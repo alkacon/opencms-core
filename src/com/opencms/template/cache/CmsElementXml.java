@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2003/01/20 17:57:48 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/01/20 23:59:21 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
      * @param parameters All parameters of this request
      * @param methodParameter not used here, only methodelemets need it.
      * @return Byte array with the processed content of this element.
-     * @exception CmsException
+     * @throws CmsException
      */
     public byte[] getContent(CmsElementCache elementCache, CmsObject cms, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters, String methodParameter) throws CmsException  {
         byte[] result = null;

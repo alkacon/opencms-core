@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/01/20 17:57:46 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/01/20 23:59:17 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.NodeList;
  * into the cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.4 $ $Date: 2003/01/20 17:57:46 $
+ * @version $Revision: 1.5 $ $Date: 2003/01/20 23:59:17 $
  */
 public class CmsImportModuledata implements I_CmsConstants, Serializable {
 
@@ -116,7 +116,7 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
      *
      * @param importFile the file or folder to import from.
      * @param importPath the path to the cms to import into.
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      */
     public CmsImportModuledata(String importFile, String importPath, CmsObject cms)
         throws CmsException {
@@ -718,7 +718,7 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
      * @param propertyType the type of the property.
      * @param resourceType the type of the resource.
      *
-     * @exception throws CmsException if something goes wrong.
+     * @throws throws CmsException if something goes wrong.
      */
     private void createPropertydefinition(String name, String resourceType)
         throws CmsException {
@@ -881,7 +881,7 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
 
     /**
      * Gets the content definition class method constructor
-     * @returns content definition object
+     * @return content definition object
      */
     protected CmsMasterContent getContentDefinition(String classname, Class[] classes, Object[] objects) {
         CmsMasterContent cd = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGallery.java,v $
- * Date   : $Date: 2003/01/20 17:57:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/01/20 23:59:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.*;
  * workplace gallery implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
      
@@ -176,7 +176,7 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
      * @param values Vector to be filled with the appropriate values in this method
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors
-     * @exception CmsException In case there were problems accessing the language resources
+     * @throws CmsException In case there were problems accessing the language resources
      */
     public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
@@ -217,7 +217,7 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
      * 
      * @param cms The current CmsObject
      * @return A vector of folder and file objects
-     * @exception CmsException In case of trouble accessing the VFS
+     * @throws CmsException In case of trouble accessing the VFS
      * 
      * @see I_CmsFileListUsers
      */
@@ -267,7 +267,7 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
      *   the included customized defintions
      * @param res CmsResource Object of the current file list entry
      * @param lang Current language file
-     * @exception CmsException if access to system resources failed.
+     * @throws CmsException if access to system resources failed.
      * 
      * @see I_CmsFileListUsers
      */

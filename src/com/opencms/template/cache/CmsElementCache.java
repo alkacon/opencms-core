@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementCache.java,v $
-* Date   : $Date: 2002/12/06 23:16:53 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/01/20 23:59:22 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
  * All inefficiant XML-files are changed to the efficient element cache data
  * structure. For createing the content no XML-parsing and DOM-accessing is
  * neccessairy.
- * @author: Andreas Schouten
+ * @author Andreas Schouten
  */
 public class CmsElementCache {
 

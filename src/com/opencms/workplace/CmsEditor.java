@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2003/01/20 17:57:47 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.37 $ $Date: 2003/01/20 17:57:47 $
+ * @version $Revision: 1.38 $ $Date: 2003/01/20 23:59:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -106,7 +106,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
      * (MS IE or Netscape Navigator). If no such section exists, the default
      * section will be displayed.
      *
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsMail.java,v $
-* Date   : $Date: 2002/10/30 10:16:49 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/01/20 23:59:22 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import java.util.*;
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  *
- * @version $Name:  $ $Revision: 1.11 $ $Date: 2002/10/30 10:16:49 $
+ * @version $Name:  $ $Revision: 1.12 $ $Date: 2003/01/20 23:59:22 $
  * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
@@ -428,7 +428,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
      * and sending the mail.
      * @param smtpHost Name of the SMTP host that should be connected.
      * @return <code>Message</code> object that can be used as argument for the <code>Transport</code> class.
-     * @exception No exceptions occuring while building the mail will be caught.
+     * @throws No exceptions occuring while building the mail will be caught.
      */
     private Message buildMessage(String smtpHost) throws Exception {
 

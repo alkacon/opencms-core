@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2003/01/20 17:57:46 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2003/01/20 17:57:46 $
+ * @version $Revision: 1.32 $ $Date: 2003/01/20 23:59:18 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
@@ -66,7 +66,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Integer getAllPropertydef(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
         int retValue = -1;
@@ -99,7 +99,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
      * @return Bytearre containgine the processed data of the template.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
@@ -296,7 +296,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Integer getProperty(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
         int retValue = -1;
@@ -331,7 +331,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Integer getPropertydef(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
         int retValue = -1;
@@ -370,7 +370,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      * @param lang The language file.
      * @param parameters User parameters.
      * @return Value that is set into the input field.
-     * @exception CmsExeption if something goes wrong.
+     * @throws CmsExeption if something goes wrong.
      */
     public String getPropertyValue(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         String propertyValue = null;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerResources.java,v $
-* Date   : $Date: 2003/01/20 17:57:47 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Template class for generating the java script.
  * Creation date: (06.09.00 09:30:25)
- * @author: Hanjo Riege
+ * @author Hanjo Riege
  */
 
 public class CmsExplorerResources extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -55,7 +55,7 @@ public class CmsExplorerResources extends CmsWorkplaceDefault implements I_CmsCo
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters.
      *
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.

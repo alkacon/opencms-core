@@ -65,7 +65,7 @@ import java.util.Vector;
  * logging.
  *
  * @author <a href="vt@freehold.crocodile.org">Vadim Tkachenko</a>
- * @version $Revision: 1.2 $ $Date: 2000/08/08 14:01:44 $
+ * @version $Revision: 1.3 $ $Date: 2003/01/20 23:59:32 $
  */
 public class SimpleQueue {
 	/**
@@ -129,7 +129,7 @@ public class SimpleQueue {
 	/**
 	 * Wait until the object appears in the queue, then return it.
 	 * @return The object from the queue.
-	 * @exception InterruptedException if this thread was interrupted by another thread.
+	 * @throws InterruptedException if this thread was interrupted by another thread.
 	 * @see #get
 	 */
 	public synchronized Object waitObject() throws InterruptedException {

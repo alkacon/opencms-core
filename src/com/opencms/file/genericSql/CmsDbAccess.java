@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/01/20 17:57:51 $
-* Version: $Revision: 1.265 $
+* Date   : $Date: 2003/01/20 23:59:31 $
+* Version: $Revision: 1.266 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.265 $ $Date: 2003/01/20 17:57:51 $ *
+ * @version $Revision: 1.266 $ $Date: 2003/01/20 23:59:31 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -212,7 +212,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     * @param statement The PreparedStatement.
     * @param posn The parameter placeholder in the prepared statement.
     * @param content The byte array to be inserted into the prepared statement.
-    * @exception SQLException Throws SQLException if something goes wrong.
+    * @throws SQLException Throws SQLException if something goes wrong.
     */
    protected void m_doSetBytes(PreparedStatement statement, int posn, byte[] content)
         throws SQLException {
@@ -226,7 +226,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
      * Instanciates the access-module and sets up all required modules and connections.
      * @param config The OpenCms configuration.
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsDbAccess(Configurations config) throws CmsException {
 
@@ -339,7 +339,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return object The property-object.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
      public Serializable addSystemProperty(String name, Serializable object)
          throws CmsException {
@@ -406,7 +406,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param type user-type
      *
      * @return the created user.
-     * @exception thorws CmsException if something goes wrong.
+     * @throws thorws CmsException if something goes wrong.
      */
     public CmsUser addUser(String name, String password, String description,
                           String firstname, String lastname, String email,
@@ -497,7 +497,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param type user-type
      *
      * @return the created user.
-     * @exception thorws CmsException if something goes wrong.
+     * @throws thorws CmsException if something goes wrong.
      */
     public CmsUser addImportUser(String name, String password, String recoveryPassword, String description,
                           String firstname, String lastname, String email,
@@ -574,7 +574,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param userid The id of the user that is to be added to the group.
      * @param groupid The id of the group.
-     * @exception CmsException Throws CmsException if operation was not succesfull.
+     * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public void addUserToGroup(int userid, int groupid)
         throws CmsException {
@@ -700,7 +700,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param parentId The parentId of the resource.
      * @param destination The complete path of the destinationfile.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
      public void copyFile(CmsProject project,
                           CmsProject onlineProject,
@@ -723,7 +723,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param project The project to be unlocked.
      * @return the amount of locked resources in this project.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public int countLockedResources(CmsProject project)
         throws CmsException {
@@ -792,7 +792,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return the amount of properties for a propertydefinition.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     protected int countProperties(CmsPropertydefinition metadef)
         throws CmsException {
@@ -856,7 +856,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return file The created file.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
      public CmsFile createFile(CmsProject project,
                                CmsProject onlineProject,
@@ -984,7 +984,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return file The created file.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlineProject, String filename, int flags, int parentId, byte[] contents, I_CmsResourceType resourceType) throws CmsException {
 
@@ -1100,7 +1100,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param flags The flags of this resource.
      *
      * @return The created folder.
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, int fileId, String foldername, int flags) throws CmsException {
 
@@ -1222,7 +1222,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param foldername The complete path of the new name of this folder.
      *
      * @return The created folder.
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsFolder createFolder(CmsUser user, CmsProject project, CmsProject onlineProject, CmsFolder folder, int parentId, String foldername) throws CmsException {
 
@@ -1352,7 +1352,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return resource The created resource.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
      public CmsResource createResource(CmsProject project,
                                CmsProject onlineProject,
@@ -1475,7 +1475,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param resource The resource to be written to the Cms.
      *
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void createProjectResource(int projectId, String resourceName) throws CmsException {
         // do not create entries for online-project
@@ -1521,12 +1521,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param name The name of the new group.
      * @param description The description for the new group.
-     * @int flags The flags for the new group.
+     * @param flags The flags for the new group.
      * @param name The name of the parent group (or null).
      *
      * @return Group
      *
-     * @exception CmsException Throws CmsException if operation was not succesfull.
+     * @throws CmsException Throws CmsException if operation was not succesfull.
      */
      public CmsGroup createGroup(String name, String description, int flags,String parent)
          throws CmsException {
@@ -1593,7 +1593,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param flags The flags for the project (e.g. archive).
      * @param type the type for the project (e.g. normal).
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsProject createProject(CmsUser owner, CmsGroup group, CmsGroup managergroup,
                                     CmsTask task, String name, String description,
@@ -1661,7 +1661,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param name The name of the propertydefinitions to overwrite.
      * @param resourcetype The resource-type for the propertydefinitions.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsPropertydefinition createPropertydefinition(String name,
                                                           int resourcetype)
@@ -1823,7 +1823,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return The Taskobject  of the generated Task
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsTask createTask(int rootId, int parentId, int tasktype,
                                int ownerId, int agentId,int  roleId, String taskname,
@@ -1894,7 +1894,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param resourceId The id of the resource.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void deleteAllProperties(int projectId, CmsResource resource)
         throws CmsException {
@@ -1944,7 +1944,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param resourceId The id of the resource.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void deleteAllProperties(int projectId, int resourceId)
         throws CmsException {
@@ -1995,7 +1995,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param project The project in which the resource will be used.
      * @param filename The complete path of the file.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public void deleteFile(CmsProject project, String filename)
         throws CmsException {
@@ -2052,7 +2052,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * If force is set to false, the folder will be deleted only if it is empty.
      * This parameter is not used yet as only empty folders can be deleted!
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public void deleteFolder(CmsProject project, CmsFolder orgFolder, boolean force)
         throws CmsException {
@@ -2120,7 +2120,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * Only the admin can do this.<P/>
      *
      * @param delgroup The name of the group that is to be deleted.
-     * @exception CmsException  Throws CmsException if operation was not succesfull.
+     * @throws CmsException  Throws CmsException if operation was not succesfull.
      */
     public void deleteGroup(String delgroup)
          throws CmsException {
@@ -2157,7 +2157,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * Therefore it deletes all files, resources and properties.
      *
      * @param project the project to delete.
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void deleteProject(CmsProject project)
         throws CmsException {
@@ -2204,7 +2204,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param project The project to delete.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void deleteProjectProperties(CmsProject project)
         throws CmsException {
@@ -2252,7 +2252,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * Deletes a specified project
      *
      * @param project The project to be deleted.
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void deleteProjectResources(CmsProject project)
         throws CmsException {
@@ -2292,7 +2292,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param project The project in which the resource is used.
      *
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void deleteAllProjectResources(int projectId) throws CmsException {
         Connection con = null;
@@ -2328,7 +2328,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param resource The resource to be deleted from the Cms.
      *
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void deleteProjectResource(int projectId, String resourceName)
             throws CmsException {
@@ -2366,7 +2366,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param resourceId The id of the resource.
      * @param resourceType The Type of the resource.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void deleteProperty(String meta, int projectId, CmsResource resource, int resourceType)
         throws CmsException {
@@ -2426,7 +2426,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param metadef The propertydefinitions to be deleted.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void deletePropertydefinition(CmsPropertydefinition metadef)
         throws CmsException {
@@ -2483,7 +2483,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * Private helper method to delete a resource.
      *
      * @param id the id of the resource to delete.
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     protected void deleteResource(CmsResource resource)
         throws CmsException {
@@ -2570,7 +2570,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param name The name of the property.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void deleteSystemProperty(String name)
         throws CmsException {
@@ -2606,7 +2606,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * Deletes a user from the database.
      *
      * @param userId The Id of the user to delete
-     * @exception thorws CmsException if something goes wrong.
+     * @throws thorws CmsException if something goes wrong.
      */
     public void deleteUser(int id)
         throws CmsException {
@@ -2643,7 +2643,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * Deletes a user from the database.
      *
      * @param user the user to delete
-     * @exception thorws CmsException if something goes wrong.
+     * @throws thorws CmsException if something goes wrong.
      */
     public void deleteUser(String name)
         throws CmsException {
@@ -2678,7 +2678,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
     /**
      * Destroys this access-module
-     * @exception throws CmsException if something goes wrong.
+     * @throws throws CmsException if something goes wrong.
      */
     public void destroy()
         throws CmsException {
@@ -2734,7 +2734,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param taskid Id of the task to end.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void endTask(int taskId)
         throws CmsException {
@@ -2854,7 +2854,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return A vector with the tasks
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     protected int findAgent(int roleid)
         throws CmsException {
@@ -2910,7 +2910,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param newRoleId The new Group the task belongs to
      * @param newUserId User who gets the task.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void forwardTask(int taskId, int newRoleId, int newUserId)
         throws CmsException {
@@ -3250,7 +3250,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param groupname The name of the group.
      * @return users A Vector of all child groups or null.
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
      public Vector getChild(String groupname)
       throws CmsException {
@@ -3324,7 +3324,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return subfiles A Vector with all file headers of the folder.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getFilesInFolder(int projectId, CmsFolder parentFolder)
         throws CmsException {
@@ -3419,7 +3419,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return Vector with all names of resources.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getFilesWithProperty(int projectId, String propertyDefinition, String propertyValue) throws CmsException {
         Vector names = new Vector();
@@ -3492,7 +3492,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return Vector with all resources.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getResourcesWithProperty(int projectId, String propertyDefinition,
                                            String propertyValue, int resourceType) throws CmsException {
@@ -3591,7 +3591,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return Vector with all resources.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getResourcesWithProperty(int projectId, String propertyDefinition)
                 throws CmsException {
@@ -3686,7 +3686,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return A Vecor of folders.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector getFolderTree(int projectId, String rootName) throws CmsException {
         Vector folders = new Vector();
@@ -3777,7 +3777,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * Returns all groups<P/>
      *
      * @return users A Vector of all existing groups.
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
      public Vector getGroups()
       throws CmsException {
@@ -3837,7 +3837,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param name The name of the user.
      * @return Vector of groups
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector getGroupsOfUser(String name)
         throws CmsException {
@@ -3897,11 +3897,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
      * Retrieves the onlineproject from the database based on the given project.
      *
-     * @author Jan Krag
-     * @author Anders Fugmann
-     * @return com.opencms.file.CmsProject the  onlineproject for the given project.
      * @param projectId int the project id for which to find the online project.
-     * @exception CmsException Throws CmsException if the resource is not found, or the database communication went wrong.
+     * @return com.opencms.file.CmsProject the  onlineproject for the given project.
+     * @throws CmsException Throws CmsException if the resource is not found, or the database communication went wrong.
      */
     public CmsProject getOnlineProject(int projectId) throws CmsException {
         return readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
@@ -4003,7 +4001,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return A Vecor of resources.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector getResourcesInFolder(int projectId, CmsFolder offlineResource) throws CmsException {
         Vector resources = new Vector();
@@ -4142,7 +4140,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return Vector with all subfolders for the given folder.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getSubFolders(int projectId, CmsFolder parentFolder)
         throws CmsException {
@@ -4230,7 +4228,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param task The task.
      * @param parname Name of the parameter.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public String getTaskPar(int taskId, String parname)
         throws CmsException {
@@ -4285,7 +4283,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return id from the task template
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public int getTaskType(String taskName)
         throws CmsException {
@@ -4391,7 +4389,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * Gets all users of a type.
      *
      * @param type The type of the user.
-     * @exception thorws CmsException if something goes wrong.
+     * @throws thorws CmsException if something goes wrong.
      */
     public Vector getUsers(int type)
         throws CmsException {
@@ -4473,7 +4471,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param type The type of the user.
      * @param namestart The namefilter
-     * @exception thorws CmsException if something goes wrong.
+     * @throws thorws CmsException if something goes wrong.
      */
     public Vector getUsers(int type, String namefilter)
         throws CmsException {
@@ -4559,7 +4557,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param name The name of the group.
      * @param type the type of the users to read.
      * @return Vector of users
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector getUsersOfGroup(String name, int type)
         throws CmsException {
@@ -4651,7 +4649,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return the users.
      *
-     * @exception CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful.
      */
     public Vector getUsersByLastname(String lastname, int userType,
                                      int userStatus, int wasLoggedIn, int nMax)
@@ -4850,7 +4848,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param onlineProject The online project of the OpenCms.
      * @param report A report object to provide the loggin messages.
      * @return a vector of changed or deleted resources.
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProject,
                          boolean enableHistory, I_CmsReport report, Hashtable exportpoints) throws CmsException{
@@ -5428,7 +5426,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param publishDate The date of publishing
      * @param userId The id of the user who had published the project
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
 
     public void backupProject(CmsProject project, int versionId,
@@ -5520,7 +5518,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param versionId The version of the backup
      * @param publishDate The date of publishing
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
 
     public void backupResource(int projectId, CmsResource resource, byte[] content,
@@ -5646,7 +5644,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param project The project in which the resource is used.
      *
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector readAllProjectResources(int projectId) throws CmsException {
         Connection con = null;
@@ -5690,7 +5688,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return Vector of file headers read from the Cms.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector readAllFileHeaders(int projectId, String resourceName)
         throws CmsException {
@@ -5783,7 +5781,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return Vector of file headers read from the Cms.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector readAllFileHeadersForHist(int projectId, String resourceName)
         throws CmsException {
@@ -5871,7 +5869,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return Vector of properties as Strings.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Hashtable readAllProperties(int projectId, CmsResource resource, int resourceType)
         throws CmsException {
@@ -5941,7 +5939,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
      * The Vector is maybe empty.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public Vector readAllPropertydefinitions(int resourcetype)
         throws CmsException {
@@ -6001,7 +5999,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
      * The Vector is maybe empty.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public Vector readAllPropertydefinitions(I_CmsResourceType resourcetype)
         throws CmsException {
@@ -6017,7 +6015,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return file The read file.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
      public CmsFile readFile(int projectId,
                              int onlineProjectId,
@@ -6741,7 +6739,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return The exportrequest read from the Cms or null if it is not found.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
      public CmsExportLink readExportLink(String request) throws CmsException{
         CmsExportLink link = null;
@@ -6815,7 +6813,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return The exportrequest read from the Cms.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
      public CmsExportLink readExportLinkHeader(String request) throws CmsException{
         CmsExportLink link = null;
@@ -6874,7 +6872,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param link the cmsexportlink.
      *
-     * @exception CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
     public void writeExportLinkProcessedState(CmsExportLink link) throws CmsException {
         int linkId = link.getId();
@@ -6920,7 +6918,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param link the cmsexportlink to delete.
      *
-     * @exception CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
     public void deleteExportLink(String link) throws CmsException {
         CmsExportLink dbLink = readExportLink(link);
@@ -6934,7 +6932,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param link the cmsexportlink object to delete.
      *
-     * @exception CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
     public void deleteExportLink(CmsExportLink link) throws CmsException {
         int deleteId = link.getId();
@@ -6987,7 +6985,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param link the cmsexportlink object to write.
      *
-     * @exception CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
     public void writeExportLink(CmsExportLink link) throws CmsException {
         //first delete old entrys in the database
@@ -7181,7 +7179,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return file The read file.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
      public CmsFile readFile(int projectId,
                              int onlineProjectId,
@@ -7284,7 +7282,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return file The read file.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
      public CmsFile readFileInProject(int projectId,
                                         int onlineProjectId,
@@ -7379,7 +7377,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param fileId the fileId.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     protected byte[] readFileContent(int projectId, int fileId)
         throws CmsException {
@@ -7447,7 +7445,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return file The read file.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public CmsFile readFileHeader(int projectId, int resourceId)
         throws CmsException {
@@ -7549,7 +7547,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return file The read file.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public CmsFile readFileHeader(int projectId, CmsResource resource)
         throws CmsException {
@@ -7652,7 +7650,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return file The read file.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public CmsFile readFileHeader(int projectId, String filename)
         throws CmsException {
@@ -7756,7 +7754,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return file The read file.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public CmsFile readFileHeader(int projectId, String filename, boolean includeDeleted)
         throws CmsException {
@@ -7861,7 +7859,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return file The read file.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public CmsBackupResource readFileHeaderForHist(int versionId, String filename)
         throws CmsException {
@@ -7954,7 +7952,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return file The read file.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
      public CmsBackupResource readFileForHist(int versionId, String filename)
          throws CmsException {
@@ -8045,7 +8043,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return file The read file.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public CmsFile readFileHeaderInProject(int projectId, String filename)
         throws CmsException {
@@ -8148,7 +8146,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return A Vecor of files.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector readFiles(int projectId) throws CmsException {
         return readFiles(projectId, true, false);
@@ -8160,7 +8158,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return A Vecor of files.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector readFiles(int projectId, boolean includeUnchanged, boolean onlyProject)
         throws CmsException {
@@ -8264,7 +8262,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return The read folder.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsFolder readFolder(int projectId, String foldername)
         throws CmsException {
@@ -8359,7 +8357,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return The read folder.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsFolder readFolder(int projectId, int folderid)
         throws CmsException {
@@ -8452,7 +8450,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return The read folder.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsFolder readFolderInProject(int projectId, String foldername)
         throws CmsException {
@@ -8546,7 +8544,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return A Vecor of folders.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector readFolders(int projectId) throws CmsException {
         return readFolders(projectId, true, false);
@@ -8559,7 +8557,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return A Vecor of folders.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector readFolders(int projectId, boolean includeUnchanged, boolean onlyProject)
         throws CmsException {
@@ -8654,7 +8652,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * Returns a group object.<P/>
      * @param groupname The id of the group that is to be read.
      * @return Group.
-     * @exception CmsException  Throws CmsException if operation was not succesful
+     * @throws CmsException  Throws CmsException if operation was not succesful
      */
      public CmsGroup readGroup(int id)
          throws CmsException {
@@ -8718,7 +8716,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * Returns a group object.<P/>
      * @param groupname The name of the group that is to be read.
      * @return Group.
-     * @exception CmsException  Throws CmsException if operation was not succesful
+     * @throws CmsException  Throws CmsException if operation was not succesful
      */
      public CmsGroup readGroup(String groupname)
          throws CmsException {
@@ -8781,7 +8779,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param id The id of the project.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsProject readProject(int id)
         throws CmsException {
@@ -8851,7 +8849,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param task The task to read the project for.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsProject readProject(CmsTask task)
         throws CmsException {
@@ -8914,7 +8912,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return A Vecor of resources.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector readProjectView(int currentProject, int project, String filter)
         throws CmsException {
@@ -8996,7 +8994,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param versionId The versionId of the backup project.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsBackupProject readBackupProject(int versionId)
         throws CmsException {
@@ -9073,7 +9071,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param project The projec for tasklog to read.
      * @return A Vector of new TaskLog objects
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public Vector readProjectLogs(int projectid)
         throws CmsException {
@@ -9149,7 +9147,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return property The property as string or null if the property not exists.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public String readProperty(String meta, int projectId, CmsResource resource, int resourceType)
         throws CmsException {
@@ -9219,7 +9217,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @return propertydefinition The propertydefinition that corresponds to the overgiven
      * arguments - or null if there is no valid propertydefinition.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsPropertydefinition readPropertydefinition(String name, int type)
         throws CmsException {
@@ -9288,7 +9286,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @return propertydefinition The propertydefinition that corresponds to the overgiven
      * arguments - or null if there is no valid propertydefinition.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsPropertydefinition readPropertydefinition(String name, I_CmsResourceType type)
         throws CmsException {
@@ -9304,7 +9302,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return The resource read.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     protected CmsResource readResource(CmsProject project, String filename)
         throws CmsException {
@@ -9403,7 +9401,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return A Vecor of resources.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector readResources(CmsProject project)
         throws CmsException {
@@ -9496,7 +9494,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param resource The resource to be read from the Cms.
      *
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public String readProjectResource(int projectId, String resourcename) throws CmsException {
         PreparedStatement statement = null;
@@ -9547,7 +9545,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param resource The resource to be read from the Cms.
      *
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     protected Vector readBackupProjectResources(int versionId) throws CmsException {
         PreparedStatement statement = null;
@@ -9588,7 +9586,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param sessionId, the id og the session to read.
      * @return the read session as Hashtable.
-     * @exception thorws CmsException if something goes wrong.
+     * @throws thorws CmsException if something goes wrong.
      */
     public Hashtable readSession(String sessionId)
         throws CmsException {
@@ -9667,7 +9665,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @return object The property-object.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public Serializable readSystemProperty(String name)
         throws CmsException {
@@ -9734,7 +9732,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
  *
  * @return a task object or null if the task is not found.
  *
- * @exception CmsException Throws CmsException if something goes wrong.
+ * @throws CmsException Throws CmsException if something goes wrong.
  */
 public CmsTask readTask(int id) throws CmsException {
     ResultSet res = null;
@@ -9810,7 +9808,7 @@ public CmsTask readTask(int id) throws CmsException {
      *
      * @param id The id for the tasklog .
      * @return A new TaskLog object
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsTaskLog readTaskLog(int id)
         throws CmsException {
@@ -9874,7 +9872,7 @@ public CmsTask readTask(int id) throws CmsException {
      *
      * @param taskid The id of the task for the tasklog to read .
      * @return A Vector of new TaskLog objects
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public Vector readTaskLogs(int taskId)
         throws CmsException {
@@ -9944,13 +9942,13 @@ public CmsTask readTask(int id) throws CmsException {
      * @param agent The task agent
      * @param owner The task owner .
      * @param group The group who has to process the task.
-     * @tasktype C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
+     * @param tasktype C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
      * @param orderBy Chooses, how to order the tasks.
      * @param sort Sort Ascending or Descending (ASC or DESC)
      *
      * @return A vector with the tasks
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner,
                             CmsGroup role, int tasktype,
@@ -10083,7 +10081,7 @@ public CmsTask readTask(int id) throws CmsException {
      * @param id the id of the user.
      * @param type the type of the user.
      * @return the read user.
-     * @exception thorws CmsException if something goes wrong.
+     * @throws thorws CmsException if something goes wrong.
      */
     public CmsUser readUser(int id)
         throws CmsException {
@@ -10175,7 +10173,7 @@ public CmsTask readTask(int id) throws CmsException {
      * @param name the name of the user.
      * @param type the type of the user.
      * @return the read user.
-     * @exception thorws CmsException if something goes wrong.
+     * @throws thorws CmsException if something goes wrong.
      */
     public CmsUser readUser(String name, int type)
         throws CmsException {
@@ -10271,7 +10269,7 @@ public CmsTask readTask(int id) throws CmsException {
      * @param password the password of the user.
      * @param type the type of the user.
      * @return the read user.
-     * @exception thorws CmsException if something goes wrong.
+     * @throws thorws CmsException if something goes wrong.
      */
     public CmsUser readUser(String name, String password, int type)
         throws CmsException {
@@ -10366,7 +10364,7 @@ public CmsTask readTask(int id) throws CmsException {
      * @param user the user to set the password for.
      * @param recoveryPassword the recoveryPassword the user has to know to set the password.
      * @param password the password to set
-     * @exception thorws CmsException if something goes wrong.
+     * @throws thorws CmsException if something goes wrong.
      */
     public void recoverPassword(String user, String recoveryPassword, String password )
         throws CmsException {
@@ -10416,7 +10414,7 @@ public CmsTask readTask(int id) throws CmsException {
       *
       * @param project The project in which the resource will be used.
       * @param filename The complete path of the file.
-      * @exception CmsException Throws CmsException if operation was not succesful
+      * @throws CmsException Throws CmsException if operation was not succesful
       */
      public void removeFile(int projectId, String filename)
         throws CmsException{
@@ -10471,7 +10469,7 @@ public CmsTask readTask(int id) throws CmsException {
      * This method is used to physically remove a folder form the database.
      *
      * @param folder The folder.
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void removeFolder(int projectId, CmsFolder folder)
         throws CmsException{
@@ -10538,7 +10536,7 @@ public CmsTask readTask(int id) throws CmsException {
      *
      * @param project The project in which the resource will be used.
      * @param foldername The complete path of the folder.
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     protected void removeFolderForPublish(int projectId, String foldername)
         throws CmsException{
@@ -10586,7 +10584,7 @@ public CmsTask readTask(int id) throws CmsException {
      * Removes the temporary files of the given resource
      *
      * @param file The file of which the remporary files should be deleted
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     protected void removeTemporaryFile(CmsFile file) throws CmsException{
         PreparedStatement statement = null;
@@ -10670,7 +10668,7 @@ public CmsTask readTask(int id) throws CmsException {
      *
      * @param userid The id of the user that is to be added to the group.
      * @param groupid The id of the group.
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
      public void removeUserFromGroup(int userid, int groupid)
          throws CmsException {
@@ -10716,7 +10714,7 @@ public CmsTask readTask(int id) throws CmsException {
      * @param oldfileID The id of the resource which will be renamed.
      * @param newname The new name of the resource.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public void renameFile(CmsProject project,
                             CmsProject onlineProject,
@@ -10770,7 +10768,7 @@ public CmsTask readTask(int id) throws CmsException {
      *
      * @param user the user to set the password for.
      * @param password the password to set
-     * @exception thorws CmsException if something goes wrong.
+     * @throws thorws CmsException if something goes wrong.
      */
     public void setPassword(String user, String password)
         throws CmsException {
@@ -10809,7 +10807,7 @@ public CmsTask readTask(int id) throws CmsException {
      *
      * @param user the user to set the password for.
      * @param password the recoveryPassword to set
-     * @exception thorws CmsException if something goes wrong.
+     * @throws thorws CmsException if something goes wrong.
      */
     public void setRecoveryPassword(String user, String password)
         throws CmsException {
@@ -10859,7 +10857,7 @@ public CmsTask readTask(int id) throws CmsException {
      *
      * @return The id of the inserted parameter or 0 if the parameter exists for this task.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public int setTaskPar(int taskId, String parname, String parvalue)
         throws CmsException {
@@ -10957,7 +10955,7 @@ public CmsTask readTask(int id) throws CmsException {
      * @param project The project in which the resource will be used.
      * @param filename The complete path of the file.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public void undeleteFile(CmsProject project, String filename)
         throws CmsException {
@@ -11008,7 +11006,7 @@ public CmsTask readTask(int id) throws CmsException {
      *
      * @param project The project to be unlocked.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void unlockProject(CmsProject project)
         throws CmsException {
@@ -11057,7 +11055,7 @@ public CmsTask readTask(int id) throws CmsException {
      * Updates the LOCKED_BY state of a Resource.
      * Creation date: (29.08.00 15:01:55)
      * @param res com.opencms.file.CmsResource
-     * @exception com.opencms.core.CmsException The exception description.
+     * @throws com.opencms.core.CmsException The exception description.
      */
     public void updateLockstate(CmsResource res, int projectId) throws CmsException {
 
@@ -11106,7 +11104,7 @@ public CmsTask readTask(int id) throws CmsException {
      * Updates the state of a Resource.
      *
      * @param res com.opencms.file.CmsResource
-     * @exception com.opencms.core.CmsException The exception description.
+     * @throws com.opencms.core.CmsException The exception description.
      */
     public void updateResourcestate(CmsResource res) throws CmsException {
 
@@ -11274,7 +11272,7 @@ public CmsTask readTask(int id) throws CmsException {
      * @param groupid The id of the group to check.
      * @return True or False
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
      public boolean userInGroup(int userid, int groupid)
          throws CmsException {
@@ -11330,7 +11328,7 @@ public CmsTask readTask(int id) throws CmsException {
      * @param file The new file.
      * @param changed Flag indicating if the file state must be set to changed.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public void writeFile(CmsProject project,
                            CmsProject onlineProject,
@@ -11348,7 +11346,7 @@ public CmsTask readTask(int id) throws CmsException {
      * @param changed Flag indicating if the file state must be set to changed.
      * @param userId The id of the user who has changed the resource.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public void writeFile(CmsProject project,
                            CmsProject onlineProject,
@@ -11377,7 +11375,7 @@ public CmsTask readTask(int id) throws CmsException {
      * @param file The new file.
      * @param changed Flag indicating if the file state must be set to changed.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
      public void writeFileHeader(CmsProject project, CmsFile file, boolean changed)
          throws CmsException {
@@ -11393,7 +11391,7 @@ public CmsTask readTask(int id) throws CmsException {
      * @param changed Flag indicating if the file state must be set to changed.
      * @param userId The id of the user who has changed the resource.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
      public void writeFileHeader(CmsProject project, CmsFile file, boolean changed, int userId)
          throws CmsException {
@@ -11479,7 +11477,7 @@ public CmsTask readTask(int id) throws CmsException {
      * @param folder The folder to be written.
      * @param changed Flag indicating if the file state must be set to changed.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public void writeFolder(CmsProject project, CmsFolder folder, boolean changed)
         throws CmsException {
@@ -11494,7 +11492,7 @@ public CmsTask readTask(int id) throws CmsException {
      * @param changed Flag indicating if the file state must be set to changed.
      * @param userId The user who has changed the resource
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public void writeFolder(CmsProject project, CmsFolder folder, boolean changed, int userId)
         throws CmsException {
@@ -11572,7 +11570,7 @@ public CmsTask readTask(int id) throws CmsException {
      * @param changed Flag indicating if the file state must be set to changed.
      * @param userId The user who has changed the resource
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public void writeResource(CmsProject project, CmsResource resource, byte[] filecontent, boolean changed, int userId)
         throws CmsException {
@@ -11661,7 +11659,7 @@ public CmsTask readTask(int id) throws CmsException {
      * Only the admin can do this.<P/>
      *
      * @param group The group that should be written to the Cms.
-     * @exception CmsException  Throws CmsException if operation was not succesfull.
+     * @throws CmsException  Throws CmsException if operation was not succesfull.
      */
      public void writeGroup(CmsGroup group)
          throws CmsException {
@@ -11707,7 +11705,7 @@ public CmsTask readTask(int id) throws CmsException {
       * Therefore it deletes all files, resources and properties.
       *
       * @param project the project to delete.
-      * @exception CmsException Throws CmsException if something goes wrong.
+      * @throws CmsException Throws CmsException if something goes wrong.
       */
      public void writeProject(CmsProject project)
          throws CmsException {
@@ -11759,7 +11757,7 @@ public CmsTask readTask(int id) throws CmsException {
      * @param resource The CmsResource object of the resource that gets the properties.
      * @param resourceType The Type of the resource.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void writeProperties(Hashtable propertyinfos, int projectId, CmsResource resource, int resourceType)
         throws CmsException {
@@ -11774,7 +11772,7 @@ public CmsTask readTask(int id) throws CmsException {
      * @param resourceType The Type of the resource.
      * @param addDefinition If <code>true</code> then the propertydefinition is added if it not exists
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void writeProperties(Hashtable propertyinfos, int projectId, CmsResource resource, int resourceType, boolean addDefinition)
         throws CmsException {
@@ -11799,7 +11797,7 @@ public CmsTask readTask(int id) throws CmsException {
      * @param resourceType The Type of the resource.
      * @param addDefinition If <code>true</code> then the propertydefinition is added if it not exists
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void writeProperty(String meta, int projectId, String value, CmsResource resource, int resourceType, boolean addDefinition)
         throws CmsException {
@@ -11887,7 +11885,7 @@ public CmsTask readTask(int id) throws CmsException {
      *
      * @return The propertydefinition, that was written.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsPropertydefinition writePropertydefinition(CmsPropertydefinition metadef)
         throws CmsException {
@@ -11951,7 +11949,7 @@ public CmsTask readTask(int id) throws CmsException {
      *
      * @return object The property-object.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public Serializable writeSystemProperty(String name, Serializable object)
         throws CmsException {
@@ -12013,7 +12011,7 @@ public CmsTask readTask(int id) throws CmsException {
      *
      * @param task The task that will be written.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsTask writeTask(CmsTask task)
         throws CmsException {
@@ -12077,7 +12075,7 @@ public CmsTask readTask(int id) throws CmsException {
      * @param comment Description for the log.
      * @param type Type of the log. 0 = Sytem log, 1 = User Log
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void writeTaskLog(int taskId, int userid,
                              java.sql.Timestamp starttime, String comment, int type)
@@ -12130,7 +12128,7 @@ public CmsTask readTask(int id) throws CmsException {
      * Creates a new tasktype set in the database.
      * @return The id of the inserted parameter or 0 if the parameter exists for this task.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public int writeTaskType(int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref)
         throws CmsException {
@@ -12189,7 +12187,7 @@ public CmsTask readTask(int id) throws CmsException {
      * Writes a user to the database.
      *
      * @param user the user to write
-     * @exception thorws CmsException if something goes wrong.
+     * @throws thorws CmsException if something goes wrong.
      */
     public void writeUser(CmsUser user)
         throws CmsException {
@@ -12336,7 +12334,7 @@ public CmsTask readTask(int id) throws CmsException {
      *
      * @return A Vecor of resources.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector readResourcesLikeName(CmsProject project, String resourcename)
         throws CmsException {
@@ -12429,7 +12427,7 @@ public CmsTask readTask(int id) throws CmsException {
      *
      * @return A Vector of files.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector readFilesByType(int projectId, int resourcetype) throws CmsException {
 

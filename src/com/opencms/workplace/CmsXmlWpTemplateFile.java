@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
-* Date   : $Date: 2002/12/06 23:16:47 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.61 $ $Date: 2002/12/06 23:16:47 $
+ * @version $Revision: 1.62 $ $Date: 2003/01/20 23:59:19 $
  */
 
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,I_CmsWpConstants {
@@ -144,7 +144,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      * @param tag Key for the datablocks hashtable.
      * @return Processed datablock for the given key.
      * @deprecated Use getProcessedDataValue instead.
-     * @exception CmsException
+     * @throws CmsException
      */
     public String getProcessedXmlDataValue(String tag) throws CmsException {
         return getProcessedDataValue(tag);
@@ -158,7 +158,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      * @param callingObject Object that should be used to look up user methods.
      * @return Processed datablock for the given key.
      * @deprecated Use getProcessedDataValue instead.
-     * @exception CmsException
+     * @throws CmsException
      */
     public String getProcessedXmlDataValue(String tag, Object callingObject) throws CmsException {
         return getProcessedDataValue(tag, callingObject);
@@ -176,7 +176,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      * @param userObj any object that should be passed to user methods
      * @return Processed datablock for the given key.
      * @deprecated Use getProcessedDataValue instead.
-     * @exception CmsException
+     * @throws CmsException
      */
     public String getProcessedXmlDataValue(String tag, Object callingObject,
             Object userObj) throws CmsException {
@@ -215,7 +215,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      * @param n XML element containing the current special workplace tag.
      * @param callingObject reference to the calling object.
      * @param userObj hashtable containig all user parameters.
-     * @exception CmsException
+     * @throws CmsException
      * @see com.opencms.workplace.I_CmsWpElement
      */
     public Object handleAnyTag(Element n, Object callingObject, Object userObj) throws CmsException {
@@ -267,15 +267,15 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      * language file.
      * @param cms CmsObject Object for accessing resources.
      * @param file CmsFile object of the file to be loaded and parsed.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public void init(CmsObject cms, CmsFile file) throws CmsException {
-        String currentLanguage = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
+        String currentLanguage = CmsXmlLanguageFileContent.getCurrentUserLanguage(cms);
         if(!m_langFiles.containsKey(currentLanguage)) {
-            m_langFiles.put(currentLanguage, new CmsXmlLanguageFile(cms));
+            m_langFiles.put(currentLanguage, new CmsXmlLanguageFileContent(cms));
         }
-        m_languageFile = (CmsXmlLanguageFile)m_langFiles.get(currentLanguage);
+        m_languageFile = new CmsXmlLanguageFile((CmsXmlLanguageFileContent)m_langFiles.get(currentLanguage));
         //Gridnine AB Aug 8, 2002
         String encoding = m_languageFile.getEncoding();
         if (encoding != null) {
@@ -290,15 +290,15 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      * language file.
      * @param cms CmsObject Object for accessing resources.
      * @param file CmsFile object of the file to be loaded and parsed.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public void init(CmsObject cms, String filename) throws CmsException {
-        String currentLanguage = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
+        String currentLanguage = CmsXmlLanguageFileContent.getCurrentUserLanguage(cms);
         if(!m_langFiles.containsKey(currentLanguage)) {
-            m_langFiles.put(currentLanguage, new CmsXmlLanguageFile(cms));
+            m_langFiles.put(currentLanguage, new CmsXmlLanguageFileContent(cms));
         }
-        m_languageFile = (CmsXmlLanguageFile)m_langFiles.get(currentLanguage);
+        m_languageFile = new CmsXmlLanguageFile((CmsXmlLanguageFileContent)m_langFiles.get(currentLanguage));
         //Gridnine AB Aug 8, 2002
         String encoding = m_languageFile.getEncoding();
         if (encoding != null) {
@@ -382,5 +382,16 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      */
     public void setXmlData(String tag, String data) {
         setData(tag, data);
+    }
+    
+    /**
+     * Returns the languagefile for the users language from the cache.
+     * If the languagefile does not exist in the cache the method returns null
+     * 
+     * @param userLanguage The language of the current user
+     * @return CmsXmlLanguageFileContent The language file
+     */
+    public static CmsXmlLanguageFileContent getLangFileFromCache(String userLanguage){
+    	return (CmsXmlLanguageFileContent)m_langFiles.get(userLanguage);
     }
 }

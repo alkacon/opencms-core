@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChannelTree.java,v $
-* Date   : $Date: 2003/01/20 17:57:46 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2003/01/20 17:57:46 $
+ * @version $Revision: 1.9 $ $Date: 2003/01/20 23:59:19 $
  */
 
 public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -160,7 +160,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
      * @param cms The CmsObject
      * @param res The resource to be checked.
      * @return True or false.
-     * @exception CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
 
     private boolean checkAccess(CmsObject cms, CmsResource res) throws CmsException {
@@ -192,7 +192,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
      * @param cms The CmsObject
      * @param res The resource to be checked.
      * @return True or false.
-     * @exception CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
 
     private boolean checkWriteable(CmsObject cms, CmsResource res) throws CmsException {
@@ -221,7 +221,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
      * @return Bytearre containgine the processed data of the template.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
@@ -278,7 +278,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
      * @param type The resource type of the file entry.
      * @param config The configuration file.
      * @return String containing the complete name of the iconfile.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     private String getIcon(CmsObject cms, I_CmsResourceType type, CmsXmlWpConfigFile config) throws CmsException {
@@ -311,7 +311,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
 
     /**
      * Creates the folder tree i.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public Object getTree(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {

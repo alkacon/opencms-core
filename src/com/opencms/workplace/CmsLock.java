@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLock.java,v $
-* Date   : $Date: 2003/01/20 17:57:48 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/01/20 23:59:20 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.42 $ $Date: 2003/01/20 17:57:48 $
+ * @version $Revision: 1.43 $ $Date: 2003/01/20 23:59:20 $
  */
 
 public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants{
@@ -73,7 +73,7 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
      * @return Bytearre containgine the processed data of the template.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,

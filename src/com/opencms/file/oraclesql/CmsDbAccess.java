@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/12/06 23:16:58 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/01/20 23:59:32 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,14 +64,14 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.6 $ $Date: 2002/12/06 23:16:58 $ *
+ * @version $Revision: 1.7 $ $Date: 2003/01/20 23:59:32 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
     /**
      * Instanciates the access-module and sets up all required modules and connections.
      * @param config The OpenCms configuration.
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsDbAccess(Configurations config)
         throws CmsException {
@@ -85,7 +85,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      * @param name The name of the property.
      * @param object The property-object.
      * @return object The property-object.
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public Serializable addSystemProperty(String name, Serializable object) throws CmsException {
         byte[] value;
@@ -204,7 +204,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      * @param type user-type
      *
      * @return the created user.
-     * @exception thorws CmsException if something goes wrong.
+     * @throws thorws CmsException if something goes wrong.
      */
     public CmsUser addUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
         int id = nextId(C_TABLE_USERS);
@@ -338,7 +338,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      * @param type user-type
      *
      * @return the created user.
-     * @exception thorws CmsException if something goes wrong.
+     * @throws thorws CmsException if something goes wrong.
      */
     public CmsUser addImportUser(String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
         int id = nextId(C_TABLE_USERS);
@@ -637,7 +637,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      *
      * @param fileId the fileId.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     protected byte[] readFileContent(int projectId, int fileId)
         throws CmsException {
@@ -819,7 +819,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      *
      * @return object The property-object.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public Serializable writeSystemProperty(String name, Serializable object) throws CmsException {
 
@@ -921,7 +921,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      * Writes a user to the database.
      *
      * @param user the user to write
-     * @exception thorws CmsException if something goes wrong.
+     * @throws thorws CmsException if something goes wrong.
      */
     public void writeUser(CmsUser user) throws CmsException {
 
@@ -1050,7 +1050,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 
     /**
      * Destroys this access-module
-     * @exception throws CmsException if something goes wrong.
+     * @throws throws CmsException if something goes wrong.
      */
     public void destroy()
         throws CmsException {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2003/01/20 17:57:47 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.55 $ $Date: 2003/01/20 17:57:47 $
+ * @version $Revision: 1.56 $ $Date: 2003/01/20 23:59:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -160,7 +160,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
      * @param cms The CmsObject
      * @param res The resource to be checked.
      * @return True or false.
-     * @exception CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
 
     private boolean checkAccess(CmsObject cms, CmsResource res) throws CmsException {
@@ -300,7 +300,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
      * @param res The resource displayed in this entry.
      * @param template The file list template.
      * @return String containing the name of the context menu.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      *
      */
 
@@ -645,7 +645,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
      * @param type The resource type of the file entry.
      * @param config The configuration file.
      * @return String containing the complete name of the iconfile.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     private String getIcon(CmsObject cms, I_CmsResourceType type, CmsXmlWpConfigFile config) throws CmsException {
@@ -842,7 +842,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @param lang CmsXmlLanguageFile conataining the currently valid language file.
      * @return Processed button.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc,

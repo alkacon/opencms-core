@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2003/01/20 17:57:48 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.45 $ $Date: 2003/01/20 17:57:48 $
+ * @version $Revision: 1.46 $ $Date: 2003/01/20 23:59:18 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -160,7 +160,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
      * @param cms The CmsObject
      * @param res The resource to be checked.
      * @return True or false.
-     * @exception CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
 
     private boolean checkAccess(CmsObject cms, CmsResource res) throws CmsException {
@@ -190,7 +190,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
      * @param cms The CmsObject
      * @param res The resource to be checked.
      * @return True or false.
-     * @exception CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
 
     private boolean checkWriteable(CmsObject cms, CmsResource res) throws CmsException {
@@ -219,7 +219,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
      * @return Bytearre containgine the processed data of the template.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
@@ -277,7 +277,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
      * @param type The resource type of the file entry.
      * @param config The configuration file.
      * @return String containing the complete name of the iconfile.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     private String getIcon(CmsObject cms, I_CmsResourceType type, CmsXmlWpConfigFile config) throws CmsException {
@@ -304,7 +304,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
 
     /**
      * Creates the folder tree i.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public Object getTree(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {

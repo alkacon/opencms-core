@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
-* Date   : $Date: 2003/01/20 17:57:49 $
-* Version: $Revision: 1.73 $
+* Date   : $Date: 2003/01/20 23:59:20 $
+* Version: $Revision: 1.74 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import FESI.jslib.JSUtil;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.73 $ $Date: 2003/01/20 17:57:49 $
+ * @version $Revision: 1.74 $ $Date: 2003/01/20 23:59:20 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -496,7 +496,7 @@ public class CmsShell implements I_CmsConstants {
     /**
      * Prints the current prompt.
      * Creation date: (10/03/00 %r)
-     * @author: Jan Krag
+     * @author Jan Krag
      */
     private void printPrompt() {
         System.out.print("{" + m_cms.getRequestContext().currentUser().getName() + "@"

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
-* Date   : $Date: 2002/12/06 23:16:50 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/01/20 23:59:21 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.w3c.dom.NodeList;
  * Content definition for "clickable" and user requestable XML body files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.27 $ $Date: 2002/12/06 23:16:50 $
+ * @version $Revision: 1.28 $ $Date: 2003/01/20 23:59:21 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
@@ -125,7 +125,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * Gets an enumeration of all names of the subelement definition in the
      * body file.
      * @return Enumeration with of names.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Enumeration getElementDefinitions() throws CmsException {
         NodeList elementDefTags = getXmlDocument().getDocumentElement().getChildNodes();
@@ -145,7 +145,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * Gets an enumeration of all parameter names of a given subelement definition.
      * @param elementName Name of the subelement.
      * @return Enumeration of all names.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Enumeration getElementParameterNames(String elementName) throws CmsException {
         Element elementDefinition = getData("elementdef." + elementName);
@@ -157,7 +157,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * Get a hashtable containing all parameters and thies values of a given subelement definition.
      * @param elementName Name of the subelement.
      * @return Enumeration of all names.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Hashtable getElementParameters(String elementName) throws CmsException {
         Hashtable result = new Hashtable();
@@ -201,7 +201,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * Gets the filename of the master template file defined in
      * the body file.
      * @return Filename of the template file.
-     * @exception CmsException
+     * @throws CmsException
      */
     public String getMasterTemplate() throws CmsException {
         String result = getDataValue("mastertemplate");
@@ -224,7 +224,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * @param unnamedAllowed Indicates if unnamed tags are allowed or an exception should
      * be thrown.
      * @return Enumeration of all "name" attributes.
-     * @exception CmsException
+     * @throws CmsException
      */
     private Enumeration getNamesFromNodeList(NodeList nl, String tag, boolean unnamedAllowed) throws CmsException {
         int numElements = nl.getLength();
@@ -263,7 +263,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
     /**
      * Gets an enumeration of all parameter names of the master template.
      * @return Enumeration of all names.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Enumeration getParameterNames() throws CmsException {
         NodeList parameterTags = getXmlDocument().getDocumentElement().getChildNodes();
@@ -273,7 +273,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
     /**
      * Gets the template class defined in the body file.
      * @return Name of the template class.
-     * @exception CmsException
+     * @throws CmsException
      */
     public String getTemplateClass() throws CmsException {
         String result = getDataValue("class");
@@ -355,7 +355,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
     /**
      * Sets the filename of the master template file of a given subelement definition.
      * @param elementName Name of the subelement.
-     * @filename Filename to be set.
+     * @param filename Filename to be set.
      */
     public void setElementTemplate(String elementName, String filename) {
         createElementDef(elementName);
@@ -376,7 +376,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * Sets the filename of the master template file defined in
      * the body file.
      * @param template Filename of the template file.
-     * @exception CmsException
+     * @throws CmsException
      */
     public void setMasterTemplate(String template) {
         setData("masterTemplate", template);

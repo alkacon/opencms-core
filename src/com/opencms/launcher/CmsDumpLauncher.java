@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
-* Date   : $Date: 2003/01/20 17:57:53 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/01/20 23:59:23 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.36 $ $Date: 2003/01/20 17:57:53 $
+ * @version $Revision: 1.37 $ $Date: 2003/01/20 23:59:23 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
 
@@ -81,7 +81,7 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
      * @param file CmsFile Object with the selected resource to be shown
      * @param startTemplateClass Name of the template class to start with.
      * @param openCms a instance of A_OpenCms for redirect-needs
-     * @exception CmsException
+     * @throws CmsException
      */
     protected void launch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
         byte[] result = null;

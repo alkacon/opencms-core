@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsButtonSubmit.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;SUBMITBUTTON&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2002/12/06 23:16:46 $
+ * @version $Revision: 1.11 $ $Date: 2003/01/20 23:59:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -64,7 +64,7 @@ public class CmsButtonSubmit extends A_CmsWpElement implements I_CmsWpElement,I_
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @param lang CmsXmlLanguageFile conataining the currently valid language file.
      * @return Processed button.
-     * @exception CmsException
+     * @throws CmsException
      */
     
     public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, 

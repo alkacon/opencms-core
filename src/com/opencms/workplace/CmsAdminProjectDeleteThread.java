@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectDeleteThread.java,v $
-* Date   : $Date: 2003/01/20 17:57:46 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import com.opencms.util.Utils;
 /**
  * Thread for deleting a project.
  * Creation date: (20.09.01)
- * @author: Edna Falkenhan
+ * @author Edna Falkenhan
  */
 
 public class CmsAdminProjectDeleteThread extends Thread implements I_CmsConstants {

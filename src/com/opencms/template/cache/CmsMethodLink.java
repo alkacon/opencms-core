@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsMethodLink.java,v $
-* Date   : $Date: 2002/12/06 23:16:51 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/01/20 23:59:21 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package com.opencms.template.cache;
  * An instance of CmsMethodLink is a link to a method. The link contains
  * the method name and the parameter for the method.
  *
- * @author: Hanjo Riege
+ * @author Hanjo Riege
  */
 public class CmsMethodLink {
 

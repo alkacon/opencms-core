@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2003/01/20 17:57:47 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.48 $ $Date: 2003/01/20 17:57:47 $
+ * @version $Revision: 1.49 $ $Date: 2003/01/20 23:59:18 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -78,7 +78,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
      * @return Bytearre containgine the processed data of the template.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
@@ -313,7 +313,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the available folders.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getFolder(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {

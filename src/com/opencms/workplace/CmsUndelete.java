@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUndelete.java,v $
-* Date   : $Date: 2003/01/20 17:57:47 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.5 $ $Date: 2003/01/20 17:57:47 $
+ * @version $Revision: 1.6 $ $Date: 2003/01/20 23:59:19 $
  */
 
 public class CmsUndelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -57,7 +57,7 @@ public class CmsUndelete extends CmsWorkplaceDefault implements I_CmsWpConstants
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
      * @return Bytearre containgine the processed data of the template.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,

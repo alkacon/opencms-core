@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContent.java,v $
-* Date   : $Date: 2003/01/20 17:57:47 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.22 $ $Date: 2003/01/20 17:57:47 $
+ * @version $Revision: 1.23 $ $Date: 2003/01/20 23:59:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -56,7 +56,7 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters. 
      * 
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
@@ -119,7 +119,7 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
      * @param orderBy A order criteria.
      * @param groupBy A sort criteria.
      * @return a vector of tasks.
-     * @exception Throws a exception, if something goes wrong.
+     * @throws Throws a exception, if something goes wrong.
      */
     
     private Vector readTasksForRole(CmsObject cms, int project, int taskType, String orderBy, String groupBy) throws CmsException {
@@ -145,7 +145,7 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
      * 
      * @param cms CmsObject Object for accessing system resources.
      * @return Vector representing the tasks.
-     * @exception CmsException
+     * @throws CmsException
      */
     
     public Vector taskList(CmsObject cms, CmsXmlLanguageFile lang) throws CmsException {

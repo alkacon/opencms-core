@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/12/06 23:16:54 $
-* Version: $Revision: 1.78 $
+* Date   : $Date: 2003/01/20 23:59:23 $
+* Version: $Revision: 1.79 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.78 $ $Date: 2002/12/06 23:16:54 $ *
+ * @version $Revision: 1.79 $ $Date: 2003/01/20 23:59:23 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -91,7 +91,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
     /**
      * Instanciates the access-module and sets up all required modules and connections.
      * @param config The OpenCms configuration.
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsDbAccess(Configurations config)
         throws CmsException {
@@ -117,7 +117,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      * @param type user-type
      *
      * @return the created user.
-     * @exception thorws CmsException if something goes wrong.
+     * @throws thorws CmsException if something goes wrong.
      */
     public CmsUser addUser(String name, String password, String description,
                           String firstname, String lastname, String email,
@@ -256,7 +256,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      *
      * @return file The created file.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public CmsFile createFile(CmsUser user,
                                CmsProject project,
@@ -367,12 +367,12 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      *
      * @param name The name of the new group.
      * @param description The description for the new group.
-     * @int flags The flags for the new group.
+     * @param flags The flags for the new group.
      * @param name The name of the parent group (or null).
      *
      * @return Group
      *
-     * @exception CmsException Throws CmsException if operation was not succesfull.
+     * @throws CmsException Throws CmsException if operation was not succesfull.
      */
   public CmsGroup createGroup (String name, String description, int flags,
                    String parent) throws CmsException
@@ -429,7 +429,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      *
      * @param project The project to delete.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void deleteProjectProperties(CmsProject project) throws CmsException {
         // get all resources of the project
@@ -510,7 +510,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      
     /**
      * Destroys this access-module
-     * @exception throws CmsException if something goes wrong.
+     * @throws throws CmsException if something goes wrong.
      */
     public void destroy() throws CmsException {
         try {
@@ -599,7 +599,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      *
      * @return A vector with the tasks
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     protected int findAgent(int roleid)
         throws CmsException {
@@ -624,7 +624,7 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
  *
  * @return file The read file.
  *
- * @exception CmsException Throws CmsException if operation was not succesful
+ * @throws CmsException Throws CmsException if operation was not succesful
  */
 public CmsFile readFile(int projectId, int onlineProjectId, String filename) throws CmsException {
     CmsFile file = null;
@@ -718,7 +718,7 @@ public CmsFile readFile(int projectId, int onlineProjectId, String filename) thr
  *
  * @return file The read file.
  *
- * @exception CmsException Throws CmsException if operation was not succesful
+ * @throws CmsException Throws CmsException if operation was not succesful
  */
 public CmsFile readFile(int projectId, int onlineProjectId, String filename, boolean includeDeleted) throws CmsException {
     CmsFile file = null;
@@ -869,7 +869,7 @@ public CmsFile readFile(int projectId, int onlineProjectId, String filename, boo
      * @param resourceId The id of the resource.
      * @param resourceType The Type of the resource.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void writeProperty(String meta, int projectId, String value, CmsResource resource,
                                       int resourceType, boolean addDefinition)
@@ -977,7 +977,7 @@ public CmsFile readFile(int projectId, int onlineProjectId, String filename, boo
      * Writes a user to the database.
      *
      * @param user the user to write
-     * @exception thorws CmsException if something goes wrong.
+     * @throws thorws CmsException if something goes wrong.
      */
     public void writeUser(CmsUser user)
         throws CmsException {

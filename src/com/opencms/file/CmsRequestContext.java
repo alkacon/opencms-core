@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/01/20 17:57:46 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2003/01/20 23:59:17 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.61 $ $Date: 2003/01/20 17:57:46 $
+ * @version $Revision: 1.62 $ $Date: 2003/01/20 23:59:17 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -147,7 +147,7 @@ public class CmsRequestContext implements I_CmsConstants {
      * @param elementCache Starting point for the element cache or <code>null</code> if the element cache should be disabled.
      * @param directoryTranslator Translator for directories (file with full path)
      * @param fileTranslator Translator for new file names (without path)
-     * @exception CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful.
      */
     void init(
         I_CmsResourceBroker rb,
@@ -262,7 +262,7 @@ public class CmsRequestContext implements I_CmsConstants {
      * Returns the current folder object.
      *
      * @return the current folder object.
-     * @exception CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful.
      */
     public CmsFolder currentFolder() throws CmsException {
         return (
@@ -400,7 +400,7 @@ public class CmsRequestContext implements I_CmsConstants {
      * Determines if the users is in the admin-group.
      *
      * @return <code>true</code> if the users current group is the admin-group; <code>false</code> otherwise.
-     * @exception CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful.
      */
     public boolean isAdmin() throws CmsException {
         return (m_rb.isAdmin(m_user, m_currentProject));
@@ -412,7 +412,7 @@ public class CmsRequestContext implements I_CmsConstants {
      * All projectmanagers can create new projects, or close their own projects.
      *
      * @return <code>true</code> if the users current group is the projectleader-group; <code>false</code> otherwise.
-     * @exception CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful.
      */
     public boolean isProjectManager() throws CmsException {
         return (m_rb.isProjectManager(m_user, m_currentProject));
@@ -422,7 +422,7 @@ public class CmsRequestContext implements I_CmsConstants {
      * Sets the current group of the current user.
      *
      * @param groupname the name of the group to be set as current group.
-     * @exception CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful.
      */
     public void setCurrentGroup(String groupname) throws CmsException {
 
@@ -448,7 +448,7 @@ public class CmsRequestContext implements I_CmsConstants {
      * Sets the current project for the user.
      *
      * @param projectId the id of the project to be set as current project.
-     * @exception CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful.
      */
     public CmsProject setCurrentProject(int projectId) throws CmsException {
         CmsProject newProject =
@@ -477,7 +477,7 @@ public class CmsRequestContext implements I_CmsConstants {
      *
      * @param b <code>true</code> if template classes are allowed to stream the
      *    results to the response's output stream theirselves, <code>false</code> otherwise.
-     * @exception CmsException if the output stream was already used previously.
+     * @throws CmsException if the output stream was already used previously.
      */
     public void setStreaming(boolean b) throws CmsException {
         if ((m_streaming != b) && getResponse().isOutputWritten()) {

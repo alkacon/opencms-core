@@ -64,7 +64,7 @@ package source.org.apache.java.io;
  * <li>Name of the thread which issued the log message.
  * <li>Name of the object on whose behalf the message was issued.
  * </ul>
- * @version $Revision: 1.2 $ $Date: 2000/08/08 14:01:43 $
+ * @version $Revision: 1.3 $ $Date: 2003/01/20 23:59:32 $
  * @author <a href="mailto:vt@freehold.crocodile.org">Vadim Tkachenko</a>
  */
 
@@ -104,7 +104,7 @@ public class LogRecord {
 	 * @param target Owner object
 	 * @param ll Log Level
 	 * @param message Message to log
-	 * @see org.apache.java.io.LogWriter
+	 * @see source.org.apache.java.io.LogWriter
 	 */
 	public LogRecord(String channel, String message, Throwable t) {
 

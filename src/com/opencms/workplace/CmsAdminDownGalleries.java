@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2003/01/20 17:57:47 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.24 $ $Date: 2003/01/20 17:57:47 $
+ * @version $Revision: 1.25 $ $Date: 2003/01/20 23:59:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -391,9 +391,9 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
      * @param values The links that are connected with each resource.
      * @param parameters Hashtable of parameters (not used yet).
      * @param descriptions Description that will be displayed for the new resource.
-     * @returns The vectors names and values are filled with the information found in the workplace.ini.
+     * @return The vectors names and values are filled with the information found in the workplace.ini.
      * @return the number of the preselected item, -1 if none preselected
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
     public int getResources(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Vector descriptions, Hashtable parameters) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);

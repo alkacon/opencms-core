@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsXmlParser.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/01/20 23:59:21 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.w3c.dom.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2002/09/03 11:57:06 $
+ * @version $Revision: 1.11 $ $Date: 2003/01/20 23:59:21 $
  */
 public interface I_CmsXmlParser {
     
@@ -88,7 +88,7 @@ public interface I_CmsXmlParser {
      * Parses the given text.
      * @param in Reader with the input text.
      * @return Parsed text as DOM document.
-     * @exception Exception
+     * @throws Exception
      */
     public Document parse(Reader in) throws Exception;
 

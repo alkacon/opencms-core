@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSyncFolderThread.java,v $
-* Date   : $Date: 2003/01/20 17:57:47 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Vector;
 /**
  * Thread for create a new project.
  *
- * @author: Edna Falkenhan
+ * @author Edna Falkenhan
  */
 
 public class CmsSyncFolderThread extends Thread implements I_CmsConstants {

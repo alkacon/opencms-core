@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsLruHashMap.java,v $
- * Date   : $Date: 2002/11/19 14:51:37 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/01/20 23:59:22 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,10 +37,9 @@ import java.util.Map;
  * with a "last-recently-used" policy of the mapped key/values.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @see CmsFlexLruCache
  * @see I_CmsFlexLruCacheObject
- * @see CmsLruCacheObject
  */
 public class CmsLruHashMap extends HashMap {
     

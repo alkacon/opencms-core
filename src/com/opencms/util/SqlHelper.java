@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/SqlHelper.java,v $
-* Date   : $Date: 2003/01/20 17:57:49 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/01/20 23:59:20 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.sql.Timestamp;
  * This is a helper class for sql queries.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2003/01/20 17:57:49 $
+ * @version $Revision: 1.15 $ $Date: 2003/01/20 23:59:20 $
  */
 
 public class SqlHelper {
@@ -58,7 +58,7 @@ public class SqlHelper {
      * @param result The resultset to get the stamp from.
      * @param column The column to read the timestamp from.
      * @return the Timestamp.
-     * @exception Throws Exception, if something goes wrong.
+     * @throws Throws Exception, if something goes wrong.
      */
 
     public static final Timestamp getTimestamp(ResultSet result, String column)

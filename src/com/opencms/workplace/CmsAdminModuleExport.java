@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2003/01/20 17:57:48 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 	 * "additional_folders" as a folder list separated by ";", you can specify folders outside the 
 	 * "system/modules" directory to be exported with the module!
 	 *
-	 * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+	 * @see #getContent(CmsObject, String, String, Hashtable, String)
 	 * @param cms CmsObject Object for accessing system resources.
 	 * @param templateFile Filename of the template file.
 	 * @param elementName Element name of this template in our parent template.

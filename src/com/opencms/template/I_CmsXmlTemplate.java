@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/01/20 23:59:21 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.*;
  * of templates (eg. type I_CmsDumpTemplate) as subtemplate.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2001/07/31 15:50:16 $
+ * @version $Revision: 1.9 $ $Date: 2003/01/20 23:59:21 $
  */
 public interface I_CmsXmlTemplate extends I_CmsTemplate {
     
@@ -82,7 +82,7 @@ public interface I_CmsXmlTemplate extends I_CmsTemplate {
      * @param doc Reference to the A_CmsXmlContent object the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Object templateElement(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException;
 }

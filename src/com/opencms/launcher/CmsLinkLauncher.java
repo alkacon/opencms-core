@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLinkLauncher.java,v $
-* Date   : $Date: 2002/12/06 23:16:54 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/01/20 23:59:23 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletResponse;
  * be used to create output.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2002/12/06 23:16:54 $
+ * @version $Revision: 1.16 $ $Date: 2003/01/20 23:59:23 $
  */
 public class CmsLinkLauncher extends A_CmsLauncher {
 
@@ -83,7 +83,7 @@ public class CmsLinkLauncher extends A_CmsLauncher {
      * @param file CmsFile Object with the selected resource to be shown
      * @param startTemplateClass Name of the template class to start with.
      * @param openCms a instance of A_OpenCms for redirect-needs
-     * @exception CmsException
+     * @throws CmsException
      */
     protected void launch(CmsObject cms, CmsFile file,
                           String startTemplateClass,

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChnav.java,v $
-* Date   : $Date: 2003/01/20 17:57:47 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.6 $ $Date: 2003/01/20 17:57:47 $
+ * @version $Revision: 1.7 $ $Date: 2003/01/20 23:59:19 $
  */
 
 public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -64,7 +64,7 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
      * @return Bytearry containing the processed data of the template.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
@@ -167,7 +167,7 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
      * @param filename The Name of the current file.
      * @return Hashtable including three arrays of strings containing the filenames,
      * nicenames and navigation positions.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
     private Hashtable getNavData(CmsObject cms, String filename) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
@@ -281,8 +281,8 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
      * @param names The names of the new rescources.
      * @param values The links that are connected with each resource.
      * @param parameters Hashtable of parameters (not used yet).
-     * @returns The vectors names and values are filled with data for building the navigation.
-     * @exception Throws CmsException if something goes wrong.
+     * @return The vectors names and values are filled with data for building the navigation.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public Integer getNavPos(CmsObject cms, CmsXmlLanguageFile lang, Vector names,

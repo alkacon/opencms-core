@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2003/01/20 17:57:49 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/01/20 23:59:20 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ public class Utils {
      * @param fileA One of the two CmsFile objects to be compared.
      * @param fileB The second of the two CmsFile objects to be compared.
      * @return <code>true</code> or <code>false</code>, depending if the two file objects have to be sorted.
-     * @exception CmsException Is thrown when file access failed.
+     * @throws CmsException Is thrown when file access failed.
      *
      */
 
@@ -345,7 +345,7 @@ public class Utils {
      * delete all unnecessary white spaces.
      * @param s Input string
      * @return Output String
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public static String removeLineBreaks(String s) throws CmsException {
@@ -370,7 +370,7 @@ public class Utils {
      *
      * @param cms The cms Object, used for reading the parent folder and the properties.
      * @param res The resource to be checked.
-     * @exception CmsException.
+     * @throws CmsException.
      */
     public static boolean isHttpsResource(CmsObject cms, CmsResource res) throws CmsException{
         while(!res.getAbsolutePath().equals(I_CmsConstants.C_ROOT)){
@@ -539,7 +539,7 @@ public class Utils {
      * @param password The new password that has to be checked.
      * @param oldPassword The old password or null if not needed.
      *
-     * @exception CmsException is thrown if the password is not valid.
+     * @throws CmsException is thrown if the password is not valid.
      */
     public static void validateNewPassword(CmsObject cms, String password, String oldPassword)throws CmsException{
 

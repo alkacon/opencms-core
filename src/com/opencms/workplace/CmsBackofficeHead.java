@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsBackofficeHead.java,v $
-* Date   : $Date: 2003/01/20 17:57:47 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Vector;
  * Template class for displaying the head frame of the generic backoffice input forms
  *
  * Creation date: (17.10.2001)
- * @author: Michael Emmerich
+ * @author Michael Emmerich
  */
 
 public class CmsBackofficeHead extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -52,7 +52,7 @@ public class CmsBackofficeHead extends CmsWorkplaceDefault implements I_CmsConst
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters.
      *
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.

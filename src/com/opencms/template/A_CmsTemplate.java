@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsTemplate.java,v $
-* Date   : $Date: 2002/12/06 23:16:51 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/01/20 23:59:21 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.HttpServletRequest;
  * Abstract template class. Contains all commonly used methods for handling cache properties.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2002/12/06 23:16:51 $
+ * @version $Revision: 1.9 $ $Date: 2003/01/20 23:59:21 $
  */
 public abstract class A_CmsTemplate implements I_CmsConstants, I_CmsTemplate, I_CmsLogChannels {
 
@@ -253,7 +253,7 @@ public abstract class A_CmsTemplate implements I_CmsConstants, I_CmsTemplate, I_
      * an error message to the OpenCms logfile and throwing a
      * CmsException of the type "unknown".
      * @param errorMessage String with the error message to be printed.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected void throwException(String errorMessage) throws CmsException {
         throwException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
@@ -265,7 +265,7 @@ public abstract class A_CmsTemplate implements I_CmsConstants, I_CmsTemplate, I_
      * CmsException of the given type.
      * @param errorMessage String with the error message to be printed.
      * @param type Type of the exception to be thrown.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected void throwException(String errorMessage, int type) throws CmsException {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
@@ -280,7 +280,7 @@ public abstract class A_CmsTemplate implements I_CmsConstants, I_CmsTemplate, I_
      * caught exception.
      * @param errorMessage String with the error message to be printed.
      * @param e Exception to be re-thrown.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected void throwException(String errorMessage, Exception e) throws CmsException {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {

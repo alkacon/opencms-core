@@ -371,7 +371,7 @@ public class CmsShowContent extends CmsXmlTemplate {
     /**
     * This methods collects all "getXYZ" methods of the contentdefinition.
     * @param cdClass the class object of the contentdefinition class
-    * @returns ArrayList of java.lang.reflect.Method objects
+    * @return ArrayList of java.lang.reflect.Method objects
     */
     protected ArrayList getGetMethods (Class cdClass) {
         // the Vector of methods to return
@@ -403,7 +403,7 @@ public class CmsShowContent extends CmsXmlTemplate {
     * in the method setDatablocks which will result in setting an error text
     * instead of the output of the method inside the template).
     * @param cdClass the class object of the contentdefinition class
-    * @returns ArrayList of java.lang.reflect.Method objects
+    * @return ArrayList of java.lang.reflect.Method objects
     * @throws com.opencms.core.CmsException in case of unrecoverable errors
     */
     protected ArrayList getGetMethodsByName (Class cdClass, String[] names)

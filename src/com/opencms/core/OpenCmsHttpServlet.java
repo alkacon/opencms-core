@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2003/01/20 17:57:49 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/01/20 23:59:20 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.38 $ $Date: 2003/01/20 17:57:49 $
+ * @version $Revision: 1.39 $ $Date: 2003/01/20 23:59:20 $
  */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
 
@@ -300,8 +300,8 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      *
      * @param req   The clints request.
      * @param res   The servlets response.
-     * @exception ServletException Thrown if request fails.
-     * @exception IOException Thrown if user autherization fails.
+     * @throws ServletException Thrown if request fails.
+     * @throws IOException Thrown if user autherization fails.
      */
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {            
         doGet(req, res);
@@ -310,7 +310,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      * Checks if the requested resource must be redirected to the server docroot and
      * excecutes the redirect if nescessary.
      * @param cms The CmsObject
-     * @returns true, if the ressource was redirected
+     * @return true, if the ressource was redirected
      * @exeption Throws CmsException if something goes wrong.
      */
     private boolean checkRelocation(CmsObject cms) throws CmsException {
@@ -472,7 +472,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      * @param req   The clints request.
      * @param res   The servlets response.
      * @return The CmsObject
-     * @exception IOException Thrown if user autherization fails.
+     * @throws IOException Thrown if user autherization fails.
      */
     private CmsObject initUser(I_CmsRequest cmsReq, I_CmsResponse cmsRes) throws IOException {
         HttpSession session;

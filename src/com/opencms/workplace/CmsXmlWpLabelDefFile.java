@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpLabelDefFile.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import com.opencms.template.A_CmsXmlContent;
  *  Content definition for the workplace label element definition file.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2002/12/06 23:16:49 $
+ * @version $Revision: 1.12 $ $Date: 2003/01/20 23:59:19 $
  **/
 
 public class CmsXmlWpLabelDefFile extends A_CmsXmlContent implements I_CmsLogChannels,I_CmsWpConstants {
@@ -91,7 +91,7 @@ public class CmsXmlWpLabelDefFile extends A_CmsXmlContent implements I_CmsLogCha
      * Gets the processed data for a label.
      * @param value The value of this label.
      * @return Processed label.
-     * @exception CmsException
+     * @throws CmsException
      */
     
     public String getLabel(String value) throws CmsException {

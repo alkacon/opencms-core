@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDefinition.java,v $
-* Date   : $Date: 2002/12/06 23:16:53 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/01/20 23:59:22 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -195,7 +195,7 @@ public class CmsElementDefinition implements Cloneable {
      * This method adds the parameter from the elementDefinition to the
      * requestParameters.
      *
-     * @parameter The hashtable with the requestparameters.
+     * @param The hashtable with the requestparameters.
      */
     public void joinParameters(Hashtable parameter){
         Enumeration enu = m_elements.keys();

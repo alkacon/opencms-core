@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2003/01/20 17:57:46 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/01/20 23:59:17 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.w3c.dom.Text;
  * to the filesystem.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.8 $ $Date: 2003/01/20 17:57:46 $
+ * @version $Revision: 1.9 $ $Date: 2003/01/20 23:59:17 $
  */
 public class CmsExportModuledata implements I_CmsConstants, Serializable{
 
@@ -158,7 +158,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
      * @param exportModules the modules to write into the exportFile
      * @param exportChannels the paths of channels to write into the exportFile
      * @param cms the cms-object to work with.
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      */
     public CmsExportModuledata(String exportFile, String[] exportChannels, String[] exportModules, CmsObject cms) throws CmsException {
         m_exportFile = exportFile;
@@ -448,7 +448,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
     /**
      * Writes the data for a resources (like acces-rights) to the manifest-xml-file.
      * @param resource The resource to get the data from.
-     * @exception throws a CmsException if something goes wrong.
+     * @throws throws a CmsException if something goes wrong.
      */
     private void writeXmlEntrys(CmsResource resource) throws CmsException {
         System.out.print("Exporting channel: "+resource.getAbsolutePath());
@@ -523,7 +523,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
 
     /**
      * Gets the content definition class method constructor
-     * @returns content definition object
+     * @return content definition object
      */
     protected CmsMasterContent getContentDefinition(String classname, Class[] classes, Object[] objects) {
         CmsMasterContent cd = null;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2002/12/15 14:21:18 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2002/12/15 14:21:18 $
+ * @version $Revision: 1.30 $ $Date: 2003/01/20 23:59:19 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -67,7 +67,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
      * @return Bytearry containing the processed data of the template.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
@@ -328,7 +328,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
      * @param lang The language file.
      * @param parameters User parameters.
      * @return Value that is set into the new file dialod.
-     * @exception CmsExeption if something goes wrong.
+     * @throws CmsExeption if something goes wrong.
      */
 
     public String setValue(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
@@ -349,8 +349,8 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
      * @param names The names of the new rescources.
      * @param values The links that are connected with each resource.
      * @param parameters Hashtable of parameters (not used yet).
-     * @returns The vectors names and values are filled with data for building the navigation.
-     * @exception Throws CmsException if something goes wrong.
+     * @return The vectors names and values are filled with data for building the navigation.
+     * @throws Throws CmsException if something goes wrong.
      */
     public Integer getNavPos(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
@@ -390,7 +390,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
      * @param cms The CmsObject.
      * @return Hashtable including three arrays of strings containing the filenames,
      * nicenames and navigation positions.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
     private Hashtable getNavData(CmsObject cms) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);

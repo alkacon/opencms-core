@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/MailUtils.java,v $
-* Date   : $Date: 2003/01/20 17:57:49 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/01/20 23:59:20 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,22 +29,16 @@
 
 package com.opencms.util;
 
-//import com.opencms.file.*;
-//import com.opencms.core.*;
-//import java.util.*;
-//import java.io.*;
-
 /**
  * This is a general helper class for applications sending mails
  *
- * @author Stefan Marx <Stefan.Marx@framfab.de>
+ * @author Stefan Marx (Stefan.Marx@framfab.de)
  */
 public class MailUtils {
 
     /**
      * Check a given email address for conformness with
      * RFC822 rules, see http://www.rfc-editor.org/rfc.html
-     * @author Stefan Marx <Stefan.Marx@framfab.de>
      * @param address EMail address to be checked
      * @return <code>true</code> if the address is syntactically correct, <code>false</code> otherwise.
     */

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPanel.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.w3c.dom.NodeList;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;PANELBAR&gt;</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2002/12/06 23:16:49 $
+ * @version $Revision: 1.11 $ $Date: 2003/01/20 23:59:19 $
  */
 
 public class CmsPanel extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpConstants {
@@ -85,7 +85,7 @@ public class CmsPanel extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpCo
      * @param parameters Hashtable containing all user parameters.
      * @param lang CmsXmlLanguageFile conataining the currently valid language file.
      * @return Processed button.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc,

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2003/01/20 17:57:49 $
-* Version: $Revision: 1.57 $
+* Date   : $Date: 2003/01/20 23:59:21 $
+* Version: $Revision: 1.58 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.57 $ $Date: 2003/01/20 17:57:49 $
+ * @version $Revision: 1.58 $ $Date: 2003/01/20 23:59:21 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -156,7 +156,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * Gets an enumeration of all used subelements in all sections of
      * of this template file.
      * @return Vector of all subtemplate names.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Vector getAllSubElements() throws CmsException {
         NodeList nl = getXmlDocument().getDocumentElement().getElementsByTagName("*");
@@ -167,7 +167,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * Gets an enumeration of all subelements defined in all sections of
      * of this template file.
      * @return Vector of all subtemplate names.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Vector getAllSubElementDefinitions() throws CmsException {
         NodeList nl = getXmlDocument().getDocumentElement().getElementsByTagName("*");
@@ -179,7 +179,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * of a template file.
      * @param selector Section to be scanned for subelements
      * @return Vector of all subtemplate names.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Vector getAllSubElements(String selector) throws CmsException {
         String templateDatablockName = getTemplateDatablockName(selector);
@@ -326,7 +326,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * @param unnamedAllowed Indicates if unnamed tags are allowed or an exception should
      * be thrown.
      * @return Enumeration of all "name" attributes.
-     * @exception CmsException
+     * @throws CmsException
      */
     private Vector getNamesFromNodeList(NodeList nl, String tag, boolean unnamedAllowed) throws CmsException {
         int numElements = nl.getLength();
@@ -365,7 +365,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * Gets an enumeration of all parameter names of a given subelement definition.
      * @param elementName Name of the subelement.
      * @return Vector of all names.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Vector getParameterNames(String elementName) throws CmsException {
         if(hasData("elementdef." + elementName)) {
@@ -382,7 +382,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * Get a hashtable containing all parameters and thies values of a given subelement definition.
      * @param elementName Name of the subelement.
      * @return Enumeration of all names.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Hashtable getParameters(String elementName) throws CmsException {
         Hashtable result = new Hashtable();
@@ -409,7 +409,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      *
      * @param tag Key for the datablocks hashtable.
      * @return Processed datablock for the given key.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Element getProcessedData(String tag) throws CmsException {
         return super.getProcessedData(tag);
@@ -421,7 +421,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * @param tag Key for the datablocks hashtable.
      * @param callingObject Object that should be used to look up user methods.
      * @return Processed datablock for the given key.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Element getProcessedData(String tag, Object callingObject) throws CmsException {
         return super.getProcessedData(tag, callingObject);
@@ -437,7 +437,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * @param callingObject Object that should be used to look up user methods.
      * @param userObj any object that should be passed to user methods
      * @return Processed datablock for the given key.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Element getProcessedData(String tag, Object callingObject, Object userObj) throws CmsException {
         return super.getProcessedData(tag, callingObject, userObj);
@@ -449,7 +449,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      *
      * @param tag Key for the datablocks hashtable.
      * @return Processed datablock for the given key.
-     * @exception CmsException
+     * @throws CmsException
      */
     public String getProcessedDataValue(String tag) throws CmsException {
         return super.getProcessedDataValue(tag);
@@ -462,7 +462,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * @param tag Key for the datablocks hashtable.
      * @param callingObject Object that should be used to look up user methods.
      * @return Processed datablock for the given key.
-     * @exception CmsException
+     * @throws CmsException
      */
     public String getProcessedDataValue(String tag, Object callingObject) throws CmsException {
         return super.getProcessedDataValue(tag, callingObject);
@@ -479,7 +479,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * @param callingObject Object that should be used to look up user methods.
      * @param userObj any object that should be passed to user methods
      * @return Processed datablock for the given key.
-     * @exception CmsException
+     * @throws CmsException
      */
     public String getProcessedDataValue(String tag, Object callingObject, Object userObj) throws CmsException {
         return super.getProcessedDataValue(tag, callingObject, userObj);
@@ -498,7 +498,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * @param userObj any object that should be passed to user methods
      * @param stream OutputStream that may be used for directly streaming the results or null.
      * @return Processed datablock for the given key.
-     * @exception CmsException
+     * @throws CmsException
      */
     public String getProcessedDataValue(String tag, Object callingObject, Object userObj, OutputStream stream) throws CmsException {
         return super.getProcessedDataValue(tag, callingObject, userObj, stream);
@@ -514,8 +514,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * @param callingObject reference to the calling object. Used to look up user methods while processing.
      * @param parameters hashtable containing all user parameters.
      * @return Processed template data.
-     * @exception CmsException
-     * @see #getTemplateDatablockName
+     * @throws CmsException
      */
     public String getProcessedTemplateContent(Object callingObject, Hashtable parameters) throws CmsException {
         return getProcessedTemplateContent(callingObject, parameters, null);
@@ -532,8 +531,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * @param parameters hashtable containing all user parameters.
      * @param templateSelector Name of the template section or null if the default section is requested.
      * @return Processed template data.
-     * @exception CmsException
-     * @see #getTemplateDatablockName
+     * @throws CmsException
      */
     public String getProcessedTemplateContent(Object callingObject, Hashtable parameters, String templateSelector) throws CmsException {
         OutputStream os = null;
@@ -574,8 +572,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * @param elementName Element name of this template in our parent template.
      * @param templateSelector Name of the template section or null if the default section is requested.
      * @return New variant for the element cache.
-     * @exception CmsException
-     * @see #getProcessedElementContent
+     * @throws CmsException
      */
     public CmsElementVariant generateElementCacheVariant(Object callingObject, Hashtable parameters, String elementName, String templateSelector) throws CmsException {
         CmsElementVariant result = new CmsElementVariant();
@@ -693,8 +690,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * @param parameters hashtable containing all user parameters.
      * @param templateSelector Name of the template section or null if the default section is requested.
      * @return Processed template data.
-     * @exception CmsException
-     * @see #getTemplateDatablockName
+     * @throws CmsException
      */
     public String getTemplateContent(Object callingObject, Hashtable parameters, String templateSelector) throws CmsException {
         String datablockName = this.getTemplateDatablockName(templateSelector);
@@ -709,7 +705,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      *
      * @param templateSelector Name of the template section or null if the default section is requested.
      * @return Appropriate name of the template datablock.
-     * @exception CmsException
+     * @throws CmsException
      */
     private String getTemplateDatablockName(String templateSelector) throws CmsException {
         String templateDatablockName = null;
@@ -747,7 +743,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      *
      * @param templateSelector Name of the template section or null if the default section is requested.
      * @return Appropriate name of the template datablock.
-     * @exception CmsException
+     * @throws CmsException
      */
     private String getEditTemplateDatablockName(String templateSelector) throws CmsException {
         String templateDatablockName = null;
@@ -794,7 +790,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * @param callingObject Reference to the object requesting the node processing.
      * @param userObj Customizable user object that will be passed through to handling and user methods.
      * @return Result of user method <code>templateElement()</code>.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Object handleElementTag(Element n, Object callingObject, Object userObj) throws CmsException {
         String tagcontent = n.getAttribute("name");
@@ -998,9 +994,6 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         super.setParsedData(tag, data);
     }
 
-    /**
-     *
-     */
     public void setEditedTemplateContent(CmsObject cms, String content, String templateSelector, boolean html, String filePath, String relativeRoot) throws CmsException {
         //first the original only used by the editor
         String editDatablockName = getEditTemplateDatablockName(templateSelector);

@@ -49,8 +49,7 @@ public class CmsShowMedia extends CmsXmlTemplate {
      * Gets the content of a defined section in a given template file and its
      * subtemplates with the given parameters.
      *
-     * @see getContent(A_CmsObject cms, String templateFile, String elementName,
-     * Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      *
      * @param cms A_CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
@@ -164,7 +163,7 @@ public class CmsShowMedia extends CmsXmlTemplate {
 
  /**
   * Gets the content definition class method constructor
-  * @returns content definition object
+  * @return content definition object
   */
   protected Object getContentDefinition(CmsObject cms, Class cdClass, Integer id) {
     Object o = null;

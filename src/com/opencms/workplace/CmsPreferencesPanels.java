@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2003/01/20 17:57:47 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.39 $ $Date: 2003/01/20 17:57:47 $
+ * @version $Revision: 1.40 $ $Date: 2003/01/20 23:59:19 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -153,7 +153,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
      * @return Bytearre containgine the processed data of the template.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
@@ -374,7 +374,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current group in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getDefaultGroup(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
@@ -471,7 +471,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current filter view in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getFilters(CmsObject cms, CmsXmlLanguageFile lang, Vector values,
@@ -582,7 +582,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current group in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values,
@@ -627,7 +627,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current group in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getLanguageFiles(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
@@ -686,7 +686,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current project in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getProjects(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
@@ -860,7 +860,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current workplace view in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getViews(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
@@ -1052,7 +1052,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.
      * @param userObj Hashtable with parameters <em>(not used here)</em>.
      * @return String with the pics URL.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Object setPanel(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {

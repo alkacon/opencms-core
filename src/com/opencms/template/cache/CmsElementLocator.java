@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2003/01/20 17:57:48 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/01/20 23:59:22 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -129,7 +129,7 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
     /**
      * Gets a Elements from this locator.
      * @param desc - the descriptor to locate the element.
-     * @returns the element that was found.
+     * @return the element that was found.
      */
     public A_CmsElement get(CmsObject cms, CmsElementDescriptor desc, Hashtable parameters) throws CmsException{
         A_CmsElement result;

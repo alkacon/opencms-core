@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronizeList.java,v $
-* Date   : $Date: 2002/12/06 23:16:45 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/01/20 23:59:17 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import com.opencms.util.*;
  * in the virtual filesystem (VFS) and the server filesystem (SFS)
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.8 $ $Date: 2002/12/06 23:16:45 $
+ * @version $Revision: 1.9 $ $Date: 2003/01/20 23:59:17 $
  */
 public class CmsSynchronizeList implements I_CmsConstants, Serializable {
 
@@ -88,7 +88,7 @@ public class CmsSynchronizeList implements I_CmsConstants, Serializable {
      * Creates the new file on the SFS
      *
      * @param newFile the file that has to be created in SFS.
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      */
     private void createNewLocalFile(File newFile) throws CmsException {
         FileOutputStream fOut = null;
@@ -166,7 +166,7 @@ public class CmsSynchronizeList implements I_CmsConstants, Serializable {
      * This reads the synchronize list which containts the resources which were
      * already synchronized and the date of the last synchronized file
      *
-     * @exception Exception the Exception is thrown if something goes wrong.
+     * @throws Exception the Exception is thrown if something goes wrong.
      * @return Serializable the content for the hashtable
      */
     private Serializable readSyncList()
@@ -228,7 +228,7 @@ public class CmsSynchronizeList implements I_CmsConstants, Serializable {
      * This saves the synchronization list after the synchronization
      * and clears the hashtable
      *
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      */
     public void saveSyncList() throws CmsException{
         try {
@@ -270,7 +270,7 @@ public class CmsSynchronizeList implements I_CmsConstants, Serializable {
      * already synchronized and the date of the last synchronized file
      *
      * @param hashSyncList the hashtable which has to be written into the file
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      * @return Serializable
      */
     private Serializable writeSyncList(Serializable hashSyncList)

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerHead.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2002/12/06 23:16:49 $
+ * @version $Revision: 1.28 $ $Date: 2003/01/20 23:59:19 $
  */
 
 public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -126,7 +126,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
      * @return Bytearre containgine the processed data of the template.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
@@ -288,7 +288,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
      * @param lang The language file.
      * @param parameters User parameters.
      * @return Value that is set into the adress field.
-     * @exception CmsExeption if something goes wrong.
+     * @throws CmsExeption if something goes wrong.
      */
 
     public String setValue(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {

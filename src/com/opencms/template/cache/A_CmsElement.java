@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2003/01/20 17:57:48 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/01/20 23:59:21 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -162,7 +162,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
     /**
      * checks the read access.
      * @param cms The cms Object for reading groups.
-     * @exception CmsException if no read access.
+     * @throws CmsException if no read access.
      */
     public void checkReadAccess(CmsObject cms) throws CmsException{
         if (m_readAccessGroup == null || "".equals(m_readAccessGroup )){
@@ -265,7 +265,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
 
     /**
      * Returns a Vector with all ElementDefinitions
-     * @returns a Vector with all ElementDefinitions.
+     * @return a Vector with all ElementDefinitions.
      */
     public CmsElementDefinitionCollection getAllDefinitions() {
         return m_elementDefinitions;
@@ -372,7 +372,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      * @param parameters All parameters of this request
      * @param methodparameter used only for methode elements. Contains the parameter for the methode.
      * @return Byte array with the processed content of this element.
-     * @exception CmsException
+     * @throws CmsException
      */
     public abstract byte[] getContent(CmsElementCache elementCache, CmsObject cms, CmsElementDefinitionCollection efDefs, String elementName, Hashtable parameters, String methodParameter) throws CmsException;
 
@@ -380,7 +380,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      * Get a template class from the template class manager.
      * @param cms CmsObject for accessing system resources.
      * @param classname Name of the requested class.
-     * @exception CmsException if the loaded class is no OpenCms template class
+     * @throws CmsException if the loaded class is no OpenCms template class
      */
     protected I_CmsTemplate getTemplateClass(CmsObject cms, String classname) throws CmsException {
         Object o = CmsTemplateClassManager.getClassInstance(cms, classname);
@@ -401,7 +401,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      * @param elementName Current name of the subelement during resolving
      * @param parameters All parameters of this request
      * @return Byte array with processed element content
-     * @exception CmsException if resolving fails.
+     * @throws CmsException if resolving fails.
      */
     public byte[] resolveVariant(CmsObject cms, CmsElementVariant variant, CmsElementCache elementCache, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters) throws CmsException {
         boolean resolveDebug = false;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDescriptor.java,v $
-* Date   : $Date: 2002/12/06 23:16:53 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/01/20 23:59:21 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package com.opencms.template.cache;
  * This descriptor is used to locate CmsElement-Objects with the
  * CmsElementLocator. It is the key for a CmsElement.
  *
- * @author: Andreas Schouten
+ * @author Andreas Schouten
  */
 public class CmsElementDescriptor {
 
@@ -61,7 +61,7 @@ public class CmsElementDescriptor {
     /**
      * Returns the key of this descriptor.
      *
-     * @returns the key of this descriptor.
+     * @return the key of this descriptor.
      */
     public String getKey() {
         return m_className + "|" + m_templateName;

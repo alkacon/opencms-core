@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
-* Date   : $Date: 2002/12/12 18:55:21 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/01/20 23:59:17 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.report.I_CmsReport;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert
- * @version $Revision: 1.32 $ $Date: 2002/12/12 18:55:21 $
+ * @version $Revision: 1.33 $ $Date: 2003/01/20 23:59:17 $
  *
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -83,7 +83,7 @@ public I_CmsRegistry clone(CmsObject cms);
  * This method checks which modules need this module. If a module depends on this the name
  * will be returned in the vector.
  * @param modulename The name of the module to check.
- * @returns a Vector with modulenames that depends on the overgiven module.
+ * @return a Vector with modulenames that depends on the overgiven module.
  */
 public Vector deleteCheckDependencies(String modulename) throws CmsException;
 /**
@@ -122,21 +122,21 @@ public void exportModule(String moduleName, String[] resources, String fileName,
 /**
  * This method returns the author of the module.
  *
- * @parameter String the name of the module.
+ * @param String the name of the module.
  * @return java.lang.String the author of the module.
  */
 public String getModuleAuthor(String modulename);
     /**
      * This method returns the email of author of the module.
      *
-     * @parameter String the name of the module.
+     * @param String the name of the module.
      * @return java.lang.String the email of author of the module.
      */
     public String getModuleAuthorEmail(String modulename);
 /**
  * Gets the create date of the module.
  *
- * @parameter String the name of the module.
+ * @param String the name of the module.
  * @return long the create date of the module.
  */
 public long getModuleCreateDate(String modulname);
@@ -153,14 +153,14 @@ public int getModuleDependencies(String modulename, Vector modules, Vector minVe
 /**
  * Returns the description of the module.
  *
- * @parameter String the name of the module.
+ * @param String the name of the module.
  * @return java.lang.String the description of the module.
  */
 public String getModuleDescription(String module);
 /**
  * Gets the url to the documentation of the module.
  *
- * @parameter String the name of the module.
+ * @param String the name of the module.
  * @return java.lang.String the url to the documentation of the module.
  */
 public String getModuleDocumentPath(String modulename);
@@ -176,14 +176,14 @@ public int getModuleFiles(String modulename, Vector retNames, Vector retCodes);
 /**
  * Returns the class, that receives all maintenance-events for the module.
  *
- * @parameter String the name of the module.
+ * @param String the name of the module.
  * @return java.lang.Class that receives all maintenance-events for the module.
  */
 public Class getModuleMaintenanceEventClass(String modulname);
 /**
  * Returns the name of the class, that receives all maintenance-events for the module.
  *
- * @parameter String the name of the module.
+ * @param String the name of the module.
  * @return java.lang.Class that receives all maintenance-events for the module.
  */
 public String getModuleMaintenanceEventName(String modulname);
@@ -197,7 +197,7 @@ public Enumeration getModuleNames();
  * Gets the nice name of the module.
  *
  * @param String the name of the module.
- * @returns String the nice name of the module.
+ * @return String the nice name of the module.
  */
 public String getModuleNiceName(String module);
     /**
@@ -410,42 +410,42 @@ public String getModuleParameterString(String modulname, String parameter, Strin
 /**
  * Returns all repositories for a module.
  *
- * @parameter String modulname the name of the module.
+ * @param String modulname the name of the module.
  * @return java.lang.String[] the reprositories of a module.
  */
 public String[] getModuleRepositories(String modulename);
 /**
  * Returns the upload-date for the module.
  *
- * @parameter String the name of the module.
+ * @param String the name of the module.
  * @return java.lang.String the upload-date for the module.
  */
 public long getModuleUploadDate(String modulename);
 /**
  * Returns the user-name of the user who had uploaded the module.
  *
- * @parameter String the name of the module.
+ * @param String the name of the module.
  * @return java.lang.String the user-name of the user who had uploaded the module.
  */
 public String getModuleUploadedBy(String module);
 /**
  * This method returns the version of the module.
  *
- * @parameter String the name of the module.
+ * @param String the name of the module.
  * @return java.lang.String the version of the module.
  */
 public int getModuleVersion(String modulename);
 /**
  * Returns the name of the view, that is implemented by the module.
  *
- * @parameter String the name of the module.
+ * @param String the name of the module.
  * @return java.lang.String the name of the view, that is implemented by the module.
  */
 public String getModuleViewName(String modulename);
 /**
  * Returns the url to the view-url for the module within the system.
  *
- * @parameter String the name of the module.
+ * @param String the name of the module.
  * @return java.lang.String the view-url to the module.
  */
 public String getModuleViewUrl(String modulename);
@@ -453,7 +453,7 @@ public String getModuleViewUrl(String modulename);
 /**
  * Returns all lifecycle classes for all modules.
  *
- * @parameter Vector classes in this parameter the classes will be returned.
+ * @param Vector classes in this parameter the classes will be returned.
  * @return int the amount of classes.
  */
 public int getModuleLifeCycle(Vector classes);
@@ -461,7 +461,7 @@ public int getModuleLifeCycle(Vector classes);
 /**
  * Returns the name of the class, that contains the publish method of the module.
  *
- * @parameter String the name of the module.
+ * @param String the name of the module.
  * @return java.lang.Class that contains the publish method of the module.
  */
  public String getModulePublishClass(String modulname);
@@ -469,8 +469,8 @@ public int getModuleLifeCycle(Vector classes);
 /**
  * Returns all publishable classes for all modules.
  *
- * @parameter Vector classes in this parameter the classess will be returned.
- * @parameter String requiredMethod The value of the methodTag for the different
+ * @param Vector classes in this parameter the classess will be returned.
+ * @param String requiredMethod The value of the methodTag for the different
  *      methods useable after publish.
  *          null means the standard publish method
  *          "linkpublish" means the method that needs the changed links as parameter (i.e. search)
@@ -481,7 +481,7 @@ public int getModulePublishables(Vector classes, String requiredMethod);
 /**
  * Returns all exportable classes for all modules.
  *
- * @parameter Hashtable classes in this parameter the classes will be returned.
+ * @param Hashtable classes in this parameter the classes will be returned.
  * @return int the amount of classes.
  */
 public int getModuleExportables(Hashtable classes);
@@ -496,10 +496,10 @@ public String[] getRepositories();
 /**
  * Returns all Resourcetypes and korresponding parameter for System and all modules.
  *
- * @parameter Vector names in this parameter the names of the Resourcetypes will be returned.
- * @parameter Vector launcherTypes in this parameters the launcherType will be returned(int).
- * @parameter Vector launcherClass in this parameters the launcherClass will be returned.
- * @parameter Vector resourceClass in this parameters the resourceClass will be returned.
+ * @param Vector names in this parameter the names of the Resourcetypes will be returned.
+ * @param Vector launcherTypes in this parameters the launcherType will be returned(int).
+ * @param Vector launcherClass in this parameters the launcherClass will be returned.
+ * @param Vector resourceClass in this parameters the resourceClass will be returned.
  * @return int the amount of resourcetypes.
  */
 public int getResourceTypes(Vector names, Vector launcherTypes, Vector launcherClass, Vector resourceClass);
@@ -509,7 +509,7 @@ public int getResourceTypes(Vector names, Vector launcherTypes, Vector launcherC
  * E.g. <code>&lt;system&gt;&lt;mailserver&gt;mail.server.com&lt;/mailserver&gt;&lt;/system&gt;</code>
  * can be requested via <code>getSystemValue("mailserver");</code> and returns "mail.server.com.
  *
- * @parameter String the key of the system-value.
+ * @param String the key of the system-value.
  * @return the value for that system-key.
  */
 public String getSystemValue(String key);
@@ -517,7 +517,7 @@ public String getSystemValue(String key);
 /**
  * Returns a vector of value for a system-key.
  *
- * @parameter String the key of the system-value.
+ * @param String the key of the system-value.
  * @return the values for that system-key.
  */
 public Hashtable getSystemValues(String key);
@@ -532,8 +532,8 @@ public org.w3c.dom.Element getSystemElement();
 /**
  * Returns all views and korresponding urls for all modules.
  *
- * @parameter String[] views in this parameter the views will be returned.
- * @parameter String[] urls in this parameters the urls vor the views will be returned.
+ * @param String[] views in this parameter the views will be returned.
+ * @param String[] urls in this parameters the urls vor the views will be returned.
  * @return int the amount of views.
  */
 public int getViews(Vector views, Vector urls);
@@ -548,7 +548,7 @@ public Vector importCheckDependencies(String moduleZip) throws CmsException;
  *  Checks for files that already exist in the system but should be replaced by the module.
  *
  *  @param moduleZip The name of the zip-file to import.
- *  @returns The complete paths to the resources that have conflicts.
+ *  @return The complete paths to the resources that have conflicts.
  */
 public Vector importGetConflictingFileNames(String moduleZip) throws CmsException;
 /**
@@ -562,7 +562,7 @@ public String importGetModuleName(String moduleZip);
  *  Returns all files that are needed to create a project for the module-import.
  *
  *  @param moduleZip The name of the zip-file to import.
- *  @returns The complete paths for resources that should be in the import-project.
+ *  @return The complete paths for resources that should be in the import-project.
  */
 public Vector importGetResourcesForProject(String moduleZip) throws CmsException;
 /**
@@ -575,7 +575,7 @@ public void importModule(String moduleZip, Vector exclusion, I_CmsReport report)
 /**
  * Checks if the module exists already in the repository.
  *
- * @parameter String the name of the module.
+ * @param String the name of the module.
  * @return true if the module exists, else false.
  */
 public boolean moduleExists(String modulename);

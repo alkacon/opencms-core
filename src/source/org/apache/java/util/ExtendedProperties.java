@@ -105,9 +105,9 @@ import java.util.*;
  * issue during intialization (and there no much time to improve it),
  * I wrote it this way. If you don't like it, go ahead and tune it up!
  *
- * @see org.apache.java.util.Configurations
+ * @see source.org.apache.java.util.Configurations
  * @author <a href="mailto:stefano@apache.org">Stefano Mazzocchi</a>
- * @version $Revision: 1.2 $ $Date: 2000/08/08 14:01:44 $
+ * @version $Revision: 1.3 $ $Date: 2003/01/20 23:59:32 $
  */
 public class ExtendedProperties extends ConfigurationsRepository {
 

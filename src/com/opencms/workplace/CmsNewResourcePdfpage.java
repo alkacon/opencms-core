@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePdfpage.java,v $
-* Date   : $Date: 2003/01/20 17:57:47 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.w3c.dom.Node;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2003/01/20 17:57:47 $
+ * @version $Revision: 1.20 $ $Date: 2003/01/20 23:59:19 $
  */
 
 public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -76,7 +76,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
      * missing folders when a new page document is createg.
      * @param cms The CmsObject
      * @param path The path in the CmsFilesystem where the new page should be created.
-     * @exception CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
 
     private void checkFolders(CmsObject cms, String path) throws CmsException {
@@ -171,7 +171,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
      * @return Bytearry containing the processed data of the template.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
@@ -273,7 +273,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
      * @param cms The CmsObject.
      * @return Hashtable including three arrays of strings containing the filenames,
      * nicenames and navigation positions.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     private Hashtable getNavData(CmsObject cms) throws CmsException {
@@ -383,8 +383,8 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
      * @param names The names of the new rescources.
      * @param values The links that are connected with each resource.
      * @param parameters Hashtable of parameters (not used yet).
-     * @returns The vectors names and values are filled with data for building the navigation.
-     * @exception Throws CmsException if something goes wrong.
+     * @return The vectors names and values are filled with data for building the navigation.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public Integer getNavPos(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
@@ -415,9 +415,9 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
      * @param names The names of the new rescources.
      * @param values The links that are connected with each resource.
      * @param parameters Hashtable of parameters (not used yet).
-     * @returns The vectors names and values are filled with the information found in the
+     * @return The vectors names and values are filled with the information found in the
      * workplace.ini.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public Integer getTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names,

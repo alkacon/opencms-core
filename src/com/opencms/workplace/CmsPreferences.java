@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferences.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2002/12/06 23:16:46 $
+ * @version $Revision: 1.9 $ $Date: 2003/01/20 23:59:18 $
  */
 
 public class CmsPreferences extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -71,10 +71,8 @@ public class CmsPreferences extends CmsWorkplaceDefault implements I_CmsWpConsta
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
      * @param userObj Hashtable with parameters <em>(not used here)</em>.
      * @return String with the pics URL.
-     * @exception CmsException
-     * @see #commonPicsUrl
+     * @throws CmsException
      */
-    
     public Object setPanel(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String panel = (String)session.getValue(C_PARA_OLDPANEL);

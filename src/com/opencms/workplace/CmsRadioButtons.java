@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRadioButtons.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/01/20 23:59:17 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2002/12/06 23:16:46 $
+ * @version $Revision: 1.13 $ $Date: 2003/01/20 23:59:17 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -68,7 +68,7 @@ public class CmsRadioButtons extends A_CmsWpElement implements I_CmsWpElement,I_
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @param lang CmsXmlLanguageFile conataining the currently valid language file.
      * @return Processed button.
-     * @exception CmsException
+     * @throws CmsException
      */
     
     public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, 

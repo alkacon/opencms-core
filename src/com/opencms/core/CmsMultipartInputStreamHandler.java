@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsMultipartInputStreamHandler.java,v $
-* Date   : $Date: 2003/01/20 17:57:49 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/01/20 23:59:20 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ class CmsMultipartInputStreamHandler {
      * Content-Length limit has been reached.
      *
      * @return value of the next byte or -1 if no byte could be read.
-     * @exception IOException Throws IOException if any error with the input stream occurs.
+     * @throws IOException Throws IOException if any error with the input stream occurs.
      */
     public int read() throws IOException {
         if(totalRead >= m_totalExpected) {
@@ -86,7 +86,7 @@ class CmsMultipartInputStreamHandler {
      * of stream.
      *
      * @return Line of input.
-     * @exception IOException Throws IOException if any error with the input stream occurs.
+     * @throws IOException Throws IOException if any error with the input stream occurs.
      */
     public String readLine() throws IOException {
         StringBuffer sbuf = new StringBuffer();
@@ -123,7 +123,7 @@ class CmsMultipartInputStreamHandler {
      * @param off Read offset.
      * @param len Length of byte buffer.
      * @return Number of bytes read.
-     * @exception IOException Throws IOException if any error with the input stream occurs.
+     * @throws IOException Throws IOException if any error with the input stream occurs.
      */
     public int readLine(byte b[], int off, int len) throws IOException {
         if(totalRead >= m_totalExpected) {

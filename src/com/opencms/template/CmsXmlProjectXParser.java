@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlProjectXParser.java,v $
-* Date   : $Date: 2002/10/30 10:32:23 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/01/20 23:59:21 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import com.opencms.core.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2002/10/30 10:32:23 $
+ * @version $Revision: 1.11 $ $Date: 2003/01/20 23:59:21 $
  */
 public class CmsXmlProjectXParser implements I_CmsXmlParser,I_CmsLogChannels {
     
@@ -53,9 +53,8 @@ public class CmsXmlProjectXParser implements I_CmsXmlParser,I_CmsLogChannels {
     
     /**
      * Creates an empty DOM XML document.
-     * Workarround caus original method is corruped
+     * Workaround because original method is not working as expected.
      * 
-     * @author Michaela Schleich
      * @param docNod first Node in empty  XML document
      * @return Empty document.
      */
@@ -64,8 +63,6 @@ public class CmsXmlProjectXParser implements I_CmsXmlParser,I_CmsLogChannels {
         docXml = docXml + "<" + docNod + ">" + "</" + docNod + ">";
         StringReader reader = new StringReader(docXml);
         return parse(reader);
-    
-    //return (Document)(new DocumentImpl(null));
     }
     
     /**
@@ -227,7 +224,7 @@ public class CmsXmlProjectXParser implements I_CmsXmlParser,I_CmsLogChannels {
      * Parses the given text with the Xerces parser.
      * @param in Reader with the input text.
      * @return Parsed text as DOM document.
-     * @exception Exception
+     * @throws Exception
      */
     public Document parse(Reader in) throws Exception {
         //[removed by Gridnine AB, 2002-06-13]

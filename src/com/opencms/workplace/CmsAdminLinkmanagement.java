@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkmanagement.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ public class CmsAdminLinkmanagement extends CmsWorkplaceDefault implements I_Cms
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters.
      *
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.

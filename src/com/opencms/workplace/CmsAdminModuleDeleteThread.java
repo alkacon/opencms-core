@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDeleteThread.java,v $
- * Date   : $Date: 2003/01/20 17:57:47 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/01/20 23:59:19 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,9 +44,9 @@ import java.util.Vector;
  * Deletes a module, showing a progress indicator report dialog that is continuously updated.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @author: Hanjo Riege
+ * @author Hanjo Riege
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleDeleteThread extends Thread {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2003/01/20 17:57:45 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/01/20 23:59:16 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.w3c.dom.Text;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.42 $ $Date: 2003/01/20 17:57:45 $
+ * @version $Revision: 1.43 $ $Date: 2003/01/20 23:59:16 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -484,7 +484,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
      * Exports one single file with all its data and content.
      *
      * @param file the file to be exported,
-     * @exception throws a CmsException if something goes wrong.
+     * @throws throws a CmsException if something goes wrong.
      */
     private void exportFile(CmsFile file)
         throws CmsException {
@@ -516,7 +516,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
      * Exports all needed sub-resources to the zip-file.
      *
      * @param path to complete path to the resource to export
-     * @exception throws CmsException if something goes wrong.
+     * @throws throws CmsException if something goes wrong.
      */
     private void exportResources(String path)
         throws CmsException {
@@ -671,7 +671,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
     /**
      * Writes the data for a resources (like acces-rights) to the manifest-xml-file.
      * @param resource The resource to get the data from.
-     * @exception throws a CmsException if something goes wrong.
+     * @throws throws a CmsException if something goes wrong.
      */
     private void writeXmlEntrys(CmsResource resource)
         throws CmsException {
@@ -736,7 +736,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
     /**
      * Exports groups with all data.
      *
-     * @exception throws a CmsException if something goes wrong.
+     * @throws throws a CmsException if something goes wrong.
      */
     private void exportGroups()
         throws CmsException {
@@ -749,7 +749,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
     /**
      * Exports users with all data.
      *
-     * @exception throws a CmsException if something goes wrong.
+     * @throws throws a CmsException if something goes wrong.
      */
     private void exportUsers()
         throws CmsException {
@@ -763,7 +763,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
      * Exports one single group with all its data.
      *
      * @param group the group to be exported,
-     * @exception throws a CmsException if something goes wrong.
+     * @throws throws a CmsException if something goes wrong.
      */
     private void exportGroup(CmsGroup group)
         throws CmsException {
@@ -784,7 +784,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
      * Exports one single user with all its data.
      *
      * @param user the user to be exported,
-     * @exception throws a CmsException if something goes wrong.
+     * @throws throws a CmsException if something goes wrong.
      */
     private void exportUser(CmsUser user)
         throws CmsException {
@@ -804,7 +804,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
     /**
      * Writes the data for a group to the manifest-xml-file.
      * @param group The group to get the data from.
-     * @exception throws a CmsException if something goes wrong.
+     * @throws throws a CmsException if something goes wrong.
      */
     private void writeXmlGroupEntrys(CmsGroup group)
         throws CmsException {
@@ -834,7 +834,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
     /**
      * Writes the data for a user to the manifest-xml-file.
      * @param group The group to get the data from.
-     * @exception throws a CmsException if something goes wrong.
+     * @throws throws a CmsException if something goes wrong.
      */
     private void writeXmlUserEntrys(CmsUser user)
         throws CmsException {

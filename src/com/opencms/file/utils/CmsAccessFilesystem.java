@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsAccessFilesystem.java,v $
-* Date   : $Date: 2003/01/20 17:57:53 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/01/20 23:59:32 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ public class CmsAccessFilesystem implements I_CmsConstants {
      *
      * @param mountpoint The mountpoint of this filesystem access module.
      *
-     * @exception CmsException Throws CmsException if connection fails.
+     * @throws CmsException Throws CmsException if connection fails.
      *
      */
     public CmsAccessFilesystem(Hashtable exportpoints)
@@ -78,7 +78,7 @@ public class CmsAccessFilesystem implements I_CmsConstants {
  * @param foldername The complete path to the folder.
  *
  *
- * @exception CmsException Throws CmsException if operation was not succesful.
+ * @throws CmsException Throws CmsException if operation was not succesful.
  */
 public void createFolder(String foldername, String key) throws CmsException {
 
@@ -97,7 +97,7 @@ public void createFolder(String foldername, String key) throws CmsException {
       * Deletes a file or folder in the filesytem.
       *
       * @param filename The complete path of the file or folder.
-      * @exception CmsException Throws CmsException if operation was not succesful
+      * @throws CmsException Throws CmsException if operation was not succesful
       */
      public void removeResource(String filename, String key)
         throws CmsException{
@@ -118,7 +118,7 @@ public void createFolder(String foldername, String key) throws CmsException {
      * @param contents The contents of the new file.
      *
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
      public void writeFile(String filename, String key, byte[] contents)
 

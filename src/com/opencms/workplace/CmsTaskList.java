@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskList.java,v $
-* Date   : $Date: 2003/01/20 17:57:47 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.w3c.dom.Element;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.19 $ $Date: 2003/01/20 17:57:47 $
+ * @version $Revision: 1.20 $ $Date: 2003/01/20 23:59:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -77,7 +77,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @param lang CmsXmlLanguageFile conataining the currently valid language file.
      * @return Processed button.
-     * @exception CmsException
+     * @throws CmsException
      */
     
     public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/01/20 17:57:46 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/01/20 23:59:17 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,10 +41,8 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @author
- * @version 1.0
+ * @version $Revision: 1.36 $
  */
-
 public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants, Serializable, com.opencms.workplace.I_CmsWpConstants {
 
      /**
@@ -164,7 +162,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * @param newGroup the name of the new group for this resource.
     * @param chRekursive shows if the subResources (of a folder) should be changed too.
     *
-    * @exception CmsException if operation was not successful.
+    * @throws CmsException if operation was not successful.
     */
     public void chgrp(CmsObject cms, String filename, String newGroup, boolean chRekursive) throws CmsException{
 
@@ -249,7 +247,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * @param flags the new flags for the resource.
     * @param chRekursive shows if the subResources (of a folder) should be changed too.
     *
-    * @exception CmsException if operation was not successful.
+    * @throws CmsException if operation was not successful.
     * for this resource.
     */
     public void chmod(CmsObject cms, String filename, int flags, boolean chRekursive) throws CmsException{
@@ -335,7 +333,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * @param newOwner the name of the new owner for this resource.
     * @param chRekursive shows if the subResources (of a folder) should be changed too.
     *
-    * @exception CmsException if operation was not successful.
+    * @throws CmsException if operation was not successful.
     */
     public void chown(CmsObject cms, String filename, String newOwner, boolean chRekursive) throws CmsException{
 
@@ -494,7 +492,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * @param filename the complete path to the resource.
     * @param newType the name of the new resourcetype for this resource.
     *
-    * @exception CmsException if operation was not successful.
+    * @throws CmsException if operation was not successful.
     */
     public void chtype(CmsObject cms, String filename, String newType) throws CmsException{
 
@@ -512,7 +510,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * @param keepFlags <code>true</code> if the copy should keep the source file's flags,
     *        <code>false</code> if the copy should get the user's default flags.
     *
-    * @exception CmsException if the file couldn't be copied, or the user
+    * @throws CmsException if the file couldn't be copied, or the user
     * has not the appropriate rights to copy the file.
     */
     public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags) throws CmsException{
@@ -570,7 +568,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * offline project and set its state to UNCHANGED.
     *
     * @param resource the name of the resource.
-    * @exception CmsException if operation was not successful.
+    * @throws CmsException if operation was not successful.
     */
     public void copyResourceToProject(CmsObject cms, String resourceName) throws CmsException {
         // copy the folder to the current project
@@ -596,7 +594,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     *
     * @return file a <code>CmsFile</code> object representing the newly created file.
     *
-    * @exception CmsException or if the resourcetype is set to folder. The CmsException is also thrown, if the
+    * @throws CmsException or if the resourcetype is set to folder. The CmsException is also thrown, if the
     * filename is not valid or if the user has not the appropriate rights to create a new file.
     */
     public CmsResource createResource(CmsObject cms, String newFolderName, Hashtable properties, byte[] contents, Object parameter) throws CmsException{
@@ -613,7 +611,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     *
     * @param folder the complete path of the folder.
     *
-    * @exception CmsException if the file couldn't be deleted, or if the user
+    * @throws CmsException if the file couldn't be deleted, or if the user
     * has not the appropriate rights to delete the file.
     */
     public void deleteResource(CmsObject cms, String folder) throws CmsException{
@@ -661,7 +659,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     *
     * @param folder the complete path of the folder.
     *
-    * @exception CmsException if the file couldn't be undeleted, or if the user
+    * @throws CmsException if the file couldn't be undeleted, or if the user
     * has not the appropriate rights to undelete the file.
     */
     public void undeleteResource(CmsObject cms, String folder) throws CmsException{
@@ -728,7 +726,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
      * 
      * @return CmsResource The imported resource.
      * 
-     * @exception Throws CmsException if the resource could not be imported
+     * @throws Throws CmsException if the resource could not be imported
      * 
      */
     public CmsResource importResource(CmsObject cms, String source, String destination, String type,
@@ -826,7 +824,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * @param resource the complete path to the resource to lock.
     * @param force if force is <code>true</code>, a existing locking will be overwritten.
     *
-    * @exception CmsException if the user has not the rights to lock this resource.
+    * @throws CmsException if the user has not the rights to lock this resource.
     * It will also be thrown, if there is a existing lock and force was set to false.
     */
     public void lockResource(CmsObject cms, String resource, boolean force) throws CmsException{
@@ -846,7 +844,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * @param source the complete path of the sourcefile.
     * @param destination the complete path of the destinationfile.
     *
-    * @exception CmsException if the user has not the rights to move this resource,
+    * @throws CmsException if the user has not the rights to move this resource,
     * or if the file couldn't be moved.
     */
     public void moveResource(CmsObject cms, String source, String destination) throws CmsException{
@@ -887,7 +885,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * @param oldname the complete path to the file which will be renamed.
     * @param newname the new name of the file.
     *
-    * @exception CmsException if the user has not the rights
+    * @throws CmsException if the user has not the rights
     * to rename the file, or if the file couldn't be renamed.
     */
     public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException{
@@ -936,7 +934,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
      * @param versionId The version id of the resource
      * @param filename The name of the file to restore
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException{
         throw new CmsException("[" + this.getClass().getName() + "] Cannot restore folders.",CmsException.C_ACCESS_DENIED);
@@ -948,7 +946,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     *
     * @param resource the complete path to the resource to be restored.
     *
-    * @exception CmsException if the user has not the rights
+    * @throws CmsException if the user has not the rights
     * to write this resource.
     */
     public void undoChanges(CmsObject cms, String resource) throws CmsException{
@@ -1015,7 +1013,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     *
     * @param resource the complete path to the resource to be unlocked.
     *
-    * @exception CmsException if the user has not the rights
+    * @throws CmsException if the user has not the rights
     * to unlock this resource.
     */
     public void unlockResource(CmsObject cms, String resource) throws CmsException{
@@ -1032,7 +1030,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
      * Set the access flags of the copied Folder to the default values.
      * @param cms The CmsObject.
      * @param foldername The name of the folder.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
     private void setDefaultFlags(CmsObject cms, String foldername)
         throws CmsException {
@@ -1056,7 +1054,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
      * will be added here as well.
      * @param allolders Vector containing all folders found so far. All subfolders of this folder
      * will be added here as well.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     private void getAllResources(CmsObject cms, String rootFolder, Vector allFiles,
@@ -1084,7 +1082,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
      *
      * @param resourcename String to check
      *
-     * @exception throws a exception, if the check fails.
+     * @throws throws a exception, if the check fails.
      */
     protected void validResourcename( String resourcename )
         throws CmsException {

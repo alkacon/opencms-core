@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeCompatiblePlain.java,v $
-* Date   : $Date: 2002/12/06 23:16:45 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/01/20 23:59:17 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import com.opencms.core.I_CmsConstants;
  * copied or deleted.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.5 $Date: 2002/08/24 08:42:37 $
+ * @version $Revision: 1.6 $Date: 2002/12/06 23:16:45 $
  *
  */
 public class CmsResourceTypeCompatiblePlain extends CmsResourceTypePlain {
@@ -51,7 +51,7 @@ public class CmsResourceTypeCompatiblePlain extends CmsResourceTypePlain {
     * @param keepFlags <code>true</code> if the copy should keep the source file's flags,
     *        <code>false</code> if the copy should get the user's default flags.
     *
-    * @exception CmsException if the file couldn't be copied, or the user
+    * @throws CmsException if the file couldn't be copied, or the user
     * has not the appropriate rights to copy the file.
     */
     public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags) throws CmsException{

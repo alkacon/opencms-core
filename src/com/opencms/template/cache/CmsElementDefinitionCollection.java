@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDefinitionCollection.java,v $
-* Date   : $Date: 2002/12/06 23:16:53 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/01/20 23:59:22 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.util.Vector;
  * Used to collect a set of element definitions.
  * Two CmsElementDefinitionCollections can be merged using the join constructor.
  *
- * @author: Alexander Lucas <alexander.lucas@framfab.de>
+ * @author Alexander Lucas <alexander.lucas@framfab.de>
  */
 public class CmsElementDefinitionCollection {
 

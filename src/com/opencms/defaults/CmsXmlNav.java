@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2003/01/20 17:57:49 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/01/20 23:59:23 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * @author Alexander Kandzior
  * @author Waruschan Babachan
  * @author Thomas Weckert
- * @version $Revision: 1.45 $ $Date: 2003/01/20 17:57:49 $
+ * @version $Revision: 1.46 $ $Date: 2003/01/20 23:59:23 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 
@@ -463,7 +463,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
      * @param userObj Hashtable with parameters.
      * @return byte[] with the content of this subelement.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Object getFolderCurrent(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
             throws CmsException {
@@ -480,7 +480,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
      * @param userObj Hashtable with parameters.
      * @return byte[] with the content of this subelement.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Object getFolderParent(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
             throws CmsException {
@@ -522,7 +522,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
      * @param userObj Hashtable with parameters.
      * @return byte[] with the content of this subelement.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Object getFolderRoot(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
             throws CmsException {
@@ -561,7 +561,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
      * @param userObj Hashtable with parameters.
      * @return byte[] with the content of this subelement.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Object getNavCurrent(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
             throws CmsException {
@@ -635,7 +635,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
      * @param userObj Hashtable with parameters.
      * @return byte[] with the content of this subelement.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Object getNavFold(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
             throws CmsException {
@@ -713,7 +713,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
      * @param userObj Hashtable with parameters.
      * @return byte[] with the content of this subelement.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Object getNavParent(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
             throws CmsException {
@@ -780,7 +780,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
      * @param userObj Hashtable with parameters.
      * @return byte[] with the content of this subelement.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Object getNavRoot(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
             throws CmsException {
@@ -854,7 +854,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param doc the XML template
      * @param userObj Hashtable with parameters (??)
      * @return byte[] the HTML of this element
-     * @exception CmsException
+     * @throws CmsException
      */
     public Object getNavPath(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {        
         // the result string holding the entire generated navigation path
@@ -960,7 +960,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param doc the XML template
      * @param userObj Hashtable with parameters (??)
      * @return byte[] the HTML of this element
-     * @exception CmsException
+     * @throws CmsException
      */    
     public Object getNavMap(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {                   
         // the result string holding the entire generated HTML of the navigation map
@@ -1121,7 +1121,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
      * @param userObj Hashtable with parameters.
      * @return byte[] with the content of this subelement.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Object getNavTree(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
             throws CmsException {
@@ -1229,7 +1229,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
      * @param userObj Hashtable with parameters.
      * @return byte[] with the content of this subelement.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Object getPropertyCurrent(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
         throws CmsException {
@@ -1257,7 +1257,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
      * @param userObj Hashtable with parameters.
      * @return byte[] with the content of this subelement.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Object getPropertyParent(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
         throws CmsException {
@@ -1309,7 +1309,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
      * @param userObj Hashtable with parameters.
      * @return byte[] with the content of this subelement.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Object getPropertyRoot(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
         throws CmsException {
@@ -1356,7 +1356,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
      * @param userObj Hashtable with parameters.
      * @return byte[] with the content of this subelement.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Object getPropertyUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
         throws CmsException {
@@ -1401,7 +1401,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 	 * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
 	 * @param userObject Hashtable with parameters.
 	 * @return byte[] with the content of this subelement.
-	 * @exception CmsException
+	 * @throws CmsException
 	 */
 	public Object getNavPop(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
 		String currentFolder = "";
@@ -1720,7 +1720,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 	 * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
 	 * @param userObj Hashtable with parameters.
 	 * @return String or byte[] with the content of this subelement.
-	 * @exception CmsException
+	 * @throws CmsException
 	 */
 	public Object getLanguagePath(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
 		String sLanguageToken = "_lang_";

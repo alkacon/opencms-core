@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsJavascriptTemplate.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/01/20 23:59:21 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,17 +29,14 @@
 
 package com.opencms.template;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.launcher.*;
-import com.opencms.template.cache.*;
-import java.util.*;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRequestContext;
+import com.opencms.launcher.I_CmsTemplateCache;
+import com.opencms.template.cache.A_CmsElement;
 
-/** Document the purpose of this class.
- *
- * @version 1.0
- * @author
- **/
+import java.util.Hashtable;
+
 public class CmsJavascriptTemplate extends A_CmsTemplate implements I_CmsJavascriptTemplate {
 
     /**
@@ -58,7 +55,7 @@ public class CmsJavascriptTemplate extends A_CmsTemplate implements I_CmsJavascr
      * @param elementName Element name of this template in our parent template
      * @param parameters Hashtable with all template class parameters.
      * @return Content of the template and all subtemplates.
-     * @exception CmsException
+     * @throws CmsException
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
         return "".getBytes();
@@ -68,14 +65,14 @@ public class CmsJavascriptTemplate extends A_CmsTemplate implements I_CmsJavascr
      * Gets the content of a defined section in a given template file
      * with the given parameters.
      *
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector section that should be processed.
      * @return Content of the template and all subtemplates.
-     * @exception CmsException
+     * @throws CmsException
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         return "".getBytes();

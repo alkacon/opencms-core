@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
-* Date   : $Date: 2003/01/20 17:57:46 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/01/20 23:59:17 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.zip.ZipInputStream;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.15 $ $Date: 2003/01/20 17:57:46 $
+ * @version $Revision: 1.16 $ $Date: 2003/01/20 23:59:17 $
  */
 public class CmsImportFolder implements I_CmsConstants {
 
@@ -85,7 +85,7 @@ public class CmsImportFolder implements I_CmsConstants {
      *
      * @param importFile the file or folder to import from.
      * @param importPath the path to the cms to import into.
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      */
     public CmsImportFolder(String importFile, String importPath, CmsObject cms)
         throws CmsException {
@@ -120,7 +120,7 @@ public class CmsImportFolder implements I_CmsConstants {
      *
      * @param content the zip file to import
      * @param importPath the path to the cms to import into.
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      */
     public CmsImportFolder(byte[] content, String importPath, CmsObject cms,
                             boolean noSubFolder) throws CmsException {

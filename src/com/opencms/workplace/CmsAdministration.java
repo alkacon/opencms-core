@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2003/01/20 17:57:48 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,8 +52,8 @@ import java.util.Vector;
  * This class is used to display the administration view.
  *
  * Creation date: (09.08.00 14:01:21)
- * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.23 $ $Date: 2003/01/20 17:57:48 $
+ * @author Hanjo Riege
+ * @version $Name:  $ $Revision: 1.24 $ $Date: 2003/01/20 23:59:19 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -210,7 +210,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters.
      *
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
@@ -414,7 +414,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
      * @param cms The CmsObject
      * @param resource The resource to be checked.
      * @return True or false.
-     * @exception CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
 
     private boolean checkVisible(CmsObject cms, CmsResource resource) throws CmsException {
@@ -452,7 +452,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
      * @param cms The CmsObject
      * @param resource The resource to be checked.
      * @return True or false.
-     * @exception CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
 
     private boolean checkActive(CmsObject cms, CmsResource resource) throws CmsException {

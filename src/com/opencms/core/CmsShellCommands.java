@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2002/12/17 12:13:20 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2003/01/20 23:59:20 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.58 $ $Date: 2002/12/17 12:13:20 $
+ * @version $Revision: 1.59 $ $Date: 2003/01/20 23:59:20 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -444,7 +444,7 @@ class CmsShellCommands implements I_CmsConstants {
      * @param source The complete path of the sourcefile.
      * @param destination The complete path of the destination.
      *
-     * @exception CmsException will be thrown, if the file couldn't be copied.
+     * @throws CmsException will be thrown, if the file couldn't be copied.
      * The CmsException will also be thrown, if the user has not the rights
      * for this resource.
      */
@@ -633,7 +633,7 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * Creates a new project for the temporary files.
      *
-     * @exception CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful.
      */
     public void createTempfileProject() throws CmsException
     {
@@ -651,7 +651,7 @@ class CmsShellCommands implements I_CmsConstants {
      * @param name The name of the propertydefinition to overwrite.
      * @param resourcetype The name of the resource-type for the propertydefinition.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void createPropertydefinition(String name, String resourcetype) throws CmsException {
         try {
@@ -947,7 +947,7 @@ class CmsShellCommands implements I_CmsConstants {
      *
      * @param exportFile the name (absolute Path) of the export resource (zip)
      *
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
     public void exportAllResources(String exportFile) throws CmsException {
 
@@ -969,7 +969,7 @@ class CmsShellCommands implements I_CmsConstants {
      *
      * @param exportFile the name (absolute Path) of the export resource (zip)
      *
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
     public void exportAllResourcesOnlyChanged(String exportFile) throws CmsException {
 
@@ -1012,7 +1012,7 @@ class CmsShellCommands implements I_CmsConstants {
      * @param pathList the names (absolute Path) of folders from which should be exported
      *          separated by semicolons
      *
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
     public void exportResources(String exportFile, String pathList) throws CmsException {
 
@@ -1045,7 +1045,7 @@ class CmsShellCommands implements I_CmsConstants {
      * @param pathList the names (absolute Path) of folders from which should be exported
      *          separated by semicolons
      *
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
     public void exportResourcesAndUserdata(String exportFile, String pathList) throws CmsException {
 
@@ -1079,7 +1079,7 @@ class CmsShellCommands implements I_CmsConstants {
      * @param pathList the names (absolute Path) of folders from which should be exported
      *          separated by semicolons
      *
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
     public void exportResourcesOnlyChanged(String exportFile, String pathList) throws CmsException {
 
@@ -1268,7 +1268,7 @@ class CmsShellCommands implements I_CmsConstants {
      *
      * @return subfiles A Vector with all subfiles for the overgiven folder.
      *
-     * @exception CmsException will be thrown, if the user has not the rights
+     * @throws CmsException will be thrown, if the user has not the rights
      * for this resource.
      */
     public void getFilesInFolder(String foldername) {
@@ -2440,7 +2440,7 @@ class CmsShellCommands implements I_CmsConstants {
      *
      * @param groupname The name of the group to be returned.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void readGroup(String groupname) {
         try {
@@ -2456,7 +2456,7 @@ class CmsShellCommands implements I_CmsConstants {
      *
      * @param groupid The id of the group to be returned.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void readGroupById(String groupid) {
         try {
@@ -2909,7 +2909,7 @@ class CmsShellCommands implements I_CmsConstants {
      * @param versionId The version id of the resource
      * @param filename The name of the file to restore
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void restoreResource(String versionId, String filename) throws CmsException{
         try{
@@ -3252,7 +3252,7 @@ class CmsShellCommands implements I_CmsConstants {
     *
     * @param resourceName the name (absolute Path) of the resource that should be synchronized.
     *
-    * @exception CmsException if operation was not successful.
+    * @throws CmsException if operation was not successful.
     */
     public void syncFolder(String resourceName){
         // synchronize the resources
@@ -3268,7 +3268,7 @@ class CmsShellCommands implements I_CmsConstants {
      *
      * @param filename the complete path of the file.
      *
-     * @exception CmsException if the file couldn't be deleted, or if the user
+     * @throws CmsException if the file couldn't be deleted, or if the user
      * has not the appropriate rights to write the file.
      */
     public void undoChanges(String filename) throws CmsException {
@@ -3434,7 +3434,7 @@ class CmsShellCommands implements I_CmsConstants {
      * propertydefinitions for.
      * @param type The new type of the propertydefinition (normal|optional).
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      * @deprecated Do not use this method any longer because there is no type of propertydefinition
      */
     /*
@@ -3640,7 +3640,7 @@ class CmsShellCommands implements I_CmsConstants {
      *
      * @return subfolders A Vector with resources.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void readResourcesLikeName(String resourcename) {
         try{

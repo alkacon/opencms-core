@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
-* Date   : $Date: 2002/12/15 14:21:19 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.42 $ $Date: 2002/12/15 14:21:19 $
+ * @version $Revision: 1.43 $ $Date: 2003/01/20 23:59:19 $
  */
 
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -75,7 +75,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
      * @return Bytearre containgine the processed data of the template.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
@@ -268,7 +268,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I
      * @param lang The language file.
      * @param parameters User parameters.
      * @return Value that is pre-set into the anew name field.
-     * @exception CmsExeption if something goes wrong.
+     * @throws CmsExeption if something goes wrong.
      */
 
     public String setValue(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {

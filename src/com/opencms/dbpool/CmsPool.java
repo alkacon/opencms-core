@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsPool.java,v $
-* Date   : $Date: 2003/01/20 17:57:49 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/01/20 23:59:22 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ public class CmsPool extends Thread {
      * @param increaseRate - the rate to increase the the amount of
      * connections in the pool.
      * @param timeout - the timout after a unused connection has to be closed.
-     * @exception SQLException - if a SQL-Error occurs.
+     * @throws SQLException - if a SQL-Error occurs.
      */
     public CmsPool(String poolname, String driver, String url, String user,
                 String password, int minConn, int maxConn, int increasRate, int timeout, int maxage)
@@ -140,7 +140,7 @@ public class CmsPool extends Thread {
      * @param timeout - the timout after a unused connection has to be closed.
      * @param conTestQuery - the test query to test a connection before
      * delivering. If this is set to null, no test will be performed.
-     * @exception SQLException - if a SQL-Error occurs.
+     * @throws SQLException - if a SQL-Error occurs.
      */
     public CmsPool(String poolname, String driver, String url, String user,
                 String password, int minConn, int maxConn, int increasRate,
@@ -200,7 +200,7 @@ public class CmsPool extends Thread {
     /**
      * Try to make a database connection to the given database.
      * @return a Connection to the database
-     * @exception SQLException if a database-access error occurs.
+     * @throws SQLException if a database-access error occurs.
      */
     public Connection connect() throws SQLException {
         return getConnection();
@@ -208,7 +208,7 @@ public class CmsPool extends Thread {
 
     /**
      * Gets a connection.
-     * @exception SQLException if a database-access error occurs.
+     * @throws SQLException if a database-access error occurs.
      */
     private Connection getConnection()
         throws SQLException {
@@ -312,7 +312,7 @@ public class CmsPool extends Thread {
     /**
      * Creates the needed connections, if possible.
      * @param amount - the amount of connections to create.
-     * @exception SQLException if a database-access error occurs.
+     * @throws SQLException if a database-access error occurs.
      */
     private void createConnections(int amount) throws SQLException {
         for(int i = 0; (i < amount) && (m_connectionAmount < m_maxConn); i++) {
@@ -325,7 +325,7 @@ public class CmsPool extends Thread {
     /**
      * Creates one connection.
      * @return the new created connection.
-     * @exception SQLException if a database-access error occurs.
+     * @throws SQLException if a database-access error occurs.
      */
     private Connection createConnection() throws SQLException {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
@@ -382,7 +382,7 @@ public class CmsPool extends Thread {
      * is no need for this testing - but in difficult environments (like firewalls)
      * you can use it to find out whats going wrong.
      * @param con The connection to test.
-     * @returns true if the connection could be tested without an SQLException.
+     * @return true if the connection could be tested without an SQLException.
      * Returns true if there is no test-statement defined in opencms.properties.
      * Returns false if there was an SQLException by executing the statement.
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/CmsShellReport.java,v $
- * Date   : $Date: 2002/12/16 13:16:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/01/20 23:59:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * @author Hanjo Riege
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
  *  
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsShellReport implements I_CmsReport {
 
@@ -68,7 +68,7 @@ public class CmsShellReport implements I_CmsReport {
     }
 
     /**
-     * @see com.opencms.report.I_CmsReport#addString(java.lang.String)
+     * @see com.opencms.report.I_CmsReport#print(java.lang.String)
      */
     public void print(String value){
         this.print(value, C_FORMAT_DEFAULT);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateClassManager.java,v $
-* Date   : $Date: 2002/10/30 10:31:38 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/01/20 23:59:21 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import com.opencms.core.*;
  * be cached and re-used.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.27 $ $Date: 2002/10/30 10:31:38 $
+ * @version $Revision: 1.28 $ $Date: 2003/01/20 23:59:21 $
  */
 public class CmsTemplateClassManager implements I_CmsLogChannels {
 
@@ -70,7 +70,7 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
      * @param cms CmsObject Object for accessing system resources.
      * @param classname Name of the requested class.
      * @return Instance of the class with the given name.
-     * @exception CmsException
+     * @throws CmsException
      */
     public static Object getClassInstance(CmsObject cms, String classname) throws CmsException {
         return getClassInstance(cms, classname, null);
@@ -84,7 +84,7 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
      * @param classname Name of the requested class.
      * @param callParameters Array of arguments that should be passed to the Constructor.
      * @return Instance of the class with the given name.
-     * @exception CmsException
+     * @throws CmsException
      */
     public static Object getClassInstance(CmsObject cms, String classname, Object[] callParameters) throws CmsException {
         int numParams = 0;
@@ -108,7 +108,7 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
      * @param callParameters Array of arguments that should be passed to the Constructor.
      * @param parameterTypes Array of the types of the arguments.
      * @return Instance of the class with the given name.
-     * @exception CmsException
+     * @throws CmsException
      */
     public static Object getClassInstance(CmsObject cms, String classname, Object[] callParameters, Class[] parameterTypes) throws CmsException {
         Object o = null;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/01/20 17:57:52 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/01/20 23:59:29 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,8 +52,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.13 $
- * $Date: 2003/01/20 17:57:52 $
+ * $Revision: 1.14 $
+ * $Date: 2003/01/20 23:59:29 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -417,7 +417,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
     /**
      * gets the unique Id of a content definition instance
      * @param cms the CmsObject to use.
-     * @returns a string with the Id
+     * @return a string with the Id
      */
     public String getUniqueId(CmsObject cms) {
         return m_channel.getResourceId() + "";
@@ -426,7 +426,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
     /**
      * gets the unique Id of a content definition instance
      *
-     * @returns int The unique id
+     * @return int The unique id
      */
     public int getId() {
         return m_channel.getResourceId();
@@ -435,7 +435,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
     /**
      * Gets the projectId where the CD belongs to.
      * This method is required for the use of the abstract backoffice.
-     * @returns int with the projectId.
+     * @return int with the projectId.
      */
     public int getLockedInProject() {
         return m_channel.getLockedInProject();
@@ -444,7 +444,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
     /**
      * Gets the state of a CD.
      * This method is required for the use of the abstract backoffice.
-     * @returns int with the state.
+     * @return int with the state.
      */
     public int getState() {
         return m_channel.getState();
@@ -453,7 +453,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
     /**
      * Gets the projectId of a CD.
      * This method is required for the use of the abstract backoffice.
-     * @returns int with the projectId.
+     * @return int with the projectId.
      */
     public int getProjectId() {
         return m_channel.getProjectId();
@@ -461,7 +461,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
 
     /**
      * gets the unique channel Id of a content definition instance
-     * @returns a string with the Id
+     * @return a string with the Id
      */
     public String getChannelId() {
         return m_channelId;
@@ -494,7 +494,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
 
     /**
      * Gets the lockstate.
-     * @returns a int with the user who has locked the ressource.
+     * @return a int with the user who has locked the ressource.
      */
     public int getLockstate() {
         return m_channel.isLockedBy();
@@ -657,7 +657,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
      * @return Index representing the current value in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getGroups(CmsObject cms, Vector names, Vector values) throws CmsException {
@@ -720,7 +720,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
     };
     /**
      * returns true if the CD is readable for the current user
-     * @retruns true
+     * @return true
      */
     public boolean isReadable() {
         m_cms.setContextToCos();
@@ -736,7 +736,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
 
     /**
      * returns true if the CD is writeable for the current user
-     * @retruns true
+     * @return true
      */
     public boolean isWriteable() {
         m_cms.setContextToCos();
@@ -842,7 +842,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
     /**
      * Gets the methods used to display the dava values in the backoffice filelist.
      * This method is needed for the abstract backoffice class only.
-     * @returns Vector with the nescessary get methods
+     * @return Vector with the nescessary get methods
      */
     public static Vector getFieldMethods(CmsObject cms) {
         Vector methods = new Vector();
@@ -862,7 +862,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
     /**
      * Gets the filter methods
      * This method is needed for the abstract backoffice class only.
-     * @returns a method array containing the methods
+     * @return a method array containing the methods
      */
     public static Vector getFilterMethods(CmsObject cms) {
         Vector filterMethods = new Vector();
@@ -923,7 +923,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * Plauzibilization method.
      * This method checks if all inputfields contain correct input data.
      * If an input field has no correct data, a CmsPlausibilizationException is thrown.
-     * @exception Throws CmsPlausibilizationException containing a vector of error-codes.
+     * @throws Throws CmsPlausibilizationException containing a vector of error-codes.
      */
     public void check() throws CmsPlausibilizationException {
         // define the vector which will hold all error codes

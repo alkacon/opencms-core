@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsWpElement.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.file.CmsObject;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2002/12/06 23:16:49 $
+ * @version $Revision: 1.36 $ $Date: 2003/01/20 23:59:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -156,7 +156,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,
      * Reads the backbutton definition file.
      * @param cms The actual cms object
      * @return Reference to the backbutton defintion file.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public CmsXmlWpTemplateFile getBackbuttonDefinitions(CmsObject cms) throws CmsException {
@@ -171,7 +171,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,
      * Reads the box definition file.
      * @param cms The actual cms object
      * @return Reference to the box defintion file.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public CmsXmlWpBoxDefFile getBoxDefinitions(CmsObject cms) throws CmsException {
@@ -184,7 +184,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,
      * Reads the buttons definition file.
      * @param cms The actual cms object
      * @return Reference to the buttons defintion file.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public CmsXmlWpButtonsDefFile getButtonDefinitions(CmsObject cms) throws CmsException {
@@ -211,7 +211,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,
      *
      * @param cms CmsObject Object for accessing system resources.
      * @return Reference to the config file.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public CmsXmlWpConfigFile getConfigFile(CmsObject cms) throws CmsException {
@@ -224,7 +224,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,
      * Reads the contextmenue definition file.
      * @param cms The actual cms object
      * @return Reference to the list defintion file.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public CmsXmlWpTemplateFile getContextmenueDefinitions(CmsObject cms) throws CmsException {
@@ -237,7 +237,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,
      * Reads the error definition file.
      * @param cms The actual cms object
      * @return Reference to the label defintion file.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public CmsXmlWpTemplateFile getErrorDefinitions(CmsObject cms) throws CmsException {
@@ -250,7 +250,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,
      * Reads the icons definition file.
      * @param cms The actual cms object
      * @return Reference to the icons defintion file.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public CmsXmlWpTemplateFile getIconDefinitions(CmsObject cms) throws CmsException {
@@ -263,7 +263,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,
      * Reads the input field definition file.
      * @param cms The actual cms object
      * @return Reference to the label defintion file.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public CmsXmlWpInputDefFile getInputDefinitions(CmsObject cms) throws CmsException {
@@ -276,7 +276,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,
      * Reads the label definition file.
      * @param cms The actual cms object
      * @return Reference to the label defintion file.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public CmsXmlWpLabelDefFile getLabelDefinitions(CmsObject cms) throws CmsException {
@@ -289,7 +289,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,
      * Reads the modulelist definition file.
      * @param cms The actual cms object
      * @return Reference to the list defintion file.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public CmsXmlWpTemplateFile getModulelistDefinitions(CmsObject cms) throws CmsException {
@@ -303,7 +303,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,
      * Reads the panel bar definition file.
      * @param cms The actual cms object
      * @return Reference to the label defintion file.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public CmsXmlWpTemplateFile getPanelDefinitions(CmsObject cms) throws CmsException {
@@ -316,7 +316,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,
      * Reads the preferences scroller definition file.
      * @param cms The actual cms object
      * @return Reference to the list defintion file.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public CmsXmlWpTemplateFile getPrefsScrollerDefinitions(CmsObject cms) throws CmsException {
@@ -330,7 +330,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,
      * Reads the projectlist definition file.
      * @param cms The actual cms object
      * @return Reference to the list defintion file.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public CmsXmlWpTemplateFile getProjectlistDefinitions(CmsObject cms) throws CmsException {
@@ -344,7 +344,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,
      * Reads the radiobutton definition file.
      * @param cms The actual cms object
      * @return Reference to the radiobutton defintion file.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public CmsXmlWpTemplateFile getRadioDefinitions(CmsObject cms) throws CmsException {
@@ -357,7 +357,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,
      * Reads the task docu definition file.
      * @param cms The actual cms object
      * @return Reference to the list defintion file.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public CmsXmlWpTemplateFile getTaskDocuDefinitions(CmsObject cms) throws CmsException {
@@ -371,7 +371,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,
      * Reads the projectlist definition file.
      * @param cms The actual cms object
      * @return Reference to the list defintion file.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public CmsXmlWpTemplateFile getTaskListDefinitions(CmsObject cms) throws CmsException {
@@ -387,7 +387,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,
      * CmsException of the given type.
      * @param errorMessage String with the error message to be printed.
      * @param type Type of the exception to be thrown.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     protected void throwException(String errorMessage, int type) throws CmsException {
@@ -402,7 +402,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,
      * an error message to the OpenCms logfile and throwing a
      * CmsException of the type "unknown".
      * @param errorMessage String with the error message to be printed.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     protected void throwException(String errorMessage) throws CmsException {

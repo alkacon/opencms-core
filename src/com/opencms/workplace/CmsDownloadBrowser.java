@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
-* Date   : $Date: 2003/01/20 17:57:47 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.20 $ $Date: 2003/01/20 17:57:47 $
+ * @version $Revision: 1.21 $ $Date: 2003/01/20 23:59:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -57,7 +57,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters.
      *
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
@@ -169,7 +169,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
      * the included customized defintions.
      * @param res CmsResource Object of the current file list entry.
      * @param lang Current language file.
-     * @exception CmsException if access to system resources failed.
+     * @throws CmsException if access to system resources failed.
      * @see I_CmsFileListUsers
      */
 
@@ -225,7 +225,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
      * Collects all files in the chosen download gallery list.
      * @param cms The CmsObject.
      * @return A vector of folder and file objects.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public Vector getFiles(CmsObject cms) throws CmsException {

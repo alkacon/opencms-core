@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceGemadipage.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,9 +47,9 @@ public class CmsNewResourceGemadipage extends CmsNewResourcePage {
      * @param names The names of the new rescources.
      * @param values The links that are connected with each resource.
      * @param parameters Hashtable of parameters (not used yet).
-     * @returns The vectors names and values are filled with the information found in the
+     * @return The vectors names and values are filled with the information found in the
      * workplace.ini.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public Integer getTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
@@ -73,9 +73,9 @@ public class CmsNewResourceGemadipage extends CmsNewResourcePage {
      * @param values The ablolute path of the templates.
      * @param currentTemplate The template used by the page (only used if called from the editor).
      * @param startFolder The folder where we start searching for the baseFolder.
-     * @returns The vectors names and values are filled with the information from the templates
+     * @return The vectors names and values are filled with the information from the templates
      * in the folder. The returnvalue is 0 or the template used by the page (only for editor).
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
     public static Integer getRelativeTemplates(CmsObject cms, Vector names, Vector values, String currentTemplate, String startFolder) throws CmsException {
 

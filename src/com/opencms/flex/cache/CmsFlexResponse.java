@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexResponse.java,v $
-* Date   : $Date: 2002/12/15 18:11:41 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/01/20 23:59:32 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.HttpServletResponse;
  * A wrapper class for a HttpServletRequest that controls the Flex cache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapper {
     
@@ -828,7 +828,7 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
          * implementation for this method.
          *
          * @param b   the <code>byte</code>.
-         * @exception IOException  if an I/O error occurs. In particular,
+         * @throws IOException  if an I/O error occurs. In particular,
          *             an <code>IOException</code> may be thrown if the
          *             output stream has been closed.
          */

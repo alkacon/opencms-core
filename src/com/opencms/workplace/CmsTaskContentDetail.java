@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
-* Date   : $Date: 2003/01/20 17:57:48 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Hashtable;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.27 $ $Date: 2003/01/20 17:57:48 $
+ * @version $Revision: 1.28 $ $Date: 2003/01/20 23:59:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -71,7 +71,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
      * @param name The name of the button to generate.
      * @param enabled True, if the button is enabled, else false.
      * @return the string-representation of the button.
-     * @exception Throws CmsException, if something goes wrong.
+     * @throws Throws CmsException, if something goes wrong.
      */
     
     private String getButton(CmsXmlWpTemplateFile xmlTemplateDocument, String name, boolean enabled) throws CmsException {
@@ -94,7 +94,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters. 
      * 
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.

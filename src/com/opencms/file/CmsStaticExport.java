@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2003/01/20 17:57:46 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/01/20 23:59:17 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.38 $ $Date: 2003/01/20 17:57:46 $
+ * @version $Revision: 1.39 $ $Date: 2003/01/20 23:59:17 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -203,7 +203,7 @@ public class CmsStaticExport implements I_CmsConstants{
      * @param changedResources. Contains the changed resources belonging to the project, if started after publishProject.
      * @param report the cmsReport to handle the log messages.
      *
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      */
     public CmsStaticExport(CmsObject cms, Vector startpoints, boolean doTheExport,
                      Vector changedLinks, Vector allExportedLinks, CmsPublishedResources changedResources, I_CmsReport report)
@@ -580,7 +580,7 @@ public class CmsStaticExport implements I_CmsConstants{
      * @return      a <code>HashTable</code> object built
      *          from the parsed key-value pairs
      *
-     * @exception IllegalArgumentException  if the query string 
+     * @throws IllegalArgumentException  if the query string 
      *                      is invalid
      *
      */

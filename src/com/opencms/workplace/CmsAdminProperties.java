@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProperties.java,v $
-* Date   : $Date: 2003/01/20 17:57:48 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.17 $ $Date: 2003/01/20 17:57:48 $
+ * @version $Revision: 1.18 $ $Date: 2003/01/20 23:59:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -84,7 +84,7 @@ public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsCons
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters.
      *
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
@@ -167,7 +167,7 @@ public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsCons
      * @param lang reference to the currently valid language file
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current filter view in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public String getDatatypes(CmsObject cms, A_CmsXmlContent doc, CmsXmlLanguageFile lang,
@@ -201,7 +201,7 @@ public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsCons
      * @param callingObject Object for accessing system resources.
      * @param resType resource type (file type)
      * @return String which holds a HTML table
-     * @exception CmsException
+     * @throws CmsException
      */
 
     private String getResourceEntry(CmsObject cms, A_CmsXmlContent doc,

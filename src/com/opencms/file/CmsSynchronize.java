@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronize.java,v $
-* Date   : $Date: 2003/01/20 17:57:46 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/01/20 23:59:17 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * into the cms and back.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.14 $ $Date: 2003/01/20 17:57:46 $
+ * @version $Revision: 1.15 $ $Date: 2003/01/20 23:59:17 $
  */
 public class CmsSynchronize implements I_CmsConstants{
 
@@ -98,7 +98,7 @@ public class CmsSynchronize implements I_CmsConstants{
      *
      * @param resourceName the resource to synchronize.
      * @param syncPath the path of the filesystem to synchronize.
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      */
     public CmsSynchronize(CmsObject cms, String resourceName)
         throws CmsException {
@@ -137,7 +137,7 @@ public class CmsSynchronize implements I_CmsConstants{
      * starts the synchronisation of the given resource
      *
      * @param resourceName the resource to synchronize.
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      */
     private void synchronizeServer(String resourceName)
         throws CmsException{
@@ -225,7 +225,7 @@ public class CmsSynchronize implements I_CmsConstants{
      * virtual filesystem. Add folders and files that does not exist in VFS
      *
      * @param resourceName the resource to synchronize.
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      */
     private void synchronizeVirtual(String resourceName)
         throws CmsException{
@@ -307,7 +307,7 @@ public class CmsSynchronize implements I_CmsConstants{
      * Synchronizes a file in the virtual or the server filesystem.
      *
      * @param vfsFile the file to synchronize.
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      */
     private void synchronizeFile(CmsFile vfsFile)
         throws CmsException{
@@ -381,7 +381,7 @@ public class CmsSynchronize implements I_CmsConstants{
      * @param resourceName the resource to compare.
      * @param vfsDate the date of the resource in the virtual filesystem.
      * @param sfsDate the date of the resource in the server filesystem.
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      * @return int the number of the action for synchronizeFile
      */
     private int compareDate(String resourceName, long vfsDate, long sfsDate)
@@ -412,7 +412,7 @@ public class CmsSynchronize implements I_CmsConstants{
      * Creates the new file on the SFS
      *
      * @param newFile the file that has to be created.
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      */
     private void createNewLocalFile(File newFile) throws CmsException {
         FileOutputStream fOut = null;
@@ -546,7 +546,7 @@ public class CmsSynchronize implements I_CmsConstants{
      * Gets the file type for the filename.
      *
      * @param filename the resource to get the type.
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      * @return String the type for the resource
      */
     private String getFileType(String filename)
@@ -571,7 +571,7 @@ public class CmsSynchronize implements I_CmsConstants{
      *
      * @param content the content of the file in the VFS.
      * @param file the file in SFS that has to be updated with content.
-     * @exception Exception the Exception is thrown if something goes wrong.
+     * @throws Exception the Exception is thrown if something goes wrong.
      */
     private void writeFileByte(byte[] content, File file)
         throws Exception {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeLink.java,v $
-* Date   : $Date: 2003/01/20 17:57:46 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/01/20 23:59:17 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,16 +28,19 @@
 
 package com.opencms.file;
 
-import com.opencms.core.*;
-import java.util.*;
+import com.opencms.core.CmsException;
+
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Vector;
 
 /**
- * This class describes the resource-type link.
+ * This class describes the resource type "link".
  *
- * @author
- * @version 1.0
+ * @version $Revision: 1.7 $
  */
-
 public class CmsResourceTypeLink extends CmsResourceTypePlain {
 
     public static final String C_TYPE_RESOURCE_NAME = "link";

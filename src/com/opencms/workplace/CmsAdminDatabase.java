@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2002/12/06 23:16:47 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.28 $ $Date: 2002/12/06 23:16:47 $
+ * @version $Revision: 1.29 $ $Date: 2003/01/20 23:59:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -116,7 +116,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters.
      *
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
@@ -361,7 +361,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current filter view in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getExportFiles(CmsObject cms, CmsXmlLanguageFile lang, Vector values,
@@ -419,7 +419,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
     public int getModules(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
@@ -446,7 +446,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
      * @param cms CmsObject Object for accessing system resources.
      * @param template The current template
      * @return String with the modules optiontags.
-     * @exception CmsException
+     * @throws CmsException
      */
     public String getModuleSelectbox(CmsObject cms, CmsXmlWpTemplateFile template) throws CmsException {
         StringBuffer selectBox = new StringBuffer();

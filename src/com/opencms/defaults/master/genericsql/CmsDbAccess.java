@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/01/20 17:57:52 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/01/20 23:59:32 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -405,7 +405,7 @@ public class CmsDbAccess {
      * Reads all media from the database.
      * @param cms the CmsObject to get access to cms-ressources.
      * @param content the CmsMasterContent to write to the database.
-     * @returns a Vector of media objects.
+     * @return a Vector of media objects.
      */
     public Vector readMedia(CmsObject cms, CmsMasterContent content)
         throws CmsException {
@@ -458,7 +458,7 @@ public class CmsDbAccess {
      * Reads all channels from the database.
      * @param cms the CmsObject to get access to cms-ressources.
      * @param content the CmsMasterContent to write to the database.
-     * @returns a Vector of channel names.
+     * @return a Vector of channel names.
      */
     public Vector readChannels(CmsObject cms, CmsMasterContent content)
         throws CmsException {
@@ -723,7 +723,7 @@ public class CmsDbAccess {
     /**
      * Returns a string representation of this instance.
      * This can be used for debugging.
-     * @returns the string representation of this instance.
+     * @return the string representation of this instance.
      */
     public String toString() {
         StringBuffer returnValue = new StringBuffer();
@@ -784,7 +784,7 @@ public class CmsDbAccess {
      * Computes one run of the replacement for one query.
      * Stores the new value into m_queries.
      * @param key the key for the query to compute.
-     * @returns if in this run replacements are done.
+     * @return if in this run replacements are done.
      */
     private boolean replace(String key) {
         boolean retValue = false;
@@ -894,7 +894,7 @@ public class CmsDbAccess {
      * @param cms the CmsObject to get access to cms-ressources.
      * @param subId the subid of this module.
      * @param dataset the set of data for this contentdefinition.
-     * @returns the actual rowcounter.
+     * @return the actual rowcounter.
      */
     protected int sqlFillValues(PreparedStatement stmnt, int subId, CmsMasterDataSet dataset)
         throws SQLException {
@@ -944,7 +944,7 @@ public class CmsDbAccess {
      * @param cms the CmsObject to get access to cms-ressources.
      * @param content the CmsMasterContent to write to the database.
      * @param dataset the set of data for this contentdefinition.
-     * @returns the actual rowcounter.
+     * @return the actual rowcounter.
      */
     protected int sqlFillValues(ResultSet res, CmsObject cms, CmsMasterDataSet dataset)
         throws SQLException {
@@ -1057,7 +1057,7 @@ public class CmsDbAccess {
      * @param stmnt the PreparedStatement to set the values into.
      * @param array the array of strings to set.
      * @param the columnscounter for the stmnt.
-     * @returns the increased columnscounter;
+     * @return the increased columnscounter;
      */
     protected int sqlSetTextArray(PreparedStatement stmnt, String[] array, int columnscounter)
         throws SQLException {
@@ -1076,7 +1076,7 @@ public class CmsDbAccess {
      * @param res the ResultSet to get the values from.
      * @param array the array of strings to set.
      * @param the columnscounter for the res.
-     * @returns the increased columnscounter;
+     * @return the increased columnscounter;
      */
     protected int sqlSetTextArray(ResultSet res, String[] array, int columnscounter)
         throws SQLException {
@@ -1091,7 +1091,7 @@ public class CmsDbAccess {
      * @param stmnt the PreparedStatement to set the values into.
      * @param array the array of ints to set.
      * @param the columnscounter for the stmnt.
-     * @returns the increased columnscounter;
+     * @return the increased columnscounter;
      */
     protected int sqlSetIntArray(PreparedStatement stmnt, int[] array, int columnscounter)
         throws SQLException {
@@ -1106,7 +1106,7 @@ public class CmsDbAccess {
      * @param res the ResultSet to get the values from.
      * @param array the array of ints to set.
      * @param the columnscounter for the res.
-     * @returns the increased columnscounter;
+     * @return the increased columnscounter;
      */
     protected int sqlSetIntArray(ResultSet res, int[] array, int columnscounter)
         throws SQLException {
@@ -1121,7 +1121,7 @@ public class CmsDbAccess {
      * @param stmnt the PreparedStatement to set the values into.
      * @param array the array of longs to set.
      * @param the columnscounter for the stmnt.
-     * @returns the increased columnscounter;
+     * @return the increased columnscounter;
      */
     protected int sqlSetDateArray(PreparedStatement stmnt, long[] array, int columnscounter)
         throws SQLException {
@@ -1136,7 +1136,7 @@ public class CmsDbAccess {
      * @param res the ResultSet to get the values from.
      * @param array the array of longs to set.
      * @param the columnscounter for the res.
-     * @returns the increased columnscounter;
+     * @return the increased columnscounter;
      */
     protected int sqlSetDateArray(ResultSet res, long[] array, int columnscounter)
         throws SQLException {
@@ -1259,7 +1259,7 @@ public class CmsDbAccess {
     /**
      * Returns true, if this is the onlineproject
      * @param cms - the CmsObject to get access to cms-ressources.
-     * @returns true, if this is the onlineproject, else returns false
+     * @return true, if this is the onlineproject, else returns false
      */
     protected boolean isOnlineProject(CmsObject cms) {
         boolean retValue = false;
@@ -2097,7 +2097,7 @@ public class CmsDbAccess {
      * Returns the correct connection. If this is the onlineproject it returns
      * the online connection, else it returns the offline connection.
      * @param cms the CmsObject to get access to cms-ressources.
-     * @returns the SQLConnection.
+     * @return the SQLConnection.
      * @throws SQLException if the connection can not be returned.
      */
     public Connection getConnection(CmsObject cms) throws SQLException {

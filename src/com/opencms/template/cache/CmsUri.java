@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2002/12/13 17:38:13 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/01/20 23:59:22 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * If access is granted for the current user it starts the startingElement to
  * process the content of this ressource.
  *
- * @author: Andreas Schouten
+ * @author Andreas Schouten
  */
 public class CmsUri implements I_CmsConstants {
 
@@ -187,7 +187,7 @@ public class CmsUri implements I_CmsConstants {
     /**
      * checks the read access.
      * @param cms The cms Object for reading groups.
-     * @exception CmsException if no read access.
+     * @throws CmsException if no read access.
      */
     public void checkReadAccess(CmsObject cms) throws CmsException{
         if (m_readAccessGroup == null || "".equals(m_readAccessGroup )){

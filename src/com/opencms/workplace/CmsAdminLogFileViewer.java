@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLogFileViewer.java,v $
-* Date   : $Date: 2003/01/20 17:57:46 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/01/20 23:59:17 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Hashtable;
  * Template class for displaying OpenCms workplace administration synchronisation properties.
  *
  * Creation date: ()
- * @author: Edna Falkenhan
+ * @author Edna Falkenhan
  */
 public class CmsAdminLogFileViewer extends CmsWorkplaceDefault implements I_CmsConstants {
 
@@ -53,7 +53,7 @@ public class CmsAdminLogFileViewer extends CmsWorkplaceDefault implements I_CmsC
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters.
      *
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.35 $ $Date: 2002/12/06 23:16:46 $
+ * @version $Revision: 1.36 $ $Date: 2003/01/20 23:59:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -68,7 +68,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
      * Accepts a task.
      * @param cms The cms-object.
      * @param int taskid The id of the task.
-     * @exception CmsException Throws CmsExceptions, that are be
+     * @throws CmsException Throws CmsExceptions, that are be
      * thrown in calling methods.
      */
 
@@ -134,7 +134,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
      * @param paraAll controls if a message should be send to all users in a role. ("checked" | "")
      * @param paraCompletion controls if a message should be send by completing this task. ("checked" | "")
      * @param paraDelivery controls if a message should be send by delivering a task. ("checked" | "")
-     * @exception CmsException Throws CmsExceptions, that are be
+     * @throws CmsException Throws CmsExceptions, that are be
      * thrown in calling methods.
      */
 
@@ -235,7 +235,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
      * @param int taskid The id of the task.
      * @param timeoutString The new timeout-date as a string in the following format:
      * "dd.mm.yyyy"
-     * @exception CmsException Throws CmsExceptions, that are be
+     * @throws CmsException Throws CmsExceptions, that are be
      * thrown in calling methods.
      */
 
@@ -261,7 +261,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
      * Ends a task.
      * @param cms The cms-object.
      * @param int taskid The id of the task.
-     * @exception CmsException Throws CmsExceptions, that are be
+     * @throws CmsException Throws CmsExceptions, that are be
      * thrown in calling methods.
      */
 
@@ -326,7 +326,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
      * @param int taskid The id of the task.
      * @param newEditorName The name of the new editor for this task.
      * @param newRoleName The name of the new role for the user.
-     * @exception CmsException Throws CmsExceptions, that are be
+     * @throws CmsException Throws CmsExceptions, that are be
      * thrown in calling methods.
      */
 
@@ -435,7 +435,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
      * @param cms The cms-object.
      * @param int taskid The id of the task.
      * @return String the comment-string.
-     * @exception CmsException Throws CmsExceptions, that are be
+     * @throws CmsException Throws CmsExceptions, that are be
      * thrown in calling methods.
      */
 
@@ -466,7 +466,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
      * @param cms The cms-object.
      * @param int taskid The id of the task.
      * @param message The text of the message.
-     * @exception CmsException Throws CmsExceptions, that are be
+     * @throws CmsException Throws CmsExceptions, that are be
      * thrown in calling methods.
      */
 
@@ -527,7 +527,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
      * @param int taskid The id of the task.
      * @param priorityString the new priority as String ("1" = high,
      * "2" = normal or "3" = low)
-     * @exception CmsException Throws CmsExceptions, that are be
+     * @throws CmsException Throws CmsExceptions, that are be
      * thrown in calling methods.
      */
 
@@ -551,7 +551,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
      * @param cms The cms-object.
      * @param int taskid The id of the task.
      * @param message The text of the message.
-     * @exception CmsException Throws CmsExceptions, that are be
+     * @throws CmsException Throws CmsExceptions, that are be
      * thrown in calling methods.
      */
 
@@ -622,7 +622,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
      * @param paraAll controls if a message should be send to all users in a role. ("checked" | "")
      * @param paraCompletion controls if a message should be send by completing this task. ("checked" | "")
      * @param paraDelivery controls if a message should be send by delivering a task. ("checked" | "")
-     * @exception CmsException Throws CmsExceptions, that are be
+     * @throws CmsException Throws CmsExceptions, that are be
      * thrown in calling methods.
      */
 
@@ -704,7 +704,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
      * Takes a task. The calling user is now the agent for this task.
      * @param cms The cms-object.
      * @param int taskid The id of the task.
-     * @exception CmsException Throws CmsExceptions, that are be
+     * @throws CmsException Throws CmsExceptions, that are be
      * thrown in calling methods.
      */
 

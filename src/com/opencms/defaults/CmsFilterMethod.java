@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsFilterMethod.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/01/20 23:59:23 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ import com.opencms.file.*;
 /**
  * Insert the type's description here.
  * Creation date: (08.11.00 12:02:57)
- * @author: Michael Knoll
+ * @author Michael Knoll
  */
 public class CmsFilterMethod {
     private String m_filterName;

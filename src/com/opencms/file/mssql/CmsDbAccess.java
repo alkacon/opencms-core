@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mssql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/12/06 23:16:57 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/01/20 23:59:32 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,13 +52,13 @@ import source.org.apache.java.util.Configurations;
  * the database.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.3 $ $Date: 2002/12/06 23:16:57 $ *
+ * @version $Revision: 1.4 $ $Date: 2003/01/20 23:59:32 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
      * Instanciates the access-module and sets up all required modules and connections.
      * @param config The OpenCms configuration.
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsDbAccess(Configurations config)
         throws CmsException {
@@ -68,7 +68,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 
     /**
      * Destroys this access-module
-     * @exception throws CmsException if something goes wrong.
+     * @throws throws CmsException if something goes wrong.
      */
     public void destroy() throws CmsException {
         try {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/I_CmsLauncher.java,v $
-* Date   : $Date: 2002/12/06 23:16:54 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/01/20 23:59:23 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import com.opencms.file.CmsObject;
  * Classes for each customized launcher have to be implemtented.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2002/12/06 23:16:54 $
+ * @version $Revision: 1.16 $ $Date: 2003/01/20 23:59:23 $
  */
 public interface I_CmsLauncher {
 
@@ -66,7 +66,7 @@ public interface I_CmsLauncher {
      * @param file CmsFile Object with the selected resource to be shown.
      * @param startTemplateClass Name of the template class to start with.
      * @param openCms a instance of A_OpenCms for redirect-needs
-     * @exception CmsException
+     * @throws CmsException
      */
     public void initlaunch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException;
 

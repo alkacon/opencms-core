@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsContextmenue.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.w3c.dom.NodeList;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.15 $ $Date: 2002/12/06 23:16:49 $
+ * @version $Revision: 1.16 $ $Date: 2003/01/20 23:59:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -70,7 +70,7 @@ public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement,I_
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @param lang CmsXmlLanguageFile conataining the currently valid language file.
      * @return Processed button.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc,

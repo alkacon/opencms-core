@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeJsp.java,v $
-* Date   : $Date: 2002/10/31 11:38:44 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/01/20 23:59:17 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,25 +34,27 @@ import com.opencms.flex.CmsJspLoader;
 import java.util.Hashtable;
 
 /**
- * Describes the resource-type JSP, ensures that some needed VFS
- * file properties are attached to new JSPs.
- * 
- * @param cms the current CmsObject
- * @param newResourceName the name of the new file in the VFS 
- * @param properties property Hashtable
- * @param contents the new file contents
- * @param parameter object that might contain additional inormation for the resource creation
+ * Describes the resource type "JSP", ensures that some needed VFS
+ * file properties are attached to new JSPs.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
- * 
- * @throws CmsException in case of an exception while manipulating the new file
+ * @version $Revision: 1.7 $
  */
-
 public class CmsResourceTypeJsp extends com.opencms.file.CmsResourceTypePlain {
 
     public static final String C_TYPE_RESOURCE_NAME = "jsp";
-
+    
+    /**
+     * Creates a new JSP resource.<p>
+     * 
+     * @param cms the current CmsObject
+     * @param newResourceName the name of the new file in the VFS 
+     * @param properties property Hashtable
+     * @param contents the new file contents
+     * @param parameter object that might contain additional inormation for the resource creation
+     * 
+     * @throws CmsException in case of an exception while manipulating the new file
+     */
     public CmsResource createResource(CmsObject cms, String newResourceName, Hashtable properties, byte[] contents, Object parameter) 
     throws CmsException {
         com.opencms.file.CmsResource res = cms.doCreateFile(newResourceName, contents, C_TYPE_RESOURCE_NAME, properties);

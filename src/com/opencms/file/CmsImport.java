@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/01/20 17:57:45 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2003/01/20 23:59:17 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.w3c.dom.NodeList;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.63 $ $Date: 2003/01/20 17:57:45 $
+ * @version $Revision: 1.64 $ $Date: 2003/01/20 23:59:17 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -132,7 +132,7 @@ public class CmsImport implements I_CmsConstants, Serializable {
      * @param importFile the file or folder to import from.
      * @param importPath the path to the cms to import into.
      * @param report A report object to provide the loggin messages.
-     * @exception CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException the CmsException is thrown if something goes wrong.
      */
     public CmsImport(String importFile, String importPath, CmsObject cms, I_CmsReport report)
         throws CmsException {
@@ -182,7 +182,7 @@ private void createDigest() throws CmsException {
      * @param propertyType the type of the property.
      * @param resourceType the type of the resource.
      *
-     * @exception throws CmsException if something goes wrong.
+     * @throws throws CmsException if something goes wrong.
      */
     private void createPropertydefinition(String name, String resourceType)
         throws CmsException {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2002/12/15 14:21:19 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.48 $ $Date: 2002/12/15 14:21:19 $
+ * @version $Revision: 1.49 $ $Date: 2003/01/20 23:59:19 $
  */
 
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -65,7 +65,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
      * @param cms The CmsObject
      * @param file The XML content file
      * @param bodypath the new XML content entry
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     private void changeContent(CmsObject cms, CmsFile file, String bodypath)
@@ -81,7 +81,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
      * @param cms The CmsObject.
      * @param filename The name of the file.
      * @param flags The flag to change the access flags.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     private void checkFlags(CmsObject cms, String filename, String flags)
@@ -112,7 +112,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
      * missing folders when a new page document is createg.
      * @param cms The CmsObject
      * @param path The path in the CmsFilesystem where the new page should be created.
-     * @exception CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
 
     private void checkFolders(CmsObject cms, String path) throws CmsException {
@@ -154,7 +154,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
      * @return Bytearre containgine the processed data of the template.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
@@ -331,7 +331,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the available folders.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getFolder(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
@@ -365,7 +365,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
      * @param file The CmsResource.
      * @param lang The content definition language file.
      * @return Formated state string.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     private String getState(CmsObject cms, CmsResource file, CmsXmlLanguageFile lang)
@@ -431,7 +431,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
      * @param lang The language file.
      * @param parameters User parameters.
      * @return Value that is pre-set into the copy field.
-     * @exception CmsExeption if something goes wrong.
+     * @throws CmsExeption if something goes wrong.
      */
 
     public String setValue(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2002/12/06 23:16:58 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/01/20 23:59:28 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,8 +50,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.25 $
- * $Date: 2002/12/06 23:16:58 $
+ * $Revision: 1.26 $
+ * $Date: 2003/01/20 23:59:28 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -88,7 +88,7 @@ public abstract class CmsMasterContent
     /**
      * Returns a database access object for the contentdefinition type.
      * @param subId the id-type of the contentdefinition.
-     * @retruns dBAccessObject the dBAccessObject that should be used to access
+     * @return dBAccessObject the dBAccessObject that should be used to access
      * the databse.
      */
     protected static CmsDbAccess getDbAccessObject(int subId) {
@@ -169,7 +169,7 @@ public abstract class CmsMasterContent
 
     /**
      * Returns a Vector of media-objects for this master cd.
-     * @returns a Vector of media-objects for this master cd.
+     * @return a Vector of media-objects for this master cd.
      * @throws CmsException if the media couldn't be read.
      */
     public Vector getMedia() throws CmsException {
@@ -207,7 +207,7 @@ public abstract class CmsMasterContent
 
     /**
      * Returns a Vector of channels for this master cd.
-     * @returns a Vector of channel-names (String) for this master cd.
+     * @return a Vector of channel-names (String) for this master cd.
      * @throws CmsException if the channel couldn't be read.
      */
     public Vector getChannels() throws CmsException {
@@ -352,7 +352,7 @@ public abstract class CmsMasterContent
     /**
      * gets the unique Id of a content definition instance
      * @param cms the CmsObject to use.
-     * @returns a string with the Id
+     * @return a string with the Id
      */
     public String getUniqueId(CmsObject cms) {
         return getId() + "";
@@ -361,7 +361,7 @@ public abstract class CmsMasterContent
     /**
      * gets the unique Id of a content definition instance
      * @param cms the CmsObject to use.
-     * @returns a int with the Id
+     * @return a int with the Id
      */
     public int getId() {
         return m_dataSet.m_masterId;
@@ -369,7 +369,7 @@ public abstract class CmsMasterContent
 
     /**
      * Gets the lockstate.
-     * @returns a int with the user who has locked the ressource.
+     * @return a int with the user who has locked the ressource.
      */
     public int getLockstate() {
         int retValue = -2; // no writeaccess for this user
@@ -522,7 +522,7 @@ public abstract class CmsMasterContent
 
     /**
      * get the accessFlag for the CD
-     * @returns the accessFlag
+     * @return the accessFlag
      */
     public int getAccessFlags() {
         return m_dataSet.m_accessFlags;
@@ -550,7 +550,7 @@ public abstract class CmsMasterContent
 
     /**
      * has the current user the right to view the CD
-     * @returns true if this cd is visible
+     * @return true if this cd is visible
      */
     public boolean isVisible() {
         CmsUser currentUser = m_cms.getRequestContext().currentUser();
@@ -574,7 +574,7 @@ public abstract class CmsMasterContent
 
     /**
      * returns true if the CD is readable for the current user
-     * @retruns true if the cd is readable
+     * @return true if the cd is readable
      */
     public boolean isReadable() {
         try {
@@ -591,7 +591,7 @@ public abstract class CmsMasterContent
 
     /**
      * returns true if the CD is writeable for the current user
-     * @retruns true if the cd is writeable
+     * @return true if the cd is writeable
      */
     public boolean isWriteable() {
         try {
@@ -681,7 +681,7 @@ public abstract class CmsMasterContent
      * Returns a Vector with the datasets of the contentdefinitions in the given channel.
      * @param subId the id-type of the contentdefinition.
      * @param channelId the id of the channel.
-     * @retruns Vector the vector that includes the datasets
+     * @return Vector the vector that includes the datasets
      */
     protected static Vector readAllByChannel(CmsObject cms, int channelId, int subId) throws CmsException{
         return getDbAccessObject(subId).readAllByChannel(cms, channelId, subId);
@@ -976,7 +976,7 @@ public abstract class CmsMasterContent
 
     /**
      * has the current user the right to write the resource
-     * @returns a boolean
+     * @return a boolean
      */
     protected static boolean hasWriteAccess(CmsObject cms, CmsResource resource) throws CmsException {
         CmsUser currentUser = cms.getRequestContext().currentUser();

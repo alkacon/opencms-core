@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/01/20 17:57:46 $
-* Version: $Revision: 1.76 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.77 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.76 $ $Date: 2003/01/20 17:57:46 $
+ * @version $Revision: 1.77 $ $Date: 2003/01/20 23:59:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -151,9 +151,9 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      * @param names The names of the new rescources.
      * @param values The links that are connected with each resource.
      * @param parameters Hashtable of parameters (not used yet).
-     * @returns The vectors names and values are filled with the information found in the
+     * @return The vectors names and values are filled with the information found in the
      * workplace.ini.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
 
     public Integer getAvailableTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
@@ -204,7 +204,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current workplace view in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getBodys(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values,
@@ -238,7 +238,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters.
      *
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
@@ -742,7 +742,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current workplace view in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getEditorViews(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values,
@@ -814,7 +814,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.
      * @param userObj Hashtable with parameters <em>(not used here)</em>.
      * @return String with the pics URL.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Object previewUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
@@ -832,7 +832,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      * @param lang The language file.
      * @param parameters User parameters.
      * @return Value that is pre-set into the title field.
-     * @exception CmsExeption if something goes wrong.
+     * @throws CmsExeption if something goes wrong.
      */
 
     public String setBodyTitle(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
@@ -887,7 +887,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      * @param lang The language file.
      * @param parameters User parameters.
      * @return Value that is pre-set into the title field.
-     * @exception CmsExeption if something goes wrong.
+     * @throws CmsExeption if something goes wrong.
      */
 
     public String setTitle(CmsObject cms, CmsXmlLanguageFile lang,

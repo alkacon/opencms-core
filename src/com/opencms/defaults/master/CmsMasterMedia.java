@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterMedia.java,v $
-* Date   : $Date: 2002/01/25 08:04:54 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/01/20 23:59:27 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,8 +37,8 @@ import com.opencms.file.CmsObject;
  * It carries a set of data to read and write.
  *
  * @author A. Schouten $
- * $Revision: 1.3 $
- * $Date: 2002/01/25 08:04:54 $
+ * $Revision: 1.4 $
+ * $Date: 2003/01/20 23:59:27 $
  */
 public class CmsMasterMedia {
 
@@ -143,7 +143,7 @@ public class CmsMasterMedia {
      * filename (e.g. mypic.gif -> image/gif)
      * @param cms - the CmsObject to get access to cms ressources.
      * @param filename - the filename to extract the extension from
-     * @returns the computed mimetype.
+     * @return the computed mimetype.
      */
     public static String computeMimetype(CmsObject cms, String filename) {
         String mimetype = null;

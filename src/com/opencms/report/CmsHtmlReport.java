@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/CmsHtmlReport.java,v $
- * Date   : $Date: 2002/12/17 19:43:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/01/20 23:59:24 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.StringTokenizer;
  * in the entire OpenCms system.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.0 rc 1
  */
@@ -89,7 +89,7 @@ public class CmsHtmlReport implements I_CmsReport {
     }
 
     /**
-     * @see com.opencms.report.I_CmsReport#addString(java.lang.String)
+     * @see com.opencms.report.I_CmsReport#print(java.lang.String)
      */
     public void print(String value) {
         this.print(value, C_FORMAT_DEFAULT);
@@ -158,7 +158,7 @@ public class CmsHtmlReport implements I_CmsReport {
     }
 
     /**
-     * @see com.opencms.report.I_CmsReport#println(java.lang.Exception)
+     * @see com.opencms.report.I_CmsReport#println(java.lang.Throwable)
      */
     public void println(Throwable t) {
         m_content.add(t);

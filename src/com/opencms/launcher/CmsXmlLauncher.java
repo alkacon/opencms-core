@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2002/12/13 17:38:13 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/01/20 23:59:23 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.http.HttpServletRequest;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.42 $ $Date: 2002/12/13 17:38:13 $
+ * @version $Revision: 1.43 $ $Date: 2003/01/20 23:59:23 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
     
@@ -83,7 +83,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
      * @param cms CmsObject Object for accessing system resources
      * @param file CmsFile Object with the selected resource to be shown
      * @param startTemplateClass Name of the template class to start with.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected byte[] generateOutput(CmsObject cms, CmsFile file, String startTemplateClass, I_CmsRequest req, A_OpenCms openCms) throws CmsException {
         byte[] output = null;
@@ -331,7 +331,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
      * @param file CmsFile Object with the selected resource to be shown
      * @param startTemplateClass Name of the template class to start with.
      * @param openCms a instance of A_OpenCms for redirect-needs
-     * @exception CmsException
+     * @throws CmsException
      */
     protected void launch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
 
@@ -350,7 +350,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
      * @param templateName Name of the requestet template file.
      * @param doc CmsXmlControlFile object containig the parsed body file.
      * @return CmsFile object of the requested template file.
-     * @exception CmsException
+     * @throws CmsException
      */
     private CmsFile loadMasterTemplateFile(CmsObject cms, String templateName, com.opencms.template.CmsXmlControlFile doc) throws CmsException {
         CmsFile masterTemplate = null;

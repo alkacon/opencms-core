@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsShowBackofficeMedia.java,v $
-* Date   : $Date: 2002/12/06 23:16:58 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/01/20 23:59:27 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,8 +47,7 @@ public class CmsShowBackofficeMedia extends CmsXmlTemplate {
      * Gets the content of a defined section in a given template file and its
      * subtemplates with the given parameters.
      *
-     * @see getContent(A_CmsObject cms, String templateFile, String elementName,
-     * Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      *
      * @param cms A_CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.

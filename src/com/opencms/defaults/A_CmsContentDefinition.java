@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsContentDefinition.java,v $
-* Date   : $Date: 2001/10/29 09:55:11 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/01/20 23:59:23 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ public abstract class A_CmsContentDefinition implements I_CmsContent, I_CmsConst
 
 /**
  * applies the filter method
- * @returns an Vector containing the method
+ * @return an Vector containing the method
  */
 public static Vector applyFilter(CmsObject cms, CmsFilterMethod filterMethod) throws Exception {
     return applyFilter(cms, filterMethod, null);
@@ -70,7 +70,7 @@ public static Vector applyFilter(CmsObject cms, CmsFilterMethod filterMethod) th
 
 /**
  * applies the filter through the method object and the user parameters
- * @returns a vector with the filtered content
+ * @return a vector with the filtered content
  */
 public static Vector applyFilter(CmsObject cms, CmsFilterMethod filterMethod, String userParameter) throws Exception {
     Method method = filterMethod.getFilterMethod();
@@ -112,7 +112,7 @@ public abstract void delete(CmsObject cms) throws Exception;
 /**
  * Gets the getXXX methods
  * You have to override this method in your content definition.
- * @returns a Vector with the filed methods.
+ * @return a Vector with the filed methods.
  */
 public  static Vector getFieldMethods(CmsObject cms) {
     return new Vector();
@@ -120,7 +120,7 @@ public  static Vector getFieldMethods(CmsObject cms) {
 /**
  * Gets the headlines of the table
  * You have to override this method in your content definition.
- * @returns a Vector with the colum names.
+ * @return a Vector with the colum names.
  */
 public static Vector getFieldNames(CmsObject cms) {
     return new Vector();
@@ -128,7 +128,7 @@ public static Vector getFieldNames(CmsObject cms) {
 /**
  * Gets the filter methods.
  * You have to override this method in your content definition.
- * @returns a Vector of FilterMethod objects containing the methods, names and default parameters
+ * @return a Vector of FilterMethod objects containing the methods, names and default parameters
  */
 public static Vector getFilterMethods(CmsObject cms) {
     return new Vector();
@@ -137,21 +137,21 @@ public static Vector getFilterMethods(CmsObject cms) {
  * Gets the lockstates
  * You have to override this method in your content definition, if you have overwritten
  * the isLockable method with true.
- * @returns a int with the lockstate
+ * @return a int with the lockstate
  */
 public int getLockstate() {
     return -1;
 }
 /**
  * gets the unique Id of a content definition instance
- * @returns a string with the Id
+ * @return a string with the Id
  */
 public abstract String getUniqueId(CmsObject cms) ;
 /**
  * Gets the url of the field entry
  * You have to override this method in your content definition,
  * if you wish to link url´s to the field entries
- * @returns a String with the url
+ * @return a String with the url
  */
 public String getUrl() {
     return null;
@@ -159,7 +159,7 @@ public String getUrl() {
 /**
  * if the content definition objects should be lockable
  * this method has to be overwritten with value true
- * @returns a boolean
+ * @return a boolean
  */
 public static boolean isLockable() {
     return false;
@@ -168,10 +168,9 @@ public static boolean isLockable() {
  *Sets the lockstates
  * You have to override this method in your content definition,
  * if you have overwritten the isLockable method with true.
- * @sets the lockstate for the actual entry
+ * @param lockstate the lockstate for the actual entry
  */
 public void setLockstate(int lockstate) {
-
 }
 /**
  * abstract write method
@@ -181,7 +180,7 @@ public abstract void write(CmsObject cms) throws Exception;
 
 /**
  * returns true if the CD is readable for the current user
- * @retruns true
+ * @return true
  */
 public boolean isReadable() {
     return true;
@@ -189,7 +188,7 @@ public boolean isReadable() {
 
 /**
  * returns true if the CD is writeable for the current user
- * @retruns true
+ * @return true
  */
 public boolean isWriteable() {
     return true;
@@ -205,7 +204,7 @@ public void setOwner(int userId) {
 
 /**
  * get the owner of the CD
- * @returns id of the owner (int)
+ * @return id of the owner (int)
  */
 public int getOwner() {
     return m_user;
@@ -221,7 +220,7 @@ public void setGroup(String group) {
 
 /**
  * get the group of the CD
- * @returns the group ID
+ * @return the group ID
  */
 public String getGroup() {
     return m_group;
@@ -237,7 +236,7 @@ public void setAccessFlags(int accessFlags) {
 
 /**
  * get the accessFlag for the CD
- * @returns the accessFlag
+ * @return the accessFlag
  */
 public int getAccessFlags() {
     return m_accessFlags;
@@ -245,7 +244,7 @@ public int getAccessFlags() {
 
 /**
  * has the current user the right to read the CD
- * @returns a boolean
+ * @return a boolean
  */
 protected boolean hasReadAccess(CmsObject cms) throws CmsException {
     CmsUser currentUser = cms.getRequestContext().currentUser();
@@ -260,7 +259,7 @@ protected boolean hasReadAccess(CmsObject cms) throws CmsException {
 
 /**
  * has the current user the right to write the CD
- * @returns a boolean
+ * @return a boolean
  */
 protected boolean hasWriteAccess(CmsObject cms) throws CmsException {
     CmsUser currentUser = cms.getRequestContext().currentUser();
@@ -350,7 +349,7 @@ protected boolean accessOther( int flags ) throws CmsException {
  * if the content definition objects should be displayed
  * in an extended list with projectflags and state
  * this method must be overwritten with value true
- * @returns a boolean
+ * @return a boolean
  */
 public static boolean isExtendedList() {
     return false;
@@ -359,7 +358,7 @@ public static boolean isExtendedList() {
 /**
  * if the content definition objects are timecritical
  * this method must be overwritten with value true.
- * @returns a boolean
+ * @return a boolean
  */
 public boolean isTimedContent() {
     return false;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsIdGenerator.java,v $
-* Date   : $Date: 2002/12/06 23:16:53 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/01/20 23:59:22 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -155,7 +155,7 @@ public class CmsIdGenerator {
      * @param con - The connection to read from.
      * @param table - The name of the table to read the id for.
      * @return the id, or C_UNKNOWN_ID if there is no entry for the table-name
-     * @exception CmsException - if an sql-error occures.
+     * @throws CmsException - if an sql-error occures.
      */
     private static int readId(Connection con, String table)
         throws CmsException {
@@ -198,7 +198,7 @@ public class CmsIdGenerator {
      * @param oldId - The oldId for this table.
      * @param newId - The newId for this table
      * @return if the row was updatet, or not.
-     * @exception CmsException - if an sql-error occures.
+     * @throws CmsException - if an sql-error occures.
      */
     private static boolean writeId(Connection con, String table, int oldId, int newId)
         throws CmsException {
@@ -229,7 +229,7 @@ public class CmsIdGenerator {
      * @param con - The connection to read from.
      * @param table - The name of the table to read the id for.
      * @param newId - The newId for this table
-     * @exception CmsException - if an sql-error occures.
+     * @throws CmsException - if an sql-error occures.
      */
     private static void createId(Connection con, String table, int newId)
         throws CmsException {

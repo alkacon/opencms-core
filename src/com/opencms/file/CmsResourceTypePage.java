@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/01/20 17:57:46 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/01/20 23:59:17 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.41 $ $Date: 2003/01/20 17:57:46 $
+ * @version $Revision: 1.42 $ $Date: 2003/01/20 23:59:17 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -176,7 +176,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     * @param newGroup the name of the new group for this resource.
     * @param chRekursive only used by folders.
     *
-    * @exception CmsException if operation was not successful.
+    * @throws CmsException if operation was not successful.
     */
     public void chgrp(CmsObject cms, String filename, String newGroup, boolean chRekursive) throws CmsException{
 
@@ -215,7 +215,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     * @param flags the new flags for the resource.
     * @param chRekursive only used by folders.
     *
-    * @exception CmsException if operation was not successful.
+    * @throws CmsException if operation was not successful.
     * for this resource.
     */
     public void chmod(CmsObject cms, String filename, int flags, boolean chRekursive) throws CmsException{
@@ -261,7 +261,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     * @param newOwner the name of the new owner for this resource.
     * @param chRekursive only used by folders.
     *
-    * @exception CmsException if operation was not successful.
+    * @throws CmsException if operation was not successful.
     */
     public void chown(CmsObject cms, String filename, String newOwner, boolean chRekursive) throws CmsException{
         CmsFile file = cms.readFile(filename);
@@ -322,7 +322,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     * @param filename the complete path to the resource.
     * @param newType the name of the new resourcetype for this resource.
     *
-    * @exception CmsException if operation was not successful.
+    * @throws CmsException if operation was not successful.
     */
     public void chtype(CmsObject cms, String filename, String newType) throws CmsException{
         CmsFile file = cms.readFile(filename);
@@ -348,7 +348,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     * @param keepFlags <code>true</code> if the copy should keep the source file's flags,
     *        <code>false</code> if the copy should get the user's default flags.
     *
-    * @exception CmsException if the file couldn't be copied, or the user
+    * @throws CmsException if the file couldn't be copied, or the user
     * has not the appropriate rights to copy the file.
     */
     public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags) throws CmsException{
@@ -401,7 +401,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     * offline project and set its state to UNCHANGED.
     *
     * @param resource the name of the resource.
-    * @exception CmsException if operation was not successful.
+    * @throws CmsException if operation was not successful.
     */
     public void copyResourceToProject(CmsObject cms, String resourceName) throws CmsException {
         //String resourceName = linkManager.getResourceName(resourceId);
@@ -424,7 +424,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * @param contents The file content
      * @param parameter an object (e.g. a HashMap) holding parameters (e.g. key/value coded) to create the new resource
      *
-     * @exception CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful.
      */
     public CmsResource createResource(CmsObject cms, String newPageName, Hashtable properties, byte[] contents, Object parameter) throws CmsException{
 
@@ -485,7 +485,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     *
     * @param filename the complete path of the file.
     *
-    * @exception CmsException if the file couldn't be deleted, or if the user
+    * @throws CmsException if the file couldn't be deleted, or if the user
     * has not the appropriate rights to delete the file.
     */
     public void deleteResource(CmsObject cms, String filename) throws CmsException{
@@ -516,7 +516,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     *
     * @param filename the complete path of the file.
     *
-    * @exception CmsException if the file couldn't be undeleted, or if the user
+    * @throws CmsException if the file couldn't be undeleted, or if the user
     * has not the appropriate rights to undelete the file.
     */
     public void undeleteResource(CmsObject cms, String filename) throws CmsException{
@@ -573,7 +573,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * 
      * @return CmsResource The imported resource.
      * 
-     * @exception Throws CmsException if the resource could not be imported
+     * @throws Throws CmsException if the resource could not be imported
      * 
      */
     public CmsResource importResource(CmsObject cms, String source, String destination, String type,
@@ -638,7 +638,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     * @param resource the complete path to the resource to lock.
     * @param force if force is <code>true</code>, a existing locking will be overwritten.
     *
-    * @exception CmsException if the user has not the rights to lock this resource.
+    * @throws CmsException if the user has not the rights to lock this resource.
     * It will also be thrown, if there is a existing lock and force was set to false.
     */
     public void lockResource(CmsObject cms, String resource, boolean force) throws CmsException{
@@ -691,7 +691,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     * @param source the complete path of the sourcefile.
     * @param destination the complete path of the destinationfile.
     *
-    * @exception CmsException if the user has not the rights to move this resource,
+    * @throws CmsException if the user has not the rights to move this resource,
     * or if the file couldn't be moved.
     */
     public void moveResource(CmsObject cms, String source, String destination) throws CmsException{
@@ -719,7 +719,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     * @param oldname the complete path to the file which will be renamed.
     * @param newname the new name of the file.
     *
-    * @exception CmsException if the user has not the rights
+    * @throws CmsException if the user has not the rights
     * to rename the file, or if the file couldn't be renamed.
     */
     public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException{
@@ -749,7 +749,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * @param versionId The version id of the resource
      * @param filename The name of the file to restore
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException{
         if(!cms.accessWrite(filename)){
@@ -784,7 +784,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     *
     * @param resource the complete path to the resource to be restored.
     *
-    * @exception CmsException if the user has not the rights
+    * @throws CmsException if the user has not the rights
     * to write this resource.
     */
     public void undoChanges(CmsObject cms, String resource) throws CmsException{
@@ -809,7 +809,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     *
     * @param resource the complete path to the resource to be unlocked.
     *
-    * @exception CmsException if the user has not the rights
+    * @throws CmsException if the user has not the rights
     * to unlock this resource.
     */
     public void unlockResource(CmsObject cms, String resource) throws CmsException{
@@ -911,7 +911,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
        * @param cms The CmsObject
        * @param file The XML content file
        * @param bodypath the new XML content entry
-       * @exception Exception if something goes wrong.
+       * @throws Exception if something goes wrong.
        */
       private void changeContent(CmsObject cms, String filename, String bodypath)
           throws CmsException {
@@ -929,7 +929,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
        * missing folders when a new page document is createg.
        * @param cms The CmsObject
        * @param path The path in the CmsFilesystem where the new page should be created.
-       * @exception CmsException if something goes wrong.
+       * @throws CmsException if something goes wrong.
        */
      private void checkFolders(CmsObject cms, String path)
           throws CmsException {
@@ -972,7 +972,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * Set the access flags of the copied resource to the default values.
      * @param cms The CmsObject.
      * @param filename The name of the file.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
     private void setDefaultFlags(CmsObject cms, String filename)
         throws CmsException {

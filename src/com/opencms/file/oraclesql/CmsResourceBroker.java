@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/09/16 12:52:41 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/01/20 23:59:32 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.3 $ $Date: 2002/09/16 12:52:41 $
+ * @version $Revision: 1.4 $ $Date: 2003/01/20 23:59:32 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 
@@ -52,7 +52,7 @@ public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBr
      * Creation date: (09/15/00 %r)
      * @return com.opencms.file.genericSql.CmsDbAccess
      * @param configurations source.org.apache.java.util.Configurations
-     * @exception com.opencms.core.CmsException Thrown if CmsDbAccess class could not be instantiated.
+     * @throws com.opencms.core.CmsException Thrown if CmsDbAccess class could not be instantiated.
      */
     public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations configurations) throws CmsException{
         return new com.opencms.file.oraclesql.CmsDbAccess(configurations);
@@ -61,7 +61,7 @@ public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBr
     /**
      * Initializes the resource broker and sets up all required modules and connections.
      * @param config The OpenCms configuration.
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void init(Configurations config) throws CmsException {
         super.init(config);

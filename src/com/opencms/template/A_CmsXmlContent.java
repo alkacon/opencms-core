@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2003/01/20 17:57:49 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2003/01/20 23:59:21 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.64 $ $Date: 2003/01/20 17:57:49 $
+ * @version $Revision: 1.65 $ $Date: 2003/01/20 23:59:21 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -178,7 +178,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @param callingObject Reference to the object containing the called method.
      * @param userObj Customizable user object that will be passed through to the user method.
      * @param resolveMethods If true the methodtags will be resolved even if they have own CacheDirectives.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected Object callUserMethod(String methodName, String parameter, Object callingObject,
                                 Object userObj, boolean resolveMethods) throws CmsException {
@@ -283,7 +283,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
     /**
      * Creates a clone of this object.
      * @return cloned object.
-     * @exception CloneNotSupportedException
+     * @throws CloneNotSupportedException
      */
     public Object clone() throws CloneNotSupportedException {
         try {
@@ -326,7 +326,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @param cms Current cms object used for accessing system resources.
      * @param filename Name of the file to be created.
      * @param documentType Document type of the new file.
-     * @exception CmsException if no absolute filename is given or write access failed.
+     * @throws CmsException if no absolute filename is given or write access failed.
      */
     public void createNewFile(CmsObject cms, String filename, String documentType) throws CmsException {
         if(!filename.startsWith("/")) {
@@ -501,7 +501,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      *
      * @param tag Key for the datablocks hashtable.
      * @return Processed datablock for the given key.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected Element getProcessedData(String tag) throws CmsException {
         return getProcessedData(tag, null, null);
@@ -513,7 +513,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @param tag Key for the datablocks hashtable.
      * @param callingObject Object that should be used to look up user methods.
      * @return Processed datablock for the given key.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected Element getProcessedData(String tag, Object callingObject) throws CmsException {
         return getProcessedData(tag, callingObject, null);
@@ -529,7 +529,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @param callingObject Object that should be used to look up user methods.
      * @param userObj any object that should be passed to user methods
      * @return Processed datablock for the given key.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected Element getProcessedData(String tag, Object callingObject, Object userObj) throws CmsException {
         Element dBlock = (Element)getData(tag).cloneNode(true);
@@ -548,7 +548,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @param userObj any object that should be passed to user methods
      * @param stream OutputStream that may be used for directly streaming the results or null.
      * @return Processed datablock for the given key.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected Element getProcessedData(String tag, Object callingObject, Object userObj, OutputStream stream) throws CmsException {
         Element dBlock = (Element)getData(tag).cloneNode(true);
@@ -563,7 +563,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      *
      * @param tag Key for the datablocks hashtable.
      * @return Processed datablock for the given key.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected String getProcessedDataValue(String tag) throws CmsException {
         return getProcessedDataValue(tag, null, null, null);
@@ -576,7 +576,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @param tag Key for the datablocks hashtable.
      * @param callingObject Object that should be used to look up user methods.
      * @return Processed datablock for the given key.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected String getProcessedDataValue(String tag, Object callingObject) throws CmsException {
         return getProcessedDataValue(tag, callingObject, null, null);
@@ -593,7 +593,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @param callingObject Object that should be used to look up user methods.
      * @param userObj any object that should be passed to user methods
      * @return Processed datablock for the given key.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected String getProcessedDataValue(String tag, Object callingObject, Object userObj) throws CmsException {
         return getProcessedDataValue(tag, callingObject, userObj, null);
@@ -612,7 +612,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @param userObj any object that should be passed to user methods
      * @param stream OutputStream that may be used for directly streaming the results or null.
      * @return Processed datablock for the given key.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected String getProcessedDataValue(String tag, Object callingObject, Object userObj, OutputStream stream) throws CmsException {
         // we cant cache the methods here, so we use the other way
@@ -671,7 +671,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @param methodName Name of the user method
      * @param callingObject Object that requested the processing of the XML document
      * @return user method
-     * @exception NoSuchMethodException
+     * @throws NoSuchMethodException
      */
     private Method getUserMethod(String methodName, Object callingObject) throws NoSuchMethodException {
         if(methodName == null || "".equals(methodName)) {
@@ -877,7 +877,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @param callingObject Reference to the object requesting the node processing.
      * @param userObj Customizable user object that will be passed through to handling and user methods.
      * @return Object returned by the user method
-     * @exception CmsException
+     * @throws CmsException
      */
     private Object handleMethodTag(Element n, Object callingObject, Object userObj) throws CmsException {
         processNode(n, m_mainProcessTags, null, callingObject, userObj);
@@ -910,7 +910,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @param callingObject Reference to the object requesting the node processing.
      * @param userObj Customizable user object that will be passed through to handling and user methods.
      * @return Object returned by the user method
-     * @exception CmsException
+     * @throws CmsException
      */
     private Object handleMethodTagForSure(Element n, Object callingObject, Object userObj) throws CmsException {
         processNode(n, m_mainProcessTags, null, callingObject, userObj);
@@ -977,7 +977,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * Load and parse the content of the given CmsFile object.
      * @param cms CmsObject Object for accessing resources.
      * @param file CmsFile object of the file to be loaded and parsed.
-     * @exception CmsException
+     * @throws CmsException
      */
     public void init(CmsObject cms, CmsFile file) throws CmsException {
         String filename = file.getAbsolutePath();
@@ -1029,8 +1029,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      *
      * @param cms CmsObject Object for accessing resources.
      * @param file CmsFile object of the file to be loaded and parsed.
-     * @exception CmsException
-     * @see #lookupAbsoluteFilename
+     * @throws CmsException
      */
     public void init(CmsObject cms, String filename) throws CmsException {
 
@@ -1062,7 +1061,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @param cms CmsObject Object for accessing system resources.
      * @param document DOM document object containing the parsed XML file.
      * @param filename OpenCms filename of the XML file.
-     * @exception CmsException
+     * @throws CmsException
      */
     public void init(CmsObject cms, Document content, String filename) throws CmsException {
         m_cms = cms;
@@ -1330,7 +1329,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @param defaultMethod Method to be called if the tag is unknown.
      * @param callingObject Reference to the object requesting the node processing.
      * @param userObj Customizable user object that will be passed through to handling and user methods.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected void processDocument(Hashtable keys, Method defaultMethod, Object callingObject, Object userObj) throws CmsException {
         processNode(m_content.getDocumentElement(), keys, defaultMethod, callingObject, userObj);
@@ -1358,7 +1357,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @param defaultMethod Method to be called if the tag is unknown.
      * @param callingObject Reference to the Object that requested the node processing.
      * @param userObj Customizable user object that will be passed to handling and user methods.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected void processNode(Node n, Hashtable keys, Method defaultMethod, Object callingObject, Object userObj) throws CmsException {
         processNode(n, keys, defaultMethod, callingObject, userObj, null);
@@ -1578,7 +1577,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * into the own Hashtable of datablocks.
      *
      * @param include completely initialized A_CmsXmlObject to be included
-     * @exception CmsExeption
+     * @throws CmsExeption
      */
     public void readIncludeFile(A_CmsXmlContent include) throws CmsException {
         m_includedTemplates.addElement(include);
@@ -1590,7 +1589,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * appends the relevant data structures of the new file to its own structures.
      *
      * @param include Filename of the XML file to be included
-     * @exception CmsException
+     * @throws CmsException
      */
     public A_CmsXmlContent readIncludeFile(String filename) throws CmsException {
         A_CmsXmlContent include = null;
@@ -1858,7 +1857,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * an error message to the OpenCms logfile and throwing a
      * CmsException of the type "unknown".
      * @param errorMessage String with the error message to be printed.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected void throwException(String errorMessage) throws CmsException {
         throwException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
@@ -1870,7 +1869,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * CmsException of the given type.
      * @param errorMessage String with the error message to be printed.
      * @param type Type of the exception to be thrown.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected void throwException(String errorMessage, int type) throws CmsException {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
@@ -1885,7 +1884,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * CmsException of the type "unknown".
      * @param errorMessage String with the error message to be printed.
      * @param e Original exception.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected void throwException(String errorMessage, Exception e) throws CmsException {
         throwException(errorMessage, e, CmsException.C_UNKNOWN_EXCEPTION);
@@ -1898,7 +1897,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @param errorMessage String with the error message to be printed.
      * @param e Original exception.
      * @param type Type of the exception to be thrown.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected void throwException(String errorMessage, Exception e, int type) throws CmsException {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
@@ -1974,7 +1973,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
 
     /**
      * Writes the XML document back to the OpenCms system.
-     * @exception CmsException
+     * @throws CmsException
      */
     //[modified by Gridnine AB, 2002-06-17]
     public void write() throws CmsException {

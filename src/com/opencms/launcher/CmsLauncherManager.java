@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLauncherManager.java,v $
-* Date   : $Date: 2002/12/06 23:16:54 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/01/20 23:59:23 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.util.*;
  * given launcher id.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.22 $ $Date: 2002/12/06 23:16:54 $
+ * @version $Revision: 1.23 $ $Date: 2003/01/20 23:59:23 $
  */
 public class CmsLauncherManager implements I_CmsLogChannels {
 
@@ -69,7 +69,7 @@ public class CmsLauncherManager implements I_CmsLogChannels {
      * the <code>Package</code> class. Then, C_KNOWN_LAUNCHERS is
      * not needed any more.
      *
-     * @exception CmsException
+     * @throws CmsException
      */
     public CmsLauncherManager(OpenCms cms) throws CmsException {
         String launcherPackage = getLauncherPackage();
@@ -150,8 +150,6 @@ public class CmsLauncherManager implements I_CmsLogChannels {
 
     /**
      * Clears all launchercaches.
-     * @author Finn Nielsen
-     * Creation date: (10/23/00 13:28:38)
      */
     public void clearCaches() {
         for(Enumeration e = launchers.elements();e.hasMoreElements();) {

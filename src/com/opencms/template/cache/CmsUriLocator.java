@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUriLocator.java,v $
-* Date   : $Date: 2002/12/06 23:16:53 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/01/20 23:59:21 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.util.Vector;
  * used a long time written to an external database. The locator manages all the
  * reading, writing and management of the CmsUri's.
  *
- * @author: Andreas Schouten
+ * @author Andreas Schouten
  */
 public class CmsUriLocator {
 
@@ -67,7 +67,7 @@ public class CmsUriLocator {
     /**
      * Gets a uri from this locator.
      * @param desc - the descriptor to locate the uri.
-     * @returns the uri that was found.
+     * @return the uri that was found.
      */
     public CmsUri get(CmsUriDescriptor desc) {
         return (CmsUri) m_uris.get(desc);

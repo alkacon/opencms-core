@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2002/12/06 23:16:51 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2003/01/20 23:59:20 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpSession;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * 
- * @version $Revision: 1.34 $ $Date: 2002/12/06 23:16:51 $
+ * @version $Revision: 1.35 $ $Date: 2003/01/20 23:59:20 $
  */
 public class CmsRequestHttpServlet implements I_CmsRequest {
 
@@ -206,7 +206,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
      * line was empty.
      * @param line Line from input stream.
      * @return Content type of the line.
-     * @exception IOException Throws an IOException if the line is malformatted.
+     * @throws IOException Throws an IOException if the line is malformatted.
      */
     private String extractContentType(String line) throws IOException {
         String contentType = null;
@@ -455,7 +455,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
      *
      * @param in The stream from which to read the file.
      * @param boundary The boundary signifying the end of this part.
-     * @exception IOException If there's a problem reading or parsing the request.
+     * @throws IOException If there's a problem reading or parsing the request.
      */
     private byte[] readAndSaveFile(CmsMultipartInputStreamHandler in, String boundary) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream(8 * 1024);
@@ -559,7 +559,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
      * @param in The stream from which to read the part
      * @param boundary The boundary separating parts
      * @return A flag indicating whether this is the last part
-     * @exception IOException If there's a problem reading or parsing the
+     * @throws IOException If there's a problem reading or parsing the
      * request
      *
      * @see readParameter
@@ -638,7 +638,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
      * @param in The stream from which to read the parameter information
      * @param boundary The boundary signifying the end of this part
      * @return The parameter value
-     * @exception IOException If there's a problem reading or parsing the
+     * @throws IOException If there's a problem reading or parsing the
      * request
      */
     private String readParameter(CmsMultipartInputStreamHandler in, String boundary) throws IOException {
@@ -670,7 +670,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
      * can override this method for a better optimized or differently
      * behaved implementation.
      *
-     * @exception IOException If the uploaded content is larger than
+     * @throws IOException If the uploaded content is larger than
      * <tt>maxSize</tt> or there's a problem parsing the request.
      */
     private void readRequest() throws IOException {

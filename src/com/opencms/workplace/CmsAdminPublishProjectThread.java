@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPublishProjectThread.java,v $
- * Date   : $Date: 2003/01/20 17:57:46 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/01/20 23:59:19 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import com.opencms.report.I_CmsReport;
 /**
  * Thread for publishing a project.
  * 
- * @author: Hanjo Riege
+ * @author Hanjo Riege
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  */
 public class CmsAdminPublishProjectThread extends Thread {

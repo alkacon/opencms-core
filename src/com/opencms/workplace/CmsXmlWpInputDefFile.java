@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpInputDefFile.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/01/20 23:59:20 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import com.opencms.template.A_CmsXmlContent;
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.16 $ $Date: 2002/12/06 23:16:49 $
+ * @version $Revision: 1.17 $ $Date: 2003/01/20 23:59:20 $
  */
 
 public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogChannels,I_CmsWpConstants {
@@ -97,7 +97,7 @@ public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogCha
      * @param value The value of this input field.
      * @param action The action of this input field.
      * @return Processed input field.
-     * @exception CmsException
+     * @throws CmsException
      */
     
     public String getInput(String styleClass, String name, String size, String length, 
@@ -118,7 +118,7 @@ public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogCha
      * @param size The size of this password field
      * @param length The input length of this password field.
      * @return Processed password field.
-     * @exception CmsException
+     * @throws CmsException
      */
     
     public String getPassword(String styleClass, String name, String size, String length) throws CmsException {

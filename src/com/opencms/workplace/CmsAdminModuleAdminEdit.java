@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdminEdit.java,v $
-* Date   : $Date: 2003/01/20 17:57:47 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Vector;
 /**
  * Template class for displaying the conflicting Files for a new Module.
  * Creation date: (06.09.00 09:30:25)
- * @author: Hanjo Riege
+ * @author Hanjo Riege
  */
 public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_CmsConstants {
 
@@ -133,7 +133,7 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters.
      *
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.

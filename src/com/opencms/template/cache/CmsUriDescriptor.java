@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUriDescriptor.java,v $
-* Date   : $Date: 2002/12/06 23:16:53 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/01/20 23:59:22 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package com.opencms.template.cache;
  * This descriptor is used to locate CmsUri-Object with the CmsUriLocator. It
  * is the key for a CmsUri.
  *
- * @author: Andreas Schouten
+ * @author Andreas Schouten
  */
 public class CmsUriDescriptor {
 
@@ -52,7 +52,7 @@ public class CmsUriDescriptor {
 
     /**
      * Returns the uri.
-     * @returns the uri
+     * @return the uri
      */
     public String getKey(){
         return m_uri;

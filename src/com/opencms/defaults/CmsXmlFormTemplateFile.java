@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlFormTemplateFile.java,v $
-* Date   : $Date: 2002/12/06 23:16:54 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/01/20 23:59:23 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.w3c.dom.Element;
  * See the handleXxxTag Methods for more details.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2002/12/06 23:16:54 $
+ * @version $Revision: 1.15 $ $Date: 2003/01/20 23:59:23 $
  */
 public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels {
 
@@ -210,7 +210,7 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
      * @param n XML element containing the current special workplace tag.
      * @param callingObject reference to the calling object.
      * @param userObj hashtable containig all user parameters.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Object handleRadiobuttonTag(Element n, Object callingObject, Object userObj) throws CmsException {
         Hashtable parameters = (Hashtable)userObj;
@@ -340,7 +340,7 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
      * @param n XML element containing the current special workplace tag.
      * @param callingObject reference to the calling object.
      * @param userObj hashtable containig all user parameters.
-     * @exception CmsException
+     * @throws CmsException
      */
     public Object handleSelectTag(Element n, Object callingObject, Object userObj) throws CmsException {
 

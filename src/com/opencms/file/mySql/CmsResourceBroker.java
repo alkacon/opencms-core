@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/12/06 23:16:54 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/01/20 23:59:23 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.44 $ $Date: 2002/12/06 23:16:54 $
+ * @version $Revision: 1.45 $ $Date: 2003/01/20 23:59:23 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 /**
@@ -55,7 +55,7 @@ public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBr
  * Creation date: (09/15/00 %r)
  * @return com.opencms.file.genericSql.CmsDbAccess
  * @param configurations source.org.apache.java.util.Configurations
- * @exception com.opencms.core.CmsException Thrown if CmsDbAccess class could not be instantiated. 
+ * @throws com.opencms.core.CmsException Thrown if CmsDbAccess class could not be instantiated. 
  */
 public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations configurations) throws CmsException
 {
@@ -71,7 +71,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
  * @param currentProject The current project of the user.
  * @param task The task to read the project of.
  * 
- * @exception CmsException Throws CmsException if something goes wrong.
+ * @throws CmsException Throws CmsException if something goes wrong.
  */
 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, CmsTask task) throws CmsException
 {

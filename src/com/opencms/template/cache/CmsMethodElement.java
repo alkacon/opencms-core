@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
-* Date   : $Date: 2003/01/20 17:57:48 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/01/20 23:59:21 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
      * @param parameters All parameters of this request
      * @param methodParameter contains the parameter for the methode (the tagcontent in the xmlfile).
      * @return Byte array with the processed content of this element.
-     * @exception CmsException
+     * @throws CmsException
      */
     public byte[] getContent(CmsElementCache elementCache, CmsObject cms, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters, String methodParameter) throws CmsException  {
         String result = null;
@@ -211,7 +211,7 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
      * checks the read access. The methode elements can be read by everyone. So we
      * don't have to check something here.
      * @param cms The cms Object for reading groups.
-     * @exception CmsException if no read access.
+     * @throws CmsException if no read access.
      */
     public void checkReadAccess(CmsObject cms) throws CmsException{
     }
@@ -222,7 +222,7 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
      * CmsException of the given type.
      * @param errorMessage String with the error message to be printed.
      * @param type Type of the exception to be thrown.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected void throwException(String errorMessage, int type) throws CmsException {
         if(C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {

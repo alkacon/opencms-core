@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjectlist.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.24 $ $Date: 2002/12/06 23:16:46 $
+ * @version $Revision: 1.25 $ $Date: 2003/01/20 23:59:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -81,7 +81,7 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement,I_C
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @param lang CmsXmlLanguageFile conataining the currently valid language file.
      * @return Processed button.
-     * @exception CmsException
+     * @throws CmsException
      */
     
     public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, 
@@ -192,7 +192,7 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement,I_C
      * @param lang The language-file.
      * @param xmlFile The file to set the xml-data into.
      * @param project The project to get the data from.
-     * @exception CmsException is thrown if something goes wrong.
+     * @throws CmsException is thrown if something goes wrong.
      */
     
     public static void setListEntryData(CmsObject cms, CmsXmlLanguageFile lang, 

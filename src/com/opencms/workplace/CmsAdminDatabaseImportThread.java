@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabaseImportThread.java,v $
-* Date   : $Date: 2003/01/20 17:57:46 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import com.opencms.util.Utils;
 /**
  * Thread for Import.
  * Creation date: (13.10.00 14:39:20)
- * @author: Hanjo Riege
+ * @author Hanjo Riege
  */
 
 public class CmsAdminDatabaseImportThread extends Thread implements I_CmsConstants {

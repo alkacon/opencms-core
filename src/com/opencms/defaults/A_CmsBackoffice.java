@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2003/01/20 17:57:49 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2003/01/20 23:59:22 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -111,27 +111,27 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
 
   /**
   * Gets the backoffice url of the module.
-  * @returns A string with the backoffice url
+  * @return A string with the backoffice url
   */
   abstract public String getBackofficeUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
                                  Object userObject) throws Exception ;
   /**
   * Gets the create url of the module.
-  * @returns a string with the create url
+  * @return a string with the create url
   */
   abstract public String getCreateUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
                              Object userObject) throws Exception ;
 
   /**
   * Gets the edit url of the module.
-  * @returns A string with the edit url
+  * @return A string with the edit url
   */
   abstract public String getEditUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
                            Object userObject) throws Exception ;
 
   /**
   * Gets the edit url of the module.
-  * @returns A string with the edit url
+  * @return A string with the edit url
   */
   public String getDeleteUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
                              Object userObject) throws Exception {
@@ -141,7 +141,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
 
   /**
   * Gets the undelete url of the module.
-  * @returns A string with the undelete url
+  * @return A string with the undelete url
   */
   public String getUndeleteUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
                              Object userObject) throws Exception {
@@ -151,7 +151,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
 
   /**
   * Gets the publish url of the module.
-  * @returns A string with the publish url
+  * @return A string with the publish url
   */
   public String getPublishUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
                              Object userObject) throws Exception {
@@ -161,7 +161,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
 
   /**
   * Gets the history url of the module.
-  * @returns A string with the history url
+  * @return A string with the history url
   */
   public String getHistoryUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
                              Object userObject) throws Exception {
@@ -171,7 +171,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
 
   /**
   * Gets the redirect url of the module. This URL is called, when an entry of the file list is selected
-  * @returns A string with the  url.
+  * @return A string with the  url.
   */
   public String getUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception {
     return "";
@@ -179,7 +179,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
 
   /**
   * Gets the setup url of the module. This is the url of the setup page for this module.
-  * @returns A string with the  setup url.
+  * @return A string with the  setup url.
   */
   public String getSetupUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception {
     return "";
@@ -187,7 +187,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
 
   /**
   * Gets the preview url of the module. This is the url of the preview page for this module.
-  * @returns A string with the  setup url.
+  * @return A string with the  setup url.
   */
   public String getPreviewUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception {
     return "";
@@ -206,7 +206,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
  * @param parameters <em>not used here</em>.
  * @param templateSelector template section that should be processed.
  * @return Processed content of the given template file.
- * @exception CmsException
+ * @throws CmsException
  */
 
 public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
@@ -524,14 +524,14 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 
   /**
   * Gets the content definition class
-  * @returns class content definition class
+  * @return class content definition class
   * Must be implemented in the extending backoffice class!
   */
   public abstract Class getContentDefinitionClass() ;
 
   /**
   * Gets the content definition class method constructor
-  * @returns content definition object
+  * @return content definition object
   */
   protected Object getContentDefinition(CmsObject cms, Class cdClass, Integer id) {
     Object o = null;
@@ -563,7 +563,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 
   /**
   * Gets the content definition class method constructor
-  * @returns content definition object
+  * @return content definition object
   */
   protected Object getContentDefinition(CmsObject cms, Class cdClass) {
     Object o = null;
@@ -595,7 +595,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 
   /**
   * Gets the content definition class method constructor
-  * @returns content definition object
+  * @return content definition object
   */
   protected Object getContentDefinition(CmsObject cms, Class cdClass, String id) {
     Object o = null;
@@ -668,7 +668,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
   * and id for the used content definition instance object
   * @param templateSelector template section that should be processed.
   * @return Processed content of the given template file.
-  * @exception CmsException
+  * @throws CmsException
   */
 
   public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
@@ -765,7 +765,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
      * and id for the used content definition instance object
      * @param templateSelector template section that should be processed.
      * @return Processed content of the given template file.
-     * @exception CmsException
+     * @throws CmsException
      */
     public byte[] getContentUndelete(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         //return var
@@ -837,7 +837,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
      * and id for the used content definition instance object
      * @param templateSelector template section that should be processed.
      * @return Processed content of the given template file.
-     * @exception CmsException
+     * @throws CmsException
      */
     public byte[] getContentCopy(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         //return var
@@ -919,7 +919,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
      * and id for the used content definition instance object
      * @param templateSelector template section that should be processed.
      * @return Processed content of the given template file.
-     * @exception CmsException
+     * @throws CmsException
      */
     public byte[] getContentDirectPublish(CmsObject cms, CmsXmlWpTemplateFile template, String elementName,
                                           Hashtable parameters, String templateSelector) throws CmsException {
@@ -1022,7 +1022,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
      * and id for the used content definition instance object
      * @param templateSelector template section that should be processed.
      * @return Processed content of the given template file.
-     * @exception CmsException
+     * @throws CmsException
      */
     public byte[] getContentHistory(CmsObject cms, CmsXmlWpTemplateFile template, String elementName,
                                           Hashtable parameters, String templateSelector) throws CmsException {
@@ -1175,7 +1175,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getHistory(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
@@ -1232,7 +1232,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
      * and id for the used content definition instance object
      * @param templateSelector template section that should be processed.
      * @return Processed content of the given template file.
-     * @exception CmsException
+     * @throws CmsException
      */
     public byte[] getContentPermissions(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         //return var
@@ -1336,7 +1336,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
   * and the author, title, text content for setting the new/changed data
   * @param templateSelector template section that should be processed.
   * @return Processed content of the given template file.
-  * @exception CmsException
+  * @throws CmsException
   */
 
   private byte[] getContentHead(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
@@ -1504,7 +1504,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
    * @param parameters <em>not used here</em>.
    * @param templateSelector template section that should be processed.
    * @return Processed content of the given template file.
-   * @exception CmsException
+   * @throws CmsException
    */
   private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, String elementName,
                                 Hashtable parameters, String templateSelector) throws CmsException {
@@ -1767,7 +1767,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
      * @param parameters <em>not used here</em>.
      * @param templateSelector template section that should be processed.
      * @return Processed content of the given template file.
-     * @exception CmsException
+     * @throws CmsException
      */
     private byte[] getContentExtendedList(CmsObject cms, CmsXmlWpTemplateFile template, String elementName,
                                 Hashtable parameters, String templateSelector) throws CmsException {
@@ -2051,7 +2051,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
   * and id for the used content definition instance object
   * @param templateSelector template section that should be processed.
   * @return Processed content of the given template file.
-  * @exception CmsException
+  * @throws CmsException
   */
 
   private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
@@ -2352,7 +2352,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
   }
 /**
  * gets the content definition class method object
- * @returns object content definition class method object
+ * @return object content definition class method object
  */
 
 private Object getContentMethodObject(CmsObject cms, Class cdClass, String method, Class paramClasses[], Object params[]) {
@@ -2430,9 +2430,9 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
      * @param names The names of the new rescources (used for optional images).
      * @param values The links that are connected with each resource.
      * @param parameters Hashtable of parameters.
-     * @returns The vectors names and values are filled with the information found in the
+     * @return The vectors names and values are filled with the information found in the
      * workplace.ini.
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
     /*public Integer setCheckbox(CmsObject cms, Vector names, Vector values, Hashtable parameters)
         throws CmsException {
@@ -2919,9 +2919,8 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
     }
 
   /**
-  * This method creates the selectbox in the head-frame
-  * @author Tilo Kellermeier
-  */
+   * This method creates the selectbox in the head-frame
+   */
   public Integer getFilter(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values,
                            Hashtable parameters) throws CmsException {
     CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
@@ -3031,7 +3030,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
   * @param elementName The emelentName of the template mechanism.
   * @param parameters All parameters of this request.
   * @param templateSelector The template selector.
-  * @returns Content of the template, as an array of bytes.
+  * @return Content of the template, as an array of bytes.
   */
   private byte[] getContentNewInternal(CmsObject cms,String id,A_CmsContentDefinition cd,
                                        I_CmsSession session,CmsXmlWpTemplateFile template,
@@ -3113,7 +3112,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
   * @param elementName The emelentName of the template mechanism.
   * @param parameters All parameters of this request.
   * @param templateSelector The template selector.
-  * @returns Content of the template, as an array of bytes.
+  * @return Content of the template, as an array of bytes.
   */
   private byte[] getContentEditInternal(CmsObject cms,String id,A_CmsContentDefinition cd,
                                         I_CmsSession session,CmsXmlWpTemplateFile template,
@@ -3206,7 +3205,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
    *  @param template The template file.
    *  @param parameters All parameters of this request.
    *  @param templateSelector The template selector.
-   *  @returns The template selector.
+   *  @return The template selector.
    */
  private String getContentButtonsInternal(CmsObject cms,A_CmsContentDefinition cd,
                                           I_CmsSession session, CmsXmlWpTemplateFile template,
@@ -3404,7 +3403,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
    * to automatically preset the datablocks of the template with the values stored in the
    * content definition.
    * @param contentDefinition The actual Content Definition class
-   * @returns Vector of get-methods
+   * @return Vector of get-methods
    */
   private Vector getGetMethods (A_CmsContentDefinition contentDefinition) {
 
@@ -3436,7 +3435,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
    * This methods collects all "setXYZ" methods of the actual content definition. This is used
    * to automatically insert the form parameters into the content definition.
    * @param contentDefinition The actual Content Definition class
-   * @returns Hashtable of set-methods.
+   * @return Hashtable of set-methods.
    */
   private Hashtable getSetMethods (A_CmsContentDefinition contentDefinition) {
     Hashtable setMethods=new Hashtable();
@@ -3472,7 +3471,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
    * @param template The template to set the datablocks in.
    * @param contentDefinition The actual content defintion.
    * @methods A vector with all "getXYZ" methods to be used.
-   * @exception Throws CmsException if something goes wrong.
+   * @throws Throws CmsException if something goes wrong.
    */
   //Gridnine AB Aug 8, 2002
   // modified method declaration to getaccess to CmsObject for correct handling encodings
@@ -3531,7 +3530,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
    * @param contentDefintion The actual content defintion.
    * @param parameters A hashtable with all template and url parameters.
    * @param setMethods A hashtable with all "setXYZ" methods
-   * @exception Throws CmsException if something goes wrong.
+   * @throws Throws CmsException if something goes wrong.
    */
   private void fillContentDefinition(CmsObject cms,A_CmsContentDefinition contentDefinition,
                                      Hashtable parameters,
@@ -3597,8 +3596,8 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
    * @param template The current template.
    * @param parameters All template and URL parameters.
    * @param templateSelector The current template selector.
-   * @returns The new template selector.
-   * @exception Throws CmsException if something goes wrong.
+   * @return The new template selector.
+   * @throws Throws CmsException if something goes wrong.
    */
   private String getTemplateSelector(CmsObject cms, CmsXmlWpTemplateFile template,
                                      Hashtable parameters,String templateSelector) throws CmsException {

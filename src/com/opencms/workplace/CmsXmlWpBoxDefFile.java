@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpBoxDefFile.java,v $
-* Date   : $Date: 2002/12/06 23:16:47 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import com.opencms.template.A_CmsXmlContent;
  *  Content definition for the workplace messagebox element definition file.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2002/12/06 23:16:47 $
+ * @version $Revision: 1.12 $ $Date: 2003/01/20 23:59:18 $
  **/
 
 public class CmsXmlWpBoxDefFile extends A_CmsXmlContent implements I_CmsLogChannels,I_CmsWpConstants {
@@ -109,7 +109,7 @@ public class CmsXmlWpBoxDefFile extends A_CmsXmlContent implements I_CmsLogChann
      * @param msgReason Fixed reason text in errorbox.
      * @param msgButton Fixed button text.
      * @return Processed errorbox.
-     * @exception CmsException
+     * @throws CmsException
      */
     
     /**
@@ -122,7 +122,7 @@ public class CmsXmlWpBoxDefFile extends A_CmsXmlContent implements I_CmsLogChann
      * @param link1 The link of button1 of this messagebox.
      * @param link2 The link of button2 of this messagebox.
      * @return Processed messagebox.
-     * @exception CmsException
+     * @throws CmsException
      */
     
     public String getMessagebox(String title, String message1, String message2, 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpStylesheet.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/01/20 23:59:21 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.util.*;
  * Dump the correct stylesheet for the current browser.
  *
  * @author Alexander Lucas <alexander.lucas@framfab.de>
- * @version $Revision: 1.5 $ $Date: 2001/07/31 15:50:16 $
+ * @version $Revision: 1.6 $ $Date: 2003/01/20 23:59:21 $
  */
 public class CmsDumpStylesheet extends CmsDumpTemplate {
 
@@ -79,7 +79,7 @@ public class CmsDumpStylesheet extends CmsDumpTemplate {
      * @param parameters <em>not used here</em>.
      * @param templateSelector <em>not used here</em>.
      * @return Unprocessed content of the given template file.
-     * @exception CmsException
+     * @throws CmsException
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
 

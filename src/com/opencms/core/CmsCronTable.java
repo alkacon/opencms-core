@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronTable.java,v $
-* Date   : $Date: 2001/11/15 16:41:21 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2003/01/20 23:59:20 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ class CmsCronTable {
 
     /**
      * Returns the size of thos table.
-     * @returns the size of thos table.
+     * @return the size of thos table.
      */
     public int size() {
         return m_cronEntries.size();
@@ -103,7 +103,7 @@ class CmsCronTable {
     /**
      * Returns one entry of this table.
      * @param i the id of the etnry to return
-     * @returns one CmsCronEntry.
+     * @return one CmsCronEntry.
      */
     public CmsCronEntry get(int i) {
         return (CmsCronEntry)m_cronEntries.get(i);
@@ -127,7 +127,7 @@ class CmsCronTable {
 
     /**
      * Returns this table as string.
-     * @returns this table as string.
+     * @return this table as string.
      */
     public String getTable() {
         StringBuffer result = new StringBuffer();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2003/01/20 23:59:17 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.51 $ $Date: 2002/12/06 23:16:46 $
+ * @version $Revision: 1.52 $ $Date: 2003/01/20 23:59:17 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -131,7 +131,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      *
      * @param cms CmsObject Object for accessing system resources.
      * @return Reference to the config file.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public CmsXmlWpConfigFile getConfigFile(CmsObject cms) throws CmsException {
@@ -180,7 +180,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current workplace view in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getFontSizes(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values,
@@ -203,7 +203,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current workplace view in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getFontStyles(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values,
@@ -227,7 +227,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current workplace view in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getFonts(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values,
@@ -379,7 +379,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @param lang reference to the currently valid language file <em>(not used here)</em>.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return <code>true</code> if the current user is in the Administrators Group, <code>false</code> otherwise.
-     * @exception CmsException if there were errors while accessing project data.
+     * @throws CmsException if there were errors while accessing project data.
      */
     public Boolean isAdmin(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         CmsRequestContext reqCont = cms.getRequestContext();
@@ -405,7 +405,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @param lang reference to the currently valid language file <em>(not used here)</em>.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return <code>true</code> if the current user is the user Admin, <code>false</code> otherwise.
-     * @exception CmsException if there were errors while accessing project data.
+     * @throws CmsException if there were errors while accessing project data.
      */
     public Boolean isTheAdminUser(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         CmsRequestContext reqCont = cms.getRequestContext();
@@ -483,7 +483,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @param lang reference to the currently valid language file <em>(not used here)</em>.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return <code>true</code> if the current project is the online project, <code>false</code> otherwise.
-     * @exception CmsException if there were errors while accessing project data.
+     * @throws CmsException if there were errors while accessing project data.
      */
 
     public Boolean isNotOnlineProject(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
@@ -502,7 +502,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @param lang reference to the currently valid language file <em>(not used here)</em>.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return <code>true</code> if the current project is the online project, <code>false</code> otherwise.
-     * @exception CmsException if there were errors while accessing project data.
+     * @throws CmsException if there were errors while accessing project data.
      */
 
     public Boolean isOnlineProject(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
@@ -521,7 +521,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @param lang reference to the currently valid language file <em>(not used here)</em>.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return <code>true</code> if the current project is the online project, <code>false</code> otherwise.
-     * @exception CmsException if there were errors while accessing project data.
+     * @throws CmsException if there were errors while accessing project data.
      */
 
     public Boolean isProjectManager(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
@@ -600,7 +600,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return Content of the template and all subtemplates.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     protected byte[] startProcessing(CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName,
@@ -646,7 +646,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.
      * @param userObj Hashtable with parameters <em>(not used here)</em>.
      * @return String with the pics URL.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Object userName(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {

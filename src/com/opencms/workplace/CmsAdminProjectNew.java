@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2003/01/20 17:57:47 $
-* Version: $Revision: 1.71 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.72 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.71 $ $Date: 2003/01/20 17:57:47 $
+ * @version $Revision: 1.72 $ $Date: 2003/01/20 23:59:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -142,7 +142,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
      * @param cms The CmsObject
      * @param res The resource to be checked.
      * @return True or false.
-     * @exception CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
 
     private boolean checkWriteable(CmsObject cms, String resPath, boolean isChannel) {
@@ -182,7 +182,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters.
      *
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
@@ -451,7 +451,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
@@ -497,7 +497,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getManagerGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names,

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
-* Date   : $Date: 2003/01/20 17:57:53 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/01/20 23:59:23 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import java.util.Hashtable;
  * </UL>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.38 $ $Date: 2003/01/20 17:57:53 $
+ * @version $Revision: 1.39 $ $Date: 2003/01/20 23:59:23 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsConstants {
 
@@ -95,7 +95,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
      * @param masterTemplate CmsFile Object with masterTemplate for the output.
      * @param parameters Hashtable with all parameters for the template class.
      * @return byte array with the generated output or null if there were errors.
-     * @exception CmsException
+     * @throws CmsException
      *
      */
     protected byte[] callCanonicalRoot(CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate, Hashtable parameters) throws CmsException {
@@ -113,8 +113,6 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
 
     /**
      * Method for clearing this launchers template cache.
-     * @author Finn Nielsen
-     * Creation date: (10/23/00 13:27:09)
      */
     public void clearCache() {
         m_templateCache.clearCache();
@@ -162,7 +160,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
      * @param cms CmsObject object for accessing system resources.
      * @param classname Name of the requested template class.
      * @return Instance of the template class.
-     * @exception CmsException.
+     * @throws CmsException.
      */
     protected I_CmsTemplate getTemplateClass(CmsObject cms, String classname) throws CmsException {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {
@@ -201,7 +199,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
      * @param cms CmsObject Object for accessing system resources.
      * @param e Exception that should be handled.
      * @param errorText Error message that should be shown.
-     * @exception CmsException
+     * @throws CmsException
      */
     public void handleException(CmsObject cms, Exception e, String errorText) throws CmsException {
 
@@ -241,7 +239,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
      * @param file CmsFile Object with the selected resource to be shown.
      * @param startTemplateClass Name of the template class to start with.
      * @param openCms a instance of A_OpenCms for redirect-needs
-     * @exception CmsException
+     * @throws CmsException
      */
     public void initlaunch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
 
@@ -323,7 +321,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
      * @param file CmsFile Object with the selected resource to be shown
      * @param startTemplateClass Name of the template class to start with.
      * @param openCms a instance of A_OpenCms for redirect-needs
-     * @exception CmsException
+     * @throws CmsException
      */
     protected abstract void launch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException;
 
@@ -331,7 +329,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
      * Writes a given byte array to the HttpServletRespose output stream.
      * @param result byte array that should be written.
      * @param mimeType MIME type that should be set for the output.
-     * @exception CmsException
+     * @throws CmsException
      */
     protected void writeBytesToResponse(CmsObject cms, byte[] result) throws CmsException {
         try {

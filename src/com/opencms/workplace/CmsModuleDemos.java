@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsModuleDemos.java,v $
-* Date   : $Date: 2003/01/20 17:57:48 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * Template class for displaying OpenCms workplace administration module
  *
  * Creation date: (30.08.00 17:59:38)
- * @author: Hanjo Riege
+ * @author Hanjo Riege
  */
 public class CmsModuleDemos extends CmsWorkplaceDefault implements I_CmsConstants {
 
@@ -51,7 +51,7 @@ public class CmsModuleDemos extends CmsWorkplaceDefault implements I_CmsConstant
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters.
      *
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.

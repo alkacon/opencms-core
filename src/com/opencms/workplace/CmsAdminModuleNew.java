@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2003/01/20 17:57:48 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/01/20 23:59:18 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  *  Template class for displaying OpenCms workplace admin module screens.
  *
  * Creation date: (01.09.00 12:55:58)
- * @author: Hanjo Riege
+ * @author Hanjo Riege
  */
 public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConstants {
 
@@ -75,7 +75,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters.
      *
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.

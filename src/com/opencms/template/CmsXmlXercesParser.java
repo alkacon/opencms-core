@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlXercesParser.java,v $
-* Date   : $Date: 2002/12/06 23:16:51 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/01/20 23:59:21 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.18 $ $Date: 2002/12/06 23:16:51 $
+ * @version $Revision: 1.19 $ $Date: 2003/01/20 23:59:21 $
  */
 public class CmsXmlXercesParser implements I_CmsXmlParser,I_CmsLogChannels {
     
@@ -62,9 +62,8 @@ public class CmsXmlXercesParser implements I_CmsXmlParser,I_CmsLogChannels {
     
     /**
      * Creates an empty DOM XML document.
-     * Workarround caus original method is corruped
+     * Workaround because the original method is not working as expected.
      * 
-     * @author Michaela Schleich
      * @param docNod first Node in empty  XML document
      * @return Empty document.
      */
@@ -141,7 +140,7 @@ public class CmsXmlXercesParser implements I_CmsXmlParser,I_CmsLogChannels {
      * Parses the given text with the Xerces parser.
      * @param in Reader with the input text.
      * @return Parsed text as DOM document.
-     * @exception Exception
+     * @throws Exception
      */
     //[modified by Gridnine AB, 2002-06-13]
     public Document parse(Reader in) throws Exception {

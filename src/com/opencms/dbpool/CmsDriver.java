@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsDriver.java,v $
-* Date   : $Date: 2003/01/20 17:57:49 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/01/20 23:59:22 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -97,7 +97,7 @@ public class CmsDriver implements java.sql.Driver {
      * @param info - a list of arbitrary string tag/value pairs as connection
      * arguments; normally at least a "user" and "password" property should be included
      * @return a Connection to the URL
-     * @exception SQLException if a database-access error occurs.
+     * @throws SQLException if a database-access error occurs.
      */
     public java.sql.Connection connect(String url, Properties info)
         throws SQLException {
@@ -117,7 +117,7 @@ public class CmsDriver implements java.sql.Driver {
      * they don't.
      * @param url - The URL of the database.
      * @return True if this driver can connect to the given URL.
-     * @exception SQLException if a database-access error occurs.
+     * @throws SQLException if a database-access error occurs.
      */
     public boolean acceptsURL(String url)
         throws SQLException {
@@ -137,7 +137,7 @@ public class CmsDriver implements java.sql.Driver {
      * on connect open
      * @return An array of DriverPropertyInfo objects describing possible properties.
      *  This array may be an empty array if no properties are required.
-     * @exception SQLException if a database-access error occurs.
+     * @throws SQLException if a database-access error occurs.
      */
     public DriverPropertyInfo[] getPropertyInfo(String url, Properties info)
         throws SQLException {
@@ -179,7 +179,7 @@ public class CmsDriver implements java.sql.Driver {
      * Returns the specified pool-object.
      * @param poolName - the name of the pool to return
      * @return Pool - the pool for this name
-     * @exception SQLException - if a SQL-Error occures.
+     * @throws SQLException - if a SQL-Error occures.
      */
     private CmsPool getPool(String poolName) throws SQLException {
         if(!m_pools.containsKey(poolName)) {
@@ -195,7 +195,7 @@ public class CmsDriver implements java.sql.Driver {
      * for the pool from configurations.
      * @param poolName - the name of the pool to create.
      * @return Pool - the created pool.
-     * @exception SQLException - is a SQL-Error occurs.
+     * @throws SQLException - is a SQL-Error occurs.
      */
     private CmsPool createPool(String poolName) throws SQLException {
         String driver = c_config.getString("pool." + poolName + ".driver");

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLinkBrowser.java,v $
-* Date   : $Date: 2003/01/20 17:57:48 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.6 $ $Date: 2003/01/20 17:57:48 $
+ * @version $Revision: 1.7 $ $Date: 2003/01/20 23:59:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -59,7 +59,7 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters.
      *
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
@@ -196,7 +196,7 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index of the selected Gallery
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getLinkGalleryNames(CmsObject cms, CmsXmlLanguageFile lang,
@@ -274,7 +274,7 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.
      * @param userObj Hashtable with parameters <em>(not used here)</em>.
      * @return String with the pics URL.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Object linkList(CmsObject cms, String tagcontent, A_CmsXmlContent doc,

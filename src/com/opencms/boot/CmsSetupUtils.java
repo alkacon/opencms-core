@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
-* Date   : $Date: 2002/12/06 23:16:54 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/01/20 23:59:26 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * This class provides several utilities and methods
  * used by the OpenCms setup wizard
  *
- * @author: Magnus Meurer
+ * @author Magnus Meurer
  */
 public class CmsSetupUtils {
 

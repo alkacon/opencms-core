@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsResponse.java,v $
-* Date   : $Date: 2002/10/30 10:09:44 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/01/20 23:59:20 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.io.*;
  * @author Michael Emmerich
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.15 $ $Date: 2002/10/30 10:09:44 $  
+ * @version $Revision: 1.16 $ $Date: 2003/01/20 23:59:20 $  
  */
 public interface I_CmsResponse {
     
@@ -64,7 +64,7 @@ public interface I_CmsResponse {
      * Returns an OutputStream for writing the response data. 
      * 
      * @return OutputStream for writing data.
-     * @exception Throws IOException if an error occurs.
+     * @throws Throws IOException if an error occurs.
      */
     public OutputStream getOutputStream() throws IOException;
     
@@ -86,7 +86,7 @@ public interface I_CmsResponse {
      * 
      * @param location The location the response is send to.
      * @param msg Additional error message.
-     * @exception Throws IOException if an error occurs.
+     * @throws Throws IOException if an error occurs.
      */
     public void sendCmsRedirect(String location) throws IOException;
     
@@ -95,7 +95,7 @@ public interface I_CmsResponse {
      * by a numeric value.
      * 
      * @param code The error code to be set.
-     * @exception Throws IOException if an error occurs.
+     * @throws Throws IOException if an error occurs.
      */
     public void sendError(int code) throws IOException;
     
@@ -105,7 +105,7 @@ public interface I_CmsResponse {
      * 
      * @param code The error code to be set.
      * @param msg Additional error message.
-     * @exception Throws IOException if an error occurs.
+     * @throws Throws IOException if an error occurs.
      */
     public void sendError(int code, String msg) throws IOException;
     
@@ -113,7 +113,7 @@ public interface I_CmsResponse {
      *  Helper function for a redirect to the cluster url. 
      * 
      * @param location a complete url, eg. http://servername/servlets/opencms/index.html 
-     * @exception Throws IOException if an error occurs.
+     * @throws Throws IOException if an error occurs.
      */
     public void sendRedirect(String location) throws IOException;
     

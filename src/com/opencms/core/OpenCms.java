@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/01/20 17:57:49 $
-* Version: $Revision: 1.102 $
+* Date   : $Date: 2003/01/20 23:59:20 $
+* Version: $Revision: 1.103 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.102 $ $Date: 2003/01/20 17:57:49 $
+ * @version $Revision: 1.103 $ $Date: 2003/01/20 23:59:20 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
 
@@ -884,7 +884,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      *
      * @return The registry to READ values from it.
      * 
-     * @exception CmsException, if the registry can not be returned.
+     * @throws CmsException, if the registry can not be returned.
      */
     public static I_CmsRegistry getRegistry() throws CmsException {
         return c_rb.getRegistry(null, null, null);

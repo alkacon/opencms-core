@@ -84,7 +84,7 @@ import java.util.Vector;
  * and faster transition between different configuration syntax.
  *
  * @author <a href="mailto:stefano@apache.org">Stefano Mazzocchi</a>
- * @version $Revision: 1.3 $ $Date: 2002/12/06 23:16:58 $
+ * @version $Revision: 1.4 $ $Date: 2003/01/20 23:59:32 $
  */
 public class Configurations {
 
@@ -138,9 +138,9 @@ public class Configurations {
 	 *
 	 * @param key the configuration key.
 	 * @return the associated boolean.
-	 * @exception NoSuchElementException is thrown if the key doesn't
+	 * @throws NoSuchElementException is thrown if the key doesn't
 	 * map to an existing object.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Boolean.
 	 */
 	public boolean getBoolean(String key) {
@@ -159,7 +159,7 @@ public class Configurations {
 	 * @param defaultValue the defaul value.
 	 * @return the associated boolean if key is found and has valid format,
 	 * default value otherwise.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Boolean.
 	 */
 	public Boolean getBoolean(String key, Boolean defaultValue) {
@@ -188,7 +188,7 @@ public class Configurations {
 	 * @param key the configuration key.
 	 * @param defaultValue the defaul value.
 	 * @return the associated boolean.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Boolean.
 	 */
 	public boolean getBoolean(String key, boolean defaultValue) {
@@ -199,11 +199,11 @@ public class Configurations {
 	 *
 	 * @param key the configuration key.
 	 * @return the associated byte.
-	 * @exception NoSuchElementException is thrown if the key doesn't
+	 * @throws NoSuchElementException is thrown if the key doesn't
 	 * map to an existing object.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Byte.
-	 * @exception NumberFormatException is thrown if the value
+	 * @throws NumberFormatException is thrown if the value
 	 * mapped by the key has not a valid number format.
 	 */
 	public byte getByte(String key) {
@@ -221,9 +221,9 @@ public class Configurations {
 	 * @param key the configuration key.
 	 * @param defaultValue the defaul value.
 	 * @return the associated byte.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Byte.
-	 * @exception NumberFormatException is thrown if the value
+	 * @throws NumberFormatException is thrown if the value
 	 * mapped by the key has not a valid number format.
 	 */
 	public byte getByte(String key, byte defaultValue) {
@@ -236,9 +236,9 @@ public class Configurations {
 	 * @param defaultValue the defaul value.
 	 * @return the associated byte if key is found and has valid format,
 	 * default value otherwise.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Byte.
-	 * @exception NumberFormatException is thrown if the value
+	 * @throws NumberFormatException is thrown if the value
 	 * mapped by the key has not a valid number format.
 	 */
 	public Byte getByte(String key, Byte defaultValue) {
@@ -266,11 +266,11 @@ public class Configurations {
 	 *
 	 * @param key the configuration key.
 	 * @return the associated double.
-	 * @exception NoSuchElementException is thrown if the key doesn't
+	 * @throws NoSuchElementException is thrown if the key doesn't
 	 * map to an existing object.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Double.
-	 * @exception NumberFormatException is thrown if the value
+	 * @throws NumberFormatException is thrown if the value
 	 * mapped by the key has not a valid number format.
 	 */
 	public double getDouble(String key) {
@@ -288,9 +288,9 @@ public class Configurations {
 	 * @param key the configuration key.
 	 * @param defaultValue the defaul value.
 	 * @return the associated double.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Double.
-	 * @exception NumberFormatException is thrown if the value
+	 * @throws NumberFormatException is thrown if the value
 	 * mapped by the key has not a valid number format.
 	 */
 	public double getDouble(String key, double defaultValue) {
@@ -303,9 +303,9 @@ public class Configurations {
 	 * @param defaultValue the defaul value.
 	 * @return the associated double if key is found and has valid format,
 	 * default value otherwise.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Double.
-	 * @exception NumberFormatException is thrown if the value
+	 * @throws NumberFormatException is thrown if the value
 	 * mapped by the key has not a valid number format.
 	 */
 	public Double getDouble(String key, Double defaultValue) {
@@ -333,11 +333,11 @@ public class Configurations {
 	 *
 	 * @param key the configuration key.
 	 * @return the associated float.
-	 * @exception NoSuchElementException is thrown if the key doesn't
+	 * @throws NoSuchElementException is thrown if the key doesn't
 	 * map to an existing object.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Float.
-	 * @exception NumberFormatException is thrown if the value
+	 * @throws NumberFormatException is thrown if the value
 	 * mapped by the key has not a valid number format.
 	 */
 	public float getFloat(String key) {
@@ -355,9 +355,9 @@ public class Configurations {
 	 * @param key the configuration key.
 	 * @param defaultValue the defaul value.
 	 * @return the associated float.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Float.
-	 * @exception NumberFormatException is thrown if the value
+	 * @throws NumberFormatException is thrown if the value
 	 * mapped by the key has not a valid number format.
 	 */
 	public float getFloat(String key, float defaultValue) {
@@ -370,9 +370,9 @@ public class Configurations {
 	 * @param defaultValue the defaul value.
 	 * @return the associated float if key is found and has valid format,
 	 * default value otherwise.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Float.
-	 * @exception NumberFormatException is thrown if the value
+	 * @throws NumberFormatException is thrown if the value
 	 * mapped by the key has not a valid number format.
 	 */
 	public Float getFloat(String key, Float defaultValue) {
@@ -400,11 +400,11 @@ public class Configurations {
 	 *
 	 * @param key the configuration key.
 	 * @return the associated int.
-	 * @exception NoSuchElementException is thrown if the key doesn't
+	 * @throws NoSuchElementException is thrown if the key doesn't
 	 * map to an existing object.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Integer.
-	 * @exception NumberFormatException is thrown if the value
+	 * @throws NumberFormatException is thrown if the value
 	 * mapped by the key has not a valid number format.
 	 */
 	public int getInteger(String key) {
@@ -422,9 +422,9 @@ public class Configurations {
 	 * @param key the configuration key.
 	 * @param defaultValue the defaul value.
 	 * @return the associated int.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Integer.
-	 * @exception NumberFormatException is thrown if the value
+	 * @throws NumberFormatException is thrown if the value
 	 * mapped by the key has not a valid number format.
 	 */
 	public int getInteger(String key, int defaultValue) {
@@ -437,9 +437,9 @@ public class Configurations {
 	 * @param defaultValue the defaul value.
 	 * @return the associated int if key is found and has valid format,
 	 * default value otherwise.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Integer.
-	 * @exception NumberFormatException is thrown if the value
+	 * @throws NumberFormatException is thrown if the value
 	 * mapped by the key has not a valid number format.
 	 */
 	public Integer getInteger(String key, Integer defaultValue) {
@@ -475,7 +475,7 @@ public class Configurations {
 	 *
 	 * @param key the configuration key.
 	 * @return the associated list.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Vector.
 	 */
 	public Enumeration getList(String key) {
@@ -486,11 +486,11 @@ public class Configurations {
 	 *
 	 * @param key the configuration key.
 	 * @return the associated long.
-	 * @exception NoSuchElementException is thrown if the key doesn't
+	 * @throws NoSuchElementException is thrown if the key doesn't
 	 * map to an existing object.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Long.
-	 * @exception NumberFormatException is thrown if the value
+	 * @throws NumberFormatException is thrown if the value
 	 * mapped by the key has not a valid number format.
 	 */
 	public long getLong(String key) {
@@ -508,9 +508,9 @@ public class Configurations {
 	 * @param key the configuration key.
 	 * @param defaultValue the defaul value.
 	 * @return the associated long.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Long.
-	 * @exception NumberFormatException is thrown if the value
+	 * @throws NumberFormatException is thrown if the value
 	 * mapped by the key has not a valid number format.
 	 */
 	public long getLong(String key, long defaultValue) {
@@ -523,9 +523,9 @@ public class Configurations {
 	 * @param defaultValue the defaul value.
 	 * @return the associated long if key is found and has valid format,
 	 * default value otherwise.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Long.
-	 * @exception NumberFormatException is thrown if the value
+	 * @throws NumberFormatException is thrown if the value
 	 * mapped by the key has not a valid number format.
 	 */
 	public Long getLong(String key, Long defaultValue) {
@@ -553,9 +553,9 @@ public class Configurations {
 	 *
 	 * @param key the configuration key.
 	 * @return the associated properties if key is found
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a String/Vector
-	 * @exception IllegalArgumentException if one of the tokens is
+	 * @throws IllegalArgumentException if one of the tokens is
 	 * malformed (does not contain an equals sign)
 	 */
 	public Properties getProperties(String key) {
@@ -566,9 +566,9 @@ public class Configurations {
 	 *
 	 * @param key the configuration key.
 	 * @return the associated properties if key is found
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a String/Vector
-	 * @exception IllegalArgumentException if one of the tokens is
+	 * @throws IllegalArgumentException if one of the tokens is
 	 * malformed (does not contain an equals sign)
 	 */
 	public Properties getProperties(String key, Properties defaults) {
@@ -602,11 +602,11 @@ public class Configurations {
 	 *
 	 * @param key the configuration key.
 	 * @return the associated short.
-	 * @exception NoSuchElementException is thrown if the key doesn't
+	 * @throws NoSuchElementException is thrown if the key doesn't
 	 * map to an existing object.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Short.
-	 * @exception NumberFormatException is thrown if the value
+	 * @throws NumberFormatException is thrown if the value
 	 * mapped by the key has not a valid number format.
 	 */
 	public short getShort(String key) {
@@ -625,9 +625,9 @@ public class Configurations {
 	 * @param defaultValue the defaul value.
 	 * @return the associated short if key is found and has valid format,
 	 * default value otherwise.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Short.
-	 * @exception NumberFormatException is thrown if the value
+	 * @throws NumberFormatException is thrown if the value
 	 * mapped by the key has not a valid number format.
 	 */
 	public Short getShort(String key, Short defaultValue) {
@@ -656,9 +656,9 @@ public class Configurations {
 	 * @param key the configuration key.
 	 * @param defaultValue the defaul value.
 	 * @return the associated short.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Short.
-	 * @exception NumberFormatException is thrown if the value
+	 * @throws NumberFormatException is thrown if the value
 	 * mapped by the key has not a valid number format.
 	 */
 	public short getShort(String key, short defaultValue) {
@@ -669,7 +669,7 @@ public class Configurations {
 	 *
 	 * @param key the configuration key.
 	 * @return the associated string.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a String.
 	 */
 	public String getString(String key) {
@@ -682,7 +682,7 @@ public class Configurations {
 	 * @param defaultValue the default value.
 	 * @return the associated string if key is found,
 	 * default value otherwise.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a String.
 	 */
 	public String getString(String key, String defaultValue) {
@@ -706,7 +706,7 @@ public class Configurations {
 	 *
 	 * @param key the configuration key.
 	 * @return the associated string array if key is found,
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a String/Vector
 	 */
 	public String[] getStringArray(String key) {
@@ -741,7 +741,7 @@ public class Configurations {
 	 *
 	 * @param key the configuration key.
 	 * @return the associated Vector.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Vector.
 	 */
 	public Vector getVector(String key) {
@@ -754,7 +754,7 @@ public class Configurations {
 	 * @param key the configuration key.
 	 * @param defaultValue the defaul value.
 	 * @return the associated Vector.
-	 * @exception ClassCastException is thrown if the key maps to an
+	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a Vector.
 	 */
 	public Vector getVector(String key, Vector defaultValue) {

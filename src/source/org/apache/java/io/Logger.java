@@ -59,8 +59,8 @@ package source.org.apache.java.io;
  * This interface represents a simple logger
  * (LogWriter is an implementation).
  *
- * @version $Revision: 1.2 $ $Date: 2000/08/08 14:01:44 $
- * @see org.apache.java.io.LogWriter
+ * @version $Revision: 1.3 $ $Date: 2003/01/20 23:59:32 $
+ * @see source.org.apache.java.io.LogWriter
  */
 public interface Logger {
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2002/12/17 19:41:13 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/01/20 23:59:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -305,7 +305,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
      * @param doc reference to the A_CmsXmlContent object of the initiating XML document.
      * @param userObj must ba a <code>java.util.Hashtable</code> with request parameters
      * @return String with customized title information
-     * @exception CmsException
+     * @throws CmsException
      */
     public Object getTitle(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
     throws CmsException {
@@ -323,7 +323,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
      * @param doc reference to the A_CmsXmlContent object of the initiating XML document.
      * @param userObj must ba a <code>java.util.Hashtable</code> with request parameters
      * @return String with the version information of this OpenCms instance
-     * @exception CmsException in case of errors processing the template
+     * @throws CmsException in case of errors processing the template
      */
     public Object version(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
     throws CmsException {
@@ -339,7 +339,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
      * @param doc reference to the A_CmsXmlContent object of the initiating XML document.
      * @param userObj must ba a <code>java.util.Hashtable</code> with request parameters
      * @return String with the version information of this OpenCms instance
-     * @exception CmsException in case of errors processing the template
+     * @throws CmsException in case of errors processing the template
      */
     public Object message(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
     throws CmsException {

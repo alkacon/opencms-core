@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2003/01/20 17:57:47 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/01/20 23:59:19 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.24 $ $Date: 2003/01/20 17:57:47 $
+ * @version $Revision: 1.25 $ $Date: 2003/01/20 23:59:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -64,7 +64,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * @param theUser the user whose data will be changed
      * @param defaultGroupName String which holds the name of the default group theUser should get
      * @param newGroups Vector of Strings with the names of the new groups of theUser
-     * @exception CmsException
+     * @throws CmsException
      */
 
     private void changeGroups(CmsObject cms, CmsUser theUser, String defaultGroupName,
@@ -116,7 +116,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters.
      *
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @see #getContent(CmsObject, String, String, Hashtable, String)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
@@ -626,7 +626,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
@@ -659,7 +659,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the default Group of the user
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getGroupsOfUser(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
@@ -686,7 +686,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the default Group of the user
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getIndirectGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
@@ -738,7 +738,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getNotSelectedGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
@@ -775,7 +775,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the default Group of the user
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getSelectedGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
@@ -814,7 +814,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Integer getUsers(CmsObject cms, CmsXmlLanguageFile lang, Vector names,

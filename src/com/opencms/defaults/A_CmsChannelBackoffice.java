@@ -157,7 +157,7 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
          * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
          * @param userObj Hashtable with parameters.
          * @return String or byte[] with the content of this subelement.
-         * @exception CmsException
+         * @throws CmsException
          */
         public Object getContentMedia(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
             //return value

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsLinkCheck.java,v $
-* Date   : $Date: 2002/07/22 12:31:14 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/01/20 23:59:17 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,8 @@ import java.net.*;
 import java.io.*;
 
 /**
- * @description This class contains the functionaility for checking the url of external links
+ * This class contains the functionaility for checking the url of external links.<p>
+ * 
  * @author Edna Falkenhan
  */
 public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob,I_CmsConstants{

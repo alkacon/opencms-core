@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsXmlContent.java,v $
-* Date   : $Date: 2002/12/06 23:16:50 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/01/20 23:59:21 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,14 +43,14 @@ import org.w3c.dom.Node;
  * Classes for each customized content type have to be implemtented.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2002/12/06 23:16:50 $
+ * @version $Revision: 1.10 $ $Date: 2003/01/20 23:59:21 $
  */
 public interface I_CmsXmlContent extends I_CmsContent {
     
     /**
      * Creates a clone of this object.
      * @return cloned object
-     * @exception CloneNotSupportedException
+     * @throws CloneNotSupportedException
      */
     public Object clone() throws CloneNotSupportedException;
     
@@ -103,7 +103,7 @@ public interface I_CmsXmlContent extends I_CmsContent {
      * Load and parse the content of the given CmsFile object.
      * @param cms CmsObject Object for accessing resources.
      * @param file CmsFile object of the file to be loaded and parsed.
-     * @exception CmsException
+     * @throws CmsException
      */
     public void init(CmsObject cms, CmsFile file) throws CmsException;
     
@@ -112,7 +112,7 @@ public interface I_CmsXmlContent extends I_CmsContent {
      * Load and parse the file given by filename,
      * @param cms CmsObject Object for accessing resources.
      * @param filename Filename of the file to be loaded.
-     * @exception CmsException
+     * @throws CmsException
      */
     public void init(CmsObject cms, String filename) throws CmsException;
     
@@ -121,7 +121,7 @@ public interface I_CmsXmlContent extends I_CmsContent {
      * @param cms CmsObject Object for accessing system resources.
      * @param document DOM document object containing the parsed XML file.
      * @param filename OpenCms filename of the XML file.
-     * @exception CmsException
+     * @throws CmsException
      */
     public void init(CmsObject cms, Document content, String filename) throws CmsException;
     
@@ -130,13 +130,13 @@ public interface I_CmsXmlContent extends I_CmsContent {
      * appends the relevant data structures of the new file to its own structures.
      * 
      * @param include Filename of the XML file to be included
-     * @exception CmsException
+     * @throws CmsException
      */
     public A_CmsXmlContent readIncludeFile(String filename) throws CmsException;
     
     /**
      * Writes the XML document back to the OpenCms system. 
-     * @exception CmsException  
+     * @throws CmsException  
      */
     public void write() throws CmsException;
 }

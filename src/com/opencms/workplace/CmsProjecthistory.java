@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjecthistory.java,v $
-* Date   : $Date: 2003/01/20 17:57:48 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/01/20 23:59:20 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.5 $ $Date: 2003/01/20 17:57:48 $
+ * @version $Revision: 1.6 $ $Date: 2003/01/20 23:59:20 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -80,7 +80,7 @@ public class CmsProjecthistory extends A_CmsWpElement implements I_CmsWpElement,
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @param lang CmsXmlLanguageFile conataining the currently valid language file.
      * @return Processed button.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject,
@@ -177,7 +177,7 @@ public class CmsProjecthistory extends A_CmsWpElement implements I_CmsWpElement,
      * @param lang The language-file.
      * @param xmlFile The file to set the xml-data into.
      * @param project The project to get the data from.
-     * @exception CmsException is thrown if something goes wrong.
+     * @throws CmsException is thrown if something goes wrong.
      */
 
     public static void setListEntryData(CmsObject cms, CmsXmlLanguageFile lang,
@@ -212,7 +212,7 @@ public class CmsProjecthistory extends A_CmsWpElement implements I_CmsWpElement,
      * Reads the projectlist definition file.
      * @param cms The actual cms object
      * @return Reference to the list defintion file.
-     * @exception CmsException
+     * @throws CmsException
      */
 
     public CmsXmlWpTemplateFile getProjectlistDefinitions(CmsObject cms) throws CmsException {

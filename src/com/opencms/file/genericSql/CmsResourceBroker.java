@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/01/20 17:57:50 $
-* Version: $Revision: 1.348 $
+* Date   : $Date: 2003/01/20 23:59:31 $
+* Version: $Revision: 1.349 $
 
 *
 * This library is part of OpenCms -
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.348 $ $Date: 2003/01/20 17:57:50 $
+ * @version $Revision: 1.349 $ $Date: 2003/01/20 23:59:31 $
 
  *
  */
@@ -156,7 +156,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
  * @param currentProject The current project of the user.
  * @param taskid The Id of the task to accept.
  *
- * @exception CmsException Throws CmsException if something goes wrong.
+ * @throws CmsException Throws CmsException if something goes wrong.
  */
 public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskId) throws CmsException
 {
@@ -417,7 +417,7 @@ protected boolean accessOther(CmsUser currentUser, CmsProject currentProject, Cm
      * @param currentProject The current project of the user.
      * @param projectId the id of the project.
      * @return true, if the user has access, else returns false.
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public boolean accessProject(CmsUser currentUser, CmsProject currentProject,
                                  int projectId)
@@ -795,12 +795,12 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
      * @param currentProject The current project of the user.
      * @param name The name of the new group.
      * @param description The description for the new group.
-     * @int flags The flags for the new group.
+     * @param flags The flags for the new group.
      * @param name The name of the parent group (or null).
      *
      * @return Group
      *
-     * @exception CmsException Throws CmsException if operation was not succesfull.
+     * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public CmsGroup addGroup(CmsUser currentUser, CmsProject currentProject,
                                String name, String description, int flags, String parent)
@@ -841,7 +841,7 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
      *
      * @return user The added user will be returned.
      *
-     * @exception CmsException Throws CmsException if operation was not succesfull.
+     * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public CmsUser addUser(CmsObject cms, CmsUser currentUser, CmsProject currentProject, String name,
                            String password, String group, String description,
@@ -897,7 +897,7 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
      *
      * @return user The added user will be returned.
      *
-     * @exception CmsException Throws CmsException if operation was not succesfull.
+     * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public CmsUser addImportUser(CmsUser currentUser, CmsProject currentProject,
         String name, String password, String recoveryPassword, String description,
@@ -932,7 +932,7 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
  * @param currentProject The current project of the user.
  * @param username The name of the user that is to be added to the group.
  * @param groupname The name of the group.
- * @exception CmsException Throws CmsException if operation was not succesfull.
+ * @throws CmsException Throws CmsException if operation was not succesfull.
  */
 public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, String username, String groupname) throws CmsException {
     if (!userInGroup(currentUser, currentProject, username, groupname)) {
@@ -987,7 +987,7 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
      *
      * @return user The added user will be returned.
      *
-     * @exception CmsException Throws CmsException if operation was not succesfull.
+     * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public CmsUser addWebUser(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
                              String name, String password,
@@ -1051,7 +1051,7 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
      *
      * @return user The added user will be returned.
      *
-     * @exception CmsException Throws CmsException if operation was not succesfull.
+     * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public CmsUser addWebUser(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
                              String name, String password,
@@ -1116,7 +1116,7 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @return the anonymous user object.
- * @exception CmsException Throws CmsException if operation was not succesful
+ * @throws CmsException Throws CmsException if operation was not succesful
  */
 public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) throws CmsException
 {
@@ -1145,7 +1145,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
      * @param filename The complete path to the resource.
      * @param newGroup The name of the new group for this resource.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void chgrp(CmsUser currentUser, CmsProject currentProject,
                       String filename, String newGroup)
@@ -1210,7 +1210,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
      * @param filename The complete path to the resource.
      * @param flags The new accessflags for the resource.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void chmod(CmsUser currentUser, CmsProject currentProject,
                       String filename, int flags)
@@ -1280,7 +1280,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
  * @param filename The complete path to the resource.
  * @param newOwner The name of the new owner for this resource.
  *
- * @exception CmsException  Throws CmsException if operation was not succesful.
+ * @throws CmsException  Throws CmsException if operation was not succesful.
  */
 public void chown(CmsUser currentUser, CmsProject currentProject, String filename, String newOwner) throws CmsException {
     CmsResource resource = null;
@@ -1385,7 +1385,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
      * @param filename The complete path to the resource.
      * @param state The new state of this resource.
      *
-     * @exception CmsException will be thrown, if the user has not the rights
+     * @throws CmsException will be thrown, if the user has not the rights
      * for this resource.
      */
     public void chstate(CmsUser currentUser, CmsProject currentProject,
@@ -1444,7 +1444,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
      * @param filename The complete path to the resource.
      * @param newType The name of the new resourcetype for this resource.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void chtype(CmsUser currentUser, CmsProject currentProject,
                       String filename, String newType)
@@ -1513,7 +1513,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
      * @param source The complete path of the sourcefile.
      * @param destination The complete path to the destination.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void copyFile(CmsUser currentUser, CmsProject currentProject,
                          String source, String destination)
@@ -1583,7 +1583,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
      * @param source The complete path of the sourcefolder.
      * @param destination The complete path to the destination.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void copyFolder(CmsUser currentUser, CmsProject currentProject,
                            String source, String destination)
@@ -1640,7 +1640,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
      * @param resource The name of the resource.
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void copyResourceToProject(CmsUser currentUser,
                                       CmsProject currentProject,
@@ -1710,7 +1710,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
      * @param id The id of the project
      * @return the amount of locked resources in this project.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public int countLockedResources(CmsUser currentUser, CmsProject currentProject, int id)
         throws CmsException {
@@ -1735,7 +1735,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
  * Creation date: (09/15/00 %r)
  * @return com.opencms.file.genericSql.CmsDbAccess
  * @param configurations source.org.apache.java.util.Configurations
- * @exception com.opencms.core.CmsException Thrown if CmsDbAccess class could not be instantiated.
+ * @throws com.opencms.core.CmsException Thrown if CmsDbAccess class could not be instantiated.
  */
 public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations configurations) throws CmsException
 {
@@ -1769,7 +1769,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
      * the values for the propertyinfos.
      * @return file The created file.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
      public CmsFile createFile(CmsUser currentUser, CmsGroup currentGroup,
                                CmsProject currentProject,
@@ -1848,7 +1848,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
      *
      * @return file The created file.
      *
-     * @exception CmsException will be thrown for missing propertyinfos, for worng propertydefs
+     * @throws CmsException will be thrown for missing propertyinfos, for worng propertydefs
      * or if the filename is not valid. The CmsException will also be thrown, if the
      * user has not the rights for this resource.
      */
@@ -1937,7 +1937,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
      * 
      * @return CmsResource The created resource.
      *
-     * @exception CmsException will be thrown for missing propertyinfos, for worng propertydefs
+     * @throws CmsException will be thrown for missing propertyinfos, for worng propertydefs
      * or if the filename is not valid. The CmsException will also be thrown, if the
      * user has not the rights for this resource.
      */
@@ -2017,8 +2017,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
  * @param group the group to be set.
  * @param managergroup the managergroup to be set.
  * @param parentId the parent project
- * @exception CmsException Throws CmsException if something goes wrong.
- * @author Martin Langelund
+ * @throws CmsException Throws CmsException if something goes wrong.
  */
 public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, String name, String description, String groupname, String managergroupname) throws CmsException
 {
@@ -2055,8 +2054,7 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
  * @param group the group to be set.
  * @param managergroup the managergroup to be set.
  * @param project type the type of the project
- * @exception CmsException Throws CmsException if something goes wrong.
- * @author Edna Falkenhan
+ * @throws CmsException Throws CmsException if something goes wrong.
  */
 public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, String name, String description, String groupname, String managergroupname, int projecttype) throws CmsException
 {
@@ -2093,8 +2091,7 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
  * @param group the group to be set.
  * @param managergroup the managergroup to be set.
  * @param project type the type of the project
- * @exception CmsException Throws CmsException if something goes wrong.
- * @author Edna Falkenhan
+ * @throws CmsException Throws CmsException if something goes wrong.
  */
 public CmsProject createDirectPublishProject(CmsUser currentUser, CmsProject currentProject, String name, String description, String groupname, String managergroupname, int projecttype) throws CmsException
 {
@@ -2126,8 +2123,7 @@ public CmsProject createDirectPublishProject(CmsUser currentUser, CmsProject cur
  * Changed: added the project type
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
- * @exception CmsException Throws CmsException if something goes wrong.
- * @author Edna Falkenhan
+ * @throws CmsException Throws CmsException if something goes wrong.
  */
 public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsProject currentProject) throws CmsException
 {
@@ -2163,7 +2159,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      *
      * @return The new task project
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsTask createProject(CmsUser currentUser, String projectName,
                                  int projectType, String roleName,
@@ -2204,7 +2200,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param name The name of the propertydefinition to overwrite.
      * @param resourcetype The name of the resource-type for the propertydefinition.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsPropertydefinition createPropertydefinition(CmsUser currentUser,
                                                     CmsProject currentProject,
@@ -2246,7 +2242,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      *
      * @return A new Task Object
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsTask createTask(CmsUser currentUser, int projectid,
                               String agentName, String roleName,
@@ -2292,7 +2288,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      *
      * @return A new Task Object
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsTask createTask(CmsUser currentUser, CmsProject currentProject,
                               String agentName, String roleName,
@@ -2328,7 +2324,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param resource The name of the resource of which the propertyinformations
      * have to be deleted.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void deleteAllProperties(CmsUser currentUser,
                                           CmsProject currentProject,
@@ -2366,7 +2362,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param currentProject The current project of the user.
      * @param filename The complete path of the file.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void deleteFile(CmsUser currentUser, CmsProject currentProject,
                            String filename)
@@ -2431,7 +2427,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param currentProject The current project of the user.
      * @param foldername The complete path of the folder.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void deleteFolder(CmsUser currentUser, CmsProject currentProject,
                              String foldername)
@@ -2489,7 +2485,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param currentProject The current project of the user.
      * @param filename The complete path of the file.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void undeleteResource(CmsUser currentUser, CmsProject currentProject,
                                 String filename)
@@ -2539,7 +2535,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
      * @param delgroup The name of the group that is to be deleted.
-     * @exception CmsException  Throws CmsException if operation was not succesfull.
+     * @throws CmsException  Throws CmsException if operation was not succesfull.
      */
     public void deleteGroup(CmsUser currentUser, CmsProject currentProject,
                             String delgroup)
@@ -2574,7 +2570,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param currentProject The current project of the user.
      * @param id The id of the project to be published.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void deleteProject(CmsUser currentUser, CmsProject currentProject,
                               int id)
@@ -2667,7 +2663,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * has to be read.
      * @param property The propertydefinition-name of which the propertyinformation has to be set.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void deleteProperty(CmsUser currentUser, CmsProject currentProject,
                                       String resource, String property)
@@ -2719,7 +2715,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param resourcetype The name of the resource type for which the
      * propertydefinition is valid.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void deletePropertydefinition(CmsUser currentUser, CmsProject currentProject,
                                      String name, String resourcetype)
@@ -2748,7 +2744,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param currentProject The current project of the user.
      * @param userId The Id of the user to be deleted.
      *
-     * @exception CmsException Throws CmsException if operation was not succesfull.
+     * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public void deleteUser(CmsUser currentUser, CmsProject currentProject,
                            int userId)
@@ -2768,7 +2764,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param currentProject The current project of the user.
      * @param name The name of the user to be deleted.
      *
-     * @exception CmsException Throws CmsException if operation was not succesfull.
+     * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public void deleteUser(CmsUser currentUser, CmsProject currentProject,
                            String username)
@@ -2795,7 +2791,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param currentProject The current project of the user.
      * @param userId The Id of the user to be deleted.
      *
-     * @exception CmsException Throws CmsException if operation was not succesfull.
+     * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public void deleteWebUser(CmsUser currentUser, CmsProject currentProject,
                            int userId)
@@ -2807,7 +2803,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
     }
     /**
      * Destroys the resource broker and required modules and connections.
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void destroy()
         throws CmsException {
@@ -2824,7 +2820,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param currentProject The current project of the user.
      * @param taskid The ID of the task to end.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void endTask(CmsUser currentUser, CmsProject currentProject, int taskid)
         throws CmsException {
@@ -2852,7 +2848,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param exportPath the names (absolute Path) of folders and files which should be exported
      * @param cms the cms-object to use for the export.
      *
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
     public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms)
         throws CmsException {
@@ -2877,7 +2873,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
      * @param cms the cms-object to use for the export.
      *
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
     public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged)
         throws CmsException {
@@ -2905,7 +2901,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param contentAge Max age of content to be exported (timestamp)
      * @param report the cmsReport to handle the log messages.
      *
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
     public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged, boolean exportUserdata, long contentAge, I_CmsReport report)
         throws CmsException {
@@ -2930,7 +2926,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param exportModules the names of modules from which should be exported
      * @param cms the cms-object to use for the export.
      *
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
     public void exportModuledata(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportChannels, String[] exportModules, CmsObject cms)
         throws CmsException {
@@ -2967,7 +2963,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param newRole The new Group for the task
      * @param newUser The new user who gets the task. if its "" the a new agent will automatic selected
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void forwardTask(CmsUser currentUser, CmsProject currentProject, int taskid,
                             String newRoleName, String newUserName)
@@ -3088,7 +3084,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      *
      * @return Vector with all projects from history.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
      public Vector getAllBackupProjects() throws CmsException{
         Vector projects = new Vector();
@@ -3101,7 +3097,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      *
      * @return Vector (Strings) with all export links.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
      public Vector getAllExportLinks() throws CmsException{
         return m_dbAccess.getAllExportLinks();
@@ -3118,7 +3114,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      *
      * Returns a Hashtable with all I_CmsResourceTypes.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public Hashtable getAllResourceTypes(CmsUser currentUser,
                                          CmsProject currentProject)
@@ -3184,7 +3180,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param currentProject The current project of the user.
      * @param groupname The name of the group.
      * @return groups A Vector of all child groups or null.
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getChild(CmsUser currentUser, CmsProject currentProject,
                            String groupname)
@@ -3208,7 +3204,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param currentProject The current project of the user.
      * @param groupname The name of the group.
      * @return groups A Vector of all child groups or null.
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getChilds(CmsUser currentUser, CmsProject currentProject,
                             String groupname)
@@ -3268,7 +3264,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param currentProject The current project of the user.
      * @param username The name of the user.
      * @return Vector of groups
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector getDirectGroupsOfUser(CmsUser currentUser, CmsProject currentProject,
                                         String username)
@@ -3294,7 +3290,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
  *
  * @return A Vector with all subfiles for the overgiven folder.
  *
- * @exception CmsException  Throws CmsException if operation was not succesful.
+ * @throws CmsException  Throws CmsException if operation was not succesful.
  */
 public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, String foldername) throws CmsException
 {
@@ -3320,7 +3316,7 @@ public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, S
  *
  * @return A Vector with all subfiles for the overgiven folder.
  *
- * @exception CmsException  Throws CmsException if operation was not succesful.
+ * @throws CmsException  Throws CmsException if operation was not succesful.
  */
 public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, String foldername, boolean includeDeleted) throws CmsException{
     Vector files;
@@ -3378,7 +3374,7 @@ public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, S
  *
  * @return Vector with all names of resources.
  *
- * @exception CmsException Throws CmsException if operation was not succesful.
+ * @throws CmsException Throws CmsException if operation was not succesful.
  */
 public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProject, String propertyDefinition, String propertyValue) throws CmsException {
     return m_dbAccess.getFilesWithProperty(currentProject.getId(), propertyDefinition, propertyValue);
@@ -3432,7 +3428,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
  * @param rootName The name of the root, e.g. /default/vfs
  * @return subfolders A Vector with the complete folder-tree for this project.
  *
- * @exception CmsException  Throws CmsException if operation was not succesful.
+ * @throws CmsException  Throws CmsException if operation was not succesful.
  */
 public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, String rootName) throws CmsException {
     // try to read from cache
@@ -3470,7 +3466,7 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, Stri
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
      * @return users A Vector of all existing groups.
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
      public Vector getGroups(CmsUser currentUser, CmsProject currentProject)
         throws CmsException {
@@ -3492,7 +3488,7 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, Stri
      * @param currentProject The current project of the user.
      * @param username The name of the user.
      * @return Vector of groups
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector getGroupsOfUser(CmsUser currentUser, CmsProject currentProject,
                                   String username)
@@ -3553,7 +3549,7 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, Stri
  * @param currentProject The current project of the user.
  * @param groupname The name of the group.
  * @return group The parent group or null.
- * @exception CmsException Throws CmsException if operation was not succesful.
+ * @throws CmsException Throws CmsException if operation was not succesful.
  */
 public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, String groupname) throws CmsException
 {
@@ -3605,7 +3601,7 @@ public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, String
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
      * @param cms The actual CmsObject
-     * @exception Throws CmsException if access is not allowed.
+     * @throws Throws CmsException if access is not allowed.
      */
 
      public I_CmsRegistry getRegistry(CmsUser currentUser, CmsProject currentProject, CmsObject cms)
@@ -3628,7 +3624,7 @@ public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, String
  *
  * @return subfolders A Vector with resources.
  *
- * @exception CmsException  Throws CmsException if operation was not succesful.
+ * @throws CmsException  Throws CmsException if operation was not succesful.
  */
 public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProject, String folder) throws CmsException {
     CmsFolder offlineFolder = null;
@@ -3680,7 +3676,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      *
      * @return Vector with all resources.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getResourcesWithProperty(CmsUser currentUser, CmsProject currentProject, String propertyDefinition,
                                            String propertyValue, int resourceType) throws CmsException {
@@ -3699,7 +3695,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      *
      * @return Vector with all resources.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getResourcesWithProperty(CmsUser currentUser, CmsProject currentProject, String propertyDefinition)
                                            throws CmsException {
@@ -3718,7 +3714,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      *
      * Returns a I_CmsResourceType.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public I_CmsResourceType getResourceType(CmsUser currentUser,
                                              CmsProject currentProject,
@@ -3750,7 +3746,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      *
      * Returns a I_CmsResourceType.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public I_CmsResourceType getResourceType(CmsUser currentUser,
                                              CmsProject currentProject,
@@ -3789,7 +3785,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      *
      * @return subfolders A Vector with all subfolders for the given folder.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public Vector getSubFolders(CmsUser currentUser, CmsProject currentProject,
                                 String foldername) throws CmsException {
@@ -3814,7 +3810,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      *
      * @return subfolders A Vector with all subfolders for the given folder.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public Vector getSubFolders(CmsUser currentUser, CmsProject currentProject,
                                 String foldername, boolean includeDeleted)
@@ -3864,7 +3860,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @param taskId The Id of the task.
      * @param parName Name of the parameter.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public String getTaskPar(CmsUser currentUser, CmsProject currentProject,
                              int taskId, String parName)
@@ -3878,7 +3874,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      *
      * @return id from the task template
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public int getTaskType(String taskName)
         throws CmsException {
@@ -3893,7 +3889,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
      * @return users A Vector of all existing users.
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getUsers(CmsUser currentUser, CmsProject currentProject)
         throws CmsException {
@@ -3915,7 +3911,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @param currentProject The current project of the user.
      * @param type The type of the users.
      * @return users A Vector of all existing users.
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getUsers(CmsUser currentUser, CmsProject currentProject, int type)
         throws CmsException {
@@ -3938,7 +3934,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @param type The type of the users.
      * @param namestart The filter for the username
      * @return users A Vector of all existing users.
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getUsers(CmsUser currentUser, CmsProject currentProject, int type, String namestart)
         throws CmsException {
@@ -3960,7 +3956,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @param currentProject The current project of the user.
      * @param groupname The name of the group to list users from.
      * @return Vector of users.
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getUsersOfGroup(CmsUser currentUser, CmsProject currentProject,
                                   String groupname)
@@ -3987,7 +3983,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      *
      * @return the users.
      *
-     * @exception CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful.
      */
     public Vector getUsersByLastname(CmsUser currentUser,
                                      CmsProject currentProject, String Lastname,
@@ -4017,7 +4013,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      *
      * @return subfiles A Vector with all subfiles for the overgiven folder.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     protected Vector helperGetFilesInFolder(CmsUser currentUser,
                                           CmsProject currentProject,
@@ -4070,7 +4066,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      *
      * @return subfolders A Hashtable with all subfolders for the given folder.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     protected Vector helperGetSubFolders(CmsUser currentUser,
                                        CmsProject currentProject,
@@ -4113,7 +4109,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @param importPath the name (absolute Path) of folder in which should be imported
      * @param cms the cms-object to use for the import.
      *
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
     public void importFolder(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath, CmsObject cms)
         throws CmsException {
@@ -4139,7 +4135,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @param cms the cms-object to use for the import.
      * @param report A report object to provide the loggin messages.
      *
-     * @exception Throws CmsException if something goes wrong.
+     * @throws Throws CmsException if something goes wrong.
      */
     public void importResources(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath, CmsObject cms, I_CmsReport report)
         throws CmsException {
@@ -4164,7 +4160,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
     /**
      * Initializes the resource broker and sets up all required modules and connections.
      * @param config The OpenCms configuration.
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void init(Configurations config)
         throws CmsException {
@@ -4221,7 +4217,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @param currentProject The current project of the user.
      * @return true, if the users current group is the admin-group,
      * else it returns false.
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public boolean isAdmin(CmsUser currentUser, CmsProject currentProject)
         throws CmsException {
@@ -4238,7 +4234,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
      * @return true, if the may manage this project.
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public boolean isManagerOfProject(CmsUser currentUser, CmsProject currentProject)
         throws CmsException {
@@ -4277,7 +4273,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @param currentProject The current project of the user.
      * @return true, if the users current group is the projectleader-group,
      * else it returns false.
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public boolean isProjectManager(CmsUser currentUser, CmsProject currentProject)
         throws CmsException {
@@ -4295,7 +4291,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @param currentProject The current project of the user.
      * @return true, if the users current group is the projectleader-group,
      * else it returns false.
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public boolean isUser(CmsUser currentUser, CmsProject currentProject)
         throws CmsException {
@@ -4313,7 +4309,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      *
      * @return the user, who had locked the resource.
      *
-     * @exception CmsException will be thrown, if the user has not the rights
+     * @throws CmsException will be thrown, if the user has not the rights
      * for this resource.
      */
     public CmsUser lockedBy(CmsUser currentUser, CmsProject currentProject,
@@ -4333,7 +4329,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      *
      * @return the user, who had locked the resource.
      *
-     * @exception CmsException will be thrown, if the user has not the rights
+     * @throws CmsException will be thrown, if the user has not the rights
      * for this resource.
      */
     public CmsUser lockedBy(CmsUser currentUser, CmsProject currentProject,
@@ -4364,7 +4360,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @param resource The complete path to the resource to lock.
      * @param force If force is true, a existing locking will be oberwritten.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      * It will also be thrown, if there is a existing lock
      * and force was set to false.
      */
@@ -4451,7 +4447,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @param password The password of the user to be returned.
      * @return the logged in user.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public CmsUser loginUser(CmsUser currentUser, CmsProject currentProject,
                                String username, String password)
@@ -4489,7 +4485,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @param password The password of the user to be returned.
      * @return the logged in user.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public CmsUser loginWebUser(CmsUser currentUser, CmsProject currentProject,
                                String username, String password)
@@ -4582,7 +4578,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @param source The complete path of the sourcefile.
      * @param destination The complete path of the destinationfile.
      *
-     * @exception CmsException will be thrown, if the file couldn't be moved.
+     * @throws CmsException will be thrown, if the file couldn't be moved.
      * The CmsException will also be thrown, if the user has not the rights
      * for this resource.
      */
@@ -4616,7 +4612,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @return the onlineproject object.
- * @exception CmsException Throws CmsException if something goes wrong.
+ * @throws CmsException Throws CmsException if something goes wrong.
  */
 public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) throws CmsException {
     CmsProject project = null;
@@ -4646,7 +4642,7 @@ public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) 
  * @param startpoints the startpoints for the export.
  * @param report the cmsReport to handle the log messages.
  *
- * @exception CmsException if operation was not successful.
+ * @throws CmsException if operation was not successful.
  */
 public synchronized void exportStaticResources(CmsUser currentUser, CmsProject currentProject,
                      CmsObject cms, Vector startpoints, Vector projectResources, Vector allExportedLinks,
@@ -4672,7 +4668,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      * @param cms the cms-object to use for the export.
      * @param linksToExport all links that where exported by the master OpenCms.
      *
-     * @exception CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful.
      */
     public synchronized void exportStaticResources(CmsUser currentUser, CmsProject currentProject,
                  CmsObject cms, Vector linksToExport) throws CmsException {
@@ -4699,7 +4695,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      * @param report A report object to provide the loggin messages.
      * @return CmsPublishedResources The object includes the vectors of changed resources.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public synchronized CmsPublishedResources publishProject(CmsObject cms, CmsUser currentUser,
                     CmsProject currentProject, int id, I_CmsReport report) throws CmsException {
@@ -4842,7 +4838,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      * @param task The task to read the agent from.
      * @return The owner of a task.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsUser readAgent(CmsUser currentUser, CmsProject currentProject,
                                CmsTask task)
@@ -4869,7 +4865,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      *
      * @return Vector of file headers read from the Cms.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
      public Vector readAllFileHeaders(CmsUser currentUser, CmsProject currentProject,
                                       String filename)
@@ -4904,7 +4900,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      *
      * @return Vector of file headers read from the Cms.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
      public Vector readAllFileHeadersForHist(CmsUser currentUser, CmsProject currentProject,
                                       String filename)
@@ -4926,7 +4922,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      * @param project The project in which the resource is used.
      *
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector readAllProjectResources(int projectId) throws CmsException {
         return m_dbAccess.readAllProjectResources(projectId);
@@ -4945,7 +4941,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      *
      * @return Vector of propertyinformation as Strings.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Hashtable readAllProperties(CmsUser currentUser, CmsProject currentProject,
                                              String resource)
@@ -4992,7 +4988,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
      * The Vector is maybe empty.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject,
                                          int resourceType)
@@ -5020,7 +5016,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
      * The Vector is maybe empty.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject,
                                               String resourcetype)
@@ -5156,7 +5152,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      *
      * @return The exportrequest read from the Cms.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
      public CmsExportLink readExportLink(String request) throws CmsException{
         return m_dbAccess.readExportLink(request);
@@ -5169,7 +5165,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      *
      * @return The exportrequest read from the Cms.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
      public CmsExportLink readExportLinkHeader(String request) throws CmsException{
         return m_dbAccess.readExportLinkHeader(request);
@@ -5180,7 +5176,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      *
      * @param link the cmsexportlink object to write.
      *
-     * @exception CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
     public void writeExportLink(CmsExportLink link) throws CmsException {
         m_dbAccess.writeExportLink(link);
@@ -5206,7 +5202,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      *
      * @param link the cmsexportlink.
      *
-     * @exception CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
     public void writeExportLinkProcessedState(CmsExportLink link) throws CmsException {
         m_dbAccess.writeExportLinkProcessedState(link);
@@ -5239,7 +5235,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
  *
  * @return The file read from the Cms.
  *
- * @exception CmsException  Throws CmsException if operation was not succesful.
+ * @throws CmsException  Throws CmsException if operation was not succesful.
  * */
 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, int projectId, String filename) throws CmsException
 {
@@ -5290,7 +5286,7 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, int proj
  *
  * @return The file read from the Cms.
  *
- * @exception CmsException  Throws CmsException if operation was not succesful.
+ * @throws CmsException  Throws CmsException if operation was not succesful.
  * */
 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String filename) throws CmsException
 {
@@ -5343,7 +5339,7 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
  *
  * @return The file read from the Cms.
  *
- * @exception CmsException  Throws CmsException if operation was not succesful.
+ * @throws CmsException  Throws CmsException if operation was not succesful.
  * */
 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String filename, boolean includeDeleted) throws CmsException
 {
@@ -5417,7 +5413,7 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
      *
      * @return The file read from the Cms.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
      public CmsResource readFileHeader(CmsUser currentUser,
                                        CmsProject currentProject,
@@ -5467,7 +5463,7 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
      *
      * @return The file read from the Cms.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
      public CmsResource readFileHeader(CmsUser currentUser,
                                          CmsProject currentProject, String filename)
@@ -5519,7 +5515,7 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
      *
      * @return The file read from the Cms.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
      public CmsResource readFileHeader(CmsUser currentUser,
                                          CmsProject currentProject, String filename,
@@ -5567,7 +5563,7 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
      *
      * @return The file read from the Cms.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
      public CmsBackupResource readFileHeaderForHist(CmsUser currentUser,
                                                     CmsProject currentProject,
@@ -5598,7 +5594,7 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
      *
      * @return The file read from the Cms.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
      public CmsBackupResource readFileForHist(CmsUser currentUser,
                                               CmsProject currentProject,
@@ -5624,7 +5620,7 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
      *
      * @return a Vector of resources.
      *
-     * @exception CmsException will be thrown, if the file couldn't be read.
+     * @throws CmsException will be thrown, if the file couldn't be read.
      * The CmsException will also be thrown, if the user has not the rights
      * for this resource.
      */
@@ -5661,7 +5657,7 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
  *
  * @return folder The read folder.
  *
- * @exception CmsException will be thrown, if the folder couldn't be read.
+ * @throws CmsException will be thrown, if the folder couldn't be read.
  * The CmsException will also be thrown, if the user has not the rights
  * for this resource
  */
@@ -5697,7 +5693,7 @@ protected CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, i
  *
  * @return folder The read folder.
  *
- * @exception CmsException will be thrown, if the folder couldn't be read.
+ * @throws CmsException will be thrown, if the folder couldn't be read.
  * The CmsException will also be thrown, if the user has not the rights
  * for this resource.
  */
@@ -5722,7 +5718,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
  *
  * @return folder The read folder.
  *
- * @exception CmsException will be thrown, if the folder couldn't be read.
+ * @throws CmsException will be thrown, if the folder couldn't be read.
  * The CmsException will also be thrown, if the user has not the rights
  * for this resource.
  */
@@ -5770,7 +5766,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
  *
  * @return folder The read folder.
  *
- * @exception CmsException will be thrown, if the folder couldn't be read.
+ * @throws CmsException will be thrown, if the folder couldn't be read.
  * The CmsException will also be thrown, if the user has not the rights
  * for this resource.
  */
@@ -5806,7 +5802,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
      * @param orderBy Chooses, how to order the tasks.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public Vector readGivenTasks(CmsUser currentUser, CmsProject currentProject,
                                  int projectId, String ownerName, int taskType,
@@ -5835,7 +5831,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
      * @return The group of a resource.
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject,
                                 CmsProject project)
@@ -5869,7 +5865,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @param currentProject The current project of the user.
      * @return The group of a resource.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject,
                                CmsResource resource)
@@ -5901,7 +5897,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @param task The task to read from.
      * @return The group of a resource.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject,
                                CmsTask task)
@@ -5919,7 +5915,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @param groupname The name of the group that is to be read.
      * @return Group.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful
+     * @throws CmsException  Throws CmsException if operation was not succesful
      */
     public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject,
                                 String groupname)
@@ -5947,7 +5943,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @param groupid The id of the group that is to be read.
      * @return Group.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful
+     * @throws CmsException  Throws CmsException if operation was not succesful
      */
     public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject,
                               int groupid)
@@ -5963,7 +5959,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
      * @return The group of a resource.
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsGroup readManagerGroup(CmsUser currentUser, CmsProject currentProject,
                                      CmsProject project)
@@ -6023,7 +6019,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @param task The task to read the original agent from.
      * @return The owner of a task.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsUser readOriginalAgent(CmsUser currentUser, CmsProject currentProject,
                                        CmsTask task)
@@ -6040,7 +6036,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @param currentProject The current project of the user.
      * @return The owner of a resource.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject,
                                CmsProject project)
@@ -6057,7 +6053,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @param currentProject The current project of the user.
      * @return The owner of a resource.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject,
                                CmsResource resource)
@@ -6075,7 +6071,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @param task The task to read the owner from.
      * @return The owner of a task.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject,
                                CmsTask task)
@@ -6092,7 +6088,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @param currentProject The current project of the user.
      * @return The owner of a resource.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, CmsTaskLog log)
         throws CmsException {
@@ -6108,7 +6104,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @param currentProject The current project of the user.
      * @param id The id of the project to read.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
         public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, int id) throws CmsException {
           CmsProject project=null;
@@ -6129,7 +6125,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @param currentProject The current project of the user.
      * @param res The resource to read the project of.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
      public CmsProject readProject(CmsUser currentUser, CmsProject currentProject,
                                    CmsResource res)
@@ -6146,7 +6142,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @param currentProject The current project of the user.
      * @param task The task to read the project of.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
      public CmsProject readProject(CmsUser currentUser, CmsProject currentProject,
                                    CmsTask task)
@@ -6204,7 +6200,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @param currentProject The current project of the user.
      * @param versionId The versionId of the project.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
      public CmsBackupProject readBackupProject(CmsUser currentUser, CmsProject currentProject, int versionId)
          throws CmsException {
@@ -6216,7 +6212,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      *
      * @param projectId The id of the projec for tasklog to read.
      * @return A Vector of new TaskLog objects
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public Vector readProjectLogs(CmsUser currentUser, CmsProject currentProject,
                                   int projectid)
@@ -6350,7 +6346,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @return propertydefinition The propertydefinition that corresponds to the overgiven
      * arguments - or null if there is no valid propertydefinition.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsPropertydefinition readPropertydefinition(CmsUser currentUser,
                                                   CmsProject currentProject,
@@ -6372,7 +6368,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
  * Creation date: (09-10-2000 09:29:45)
  * @return java.util.Vector
  * @param project com.opencms.file.CmsProject
- * @exception com.opencms.core.CmsException The exception description.
+ * @throws com.opencms.core.CmsException The exception description.
  */
 public Vector readResources(CmsProject project) throws com.opencms.core.CmsException
 {
@@ -6388,7 +6384,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @param currentProject The current project of the user.
      * @param id The id for the task to read.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsTask readTask(CmsUser currentUser, CmsProject currentProject,
                             int id)
@@ -6405,7 +6401,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @param currentProject The current project of the user.
      * @param taskid The task for the tasklog to read .
      * @return A Vector of new TaskLog objects
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public Vector readTaskLogs(CmsUser currentUser, CmsProject currentProject,
                                int taskid)
@@ -6421,11 +6417,11 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
      * @param projectId The id of the Project in which the tasks are defined. Can be null for all tasks
-     * @tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
+     * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
      * @param orderBy Chooses, how to order the tasks.
      * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public Vector readTasksForProject(CmsUser currentUser, CmsProject currentProject,
                                       int projectId, int tasktype,
@@ -6452,7 +6448,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
      * @param orderBy Chooses, how to order the tasks.
      * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public Vector readTasksForRole(CmsUser currentUser, CmsProject currentProject,
                                    int projectId, String roleName, int tasktype,
@@ -6485,7 +6481,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @param taskType Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
      * @param orderBy Chooses, how to order the tasks.
      * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public Vector readTasksForUser(CmsUser currentUser, CmsProject currentProject,
                                    int projectId, String userName, int taskType,
@@ -6510,7 +6506,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @param currentProject The current project of the user.
      * @param id The id of the user that is to be read.
      * @return User
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public CmsUser readUser(CmsUser currentUser, CmsProject currentProject,
                               int id)
@@ -6539,7 +6535,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @param currentProject The current project of the user.
      * @param username The name of the user that is to be read.
      * @return User
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public CmsUser readUser(CmsUser currentUser, CmsProject currentProject,
                               String username)
@@ -6568,7 +6564,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @param username The name of the user that is to be read.
      * @param type The type of the user.
      * @return User
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public CmsUser readUser(CmsUser currentUser, CmsProject currentProject,
                               String username,int type)
@@ -6598,7 +6594,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @param password The password of the user that is to be read.
      * @return User
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful
+     * @throws CmsException  Throws CmsException if operation was not succesful
      */
     public CmsUser readUser(CmsUser currentUser, CmsProject currentProject,
                               String username, String password)
@@ -6623,7 +6619,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @param username The username of the user that is to be read.
      * @return User
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful
+     * @throws CmsException  Throws CmsException if operation was not succesful
      */
     public CmsUser readWebUser(CmsUser currentUser, CmsProject currentProject,
                               String username)
@@ -6653,7 +6649,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @param password The password of the user that is to be read.
      * @return User
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful
+     * @throws CmsException  Throws CmsException if operation was not succesful
      */
     public CmsUser readWebUser(CmsUser currentUser, CmsProject currentProject,
                               String username, String password)
@@ -6678,7 +6674,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @param currentProject The current project of the user.
      * @param taskid The Id of the task to accept.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void reaktivateTask(CmsUser currentUser, CmsProject currentProject,
                                int taskId)
@@ -6708,7 +6704,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @param recoveryPassword The recovery password.
      * @param newPassword The new password.
      *
-     * @exception CmsException Throws CmsException if operation was not succesfull.
+     * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public void recoverPassword(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
                             String username, String recoveryPassword, String newPassword)
@@ -6736,7 +6732,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @param currentProject The current project of the user.
      * @param username The name of the user that is to be removed from the group.
      * @param groupname The name of the group.
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public void removeUserFromGroup(CmsUser currentUser, CmsProject currentProject,
                                     String username, String groupname)
@@ -6808,7 +6804,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
  * @param oldname The complete path to the resource which will be renamed.
  * @param newname The new name of the resource (CmsUser callingUser, No path information allowed).
  *
- * @exception CmsException  Throws CmsException if operation was not succesful.
+ * @throws CmsException  Throws CmsException if operation was not succesful.
  */
 public void renameFile(CmsUser currentUser, CmsProject currentProject, String oldname, String newname) throws CmsException {
 
@@ -6848,7 +6844,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
      * @param versionId The version id of the resource
      * @param filename The name of the file to restore
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void restoreResource(CmsUser currentUser, CmsProject currentProject,
                                    int versionId, String filename) throws CmsException {
@@ -6900,7 +6896,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
      * @param taskid The Id of the task to set the percentage.
      * @param name The new name value
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void setName(CmsUser currentUser, CmsProject currentProject,
                         int taskId, String name)
@@ -6927,7 +6923,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
      * @param groupName The name of the group that should be written to the Cms.
      * @param parentGroupName The name of the parentGroup to set, or null if the parent
      * group should be deleted.
-     * @exception CmsException  Throws CmsException if operation was not succesfull.
+     * @throws CmsException  Throws CmsException if operation was not succesfull.
      */
     public void setParentGroup(CmsUser currentUser, CmsProject currentProject,
                                String groupName, String parentGroupName)
@@ -6965,7 +6961,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
      * @param username The name of the user.
      * @param newPassword The new password.
      *
-     * @exception CmsException Throws CmsException if operation was not succesfull.
+     * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public void setPassword(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
                             String username, String newPassword)
@@ -6995,7 +6991,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
      * @param oldPassword The new password.
      * @param newPassword The new password.
      *
-     * @exception CmsException Throws CmsException if operation was not succesfull.
+     * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public void setPassword(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
                             String username, String oldPassword, String newPassword)
@@ -7029,7 +7025,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
      * @param taskid The Id of the task to set the percentage.
      * @param new priority value
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void setPriority(CmsUser currentUser, CmsProject currentProject,
                             int taskId, int priority)
@@ -7057,7 +7053,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
      * @param password The password of the user.
      * @param newPassword The new recoveryPassword to be set.
      *
-     * @exception CmsException Throws CmsException if operation was not succesfull.
+     * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public void setRecoveryPassword(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
                             String username, String password, String newPassword)
@@ -7089,7 +7085,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
      *
      * @return The id of the inserted parameter or 0 if the parameter already exists for this task.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void setTaskPar(CmsUser currentUser, CmsProject currentProject,
                            int taskId, String parName, String parValue)
@@ -7107,7 +7103,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
      * @param taskid The Id of the task to set the percentage.
      * @param new timeout value
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void setTimeout(CmsUser currentUser, CmsProject currentProject,
                            int taskId, long timeout)
@@ -7148,7 +7144,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
      * @param currentProject The current project of the user.
      * @param resourceName The name of the resource to be restored.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void undoChanges(CmsUser currentUser, CmsProject currentProject, String resourceName)
         throws CmsException {
@@ -7237,7 +7233,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
      * @param currentProject The current project of the user.
      * @param id The id of the project to be published.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void unlockProject(CmsUser currentUser, CmsProject currentProject, int id)
         throws CmsException {
@@ -7276,7 +7272,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
      * @param project The project in which the resource will be used.
      * @param resourcename The complete path to the resource to lock.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void unlockResource(CmsUser currentUser,CmsProject currentProject,
                                String resourcename)
@@ -7352,7 +7348,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
      * @param groupname The name of the group to check.
      * @return True or False
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public boolean userInGroup(CmsUser currentUser, CmsProject currentProject,
                                String username, String groupname)
@@ -7373,7 +7369,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
      *
      * @param filename String to check
      *
-     * @exception throws a exception, if the check fails.
+     * @throws throws a exception, if the check fails.
      */
     protected void validFilename( String filename )
         throws CmsException {
@@ -7410,7 +7406,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
      *
      * @param filename String to check
      *
-     * @exception throws a exception, if the check fails.
+     * @throws throws a exception, if the check fails.
      */
     protected void validTaskname( String taskname )
         throws CmsException {
@@ -7451,7 +7447,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
  *
  * @param name String to check
  *
- * @exception throws a exception, if the check fails.
+ * @throws throws a exception, if the check fails.
  */
 protected void validName(String name, boolean blank) throws CmsException {
     if (name == null || name.length() == 0 || name.trim().length() == 0) {
@@ -7534,7 +7530,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      * @param currentProject The project in which the resource will be used.
      * @param file The name of the file to write.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void writeFile(CmsUser currentUser, CmsProject currentProject,
                           CmsFile file)
@@ -7590,7 +7586,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      * @param resourceType The new type of the resource
      * @param filecontent The new filecontent of the resource
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void writeResource(CmsUser currentUser, CmsProject currentProject,
                                String resourcename, Hashtable properties,
@@ -7695,7 +7691,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      * @param currentProject The project in which the resource will be used.
      * @param file The file to write.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void writeFileHeader(CmsUser currentUser, CmsProject currentProject,
                                 CmsFile file)
@@ -7725,7 +7721,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
      * @param group The group that should be written to the Cms.
-     * @exception CmsException  Throws CmsException if operation was not succesfull.
+     * @throws CmsException  Throws CmsException if operation was not succesfull.
      */
     public void writeGroup(CmsUser currentUser, CmsProject currentProject,
                            CmsGroup group)
@@ -7752,7 +7748,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      * has to be read.
      * @param propertyinfos A Hashtable with propertydefinition- propertyinfo-pairs as strings.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void writeProperties(CmsUser currentUser, CmsProject currentProject,
                                       String resource, Hashtable propertyinfos)
@@ -7795,7 +7791,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      * @param property The propertydefinition-name of which the propertyinformation has to be set.
      * @param value The value for the propertyinfo to be set.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void writeProperty(CmsUser currentUser, CmsProject currentProject,
                                      String resource, String property, String value)
@@ -7840,7 +7836,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      *
      * @return The propertydefinition, that was written.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsPropertydefinition writePropertydefinition(CmsUser currentUser,
                                                    CmsProject currentProject,
@@ -7866,7 +7862,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      * @param taskid The Id of the task .
      * @param comment Description for the log
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void writeTaskLog(CmsUser currentUser, CmsProject currentProject,
                              int taskid, String comment)
@@ -7888,7 +7884,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      * @param comment Description for the log
      * @param tasktype Type of the tasklog. User tasktypes must be greater then 100.
      *
-     * @exception CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void writeTaskLog(CmsUser currentUser, CmsProject currentProject,
                              int taskid, String comment, int type)
@@ -7910,7 +7906,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      * @param currentProject The current project of the user.
      * @param user The  user to be updated.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void writeUser(CmsUser currentUser, CmsProject currentProject,
                           CmsUser user)
@@ -7943,7 +7939,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      * @param currentProject The current project of the user.
      * @param user The  user to be updated.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void writeWebUser(CmsUser currentUser, CmsProject currentProject,
                           CmsUser user)
@@ -8012,7 +8008,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      * @param publishDate The date of publishing
      * @param userId The id of the user who had published the project
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
 
     public void backupProject(int projectId, int versionId,
@@ -8191,7 +8187,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      * the access to the workplace can be limited to a user defined port. With this
      * feature a firewall can block all outside requests to this port with the result
      * the workplace is only available in the local net segment.
-     * @returns the portnumber or -1 if no port is set.
+     * @return the portnumber or -1 if no port is set.
      */
     public int getLimitedWorkplacePort() {
         return m_limitedWorkplacePort;
@@ -8271,7 +8267,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      *
      * @return subfolders A Vector with resources.
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public Vector readResourcesLikeName(CmsUser currentUser, CmsProject currentProject, String resourcename) throws CmsException {
         Vector resources = new Vector();
@@ -8300,7 +8296,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      *
      * @return A Vector of files.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector readFilesByType(CmsUser currentUser, CmsProject currentProject, int projectId, int resourcetype) throws CmsException {
         Vector resources = new Vector();
@@ -8447,7 +8443,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      *
      * @return Vector with all resources.
      *
-     * @exception CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getVisibleResourcesWithProperty(CmsUser currentUser, CmsProject currentProject, String propertyDefinition,
                                            String propertyValue, int resourceType) throws CmsException {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLink.java,v $
-* Date   : $Date: 2002/12/06 23:16:53 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/01/20 23:59:22 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ package com.opencms.template.cache;
  * only the name of the linked element. Which element is linked will be
  * determinded during the runtime of the content-creation (getContent-method).
  *
- * @author: Andreas Schouten
+ * @author Andreas Schouten
  */
 public class CmsElementLink {
 
@@ -53,7 +53,7 @@ public class CmsElementLink {
 
     /**
      * Returns the name of the element to link to.
-     * @returns the name of the element to link to.
+     * @return the name of the element to link to.
      */
     public String toString() {
         return m_elementName;
@@ -61,7 +61,7 @@ public class CmsElementLink {
 
     /**
      * Returns the name of the element to link to.
-     * @returns the name of the element to link to.
+     * @return the name of the element to link to.
      */
     public String getElementName() {
         return toString();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsJavascriptTemplate.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/01/20 23:59:21 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -26,14 +26,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-
 package com.opencms.template;
 
-/** Document the purpose of this class.
- *
- * @version 1.0
- * @author 
- */
-public interface I_CmsJavascriptTemplate extends I_CmsTemplate {
-    
+public interface I_CmsJavascriptTemplate extends I_CmsTemplate {    
 }
