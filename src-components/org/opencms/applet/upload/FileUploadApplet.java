@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2003/10/28 13:28:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/10/28 14:09:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -161,9 +161,9 @@ public class FileUploadApplet extends JApplet implements Runnable {
         // setup the applet output
         m_font = new java.awt.Font("Verdana", Font.BOLD, 12);
         m_metrics = getFontMetrics(m_font);
-        m_source=getImage(getCodeBase(), "images/folder_open.gif");
-        m_target=getImage(getCodeBase(), "images/ocms.gif");
-        m_floater=getImage(getCodeBase(), "images/floater.gif");
+        m_source=getImage(getCodeBase(), "org/opencms/applet/upload/folder_open.gif");
+        m_target=getImage(getCodeBase(), "org/opencms/applet/upload/ocms.gif");
+        m_floater=getImage(getCodeBase(), "org/opencms/applet/upload/floater.gif");
         
         // get the output massages in the correct language
         if (getParameter("actionOutputSelect")!=null) m_actionOutputSelect = getParameter("actionOutputSelect");
