@@ -142,9 +142,9 @@ Other Preference input forms will be added here
 					<TD ALIGN=CENTER class=dialogtxt>i</TD>
 				</TR>
 				<TR>
-					<TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="ur" ]]><PROCESS>CHECKUR</PROCESS><![CDATA[></TD>
-					<TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="uw" ]]><PROCESS>CHECKUW</PROCESS><![CDATA[></TD>
-					<TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="uv" ]]><PROCESS>CHECKUV</PROCESS><![CDATA[></TD>
+					<TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="ur" ]]><PROCESS>CHECKUR</PROCESS><![CDATA[ disabled ></TD>
+					<TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="uw" ]]><PROCESS>CHECKUW</PROCESS><![CDATA[ disabled ></TD>
+					<TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="uv" ]]><PROCESS>CHECKUV</PROCESS><![CDATA[ disabled ></TD>
 					<TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="gr" ]]><PROCESS>CHECKGR</PROCESS><![CDATA[></TD>
 					<TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="gw" ]]><PROCESS>CHECKGW</PROCESS><![CDATA[></TD>
 					<TD ALIGN=CENTER class=dialogtxt><INPUT TYPE=CHECKBOX NAME="gv" ]]><PROCESS>CHECKGV</PROCESS><![CDATA[></TD>
