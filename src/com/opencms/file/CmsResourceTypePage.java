@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2001/11/14 10:12:35 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2001/12/20 10:48:56 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.23 $ $Date: 2001/11/14 10:12:35 $
+ * @version $Revision: 1.24 $ $Date: 2001/12/20 10:48:56 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -629,15 +629,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     */
     public void moveResource(CmsObject cms, String source, String destination) throws CmsException{
         CmsFile file = cms.readFile(source);
-        //String bodyPath = readBodyPath(cms, source);
         String bodyPath = checkBodyPath(cms, file);
-        //int help = C_CONTENTBODYPATH.lastIndexOf("/");
-        //String hbodyPath=(C_CONTENTBODYPATH.substring(0,help)) + source;
-        //if(hbodyPath.equals(bodyPath)) {
         if(bodyPath != null) {
-            //help=bodyPath.lastIndexOf("/") + 1;
-            //hbodyPath = bodyPath.substring(0,help) + destination;
-            //String hbodyPath = bodyPath.substring(0, bodyPath.lastIndexOf("/")) + destination;
             String hbodyPath = C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/")) + destination;
             checkFolders(cms, destination.substring(0, destination.lastIndexOf("/")));
             cms.doMoveFile(bodyPath, hbodyPath);
@@ -916,7 +909,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      */
     public void changeLockedInProject(CmsObject cms, int newProjectId, String resourcename)
         throws CmsException{
-        CmsFile file = cms.readFile(resourcename);
+        CmsFile file = cms.readFile(resourcename, true);
         cms.doChangeLockedInProject(newProjectId, resourcename);
         String bodyPath = checkBodyPath(cms, (CmsFile)file);
         if (bodyPath != null){
