@@ -26,6 +26,15 @@
         <repository>
             <path>/system/classes/</path>
         </repository>
+		<syncpath>c:/work41/sync</syncpath>
+		<syncproject>_syncProject</syncproject>
+		<syncresource>
+			<res1>/content/</res1>
+			<res2>/system/workplace/config/</res2>
+			<res3>/system/workplace/action/syncfolder.html</res3>
+			<res4>/system/workplace/templates/syncfolder</res4>
+			<res5>/system/workplace/templates/head</res5>
+		</syncresource>
     </system>
     <modules/>
 </registry>
