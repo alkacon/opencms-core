@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/05 12:22:25 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2003/09/08 11:37:51 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.48 $ $Date: 2003/09/05 12:22:25 $
+ * @version $Revision: 1.49 $ $Date: 2003/09/08 11:37:51 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -340,29 +340,6 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if something goes wrong
      */   
     boolean existsStructureId(int projectId, CmsUUID structureId) throws CmsException;      
-    
-    /**
-     * Returns the date of the last modification of a resource.<p>
-     * 
-     * @param theProjectId the id of the project
-     * @param theResourceId the id of the resource
-     * @param theDefaultDate the default date
-     * @return the date of the resource or the default date if the resource does not exist
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    long fetchDateFromResource(int theProjectId, int theResourceId, long theDefaultDate) throws CmsException;
-
-    /**
-     * Returns the set of flags of a resource.<p>
-     * 
-     * @param theProject the id of the project
-     * @param theResourceName the name of the resource
-     * @return the flag set of the resource
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    int fetchResourceFlags(CmsProject theProject, String theResourceName) throws CmsException;
     
     /**
      * Gets a list of all hard and soft links pointing to the content of a resource.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/08 09:28:27 $
- * Version: $Revision: 1.116 $
+ * Date   : $Date: 2003/09/08 11:37:51 $
+ * Version: $Revision: 1.117 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.116 $ $Date: 2003/09/08 09:28:27 $
+ * @version $Revision: 1.117 $ $Date: 2003/09/08 11:37:51 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -211,10 +211,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         resProjectId = lockedInProject;
 
-        if (org.opencms.db.generic.CmsProjectDriver.C_USE_TARGET_DATE && resourceType == org.opencms.db.generic.CmsProjectDriver.C_RESTYPE_LINK_ID && resourceFlags > 0) {
-            dateLastModified = fetchDateFromResource(projectId, resourceFlags, dateLastModified);
-        }
-
         int newState = (structureState > resourceState) ? structureState : resourceState;
 
         return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, newState, loaderId, dateCreated, userCreated, dateLastModified, userLastModified, resourceSize, linkCount, content);
@@ -241,10 +237,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_USER_LASTMODIFIED")));
         byte[] content = m_sqlManager.getBytes(res, m_sqlManager.get("C_RESOURCES_FILE_CONTENT"));
         int linkCount = res.getInt(m_sqlManager.get("C_RESOURCES_LINK_COUNT"));
-
-        if (org.opencms.db.generic.CmsProjectDriver.C_USE_TARGET_DATE && resourceType == org.opencms.db.generic.CmsProjectDriver.C_RESTYPE_LINK_ID && resourceFlags > 0) {
-            dateLastModified = fetchDateFromResource(projectId, resourceFlags, dateLastModified);
-        }
         
         int newState = (structureState > resourceState) ? structureState : resourceState;
         
@@ -311,10 +303,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_USER_CREATED")));
         CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_USER_LASTMODIFIED")));
         int linkCount = res.getInt(m_sqlManager.get("C_RESOURCES_LINK_COUNT"));
-
-        if (org.opencms.db.generic.CmsProjectDriver.C_USE_TARGET_DATE && resourceType == org.opencms.db.generic.CmsProjectDriver.C_RESTYPE_LINK_ID && resourceFlags > 0) {
-            dateLastModified = fetchDateFromResource(projectId, resourceFlags, dateLastModified);
-        }
         
         int newState = (structureState > resourceState) ? structureState : resourceState;
                      
@@ -543,7 +531,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             m_sqlManager.closeAll(conn, stmt, null);
         }
 
-        return this.readFileHeader(project.getId(), resource.getId(), false); 
+        return readFileHeader(project.getId(), resource.getId(), false); 
     }
         
     /**
@@ -1451,79 +1439,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
         }
     }    
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#fetchDateFromResource(int, int, long)
-     */
-    // TODO: should this be renamed to getDateFromResource ???
-    public long fetchDateFromResource(int theProjectId, int theResourceId, long theDefaultDate) throws CmsException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        ResultSet res = null;
-        long date_lastModified = theDefaultDate;
-
-        try {
-            // execute the query
-            conn = m_sqlManager.getConnection(theProjectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, theProjectId, "C_SELECT_RESOURCE_DATE_LASTMODIFIED");
-            stmt.setInt(1, theResourceId);
-            res = stmt.executeQuery();
-
-            if (res.next()) {
-                date_lastModified = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                //System.err.println( "date: " + result.getObject(1).toString() );
-            } else {
-                date_lastModified = theDefaultDate;
-            }
-        } catch (SQLException e) {
-            //System.err.println( "\n[" + this.getClass().getName() + ".fetchDateFromResource()] " + e.toString() );
-            date_lastModified = theDefaultDate;
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-
-        return date_lastModified;
-    }
-
-    /**
-     * Fetches the RESOURCE_FLAGS attribute for a given resource name.
-     * This method is slighty more efficient that calling readFileHeader().
-     * 
-     * @param theProject the current project to choose the right SQL query
-     * @param theResourceName the name of the resource of which the resource flags are fetched
-     * @return the value of the resource flag attribute.
-     * @throws CmsException
-     */
-    // TODO: check this !!!!!
-    // TODO: should this be renamed to getResourceFlags ???
-    public int fetchResourceFlags(CmsProject theProject, String theResourceName) throws CmsException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        int resourceFlags = 0;
-        ResultSet res = null;
-
-        try {
-            // execute the query
-            conn = m_sqlManager.getConnection(theProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, theProject, "C_SELECT_RESOURCE_FLAGS");
-            stmt.setString(1, theResourceName);
-            res = stmt.executeQuery();
-
-            if (res.next()) {
-                resourceFlags = res.getInt(1);
-            } else {
-                resourceFlags = 0;
-            }
-        } catch (SQLException e) {
-            resourceFlags = 0;
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-
-        return resourceFlags;
-    }
 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#getVfsLinksForResource(com.opencms.file.CmsProject, com.opencms.file.CmsResource)
