@@ -36,29 +36,38 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 		A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
 	}
 	CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-
 	String initial = (String) parameters.get(C_PARA_INITIAL);
 	if (initial != null)
-	{	
+	{
+		//Cannot delete the selected site
+		if (cms.getCurrentSite().getId() == Integer.parseInt((String) parameters.get("siteid")))
+		{
+			xmlTemplateDocument.setData("details", "");
+			templateSelector = "cannotdeletecurrent";
+			return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
+		}
 		CmsSite site = cms.getSiteBySiteId(Integer.parseInt((String) parameters.get("siteid")));
 		String name = site.getName();
 		String description = site.getDescription();
 		String domainname = "";
-		
 		Vector siteUrls = cms.getSiteUrls(site.getId());
 		for (int i = 0; i < siteUrls.size(); i++)
 			if (((CmsSiteUrls) siteUrls.elementAt(i)).getUrlId() == ((CmsSiteUrls) siteUrls.elementAt(i)).getPrimaryUrl())
 				domainname = ((CmsSiteUrls) siteUrls.elementAt(0)).getUrl();
-				
 		String category = cms.getCategory(site.getCategoryId()).getName();
 		String language = cms.getLanguage(site.getLanguageId()).getName();
 		String domain = cms.getCountry(site.getCountryId()).getName();
-			
 		CmsProject project = cms.readProject(site.getOnlineProjectId());
 		String projectmanager = cms.readManagerGroup(project).getName();
 		String projectworker = cms.readGroup(project).getName();
-
-		xmlTemplateDocument.setData("id", ""+site.getId());
+		//Cannot delete the root site
+		if (project.getParentId() == -1)
+		{
+			xmlTemplateDocument.setData("details", "");
+			templateSelector = "cannotdeleteroot";
+			return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
+		}
+		xmlTemplateDocument.setData("id", "" + site.getId());
 		xmlTemplateDocument.setData("name", name);
 		xmlTemplateDocument.setData("domainname", domainname);
 		xmlTemplateDocument.setData("description", description);
@@ -68,21 +77,20 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 		xmlTemplateDocument.setData("projectmanager", projectmanager);
 		xmlTemplateDocument.setData("projectworker", projectworker);
 	}
-	
 	String site_id = (String) parameters.get("site_id");
-	if (site_id!=null)
+	if (site_id != null)
 	{
 		try
 		{
 			cms.deleteSite(Integer.parseInt(site_id));
-			templateSelector = "done";			
+			templateSelector = "done";
 		}
-		catch(CmsException e)
+		catch (CmsException e)
 		{
+			xmlTemplateDocument.setData("details", "");
 			templateSelector = "error";
 		}
 	}
-		
 	return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
 }
 /**

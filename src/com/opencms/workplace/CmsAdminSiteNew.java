@@ -121,7 +121,11 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 				session.removeValue("SITE_MANAGERGROUP");
 				session.removeValue("SITE_GROUP");
 			}
-			else templateSelector = "errornewsite";
+			else 
+			{
+				xmlTemplateDocument.setData("details", "");
+				templateSelector = "errornewsite";
+			}
 		}
 		catch (CmsException exc)
 		{
