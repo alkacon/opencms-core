@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="OpenCms" default="compile" basedir=".">
 
-    <!-- property environment="env"/ -->
+    <property environment="env"/>
 
     <!-- The version-number ${version.number} is automatically set to the
     current date and time. For official builds this should be set to a proper
     value at the commandline.
     Set it like this: ant all -Dversion.number=4.3.28     
     You can also uncomment the line below. -->
-    <property name="version.number"             value="5.0_beta_1"/>    
+    <!-- property name="version.number"             value="5.0_beta_1"/-->    
 
     <property name="version.name"               value="Kaitain"/>
     <property name="app.name"                   value="opencms"/>
