@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<XMLTEMPLATE>
+
+<TEMPLATE>
+<![CDATA[<html>
+<head>
+<title>SiteMatrix</title>
+<script language="JavaScript" type="text/javascript">
+<!-- 
+function showThing(id)
+{
+  alert('Is supposed to show site with id = ' + id);
+}
+
+function editThing(id)
+{
+  alert('Is supposed to edit site with id = ' + id);
+}
+
+// -->
+</script>
+</head>
+<body bgcolor="#ffffff">
+<h1>SiteMatrix</h1>
+
+<table border="0" cellspacing="1" cellpadding="1">
+  <tr align="center">
+    <td colspan="2">&nbsp;</td>
+    <td colspan="]]><process>domaincount</process><![CDATA[" bgcolor="#bbbbbb">Domains</td>
+  </tr>
+  ]]>
+  <process>domainlist</process>
+  <process>lines</process>
+<![CDATA[
+</table>
+
+</body>
+</html>
+]]>
+</TEMPLATE>
+
+<domainrow>
+<![CDATA[
+  <tr align="center">
+    <td colspan="2">&nbsp;</td>
+]]><process>domains</process><![CDATA[
+  </tr>
+]]>
+</domainrow>
+
+<domaindot>
+<![CDATA[<td bgcolor="#bbbbbb">]]><process>domainname</process><![CDATA[</td>]]>
+</domaindot>
+
+<firstrow>
+<![CDATA[
+  <tr align="center">
+    <td bgcolor="#bbbbbb" rowspan="]]><process>categorycount</process><![CDATA["><img src="../img/text_sitetype_rotated.gif" width="12" height="43"></td>
+    <td bgcolor="#bbbbbb" align="left">]]><process>categoryname</process><![CDATA[</td>]]>
+    <process>dots</process>
+<![CDATA[
+  </tr>
+]]>
+</firstrow>
+
+<row>
+<![CDATA[
+  <tr align="center">
+    <td bgcolor="#bbbbbb" align="left">]]><process>categoryname</process><![CDATA[</td>]]>
+    <process>dots</process>
+<![CDATA[
+  </tr>
+]]>
+</row>
+
+<emptydot>
+<![CDATA[<td bgcolor="#eeeeee">&nbsp;</td>]]>
+</emptydot>
+
+<activedot>
+<![CDATA[<td bgcolor="#eeeeee"> <a href="javascript:showThing(']]><process>id</process><![CDATA[');">[p]</a> <a href="javascript:editThing(']]><process>id</process><![CDATA[');">[e]</a> </td>]]>
+</activedot>
+
+<inactivedot>
+<![CDATA[<td bgcolor="#eeeeee"> ? </td>]]>
+</inactivedot>
+
+</XMLTEMPLATE>
