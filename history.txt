@@ -8,6 +8,27 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.0a27 Giedi Prime: Rabban - 05 May 2000
+
+! New locking mechanism for folders: All lock operations are also applied on the subresources of
+  the folder.
+! Changed the logic for locking and unlocking resources.
+! Guest user has no access to the workplace anymore.
+! New projects now include the complete-content-directory.
+! Revised group selection in user management
+! Contextmenus for the tasks
+* Bugfix in folder workplace functions copy, move, rename, delete, chown, chmod, chgrp.
+* File history in now sorted by the project publishing date.
+* Files marked as "deleted" cannot be displayed anymore.
+* File upload: Error message if a non-existing file is uploaded.
+* Corrected a bug in creating projects.
+* Corrected an error in locked-resource-counter.
+* File list in the recent project administration dialog now only shows visible files.
+* Several minor layout changes in workplace dialogues.
+* Bugfix in the context menus in the administration and news view.
+
+
+
 OpenCms 4.0a26 Giedi Prime: Rabban - 20 April 2000
 ! Filesystem mountpoints now have complete workplace and project functionality.
 ! Projects can now be deleted physically.
