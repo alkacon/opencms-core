@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2000/11/16 10:05:12 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/11/17 16:00:12 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.18 $ $Date: 2000/11/16 10:05:12 $
+ * @version $Revision: 1.19 $ $Date: 2000/11/17 16:00:12 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -1563,19 +1563,6 @@ public void loginWebUser(String username, String password) {
 public void moveFile(String source, String destination) {
 	try {
 		m_cms.moveFile(source, destination);
-	} catch (Exception exc) {
-		CmsShell.printException(exc);
-	}
-}
-/**
- * Moves the folder to the given destination.
- * 
- * @param source the complete path of the sourcefile.
- * @param destination the complete path of the destinationfile.
- */
-public void moveFolder(String source, String destination) {
-	try {
-		m_cms.moveFolder(source, destination);
 	} catch (Exception exc) {
 		CmsShell.printException(exc);
 	}

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/11/16 10:05:12 $
- * Version: $Revision: 1.141 $
+ * Date   : $Date: 2000/11/17 16:00:12 $
+ * Version: $Revision: 1.142 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.launcher.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.141 $ $Date: 2000/11/16 10:05:12 $ 
+ * @version $Revision: 1.142 $ $Date: 2000/11/17 16:00:12 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -1273,18 +1273,6 @@ public String loginWebUser(String username, String password) throws CmsException
  */
 public void moveFile(String source, String destination) throws CmsException {
 	m_rb.moveFile(m_context.currentUser(), m_context.currentProject(), source, destination);
-}
-/**
- * Moves the folder to the given destination.
- * 
- * @param source the complete path of the sourcefile.
- * @param destination the complete path of the destinationfile.
- * 
- * @exception CmsException if the user has not the rights to move this resource,
- * or if the file couldn't be moved. 
- */
-public void moveFolder(String source, String destination) throws CmsException {
-	m_rb.moveFolder(m_context.currentUser(), m_context.currentProject(), source, destination);
 }
 /**
  * Returns the online project.

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/16 10:05:13 $
- * Version: $Revision: 1.131 $
+ * Date   : $Date: 2000/11/17 16:00:13 $
+ * Version: $Revision: 1.132 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.131 $ $Date: 2000/11/16 10:05:13 $
+ * @version $Revision: 1.132 $ $Date: 2000/11/17 16:00:13 $
  * 
  */
 
@@ -1535,24 +1535,6 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	 * for this resource.
 	 */	
 	public void moveFile(CmsUser currentUser, CmsProject currentProject,
-						 String source, String destination)
-		throws CmsException;
-	/**
-	 * Moves the folder.
-	 * 
-	 * This operation includes a copy and a delete operation. These operations
-	 * are done with their security-checks.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param source The complete path of the sourcefolder.
-	 * @param destination The complete path of the destinationfolder.
-	 * 
-	 * @exception CmsException will be thrown, if the file couldn't be moved. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 */	
-	public void moveFolder(CmsUser currentUser, CmsProject currentProject,
 						 String source, String destination)
 		throws CmsException;
 	/**

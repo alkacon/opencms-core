@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/17 15:17:45 $
- * Version: $Revision: 1.195 $
+ * Date   : $Date: 2000/11/17 16:00:13 $
+ * Version: $Revision: 1.196 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.195 $ $Date: 2000/11/17 15:17:45 $
+ * @version $Revision: 1.196 $ $Date: 2000/11/17 16:00:13 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -475,12 +475,12 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
 		if(resource.getProjectId() != currentProject.getId()) {
 			return false;
 		}
-//TODO: please don't enable the following check because there are some problems with it
-  	// check, if the resource is locked by the current user
-		//if(resource.isLockedBy() != currentUser.getId()) {
+		
+	  	// check, if the resource is locked by the current user
+		if(resource.isLockedBy() != currentUser.getId()) {
 			// resource is not locked by the current user, no writing allowed
-			//return(false);					
-		//}
+			return(false);					
+		}
 
 		// check the rights for the current resource
 		if( ! ( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) || 
@@ -3745,38 +3745,26 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 	 * @exception CmsException will be thrown, if the file couldn't be moved. 
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
-	 */	
-	public void moveFile(CmsUser currentUser, CmsProject currentProject,
-						 String source, String destination)
-		throws CmsException {
-			
-		// first copy the file, this may ends with an exception
-		copyFile(currentUser, currentProject, source, destination);
-		
-		// then delete the source-file, this may end with an exception
-		// => the file was only copied, not moved!
-		deleteFile(currentUser, currentProject, source);
-		// inform about the file-system-change
-		fileSystemChanged();
-	}
-	/**
-	 * Moves the folder.
-	 * 
-	 * This operation includes a copy and a delete operation. These operations
-	 * are done with their security-checks.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param source The complete path of the sourcefolder.
-	 * @param destination The complete path of the destinationfolder.
-	 * 
-	 * @exception CmsException will be thrown, if the file couldn't be moved. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 */	
-	public void moveFolder(CmsUser currentUser, CmsProject currentProject,
-						 String source, String destination)
-		throws CmsException {
+	 */
+	public void moveFile(CmsUser currentUser, CmsProject currentProject, String source, String destination) throws CmsException {
+
+		// read the file to check access
+		CmsResource file = readFileHeader(currentUser,currentProject, source);
+
+		// has the user write-access?
+		if (accessWrite(currentUser, currentProject, file)) {
+
+			// first copy the file, this may ends with an exception
+			copyFile(currentUser, currentProject, source, destination);
+
+			// then delete the source-file, this may end with an exception
+			// => the file was only copied, not moved!
+			deleteFile(currentUser, currentProject, source);
+			// inform about the file-system-change
+			fileSystemChanged();
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + source, CmsException.C_NO_ACCESS);
+		}
 	}
 /**
  * Returns the onlineproject.  All anonymous 
