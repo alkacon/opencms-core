@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/12/12 19:01:14 $
-* Version: $Revision: 1.263 $
+* Date   : $Date: 2002/12/14 01:06:48 $
+* Version: $Revision: 1.264 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.263 $ $Date: 2002/12/12 19:01:14 $ *
+ * @version $Revision: 1.264 $ $Date: 2002/12/14 01:06:48 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -5076,7 +5076,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         for (int i = 0; i < offlineFiles.size(); i++){
             currentFile = ((CmsFile) offlineFiles.elementAt(i));
             report.print(report.key("report.publishing"), I_CmsReport.C_FORMAT_NOTE);
-            report.println(currentFile.getAbsolutePath());            
+            report.println(currentFile.getAbsolutePath());     
             if(!currentFile.isLocked()){
                 // remove the temporary files for this resource
                 removeTemporaryFile(currentFile);
@@ -10595,7 +10595,8 @@ public CmsTask readTask(int id) throws CmsException {
         PreparedStatement statementProp = null;
         Connection con = null;
         ResultSet res = null;
-        String tempFilename = file.getPath() + C_TEMP_PREFIX + file.getName()+"%";
+              
+        String tempFilename = file.getRootName() + file.getPath() + C_TEMP_PREFIX + file.getName()+"%";
         try{
             con = DriverManager.getConnection(m_poolName);
             // get all temporary files of the resource
@@ -10710,7 +10711,7 @@ public CmsTask readTask(int id) throws CmsException {
     /**
      * Renames the file to the new name.
      *
-     * @param project The project in which the resource will be used.
+     * @param project The prect in which the resource will be used.
      * @param onlineProject The online project of the OpenCms.
      * @param userId The user id
      * @param oldfileID The id of the resource which will be renamed.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/Attic/todo.txt,v $
- * Date   : $Date: 2002/12/13 17:43:18 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2002/12/14 01:06:48 $
+ * Version: $Revision: 1.12 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -428,7 +428,7 @@ Suggested by:
 
 Description:
   Some minor issues that could/should be improved and fixed
-   1. ? Improved temp-file handling, no more "dead" files like ~page1.html
+   1. # Improved temp-file handling, no more "dead" files like ~page1.html
    2. # Reports do not always scroll right while exporting/publishing
    3. # Add reports to module export/import (don't use System.out here)
    4. # Check new link dialog in HTML editor for handling of filename parameters
@@ -453,4 +453,7 @@ Updates:
   Point 2 + 3 have been fixed / implemented
   Tried to fix point 4, the issue is not related to the
   link dialog but to the MS DHTML edit control in general, no easy fix was found
-
+  (12/14/02) Alexander Kandzior
+  Fixed issue 1. Temp files are now re-used if a "dead" file is found.
+  Upon publishing, temp file are deleted, but only if the corrosponding
+  file "real" has been changed.

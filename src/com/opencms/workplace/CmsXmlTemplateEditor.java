@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.73 $
+* Date   : $Date: 2002/12/14 01:06:48 $
+* Version: $Revision: 1.74 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.73 $ $Date: 2002/12/06 23:16:46 $
+ * @version $Revision: 1.74 $ $Date: 2002/12/14 01:06:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -92,23 +92,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
     protected String createTemporaryFile(CmsObject cms, CmsResource file, int tempProject, int curProject) throws CmsException {
         String temporaryFilename = file.getPath() + C_TEMP_PREFIX + file.getName();
 
-        // TODO: Improve handling of temporary editor files, prevent "dead" files 
-
-        // This is the code for single temporary files.
-        // re-activate it, if the cms object provides a special
-        // method for managing temporary files
-
-        /* try {
-        cms.copyFile(file.getAbsolutePath(), temporaryFilename);
-        } catch(CmsException e) {
-        if(e.getType() == e.C_FILE_EXISTS) {
-        throwException("Temporary file for " + file.getName() + " already exists!", e.C_FILE_EXISTS);
-        } else {
-        throwException("Could not cread temporary file for " + file.getName() + ".", e);
-        }
-        }*/
-
-        String extendedTempFile = null;
         boolean ok = true;
         cms.getRequestContext().setCurrentProject(tempProject);
         try {
@@ -116,16 +99,21 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             cms.chmod(temporaryFilename, 91);
         }
         catch(CmsException e) {
-            if((e.getType() != CmsException.C_FILE_EXISTS) && (e.getType() != CmsException.C_SQL_ERROR)) {
-                cms.getRequestContext().setCurrentProject(curProject);
-                // This was no file exists exception.
-                // Vary bad. We should not go on here since we may run
-                // in an endless loop.
+            if((e.getType() == CmsException.C_FILE_EXISTS) || (e.getType() != CmsException.C_SQL_ERROR)) {
+                try {
+                    // try to re-use the old temporary file
+                    cms.changeLockedInProject(tempProject, temporaryFilename);
+                    cms.lockResource(temporaryFilename, true);
+                    cms.chmod(temporaryFilename, 91);
+                }
+                catch (Exception ex) {
+                    ok = false;
+                }
+            } else {
                 throw e;
             }
-            ok = false;
         }
-        extendedTempFile = temporaryFilename;
+        String extendedTempFile = temporaryFilename;
 
         int loop = 0;
         while(!ok) {
