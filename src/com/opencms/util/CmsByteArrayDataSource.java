@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/CmsByteArrayDataSource.java,v $
-* Date   : $Date: 2002/10/30 10:01:54 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2003/01/31 17:02:40 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import javax.activation.*;
  * 
  * @author $Author: a.kandzior $
  * 
- * @version $Revision: 1.1 $ $Date: 2002/10/30 10:01:54 $
+ * @version $Revision: 1.2 $ $Date: 2003/01/31 17:02:40 $
  * 
  * @see com.opencms.defaults.CmsMail
  * @see <a href="http://java.sun.com/products/javamail/index.html">http://java.sun.com/products/javamail/index.html</a>
@@ -73,12 +73,11 @@ public class CmsByteArrayDataSource implements DataSource {
     
     /* Create a DataSource from a String */
     public CmsByteArrayDataSource(String data, String type) {
-        try {
-            
+        try {            
             // Assumption that the string contains only ASCII            
             // characters!  Otherwise just pass a charset into this            
             // constructor and use it in getBytes()
-            this.data = data.getBytes("iso-8859-1");
+            this.data = data.getBytes("ISO-8859-1");
         }
         catch(UnsupportedEncodingException uex) {
             
