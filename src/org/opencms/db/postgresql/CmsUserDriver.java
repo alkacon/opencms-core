@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsUserDriver.java,v $
- * Date   : $Date: 2004/11/28 21:58:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/12/16 13:57:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,14 +43,14 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * PostgreSql implementation of the user driver methods.<p>
  * 
  * @author Antonio Core (antonio@starsolutions.it)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 6.0
  */
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
@@ -128,7 +128,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         String email,
         long lastlogin,
         int flags,
-        Hashtable additionalInfos,
+        Map additionalInfos,
         String address,
         int type) throws CmsException {
 
@@ -185,7 +185,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         String email,
         long lastlogin,
         int flags,
-        Hashtable additionalInfos,
+        Map additionalInfos,
         String address,
         int type,
         Object reservedParam) throws CmsException {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2004/12/15 12:29:45 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2004/12/16 13:57:21 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -60,7 +59,7 @@ import java.util.Properties;
  * Generic (ANSI-SQL) implementation of the SQL manager.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.46 $ $Date: 2004/12/15 12:29:45 $
+ * @version $Revision: 1.47 $ $Date: 2004/12/16 13:57:21 $
  * @since 5.1
  */
 public class CmsSqlManager implements Serializable, Cloneable {
