@@ -32,7 +32,7 @@ The Content Definition object is used by the template classes to access
 the required data in a general way. 
 Therefore, the data source can be modified without changing the template classes at all. 
 In addition, the Content Definition is also used to maintain the content
-data with an appropriate Back Office module (see chapter \ref{Backoffice Modules}
+data with an appropriate Backoffice module (see chapter \ref{Backoffice Modules}
 about Backoffice modules ).
 
 The way the Content Definition encapsulates the data is very similar to
@@ -55,10 +55,6 @@ of the methods to access the data encapsulated in the Content Definition.
 This description is the proposal how to implement a Content Definition.
 There are other possibilities how to write a Content Definition, but
 it is highly recommended to follow the proposals of this document.
-
-The Content Definition should implement the {\name I\_CmsContent interface}.
-This interface is only a marker interface, so no methods have to be
-implemented.
 
 A Content Definition object always contains the data of one single entry
 of the content type, for the news example already mentioned, this would
@@ -90,9 +86,10 @@ be used to non-ambiguously select an entry from the data source. In case
 of a database record this is usually the primary key of the table (in 
 most cases an integer value). \\
 Note: if the Content Definition should be used to manipulate the data in 
-the OpenCms Backoffice (from the OpenCms workplace) a constructor has to 
-exist that takes the \\
-{\class CmsObject} and an Integer object as parameters.
+the OpenCms Backoffice (from the OpenCms workplace) two constructors have to 
+exist.
+One that takes the {\class CmsObject} as a parameter and another one
+that take the {\class CmsObject} and an Integer object as parameters.
 For this reason it is necessary to have a numeric value as a primary key 
 in your database table (see section \ref{enhancements} 
 for details about adding OpenCms Backoffice functionality).
@@ -102,15 +99,15 @@ for details about adding OpenCms Backoffice functionality).
 \jtaba  \xspace * NewsContentDefinition constructor.\\
 \jtaba  \xspace * @param id The id of the news entry to be read.\\
 \jtaba  \xspace */\\
-\jtaba public NewsContentDefinition(CmsObject cms, int id) \{\\
+\jtaba public NewsContentDefinition(CmsObject cms, Integer id) \{\\
 \jtabb  // read data from data source and\\
 \jtabb  // initialize the member variables here\\
 \jtaba \}\\
 \end{java}
 
-Creating a new entry is done with a constructor as well. This time, the
-constructor gets all the data of a news entry and creates a new Content Definition
-object with this data:
+Creating a new entry is done with a constructor as well. In the next
+example, the constructor gets all the data of a news entry and creates 
+a new Content Definition object with this data:
 
 \begin{java}
 \jtaba         /**\\
@@ -128,6 +125,9 @@ object with this data:
 This will only create a new Content Definition object, but no entry in
 the data source. To add the new entry in the data source, it must be
 written by using the {\meth write(}) method of the Content Definition.
+Of course the constructor NewsContentDefinition(CmsObject cms) can be
+used as well. The data can then be set afterwards by using the
+corresponding set-methods. 
 
 On this object, the data stored in the Content Definition can be
 accessed by using the different set and get methods, for example the
@@ -190,11 +190,25 @@ together with the data for every entry. Therefore three new fields in the data s
 and the ContentDefinition are necessary. The OpenCms
 provides an abstract class {\class A\_CmsContentDefinition} in the 
 {\code com.opencms.defaults} package where some of this functionality is
-already implemented. This class has the member fields to store group, owner and
-access flags for an entry and also methods to check the access rights for a user.
+already implemented. 
+This class has the member variable {\name m\_accessFlags} which stores the access rights
+for owner group and others in an integer value. The access information can be set with
+the method {\meth setAccessFlags(int accessFlags)}. The access right handling uses the
+bit-representation of the int-value. For example:
+\begin{verbatim} 
+access rights: r w v  r w v  r w v  i 
+               1 1 1  1 1 1  0 0 0  1 
+        value: 1 2 4  8 16     ->   512   = 575
+\end{verbatim}
+Thus, you have to set the access rights to 575 to get the above settings.
+Notice: for certain reasons the bit representation of the integers is just
+the other way round as normal!
+
+The class has also some methods to check the access rights for a user.
 To check if an entry can be read or write the methods
-{\meth isReadable()} and {\meth isWriteable()} are used. This is the default implementation
-in the abstract class {\class A\_CmsContentDefinition} of these methods:
+{\meth isReadable()} and {\meth isWriteable()} are used. This is the default
+implementation in the abstract class {\class A\_CmsContentDefinition} of these 
+methods:
 
 \begin{java}
 \jtaba          /**\\
