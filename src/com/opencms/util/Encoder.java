@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2002/09/03 19:43:08 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2002/09/04 15:41:30 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -79,10 +79,11 @@ public class Encoder {
     public static String encode(String source, String encoding) {
         if (encoding != null) {
             try {
-                return URLEncoder.encode(source, encoding);                
-            } catch (Exception e) {
-                // might be UnsupportedEncodingException or NoSuchMethodError                
-            }
+                String encodedSource = URLEncoder.encode(source, encoding); 
+                return encodedSource;
+            } 
+            catch (java.io.UnsupportedEncodingException e) {}
+            catch (java.lang.NoSuchMethodError n) {}
         }
         // Use default encoding
         // This is also important for Java 1.3 compatibility
@@ -110,9 +111,9 @@ public class Encoder {
         if (encoding != null) {
             try {
                 return URLDecoder.decode(source, encoding);                
-            } catch (Exception e) {
-                // might be UnsupportedEncodingException or NoSuchMethodError                
             }
+            catch (java.io.UnsupportedEncodingException e) {}
+            catch (java.lang.NoSuchMethodError n) {}            
         }
         // Use default encoding
         // This is also important for Java 1.3 compatibility
