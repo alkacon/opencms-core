@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2004/03/07 19:21:54 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/03/10 11:22:43 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,9 +30,9 @@
  */
 package org.opencms.workplace;
 
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
+import org.opencms.file.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 5.1
  */
@@ -103,22 +103,21 @@ public class CmsFrameset extends CmsWorkplace {
      * @return the Javascript for the Workplace context menus
      */
     public String buildContextMenues() {
-        StringBuffer result = new StringBuffer();
-        List resTypes = null;
-        try {
-            resTypes = getCms().getFilesInFolder(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "restypes/");
-        } catch (CmsException e) {
-            resTypes = new Vector();
-        }
-        for (int i = 0; i < resTypes.size(); i++) {
-            CmsFile resourceTyp = (CmsFile)resTypes.get(i);
-            try {                
-                int resId = getCms().getResourceTypeId(resourceTyp.getName());              
-                result.append(getResourceEntry(new String(getCms().readFile(getCms().readAbsolutePath(resourceTyp)).getContents()), resId));
-            } catch (CmsException e) {
-                // ignore
+        StringBuffer result = new StringBuffer();  
+        // get all resource types
+        List resTypes = getCms().getAllResourceTypes();
+        Iterator i = resTypes.iterator();
+        while (i.hasNext()) {
+            I_CmsResourceType resType = (I_CmsResourceType)i.next();
+            int resTypeId = resType.getResourceType();
+            // get explorer type settings for current resource type
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getEplorerTypeSetting(resType.getResourceTypeName());
+            if (settings != null) {
+                // append the context menu of the current resource type 
+                String script = settings.getContextMenu().getJSEntries(getCms(), settings, resTypeId, getSettings().getMessages());
+                result.append(script);
             }
-        }  
+        }         
         return result.toString();      
     }
     
@@ -158,73 +157,6 @@ public class CmsFrameset extends CmsWorkplace {
         } else {
             return I_CmsWpConstants.C_FILELIST_NAME + I_CmsWpConstants.C_FILELIST_TITLE + I_CmsWpConstants.C_FILELIST_TYPE + I_CmsWpConstants.C_FILELIST_DATE_LASTMODIFIED;
         }
-    }
-        
-    /**
-     * Builds the Javascript for the contents of a resource-type file.<p> 
-     * 
-     * @param data the content of the file
-     * @param id the resource id of the file type
-     * @return the Javascript for the contents of a resource-type file
-     */
-    private String getResourceEntry(String data, int id) {
-        
-        StringBuffer result;
-        int index = 0;
-        String myToken;
-        int foundAt;
-        
-        result = new StringBuffer(1024);
-        
-        // first append the current value of resource_id
-        result.append("\nresource_id = ");
-        result.append(id);
-        result.append("\n");
-        
-        // set the language keys
-        myToken = "language_key(";
-        index = 0;
-        foundAt = data.indexOf(myToken, index);
-        while (foundAt != -1) {
-            int endIndex = data.indexOf(")", foundAt);
-            String langKey = data.substring(foundAt + 13, endIndex);
-            langKey = key(langKey);
-            result.append(data.substring(index, foundAt));
-            result.append(langKey);
-            index = endIndex + 1;
-            foundAt = data.indexOf(myToken, index);
-        }
-        result.append(data.substring(index));
-        data = result.toString();
-
-        // remove the spaces in the rules parameter
-        result = new StringBuffer(1024);
-        myToken = "rules_key(";
-        index = 0;
-        foundAt = data.indexOf(myToken, index);
-        while (foundAt != -1) {
-            int endIndex = data.indexOf(")", foundAt);
-            String rulesKey = data.substring(foundAt + 10, endIndex);
-            result.append(data.substring(index, foundAt));
-            int length = rulesKey.length();
-            char c;
-            for (int i=0; i<length; i++) {
-                if ((c = rulesKey.charAt(i)) != ' ') {
-                    result.append(c);
-                }
-            }
-            index = endIndex + 1;
-            foundAt = data.indexOf(myToken, index);
-        }
-        result.append(data.substring(index));
-        
-        String str = result.toString();        
-        String jspWorkplaceUri = OpenCms.getLinkManager().substituteLink(getCms(), C_PATH_WORKPLACE);  
-        String xmlWorkplaceUri = OpenCms.getLinkManager().substituteLink(getCms(), CmsWorkplaceAction.C_PATH_XML_WORKPLACE);          
-        str = str.replaceAll("/JSPWORKPLACE/", jspWorkplaceUri);
-        str = str.replaceAll("/XMLWORKPLACE/", xmlWorkplaceUri);
-        
-        return str;
     }
     
     /**

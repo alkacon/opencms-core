@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/03/07 19:21:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/03/10 11:22:43 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,15 +49,6 @@ import org.opencms.workplace.editor.I_CmsEditorActionHandler;
 import org.opencms.workplace.editor.I_CmsEditorHandler;
 
 import java.util.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -69,7 +60,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.3.1
  */
@@ -93,6 +84,15 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     /** The editor manager */
     private CmsWorkplaceEditorManager m_editorManager;
     
+    /** The explorer type settings */
+    private List m_explorerTypeSettings;
+    
+    /** The explorer type settings as Map with resource type name as key */
+    private Map m_explorerTypeSettingsMap;
+    
+    /** The workplace export points */
+    private Set m_exportPoints;
+    
     /** Maximum size of an upload file */
     private int m_fileMaxUploadSize;
     
@@ -107,9 +107,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     
     /** The configured workplace views */
     private List m_views;
-    
-    /** The workplace export points */
-    private Set m_exportPoints;
     
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
@@ -127,6 +124,36 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         m_exportPoints = new HashSet();
         m_editorHandler = new CmsEditorHandler();
         m_fileMaxUploadSize = -1;
+        m_explorerTypeSettings = new ArrayList();
+        m_explorerTypeSettingsMap = new HashMap();
+    }
+    
+    /**
+     * Adds a dialog handler instance to the list of configured dialog handlers.<p>
+     * 
+     * @param clazz the instanciated dialog handler to add
+     */
+    public void addDialogHandler(I_CmsDialogHandler clazz) {
+        m_dialogHandler.put(clazz.getDialogHandler(), clazz);
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Adding dialog handler: " + clazz.getDialogHandler() + " - " + clazz.getClass().getName());
+        }             
+    }
+    
+    /** 
+     * Adds an explorer type setting object to the list of type settings.<p>
+     * 
+     * Adds the type setting as well to a map with the resource type name as key.
+     * This map is handy to get the settings for a known resource type.<p>
+     * 
+     * @param settings the explorer type settings
+     */
+    public void addExplorerTypeSetting(CmsExplorerTypeSettings settings) {
+        m_explorerTypeSettings.add(settings);
+        m_explorerTypeSettingsMap.put(settings.getName(), settings);
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Adding type setting  : " + settings.getName());
+        }  
     }
         
     /**
@@ -144,12 +171,15 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
     
     /**
-     * Returns the set of configured export points for the workplace.<p>
-     *
-     * @return the set of configured export points for the workplace
+     * Adds a folder to the list of labeled folders.<p>
+     * 
+     * @param uri the folder uri to add
      */
-    public Set getExportPoints() {
-        return m_exportPoints;
+    public void addLabeledFolder(String uri) {
+        m_labelSiteFolders.add(uri);
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Label links in folder: " + uri);
+        }              
     }
     
     /**
@@ -168,49 +198,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
     
     /**
-     * Returns the map of configured workplace views.<p>
-     * 
-     * @return the map of configured workplace views
-     */
-    public List getViews() {
-        return m_views;
-    }
-    
-    /**
-     * Initializes the workplace manager with the OpenCms system configuration.<p>
-     * 
-     * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
-     * @throws CmsException if something goes wrong
-     */    
-    public void initialize(CmsObject cms) throws CmsException {
-        // sort the views
-        Collections.sort(m_views);
-        // initialize the workplace editor manager
-        m_editorManager = new CmsWorkplaceEditorManager(cms);
-        // initialize the locale handler
-        initHandler(cms);    
-    }
-    
-    /**
      * Returns if the autolock resources feature is enabled.<p>
      * 
      * @return true if the autolock resources feature is enabled, otherwise false
      */
     public boolean autoLockResources() {
         return m_autoLockResources;
-    }
-    
-    
-    /**
-     * Sets if the autolock resources feature is enabled.<p>
-     * 
-     * @param value "true" if the autolock resources feature is enabled, otherwise false
-     */
-    public void setAutoLock(String value) {
-        m_autoLockResources = Boolean.valueOf(value).booleanValue();
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Auto lock feature    : " + (m_autoLockResources?"enabled":"disabled"));
-        }        
     }
     
     /**
@@ -221,24 +214,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public Locale getDefaultLocale() {
         return m_defaultLocale;
     }      
-
-    /**
-     * Sets the Workplace default locale.<p>
-     * 
-     * @param locale the locale to set
-     */
-    public void setDefaultLocale(String locale) {
-        try {
-            m_defaultLocale = CmsLocaleManager.getLocale(locale);
-        } catch (Exception e) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(". Workplace init       : non-critical error " + e.toString());
-            }
-        }        
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace init       : Default locale is '" + m_defaultLocale + "'");
-        }        
-    }
     
     /**
      * Returns all instanciated dialog handlers for the workplace.<p>
@@ -260,36 +235,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
     
     /**
-     * Adds a dialog handler instance to the list of configured dialog handlers.<p>
-     * 
-     * @param clazz the instanciated dialog handler to add
-     */
-    public void addDialogHandler(I_CmsDialogHandler clazz) {
-        m_dialogHandler.put(clazz.getDialogHandler(), clazz);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Adding dialog handler: " + clazz.getDialogHandler() + " - " + clazz.getClass().getName());
-        }             
-    }
-    
-    /**
      * Returns the instanciated editor action handler class.<p>
      * 
      * @return the instanciated editor action handler class
      */
     public I_CmsEditorActionHandler getEditorActionHandler() {
         return m_editorAction;
-    }
-    
-    /**
-     * Sets the editor action class.<p>
-     * 
-     * @param clazz the editor action class to set
-     */
-    public void setEditorAction(I_CmsEditorActionHandler clazz) {
-        m_editorAction = clazz;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Editor action class  : " + m_editorAction.getClass().getName());
-        }        
     }
     
     /**
@@ -302,15 +253,34 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
     
     /**
-     * Sets the editor handler class.<p>
+     * Returns the explorer type settings for the specified resource type.<p>
      * 
-     * @param clazz the editor handler class to set
+     * @param type the resource type for which the settings are required
+     * @return the explorer type settings for the specified resource type
      */
-    public void setEditorHandler(I_CmsEditorHandler clazz) {            
-        m_editorHandler = clazz;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Editor handler class : " + m_editorHandler.getClass().getName());
-        }
+    public CmsExplorerTypeSettings getEplorerTypeSetting(String type) {
+        return (CmsExplorerTypeSettings)m_explorerTypeSettingsMap.get(type);
+        
+    }
+    
+    /**
+     * Returns the list of explorer type settings.<p>
+     * 
+     * These settings provide information for the new resource dialog and the context menu appearance.<p>
+     * 
+     * @return the list of explorer type settings
+     */
+    public List getExplorerTypeSettings() {
+        return m_explorerTypeSettings;
+    }
+    
+    /**
+     * Returns the set of configured export points for the workplace.<p>
+     *
+     * @return the set of configured export points for the workplace
+     */
+    public Set getExportPoints() {
+        return m_exportPoints;
     }
     
     /**
@@ -321,22 +291,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public int getFileMaxUploadSize() {
         return m_fileMaxUploadSize;
     }
-
-    /**
-     * Sets the value (in kb) for the maximum file upload size.<p>
-     * 
-     * @param value the value (in kb) for the maximum file upload size
-     */
-    public void setFileMaxUploadSize(String value) {
-        try {
-            m_fileMaxUploadSize = Integer.valueOf(value).intValue();
-        } catch (NumberFormatException e) {
-            m_fileMaxUploadSize = -1;
-        }
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". File max. upload size: " + (m_fileMaxUploadSize > 0 ? (m_fileMaxUploadSize + " KB") : "unlimited"));
-        }        
-    }
     
     
     /**
@@ -346,18 +300,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      */
     public List getLabelSiteFolders() {
         return m_labelSiteFolders;
-    }
-    
-    /**
-     * Adds a folder to the list of lables folders.<p>
-     * 
-     * @param uri the folder uri to add
-     */
-    public void addLabledFolder(String uri) {
-        m_labelSiteFolders.add(uri);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Label links in folder: " + uri);
-        }              
     }
     
     /**
@@ -410,6 +352,15 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
     
     /**
+     * Returns the map of configured workplace views.<p>
+     * 
+     * @return the map of configured workplace views
+     */
+    public List getViews() {
+        return m_views;
+    }
+    
+    /**
      * Returns the instanciated workplace editor manager class.<p>
      * 
      * @return the instanciated workplace editor manager class
@@ -425,6 +376,29 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         // initialize the workplace locale set
         m_locales = initWorkplaceLocales(cms);
     }    
+    
+    /**
+     * Initializes the workplace manager with the OpenCms system configuration.<p>
+     * 
+     * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
+     * @throws CmsException if something goes wrong
+     */    
+    public void initialize(CmsObject cms) throws CmsException {
+        // sort the views
+        Collections.sort(m_views);
+        // initialize the workplace editor manager
+        m_editorManager = new CmsWorkplaceEditorManager(cms);
+        // initialize the locale handler
+        initHandler(cms);  
+        // sort the explorer type settings
+        Collections.sort(m_explorerTypeSettings);
+        // create the access control lists for each explorer type
+        Iterator i = m_explorerTypeSettings.iterator();
+        while (i.hasNext()) {
+            CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
+            settings.createAccessControlList(cms);
+        }
+    }
     
     /**
      * Initilizes the workplace locale set.<p>
@@ -459,13 +433,75 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         return m_locales;
     }
     
+    
     /**
-     * Returns if the user/group icon in the administration view should be shown.<p>
+     * Sets if the autolock resources feature is enabled.<p>
      * 
-     * @return true if the user/group icon in the administration view should be shown, otherwise false
+     * @param value "true" if the autolock resources feature is enabled, otherwise false
      */
-    public boolean showUserGroupIcon() {
-        return m_showUserGroupIcon;
+    public void setAutoLock(String value) {
+        m_autoLockResources = Boolean.valueOf(value).booleanValue();
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Auto lock feature    : " + (m_autoLockResources?"enabled":"disabled"));
+        }        
+    }
+
+    /**
+     * Sets the Workplace default locale.<p>
+     * 
+     * @param locale the locale to set
+     */
+    public void setDefaultLocale(String locale) {
+        try {
+            m_defaultLocale = CmsLocaleManager.getLocale(locale);
+        } catch (Exception e) {
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(". Workplace init       : non-critical error " + e.toString());
+            }
+        }        
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace init       : Default locale is '" + m_defaultLocale + "'");
+        }        
+    }
+    
+    /**
+     * Sets the editor action class.<p>
+     * 
+     * @param clazz the editor action class to set
+     */
+    public void setEditorAction(I_CmsEditorActionHandler clazz) {
+        m_editorAction = clazz;
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Editor action class  : " + m_editorAction.getClass().getName());
+        }        
+    }
+    
+    /**
+     * Sets the editor handler class.<p>
+     * 
+     * @param clazz the editor handler class to set
+     */
+    public void setEditorHandler(I_CmsEditorHandler clazz) {            
+        m_editorHandler = clazz;
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Editor handler class : " + m_editorHandler.getClass().getName());
+        }
+    }
+
+    /**
+     * Sets the value (in kb) for the maximum file upload size.<p>
+     * 
+     * @param value the value (in kb) for the maximum file upload size
+     */
+    public void setFileMaxUploadSize(String value) {
+        try {
+            m_fileMaxUploadSize = Integer.valueOf(value).intValue();
+        } catch (NumberFormatException e) {
+            m_fileMaxUploadSize = -1;
+        }
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". File max. upload size: " + (m_fileMaxUploadSize > 0 ? (m_fileMaxUploadSize + " KB") : "unlimited"));
+        }        
     }
     
     /**
@@ -478,5 +514,14 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". User managememnt icon: " + (m_showUserGroupIcon?"enabled":"disabled"));
         }         
+    }
+    
+    /**
+     * Returns if the user/group icon in the administration view should be shown.<p>
+     * 
+     * @return true if the user/group icon in the administration view should be shown, otherwise false
+     */
+    public boolean showUserGroupIcon() {
+        return m_showUserGroupIcon;
     }
 }

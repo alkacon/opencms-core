@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsLoaderManager.java,v $
- * Date   : $Date: 2004/03/06 18:50:12 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/03/10 11:22:43 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.ServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.1
  */
 public class CmsLoaderManager {
@@ -91,7 +91,7 @@ public class CmsLoaderManager {
      */
     public I_CmsResourceLoader[] getLoaders() {
         // ensure only a clone is returned so that the original array can not be modified
-        return (I_CmsResourceLoader[])m_loaders.clone();
+        return m_loaders;
     }
     
     /**

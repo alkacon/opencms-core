@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2004/03/07 19:22:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/03/10 11:22:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,10 +82,10 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     protected static final String N_IMMUTABLES = "immutables";
 
     /** The principal translation node */
-    protected static final String N_PRINCIPALTRANSLATIONS = "princialtranslations";
+    protected static final String N_PRINCIPALTRANSLATIONS = "principaltranslations";
     
     /** An individual principal translation node */
-    protected static final String N_PRINCIPALTRANSLATION = "princialtranslation";
+    protected static final String N_PRINCIPALTRANSLATION = "principaltranslation";
     
     /** Node that indicates page conversion */
     protected static final String N_CONVERT = "convert";
@@ -95,9 +95,6 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     
     /** Node that contains a list of properties ignored during import */
     protected static final String N_IGNOREDPROPERTIES = "ignoredproperties";
-    
-    /** An indovidual property node */
-    protected static final String N_PROPERTY = "property";
     
     /** The configured import/export manager */
     private CmsImportExportManager m_importExportManager;
@@ -204,7 +201,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
             immutablesElement.addElement(N_RESOURCE).addAttribute(A_URI, uri);
         }        
 
-        // <princialtranslations> node
+        // <principaltranslations> node
         Element principalsElement = importElement.addElement(N_PRINCIPALTRANSLATIONS);
         i = m_importExportManager.getImportGroupTranslations().keySet().iterator();
         while (i.hasNext()) {

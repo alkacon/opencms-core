@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/03/07 19:22:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/03/10 11:22:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,8 @@ package org.opencms.configuration;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.workplace.CmsExplorerContextMenuItem;
+import org.opencms.workplace.CmsExplorerTypeSettings;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceView;
 
@@ -42,7 +44,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.digester.Digester;
-
 import org.dom4j.Element;
 
 /**
@@ -52,36 +53,84 @@ import org.dom4j.Element;
  * @since 5.3
  */
 public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
+    
+    /** The "isxml" attribute */
+    protected static final String A_ISXML = "isxml";
+    
+    /** The "permissions" attribute */
+    protected static final String A_PERMISSIONS = "permissions";
    
-    /** The node name of the master workplace node */
-    protected static final String N_WORKPLACE = "workplace";
+    /** The "principal" attribute */
+    protected static final String A_PRINCIPAL = "principal";
     
-    /** The main workplace handler node name */
-    protected static final String N_DIALOGHANDLERS = "dialoghandlers";
+    /** The "rules" attribute */
+    protected static final String A_RULES = "rules";
     
-    /** Indivividual workplace handler node name */
-    protected static final String N_DIALOGHANDLER = "dialoghandler";      
+    /** The "shownavigation" attribute */
+    protected static final String A_SHOWNAVIGATION = "shownavigation";
     
-    /** The name of the editor handler node */
-    protected static final String N_EDITORHANDLER = "editorhandler";
+    /** The "target" attribute */
+    protected static final String A_TARGET = "target";
     
-    /** The name of the editor action node */
-    protected static final String N_EDITORACTION = "editoraction";
+    /** The name of the access control node */
+    protected static final String N_ACCESSCONTROL = "accesscontrol";
+    
+    /** The name of the access entry node */
+    protected static final String N_ACCESSENTRY = "accessentry";
     
     /** The name of the autolock node */
     protected static final String N_AUTOLOCK = "autolock";
     
+    /** The name of the context menu node */
+    protected static final String N_CONTEXTMENU = "contextmenu";
+    
+    /** The name of the node for the default locale */
+    protected static final String N_DEFAULTLOCALE = "defaultlocale";
+    
+    /** The name of the default properties node */
+    protected static final String N_DEFAULTPROPERTIES = "defaultproperties";
+    
+    /** Indivividual workplace handler node name */
+    protected static final String N_DIALOGHANDLER = "dialoghandler";      
+    
+    /** The main workplace handler node name */
+    protected static final String N_DIALOGHANDLERS = "dialoghandlers";
+    
+    /** The name of the edit options node */
+    protected static final String N_EDITOPTIONS = "editoptions";
+    
+    /** The name of the editor action node */
+    protected static final String N_EDITORACTION = "editoraction";
+    
+    /** The name of the editor handler node */
+    protected static final String N_EDITORHANDLER = "editorhandler";
+    
     /** The name of the "user management enabled" node */
     protected static final String N_ENABLEUSERMGMT = "enableusermanagement";
+    
+    /** The name of the entry node */
+    protected static final String N_ENTRY = "entry";
+    
+    /** The name of the explorer type node */
+    protected static final String N_EXPLORERTYPE = "explorertype";
+    
+    /** The name of the explorer types node */
+    protected static final String N_EXPLORERTYPES = "explorertypes";
+    
+    /** The name of the "labeled folders" node */
+    protected static final String N_LABELEDFOLDERS = "labeledfolders";    
     
     /** The name of the "max file upload size" node */
     protected static final String N_MAXUPLOADSIZE = "maxfileuploadsize";
     
-    /** The name of the "labled folders" node */
-    protected static final String N_LABLEDFOLDERS = "labledfolders";    
+    /** The name of the new resource node */
+    protected static final String N_NEWRESOURCE = "newresource";
     
-    /** The name of the node for the default locale */
-    protected static final String N_DEFAULTLOCALE = "defaultlocale";
+    /** The name of the separator node */
+    protected static final String N_SEPARATOR = "separator";
+    
+    /** The node name of the master workplace node */
+    protected static final String N_WORKPLACE = "workplace";
     
     /** The configured workplace manager */
     private CmsWorkplaceManager m_workplaceManager;
@@ -146,9 +195,50 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add max file upload size rule
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_MAXUPLOADSIZE, "setFileMaxUploadSize", 0);
         
-        // add labled folders rule
-        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_LABLEDFOLDERS + "/" + N_RESOURCE, "addLabledFolder", 1);        
-        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_LABLEDFOLDERS + "/" + N_RESOURCE, 0, A_URI);
+        // add labeled folders rule
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_LABELEDFOLDERS + "/" + N_RESOURCE, "addLabeledFolder", 1);        
+        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_LABELEDFOLDERS + "/" + N_RESOURCE, 0, A_URI);
+        
+        // add explorer type settings
+        digester.addObjectCreate("*/" + N_EXPLORERTYPE, CmsExplorerTypeSettings.class);
+        digester.addSetNext("*/" + N_EXPLORERTYPE, "addExplorerTypeSetting");
+        
+        digester.addCallMethod("*/" + N_EXPLORERTYPE, "setTypeAttributes", 3);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 0, A_NAME);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 1, A_KEY);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 2, A_ICON);
+        
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceUri", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_URI);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceOrder", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_ORDER);
+        
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY, "addAccessEntry", 2);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY, 0, A_PRINCIPAL);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY, 1, A_PERMISSIONS);
+        
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES, "setPropertyDefaults", 2);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES, 0, A_ENABLED);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES, 1, A_SHOWNAVIGATION);
+        
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES + "/" + N_PROPERTY, "addProperty", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES + "/" + N_PROPERTY, 0, A_NAME);
+        
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, "addContextMenuEntry", 6);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, 0, A_KEY);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, 1, A_URI);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, 2, A_RULES);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, 3, A_TARGET);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, 4, A_ORDER);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY, 5, A_ISXML);
+        
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_SEPARATOR, "addContextMenuSeparator", 2);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_SEPARATOR, 0, A_RULES);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_SEPARATOR, 1, A_ORDER);
+        
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU, "createContextMenu");
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS, "setIsResourceType");
+       
     }
     
     /**
@@ -209,11 +299,71 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         workplaceElement.addElement(N_MAXUPLOADSIZE)
             .setText(new Integer(m_workplaceManager.getFileMaxUploadSize()).toString());         
         
-        // add <labledfolders> resource list
-        Element labledElement = workplaceElement.addElement(N_LABLEDFOLDERS);        
+        // add <labeledfolders> resource list
+        Element labeledElement = workplaceElement.addElement(N_LABELEDFOLDERS);        
         i =  m_workplaceManager.getLabelSiteFolders().iterator();
         while (i.hasNext()) {
-            labledElement.addElement(N_RESOURCE).addAttribute(A_URI, (String)i.next());        
+            labeledElement.addElement(N_RESOURCE).addAttribute(A_URI, (String)i.next());        
+        }
+        
+        // add <explorertypes> node
+        Element explorerTypesElement = workplaceElement.addElement(N_EXPLORERTYPES);
+        i = m_workplaceManager.getExplorerTypeSettings().iterator();
+        while (i.hasNext()) {
+            // create an explorer type node
+            CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
+            Element explorerTypeElement = explorerTypesElement.addElement(N_EXPLORERTYPE);
+            explorerTypeElement.addAttribute(A_NAME, settings.getName());
+            explorerTypeElement.addAttribute(A_KEY, settings.getKey());
+            explorerTypeElement.addAttribute(A_ICON, settings.getIcon());
+            // create subnode <newresource>
+            Element newResElement = explorerTypeElement.addElement(N_NEWRESOURCE);
+            newResElement.addAttribute(A_URI, settings.getNewResourceUri());
+            newResElement.addAttribute(A_ORDER, settings.getNewResourceOrder());
+            // create subnode <accesscontrol>
+            Element accessControlElement = explorerTypeElement.addElement(N_ACCESSCONTROL);
+            Iterator k = settings.getAccessEntries().keySet().iterator();
+            while (k.hasNext()) {
+                String key = (String)k.next();
+                String value = (String)settings.getAccessEntries().get(key);
+                Element accessEntryElement = accessControlElement.addElement(N_ACCESSENTRY);
+                accessEntryElement.addAttribute(A_PRINCIPAL, key);
+                accessEntryElement.addAttribute(A_PERMISSIONS, value);
+            }
+            // create subnode <editoptions>
+            if (settings.isResourceType()) {
+                Element editOptionsElement = explorerTypeElement.addElement(N_EDITOPTIONS);
+                Element defaultPropertiesElement = editOptionsElement.addElement(N_DEFAULTPROPERTIES);
+                defaultPropertiesElement.addAttribute(A_ENABLED, "" + settings.isPropertiesEnabled());
+                defaultPropertiesElement.addAttribute(A_SHOWNAVIGATION, "" + settings.isShowNavigation());
+                Iterator m = settings.getProperties().iterator();
+                while (m.hasNext()) {
+                    defaultPropertiesElement.addElement(N_PROPERTY).addAttribute(A_NAME, (String)m.next());
+                }
+                Element contextMenuElement = editOptionsElement.addElement(N_CONTEXTMENU);
+                m = settings.getContextMenuEntries().iterator();
+                while (m.hasNext()) {
+                    CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)m.next();
+                    Element itemElement;
+                    if (CmsExplorerContextMenuItem.C_TYPE_ENTRY.equals(item.getType())) {
+                        // create an <entry> node
+                        itemElement = contextMenuElement.addElement(N_ENTRY);
+                        itemElement.addAttribute(A_KEY, item.getKey());
+                        itemElement.addAttribute(A_URI, item.getUri());
+                        if (item.isXml()) {
+                            itemElement.addAttribute(A_ISXML, "" + item.isXml());
+                        }
+                        if (item.getTarget() != null) {
+                            itemElement.addAttribute(A_TARGET, item.getTarget());
+                        }
+                    } else {
+                        // create a <separator> node
+                        itemElement = contextMenuElement.addElement(N_SEPARATOR);
+                    }
+                    itemElement.addAttribute(A_RULES, item.getRules());
+                    itemElement.addAttribute(A_ORDER, "" + item.getOrder());
+                }
+            }            
         }
         
         // return the configured node

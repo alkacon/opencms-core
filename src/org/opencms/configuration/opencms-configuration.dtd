@@ -270,6 +270,7 @@
 	uri CDATA #REQUIRED 
 	rules CDATA #REQUIRED 
 	order CDATA #REQUIRED 
+	target CDATA #IMPLIED
 	isxml (true|false|TRUE|FALSE) #IMPLIED>
 	
 <!ELEMENT separator EMPTY>

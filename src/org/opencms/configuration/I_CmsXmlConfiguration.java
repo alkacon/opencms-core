@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2004/03/08 12:32:02 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/03/10 11:22:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,6 +55,9 @@ public interface I_CmsXmlConfiguration extends ObjectCreationFactory, I_CmsConfi
 
     /** The "from" attribute */
     String A_FROM = "from";
+    
+    /** The "icon" attribute */
+    String A_ICON = "icon";
 
     /** The "key" attribute */
     String A_KEY = "key";
@@ -94,6 +97,9 @@ public interface I_CmsXmlConfiguration extends ObjectCreationFactory, I_CmsConfi
     
     /** Workplace views master node */
     String N_VIEWS = "views";
+    
+    /** An individual property node */
+    String N_PROPERTY = "property";
     
     /**
      * Digests an XML node and creates an instance of this configurable class.<p>

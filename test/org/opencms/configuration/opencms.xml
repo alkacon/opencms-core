@@ -76,7 +76,7 @@
         		<translation>s#/default/vfs/system/workplace/css/(.*)#/system/workplace/resources/$1#</translation>
         		<translation>s#/default/vfs/system/workplace/templates/js/(.*)#/system/workplace/scripts/$1#</translation>
         	</foldertranslations>
-        </translations>
+        </translations>           
     </vfs>   
     <workplace>
     	<defaultlocale>en</defaultlocale>
@@ -102,7 +102,86 @@
     	<labeledfolders>
     		<resource uri="/system/"/>
     		<resource uri="/system/login/"/>
-    	</labeledfolders>    	
+    	</labeledfolders>
+    	<explorertypes>
+			<explorertype name="jsp" key="fileicon.jsp" icon="jsp.gif">
+				<newresource uri="new_resource_jsp.jsp" order="50"/>
+				<accesscontrol>
+					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+				</accesscontrol>
+				<editoptions>
+					<defaultproperties enabled="false" shownavigation="false"/>
+					<contextmenu>
+						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaai aaai dddd dddd dddd dddd dddd dddd" order="10"/>
+						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd dddd aaai aaai aaai dddd aaai" order="20"/>
+						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd dddd aaai dddd dddd dddd aaai dddd" order="30"/>
+						<separator rules="d d aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa" order="40"/>
+						<entry key="explorer.context.project" uri="resource_to_project.html.html" isxml="true" rules="a d dddd dddd dddd dddd dddd dddd dddd dddd" order="50"/>
+						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd dddd dddd dddd dddd dddd" order="60"/>
+						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d iaaa iaaa iaaa dddd dddd dddd iiii dddd" order="70"/>
+						<separator rules="a a aaaa aaaa aaaa dddd dddd dddd aaaa dddd" order="80"/>
+						<entry key="explorer.context.edit" uri="editors/editor.html" target="_top" rules="d d iiii aaai aaai dddd dddd dddd iiii dddd" order="90"/>
+						<separator rules="d d aaaa aaaa aaaa dddd dddd dddd aaaa dddd" order="100"/>
+						<entry key="explorer.context.copy" uri="dialogs/copy.html" isxml="false" rules="d d aaai aaai aaai dddd dddd dddd iiii dddd" order="110"/>
+						<entry key="explorer.context.rename" uri="dialogs/rename.html" isxml="false" rules="d d iiii aaai aaai dddd dddd dddd aaai dddd" order="120"/>
+						<entry key="explorer.context.move" uri="dialogs/move.html" isxml="false" rules="d d iiii aaai aaai dddd dddd dddd aaai dddd" order="130"/>
+						<entry key="explorer.context.delete" uri="dialogs/delete.html" isxml="false" rules="d d iiii aaai aaai dddd dddd dddd aaai dddd" order="140"/>
+						<entry key="explorer.context.touch" uri="dialogs/touch.html" isxml="false" rules="d d iiii aaai aaai dddd dddd dddd iiii dddd" order="150"/>
+						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" isxml="false" rules="d d iiid iaid iaid dddd dddd dddd iiii dddd" order="160"/>
+						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" isxml="false" rules="d d ddda ddda ddda dddd dddd dddd ddda dddd" order="170"/>
+						<separator rules="d d aaaa aaaa aaaa dddd dddd dddd aaaa dddd" order="180"/>
+						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" isxml="false" rules="d d aaai aaai aaai dddd dddd dddd aaai dddd" order="190"/>
+						<separator rules="d d aaaa aaaa aaaa dddd dddd dddd aaaa dddd" order="200"/>
+						<entry key="explorer.context.access" uri="dialogs/chacc.html" isxml="false" rules="d d iiii aaai aaai dddd dddd dddd iiii dddd" order="210"/>
+						<entry key="explorer.context.type" uri="chtype.html" isxml="true" rules="d d iiii aaai aaai dddd dddd dddd iiii dddd" order="220"/>
+						<entry key="explorer.context.chnav" uri="dialogs/chnav.html" isxml="false" rules="d d iiii aaai aaai dddd dddd dddd iiii dddd" order="230"/>
+						<separator rules="d d aaaa aaaa aaaa dddd dddd dddd aaaa dddd" order="240"/>
+						<entry key="explorer.context.history" uri="history.html" isxml="true" rules="a a aaaa aaaa aaaa aaaa aaaa aaaa iiii iiii" order="250"/>
+						<entry key="explorer.context.property" uri="dialogs/property.html" isxml="false" rules="a a aaai aaai aaai aaai aaai aaai aaai aaai" order="260"/>
+					</contextmenu>
+				</editoptions>
+			</explorertype>	
+			<explorertype name="binary" key="fileicon.binary" icon="binary.gif">
+				<newresource uri="new_resource_binary.jsp" order="60"/>
+				<accesscontrol>
+					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+				</accesscontrol>
+				<editoptions>
+					<defaultproperties enabled="true" shownavigation="false"/>
+					<contextmenu>
+						<entry key="explorer.context.lock" uri="dialogs/lock.html" isxml="false" rules="d d aaai aaai dddd dddd dddd dddd dddd dddd" order="10"/>
+						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" isxml="false" rules="d d dddd dddd dddd aaai aaai aaai dddd aaai" order="20"/>
+						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" isxml="false" rules="d d dddd dddd aaai dddd dddd dddd aaai dddd" order="30"/>
+						<separator rules="d d aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa" order="40"/>
+						<entry key="explorer.context.project" uri="resource_to_project.html.html" isxml="true" rules="a d dddd dddd dddd dddd dddd dddd dddd dddd" order="50"/>
+						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd dddd dddd dddd dddd dddd" order="60"/>
+						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" isxml="false" rules="d d iaaa iaaa iaaa dddd dddd dddd iiii dddd" order="70"/>
+						<separator rules="a a aaaa aaaa aaaa dddd dddd dddd aaaa dddd" order="80"/>
+						<entry key="explorer.context.copy" uri="dialogs/copy.html" isxml="false" rules="d d aaai aaai aaai dddd dddd dddd iiii dddd" order="90"/>
+						<entry key="explorer.context.rename" uri="dialogs/rename.html" isxml="false" rules="d d iiii aaai aaai dddd dddd dddd aaai dddd" order="100"/>
+						<entry key="explorer.context.move" uri="dialogs/move.html" isxml="false" rules="d d iiii aaai aaai dddd dddd dddd aaai dddd" order="110"/>
+						<entry key="explorer.context.delete" uri="dialogs/delete.html" isxml="false" rules="d d iiii aaai aaai dddd dddd dddd aaai dddd" order="120"/>
+						<entry key="explorer.context.replace" uri="replace.html?overwrite=yes&amp;mode=replace" isxml="true" rules="d d iiii aaai aaai dddd dddd dddd iiii dddd" order="130"/>
+						<entry key="explorer.context.touch" uri="dialogs/touch.html" isxml="false" rules="d d iiii aaai aaai dddd dddd dddd iiii dddd" order="140"/>
+						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" isxml="false" rules="d d iiid iaid iaid dddd dddd dddd iiii dddd" order="150"/>
+						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" isxml="false" rules="d d ddda ddda ddda dddd dddd dddd ddda dddd" order="160"/>
+						<separator rules="d d aaaa aaaa aaaa dddd dddd dddd aaaa dddd" order="170"/>
+						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" isxml="false" rules="d d aaai aaai aaai dddd dddd dddd aaai dddd" order="180"/>
+						<separator rules="d d aaaa aaaa aaaa dddd dddd dddd aaaa dddd" order="190"/>
+						<entry key="explorer.context.access" uri="dialogs/chacc.html" isxml="false" rules="d d iiii aaai aaai dddd dddd dddd iiii dddd" order="200"/>
+						<entry key="explorer.context.type" uri="chtype.html" isxml="true" rules="d d iiii aaai aaai dddd dddd dddd iiii dddd" order="210"/>
+						<entry key="explorer.context.chnav" uri="dialogs/chnav.html" isxml="false" rules="d d iiii aaai aaai dddd dddd dddd iiii dddd" order="220"/>
+						<separator rules="d d aaaa aaaa aaaa dddd dddd dddd aaaa dddd" order="230"/>
+						<entry key="explorer.context.history" uri="history.html" isxml="true" rules="a a aaaa aaaa aaaa aaaa aaaa aaaa iiii iiii" order="240"/>
+						<entry key="explorer.context.property" uri="dialogs/property.html" isxml="false" rules="a a aaai aaai aaai aaai aaai aaai aaai aaai" order="250"/>
+					</contextmenu>
+				</editoptions>
+			</explorertype>
+		</explorertypes>
     </workplace>      
 	<importexport>
 		<importexporthandlers>
