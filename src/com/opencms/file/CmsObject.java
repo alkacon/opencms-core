@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2004/01/23 11:07:16 $
-* Version: $Revision: 1.446 $
+* Date   : $Date: 2004/01/23 15:02:16 $
+* Version: $Revision: 1.447 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.446 $
+ * @version $Revision: 1.447 $
  */
 public class CmsObject {
 
@@ -4423,7 +4423,7 @@ public class CmsObject {
     }
     
     /**
-     * Validates the HTML links (hrefs and images) in all unpublished plain files and XML pages
+     * Validates the HTML links (hrefs and images) in all unpublished XML pages
      * of the current project.<p>
      * 
      * @param report an instance of I_CmsReport to print messages
@@ -4434,7 +4434,7 @@ public class CmsObject {
     }
     
     /**
-     * Validates the HTML links (hrefs and images) in the unpublished plain or XML page
+     * Validates the HTML links (hrefs and images) in the unpublished XML page
      * which will be directly published in the current project.<p>
      * 
      * @param directPublishResource the resource which will be directly published

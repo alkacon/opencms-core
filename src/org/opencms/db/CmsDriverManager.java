@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/01/23 14:59:37 $
- * Version: $Revision: 1.309 $
+ * Date   : $Date: 2004/01/23 15:02:16 $
+ * Version: $Revision: 1.310 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.309 $ $Date: 2004/01/23 14:59:37 $
+ * @version $Revision: 1.310 $ $Date: 2004/01/23 15:02:16 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -8946,8 +8946,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
     
     /**
-     * Validates the HTML links (hrefs and images) in the unpublished plain or XML page
-     * which will be directly published in the current project.<p>
+     * Validates the HTML links (hrefs and images) in the unpublished XML page
+     * which will be published in the current project.<p>
      * 
      * @param cms the current user's Cms object
      * @param directPublishResource the resource which will be directly published
