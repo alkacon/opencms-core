@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/12/05 16:22:27 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2003/12/12 15:37:27 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -114,10 +114,10 @@ public final class OpenCmsCore {
     private static final String C_DEFAULT_MIMETYPE = "text/html";
 
     /** Static version name to use if version.properties can not be read */
-    private static final String C_DEFAULT_VERSION_NAME = "Salusa Secundus";
+    private static final String C_DEFAULT_VERSION_NAME = "Ix";
 
     /** Static version number to use if version.properties can not be read */
-    private static final String C_DEFAULT_VERSION_NUMBER = "5.1.x";
+    private static final String C_DEFAULT_VERSION_NUMBER = "5.3.x";
     
     /** Prefix for error messages for initialization errors */
     private static final String C_ERRORMSG = "OpenCms initialization error!\n\n";     
