@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/07/02 11:03:12 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/11 07:48:05 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the generic (ANSI-SQL) driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.6 $ $Date: 2003/07/11 07:48:05 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -209,7 +209,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
         
         if (!m_cachedQueries.containsKey(queryKey)) {            
             // make the statement project dependent
-            query = replaceTableKey(projectId, query);
+            query = CmsSqlManager.replaceTableKey(projectId, query);
             
             // to minimize costs, all statements with replaced expressions are cached in a map
             queryKey += (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) ? "_ONLINE" : "_OFFLINE";
@@ -230,7 +230,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * @param query the SQL query
      * @return String the SQL query with the table key search pattern replaced
      */
-    public String replaceTableKey(int projectId, String query) {
+    public static String replaceTableKey(int projectId, String query) {
         // make the statement project dependent
         String replacePattern = (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) ? "_ONLINE_" : "_OFFLINE_";
         query = CmsStringSubstitution.substitute(query, C_TABLE_KEY_SEARCH_PATTERN, replacePattern);

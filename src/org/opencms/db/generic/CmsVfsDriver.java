@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/10 14:39:23 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/07/11 07:48:05 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.22 $ $Date: 2003/07/10 14:39:23 $
+ * @version $Revision: 1.23 $ $Date: 2003/07/11 07:48:05 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -2092,7 +2092,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         
         try {
             conn = m_sqlManager.getConnection(projectId);
-            query = m_sqlManager.get(projectId, "C_RESOURCES_READ_FILES_BY_PROJECT") + m_sqlManager.replaceTableKey(projectId, projectClause + changedClause + orderClause);
+            query = m_sqlManager.get(projectId, "C_RESOURCES_READ_FILES_BY_PROJECT") + CmsSqlManager.replaceTableKey(projectId, projectClause + changedClause + orderClause);
             stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
             //stmt.setInt(1, projectId);
             res = stmt.executeQuery();
@@ -2247,15 +2247,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    /**
-     * Reads all folders from the Cms, that are in one project.<BR/>
-     *
-     * @param project The project in which the folders are.
-     *
-     * @return A Vecor of folders.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
     public List readFolders(CmsProject currentProject, boolean includeUnchanged, boolean onlyProject) throws CmsException {
         List folders = (List) new ArrayList();
         CmsFolder currentFolder;
@@ -2283,7 +2274,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         
         try {
             conn = m_sqlManager.getConnection(projectId);            
-            query = m_sqlManager.get(projectId, "C_RESOURCES_READ_FOLDERS_BY_PROJECT") + m_sqlManager.replaceTableKey(projectId, projectClause + changedClause + orderClause);
+            query = m_sqlManager.get(projectId, "C_RESOURCES_READ_FOLDERS_BY_PROJECT") + CmsSqlManager.replaceTableKey(projectId, projectClause + changedClause + orderClause);
             stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
             //stmt.setInt(1, projectId);
             res = stmt.executeQuery();
@@ -3604,7 +3595,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         
         try {
             conn = m_sqlManager.getConnection(currentProject);
-            query = m_sqlManager.get(currentProject, "C_RESOURCES_GET_SUBRESOURCES") + m_sqlManager.replaceTableKey(currentProject.getId(), resourceTypeClause + orderClause);
+            query = m_sqlManager.get(currentProject, "C_RESOURCES_GET_SUBRESOURCES") + CmsSqlManager.replaceTableKey(currentProject.getId(), resourceTypeClause + orderClause);
             stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
             stmt.setString(1, parentFolder.getId().toString());
             res = stmt.executeQuery();
