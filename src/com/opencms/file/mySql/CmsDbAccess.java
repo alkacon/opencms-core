@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/11/14 10:09:13 $
-* Version: $Revision: 1.70 $
+* Date   : $Date: 2002/08/26 08:38:15 $
+* Version: $Revision: 1.71 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.70 $ $Date: 2001/11/14 10:09:13 $ *
+ * @version $Revision: 1.71 $ $Date: 2002/08/26 08:38:15 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
@@ -406,6 +406,74 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
         }
     }
 
+    /**
+     * Returns all projects from the history.
+     *
+     *
+     * @return a Vector of projects.
+     */
+     public Vector getAllBackupProjects() throws CmsException {
+         Vector projects = new Vector();
+         ResultSet res = null;
+         PreparedStatement statement = null;
+         Connection con = null;
+
+         try {
+             // create the statement
+             con = DriverManager.getConnection(m_poolNameBackup);
+             statement = con.prepareStatement(m_cq.get("C_PROJECTS_READLAST_BACKUP"));
+             statement.setInt(1, 300);
+             res = statement.executeQuery();
+             while(res.next()) {
+                 Vector resources = readBackupProjectResources(res.getInt("VERSION_ID"));
+                 projects.addElement( new CmsBackupProject(res.getInt("VERSION_ID"),
+                                                    res.getInt("PROJECT_ID"),
+                                                    res.getString("PROJECT_NAME"),
+                                                    SqlHelper.getTimestamp(res,"PROJECT_PUBLISHDATE"),
+                                                    res.getInt("PROJECT_PUBLISHED_BY"),
+                                                    res.getString("PROJECT_PUBLISHED_BY_NAME"),
+                                                    res.getString("PROJECT_DESCRIPTION"),
+                                                    res.getInt("TASK_ID"),
+                                                    res.getInt("USER_ID"),
+                                                    res.getString("USER_NAME"),
+                                                    res.getInt("GROUP_ID"),
+                                                    res.getString("GROUP_NAME"),
+                                                    res.getInt("MANAGERGROUP_ID"),
+                                                    res.getString("MANAGERGROUP_NAME"),
+                                                    SqlHelper.getTimestamp(res,"PROJECT_CREATEDATE"),
+                                                    res.getInt("PROJECT_TYPE"),
+                                                    resources));
+             }
+         } catch( SQLException exc ) {
+             throw new CmsException("[" + this.getClass().getName() + ".getAllBackupProjects()] " + exc.getMessage(),
+                 CmsException.C_SQL_ERROR, exc);
+         } finally {
+            // close all db-resources
+            if(res != null) {
+                 try {
+                     res.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(statement != null) {
+                 try {
+                     statement.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(con != null) {
+                 try {
+                     con.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+         }
+         return(projects);
+     }
+     
     /**
      * Destroys this access-module
      * @exception throws CmsException if something goes wrong.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/08/15 09:16:42 $
-* Version: $Revision: 1.254 $
+* Date   : $Date: 2002/08/26 08:38:47 $
+* Version: $Revision: 1.255 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.254 $ $Date: 2002/08/15 09:16:42 $ *
+ * @version $Revision: 1.255 $ $Date: 2002/08/26 08:38:47 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -3048,9 +3048,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
              // create the statement
              con = DriverManager.getConnection(m_poolNameBackup);
              statement = con.prepareStatement(m_cq.get("C_PROJECTS_READLAST_BACKUP"));
-             statement.setInt(1, 300);
              res = statement.executeQuery();
-             while(res.next()) {
+             int i = 0;
+             int max = 300;
+             while(res.next() && (i < max)) {
                  Vector resources = readBackupProjectResources(res.getInt("VERSION_ID"));
                  projects.addElement( new CmsBackupProject(res.getInt("VERSION_ID"),
                                                     res.getInt("PROJECT_ID"),
@@ -3069,6 +3070,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                                                     SqlHelper.getTimestamp(res,"PROJECT_CREATEDATE"),
                                                     res.getInt("PROJECT_TYPE"),
                                                     resources));
+                 i++;
              }
          } catch( SQLException exc ) {
              throw new CmsException("[" + this.getClass().getName() + ".getAllBackupProjects()] " + exc.getMessage(),
