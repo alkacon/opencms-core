@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/05/28 08:38:16 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/05/28 09:18:10 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.3.5
  */
@@ -124,6 +124,27 @@ public class OpenCmsTestCase extends TestCase {
             
         } catch (CmsException e) {
             fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
+        }
+    }
+    
+    /**
+     * Tests if the the current date last modified of a resource is later then a given date.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param dateLastModified the last modification date
+     */
+    public void assertDateLastModifiedAfter(CmsObject cms, String resourceName, long dateLastModified) {
+        try {
+            // get the actual resource from the vfs
+            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            
+            if (res.getDateLastModified() < dateLastModified) {
+                fail("[DateLastModified " + dateLastModified + " > "+res.getDateLastModified() + "]");
+            }
+            
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName+" " + CmsException.getStackTraceAsString(e));     
         }
     }
     
@@ -316,6 +337,307 @@ public class OpenCmsTestCase extends TestCase {
             fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
         }
     }
+    
+     /**
+     * Compares the current properties of a resource with the stored values and a given, changed property.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param property the changed property
+     */
+    public void assertPropertyChanged(CmsObject cms, String resourceName, CmsProperty property) {
+        try {
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
+            
+            // create the exclude list
+            List excludeList = new ArrayList();
+            excludeList.add(property);            
+            
+            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
+            
+            // now see if we have collected any no-matches
+            if (noMatches.length() > 0) {
+                fail("error comparing resource " + resourceName + " with stored values: " + noMatches);
+            }   
+            
+            // test if the property was already in the stored result
+            List storedProperties =  storedResource.getProperties();
+            if (!storedProperties.contains(property)) {
+                 fail("property not found in stored value: " + property);     
+            }
+            
+            // test if the values of the changed propertiy is correct.
+            CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
+            if (!resourceProperty.isIdentical(property)) {
+                fail("property is not identical :" + property + " <-> " + resourceProperty);              
+            }  
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
+        }
+    }
+    
+    
+     /**
+     * Compares the current properties of a resource with the stored values and a list of changed property.<p>
+     * 
+     * @param cms an initialized CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param excludeList a list of CmsProperties to exclude
+     */
+    public void assertPropertyChanged(CmsObject cms, String resourceName, List excludeList) {
+        
+        try {
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);    
+            
+            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
+            
+            // now see if we have collected any no-matches
+            if (noMatches.length() > 0) {
+                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
+            }   
+  
+            // test if the values of the changed properties are correct and if the properties
+            // were already in the stored result
+            
+            String propertyNoMatches = "";
+            String storedNotFound = "";
+            Iterator i = excludeList.iterator();
+            List storedProperties =  storedResource.getProperties();
+            while (i.hasNext()) {
+                CmsProperty property = (CmsProperty)i.next();
+                CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
+                // test if the property has the same value
+                if (!resourceProperty.isIdentical(property)) {
+                    propertyNoMatches +=  "[" + property + " <-> " + resourceProperty + "]";          
+                }
+                // test if the property was already in the stored object
+                if (!storedProperties.contains(property)) {
+                    storedNotFound +=  "[" + property + "]"; 
+                }
+            }                        
+            // now see if we have collected any property no-matches
+            if (propertyNoMatches.length() > 0) {
+                fail("error comparing properties for resource " + resourceName + ": " + propertyNoMatches);
+            }
+            // now see if we have collected any property not found in the stored original
+            if (storedNotFound.length() > 0) {
+                fail("properties not found in stored value: " + storedNotFound);
+            }          
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
+        }
+    } 
+    
+    
+    /**
+     * Compares the current properties of a resource with the stored values.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     */
+    public void assertPropertyEqual(CmsObject cms, String resourceName) {
+        try {
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
+            String noMatches = compareProperties(cms, resourceName, storedResource, null);   
+            
+            // now see if we have collected any no-matches
+            if (noMatches.length() > 0) {
+                fail("error comparing resource " + resourceName + " with stored values: " + noMatches);
+            }   
+            
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
+        }
+    }
+     
+    /**
+     * Compares the current properties of a resource with the stored values and a given, new property.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param property the changed property
+     */
+    public void assertPropertyNew(CmsObject cms, String resourceName, CmsProperty property) {
+        try {
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
+            
+            // create the exclude list
+            List excludeList = new ArrayList();
+            excludeList.add(property);            
+            
+            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
+            
+            // now see if we have collected any no-matches
+            if (noMatches.length() > 0) {
+                fail("error comparing resource " + resourceName + " with stored values: " + noMatches);
+            }   
+            
+            // test if the property was already in the stored result
+            List storedProperties =  storedResource.getProperties();
+            if (storedProperties.contains(property)) {
+                 fail("property already found in stored value: " + property);     
+            }
+            
+            // test if the values of the changed propertiy is correct.
+            CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
+            if (!resourceProperty.isIdentical(property)) {
+                fail("property is not identical :" + property + " <-> " + resourceProperty);              
+            }  
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
+        }
+    }
+    
+    
+    /**
+     * Compares the current properties of a resource with the stored values and a list of new property.<p>
+     * 
+     * @param cms an initialized CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param excludeList a list of CmsProperties to exclude
+     */
+    public void assertPropertyNew(CmsObject cms, String resourceName, List excludeList) {
+        
+        try {
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);    
+            
+            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
+            
+            // now see if we have collected any no-matches
+            if (noMatches.length() > 0) {
+                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
+            }   
+  
+            // test if the values of the changed properties are correct and if the properties
+            // were already in the stored result
+            
+            String propertyNoMatches = "";
+            String storedFound = "";
+            Iterator i = excludeList.iterator();
+            List storedProperties =  storedResource.getProperties();
+            while (i.hasNext()) {
+                CmsProperty property = (CmsProperty)i.next();
+                CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
+                // test if the property has the same value
+                if (!resourceProperty.isIdentical(property)) {
+                    propertyNoMatches +=  "[" + property + " <-> " + resourceProperty + "]";          
+                }
+                // test if the property was already in the stored object
+                if (storedProperties.contains(property)) {
+                    storedFound +=  "[" + property + "]"; 
+                }
+            }                        
+            // now see if we have collected any property no-matches
+            if (propertyNoMatches.length() > 0) {
+                fail("error comparing properties for resource " + resourceName + ": " + propertyNoMatches);
+            }
+            // now see if we have collected any property not found in the stored original
+            if (storedFound.length() > 0) {
+                fail("properties already found in stored value: " + storedFound);
+            }          
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
+        }
+    } 
+     
+    /**
+     * Compares the current properties of a resource with the stored values and a given, deleted property.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param property the deleted property
+     */
+    public void assertPropertyRemoved(CmsObject cms, String resourceName, CmsProperty property) {
+        try {
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
+            
+            // create the exclude list
+            List excludeList = new ArrayList();
+            excludeList.add(property);            
+            
+            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
+            
+            // now see if we have collected any no-matches
+            if (noMatches.length() > 0) {
+                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
+            }   
+            
+            // test if the property was already in the stored result
+            List storedProperties =  storedResource.getProperties();
+            if (!storedProperties.contains(property)) {
+                 fail("property not found in stored value: "+property);     
+            }
+            
+            // test if the values of the changed propertiy is correct.
+            CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
+            if (resourceProperty != CmsProperty.getNullProperty()) {
+                fail("property is not removed :"+property+" <-> "+ resourceProperty);              
+            }  
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
+        }
+    }  
+    
+    
+    /**
+     * Compares the current properties of a resource with the stored values and a list of deleted properties.<p>
+     * 
+     * @param cms an initialized CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param excludeList a list of CmsProperties to exclude
+     */
+    public void assertPropertyRemoved(CmsObject cms, String resourceName, List excludeList) {
+        
+        try {
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);    
+            
+            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
+            
+            // now see if we have collected any no-matches
+            if (noMatches.length() > 0) {
+                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
+            }   
+  
+            // test if the values of the changed properties are correct and if the properties
+            // were already in the stored result
+            
+            String propertyNotDeleted = "";
+            String storedNotFound = "";
+            Iterator i = excludeList.iterator();
+            List storedProperties =  storedResource.getProperties();
+            List resourceProperties = cms.readPropertyObjects(resourceName, false);
+            
+            while (i.hasNext()) {
+                CmsProperty property = (CmsProperty)i.next();
+                 // test if the property has the same value
+                if (resourceProperties.contains(property)) {
+                    CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
+                    propertyNotDeleted +=  "[" + property + " <-> " + resourceProperty +"]";          
+                }
+                // test if the property was already in the stored object
+                if (!storedProperties.contains(property)) {
+                    storedNotFound +=  "[" + property + "]"; 
+                }
+            }                        
+            // now see if we have collected any property no-matches
+            if (propertyNotDeleted.length() > 0) {
+                fail("properties not deleted for "+resourceName+": "+propertyNotDeleted);
+            }
+            // now see if we have collected any property not found in the stored original
+            if (storedNotFound.length() > 0) {
+                fail("properties not found in stored value: "+storedNotFound);
+            }          
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
+        }
+    } 
     
     /**
      * Compares the current state of a resource with a given state.<p>
@@ -514,328 +836,6 @@ public class OpenCmsTestCase extends TestCase {
                 fail("cannot read resource "+resourceName+" or " +resName + " "+CmsException.getStackTraceAsString(e));                
             }
     }
-    
-    /**
-     * Tests if the the current date last modified of a resource is later then a given date.<p>
-     * 
-     * @param cms the CmsObject
-     * @param resourceName the name of the resource to compare
-     * @param dateLastModified the last modification date
-     */
-    protected void assertDateLastModifiedAfter(CmsObject cms, String resourceName, long dateLastModified) {
-        try {
-            // get the actual resource from the vfs
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
-            
-            if (res.getDateLastModified() < dateLastModified) {
-                fail("[DateLastModified " + dateLastModified + " > "+res.getDateLastModified() + "]");
-            }
-            
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName+" " + CmsException.getStackTraceAsString(e));     
-        }
-    }
-    
-     /**
-     * Compares the current properties of a resource with the stored values and a given, changed property.<p>
-     * 
-     * @param cms the CmsObject
-     * @param resourceName the name of the resource to compare
-     * @param property the changed property
-     */
-    protected void assertPropertyChanged(CmsObject cms, String resourceName, CmsProperty property) {
-        try {
-            // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
-            
-            // create the exclude list
-            List excludeList = new ArrayList();
-            excludeList.add(property);            
-            
-            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
-            
-            // now see if we have collected any no-matches
-            if (noMatches.length() > 0) {
-                fail("error comparing resource " + resourceName + " with stored values: " + noMatches);
-            }   
-            
-            // test if the property was already in the stored result
-            List storedProperties =  storedResource.getProperties();
-            if (!storedProperties.contains(property)) {
-                 fail("property not found in stored value: " + property);     
-            }
-            
-            // test if the values of the changed propertiy is correct.
-            CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
-            if (!resourceProperty.isIdentical(property)) {
-                fail("property is not identical :" + property + " <-> " + resourceProperty);              
-            }  
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
-        }
-    }
-    
-    
-     /**
-     * Compares the current properties of a resource with the stored values and a list of changed property.<p>
-     * 
-     * @param cms an initialized CmsObject
-     * @param resourceName the name of the resource to compare
-     * @param excludeList a list of CmsProperties to exclude
-     */
-    protected void assertPropertyChanged(CmsObject cms, String resourceName, List excludeList) {
-        
-        try {
-            // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);    
-            
-            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
-            
-            // now see if we have collected any no-matches
-            if (noMatches.length() > 0) {
-                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
-            }   
-  
-            // test if the values of the changed properties are correct and if the properties
-            // were already in the stored result
-            
-            String propertyNoMatches = "";
-            String storedNotFound = "";
-            Iterator i = excludeList.iterator();
-            List storedProperties =  storedResource.getProperties();
-            while (i.hasNext()) {
-                CmsProperty property = (CmsProperty)i.next();
-                CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
-                // test if the property has the same value
-                if (!resourceProperty.isIdentical(property)) {
-                    propertyNoMatches +=  "[" + property + " <-> " + resourceProperty + "]";          
-                }
-                // test if the property was already in the stored object
-                if (!storedProperties.contains(property)) {
-                    storedNotFound +=  "[" + property + "]"; 
-                }
-            }                        
-            // now see if we have collected any property no-matches
-            if (propertyNoMatches.length() > 0) {
-                fail("error comparing properties for resource " + resourceName + ": " + propertyNoMatches);
-            }
-            // now see if we have collected any property not found in the stored original
-            if (storedNotFound.length() > 0) {
-                fail("properties not found in stored value: " + storedNotFound);
-            }          
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
-        }
-    } 
-    
-    
-    /**
-     * Compares the current properties of a resource with the stored values.<p>
-     * 
-     * @param cms the CmsObject
-     * @param resourceName the name of the resource to compare
-     */
-    protected void assertPropertyEqual(CmsObject cms, String resourceName) {
-        try {
-            // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
-            String noMatches = compareProperties(cms, resourceName, storedResource, null);   
-            
-            // now see if we have collected any no-matches
-            if (noMatches.length() > 0) {
-                fail("error comparing resource " + resourceName + " with stored values: " + noMatches);
-            }   
-            
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
-        }
-    }
-     
-    /**
-     * Compares the current properties of a resource with the stored values and a given, new property.<p>
-     * 
-     * @param cms the CmsObject
-     * @param resourceName the name of the resource to compare
-     * @param property the changed property
-     */
-    protected void assertPropertyNew(CmsObject cms, String resourceName, CmsProperty property) {
-        try {
-            // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
-            
-            // create the exclude list
-            List excludeList = new ArrayList();
-            excludeList.add(property);            
-            
-            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
-            
-            // now see if we have collected any no-matches
-            if (noMatches.length() > 0) {
-                fail("error comparing resource " + resourceName + " with stored values: " + noMatches);
-            }   
-            
-            // test if the property was already in the stored result
-            List storedProperties =  storedResource.getProperties();
-            if (storedProperties.contains(property)) {
-                 fail("property already found in stored value: " + property);     
-            }
-            
-            // test if the values of the changed propertiy is correct.
-            CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
-            if (!resourceProperty.isIdentical(property)) {
-                fail("property is not identical :" + property + " <-> " + resourceProperty);              
-            }  
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
-        }
-    }
-    
-    
-    /**
-     * Compares the current properties of a resource with the stored values and a list of new property.<p>
-     * 
-     * @param cms an initialized CmsObject
-     * @param resourceName the name of the resource to compare
-     * @param excludeList a list of CmsProperties to exclude
-     */
-    protected void assertPropertyNew(CmsObject cms, String resourceName, List excludeList) {
-        
-        try {
-            // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);    
-            
-            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
-            
-            // now see if we have collected any no-matches
-            if (noMatches.length() > 0) {
-                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
-            }   
-  
-            // test if the values of the changed properties are correct and if the properties
-            // were already in the stored result
-            
-            String propertyNoMatches = "";
-            String storedFound = "";
-            Iterator i = excludeList.iterator();
-            List storedProperties =  storedResource.getProperties();
-            while (i.hasNext()) {
-                CmsProperty property = (CmsProperty)i.next();
-                CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
-                // test if the property has the same value
-                if (!resourceProperty.isIdentical(property)) {
-                    propertyNoMatches +=  "[" + property + " <-> " + resourceProperty + "]";          
-                }
-                // test if the property was already in the stored object
-                if (storedProperties.contains(property)) {
-                    storedFound +=  "[" + property + "]"; 
-                }
-            }                        
-            // now see if we have collected any property no-matches
-            if (propertyNoMatches.length() > 0) {
-                fail("error comparing properties for resource " + resourceName + ": " + propertyNoMatches);
-            }
-            // now see if we have collected any property not found in the stored original
-            if (storedFound.length() > 0) {
-                fail("properties already found in stored value: " + storedFound);
-            }          
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
-        }
-    } 
-     
-    /**
-     * Compares the current properties of a resource with the stored values and a given, deleted property.<p>
-     * 
-     * @param cms the CmsObject
-     * @param resourceName the name of the resource to compare
-     * @param property the deleted property
-     */
-    protected void assertPropertyRemoved(CmsObject cms, String resourceName, CmsProperty property) {
-        try {
-            // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
-            
-            // create the exclude list
-            List excludeList = new ArrayList();
-            excludeList.add(property);            
-            
-            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
-            
-            // now see if we have collected any no-matches
-            if (noMatches.length() > 0) {
-                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
-            }   
-            
-            // test if the property was already in the stored result
-            List storedProperties =  storedResource.getProperties();
-            if (!storedProperties.contains(property)) {
-                 fail("property not found in stored value: "+property);     
-            }
-            
-            // test if the values of the changed propertiy is correct.
-            CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
-            if (resourceProperty != CmsProperty.getNullProperty()) {
-                fail("property is not removed :"+property+" <-> "+ resourceProperty);              
-            }  
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
-        }
-    }  
-    
-    
-    /**
-     * Compares the current properties of a resource with the stored values and a list of deleted properties.<p>
-     * 
-     * @param cms an initialized CmsObject
-     * @param resourceName the name of the resource to compare
-     * @param excludeList a list of CmsProperties to exclude
-     */
-    protected void assertPropertyRemoved(CmsObject cms, String resourceName, List excludeList) {
-        
-        try {
-            // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);    
-            
-            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
-            
-            // now see if we have collected any no-matches
-            if (noMatches.length() > 0) {
-                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
-            }   
-  
-            // test if the values of the changed properties are correct and if the properties
-            // were already in the stored result
-            
-            String propertyNotDeleted = "";
-            String storedNotFound = "";
-            Iterator i = excludeList.iterator();
-            List storedProperties =  storedResource.getProperties();
-            List resourceProperties = cms.readPropertyObjects(resourceName, false);
-            
-            while (i.hasNext()) {
-                CmsProperty property = (CmsProperty)i.next();
-                 // test if the property has the same value
-                if (resourceProperties.contains(property)) {
-                    CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
-                    propertyNotDeleted +=  "[" + property + " <-> " + resourceProperty +"]";          
-                }
-                // test if the property was already in the stored object
-                if (!storedProperties.contains(property)) {
-                    storedNotFound +=  "[" + property + "]"; 
-                }
-            }                        
-            // now see if we have collected any property no-matches
-            if (propertyNotDeleted.length() > 0) {
-                fail("properties not deleted for "+resourceName+": "+propertyNotDeleted);
-            }
-            // now see if we have collected any property not found in the stored original
-            if (storedNotFound.length() > 0) {
-                fail("properties not found in stored value: "+storedNotFound);
-            }          
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
-        }
-    } 
     
     /**
      * Check the setup DB for errors that might have occured.<p>
