@@ -9,6 +9,7 @@ Legend:
 - General comment
 
 OpenCms 4.5.3  Gom Jabbar   - ?? August 2001
+* Corrected Cache-Directives in CmsXmlNav (Default-Navigation)
 - Switched default-language to english (uk).
 
 OpenCms 4.5.2  Gom Jabbar   - 08 August 2001

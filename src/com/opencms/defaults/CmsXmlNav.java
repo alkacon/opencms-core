@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2001/08/10 14:46:46 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -43,7 +43,7 @@ import java.util.*;
  *
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.32 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.33 $ $Date: 2001/08/10 14:46:46 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 
@@ -895,5 +895,23 @@ public class CmsXmlNav extends A_CmsNavBase {
         property=cms.readProperty(requestedUri, tagcontent);
         property=(property!=null?property:"");
         return (property.getBytes());
+    }
+
+    /**
+     * gets the caching information from the current template class.
+     *
+     * @param cms CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file
+     * @param elementName Element name of this template in our parent template.
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
+     * @return <EM>true</EM> if this class may stream it's results, <EM>false</EM> otherwise.
+     */
+    public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+
+        // First build our own cache directives.
+        CmsCacheDirectives result = new CmsCacheDirectives(true);
+        result.setCacheUri(true);
+        return result;
     }
 }
