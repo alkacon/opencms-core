@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/11/24 13:49:43 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2000/11/30 15:12:36 $
+ * Version: $Revision: 1.42 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.41 $ $Date: 2000/11/24 13:49:43 $ * 
+ * @version $Revision: 1.42 $ $Date: 2000/11/30 15:12:36 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -409,8 +409,8 @@ protected void fillDefaults() throws CmsException
 	CmsUser admin = addUser(C_USER_ADMIN, "admin", "the admin-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), administrators, "", "", C_USER_TYPE_SYSTEMUSER);
 	addUserToGroup(guest.getId(), guests.getId());
 	addUserToGroup(admin.getId(), administrators.getId());
-    writeTaskType(1, 0, "../taskforms/adhoc.asp", "Ad-Hoc", "30308", 1, 1);
-    CmsTask task = createTask(0, 0, 1, // standart project type,
+	writeTaskType(1, 0, "../taskforms/adhoc.asp", "Ad-Hoc", "30308", 1, 1);
+	CmsTask task = createTask(0, 0, 1, // standart project type,
 	admin.getId(), admin.getId(), administrators.getId(), C_PROJECT_ONLINE, new java.sql.Timestamp(new java.util.Date().getTime()), new java.sql.Timestamp(new java.util.Date().getTime()), C_TASK_PRIORITY_NORMAL);
 	CmsProject online = createProject(admin, guests, projectleader, task, C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL);
 
@@ -503,6 +503,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 	CmsAccessFilesystem discAccess = new CmsAccessFilesystem(m_exportpointStorage);
 	CmsFolder currentFolder = null;
 	CmsFile currentFile = null;
+	CmsFolder newFolder = null;
 	Vector offlineFolders;
 	Vector offlineFiles;
 	Vector deletedFolders = new Vector();
@@ -541,9 +542,51 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 					folderIdIndex.put(new Integer(currentFolder.getParentId()), parentId);
 				}
 				// create the new folder and insert its id in the folderindex
-				CmsFolder newFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getAbsolutePath());
-				newFolder.setState(C_STATE_UNCHANGED);
-				writeFolder(onlineProject, newFolder, false);
+				try {
+					newFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getAbsolutePath());
+					newFolder.setState(C_STATE_UNCHANGED);
+					writeFolder(onlineProject, newFolder, false);
+				} catch (CmsException e) {
+					if (e.getType() == CmsException.C_FILE_EXISTS) {
+						// the folder already exists
+						CmsFolder onlineFolder = null;
+						try {
+							onlineFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
+						} catch (CmsException exc) {
+							throw exc;
+						} // end of catch	
+						PreparedStatement statement = null;
+						try {
+							// update the onlineFolder with data from offlineFolder
+							statement = m_pool.getPreparedStatement(m_cq.C_RESOURCES_UPDATE_KEY);
+							statement.setInt(1, currentFolder.getType());
+							statement.setInt(2, currentFolder.getFlags());
+							statement.setInt(3, currentFolder.getOwnerId());
+							statement.setInt(4, currentFolder.getGroupId());
+							statement.setInt(5, onlineFolder.getProjectId());
+							statement.setInt(6, currentFolder.getAccessFlags());
+							statement.setInt(7, C_STATE_UNCHANGED);
+							statement.setInt(8, currentFolder.isLockedBy());
+							statement.setInt(9, currentFolder.getLauncherType());
+							statement.setString(10, currentFolder.getLauncherClassname());
+							statement.setTimestamp(11, new Timestamp(System.currentTimeMillis()));
+							statement.setInt(12, currentFolder.getResourceLastModifiedBy());
+							statement.setInt(13, 0);
+							statement.setInt(14, currentFolder.getFileId());
+							statement.setInt(15, onlineFolder.getResourceId());
+							statement.executeUpdate();
+							newFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
+						} catch (SQLException sqle) {
+							throw new CmsException("[" + this.getClass().getName() + "] " + sqle.getMessage(), CmsException.C_SQL_ERROR, sqle);
+						} finally {
+							if (statement != null) {
+								m_pool.putPreparedStatement(m_cq.C_RESOURCES_UPDATE_KEY, statement);
+							}
+						}
+					} else {
+						throw e;
+					}
+				}
 				folderIdIndex.put(new Integer(currentFolder.getResourceId()), new Integer(newFolder.getResourceId()));
 
 				// copy properties
