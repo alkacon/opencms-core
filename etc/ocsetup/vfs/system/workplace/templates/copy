@@ -79,7 +79,7 @@ function show_help()
 			<tr><td class=dialogtxt colspan=2>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="alert('hi');location.href='copy.html?newfile='+document.COPY.file.value+'&newfolder='+document.COPY.folder.value;"></td>
+					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='copy.html?newfile='+document.COPY.file.value+'&newfolder='+document.COPY.folder.value+'&flags='+document.COPY.RIGHT.checked;"></td>
 					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href='explorer_files.html'"></td>
 				</tr>
 				</table>
