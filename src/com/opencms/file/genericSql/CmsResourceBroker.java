@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/20 09:36:16 $
- * Version: $Revision: 1.250 $
+ * Date   : $Date: 2001/07/23 07:21:47 $
+ * Version: $Revision: 1.251 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.250 $ $Date: 2001/07/20 09:36:16 $
+ * @version $Revision: 1.251 $ $Date: 2001/07/23 07:21:47 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -996,35 +996,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 {
     return readUser(currentUser, currentProject, C_USER_GUEST);
 }
-    /**
-     * Checks, if all mandatory metainfos for the resource type are set as key in the
-     * metainfo-hashtable. It throws a exception, if a mandatory metainfo is missing.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resourceType The type of the rersource to check the metainfos for.
-     * @param propertyinfos The propertyinfos to check.
-     *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
-     */
-    protected void checkMandatoryProperties(CmsUser currentUser,
-                                         CmsProject currentProject,
-                                         String resourceType,
-                                         Hashtable propertyinfos)
-        throws CmsException {
-        // read the mandatory metadefs
-        Vector metadefs = readAllPropertydefinitions(currentUser, currentProject,
-                                                      resourceType);
 
-        // check, if the mandatory metainfo is given
-        for(int i = 0; i < metadefs.size(); i++) {
-            if( propertyinfos.containsKey(metadefs.elementAt(i) ) ) {
-                // mandatory metainfo is missing - throw exception
-                throw new CmsException("[" + this.getClass().getName() + "] " + (String)metadefs.elementAt(i),
-                    CmsException.C_MANDATORY_PROPERTY);
-            }
-        }
-    }
      /**
      * Changes the group for this resource<br>
      *
@@ -1611,10 +1583,6 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
 
          throws CmsException {
 
-
-        // check for mandatory metainfos
-        checkMandatoryProperties(currentUser, currentProject, type, propertyinfos);
-
         // checks, if the filename is valid, if not it throws a exception
         validFilename(filename);
 
@@ -1695,9 +1663,6 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
                                   Hashtable propertyinfos)
         throws CmsException {
 
-        // check for mandatory metainfos
-        checkMandatoryProperties(currentUser, currentProject, C_TYPE_FOLDER_NAME,
-                                  propertyinfos);
         // checks, if the filename is valid, if not it throws a exception
         validFilename(newFolderName);
         CmsFolder cmsFolder = readFolder(currentUser,currentProject, folder);
