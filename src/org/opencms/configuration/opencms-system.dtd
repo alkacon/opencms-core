@@ -162,14 +162,22 @@ Each job can have an optional list of parameters.
 # workplace-server: the default server of the OpenCms workplace
 # default-uri: the default uri marks the site that is used when 
 #              a request matches no defined site 
+# secure: an optional secure server for the site
+# alias:  alias servers for the site
 -->
 <!ELEMENT sites (workplace-server, default-uri, site+)>
 <!ELEMENT workplace-server (#PCDATA)>
 <!ELEMENT default-uri (#PCDATA)>
-<!ELEMENT site EMPTY>
+<!ELEMENT site (secure?, alias*)>
 <!ATTLIST site 
 	server CDATA #REQUIRED
 	uri CDATA #REQUIRED>
+<!ELEMENT secure EMPTY>	
+<!ATTLIST secure
+	server CDATA #REQUIRED>
+<!ELEMENT alias EMPTY>	
+<!ATTLIST alias
+	server CDATA #REQUIRED>	
 	
 <!--
 # Optional configuration that controls some additional information as key/value param pairs

@@ -252,6 +252,48 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>folder1/page4.html</source>
+			<destination>folder1/page4.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>7c169bd5-b3ad-11d8-9c65-514d35723fed</uuidresource>
+			<datelastmodified>Tue, 01 Jun 2004 11:50:52 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 11:24:30 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page4 in folder1]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page4]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword page4]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page4]]></value>
+				</property>
+				<property>
+					<name>secure</name>
+					<value><![CDATA[true]]></value>
+				</property>				
+			</properties>
+			<accesscontrol/>
+		</file>		
+		<file>
 			<destination>folder1/subfolder11</destination>
 			<type>folder</type>
 			<datelastmodified>Tue, 01 Jun 2004 11:35:53 CEST</datelastmodified>

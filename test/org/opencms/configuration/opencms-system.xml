@@ -54,7 +54,11 @@
 		<sites>
 			<workplace-server>http://localhost:8080</workplace-server>
 			<default-uri>/sites/default/</default-uri>
-			<site server="http://localhost:8080" uri="/sites/default/"/>
+			<site server="http://localhost:8080" uri="/sites/default/">
+              <secure server="http://www.mysecureserver.com"/>			
+              <alias server="http://www.aliasserver.com"/>              			
+              <alias server="http://www.yetanotheraliasserver.com"/>			
+			</site>
 		</sites>
 		<runtimeproperties>
 			<param name="compatibility.support.oldlocales">false</param>

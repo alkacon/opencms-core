@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/03/29 17:52:48 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Map;
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.1.12
  */
@@ -84,6 +84,7 @@ public class CmsUserSettings {
     private String m_project;
     private boolean m_restrictExplorerView;
     private boolean m_showLock;
+    private boolean m_showExportSettings;
     private String m_startFolder;
     private String m_startSite;
     private int m_taskMessages;
@@ -196,6 +197,15 @@ public class CmsUserSettings {
      */
     public boolean getDialogShowLock() {
         return m_showLock;
+    }
+    
+    /**
+     * Determines if the export part of the secure/export dialog should be shown.<p>
+     * 
+     * @return true if the export dialog is shown, otherwise false
+     */
+    public boolean getDialogShowExportSettings() {
+        return m_showExportSettings;
     }
     
     /**
@@ -503,6 +513,12 @@ public class CmsUserSettings {
         } catch (Throwable t) {
             m_showLock  = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogShowLock();           
         }       
+        // dialog show export settings mode
+        try {
+            m_showExportSettings = ((Boolean)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWEXPORTSETTINGS)).booleanValue();
+        } catch (Throwable t) {
+            m_showExportSettings  = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogShowExportSettings();           
+        }         
         // dialog permissions inheritation mode
         try {
             m_dialogPermissionsInheritOnFolder = ((Boolean)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_PERMISSIONSINHERITONFOLDER)).booleanValue();
@@ -835,6 +851,15 @@ public class CmsUserSettings {
      */
     public void setDialogShowLock(boolean show) {
         m_showLock = show;
+    }
+    
+    /**
+     *  Sets if the export setting part of the secure/export dialog should be shown.<p>
+     * 
+     * @param show true if the export dialog should be shown, otherwise false
+     */
+    public void setDialogShowExportSettings(boolean show) {
+        m_showExportSettings = show;
     }
     
     /**

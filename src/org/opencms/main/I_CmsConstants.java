@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2005/03/26 11:36:35 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/03/29 17:53:39 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  */
 public interface I_CmsConstants {
 
@@ -861,6 +861,9 @@ public interface I_CmsConstants {
 
     /** Property to sort search results in categories. */
     String C_PROPERTY_SEARCH_CATEGORY = "category";
+    
+    /** Property for the secure transmission of resources. */
+    String C_PROPERTY_SECURE = "secure";    
 
     /** Property to control the template. */
     String C_PROPERTY_TEMPLATE = "template";

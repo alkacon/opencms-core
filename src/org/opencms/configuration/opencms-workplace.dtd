@@ -467,6 +467,7 @@
 								   filedeletion,
 								   directpublish,
 								   showlock,
+								   showexportsettings,								   
 								   expand-permissionsuser,
 								   expand-permissionsinherited,
 								   permissions-inheritonfolder)>
@@ -499,6 +500,11 @@
 # If this element is set to "true", the lock dialog is shown on each lock operation.
 -->	
 <!ELEMENT showlock (#PCDATA)>
+
+<!--
+# If this element is set to "true", the export part of the secure/export dialog is shown.
+-->	
+<!ELEMENT showexportsettings (#PCDATA)>
 
 <!--
 # If this element is set to "true", the permission dialog expands the users permission when opened.

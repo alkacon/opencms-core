@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/03/29 17:52:04 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.workplace.I_CmsWpConstants;
  *  
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsDefaultUserSettings extends CmsUserSettings {
 
@@ -232,6 +232,16 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         return getBoolRepresentation(getDialogShowLock());
     }
 
+    /**
+     * Determines if the export settings part of the secure/export dialog should be shown.<p>
+     * 
+     * @return true if the export dialog is shown, otherwise false
+     */
+    public String getDialogShowExportSettingsString() {
+
+        return getBoolRepresentation(getDialogShowExportSettings());
+    }
+    
     /**
      * Returns a string representation of the direct edit button style.<p>
      * 
@@ -798,6 +808,20 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         }
         setDialogShowLock(showLock);
     }
+    
+    /**
+     *  Sets if the export part of the secure/export dialog should be shown.<p>
+     * 
+     * @param mode true if the export dialog should be shown, otherwise false
+     */
+    public void setShowExportSettingsDialog(String mode) {
+
+        boolean showExportSettings = false;
+        if (mode.equalsIgnoreCase(C_TRUEVALUE)) {
+            showExportSettings = true;
+        }
+        setDialogShowExportSettings(showExportSettings);
+    }    
 
     /**
      * Sets if a message should be sent if the task is accepted.<p>

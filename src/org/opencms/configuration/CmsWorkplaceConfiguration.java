@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/03/29 17:50:19 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -191,6 +191,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The node name of the show lock node. */
     public static final String N_SHOWLOCK = "showlock";
+
+    /** The node name of the show lock node. */
+    public static final String N_SHOWEXPORTSETTINGS = "showexportsettings";
     
     /** The node name of the showprojects node. */
     public static final String N_SHOWPROJECTS = "showprojects";    
@@ -607,7 +610,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_DIALOGSPREFERENCES + "/"+ N_DIALOGSDEFAULTSETTINGS + "/"  + N_DIRECTPUBLISH,
                 "setDialogPublishSiblings", 0);
         digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_DIALOGSPREFERENCES + "/"+ N_DIALOGSDEFAULTSETTINGS + "/"  + N_SHOWLOCK,
-                "setShowLockDialog", 0);      
+                "setShowLockDialog", 0);
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_DIALOGSPREFERENCES + "/"+ N_DIALOGSDEFAULTSETTINGS + "/"  + N_SHOWEXPORTSETTINGS,
+                "setShowExportSettingsDialog", 0);             
         digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_DIALOGSPREFERENCES + "/"+ N_DIALOGSDEFAULTSETTINGS + "/"  + N_PERMISSIONSINHERITONFOLDER,
                 "setDialogPermissionsInheritOnFolder", 0); 
         digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_DIALOGSPREFERENCES + "/"+ N_DIALOGSDEFAULTSETTINGS + "/"  + N_EXPANDPERMISSIONSINHERITED,
@@ -820,6 +825,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         dialogDefaultSettings.addElement(N_DIRECTPUBLISH).setText(m_workplaceManager.getDefaultUserSettings().getDialogPublishSiblingsString());
         // add the <showlock> node
         dialogDefaultSettings.addElement(N_SHOWLOCK).setText(m_workplaceManager.getDefaultUserSettings().getDialogShowLockString());
+        // add the <showexportsettings> node
+        dialogDefaultSettings.addElement(N_SHOWEXPORTSETTINGS).setText(m_workplaceManager.getDefaultUserSettings().getDialogShowExportSettingsString());        
         // add the <expand-permissionsuser> node
         dialogDefaultSettings.addElement(N_EXPANDPERMISSIONSUSER).setText(m_workplaceManager.getDefaultUserSettings().getDialogExpandUserPermissionsString());
         // add the <expand-permissionsinherited> node

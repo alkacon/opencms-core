@@ -52,6 +52,7 @@
 						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
 						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.secure" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
 						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="305"/>
 						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<separator order="340"/>
@@ -94,6 +95,7 @@
 						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
 						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.secure" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
 						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="305"/>
 						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<separator order="340"/>
@@ -143,6 +145,7 @@
 						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
 						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.secure" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
 						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="305"/>
 						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<separator order="330"/>
@@ -187,6 +190,7 @@
 						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
 						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.secure" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
 						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="305"/>
 						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<separator order="330"/>
@@ -229,6 +233,7 @@
 						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
 						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.secure" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
 						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
 						<separator order="340"/>
@@ -268,6 +273,7 @@
 						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
 						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.secure" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
 						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
 						<separator order="340"/>
@@ -310,6 +316,7 @@
 						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
 						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.secure" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
 						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
 						<separator order="340"/>
@@ -348,6 +355,7 @@
 						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
 						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.secure" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
 						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
 						<separator order="340"/>
@@ -384,6 +392,7 @@
 						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
 						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.secure" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
 						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
 						<separator order="340"/>
@@ -421,6 +430,7 @@
 						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
 						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.secure" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
 						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<separator order="340"/>
 						<entry key="explorer.context.history" uri="commons/history.jsp" rules="d d iiii aaai dddd" order="350"/>
@@ -495,6 +505,7 @@
 					<filedeletion>preservesiblings</filedeletion> 
 					<directpublish>onlyresource</directpublish> 	
 					<showlock>false</showlock>
+					<showexportsettings>true</showexportsettings>					
 					<expand-permissionsuser>false</expand-permissionsuser>
 					<expand-permissionsinherited>true</expand-permissionsinherited>
 					<permissions-inheritonfolder>true</permissions-inheritonfolder>

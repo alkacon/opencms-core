@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2005/03/21 17:22:54 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/03/29 18:01:40 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -496,6 +496,6 @@ public class TestPublishIssues extends OpenCmsTestCase {
         List publishedResources = cms.readPublishedResources(publishId);
         
         // make sure the publish history contains the required amount of resources
-        assertEquals(34, publishedResources.size());
+        assertEquals(35, publishedResources.size());
     }    
 }
