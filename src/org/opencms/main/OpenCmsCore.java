@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/01/06 12:52:55 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2004/01/07 16:53:02 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.main;
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.CmsMain;
 import com.opencms.boot.CmsSetupUtils;
-import com.opencms.core.CmsCoreSession;
 import com.opencms.core.CmsException;
 import com.opencms.core.CmsRequestHttpServlet;
 import com.opencms.core.CmsResponseHttpServlet;
@@ -42,7 +41,6 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsResourceInit;
 import com.opencms.core.I_CmsResponse;
-import com.opencms.core.OpenCmsServletNotify;
 import com.opencms.core.exceptions.CmsResourceInitException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
@@ -62,6 +60,7 @@ import org.opencms.flex.CmsFlexCache;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsLoaderManager;
 import org.opencms.loader.I_CmsResourceLoader;
+import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
@@ -103,7 +102,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -174,6 +173,9 @@ public final class OpenCmsCore {
 
     /** The loader manager used for loading individual resources */
     private CmsLoaderManager m_loaderManager;
+    
+    /** The lock manager used for the locking mechanism  */
+    private CmsLockManager m_lockManager;
 
     /** The OpenCms log to write all log messages to */
     private CmsLog m_log;
@@ -211,8 +213,8 @@ public final class OpenCmsCore {
     /** The session manager */
     private OpenCmsSessionManager m_sessionManager;
     
-    /** The session storage for all active users */
-    private CmsCoreSession m_sessionStorage;
+    /** The session info storage for all active users */
+    private CmsSessionInfoManager m_sessionInfoManager;
     
     /** The site manager contains information about all configured sites */
     private CmsSiteManager m_siteManager;
@@ -731,6 +733,15 @@ public final class OpenCmsCore {
     }
     
     /**
+     * Returns the lock manager used for the locking mechanism.<p>
+     * 
+     * @return the lock manager used for the locking mechanism
+     */
+    protected CmsLockManager getLockManager() {
+        return m_lockManager;
+    }
+    
+    /**
      * Returns the initialized logger (for changing the runlevel).<p>
      * 
      * @return the initialized logger
@@ -892,21 +903,21 @@ public final class OpenCmsCore {
     }
     
     /**
+     * Returns the session info storage for all active users.<p>
+     * 
+     * @return the session info storage for all active users
+     */
+    protected CmsSessionInfoManager getSessionInfoManager() {
+        return m_sessionInfoManager;
+    }
+    
+    /**
      * Returns the session manager.<p>
      * 
      * @return the session manager
      */
     public OpenCmsSessionManager getSessionManager() {
         return m_sessionManager;
-    }
-
-    /**
-     * Returns the OpenCms session storage.<p>
-     * 
-     * @return the OpenCms session storage
-     */
-    public CmsCoreSession getSessionStorage() {
-        return m_sessionStorage;
     }
 
     /**
@@ -1014,12 +1025,12 @@ public final class OpenCmsCore {
         String user = null;
         if (session != null) {
             // session exists, try to reuse the user from the session
-            user = m_sessionStorage.getUserName(session.getId());
+            user = m_sessionInfoManager.getUserName(session.getId());
             sessionId = session.getId();
         } else {
             sessionId = req.getParameter("JSESSIONID");
             if (sessionId != null) {
-                user = m_sessionStorage.getUserName(sessionId);
+                user = m_sessionInfoManager.getUserName(sessionId);
             }
         }
                    
@@ -1028,7 +1039,7 @@ public final class OpenCmsCore {
                    
         if (user != null) {
             // a user name is found in the session, reuse this user
-            Integer project = m_sessionStorage.getCurrentProject(sessionId);
+            Integer project = m_sessionInfoManager.getCurrentProject(sessionId);
 
             // initialize site root from request
             String siteroot = null;
@@ -1036,12 +1047,12 @@ public final class OpenCmsCore {
             if ((getSiteManager().getWorkplaceSiteMatcher().equals(site.getSiteMatcher()))) {
                 // if no dedicated workplace site is configured, 
                 // or for the dedicated workplace site, use the site root from the session attribute
-                siteroot = m_sessionStorage.getCurrentSite(sessionId);
+                siteroot = m_sessionInfoManager.getCurrentSite(sessionId);
             }
             if (siteroot == null) {
                 siteroot = site.getSiteRoot();
             }        
-            cms = initCmsObject(cmsReq, cmsRes, user, siteroot, project.intValue(), m_sessionStorage);
+            cms = initCmsObject(cmsReq, cmsRes, user, siteroot, project.intValue(), m_sessionInfoManager);
         } else {
             // no user name found in session or no session, login the user as guest user
             cms = initCmsObject(cmsReq, cmsRes, OpenCms.getDefaultUsers().getUserGuest(), site.getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);            
@@ -1121,7 +1132,7 @@ public final class OpenCmsCore {
         String user, 
         String currentSite, 
         int project, 
-        CmsCoreSession sessionStorage
+        CmsSessionInfoManager sessionStorage
     ) throws CmsException {
         CmsObject cms = new CmsObject();
         cms.init(m_driverManager, cmsReq, cmsRes, user, project, currentSite, sessionStorage, m_directoryTranslator, m_fileTranslator);
@@ -1221,6 +1232,9 @@ public final class OpenCmsCore {
         CmsUUID.init(ethernetAddress);
         
         m_serverName = configuration.getString("server.name", "OpenCmsServer");
+        
+        // initialize the lock manager
+        m_lockManager = CmsLockManager.getInstance();
         
         // initialize the memory monitor
         m_memoryMonitor = CmsMemoryMonitor.initialize(configuration);
@@ -1668,7 +1682,8 @@ public final class OpenCmsCore {
         }
         
         // save the configuration
-        m_configuration = configuration;        
+        m_configuration = configuration;  
+     
     }
 
     /**
@@ -1815,7 +1830,7 @@ public final class OpenCmsCore {
         }                       
 
         // initalize the session storage
-        m_sessionStorage = new CmsCoreSession();
+        m_sessionInfoManager = new CmsSessionInfoManager();
         if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             getLog(CmsLog.CHANNEL_INIT).info(". Session storage      : initialized");
         }
@@ -2370,7 +2385,7 @@ public final class OpenCmsCore {
     }
     
     /**
-     * Updates the the user data stored in the CmsCoreSession after the requested document
+     * Updates the the user data stored in the CmsSessionInfoManager after the requested document
      * is processed.<p>
      *
      * This is required if the user data (current group or project) was changed in
@@ -2393,34 +2408,37 @@ public final class OpenCmsCore {
         HttpSession session = req.getSession(false);
 
         // if the user was authenticated via sessions, update the information in the
-        // sesssion stroage
-        if ((session != null)) {
+        // session stroage
+        if (session != null) {
             if (!cms.getRequestContext().currentUser().getName().equals(OpenCms.getDefaultUsers().getUserGuest())) {
-
-                Hashtable sessionData = new Hashtable(4);
-                sessionData.put(I_CmsConstants.C_SESSION_USERNAME, cms.getRequestContext().currentUser().getName());
-                sessionData.put(I_CmsConstants.C_SESSION_PROJECT, new Integer(cms.getRequestContext().currentProject().getId()));
-                sessionData.put(I_CmsConstants.C_SESSION_CURRENTSITE, cms.getRequestContext().getSiteRoot());
+                
+                CmsSessionInfo sessionInfo = new CmsSessionInfo();
+                
+                // set necessary values in the CmsSessionInfo object
+                sessionInfo.setUserName(cms.getRequestContext().currentUser().getName());
+                sessionInfo.setUserId(cms.getRequestContext().currentUser().getId());
+                sessionInfo.setProject(new Integer(cms.getRequestContext().currentProject().getId()));
+                sessionInfo.setCurrentSite(cms.getRequestContext().getSiteRoot());
                 
                 // get current session data
                 Hashtable oldData = (Hashtable)session.getAttribute(I_CmsConstants.C_SESSION_DATA);
                 if (oldData == null) {
                     oldData = new Hashtable();
                 }
-                sessionData.put(I_CmsConstants.C_SESSION_DATA, oldData);
+                sessionInfo.setSessionData(oldData);
 
                 // update the user-data
-                m_sessionStorage.putUser(session.getId(), sessionData);
+                m_sessionInfoManager.putUser(session.getId(), sessionInfo);
 
                 // ensure that the session notify is set
                 // this is required to remove the session from the internal storage on its destruction
-                OpenCmsServletNotify notify = null;
+                CmsSessionBindingListener notify = null;
                 Object sessionValue = session.getAttribute("NOTIFY");
-                if (sessionValue instanceof OpenCmsServletNotify) {
-                    notify = (OpenCmsServletNotify)sessionValue;
+                if (sessionValue instanceof CmsSessionBindingListener) {
+                    notify = (CmsSessionBindingListener)sessionValue;
                 }
                 if (notify == null) {
-                    notify = new OpenCmsServletNotify(session.getId(), m_sessionStorage);
+                    notify = new CmsSessionBindingListener(session.getId());
                     session.setAttribute("NOTIFY", notify);
                 }
             }

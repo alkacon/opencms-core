@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServletNotify.java,v $
- * Date   : $Date: 2003/08/14 15:37:23 $
- * Version: $Revision: 1.14 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/CmsSessionBindingListener.java,v $
+ * Date   : $Date: 2004/01/07 16:53:02 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.opencms.core;
+package org.opencms.main;
 
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
@@ -37,31 +37,29 @@ import javax.servlet.http.HttpSessionBindingListener;
 /**
  * Implementation of the HttpSessionBindingListener interface. <br>
  * 
- * The OpenCmsServletNotify Object is notified when it is bound or unbound to
+ * The CmsSessionBindingListener Object is notified when it is bound or unbound to
  * a HTTPSession. It is required to inform the OpemCms that a session is destroyed
- * and must be removed from the CmsCoreSession storage.<p>
+ * and must be removed from the CmsSessionInfoManager storage.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @version $Revision: 1.1 $
  */
-public class OpenCmsServletNotify implements HttpSessionBindingListener {
+public class CmsSessionBindingListener implements HttpSessionBindingListener {
     
     /** String to identify the notif session attribute in the session */
     public static final String C_NOTIFY_ATTRIBUTE = "__OpenCmsServletNotify";
     
     String m_id = null;
-    CmsCoreSession m_sessionStorage = null;
     
     /**
-     * Constructor, creates a new OpenCmsServletNotify object.
+     * Constructor, creates a new CmsSessionBindingListener object.
      * 
      * @param id The session Id to which this object is bound to.
-     * @param sessionStorage The reference to the session strorage.
      */
-    public OpenCmsServletNotify(String id, CmsCoreSession sessionStorage) {
+    public CmsSessionBindingListener(String id) {
         m_id = id;
-        m_sessionStorage = sessionStorage;
     }
     
     /**
@@ -80,6 +78,6 @@ public class OpenCmsServletNotify implements HttpSessionBindingListener {
      * @param event the HttpSessionBindingEvent
      */
     public void valueUnbound(HttpSessionBindingEvent event) {
-        m_sessionStorage.deleteUser(m_id);
+        OpenCms.getSessionInfoManager().deleteUser(m_id);
     }
 }

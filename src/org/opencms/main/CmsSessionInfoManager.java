@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCoreSession.java,v $
- * Date   : $Date: 2003/08/25 09:51:14 $
- * Version: $Revision: 1.18 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/CmsSessionInfoManager.java,v $
+ * Date   : $Date: 2004/01/07 16:53:02 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,21 +29,28 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.opencms.core;
+package org.opencms.main;
 
-import org.opencms.main.*;
+import com.opencms.core.I_CmsConstants;
 
-import java.util.Enumeration;
+import org.opencms.util.CmsUUID;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 /**
- * This class implements a session storage which is mainly used to count the
+ * This class implements a session info storage which is mainly used to count the
  * currently logged in OpenCms users.<p> 
  * 
  * It is required for user authentification of OpenCms. 
  * For each active user, its name and other additional information 
- * (like the current user group) are stored in a hashtable, useing the session 
+ * (like the current user group) are stored in a hashtable, using the session 
  * Id as key to them.<p>
  *
  * When the session gets destroyed, the user will removed from the storage.<p>
@@ -52,22 +59,23 @@ import java.util.Vector;
  * <code>sendBroadcastMessage()</code> method.
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.18 $ 
+ * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @version $Revision: 1.1 $ 
  * 
  * @see #sendBroadcastMessage(String message)
  */
-public class CmsCoreSession {
+public class CmsSessionInfoManager {
 
     /**
      * Hashtable storage to store all active users.
      */
-    private Hashtable m_sessions;
+    private Map m_sessions;
 
     /**
-     * Constructor, creates a new CmsCoreSession object.
+     * Constructor, creates a new CmsSessionInfoManager object.
      */
-    public CmsCoreSession() {
-        m_sessions = new Hashtable();
+    public CmsSessionInfoManager() {
+        m_sessions = Collections.synchronizedMap(new HashMap());
     }
 
     /**
@@ -77,7 +85,38 @@ public class CmsCoreSession {
      * @param sessionId the users session id
      */
     public void deleteUser(String sessionId) {
+        CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(sessionId);
+        CmsUUID userId = CmsUUID.getNullUUID();
+        if (sessionInfo != null) {
+            userId = sessionInfo.getUserId();
+        }
         m_sessions.remove(sessionId);
+        if (!userId.isNullUUID() && getUserSessions(userId).size() == 0) {
+            // remove the temporary locks of this user from memory
+            OpenCms.getLockManager().removeTempLocks(userId);
+            
+        }
+    }
+    
+    /**
+     * Returns a list of all active CmsSessionInfo objects for the specified user id.<p>
+     * 
+     * @param userId the id of the user
+     * @return the list of all active CmsSessionInfo objects
+     */
+    public List getUserSessions(CmsUUID userId) {
+        List userSessions = new ArrayList();
+        synchronized (m_sessions) {
+            Iterator i = m_sessions.keySet().iterator();
+            while (i.hasNext()) {
+                String key = (String)i.next();
+                CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(key);
+                if (userId.equals(sessionInfo.getUserId())) {
+                    userSessions.add(sessionInfo);
+                }
+            }
+        }
+        return userSessions;
     }
 
     /**
@@ -88,10 +127,10 @@ public class CmsCoreSession {
      */
     public Integer getCurrentProject(String sessionId) {
         Integer currentProject = null;
-        Hashtable userinfo = getUser(sessionId);
+        CmsSessionInfo userinfo = getUserInfo(sessionId);
         // this user does exist, so get his current project
         if (userinfo != null) {
-            currentProject = (Integer)userinfo.get(I_CmsConstants.C_SESSION_PROJECT);
+            currentProject = userinfo.getProject();
         }
         if (currentProject == null) {
             return new Integer(I_CmsConstants.C_PROJECT_ONLINE_ID);
@@ -108,10 +147,10 @@ public class CmsCoreSession {
      */
     public String getCurrentSite(String sessionId) {
         String currentSite = null;
-        Hashtable userinfo = getUser(sessionId);
+        CmsSessionInfo userinfo = getUserInfo(sessionId);
         // this user does exist, so get his current site
         if (userinfo != null) {
-            currentSite = (String)userinfo.get(I_CmsConstants.C_SESSION_CURRENTSITE);
+            currentSite = userinfo.getCurrentSite();
         }
         if (currentSite == null) {
             return OpenCms.getSiteManager().getDefaultSite().getSiteRoot();
@@ -129,10 +168,10 @@ public class CmsCoreSession {
      */
     public String getUserName(String sessionId) {
         String username = null;
-        Hashtable userinfo = getUser(sessionId);
+        CmsSessionInfo userinfo = getUserInfo(sessionId);
         // this user does exist, so get his name.
         if (userinfo != null) {
-            username = (String)userinfo.get(I_CmsConstants.C_SESSION_USERNAME);
+            username = userinfo.getUserName();
         }
         return username;
     }
@@ -143,57 +182,22 @@ public class CmsCoreSession {
      * @param sessionId A currently valid session id.
      * @return table with user information or null
      */
-    public Hashtable getUser(String sessionId) {
-        return (Hashtable)m_sessions.get(sessionId);
+    public CmsSessionInfo getUserInfo(String sessionId) {
+        return (CmsSessionInfo)m_sessions.get(sessionId);
     }
 
     /**
-     * Puts a new user into the sesstion storage.<p>
+     * Puts a new user into the session storage.<p>
      * 
-     * A user is stored with its current
-     * session id after a positive authentification.<p>
-     *
-     * @param sessionId  a currently valid session id
-     * @param username the name of the user to be stored
-     */
-    public void putUser(String sessionId, String username) {
-        Hashtable userinfo = new Hashtable();
-        userinfo.put(I_CmsConstants.C_SESSION_USERNAME, username);
-        putUser(sessionId, userinfo);
-    }
-
-    /**
-     * Puts a new user into the sesstion storage.<p>
+     * This method also stores additional user information in a CmsSessionInfo object.<p>
      * 
-     * A user is stored with its current
-     * session id after a positive authentification.<p>
-     *
-     * @param sessionId  a currently valid session id
-     * @param username the name of the user to be stored
-     * @param group the name of the users current group
-     * @param project the id of the users current project
-     */
-    public void putUser(String sessionId, String username, String group, Integer project) {
-        Hashtable userinfo = new Hashtable();
-        userinfo.put(I_CmsConstants.C_SESSION_USERNAME, username);
-        userinfo.put(I_CmsConstants.C_SESSION_CURRENTGROUP, group);
-        userinfo.put(I_CmsConstants.C_SESSION_PROJECT, project);
-        putUser(sessionId, userinfo);
-    }
-
-    /**
-     * Puts a new user into the sesstion storage, 
-     * this method also stores a complete hashtable with additional 
-     * user information.<p>
-     * 
-     * A user is stored with its current
-     * session id after a positive authentification.<p>
+     * A user is stored with its current session id after a positive authentification.<p>
      *
      * @param sessionId a currently valid session id
-     * @param userinfo a Hashtable containing information (including the name) about the user
+     * @param sessionInfo a CmsSessionInfo object containing information (e.g. the name) about the user
      */
-    public void putUser(String sessionId, Hashtable userinfo) {
-        m_sessions.put(sessionId, userinfo);
+    public void putUser(String sessionId, CmsSessionInfo sessionInfo) {
+        m_sessions.put(sessionId, sessionInfo);
     }
 
     /**
@@ -211,16 +215,18 @@ public class CmsCoreSession {
     public String toString() {
         StringBuffer output = new StringBuffer();
         String key;
-        Hashtable value;
+        CmsSessionInfo sessionInfo;
         String name;
-        Enumeration enu = m_sessions.keys();
-        output.append("[CmsCoreSessions]:\n");
-        while (enu.hasMoreElements()) {
-            key = (String)enu.nextElement();
-            output.append(key + " : ");
-            value = (Hashtable)m_sessions.get(key);
-            name = (String)value.get(I_CmsConstants.C_SESSION_USERNAME);
-            output.append(name + "\n");
+        synchronized (m_sessions) {
+            Iterator i = m_sessions.keySet().iterator();
+            output.append("[CmsCoreSessions]:\n");
+            while (i.hasNext()) {
+                key = (String)i.next();
+                output.append(key + " : ");
+                sessionInfo = (CmsSessionInfo)m_sessions.get(key);
+                name = sessionInfo.getUserName();
+                output.append(name + "\n");
+            }
         }
         return output.toString();
     }
@@ -237,22 +243,24 @@ public class CmsCoreSession {
     public Vector getLoggedInUsers() {
         Vector output = new Vector();
         String key;
-        Hashtable value;
+        CmsSessionInfo sessionInfo;
 
         // Hastable to return in the vector for one user-entry
         Hashtable userentry;
 
-        Enumeration enu = m_sessions.keys();
-        while (enu.hasMoreElements()) {
-            userentry = new Hashtable(4);
-            key = (String)enu.nextElement();
-            value = (Hashtable)m_sessions.get(key);
-            userentry.put(I_CmsConstants.C_SESSION_USERNAME, value.get(I_CmsConstants.C_SESSION_USERNAME));
-            userentry.put(I_CmsConstants.C_SESSION_PROJECT, value.get(I_CmsConstants.C_SESSION_PROJECT));
-            // userentry.put(I_CmsConstants.C_SESSION_CURRENTGROUP, value.get(I_CmsConstants.C_SESSION_CURRENTGROUP));
-            userentry.put(I_CmsConstants.C_SESSION_MESSAGEPENDING, new Boolean(((Hashtable)value.get(I_CmsConstants.C_SESSION_DATA)).containsKey(I_CmsConstants.C_SESSION_BROADCASTMESSAGE)));
-
-            output.addElement(userentry);
+        synchronized (m_sessions) {
+            Iterator i = m_sessions.keySet().iterator();
+            while (i.hasNext()) {
+                userentry = new Hashtable(4);
+                key = (String)i.next();
+                sessionInfo = (CmsSessionInfo)m_sessions.get(key);
+                userentry.put(I_CmsConstants.C_SESSION_USERNAME, sessionInfo.getUserName());
+                userentry.put(I_CmsConstants.C_SESSION_PROJECT, sessionInfo.getProject());
+                // userentry.put(I_CmsConstants.C_SESSION_CURRENTGROUP, value.get(I_CmsConstants.C_SESSION_CURRENTGROUP));
+                userentry.put(I_CmsConstants.C_SESSION_MESSAGEPENDING, new Boolean((sessionInfo.getSessionData()).containsKey(I_CmsConstants.C_SESSION_BROADCASTMESSAGE)));
+    
+                output.addElement(userentry);
+            }
         }
         return output;
     }
@@ -264,22 +272,24 @@ public class CmsCoreSession {
      */
     public void sendBroadcastMessage(String message) {
         String key;
-        Hashtable value;
+        CmsSessionInfo sessionInfo;
 
         Hashtable session_data;
         String session_message;
-
-        Enumeration enu = m_sessions.keys();
-        while (enu.hasMoreElements()) {
-            key = (String)enu.nextElement();
-            value = (Hashtable)m_sessions.get(key);
-            session_data = (Hashtable)value.get(I_CmsConstants.C_SESSION_DATA);
-            session_message = (String)session_data.get(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
-            if (session_message == null) {
-                session_message = "";
+        
+        synchronized (m_sessions) {
+            Iterator i = m_sessions.keySet().iterator();
+            while (i.hasNext()) {
+                key = (String)i.next();
+                sessionInfo = (CmsSessionInfo)m_sessions.get(key);
+                session_data = sessionInfo.getSessionData();
+                session_message = (String)session_data.get(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
+                if (session_message == null) {
+                    session_message = "";
+                }
+                session_message += message;
+                session_data.put(I_CmsConstants.C_SESSION_BROADCASTMESSAGE, session_message);
             }
-            session_message += message;
-            session_data.put(I_CmsConstants.C_SESSION_BROADCASTMESSAGE, session_message);
         }
     }
 }

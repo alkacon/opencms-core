@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2003/11/25 10:36:52 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/01/07 16:53:02 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,16 @@
 
 package org.opencms.main;
 
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRegistry;
+
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.loader.CmsLoaderManager;
+import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
-
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRegistry;
 
 import java.util.List;
 
@@ -52,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public final class OpenCms {
     
@@ -182,6 +183,15 @@ public final class OpenCms {
     }
     
     /**
+     * Returns the lock manager used for the locking mechanism.<p>
+     * 
+     * @return the lock manager used for the locking mechanism
+     */
+    public static CmsLockManager getLockManager() {
+        return OpenCmsCore.getInstance().getLockManager();
+    }
+    
+    /**
      * Returns the log for the selected object.<p>
      * 
      * If the provided object is a String, this String will
@@ -273,7 +283,16 @@ public final class OpenCms {
      */
     public static String getServerName() {
         return OpenCmsCore.getInstance().getServerName();        
-    }    
+    } 
+    
+    /**
+     * Returns the session info storage for all active users.<p>
+     * 
+     * @return the session info storage for all active users
+     */
+    public static CmsSessionInfoManager getSessionInfoManager() {
+        return OpenCmsCore.getInstance().getSessionInfoManager();
+    }
 
     /**
      * Returns the initialized site manager, 

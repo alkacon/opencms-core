@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2003/11/17 07:45:48 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/01/07 16:53:02 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.monitor;
 import org.opencms.cache.CmsLruCache;
 import org.opencms.cron.I_CmsCronJob;
 import org.opencms.flex.CmsFlexCache.CmsFlexCacheVariation;
+import org.opencms.main.CmsSessionInfoManager;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
@@ -44,7 +45,6 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
 
-import com.opencms.core.CmsCoreSession;
 import com.opencms.core.CmsException;
 import com.opencms.defaults.CmsMail;
 import com.opencms.file.CmsFile;
@@ -70,7 +70,7 @@ import org.apache.commons.collections.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.20 $ $Date: 2003/11/17 07:45:48 $
+ * @version $Revision: 1.21 $ $Date: 2004/01/07 16:53:02 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -615,7 +615,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
         }
         
         OpenCmsSessionManager sm = OpenCmsCore.getInstance().getSessionManager();
-        CmsCoreSession cs = OpenCmsCore.getInstance().getSessionStorage();
+        CmsSessionInfoManager cs = OpenCms.getSessionInfoManager();
         
         if ((sm != null) && (cs != null)) {
             content += "Current status of the sessions:\n\n";
@@ -739,7 +739,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
             OpenCms.getLog(this).debug(memStatus);
             
             OpenCmsSessionManager sm = OpenCmsCore.getInstance().getSessionManager();
-            CmsCoreSession cs = OpenCmsCore.getInstance().getSessionStorage();
+            CmsSessionInfoManager cs = OpenCms.getSessionInfoManager();
             
             if ((sm != null) && (cs != null)) {
                 OpenCms.getLog(this).debug(", Sessions users: " + cs.getLoggedInUsers().size() + " current: " + sm.getCurrentSessions() + " total: " + sm.getTotalSessions());
