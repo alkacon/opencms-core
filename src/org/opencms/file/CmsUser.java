@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/08/18 11:46:39 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -377,27 +377,27 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Gets the login-name of the user.<p>
+     * Gets the (login) name of this user.<p>
      *
-     * @return the login-name of the user.
+     * @return the (login) name of this user
      */
     public String getName() {
         return m_name;
     }
 
     /**
-     * Gets the password.<p>
+     * Returns the encrypted user password.<p>
      *
-     * @return the USER_PASSWORD, or null.
+     * @return the encrypted user password
      */
     public String getPassword() {
         return m_password;
     }
 
     /**
-     * Gets the recovery password.<p>
+     * Returns the encrypted user recovery password.<p>
      *
-     * @return the USER_RECOVERY_PASSWORD, or null.
+     * @return the encrypted user recovery password
      */
     public String getRecoveryPassword() {
         return m_recoveryPassword;
