@@ -5317,6 +5317,7 @@
             <access>15</access>
             <properties/>
         </file>
+<!-- Removed the static export, until it works properly
         <file>
             <destination>system/workplace/administration/staticexport</destination>
             <type>folder</type>
@@ -5369,6 +5370,7 @@
             <access>15</access>
             <properties/>
         </file>
+-->        
         <file>
             <destination>system/workplace/administration/syncfolder</destination>
             <type>folder</type>
