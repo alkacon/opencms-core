@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagTemplate.java,v $
-* Date   : $Date: 2002/11/08 21:54:54 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2002/11/17 14:00:16 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,8 @@
 
 package com.opencms.flex.jsp;
 
+import com.opencms.flex.cache.CmsFlexRequest;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
@@ -37,7 +39,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
@@ -74,12 +76,15 @@ public class CmsJspTagTemplate extends BodyTagSupport {
     }    
 
     public int doStartTag() throws JspException {
-        String param =  pageContext.getRequest().getParameter(C_TEMPLATE_PART);
-        
-        if ((param == null) || (param.equals(m_part))) {
+        if (templateTagAction(m_part, (CmsFlexRequest)pageContext.getRequest())) {
             return EVAL_BODY_INCLUDE;
         } else {
             return SKIP_BODY;
         }
+    }
+    
+    public static boolean templateTagAction(String part, CmsFlexRequest req) {
+        String param =  req.getParameter(C_TEMPLATE_PART);        
+        return ((param == null) || (param.equals(part)));
     }
  }
