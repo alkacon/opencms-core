@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlXercesParser.java,v $
- * Date   : $Date: 2000/04/04 10:02:08 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/06/09 18:20:27 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.core.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2000/04/04 10:02:08 $
+ * @version $Revision: 1.8 $ $Date: 2000/06/09 18:20:27 $
  */
 public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
     
@@ -66,7 +66,7 @@ public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
         } catch(SAXException e) {
             if(A_OpenCms.isLogging() && ! c_xercesWarning) {
                 A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlXercesParser] Cannot set parser feature for apache xerces XML parser.");
-                A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlXercesParser] This is NOT critical, but you should better use xerces 1.0.3 or higher.");
+                A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlXercesParser] This is NOT critical, but you should better use xerces 1.1.1 or higher.");
                 c_xercesWarning = true;
             }
         }
@@ -113,12 +113,13 @@ public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
         outf.setLineWidth(C_XML_LINE_WIDTH);            
         outf.setPreserveSpace(false);
         
-        XMLSerializer serializer = new XMLSerializer(out, outf);
+        XMLSerializer serializer = new XMLSerializer(out, outf);        
         try {
-            serializer.serialize(doc);
+            DOMSerializer domSerializer = serializer.asDOMSerializer();
+            domSerializer.serialize(doc);
         } catch(Exception e) {
             if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlXerxesParser] " + e);
+                A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlXercesParser] " + e);
             }
         }
     }
