@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/06/08 08:11:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/06/08 17:12:56 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import source.org.apache.java.util.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/06/08 08:11:04 $
+ * @version $Revision: 1.4 $ $Date: 2000/06/08 17:12:56 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -219,7 +219,21 @@ public class CmsShell implements I_CmsConstants {
 	/**
 	 * Exits the commandline-interface
 	 */
+	public void quit() {
+		exit();
+	}
+	
+	/**
+	 * Exits the commandline-interface
+	 */
 	public void exit() {
+		
+        try {
+            m_openCms.destroy();
+        } catch (CmsException e) {
+           e.printStackTrace();
+        }        
+
 		System.exit(0);
 	}
 
@@ -634,29 +648,12 @@ public class CmsShell implements I_CmsConstants {
 	public void createProject(String name, String description, String groupname,
 							  String managergroupname) {
 		try {
-			m_cms.createProject(name, description, groupname, managergroupname);
+			System.out.println( m_cms.createProject(name, description, groupname, managergroupname).toString() );
 		} catch( Exception exc ) {
 			printException(exc);
 		}		
 	}
 
-	/**
-	 * Creates a project.
-	 * 
-	 * @param id The id of the new project, it must be unique.
-	 * @param name The name of the project to read.
-	 * @param description The description for the new project.
-	 * @param groupname the name of the group to be set.
-	 */
-	public void createProject(String id, String name, String description, 
-							  String groupname, String managergroupname) {
-		try {
-			m_cms.createProject(Integer.parseInt(id), name, description, groupname, managergroupname);
-		} catch( Exception exc ) {
-			printException(exc);
-		}		
-	}
-	
 	/**
 	 * Reads a project from the Cms.
 	 * 
@@ -665,7 +662,7 @@ public class CmsShell implements I_CmsConstants {
 	public void readProject(String id) {
 		try {
 			int projectId = Integer.parseInt(id);
-			System.out.println( m_cms.readProject(projectId) );
+			System.out.println( m_cms.readProject(projectId).toString() );
 		} catch( Exception exc ) {
 			printException(exc);
 		}		
@@ -676,7 +673,7 @@ public class CmsShell implements I_CmsConstants {
 	 */
 	public void onlineProject() {
 		try {
-			System.out.println( m_cms.onlineProject() );
+			System.out.println( m_cms.onlineProject().toString() );
 		} catch( Exception exc ) {
 			printException(exc);
 		}		
@@ -1051,7 +1048,7 @@ public class CmsShell implements I_CmsConstants {
 	 * Returns the current project for the user.
 	 */
 	public void getCurrentProject() {
-		System.out.println(m_cms.getRequestContext().currentProject());
+		System.out.println(m_cms.getRequestContext().currentProject().toString());
 	}
 	
 	/**
@@ -1062,7 +1059,7 @@ public class CmsShell implements I_CmsConstants {
 	public void setCurrentProject(String id) {
 		try {
 			int projectId = Integer.parseInt(id);
-			System.out.println( m_cms.getRequestContext().setCurrentProject(projectId) );
+			System.out.println( m_cms.getRequestContext().setCurrentProject(projectId).toString() );
 		} catch( Exception exc ) {
 			printException(exc);
 		}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/08 16:44:16 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2000/06/08 17:12:57 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -28,11 +28,13 @@
 
 package com.opencms.file.genericSql;
 
+import com.opencms.core.*;
+
 /**
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.24 $ $Date: 2000/06/08 16:44:16 $
+ * @version $Revision: 1.25 $ $Date: 2000/06/08 17:12:57 $
  */
 public interface I_CmsQuerys {
     
@@ -264,7 +266,25 @@ public interface I_CmsQuerys {
 	public static final Integer C_PROJECTS_CREATE_KEY = new Integer(401);
 	public static final String C_PROJECTS_CREATE = "INSERT INTO " + C_DATABASE_PREFIX + "PROJECTS VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 
-    // Constants for Users table
+	public static final Integer C_PROJECTS_READ_KEY = new Integer(402);
+	public static final String C_PROJECTS_READ = "SELECT * from " + C_DATABASE_PREFIX + "PROJECTS where PROJECT_ID = ?";
+
+	public static final Integer C_PROJECTS_READ_BYTASK_KEY = new Integer(403);
+	public static final String C_PROJECTS_READ_BYTASK = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where TASK_ID = ?";
+	
+	public static final Integer C_PROJECTS_READ_BYUSER_KEY = new Integer(404);
+	public static final String C_PROJECTS_READ_BYUSER = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where USER_ID = ? and PROJECT_FLAGS = " + I_CmsConstants.C_PROJECT_STATE_UNLOCKED;
+
+	public static final Integer C_PROJECTS_READ_BYGROUP_KEY = new Integer(405);
+	public static final String C_PROJECTS_READ_BYGROUP = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where (GROUP_ID = ? or MANAGERGROUP_ID = ? ) and PROJECT_FLAGS = " + I_CmsConstants.C_PROJECT_STATE_UNLOCKED;
+
+	public static final Integer C_PROJECTS_READ_BYFLAG_KEY = new Integer(406);
+	public static final String C_PROJECTS_READ_BYFLAG = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where PROJECT_FLAGS = ?";
+	
+	public static final Integer C_PROJECTS_READ_BYMANAGER_KEY = new Integer(407);
+	public static final String C_PROJECTS_READ_BYMANAGER = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where MANAGERGROUP_ID = ? and PROJECT_FLAGS = " + I_CmsConstants.C_PROJECT_STATE_UNLOCKED;
+	
+	// Constants for Users table
 	public static final String C_USERS_USER_ID = "USER_ID";
 	public static final String C_USERS_USER_NAME = "USER_NAME";
 	public static final String C_USERS_USER_PASSWORD = "USER_PASSWORD";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/08 16:00:43 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2000/06/08 17:12:57 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.35 $ $Date: 2000/06/08 16:00:43 $ * 
+ * @version $Revision: 1.36 $ $Date: 2000/06/08 17:12:57 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -474,10 +474,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
             // create new Cms group objects
 		    while ( res.next() ) {
                     group=new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
-                                  res.getInt(C_GROUPS_PARENT_GROUP_ID),
-                                  res.getString(C_GROUPS_GROUP_NAME),
-                                  res.getString(C_GROUPS_GROUP_DESCRIPTION),
-                                  res.getInt(C_GROUPS_GROUP_FLAGS));
+									   res.getInt(C_GROUPS_PARENT_GROUP_ID),
+									   res.getString(C_GROUPS_GROUP_NAME),
+									   res.getString(C_GROUPS_GROUP_DESCRIPTION),
+									   res.getInt(C_GROUPS_GROUP_FLAGS));
                     groups.addElement(group);
              }
              res.close();
@@ -828,55 +828,32 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		
 		try	{			
             // serialize the hashtable
-			System.out.println("a1");
             ByteArrayOutputStream bout= new ByteArrayOutputStream();            
-			System.out.println("a2");
             ObjectOutputStream oout=new ObjectOutputStream(bout);
-			System.out.println("a3");
             oout.writeObject(additionalInfos);
-			System.out.println("a4");
             oout.close();
-			System.out.println("a5");
             value=bout.toByteArray();
-			System.out.println("a6");
 			
             // write data to database     
             statement = m_pool.getPreparedStatement(C_USERS_ADD_KEY);
-			System.out.println("a7");
 			
             statement.setInt(1,id);
-			System.out.println("a8");
 			statement.setString(2,name);
-			System.out.println("a9");
 			// crypt the password with MD5
 			statement.setString(3, digest(password));
-			System.out.println("a10");
 			statement.setString(4,description);
-			System.out.println("a11");
 			statement.setString(5,firstname);
-			System.out.println("a12");
 			statement.setString(6,lastname);
-			System.out.println("a13");
 			statement.setString(7,email);
-			System.out.println("a14");
 			statement.setTimestamp(8, new Timestamp(lastlogin));
-			System.out.println("a15");
 			statement.setTimestamp(9, new Timestamp(lastused));
-			System.out.println("a16");
 			statement.setInt(10,flags);
-			System.out.println("a17");
 			statement.setBytes(11,value);
-			System.out.println("a18");
 			statement.setInt(12,defaultGroup.getId());
-			System.out.println("a19");
 			statement.setString(13,address);
-			System.out.println("a20");
 			statement.setString(14,section);
-			System.out.println("a21");
 			statement.setInt(15,type);
-			System.out.println("a22");
 			statement.executeUpdate();
-			System.out.println("a23");
          }
         catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
@@ -1258,6 +1235,344 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		}
 	}
 	
+	// methods working with projects
+	
+	/**
+	 * Creates a project.
+	 * 
+	 * @param owner The owner of this project.
+	 * @param group The group for this project.
+	 * @param managergroup The managergroup for this project.
+	 * @param task The task.
+	 * @param name The name of the project to create.
+	 * @param description The description for the new project.
+	 * @param flags The flags for the project (e.g. archive).
+	 * @param type the type for the project (e.g. normal).
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public CmsProject createProject(CmsUser owner, CmsGroup group, CmsGroup managergroup, 
+									CmsTask task, String name, String description, 
+									int flags, int type) 
+		throws CmsException {
+		
+		Timestamp createTime = new Timestamp(new java.util.Date().getTime());
+		PreparedStatement statement = null;
+		
+		int id = nextId(C_TABLE_PROJECTS);
+		
+		try	{			
+			
+            // write data to database     
+            statement = m_pool.getPreparedStatement(C_PROJECTS_CREATE_KEY);
+			
+            statement.setInt(1,id);
+			statement.setInt(2,owner.getId());
+			statement.setInt(3,group.getId());
+			statement.setInt(4,managergroup.getId());
+			statement.setInt(5,task.getId());
+			statement.setString(6,name);
+			statement.setString(7,description);
+			statement.setInt(8,flags);
+			statement.setTimestamp(9,createTime);
+			statement.setNull(10,Types.TIMESTAMP);
+			statement.setInt(11,C_UNKNOWN_ID);
+			statement.setInt(12,type);
+			statement.executeUpdate();
+         }
+        catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_PROJECTS_CREATE_KEY, statement);
+			}
+		}
+		return readProject(id);
+	}
+	
+	/**
+	 * Reads a project.
+	 * 
+	 * @param id The id of the project.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public CmsProject readProject(int id) 
+		throws CmsException {
+		
+		PreparedStatement statement = null;
+		CmsProject project = null;
+		
+		try	{			
+            statement = m_pool.getPreparedStatement(C_PROJECTS_READ_KEY);
+			
+            statement.setInt(1,id);
+			ResultSet res = statement.executeQuery();
+			
+			if(res.next()) {
+				project = new CmsProject(res.getInt(C_PROJECTS_PROJECT_ID),
+										 res.getString(C_PROJECTS_PROJECT_NAME),
+										 res.getString(C_PROJECTS_PROJECT_DESCRIPTION),
+										 res.getInt(C_PROJECTS_TASK_ID),
+										 res.getInt(C_PROJECTS_USER_ID),
+										 res.getInt(C_PROJECTS_GROUP_ID),
+										 res.getInt(C_PROJECTS_MANAGERGROUP_ID),
+										 res.getInt(C_PROJECTS_PROJECT_FLAGS),
+										 res.getTimestamp(C_PROJECTS_PROJECT_CREATEDATE),
+										 res.getTimestamp(C_PROJECTS_PROJECT_PUBLISHDATE),
+										 res.getInt(C_PROJECTS_PROJECT_PUBLISHED_BY),
+										 res.getInt(C_PROJECTS_PROJECT_TYPE));
+			} else {
+				// project not found!
+				throw new CmsException("[" + this.getClass().getName() + "] " + id, 
+					CmsException.C_NOT_FOUND);
+			}
+			res.close();
+         }
+        catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_PROJECTS_READ_KEY, statement);
+			}
+		}
+		return project;
+	}
+	
+	/**
+	 * Reads a project by task-id.
+	 * 
+	 * @param task The task to read the project for.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public CmsProject readProject(CmsTask task) 
+		throws CmsException {
+		
+		PreparedStatement statement = null;
+		CmsProject project = null;
+		
+		try	{			
+            statement = m_pool.getPreparedStatement(C_PROJECTS_READ_BYTASK_KEY);
+			
+            statement.setInt(1,task.getId());
+			ResultSet res = statement.executeQuery();
+			
+			if(res.next()) {
+				project = new CmsProject(res.getInt(C_PROJECTS_PROJECT_ID),
+										 res.getString(C_PROJECTS_PROJECT_NAME),
+										 res.getString(C_PROJECTS_PROJECT_DESCRIPTION),
+										 res.getInt(C_PROJECTS_TASK_ID),
+										 res.getInt(C_PROJECTS_USER_ID),
+										 res.getInt(C_PROJECTS_GROUP_ID),
+										 res.getInt(C_PROJECTS_MANAGERGROUP_ID),
+										 res.getInt(C_PROJECTS_PROJECT_FLAGS),
+										 res.getTimestamp(C_PROJECTS_PROJECT_CREATEDATE),
+										 res.getTimestamp(C_PROJECTS_PROJECT_PUBLISHDATE),
+										 res.getInt(C_PROJECTS_PROJECT_PUBLISHED_BY),
+										 res.getInt(C_PROJECTS_PROJECT_TYPE));
+			} else {
+				// project not found!
+				throw new CmsException("[" + this.getClass().getName() + "] " + task, 
+					CmsException.C_NOT_FOUND);
+			}
+			res.close();
+         }
+        catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_PROJECTS_READ_BYTASK_KEY, statement);
+			}
+		}
+		return project;
+	}
+	
+	/**
+	 * Returns all projects, which are owned by a user.
+	 * 
+	 * @param user The requesting user.
+	 * 
+	 * @return a Vector of projects.
+	 */
+	 public Vector getAllAccessibleProjectsByUser(CmsUser user)
+		 throws CmsException {
+ 		 Vector projects = new Vector();
+		 ResultSet res;
+		 PreparedStatement statement = null;
+
+		 try {			 
+			 // create the statement
+			 statement = m_pool.getPreparedStatement(C_PROJECTS_READ_BYUSER_KEY);
+
+			 statement.setInt(1,user.getId());
+			 res = statement.executeQuery();
+			 
+			 while(res.next()) {
+				 projects.addElement( new CmsProject(res.getInt(C_PROJECTS_PROJECT_ID),
+													 res.getString(C_PROJECTS_PROJECT_NAME),
+													 res.getString(C_PROJECTS_PROJECT_DESCRIPTION),
+													 res.getInt(C_PROJECTS_TASK_ID),
+													 res.getInt(C_PROJECTS_USER_ID),
+													 res.getInt(C_PROJECTS_GROUP_ID),
+													 res.getInt(C_PROJECTS_MANAGERGROUP_ID),
+													 res.getInt(C_PROJECTS_PROJECT_FLAGS),
+													 res.getTimestamp(C_PROJECTS_PROJECT_CREATEDATE),
+													 res.getTimestamp(C_PROJECTS_PROJECT_PUBLISHDATE),
+													 res.getInt(C_PROJECTS_PROJECT_PUBLISHED_BY),
+													 res.getInt(C_PROJECTS_PROJECT_TYPE) ) );
+			 }
+			 res.close();
+		 } catch( Exception exc ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				 CmsException.C_SQL_ERROR, exc);
+		 } finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_PROJECTS_READ_BYUSER_KEY, statement);
+			}
+		 }	
+		 return(projects);
+	 }
+
+	/**
+	 * Returns all projects, which are accessible by a group.
+	 * 
+	 * @param group The requesting group.
+	 * 
+	 * @return a Vector of projects.
+	 */
+	 public Vector getAllAccessibleProjectsByGroup(CmsGroup group)
+		 throws CmsException {
+ 		 Vector projects = new Vector();
+		 ResultSet res;
+		 PreparedStatement statement = null;
+
+		 try {			 
+			 // create the statement
+			 statement = m_pool.getPreparedStatement(C_PROJECTS_READ_BYGROUP_KEY);
+
+			 statement.setInt(1,group.getId());
+			 statement.setInt(2,group.getId());
+			 res = statement.executeQuery();
+			 
+			 while(res.next()) {
+				 projects.addElement( new CmsProject(res.getInt(C_PROJECTS_PROJECT_ID),
+													 res.getString(C_PROJECTS_PROJECT_NAME),
+													 res.getString(C_PROJECTS_PROJECT_DESCRIPTION),
+													 res.getInt(C_PROJECTS_TASK_ID),
+													 res.getInt(C_PROJECTS_USER_ID),
+													 res.getInt(C_PROJECTS_GROUP_ID),
+													 res.getInt(C_PROJECTS_MANAGERGROUP_ID),
+													 res.getInt(C_PROJECTS_PROJECT_FLAGS),
+													 res.getTimestamp(C_PROJECTS_PROJECT_CREATEDATE),
+													 res.getTimestamp(C_PROJECTS_PROJECT_PUBLISHDATE),
+													 res.getInt(C_PROJECTS_PROJECT_PUBLISHED_BY),
+													 res.getInt(C_PROJECTS_PROJECT_TYPE) ) );
+			 }
+			 res.close();
+		 } catch( Exception exc ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				 CmsException.C_SQL_ERROR, exc);
+		 } finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_PROJECTS_READ_BYGROUP_KEY, statement);
+			}
+		 }	
+		 return(projects);
+	 }
+	 
+	/**
+	 * Returns all projects, which are manageable by a group.
+	 * 
+	 * @param group The requesting group.
+	 * 
+	 * @return a Vector of projects.
+	 */
+	 public Vector getAllAccessibleProjectsByManagerGroup(CmsGroup group)
+		 throws CmsException {
+ 		 Vector projects = new Vector();
+		 ResultSet res;
+		 PreparedStatement statement = null;
+
+		 try {			 
+			 // create the statement
+			 statement = m_pool.getPreparedStatement(C_PROJECTS_READ_BYMANAGER_KEY);
+
+			 statement.setInt(1,group.getId());
+			 res = statement.executeQuery();
+			 
+			 while(res.next()) {
+				 projects.addElement( new CmsProject(res.getInt(C_PROJECTS_PROJECT_ID),
+													 res.getString(C_PROJECTS_PROJECT_NAME),
+													 res.getString(C_PROJECTS_PROJECT_DESCRIPTION),
+													 res.getInt(C_PROJECTS_TASK_ID),
+													 res.getInt(C_PROJECTS_USER_ID),
+													 res.getInt(C_PROJECTS_GROUP_ID),
+													 res.getInt(C_PROJECTS_MANAGERGROUP_ID),
+													 res.getInt(C_PROJECTS_PROJECT_FLAGS),
+													 res.getTimestamp(C_PROJECTS_PROJECT_CREATEDATE),
+													 res.getTimestamp(C_PROJECTS_PROJECT_PUBLISHDATE),
+													 res.getInt(C_PROJECTS_PROJECT_PUBLISHED_BY),
+													 res.getInt(C_PROJECTS_PROJECT_TYPE) ) );
+			 }
+			 res.close();
+		 } catch( Exception exc ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				 CmsException.C_SQL_ERROR, exc);
+		 } finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_PROJECTS_READ_BYMANAGER_KEY, statement);
+			}
+		 }	
+		 return(projects);
+	 }
+	 
+	/**
+	 * Returns all projects, with the overgiven state.
+	 * 
+	 * @param state The state of the projects to read.
+	 * 
+	 * @return a Vector of projects.
+	 */
+	 public Vector getAllProjects(int state)
+		 throws CmsException {
+ 		 Vector projects = new Vector();
+		 ResultSet res;
+		 PreparedStatement statement = null;
+
+		 try {			 
+			 // create the statement
+			 statement = m_pool.getPreparedStatement(C_PROJECTS_READ_BYFLAG_KEY);
+
+			 statement.setInt(1,state);
+			 res = statement.executeQuery();
+			 
+			 while(res.next()) {
+				 projects.addElement( new CmsProject(res.getInt(C_PROJECTS_PROJECT_ID),
+													 res.getString(C_PROJECTS_PROJECT_NAME),
+													 res.getString(C_PROJECTS_PROJECT_DESCRIPTION),
+													 res.getInt(C_PROJECTS_TASK_ID),
+													 res.getInt(C_PROJECTS_USER_ID),
+													 res.getInt(C_PROJECTS_GROUP_ID),
+													 res.getInt(C_PROJECTS_MANAGERGROUP_ID),
+													 res.getInt(C_PROJECTS_PROJECT_FLAGS),
+													 res.getTimestamp(C_PROJECTS_PROJECT_CREATEDATE),
+													 res.getTimestamp(C_PROJECTS_PROJECT_PUBLISHDATE),
+													 res.getInt(C_PROJECTS_PROJECT_PUBLISHED_BY),
+													 res.getInt(C_PROJECTS_PROJECT_TYPE) ) );
+			 }
+			 res.close();
+		 } catch( Exception exc ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				 CmsException.C_SQL_ERROR, exc);
+		 } finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_PROJECTS_READ_BYFLAG_KEY, statement);
+			}
+		 }	
+		 return(projects);
+	 }
+	 
     // methods working with systemproperties
     
     /**
@@ -2135,7 +2450,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		
 		// init statements for projects        
 		m_pool.initPreparedStatement(C_PROJECTS_MAXID_KEY, C_PROJECTS_MAXID);
-				
+		m_pool.initPreparedStatement(C_PROJECTS_CREATE_KEY, C_PROJECTS_CREATE);
+		m_pool.initPreparedStatement(C_PROJECTS_READ_KEY, C_PROJECTS_READ);
+		m_pool.initPreparedStatement(C_PROJECTS_READ_BYTASK_KEY, C_PROJECTS_READ_BYTASK);
+		m_pool.initPreparedStatement(C_PROJECTS_READ_BYUSER_KEY, C_PROJECTS_READ_BYUSER);
+		m_pool.initPreparedStatement(C_PROJECTS_READ_BYGROUP_KEY, C_PROJECTS_READ_BYGROUP);
+		m_pool.initPreparedStatement(C_PROJECTS_READ_BYFLAG_KEY, C_PROJECTS_READ_BYFLAG);
+		m_pool.initPreparedStatement(C_PROJECTS_READ_BYMANAGER_KEY, C_PROJECTS_READ_BYMANAGER);
 
 		// init statements for systemproperties
 		m_pool.initPreparedStatement(C_SYSTEMPROPERTIES_MAXID_KEY, C_SYSTEMPROPERTIES_MAXID);
@@ -2172,13 +2493,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	private void fillDefaults() 
 		throws CmsException {
 		// TODO: init all default-resources
-
-          // set the mimetypes
-        addSystemProperty(C_SYSTEMPROPERTY_MIMETYPES,initMimetypes());
+		
+		// set the mimetypes
+		addSystemProperty(C_SYSTEMPROPERTY_MIMETYPES,initMimetypes());
         
 		CmsGroup guests = createGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
         CmsGroup administrators = createGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED|C_FLAG_GROUP_PROJECTMANAGER, null);            
-		createGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group",C_FLAG_ENABLED|C_FLAG_GROUP_PROJECTMANAGER|C_FLAG_GROUP_PROJECTCOWORKER|C_FLAG_GROUP_ROLE,null);
+		CmsGroup projectleader = createGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group",C_FLAG_ENABLED|C_FLAG_GROUP_PROJECTMANAGER|C_FLAG_GROUP_PROJECTCOWORKER|C_FLAG_GROUP_ROLE,null);
         createGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED|C_FLAG_GROUP_ROLE|C_FLAG_GROUP_PROJECTCOWORKER, C_GROUP_GUEST);
                
         CmsUser guest = addUser(C_USER_GUEST, "", "the guest-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), guests, "", "", C_USER_TYPE_SYSTEMUSER); 
@@ -2186,6 +2507,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		
 		addUserToGroup(guest.getId(), guests.getId());
 		addUserToGroup(admin.getId(), administrators.getId());
+
+		// TODO: use real task here-when available!
+		createProject(admin, guests, projectleader, new CmsTask(), C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL);
 	}
 	
 	/**
@@ -2406,4 +2730,53 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		mt.put( "ice", "x-conference/x-cooltalk" );
         return mt;
     }
+
+	/**
+	 * Destroys this access-module
+	 * @exception throws CmsException if something goes wrong.
+	 */
+	public void destroy() 
+		throws CmsException {
+
+		Vector statements;
+		Hashtable allStatements = m_pool.getAllPreparedStatement();
+		Enumeration keys = allStatements.keys();
+		
+		Vector connections = m_pool.getAllConnections();
+		
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] closing all statements.");
+		}
+		// close all statements
+		while(keys.hasMoreElements()) {
+			Object key = keys.nextElement();
+			statements = (Vector) allStatements.get(key);
+			for(int i = 0; i < statements.size(); i++) {
+				try {
+					((PreparedStatement) statements.elementAt(i)).close();
+				} catch(SQLException exc) {
+					if(A_OpenCms.isLogging()) {
+						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] error closing statement: " + exc.getMessage());
+					}
+				}
+			}
+		}
+		
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] closing all connections.");
+		}
+		// close all connections
+		for(int i = 0; i < connections.size(); i++) {
+			try {
+				((Connection) connections.elementAt(i)).close();
+			} catch(SQLException exc) {
+				if(A_OpenCms.isLogging()) {
+					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] error closing connection: " + exc.getMessage());
+				}
+			}
+		}
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] destroy complete.");
+		}
+	}
 }

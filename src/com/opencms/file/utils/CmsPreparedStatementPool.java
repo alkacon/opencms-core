@@ -1,8 +1,8 @@
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsPreparedStatementPool.java,v $
- * Date   : $Date: 2000/06/07 14:12:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/06/08 17:12:57 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -235,5 +235,14 @@ public class CmsPreparedStatementPool {
 		Vector temp = (Vector) m_prepStatements.get(key);
 		
 		return temp;
+	}
+
+	/**
+	 * Returns all statements.
+	 * 
+	 * @return all prepared statements
+	 */
+	public Hashtable getAllPreparedStatement() {
+		return m_prepStatements;
 	}
 }

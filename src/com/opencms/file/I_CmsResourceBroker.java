@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/08 09:54:22 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2000/06/08 17:12:56 $
+ * Version: $Revision: 1.78 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.77 $ $Date: 2000/06/08 09:54:22 $
+ * @version $Revision: 1.78 $ $Date: 2000/06/08 17:12:56 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -121,27 +121,6 @@ public interface I_CmsResourceBroker {
 									   String managergroupname)
 		 throws CmsException;
 	
-	/**
-	 * Creates a project.
-	 * 
-	 * <B>Security</B>
-	 * Only the users which are in the admin or projectleader-group are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param id The id of the new project, it must be unique.
-	 * @param name The name of the project to read.
-	 * @param description The description for the new project.
-	 * @param group the group to be set.
-	 * @param managergroup the managergroup to be set.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	 public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
-									   int id, String name, String description, String group,
-									   String managergroupname)
-		 throws CmsException;
-     							
 	/**
 	 * Deletes a project.
 	 * 
@@ -2631,7 +2610,6 @@ public interface I_CmsResourceBroker {
 	
 	// Methods working with database import and export
     
-     
     /**
 	 * Imports a import-resource (folder or zipfile) to the cms.
 	 * 

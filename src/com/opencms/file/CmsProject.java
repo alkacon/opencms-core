@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
- * Date   : $Date: 2000/06/07 16:08:23 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/06/08 17:12:56 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import java.sql.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/06/07 16:08:23 $
+ * @version $Revision: 1.18 $ $Date: 2000/06/08 17:12:56 $
  */
 public class CmsProject implements I_CmsConstants,
                                                         Cloneable{
@@ -77,15 +77,10 @@ public class CmsProject implements I_CmsConstants,
 	 */
 	private String m_description = null;
 	
-    /**
-     * The group  of this resource.
-     */
-    private CmsGroup m_group;
-  
      /**
      * The manager group  of this resource.
      */
-    private CmsGroup m_managerGroup;
+    private int m_managerGroupId;
     
 	/**
 	 * The creation date of this project.
@@ -108,33 +103,27 @@ public class CmsProject implements I_CmsConstants,
 	private int m_publishedBy = C_UNKNOWN_ID;
 	
 	/**
-	 * The counter of locked resources in this project.
-	 */
-	private int m_countLockedResources = 0;
-
-	/**
 	 * The project type
 	 */
 	private int m_type = C_UNKNOWN_ID;
 	
 
 	public CmsProject(int projectId, String name, String description, int taskId, 
-					  int ownerId, CmsGroup group, CmsGroup managerGroup, int flags, 
+					  int ownerId, int group, int managerGroup, int flags, 
 					  Timestamp createdate, Timestamp publishingdate, int publishedBy, 
-					  int countLockedResources, int type) {
+					  int type) {
 		
 		m_id = projectId;
 		m_name = name;
 		m_description = description;
 		m_taskId = taskId;
 		m_ownerId = ownerId;
-		m_groupId = group.getId();
-        m_group=group;
-		m_managergroupId = managerGroup.getId();
-        m_managerGroup=managerGroup;
+		m_groupId = group;
+        m_groupId=group;
+		m_managergroupId = managerGroup;
+        m_managerGroupId=managerGroup;
 		m_flags = flags;
 		m_publishedBy = publishedBy;
-		m_countLockedResources = countLockedResources;
 		m_type = type;
 		if( createdate != null) {
 			m_createdate = createdate.getTime();
@@ -221,7 +210,7 @@ public class CmsProject implements I_CmsConstants,
 	 * 
 	 * @return the groupid of this project.
 	 */
-    int getGroupId() {
+    public int getGroupId() {
 		return(m_groupId);
 	}
 	
@@ -230,7 +219,7 @@ public class CmsProject implements I_CmsConstants,
 	 * 
 	 * @return the manager groupid of this project.
 	 */
-	int getManagerGroupId() {
+	public int getManagerGroupId() {
 		return( m_managergroupId );
 	}
 	
@@ -288,25 +277,6 @@ public class CmsProject implements I_CmsConstants,
 		m_publishedBy = id;
 	}
        
-    /**
-	 * Returns the group of this project.
-	 * 
-	 * @return the group of this resource.
-	 */
-     public CmsGroup getGroup() {
-         return  (CmsGroup)m_group.clone();
-     }
-
-         
-    /**
-	 * Returns the manager group of this project.
-	 * 
-	 * @return the manager group of this resource.
-	 */
-     public CmsGroup getManagerGroup() {
-         return  (CmsGroup)m_managerGroup.clone();
-      }
-     
 	/**
 	 * Gets the type.
 	 * 
@@ -323,40 +293,6 @@ public class CmsProject implements I_CmsConstants,
 	 */
 	void setType(int id) {
 		m_type = id;
-	}
-	
-	
-	/**
-	 * Gets the counter for locked resources in this project.
-	 * 
-	 * @return the counter for locked resources in this project.
-	 */
-	public int getCountLockedResources() {
-		return m_countLockedResources;
-	}
-	
-	/**
-	 * Increments the counter for locked resources in this project.
-	 */
-	void incrementCountLockedResources() {
-		m_countLockedResources ++;
-	}
-	
-	/**
-	 * Decrements the counter for locked resources in this project.
-	 */
-	void decrementCountLockedResources() {
-		m_countLockedResources --;
-		if( m_countLockedResources < 0 ) {
-			m_countLockedResources = 0;
-		}
-	}
-	
-	/**
-	 * Clears the counter for locked resources in this project.
-	 */
-	void clearCountLockedResources() {
-		m_countLockedResources = 0;
 	}
 	
 	/**
@@ -400,10 +336,10 @@ public class CmsProject implements I_CmsConstants,
     public Object clone() {
         CmsProject project=new CmsProject(this.m_id,new String (this.m_name),
                                        new String(m_description),this.m_taskId,
-                                       this.m_ownerId,this.getGroup(),this.getManagerGroup(),
+                                       this.m_ownerId,this.m_groupId,this.m_managerGroupId,
                                        this.m_flags,new Timestamp(this.m_createdate),
                                        new Timestamp(this.m_publishingdate),this.m_publishedBy,
-									   this.m_countLockedResources, this.m_type);
+									   this.m_type);
         return project;    
     }  
 }

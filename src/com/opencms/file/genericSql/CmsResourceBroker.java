@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/08 16:44:16 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/06/08 17:12:57 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2000/06/08 16:44:16 $
+ * @version $Revision: 1.30 $ $Date: 2000/06/08 17:12:57 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -86,10 +86,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
      * @exception CmsException Throws CmsException if something goes wrong.
      */
     public void destroy() 
-        throws CmsException{
-    }
-    
-    
+        throws CmsException {
+		// destroy the db-access.
+		m_dbAccess.destroy();
+    }    
     
 	// Method to access the configuration
 
@@ -124,31 +124,35 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public boolean accessProject(CmsUser currentUser, CmsProject currentProject,
 								 int projectId) 
         throws CmsException {
-        return true;
+		
+		CmsProject testProject = readProject(currentUser, currentProject, projectId);
+		
+		// is the project unlocked?
+		if( testProject.getFlags() != C_PROJECT_STATE_UNLOCKED ) {
+			return(false);
+		}
+		
+		// is the current-user admin, or the owner of the project?
+		if( (currentProject.getOwnerId() == currentUser.getId()) || 
+			isAdmin(currentUser, currentProject) ) {
+			return(true);
+		}
+		
+		// get all groups of the user
+		Vector groups = getGroupsOfUser(currentUser, currentProject, 
+										currentUser.getName());
+		
+		// test, if the user is in the same groups like the project.
+		for(int i = 0; i < groups.size(); i++) {
+			int groupId = ((CmsGroup) groups.elementAt(i)).getId();
+			if( ( groupId == testProject.getGroupId() ) ||
+				( groupId == testProject.getManagerGroupId() ) ) {
+				return( true );
+			}
+		}
+		return( false );
     }
     
-     /**
-	 * Creates a project.
-	 * 
-	 * <B>Security</B>
-	 * Only the users which are in the admin or projectleader-group are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param name The name of the project to read.
-	 * @param description The description for the new project.
-	 * @param group the group to be set.
-	 * @param managergroup the managergroup to be set.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	 public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
-									   String name, String description, String group,
-									   String managergroupname)
-         throws CmsException {
-         return null;
-     }
-	
 	/**
 	 * Creates a project.
 	 * 
@@ -157,7 +161,6 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param id The id of the new project, it must be unique.
 	 * @param name The name of the project to read.
 	 * @param description The description for the new project.
 	 * @param group the group to be set.
@@ -166,10 +169,28 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	 public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
-									   int id, String name, String description, String group,
-									   String managergroupname)
+									 String name, String description, 
+									 String groupname, String managergroupname)
          throws CmsException {
-         return null;
+		 if( isAdmin(currentUser, currentProject) || 
+			 isProjectManager(currentUser, currentProject)) {
+			 
+			 // read the needed groups from the cms
+			 CmsGroup group = readGroup(currentUser, currentProject, groupname);
+			 CmsGroup managergroup = readGroup(currentUser, currentProject, 
+											   managergroupname);
+			 
+			 // TODO: create a new task for the project
+			 /*CmsTask task = m_taskRb.createProject(currentUser, name, group,
+													 new java.sql.Timestamp(System.currentTimeMillis()),
+													 C_TASK_PRIORITY_NORMAL); */
+			 CmsTask task = new CmsTask();
+			 
+			 return m_dbAccess.createProject(currentUser, group, managergroup, task, name, description, C_PROJECT_STATE_UNLOCKED, C_PROJECT_TYPE_NORMAL );
+		} else {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + name,
+				 CmsException.C_NO_ACCESS);
+		}
      }
      							
 	/**
@@ -203,8 +224,36 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	 public Vector getAllAccessibleProjects(CmsUser currentUser, 
 											CmsProject currentProject)
-         throws CmsException {
-         return null;
+		 throws CmsException {
+		// get all groups of the user
+		Vector groups = getGroupsOfUser(currentUser, currentProject, 
+										currentUser.getName());
+		
+		// get all projects which are owned by the user.
+		Vector projects = m_dbAccess.getAllAccessibleProjectsByUser(currentUser);
+		
+		// get all projects, that the user can access with his groups.
+		for(int i = 0; i < groups.size(); i++) {
+			Vector projectsByGroup;
+			// is this the admin-group?
+			if( ((CmsGroup) groups.elementAt(i)).getName().equals(C_GROUP_ADMIN) ) {
+				 // yes - all unlocked projects are accessible for him
+				 projectsByGroup = m_dbAccess.getAllProjects(C_PROJECT_STATE_UNLOCKED);
+			} else {
+				// no - get all projects, which can be accessed by the current group
+				projectsByGroup = m_dbAccess.getAllAccessibleProjectsByGroup((CmsGroup) groups.elementAt(i));
+			}
+
+			// merge the projects to the vector
+			for(int j = 0; j < projectsByGroup.size(); j++) {
+				// add only projects, which are new
+				if(!projects.contains(projectsByGroup.elementAt(j))) {
+					projects.addElement(projectsByGroup.elementAt(j));
+				}
+			}
+		}
+		// return the vector of projects
+		return(projects);
      }
 	
 	/**
@@ -222,7 +271,38 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 public Vector getAllManageableProjects(CmsUser currentUser, 
 											CmsProject currentProject)
          throws CmsException {
-      return null;
+		// get all groups of the user
+		Vector groups = getGroupsOfUser(currentUser, currentProject, 
+										currentUser.getName());
+		
+		// get all projects which are owned by the user.
+		Vector projects = m_dbAccess.getAllAccessibleProjectsByUser(currentUser);
+		
+		// get all projects, that the user can manage with his groups.
+		for(int i = 0; i < groups.size(); i++) {
+			// get all projects, which can be managed by the current group
+			Vector projectsByGroup;
+			// is this the admin-group?
+			if( ((CmsGroup) groups.elementAt(i)).getName().equals(C_GROUP_ADMIN) ) {
+				 // yes - all unlocked projects are accessible for him
+				 projectsByGroup = m_dbAccess.getAllProjects(C_PROJECT_STATE_UNLOCKED);
+			} else {
+				// no - get all projects, which can be accessed by the current group
+				projectsByGroup = m_dbAccess.getAllAccessibleProjectsByManagerGroup((CmsGroup)groups.elementAt(i));
+			}
+				
+			// merge the projects to the vector
+			for(int j = 0; j < projectsByGroup.size(); j++) {
+				// add only projects, which are new
+				if(!projects.contains(projectsByGroup.elementAt(j))) {
+					projects.addElement(projectsByGroup.elementAt(j));
+				}
+			}
+		}
+		// remove the online-project, it is not manageable!
+		projects.removeElement(onlineProject(currentUser, currentProject));
+		// return the vector of projects
+		return(projects);
      }
 	 
      
@@ -277,8 +357,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, 
 								   int id)
          throws CmsException {
-		 // TODO: remove this dummy-project
-		 return new CmsProject(-1, "Dummy-Project", "Dummy-Project", -1, -1, new CmsGroup(-1, -1, "", "", 1), new CmsGroup(-1, -1, "", "", 1), 1, new java.sql.Timestamp(1), new java.sql.Timestamp(1), -1, 0, 0 );
+		 return m_dbAccess.readProject(id);
      }
      
      /**
@@ -296,8 +375,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, 
 								   CmsResource res)
          throws CmsException {
-		 		 // TODO: remove this dummy-project
-		 return new CmsProject(-1, "Dummy-Project", "Dummy-Project", -1, -1, new CmsGroup(-1, -1, "", "", 1), new CmsGroup(-1, -1, "", "", 1), 1, new java.sql.Timestamp(1), new java.sql.Timestamp(1), -1, 0, 0 );
+ 		 return readProject(currentUser, currentProject, res.getProjectId());
      }
 	
     /**
@@ -313,10 +391,13 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, 
-									 CmsTask task)
+								   CmsTask task)
          throws CmsException {
- 		 // TODO: remove this dummy-project
-		 return new CmsProject(-1, "Dummy-Project", "Dummy-Project", -1, -1, new CmsGroup(-1, -1, "", "", 1), new CmsGroup(-1, -1, "", "", 1), 1, new java.sql.Timestamp(1), new java.sql.Timestamp(1), -1, 0, 0 );
+		 // read the parent of the task, until it has no parents.
+		 while(task.getParent() != 0) {
+			 task = readTask(currentUser, currentProject, task.getParent());
+		 }
+		 return m_dbAccess.readProject(task);
      }
 	 
 
@@ -334,6 +415,20 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public void unlockProject(CmsUser currentUser, CmsProject currentProject, int id)
         throws CmsException {
+		// read the project.
+		CmsProject project = readProject(currentUser, currentProject, id);
+
+		// check the security
+		if( isAdmin(currentUser, currentProject) || 
+			isManagerOfProject(currentUser, project) || 
+			(project.getFlags() == C_PROJECT_STATE_UNLOCKED )) {
+			
+			// TODO: unlock all resources in the project
+			// m_dbAccess.unlockProject(project);
+		} else {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + id, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 
 	
@@ -1321,7 +1416,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
 								CmsProject project) 
         throws CmsException {
-        return project.getGroup();
+		// TODO: implement this!
+        return null;
     }
 	
 	/**
@@ -1339,7 +1435,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsGroup readManagerGroup(CmsUser currentUser, CmsProject currentProject, 
 									   CmsProject project) 
         throws CmsException {
-        return project.getManagerGroup();
+		// TODO: implement this!
+        return null;
     }
 	
 	/**
@@ -3124,7 +3221,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 									String roleName, long timeout, 
 									int priority)
          throws CmsException {
-      return null;
+		 return null;		 
      }
 	
 	 /**
@@ -3540,7 +3637,6 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
 	// Methods working with database import and export
     
-      
     /**
 	 * Imports a import-resource (folder or zipfile) to the cms.
 	 * 
@@ -3595,8 +3691,4 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String exportPath, CmsObject cms, boolean includeSystem)
         throws CmsException {
     }
-    
-    
-
-
 }

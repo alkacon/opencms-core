@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/08 08:11:04 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2000/06/08 17:12:56 $
+ * Version: $Revision: 1.80 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.79 $ $Date: 2000/06/08 08:11:04 $ 
+ * @version $Revision: 1.80 $ $Date: 2000/06/08 17:12:56 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -290,25 +290,6 @@ public class CmsObject implements I_CmsConstants {
 									groupname, managergroupname) );
 	 }
 	
-	/**
-	 * Creates a project.
-	 * 
-	 * @param id The id of the new project, it must be unique.
-	 * @param name The name of the project to read.
-	 * @param description The description for the new project.
-	 * @param groupname the name of the group to be set.
-	 * @param managergroupname the name of the managergroup to be set.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	 public CmsProject createProject(int id, String name, String description, 
-									   String groupname, String managergroupname)
-		 throws CmsException {
-		 return( c_rb.createProject(m_context.currentUser(), 
-									m_context.currentProject(), id, name, description, 
-									groupname, managergroupname) );
-	 }
-	 
 	/**
 	 * Publishes a project.
 	 * 
