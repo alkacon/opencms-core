@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/07/20 15:45:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/30 11:56:16 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import com.opencms.file.CmsUser;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */
@@ -54,7 +54,6 @@ public class CmsWorkplaceSettings {
     private String m_explorerFolder;
     private String m_explorerMode;
     private int m_explorerPage = 1;
-    private boolean m_explorerContext = true;
     private int m_explorerChecksum = -1;
     private String m_explorerFlaturl;
     private String m_permissionDetailView;
@@ -194,20 +193,20 @@ public class CmsWorkplaceSettings {
     }
         
     /**
-     * Returns the current folder to be displayed in the explorer.<p>
+     * Returns the current resource to be displayed in the explorer.<p>
      * 
-     * @return the current folder to be displayed in the explorer
+     * @return the current resource to be displayed in the explorer
      */
-    public synchronized String getExplorerFolder() {
+    public synchronized String getExplorerResource() {
         return m_explorerFolder;
     }
     
     /**
-     * Sets the current folder to be displayed in the explorer.<p>
+     * Sets the current resource to be displayed in the explorer.<p>
      * 
-     * @param value the current folder to be displayed in the explorer
+     * @param value the current resource to be displayed in the explorer
      */
-    public synchronized void setExplorerFolder(String value) {
+    public synchronized void setExplorerResource(String value) {
         m_explorerFolder = value;
     }
     
@@ -263,24 +262,6 @@ public class CmsWorkplaceSettings {
      */
     public void setExplorerChecksum(int value) {
         m_explorerChecksum = value;
-    }
-
-    /**
-     * Returns true if the explorer context menues are enabled.<p>
-     * 
-     * @return true if the explorer context menues are enabled
-     */
-    public boolean getExplorerContext() {
-        return m_explorerContext;
-    }
-
-    /**
-     * Controls if the explorer context menues are enabled
-     * 
-     * @param value if true, the explorer context menues are enabled
-     */
-    public void setExplorerContext(boolean value) {
-        m_explorerContext = value;
     }
 
     /**

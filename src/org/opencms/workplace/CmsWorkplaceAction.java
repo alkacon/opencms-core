@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceAction.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/30 11:56:16 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.HttpSession;
  * functionality from the old XML based workplace to the new JSP workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1
  */
@@ -111,7 +111,7 @@ public final class CmsWorkplaceAction {
         if (session == null) return null;
         CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
         if (settings != null) {
-            return settings.getExplorerFolder();
+            return settings.getExplorerResource();
         } else {
             return (String)session.getAttribute(I_CmsWpConstants.C_PARA_FILELIST);
         }
@@ -128,7 +128,7 @@ public final class CmsWorkplaceAction {
         if (session == null) return;
         CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
         if (settings != null) {
-            settings.setExplorerFolder(currentFolder);
+            settings.setExplorerResource(currentFolder);
         }       
         session.setAttribute(I_CmsWpConstants.C_PARA_FILELIST, currentFolder);       
     }   

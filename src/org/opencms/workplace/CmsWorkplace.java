@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/07/22 00:29:22 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/07/30 11:56:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1
  */
@@ -269,7 +269,7 @@ public abstract class CmsWorkplace {
         if (!(settings.getSite().equals(reqCont.getSiteRoot()))) {
             reqCont.setSiteRoot(settings.getSite());
             settings.setExplorerChecksum(-2);
-            settings.setExplorerFolder("/");
+            settings.setExplorerResource("/");
         }        
     }
     

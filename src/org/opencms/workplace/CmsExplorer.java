@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/29 15:58:47 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2003/07/30 11:56:16 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 5.1
  */
@@ -84,26 +84,32 @@ public class CmsExplorer extends CmsWorkplace {
     protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
         String currentResource = null;
         String mode = request.getParameter("mode");
-        settings.setExplorerMode(mode);
+        if (mode != null) {
+            settings.setExplorerMode(mode);
+        } else {
+            if (! "projectview".equals(settings.getExplorerMode())) {
+                settings.setExplorerMode("explorerview");
+            }
+        }
 
         if ("vfslink".equals(settings.getExplorerMode())) {
             currentResource = request.getParameter("file");
-            settings.setExplorerFolder(currentResource);
+            settings.setExplorerResource(currentResource);
         } else {
             currentResource = request.getParameter("folder");
 
             if ((currentResource != null) && (currentResource.startsWith("vfslink:"))) {
                 // this is a link check, remove the prefix
                 settings.setExplorerMode("vfslink");
-                settings.setExplorerFolder(currentResource.substring(8));
+                settings.setExplorerResource(currentResource.substring(8));
             } else {
                 if ((currentResource != null) && (!"".equals(currentResource)) && folderExists(getCms(), currentResource)) {
-                    settings.setExplorerFolder(currentResource);
+                    settings.setExplorerResource(currentResource);
                 } else {
-                    currentResource = settings.getExplorerFolder();
+                    currentResource = settings.getExplorerResource();
                     if ((currentResource == null) || (!folderExists(getCms(), currentResource))) {
                         currentResource = "/";
-                        settings.setExplorerFolder(currentResource);
+                        settings.setExplorerResource(currentResource);
                     }
                 }
             }
@@ -115,13 +121,10 @@ public class CmsExplorer extends CmsWorkplace {
             try {
                 page = Integer.parseInt(selPage);
             } catch (NumberFormatException e) {
-                // defaul is 1
+                // default is 1
             }
             settings.setExplorerPage(page);
         }        
-        
-        // are context menues enabled?
-        settings.setExplorerContext(! "false".equals(request.getParameter("kontext")));
         
         // the flaturl 
         settings.setExplorerFlaturl(request.getParameter("flaturl"));
@@ -193,7 +196,7 @@ public class CmsExplorer extends CmsWorkplace {
 
         CmsResource currentResource = null;
                 
-        String currentFolder = getSettings().getExplorerFolder();
+        String currentFolder = getSettings().getExplorerResource();
         boolean found = true;
         try {
             currentResource = getCms().readFileHeader(currentFolder);
@@ -238,18 +241,15 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("top.openfolderMethod='openthisfolder';\n");
         }
         
-        if (projectView || vfslinkView) {
-            content.append("top.projectView=true;\n");
-        } else {
-            content.append("top.projectView=false;\n");
-        }
+//        if (projectView || vfslinkView) {
+//            content.append("top.projectView=true;\n");
+//        } else {
+//            content.append("top.projectView=false;\n");
+//        }
 
-        // show kontext
-        if (getSettings().getExplorerContext()) {
-            content.append("top.showKon=true;\n");
-        } else {
-            content.append("top.showKon=false;\n");
-        }
+        content.append("top.mode=\"");        
+        content.append(getSettings().getExplorerMode());
+        content.append("\";\n");
 
         // the flaturl
         if (getSettings().getExplorerFlaturl() != null) {
@@ -291,11 +291,11 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("top.setDirectory(\"");
         content.append(currentFolderId.hashCode());
         content.append("\",\"");
-        content.append(CmsResource.getPath(getSettings().getExplorerFolder()));
+        content.append(CmsResource.getPath(getSettings().getExplorerResource()));
         content.append("\");\n");
         if (vfslinkView) {
             content.append("top.addHist('");
-            content.append(CmsResource.getPath(getSettings().getExplorerFolder()));
+            content.append(CmsResource.getPath(getSettings().getExplorerResource()));
             content.append("')\n");
             
         }
@@ -313,7 +313,7 @@ public class CmsExplorer extends CmsWorkplace {
         boolean showUserWhoCreated = (preferences & I_CmsWpConstants.C_FILELIST_USER_CREATED) > 0;
 
         // now get the entries for the filelist
-        Vector resources = getRessources(getSettings().getExplorerMode(), getSettings().getExplorerFolder());
+        Vector resources = getRessources(getSettings().getExplorerMode(), getSettings().getExplorerResource());
 
         // if a folder contains to much entrys we split them to pages of C_ENTRYS_PER_PAGE length
         int startat = 0;
@@ -599,17 +599,17 @@ public class CmsExplorer extends CmsWorkplace {
             }
         }
         
-        if (listonly || projectView) {
-            // only show the filelist
-            content.append("top.dUL(document);\n");
-        } else {
-            // update all frames
-            content.append("top.dU(document,");
-            content.append(numberOfPages);
-            content.append(",");
-            content.append(selectedPage);
-            content.append("); \n");
-        }
+//        if (listonly || projectView) {
+//            // only show the filelist
+//            content.append("top.dUL(document);\n");
+//        } else {
+//            // update all frames
+        content.append("top.dU(document,");
+        content.append(numberOfPages);
+        content.append(",");
+        content.append(selectedPage);
+        content.append("); \n");
+//        }
         
         content.append("}\n");
         return content.toString();
