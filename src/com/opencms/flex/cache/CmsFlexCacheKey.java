@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2002/12/04 14:44:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/02/09 16:52:00 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Iterator;
  * to avoid method calling overhead (a cache is about speed, isn't it :)
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsFlexCacheKey {
     
@@ -554,7 +554,7 @@ public class CmsFlexCacheKey {
         java.util.StringTokenizer toker = new java.util.StringTokenizer(value, ",");
         java.util.Map result = new java.util.HashMap();
         while (toker.hasMoreTokens()) {
-            result.put(toker.nextToken().trim().toLowerCase(), new String[] { "&?&" } );
+            result.put(toker.nextToken().trim(), new String[] { "&?&" } );
         }
         return result;
     }
