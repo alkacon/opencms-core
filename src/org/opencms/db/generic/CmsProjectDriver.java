@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/01 16:44:53 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2003/09/02 14:47:22 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.73 $ $Date: 2003/09/01 16:44:53 $
+ * @version $Revision: 1.74 $ $Date: 2003/09/02 14:47:22 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1952,7 +1952,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         String comment = null;
         java.sql.Timestamp starttime = null;
         int id = I_CmsConstants.C_UNKNOWN_ID;
-        int task = I_CmsConstants.C_UNKNOWN_ID;
         CmsUUID user = CmsUUID.getNullUUID();
         int type = I_CmsConstants.C_UNKNOWN_ID;
 
@@ -1965,11 +1964,10 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 comment = res.getString(m_sqlManager.get("C_LOG_COMMENT"));
                 id = res.getInt(m_sqlManager.get("C_LOG_ID"));
                 starttime = SqlHelper.getTimestamp(res, m_sqlManager.get("C_LOG_STARTTIME"));
-                task = res.getInt(m_sqlManager.get("C_LOG_TASK"));
                 user = new CmsUUID(res.getString(m_sqlManager.get("C_LOG_USER")));
                 type = res.getInt(m_sqlManager.get("C_LOG_TYPE"));
 
-                tasklog = new CmsTaskLog(id, comment, task, user, starttime, type);
+                tasklog = new CmsTaskLog(id, comment, user, starttime, type);
                 logs.addElement(tasklog);
             }
         } catch (SQLException exc) {

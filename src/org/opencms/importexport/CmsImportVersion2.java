@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2003/09/01 09:09:17 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/09/02 14:47:22 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -295,7 +295,7 @@ public class CmsImportVersion2 extends A_CmsImport {
     private void importAllResources(Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
         NodeList fileNodes, acentryNodes;
         Element currentElement, currentEntry;
-        String source, destination, type, access, timestamp, uuid, uuidfile, uuidresource;
+        String source, destination, type, timestamp, uuid, uuidfile, uuidresource;
         long lastmodified = 0;
         Map properties = null;
 
@@ -350,7 +350,6 @@ public class CmsImportVersion2 extends A_CmsImport {
                 source = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_SOURCE);
                 destination = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESTINATION);
                 type = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
-                access = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_ACCESS);
                 uuid = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDSTRUCTURE);
                 uuidfile = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDCONTENT);
                 uuidresource = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE);
@@ -387,7 +386,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                     properties = getPropertiesFromXml(currentElement, type, propertyName, propertyValue, deleteProperties);
 
                     // import the specified file 
-                    CmsResource res = importResource(source, destination, uuid, uuidfile, uuidresource, type, access, lastmodified, properties, writtenFilenames, fileCodes);
+                    CmsResource res = importResource(source, destination, uuid, uuidfile, uuidresource, type, lastmodified, properties, writtenFilenames, fileCodes);
 
                     if (res != null) {
 
@@ -475,7 +474,7 @@ public class CmsImportVersion2 extends A_CmsImport {
       *       not used when null
       * @return imported resource
       */
-     private CmsResource importResource(String source, String destination, String uuid, String uuidfile, String uuidresource, String type, String access, long lastmodified, Map properties, Vector writtenFilenames, Vector fileCodes) {
+     private CmsResource importResource(String source, String destination, String uuid, String uuidfile, String uuidresource, String type, long lastmodified, Map properties, Vector writtenFilenames, Vector fileCodes) {
 
          boolean success = true;
          byte[] content = null;

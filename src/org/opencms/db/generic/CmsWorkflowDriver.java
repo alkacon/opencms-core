@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/08/30 11:30:08 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/09/02 14:47:22 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the workflow driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2003/08/30 11:30:08 $
+ * @version $Revision: 1.12 $ $Date: 2003/09/02 14:47:22 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -486,11 +486,10 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
                 String comment = res.getString(m_sqlManager.get("C_LOG_COMMENT"));
                 id = res.getInt(m_sqlManager.get("C_LOG_ID"));
                 java.sql.Timestamp starttime = SqlHelper.getTimestamp(res, m_sqlManager.get("C_LOG_STARTTIME"));
-                int task = res.getInt(m_sqlManager.get("C_LOG_TASK"));
                 CmsUUID user = new CmsUUID(res.getString(m_sqlManager.get("C_LOG_USER")));
                 int type = res.getInt(m_sqlManager.get("C_LOG_TYPE"));
 
-                tasklog = new CmsTaskLog(id, comment, task, user, starttime, type);
+                tasklog = new CmsTaskLog(id, comment, user, starttime, type);
             }
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
@@ -520,7 +519,6 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
         String comment = null;
         java.sql.Timestamp starttime = null;
         int id = I_CmsConstants.C_UNKNOWN_ID;
-        int task = I_CmsConstants.C_UNKNOWN_ID;
         CmsUUID user = CmsUUID.getNullUUID();
         int type = I_CmsConstants.C_UNKNOWN_ID;
 
@@ -533,10 +531,9 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
                 comment = res.getString(m_sqlManager.get("C_TASKLOG_COMMENT"));
                 id = res.getInt(m_sqlManager.get("C_TASKLOG_ID"));
                 starttime = SqlHelper.getTimestamp(res, m_sqlManager.get("C_TASKLOG_STARTTIME"));
-                task = res.getInt(m_sqlManager.get("C_TASKLOG_TASK"));
                 user = new CmsUUID(res.getString(m_sqlManager.get("C_TASKLOG_USER")));
                 type = res.getInt(m_sqlManager.get("C_TASKLOG_TYPE"));
-                tasklog = new CmsTaskLog(id, comment, task, user, starttime, type);
+                tasklog = new CmsTaskLog(id, comment, user, starttime, type);
                 logs.addElement(tasklog);
             }
         } catch (SQLException exc) {
