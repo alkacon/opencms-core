@@ -7377,7 +7377,7 @@
 		</file>
         <file>
             <source>pics/system/bt_publish_in.gif</source>
-            <destination>system/workplace/pics/bt_publish_off.gif</destination>
+            <destination>system/workplace/pics/bt_publish_in.gif</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Administrators</group>
