@@ -2,8 +2,8 @@
 <export>
     <info>
         <creator>Admin</creator>
-        <opencms_version>Version 4.3.23 Bela Tegeuse </opencms_version>
-        <createdate>10.07.2001 19:20</createdate>
+        <opencms_version>Version 4.3.24 Bela Tegeuse </opencms_version>
+        <createdate>13.07.2001 12:12</createdate>
         <project>Online</project>
         <export_version>1</export_version>
     </info>
@@ -224,7 +224,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -233,7 +233,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -241,8 +241,8 @@
             <destination>pics/system/bg_mitte4.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
+            <group>Users</group>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -250,8 +250,8 @@
             <destination>pics/system/bg_mitte_rechts.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
+            <group>Users</group>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -260,7 +260,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -269,7 +269,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -278,7 +278,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -287,7 +287,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -296,7 +296,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -305,7 +305,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -314,7 +314,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -323,7 +323,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -332,7 +332,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -341,7 +341,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -350,7 +350,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -359,7 +359,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -368,7 +368,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -377,7 +377,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -386,7 +386,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -395,7 +395,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -404,7 +404,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -413,7 +413,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -422,7 +422,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -431,7 +431,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -440,7 +440,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -449,7 +449,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -458,7 +458,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -467,7 +467,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -476,7 +476,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -485,7 +485,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -494,7 +494,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -503,7 +503,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -512,7 +512,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -521,7 +521,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -530,7 +530,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -539,7 +539,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -548,7 +548,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -557,7 +557,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -566,7 +566,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -575,7 +575,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -584,7 +584,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -593,7 +593,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -602,7 +602,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -611,7 +611,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -620,7 +620,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -629,7 +629,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -638,7 +638,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -647,7 +647,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -656,7 +656,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -665,7 +665,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -674,7 +674,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -683,7 +683,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -692,7 +692,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -701,7 +701,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -710,7 +710,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -719,7 +719,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -728,7 +728,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -737,7 +737,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -746,7 +746,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -755,7 +755,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -764,7 +764,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -773,7 +773,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -782,7 +782,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -791,7 +791,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -800,7 +800,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -809,7 +809,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -818,7 +818,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -827,7 +827,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -836,7 +836,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -845,7 +845,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -854,7 +854,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -863,7 +863,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -872,7 +872,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -881,7 +881,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -890,7 +890,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -899,7 +899,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -908,7 +908,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -917,7 +917,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -926,7 +926,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -935,7 +935,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -944,7 +944,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -953,7 +953,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -962,7 +962,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -971,7 +971,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -980,7 +980,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -989,7 +989,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -998,7 +998,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1007,7 +1007,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1016,7 +1016,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1025,7 +1025,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1034,7 +1034,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1043,7 +1043,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1052,7 +1052,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1061,7 +1061,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1070,7 +1070,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1079,7 +1079,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1088,7 +1088,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1097,7 +1097,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1106,7 +1106,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1115,7 +1115,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1124,7 +1124,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1133,7 +1133,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1142,7 +1142,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1151,7 +1151,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1160,7 +1160,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1169,7 +1169,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1178,7 +1178,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1187,7 +1187,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1196,7 +1196,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1205,7 +1205,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1214,7 +1214,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1223,7 +1223,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1232,7 +1232,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1241,7 +1241,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1250,7 +1250,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1259,7 +1259,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1268,7 +1268,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1277,7 +1277,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1286,7 +1286,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1295,7 +1295,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1304,7 +1304,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1313,7 +1313,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1322,7 +1322,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1331,7 +1331,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1340,7 +1340,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1349,7 +1349,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1358,7 +1358,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1367,7 +1367,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1376,7 +1376,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1385,7 +1385,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1394,7 +1394,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1403,7 +1403,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1412,7 +1412,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1421,7 +1421,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1430,7 +1430,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1439,7 +1439,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1448,7 +1448,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1456,8 +1456,8 @@
             <destination>pics/system/bt_publish_in.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
+            <group>Users</group>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1465,8 +1465,8 @@
             <destination>pics/system/bt_publish_off.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
+            <group>Users</group>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1474,8 +1474,8 @@
             <destination>pics/system/bt_publish_on.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
+            <group>Users</group>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1483,8 +1483,8 @@
             <destination>pics/system/bt_publish_push.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
+            <group>Users</group>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1493,7 +1493,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1502,7 +1502,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1511,7 +1511,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1520,7 +1520,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1529,7 +1529,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1538,7 +1538,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1547,7 +1547,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1556,7 +1556,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1565,7 +1565,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1574,7 +1574,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1583,7 +1583,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1592,7 +1592,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1601,7 +1601,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1610,7 +1610,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1619,7 +1619,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1628,7 +1628,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1637,7 +1637,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1646,7 +1646,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1655,7 +1655,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1664,7 +1664,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1673,7 +1673,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1682,7 +1682,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1691,7 +1691,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1700,7 +1700,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1709,7 +1709,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1718,7 +1718,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1727,7 +1727,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1736,7 +1736,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1745,7 +1745,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1754,7 +1754,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1763,7 +1763,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1772,7 +1772,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1781,7 +1781,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1790,7 +1790,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1799,7 +1799,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1808,7 +1808,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1817,7 +1817,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1826,7 +1826,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1835,7 +1835,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1844,7 +1844,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1853,7 +1853,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1862,7 +1862,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1871,7 +1871,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1880,7 +1880,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1889,7 +1889,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1898,7 +1898,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1907,7 +1907,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1916,7 +1916,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1925,7 +1925,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1934,7 +1934,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1943,7 +1943,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1952,7 +1952,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1961,7 +1961,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1970,7 +1970,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1979,7 +1979,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1988,7 +1988,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -1997,7 +1997,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2006,7 +2006,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2015,7 +2015,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2024,7 +2024,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2033,7 +2033,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2042,7 +2042,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2051,7 +2051,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2060,7 +2060,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2069,7 +2069,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2078,7 +2078,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2087,7 +2087,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2096,7 +2096,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2105,7 +2105,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2114,7 +2114,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2123,7 +2123,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2132,7 +2132,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2141,7 +2141,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2150,7 +2150,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2159,7 +2159,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2167,15 +2167,9 @@
             <destination>pics/system/ic_admin_module.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <type>5</type>
-                    <value><![CDATA[w]]></value>
-                </property>
-            </properties>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
         </file>
         <file>
             <source>pics/system/ic_admin_newext.gif</source>
@@ -2183,7 +2177,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2192,7 +2186,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2201,7 +2195,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2210,7 +2204,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2219,7 +2213,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2227,8 +2221,8 @@
             <destination>pics/system/ic_admin_staticexport.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
+            <group>Users</group>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2236,8 +2230,8 @@
             <destination>pics/system/ic_admin_staticexport_in.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
+            <group>Users</group>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2246,7 +2240,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2255,7 +2249,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2264,7 +2258,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2273,7 +2267,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2282,7 +2276,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2291,7 +2285,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2300,7 +2294,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2309,7 +2303,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2318,7 +2312,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2327,7 +2321,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2336,7 +2330,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2345,7 +2339,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2354,7 +2348,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2363,7 +2357,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2372,7 +2366,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2381,7 +2375,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2390,7 +2384,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2399,7 +2393,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2408,7 +2402,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2417,7 +2411,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2426,7 +2420,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2435,7 +2429,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2444,7 +2438,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2453,7 +2447,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2462,7 +2456,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2471,7 +2465,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2480,7 +2474,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2489,7 +2483,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2498,7 +2492,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2507,7 +2501,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2516,7 +2510,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2525,7 +2519,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2534,7 +2528,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2543,7 +2537,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2552,7 +2546,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2560,15 +2554,9 @@
             <destination>pics/system/ic_local.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <type>5</type>
-                    <value><![CDATA[ic_local]]></value>
-                </property>
-            </properties>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
         </file>
         <file>
             <source>pics/system/ic_lock.gif</source>
@@ -2576,7 +2564,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2585,7 +2573,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2594,7 +2582,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2603,7 +2591,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2612,7 +2600,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2621,7 +2609,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2630,7 +2618,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2639,7 +2627,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2648,7 +2636,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2657,7 +2645,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2665,15 +2653,9 @@
             <destination>pics/system/ic_server.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <type>5</type>
-                    <value><![CDATA[ic_server]]></value>
-                </property>
-            </properties>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
         </file>
         <file>
             <source>pics/system/ic_syncfolder_properties.gif</source>
@@ -2681,7 +2663,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2690,7 +2672,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2699,7 +2681,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2708,7 +2690,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2717,7 +2699,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2726,7 +2708,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2735,7 +2717,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2744,7 +2726,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2753,7 +2735,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2762,7 +2744,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2771,7 +2753,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2780,7 +2762,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2789,7 +2771,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2798,7 +2780,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2807,7 +2789,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2816,7 +2798,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2825,7 +2807,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2834,7 +2816,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2843,7 +2825,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2852,7 +2834,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2861,7 +2843,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2870,7 +2852,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2879,7 +2861,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2888,7 +2870,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2897,7 +2879,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2906,7 +2888,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2915,7 +2897,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2924,7 +2906,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2933,7 +2915,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2942,7 +2924,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2951,7 +2933,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2960,7 +2942,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2969,7 +2951,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2978,7 +2960,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2987,7 +2969,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -2996,7 +2978,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -3005,7 +2987,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -3014,7 +2996,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -3023,7 +3005,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -3032,7 +3014,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -3041,7 +3023,7 @@
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -3049,23 +3031,17 @@
             <destination>pics/system/pixel_blue.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <type>5</type>
-                    <value><![CDATA[wait]]></value>
-                </property>
-            </properties>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
         </file>
         <file>
             <source>pics/system/_bg_grau.gif</source>
             <destination>pics/system/_bg_grau.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
+            <group>Users</group>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -3073,8 +3049,8 @@
             <destination>pics/system/_bg_mitte.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
+            <group>Users</group>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -3082,8 +3058,8 @@
             <destination>pics/system/_bg_mitte2.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
+            <group>Users</group>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -3091,8 +3067,8 @@
             <destination>pics/system/_bg_mitte3.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
+            <group>Users</group>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -3100,8 +3076,8 @@
             <destination>pics/system/_bg_mitte4.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
+            <group>Users</group>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -3109,8 +3085,8 @@
             <destination>pics/system/_Bg_mitte_links.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
+            <group>Users</group>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -3118,8 +3094,8 @@
             <destination>pics/system/_bg_mitte_oben.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
+            <group>Users</group>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -3127,8 +3103,8 @@
             <destination>pics/system/_bg_mitte_rahmen.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
+            <group>Users</group>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -3136,8 +3112,8 @@
             <destination>pics/system/_bg_mitte_rahmen_links.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
+            <group>Users</group>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -3145,8 +3121,8 @@
             <destination>pics/system/_bg_mitte_rahmen_mitte.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
+            <group>Users</group>
+            <access>79</access>
             <properties/>
         </file>
         <file>
@@ -3154,8 +3130,8 @@
             <destination>pics/system/_bg_mitte_rechts.gif</destination>
             <type>image</type>
             <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
+            <group>Users</group>
+            <access>79</access>
             <properties/>
         </file>
         <file>
