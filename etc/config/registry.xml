@@ -17,6 +17,9 @@
             <name>select.news</name>
             <url>/system/workplace/action/news_admin.html</url>
         </view>
+		<smtpserver>my.smtp.server</smtpserver>
+		<smtpserver2>alternative.smtp.server</smtpserver2>
+		<defaultmailsender>nobody@nowhere.com</defaultmailsender>
     </system>
     <modules/>
 </registry>
