@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.21 $ $Date: 2000/01/13 16:11:48 $
+ * @version $Revision: 1.22 $ $Date: 2000/01/13 18:12:51 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -1910,6 +1910,24 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		
 		// checks, if the filename is valid, if not it throws a exception
 		validFilename(filename);
+		
+		A_CmsResource onlineResource = null;
+
+		// try to load the resource in the onlineproject
+		try {
+			onlineResource = m_fileRb.readFileHeader( onlineProject(currentUser, 
+																	currentProject), 
+													  folder + filename);
+			
+		}catch(CmsException exc) {
+			// hopefully a exception is thrown, else the resource don't can be
+			// created in the offlineporject
+		}
+		
+		if( onlineResource != null ) {
+			// the resource exists in the onlineproject -> exception!
+			throw new CmsException(folder + filename, CmsException.C_FILE_EXISTS);
+		}
 		
 		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
 												  folder);
