@@ -416,7 +416,7 @@ function printList(wo) {
 		wo.writeln("<tr>");
 		wo.write("<td unselectable=\"on\" id=\"td0_" + i + "\"" + vi_bg + ">");
 		if (showKon && !noaccess) {
-			wo.write("<a style=\"cursor:hand;\" onclick=\"top.showContext(document, " + i + ");\"");
+			wo.write("<a style=\"cursor:pointer;\" onclick=\"top.showContext(document, " + i + ");\"");
 			wo.write(" onmouseover=\"top.setId(" + i + ")\" onmouseout=\"top.setId(-1)\">");
 		}
 		wo.write("<img id=\"ic" + i + "\" src='" + vi_icon + "' border=0 width=16 height=16>");
