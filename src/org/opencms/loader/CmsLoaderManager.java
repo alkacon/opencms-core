@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsLoaderManager.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/06/18 13:09:34 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import java.io.IOException;
@@ -60,7 +59,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * @since 5.1
  */
 public class CmsLoaderManager {
@@ -190,19 +189,23 @@ public class CmsLoaderManager {
     
     /**
      * Returns a template loader facade for the given file.<p>
-     * 
      * @param cms the current cms context
      * @param resource the requested file
+     * @param templateProperty the property to read for the template
+     * 
      * @return a resource loader facade for the given file
      * @throws CmsException if something goes wrong
      */
-    public CmsTemplateLoaderFacade getTemplateLoaderFacade(CmsObject cms, CmsResource resource) throws CmsException {        
+    public CmsTemplateLoaderFacade getTemplateLoaderFacade(CmsObject cms, CmsResource resource, String templateProperty) throws CmsException {        
         String absolutePath = cms.readAbsolutePath(resource);        
-        String templateProp = cms.readPropertyObject(absolutePath, I_CmsConstants.C_PROPERTY_TEMPLATE, false).getValue();       
+        
+        int warning = 0;
+        // TODO: Check for side effects cased by property search
+        String templateProp = cms.readPropertyObject(absolutePath, templateProperty, true).getValue();       
 
         if (templateProp == null) {
             // no template property defined, this is a must for facade loaders
-            throw new CmsLoaderException("Property '" + I_CmsConstants.C_PROPERTY_TEMPLATE + "' undefined for file " + absolutePath);
+            throw new CmsLoaderException("Property '" + templateProperty + "' undefined for file " + absolutePath);
         }        
 
         CmsResource template = cms.readFile(templateProp);
