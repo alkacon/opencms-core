@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/04/01 15:20:17 $
-* Version: $Revision: 1.268 $
+* Date   : $Date: 2004/01/05 13:48:43 $
+* Version: $Revision: 1.268.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.268 $
+ * @version $Revision: 1.268.2.1 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -2454,7 +2454,12 @@ public void publishProject(int id, I_CmsReport report) throws CmsException {
                                  linkChanges, allExportedLinks, allChanged, report);
                 m_context.setCurrentProject(oldId);
                 Utils.getModulPublishMethods(this, linkChanges);
-                this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_STATIC_EXPORT, allExportedLinks);
+                
+                Map eventData = (Map) new HashMap();
+                eventData.put("project", theProject);
+                eventData.put("report", report);
+                eventData.put("exportedLinks", allExportedLinks);
+                A_OpenCms.fireCmsEvent(this, com.opencms.flex.I_CmsEventListener.EVENT_STATIC_EXPORT, eventData);             
             } catch (Exception ex){
                 if (DEBUG > 0) {
                     System.err.println("Error while exporting static resources:");
