@@ -12,6 +12,33 @@ top.help_url='FunkButtonNeu/AnlegenNeuerVerknuepfung.html';
 <head>
 <script language=JavaScript>
 <!--
+
+
+function checkforchars(whichform){
+allesklar=true;
+	for(i=0;i<whichform.value.length;i++){
+	    if(whichform.value.charAt(i)=="%"){
+	    	allesklar=false;
+		    alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
+	    }
+	    if(whichform.value.charAt(i)=="#"){
+	    	allesklar=false;
+		    alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
+		    }
+	    if(whichform.value.charAt(i)=="&"){
+   	    	allesklar=false;
+	    	alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
+	    	}
+	}
+	
+if(allesklar)location='explorer_files_new_link.html?step=1&file='+document.NEU.NEUNAME.value+'&link='+document.NEU.neulink.value;
+}
+
+
+
+
+
+
 function check_namefield()
 {
 if(document.NEU.NEUNAME.value=="")
@@ -36,7 +63,7 @@ return true;
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
 
-<form name=NEU>
+<form name=NEU >
 <table border=2 cellspacing=0 cellpadding=0 width=500px>
 <tr><td>
 	<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
@@ -65,7 +92,7 @@ return true;
 			<tr>
 				<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new.html';"></td>
 
-				<td class=formular align=middle width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="a=check_namefield(); if(a==true)location='explorer_files_new_link.html?step=1&file='+document.NEU.NEUNAME.value+'&link='+document.NEU.neulink.value;"></td>
+				<td class=formular align=middle width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="a=check_namefield(); if(a==true)checkforchars(document.NEU.NEUNAME);"></td>
 
 				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
 			</tr>
