@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorRtf.java,v $
- * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/26 11:37:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.search.extractors;
 
 import java.io.InputStream;
 
-import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Document;
 import javax.swing.text.rtf.RTFEditorKit;
 
 /**
@@ -72,13 +72,13 @@ public final class CmsExtractorRtf extends A_CmsTextExtractor {
     public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
 
         // use build in RTF parser from Swing API
-        DefaultStyledDocument styledDoc = new DefaultStyledDocument();
         RTFEditorKit rtfEditor = new RTFEditorKit();
-        rtfEditor.read(in, styledDoc, 0);
+        Document doc = rtfEditor.createDefaultDocument();
+        rtfEditor.read(in, doc, 0);
 
-        String result = styledDoc.getText(0, styledDoc.getLength());
+        String result = doc.getText(0, doc.getLength());
         result = removeControlChars(result);
-        
+
         return new CmsExtractionResult(result);
     }
 
