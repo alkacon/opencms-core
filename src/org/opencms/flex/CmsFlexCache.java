@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/11/05 17:44:03 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -169,8 +169,20 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         this.m_entryLruCache = new CmsLruCache(maxCacheBytes, avgCacheBytes, maxEntryBytes, forceGC);             
         this.m_variationCache = new CmsLruCache(maxVariations, (int)(maxVariations*0.75), -1, false);
         
+        if (OpenCms.getMemoryMonitor().enabled()) {
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_entryLruCache", m_entryLruCache);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_variationCache", m_variationCache);
+        }
+        
         if (m_enabled) {
-            this.m_resourceMap = java.util.Collections.synchronizedMap(new CmsLruHashMap(CmsFlexCache.C_INITIAL_CAPACITY_CACHE, maxKeys));     
+
+            CmsLruHashMap hashMap;
+            this.m_resourceMap = java.util.Collections.synchronizedMap(hashMap = new CmsLruHashMap(CmsFlexCache.C_INITIAL_CAPACITY_CACHE, maxKeys));     
+
+            if (OpenCms.getMemoryMonitor().enabled()) {
+                OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_resourceMap", hashMap);    
+            }
+
             OpenCms.addCmsEventListener(this, new int[] {
                 I_CmsEventListener.EVENT_PUBLISH_PROJECT,
                 I_CmsEventListener.EVENT_PUBLISH_BO_RESOURCE,
@@ -195,7 +207,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         
         this.m_entryLruCache = null;
         this.m_variationCache = null;
-        this.m_resourceMap = null;
         this.m_resourceMap = null;
         
         super.finalize();
@@ -730,7 +741,8 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         if (! isEnabled()) return;
         
         m_resourceMap.clear();
-        m_resourceMap = java.util.Collections.synchronizedMap(new CmsLruHashMap(C_INITIAL_CAPACITY_CACHE));
+        // TODO: removed - check (cw)
+        // m_resourceMap = java.util.Collections.synchronizedMap(new CmsLruHashMap(C_INITIAL_CAPACITY_CACHE));
         
         m_size = 0;
         
@@ -867,7 +879,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.10 $ 
+     * @version $Revision: 1.11 $ 
      */
     class CmsFlexCacheVariation extends Object implements org.opencms.cache.I_CmsLruCacheObject {
         
@@ -947,6 +959,13 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
          */
         public int getLruCacheCosts() {
             return this.m_map.size();
+        }
+        
+        /**
+         * @see org.opencms.cache.I_CmsLruCacheObject#getValue()
+         */
+        public Object getValue() {
+            return this.m_map;
         }     
     }    
 }

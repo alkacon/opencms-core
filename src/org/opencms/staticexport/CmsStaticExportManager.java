@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/11/04 08:22:03 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2003/11/05 17:45:41 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -134,8 +134,14 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         m_exportRelativeLinks = false;
         m_staticExportEnabled = false;
         m_exportPropertyDefault = true;
+        
         m_cacheOnlineLinks = new CmsLruHashMap(1024);
-        m_cacheExportUris = new CmsLruHashMap(1024);      
+        m_cacheExportUris = new CmsLruHashMap(1024);
+        
+        if (OpenCms.getMemoryMonitor().enabled()) {
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_cacheOnlineLinks", m_cacheOnlineLinks);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_cacheExportUris", m_cacheExportUris);
+        }              
         
         // register this object as event listener
         OpenCms.addCmsEventListener(this, new int[] {

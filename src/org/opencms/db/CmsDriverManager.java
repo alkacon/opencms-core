@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/11/05 17:19:04 $
- * Version: $Revision: 1.287 $
+ * Date   : $Date: 2003/11/05 17:43:37 $
+ * Version: $Revision: 1.288 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.287 $ $Date: 2003/11/05 17:19:04 $
+ * @version $Revision: 1.288 $ $Date: 2003/11/05 17:43:37 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -4413,19 +4413,55 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // initialize the key generator
         m_keyGenerator = (I_CmsCacheKey)Class.forName(config.getString(I_CmsConstants.C_CONFIGURATION_CACHE + ".keygenerator")).newInstance(); 
 
-        // initalize the caches 
-        m_userCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".user", 50)));
-        m_groupCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".group", 50)));
-        m_userGroupsCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".usergroups", 50)));
-        m_projectCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".project", 50)));
-        m_resourceCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".resource", 2500)));
-        m_resourceListCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".subres", 100)));
-        m_propertyCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".property", 5000)));
-        m_propertyDefCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".propertydef", 100)));
-        m_propertyDefVectorCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".propertyvectordef", 100)));
-        m_accessCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".access", 1000)));
-        m_accessControlListCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".access", 1000)));
-        m_permissionCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".access", 1000)));
+        // initalize the caches
+        CmsLruHashMap hashMap; 
+        m_userCache = Collections.synchronizedMap(hashMap = new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".user", 50)));
+        if (OpenCms.getMemoryMonitor().enabled())
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_userCache", hashMap);
+
+        m_groupCache = Collections.synchronizedMap(hashMap = new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".group", 50)));
+        if (OpenCms.getMemoryMonitor().enabled())
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_groupCache", hashMap);
+
+        m_userGroupsCache = Collections.synchronizedMap(hashMap = new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".usergroups", 50)));
+        if (OpenCms.getMemoryMonitor().enabled())
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_userGroupsCache", hashMap);
+
+        m_projectCache = Collections.synchronizedMap(hashMap = new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".project", 50)));
+        if (OpenCms.getMemoryMonitor().enabled())
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_projectCache", hashMap);
+
+        m_resourceCache = Collections.synchronizedMap(hashMap = new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".resource", 2500)));
+        if (OpenCms.getMemoryMonitor().enabled())
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_resourceCache", hashMap);
+            
+        m_resourceListCache = Collections.synchronizedMap(hashMap = new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".subres", 100)));
+        if (OpenCms.getMemoryMonitor().enabled())
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_resourceListCache", hashMap);
+            
+        m_propertyCache = Collections.synchronizedMap(hashMap = new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".property", 5000)));
+        if (OpenCms.getMemoryMonitor().enabled())
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_propertyCache", hashMap);
+
+        m_propertyDefCache = Collections.synchronizedMap(hashMap = new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".propertydef", 100)));
+        if (OpenCms.getMemoryMonitor().enabled())
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_propertyDefCache", hashMap);
+        
+        m_propertyDefVectorCache = Collections.synchronizedMap(hashMap = new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".propertyvectordef", 100)));
+        if (OpenCms.getMemoryMonitor().enabled())
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_propertyDefVectorCache", hashMap);
+            
+        m_accessCache = Collections.synchronizedMap(hashMap = new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".access", 1000)));
+        if (OpenCms.getMemoryMonitor().enabled())
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_accessCache", hashMap);
+            
+        m_accessControlListCache = Collections.synchronizedMap(hashMap = new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".access", 1000)));
+        if (OpenCms.getMemoryMonitor().enabled())
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_accessControlListCache", hashMap);
+            
+        m_permissionCache = Collections.synchronizedMap(hashMap = new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".access", 1000)));
+        if (OpenCms.getMemoryMonitor().enabled()) 
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_permissionCache", hashMap);
 
         m_cachelimit = config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".maxsize", 20000);
         m_refresh = config.getString(I_CmsConstants.C_CONFIGURATION_CACHE + ".refresh", "");
