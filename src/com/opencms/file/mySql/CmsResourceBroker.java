@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/11 13:06:14 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/08/11 14:26:53 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/08/11 13:06:14 $
+ * @version $Revision: 1.17 $ $Date: 2000/08/11 14:26:53 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -5659,7 +5659,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				((c < 'a') || (c > 'z')) &&
 				((c < '0') || (c > '9')) &&
 				((c < 'A') || (c > 'Z')) &&
-				(c != '-') && (c != '/') && (c != '.') &&
+				(c != '-') && (c != '.') &&
 				(c != '|') && (c != '_') && (c != '~') 
 				) {
 				throw new CmsException("[" + this.getClass().getName() + "] " + filename, 

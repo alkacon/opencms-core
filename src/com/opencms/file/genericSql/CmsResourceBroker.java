@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/11 13:06:14 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2000/08/11 14:26:53 $
+ * Version: $Revision: 1.101 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.100 $ $Date: 2000/08/11 13:06:14 $
+ * @version $Revision: 1.101 $ $Date: 2000/08/11 14:26:53 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2298,7 +2298,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param currentUser user who requestd themethod
 	 * @param currentProject current project of the user
 	 * @param exportFile the name (absolute Path) of the export resource (zip)
-	 * @param exportPath the name (absolute Path) of folder from which should be exported
+	 * @param exportPath the names (absolute Path) of folders and files which should be exported
 	 * @param cms the cms-object to use for the export.
 	 * 
 	 * @exception Throws CmsException if something goes wrong.
@@ -5661,7 +5661,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				((c < 'a') || (c > 'z')) &&
 				((c < '0') || (c > '9')) &&
 				((c < 'A') || (c > 'Z')) &&
-				(c != '-') && (c != '/') && (c != '.') &&
+				(c != '-') && (c != '.') &&
 				(c != '|') && (c != '_') && (c != '~') 
 				) {
 				throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
