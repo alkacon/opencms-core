@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/05 14:31:59 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2000/06/05 15:18:17 $
+ * Version: $Revision: 1.70 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.69 $ $Date: 2000/06/05 14:31:59 $
+ * @version $Revision: 1.70 $ $Date: 2000/06/05 15:18:17 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -2356,54 +2356,6 @@ interface I_CmsResourceBroker {
 	 */
 	public int getTaskType(String taskname)
 		throws CmsException; 
-
-	/**
-	 * Checks, if the user may read this resource.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param resource The resource to check.
-	 * 
-	 * @return wether the user has access, or not.
-	 */
-	public boolean accessRead(A_CmsUser currentUser, A_CmsProject currentProject,
-							   A_CmsResource resource) throws CmsException;
-
-	/**
-	 * Checks, if the user may create this resource.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param resource The resource to check.
-	 * 
-	 * @return wether the user has access, or not.
-	 */
-	public boolean accessCreate(A_CmsUser currentUser, A_CmsProject currentProject,
-								 A_CmsResource resource) throws CmsException;
-			
-	/**
-	 * Checks, if the user may write this resource.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param resource The resource to check.
-	 * 
-	 * @return wether the user has access, or not.
-	 */
-	public boolean accessWrite(A_CmsUser currentUser, A_CmsProject currentProject,
-								A_CmsResource resource) throws CmsException;
-    	
-	/**
-	 * Checks, if the user may lock this resource.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param resource The resource to check.
-	 * 
-	 * @return wether the user may lock this resource, or not.
-	 */
-	public boolean accessLock(A_CmsUser currentUser, A_CmsProject currentProject,
-							   A_CmsResource resource) throws CmsException;
    
 	 /**
 	  * Set a Parameter for a task.
