@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbTask.java,v $
- * Date   : $Date: 2000/03/13 15:42:08 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/03/15 09:46:12 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Rüdiger Gutfleisch
- * @version $Revision: 1.7 $ $Date: 2000/03/13 15:42:08 $
+ * @version $Revision: 1.8 $ $Date: 2000/03/15 09:46:12 $
  */
  class CmsRbTask implements I_CmsRbTask, I_CmsConstants {
 	 
@@ -282,6 +282,26 @@ import com.opencms.core.*;
 											  currentUser.getLastname() + " to " + 
 											  newUser.getFirstname() + " " +
 											  newUser.getLastname() + ".");
+	 }
+	 
+	 /**
+	  * Reaktivates a task from the Cms.
+	  * 
+	  * @param currentUser The user who reaktivates the task.	 
+	  * @param taskid The Id of the task to accept.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void reaktivateTask(A_CmsUser currentUser, int taskId)
+		 throws CmsException {
+		 
+		 A_CmsTask task = readTask(taskId);
+		 task.setState(C_TASK_STATE_STARTED);
+		 task = m_accessTask.writeTask(task);
+		 m_accessTask.writeSytemTaskLog(taskId, 
+										"Task was reactivated from " + 					
+										currentUser.getFirstname() + " " +
+										currentUser.getLastname() + ".");
 	 }
 	 
 	 /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/03/13 15:54:50 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2000/03/15 09:46:12 $
+ * Version: $Revision: 1.79 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.78 $ $Date: 2000/03/13 15:54:50 $
+ * @version $Revision: 1.79 $ $Date: 2000/03/15 09:46:12 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1618,12 +1618,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param username The name of the user.
+	 * @param oldPassword The new password.
 	 * @param newPassword The new password.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
 	public void setPassword(A_CmsUser currentUser, A_CmsProject currentProject, 
-							String username, String newPassword)
+							String username, String oldPassword, String newPassword)
 		throws CmsException {
 		
 		// check the length of the new password.
@@ -1633,7 +1634,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 		
 		// read the user
-		A_CmsUser user = readUser(currentUser, currentProject, username);
+		A_CmsUser user = readUser(currentUser, currentProject, username, oldPassword);
 		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) && 
 			( isAdmin(user, currentProject) || user.equals(currentUser)) ) {
 			m_userRb.setPassword(username, newPassword);
@@ -4341,5 +4342,23 @@ System.err.println(">>> readFile(2) error for\n" +
 							 int taskId, int priority)
 		 throws CmsException {
 		 m_taskRb.setPriority(currentUser, taskId, priority);
+	 }
+
+	 /**
+	  * Reaktivates a task from the Cms.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The Id of the task to accept.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void reaktivateTask(A_CmsUser currentUser, A_CmsProject currentProject,
+								int taskId)
+		 throws CmsException {
+		 m_taskRb.reaktivateTask(currentUser, taskId);
 	 }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRbTask.java,v $
- * Date   : $Date: 2000/03/13 15:42:07 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/03/15 09:46:13 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Rüdiger Gutfleisch
- * @version $Revision: 1.14 $ $Date: 2000/03/13 15:42:07 $
+ * @version $Revision: 1.15 $ $Date: 2000/03/15 09:46:13 $
  */
 interface I_CmsRbTask { 	
 
@@ -150,6 +150,17 @@ interface I_CmsRbTask {
 								 java.sql.Timestamp timeout, int priority)
 		 throws CmsException;
 
+	 /**
+	  * Reaktivates a task from the Cms.
+	  * 
+	  * @param currentUser The user who reaktivates the task.	 
+	  * @param taskid The Id of the task to accept.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void reaktivateTask(A_CmsUser currentUser, int taskId)
+		 throws CmsException;
+	 
 	 /**
 	  * Ends a task from the Cms.
 	  * 

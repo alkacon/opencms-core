@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/setup/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/03/13 15:41:23 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2000/03/15 09:46:13 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.32 $ $Date: 2000/03/13 15:41:23 $
+ * @version $Revision: 1.33 $ $Date: 2000/03/15 09:46:13 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -384,13 +384,7 @@ public class CmsShell implements I_CmsConstants {
 			user.setEmail(email);
 			user.setFirstname(firstname);
 			user.setLastname(lastname);
-			user.setAdditionalInfo("test", "AS");
 			m_cms.writeUser(user);
-			System.out.println(user);
-			System.out.println(user.getFirstname());
-			System.out.println(user.getLastname());
-			System.out.println(user.getEmail());
-			System.out.println(user.getAdditionalInfo("test"));
 		} catch( Exception exc ) {
 			printException(exc);
 		}
@@ -596,11 +590,12 @@ public class CmsShell implements I_CmsConstants {
 	 * Sets the password for a user.
 	 * 
 	 * @param username The name of the user.
+	 * @param oldPassword The old password.
 	 * @param newPassword The new password.
 	 */
-	public void setPassword(String username, String newPassword) {
+	public void setPassword(String username, String oldPassword, String newPassword) {
 		try {
-			m_cms.setPassword( username, newPassword );
+			m_cms.setPassword( username, oldPassword, newPassword );
 		} catch( Exception exc ) {
 			printException(exc);
 		}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/03/13 15:42:07 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2000/03/15 09:46:13 $
+ * Version: $Revision: 1.48 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.47 $ $Date: 2000/03/13 15:42:07 $
+ * @version $Revision: 1.48 $ $Date: 2000/03/15 09:46:13 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -991,12 +991,13 @@ interface I_CmsResourceBroker {
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param username The name of the user.
+	 * @param oldPassword The new password.
 	 * @param newPassword The new password.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
 	public void setPassword(A_CmsUser currentUser, A_CmsProject currentProject, 
-							String username, String newPassword)
+							String username, String oldPassword, String newPassword)
 		throws CmsException;
 	
 	/**
@@ -2228,5 +2229,21 @@ interface I_CmsResourceBroker {
 	  */
 	 public void setPriority(A_CmsUser currentUser, A_CmsProject currentProject,
 							 int taskId, int priority)
+		 throws CmsException;
+
+	 /**
+	  * Reaktivates a task from the Cms.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The Id of the task to accept.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void reaktivateTask(A_CmsUser currentUser, A_CmsProject currentProject,
+								int taskId)
 		 throws CmsException;
 }

@@ -42,15 +42,21 @@ function show_help()
 	<!-- Ende Überschrift blau-->
 	
 	<!-- Beginn Leerzele-->
-	<tr><td colspan=3 class=leerzeile>&nbsp;</td></tr>
+	<tr><td class=formular><img src="]]><METHOD name="picsUrl">ic_taskdoku_prio.gif</METHOD><![CDATA[" border=0 width=16 height=16></td></tr>
 	<!-- Ende Leerzeile-->
 	
 	<!-- Beginn Inhalt -->
 	<tr>
-		<td class=formular nowrap>]]><LABEL value="task.dialog.priority.head" /><![CDATA[:</td>
-		<td class=dialogtxt nowrap>
-			]]><SELECT class="textfeld" name="PRIORITY" width="150" method="getPriority" onchange=""/><![CDATA[
-		</td>
+		<td class=formular>
+			<table cellspacing=0 cellpadding=3 width=100%>
+				<tr>
+					<td class=formular nowrap>]]><LABEL value="task.dialog.priority.head" /><![CDATA[:</td>
+					<td class=dialogtxt width=100%>
+						]]><SELECT class="textfeld" name="PRIORITY" width="150" method="getPriority" onchange=""/><![CDATA[
+					</td>
+				</tr>
+			</table>
+		</td>		
 	</tr>
 	<!-- Ende Inhalt -->
 	

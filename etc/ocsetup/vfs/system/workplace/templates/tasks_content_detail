@@ -407,7 +407,7 @@ function show_help()
 	
 	<!-- Button2 -->
 	<button_accept><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=100 type="button" value="]]><LABEL value="task.button.accept"/><![CDATA[" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_detail.html?action=accept&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_accept>
-	<button_forward><![CDATA[<INPUT disabled ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=100 type="button" value="]]><LABEL value="task.button.forward"/><![CDATA[" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_detail.html?action=forward&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_forward>
+	<button_forward><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=100 type="button" value="]]><LABEL value="task.button.forward"/><![CDATA[" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_dialogforward.html?taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_forward>
 	<button_take><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=100 type="button" value="]]><LABEL value="task.button.take"/><![CDATA[" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_detail.html?action=take&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_take>
 
 	<!-- Button3 -->
@@ -421,6 +421,6 @@ function show_help()
 
 	<!-- Button6 -->
 	<button_ok><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=100 type="button" value="]]><LABEL value="task.button.ok"/><![CDATA[" id=BUTTON6 name=BUTTON6 onClick="location='tasks_content_detail.html?action=ok&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_ok>
-	<button_reakt><![CDATA[<INPUT disabled ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=100 type="button" value="]]><LABEL value="task.button.reakt"/><![CDATA[" id=BUTTON6 name=BUTTON6 onClick="location='tasks_content_detail.html?action=reakt&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_reakt>
+	<button_reakt><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=100 type="button" value="]]><LABEL value="task.button.reakt"/><![CDATA[" id=BUTTON6 name=BUTTON6 onClick="location='tasks_content_dialogreakt.html?taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_reakt>
 
 </WORKPLACE>

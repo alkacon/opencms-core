@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/03/13 15:42:08 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2000/03/15 09:46:12 $
+ * Version: $Revision: 1.53 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.52 $ $Date: 2000/03/13 15:42:08 $ 
+ * @version $Revision: 1.53 $ $Date: 2000/03/15 09:46:12 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -966,11 +966,12 @@ public abstract class A_CmsObject {
 	 * Sets the password for a user.
 	 * 
 	 * @param username The name of the user.
+	 * @param oldPassword The old password.
 	 * @param newPassword The new password.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	abstract public void setPassword(String username, String newPassword)
+	abstract public void setPassword(String username, String oldPassword, String newPassword)
 		throws CmsException;
 	
 	/** 
@@ -1609,5 +1610,15 @@ public abstract class A_CmsObject {
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 abstract public void setPriority(int taskId, int priority)
+		 throws CmsException;
+
+ 	 /**
+	  * Reaktivates a task from the Cms.
+	  * 
+	  * @param taskid The Id of the task to accept.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 abstract public void reaktivateTask(int taskId)
 		 throws CmsException;
 }

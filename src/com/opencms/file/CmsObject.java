@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/03/13 15:42:08 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2000/03/15 09:46:12 $
+ * Version: $Revision: 1.54 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.53 $ $Date: 2000/03/13 15:42:08 $ 
+ * @version $Revision: 1.54 $ $Date: 2000/03/15 09:46:12 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -1197,14 +1197,15 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * Sets the password for a user.
 	 * 
 	 * @param username The name of the user.
+	 * @param oldPassword The old password.
 	 * @param newPassword The new password.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	public void setPassword(String username, String newPassword)
+	public void setPassword(String username, String oldPassword, String newPassword)
 		throws CmsException {
 		c_rb.setPassword(m_context.currentUser(), m_context.currentProject(), 
-						 username, newPassword );
+						 username, oldPassword, newPassword );
 	}
 	
 	/** 
@@ -2009,5 +2010,17 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		 throws CmsException {
 		 c_rb.setPriority(m_context.currentUser(), m_context.currentProject(), 
 						  taskId, priority);
+	 }
+
+ 	 /**
+	  * Reaktivates a task from the Cms.
+	  * 
+	  * @param taskid The Id of the task to accept.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void reaktivateTask(int taskId)
+		 throws CmsException {
+		 c_rb.reaktivateTask(m_context.currentUser(), m_context.currentProject(), taskId);
 	 }
 }
