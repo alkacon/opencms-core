@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsLock.java,v $
- * Date   : $Date: 2004/02/22 13:52:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/25 13:19:44 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,13 +34,9 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-
-
 import org.opencms.security.CmsSecurityException;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1.12
  */
@@ -227,12 +223,7 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
      * @return true if dialogs should be shown, otherwise false
      */
     public boolean showConfirmation() {
-        Hashtable startSettings = (Hashtable)getSettings().getUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);
-        String showLockDialog = "off";
-        if (startSettings != null) {
-            showLockDialog = (String)startSettings.get(I_CmsConstants.C_START_LOCKDIALOG);
-        }
-        return ("on".equals(showLockDialog));
+        return getSettings().getUserSettings().showLockDialog();
     }
     
     /**
@@ -242,13 +233,14 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
      * @return the dialog action: lock, change lock (steal) or unlock
      */
     public static int getDialogAction(CmsObject cms) {
-        String uri = cms.getRequestContext().getUri();
-        if (uri == null) {
+        String fileName = CmsResource.getName(cms.getRequestContext().getUri());
+        if (fileName == null) {
+            // file name could not be determined, return "unlock" action
             return TYPE_UNLOCK;
-        } else if (uri.endsWith("lock.html")) {
+        } else if (fileName.equals("lock.html")) {
             // a "lock" action is requested
             return TYPE_LOCK;            
-        } else if (uri.endsWith("lockchange.html")) {
+        } else if (fileName.endsWith("lockchange.html")) {
             // a "steal lock" action is requested
             return TYPE_LOCKCHANGE;            
         } else {
