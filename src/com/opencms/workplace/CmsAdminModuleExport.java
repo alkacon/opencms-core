@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/29 10:26:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2001/01/18 15:34:07 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -99,9 +99,15 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 				try{
 					cms.readFileHeader(resourcen[i]);
 				}catch(CmsException e){
-					System.err.println("error exporting module: couldn't add "+resourcen[i]+" to Module");
+					System.err.println("error exporting module: couldn't add "+resourcen[i]+" to Module\n"+Utils.getStackTrace(e));
 					resourcen[i] = resourcen[0];
 				}
+			}
+			try{
+				cms.readFileHeader(resourcen[0]);
+			}catch(CmsException e){
+				System.err.println("error exporting module: couldn't add "+resourcen[0]+" to Module\n"+"You dont have this module in this project!");
+				return startProcessing(cms, templateDocument, elementName, parameters, "done");
 			}
 			// end hack
 			
