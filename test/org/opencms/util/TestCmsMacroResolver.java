@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsMacroResolver.java,v $
- * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/02 07:32:10 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import junit.framework.TestCase;
  * Test cases for {@link org.opencms.util.CmsMacroResolver}.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com}
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCmsMacroResolver extends TestCase {
       
@@ -80,9 +80,17 @@ public class TestCmsMacroResolver extends TestCase {
         result  = resolver.resolveMacros(content);
         assertEquals("$<<This is a suffix>>", result);        
         
+        content = "${<<This is a suffix>>";
+        result  = resolver.resolveMacros(content);
+        assertEquals("${<<This is a suffix>>", result);  
+        
         content = "<<This is a prefix >>$";
         result  = resolver.resolveMacros(content);
         assertEquals("<<This is a prefix >>$", result);
+        
+        content = "<<This is a prefix >>${";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>${", result);
         
         content = "<<This is a prefix >>${}<<This is a suffix>>";
         result  = resolver.resolveMacros(content);
@@ -96,7 +104,19 @@ public class TestCmsMacroResolver extends TestCase {
         result  = resolver.resolveMacros(content);
         assertEquals("<<This is a prefix >>${test<<This is a suffix>>", result);
         
-        // test for unknown macros
+        content = "<<This is a prefix >>${";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>${", result);
+        
+        content = "<<This is a prefix >>${${}";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>${", result);
+        
+        content = "${$<<This $}{ is$}$ a {{pr${{${efix >>${${}";
+        result  = resolver.resolveMacros(content);
+        assertEquals("${$<<This $}{ is$}$ a {{pr${{${efix >>${", result);
+        
+        // test for unknown macros       
         
         content = "<<This is a prefix >>${unknown}<<This is a suffix>>";
         result  = resolver.resolveMacros(content);
@@ -116,6 +136,10 @@ public class TestCmsMacroResolver extends TestCase {
         
         // set the "keep unknown macros" flag
         resolver.setKeepEmptyMacros(true);        
+        
+        content = "<<This is a prefix >>${${}";
+        result  = resolver.resolveMacros(content);
+        assertEquals("<<This is a prefix >>${${}", result);
         
         content = "<<This is a prefix >>${unknown}<<This is a suffix>>";
         result  = resolver.resolveMacros(content);
@@ -194,7 +218,7 @@ public class TestCmsMacroResolver extends TestCase {
         
         content = "<<This is a prefix >>$";
         result  = resolver.resolveMacros(content);
-        assertEquals("<<This is a prefix >>$", result);
+        assertEquals("<<This is a prefix >>$", result);       
         
         content = "<<This is a prefix >>${}<<This is a suffix>>";
         result  = resolver.resolveMacros(content);

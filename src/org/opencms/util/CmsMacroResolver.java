@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2005/03/20 23:44:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/02 07:32:10 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 6.0 alpha 3
  */
 public class CmsMacroResolver implements I_CmsMacroResolver {
@@ -205,7 +205,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
         return new CmsMacroResolver();
     }
-    
+
     /**
      * Resolves macros in the provided input String using the given macro resolver.<p>
      * 
@@ -224,50 +224,70 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
      */
     public static String resolveMacros(String input, I_CmsMacroResolver resolver) {
 
-        if (CmsStringUtil.isEmpty(input)) {
+        int len;
+        if ((input == null) || ((len = input.length()) < 3)) {
+            // macro must have at last 3 chars "${}"
             return input;
-        } 
-        
-        String[] segments = CmsStringUtil.splitAsArray(input, I_CmsMacroResolver.MACRO_DELIMITER);
+        }
 
-        if (segments.length == 1) {
+        int p = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER);
+        if (p == -1) {
+            // no macro delimiter found in input
             return input;
         }
-        
-        String macro;
-        String value;
-        int pos;
+
         StringBuffer result = new StringBuffer(input.length() * 2);
-        
-        for (int i = 0; i < segments.length; i++) {
-            if ((segments[i].length() > 0)
-                && (segments[i].charAt(0) == I_CmsMacroResolver.MACRO_START)
-                && (pos = segments[i].indexOf(I_CmsMacroResolver.MACRO_END)) > 0) {
-                // segment contains a macro
-                
-                // get macro name
-                macro = segments[i].substring(1, pos);
-                // resolve macro
-                value = resolver.getMacroValue(macro);                
-                if (value != null) {
-                    // macro was successfully resolved
-                    result.append(value);
-                } else if (resolver.isKeepEmptyMacros()) {
-                    // macro was unknown, but should be kept
-                    result.append(formatMacro(macro));
-                }
-                // append remaining segment
-                result.append(segments[i].substring(pos + 1));
-            } else {
-                // this segment is not a macro
-                if (i > 0) {
-                    // add delimiter that was cut of when splitting
-                    result.append(I_CmsMacroResolver.MACRO_DELIMITER);
-                }
-                // add the rest of the segment
-                result.append(segments[i]);
+        int np, pp1, pp2, e;
+        String macro, value;
+        boolean keep = resolver.isKeepEmptyMacros();
+
+        // append chars before the first delimiter found
+        result.append(input.substring(0, p));
+        do {
+            pp1 = p + 1;
+            pp2 = pp1 + 1;
+            if (pp2 >= len) {
+                // remaining chars cant be a macro (minumum size is 3)
+                result.append(input.substring(p, len));
+                break;
             }
-        }
+            // get the next macro delimiter
+            np = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER, pp1);
+            if (np == -1) {
+                // none found, make sure remaining chars in this segement are appended
+                np = len;
+            }
+            // check if the next char is a "macro start"
+            if (input.charAt(pp1) == I_CmsMacroResolver.MACRO_START) {
+                // we have a starting macro sequence "${", now check if this segment contains a "}"
+                e = input.indexOf(I_CmsMacroResolver.MACRO_END, p);
+                if ((e > 0) && (e < np)) {
+                    // this segment contains a closing macro delimiter "}", so we have found a macro
+                    macro = input.substring(pp2, e);
+                    // resolve macro
+                    value = resolver.getMacroValue(macro);
+                    e++;
+                    if (value != null) {
+                        // macro was successfully resolved
+                        result.append(value);
+                    } else if (keep) {
+                        // macro was unknown, but should be kept
+                        result.append(input.substring(p, e));
+                    }
+                } else {
+                    // no complete macro "${...}" in this segment
+                    e = p;
+                }
+            } else {
+                // no macro start char after the "$"
+                e = p;
+            }
+            // append the remaining chars after the macro to the start of the next macro
+            result.append(input.substring(e, np));
+            // this is a nerdy joke ;-)
+            p = np;
+        } while (p < len);
+
         return result.toString();
     }
 
