@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/02/20 14:53:36 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2000/02/20 15:24:36 $
+ * Version: $Revision: 1.50 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  *  
- * @version $Revision: 1.49 $ $Date: 2000/02/20 14:53:36 $ 
+ * @version $Revision: 1.50 $ $Date: 2000/02/20 15:24:36 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -1646,6 +1646,30 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		return( c_rb.getFileSystemChanges(m_context.currentUser(), 
 										  m_context.currentProject()) );
 	 }
+	 
+	 
+	 /**
+	  * Creates a new project for task handling.
+	  * 
+	  * @param projectname Name of the project
+	  * @param projectType Type of the Project
+	  * @param role Usergroup for the project
+	  * @param timeout Time when the Project must finished
+	  * @param priority Priority for the Project
+	  * 
+	  * @return The new task project
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public A_CmsTask createProject(String projectname, int projectType,
+									String roleName, long timeout, 
+									int priority)
+		 throws CmsException {
+						 
+		 return c_rb.createProject(m_context.currentUser(), projectname, projectType, 
+									   roleName, timeout, priority);
+	 }
+	 
 
 	 /**
 	  * Creates a new task.
@@ -1670,6 +1694,35 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 								 agentName, roleName, taskname, taskcomment, 
 								 timeout, priority) );
 	 }
+	 
+	 /**
+	  * Creates a new task.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param projectid The Id of the current project task of the user.
+	  * @param agentname User who will edit the task 
+	  * @param rolename Usergroup for the task
+	  * @param taskname Name of the task
+	  * @param tasktype Type of the task 
+	  * @param taskcomment Description of the task
+	  * @param timeout Time when the task must finished
+	  * @param priority Id for the priority
+	  * 
+	  * @return A new Task Object
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public A_CmsTask createTask(int projectid, String agentName, String roleName, 
+								 String taskname, String taskcomment, int tasktype,
+								 long timeout, int priority)
+		 throws CmsException {
+	 
+		 return c_rb.createTask(m_context.currentUser(), projectid, agentName, roleName,
+									taskname, taskcomment, tasktype, timeout, priority);
+	 } 
+	 
 
 	 /**
 	  * Set a Parameter for a task.
@@ -1813,6 +1866,21 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		 return( c_rb.readTask(m_context.currentUser(), m_context.currentProject(), 
 							   id) );
 	 }
+	 
+	/**
+	 * Get the template task id fo a given taskname.
+	 * 
+	 * @param taskname Name of the Task
+	 * 
+	 * @return id from the task template
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public int getTaskType(String taskname)
+		throws CmsException {
+			 return  c_rb.getTaskType(taskname);		
+	}
+
 
 	 /**
 	  * Accept a task from the Cms.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsAccessTask.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/02/20 15:24:36 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/20 15:24:36 $
  */
 interface I_CmsAccessTask {
 
@@ -47,6 +47,7 @@ interface I_CmsAccessTask {
 	 * 
 	 * @param owner User who creates the project
 	 * @param projectname Name of the project
+	 * @param projectType Type of the Project
 	 * @param role Usergroup for the project
 	 * @param taskcomment Description of the task
 	 * @param timeout Time when the Project must finished
@@ -56,7 +57,7 @@ interface I_CmsAccessTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsTask createProject(A_CmsUser owner, String projectname, A_CmsGroup role, java.sql.Timestamp timeout, int priority)
+	public A_CmsTask createProject(A_CmsUser owner, String projectname, int projectType, A_CmsGroup role, java.sql.Timestamp timeout, int priority)
 		throws CmsException;
 	
 	
@@ -64,6 +65,29 @@ interface I_CmsAccessTask {
 	 * Creates a new task.
 	 * 
 	 * @param project Project to witch the task belongs.
+	 * @param owner User who hast created the task 
+	 * @param agent User who will edit the task 
+	 * @param role Usergroup for the task
+	 * @param taskType Type of the task template
+	 * @param taskname Name of the task
+	 * @param taskcomment Description of the task
+	 * @param timeout Time when the task must finished
+	 * @param priority Id for the priority
+	 * 
+	 * @return A new Task Object
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	
+	public A_CmsTask createTask(A_CmsProject project, A_CmsUser owner, A_CmsUser agent, A_CmsGroup role, 
+								int taskType, String taskname, java.sql.Timestamp timeout, int priority)
+		
+		throws CmsException;
+	
+	/**
+	 * Creates a new task.
+	 * 
+	 * @param projectid Project to witch the task belongs.
 	 * @param owner User who hast created the task 
 	 * @param agent User who will edit the task 
 	 * @param role Usergroup for the task
@@ -77,12 +101,10 @@ interface I_CmsAccessTask {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	
-	public A_CmsTask createTask(A_CmsProject project, A_CmsUser owner, A_CmsUser agent, A_CmsGroup role, 
-								String taskname, java.sql.Timestamp timeout, int priority)
+	public A_CmsTask createTask(int projectid, A_CmsUser owner, A_CmsUser agent, A_CmsGroup role, 
+								int taskType, String taskname, java.sql.Timestamp timeout, int priority)
 		
 		throws CmsException;
-	
-	
 	
 	/**
 	 * Updates a task.
@@ -251,5 +273,17 @@ interface I_CmsAccessTask {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public String getTaskPar(int task, String parname)
+		throws CmsException;
+	
+	/**
+	 * Get the template task id fo a given taskname.
+	 * 
+	 * @param taskName Name of the TAsk
+	 * 
+	 * @return id from the task template
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public int getTaskType(String taskName)
 		throws CmsException;
 }

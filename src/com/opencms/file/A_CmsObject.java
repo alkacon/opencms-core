@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/02/20 14:53:36 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2000/02/20 15:24:36 $
+ * Version: $Revision: 1.49 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.48 $ $Date: 2000/02/20 14:53:36 $ 
+ * @version $Revision: 1.49 $ $Date: 2000/02/20 15:24:36 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1322,6 +1322,25 @@ public abstract class A_CmsObject {
 	 */
 	abstract public long getFileSystemChanges();
 
+	
+	/**
+	  * Creates a new project for task handling.
+	  * 
+	  * @param projectname Name of the project
+	  * @param projectType Type of the Project
+	  * @param role Usergroup for the project
+	  * @param timeout Time when the Project must finished
+	  * @param priority Priority for the Project
+	  * 
+	  * @return The new task project
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 abstract public A_CmsTask createProject(String projectname, int projectType,
+									String roleName, long timeout, 
+									int priority)
+		 throws CmsException;
+	
 	 /**
 	  * Creates a new task.
 	  * 
@@ -1340,6 +1359,31 @@ public abstract class A_CmsObject {
 	 abstract public A_CmsTask createTask(String agentName, String roleName, 
 										  String taskname, String taskcomment, 
 										  long timeout, int priority)
+		 throws CmsException;
+	 
+	 	 /**
+	  * Creates a new task.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param projectid The Id of the current project task of the user.
+	  * @param agentname User who will edit the task 
+	  * @param rolename Usergroup for the task
+	  * @param taskname Name of the task
+	  * @param tasktype Type of the task 
+	  * @param taskcomment Description of the task
+	  * @param timeout Time when the task must finished
+	  * @param priority Id for the priority
+	  * 
+	  * @return A new Task Object
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 abstract public A_CmsTask createTask(int projectid, String agentName, String roleName, 
+								 String taskname, String taskcomment, int tasktype,
+								 long timeout, int priority)
 		 throws CmsException;
 
 	 /**
@@ -1461,6 +1505,19 @@ public abstract class A_CmsObject {
 	  */
 	 abstract public A_CmsTask readTask(int id)
 		 throws CmsException;
+	 
+	 /**
+	 * Get the template task id fo a given taskname.
+	 * 
+	 * @param taskname Name of the Task
+	 * 
+	 * @return id from the task template
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	abstract public int getTaskType(String taskname)
+		throws CmsException;
+
 
 	 /**
 	  * Accept a task from the Cms.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/20 14:53:37 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2000/02/20 15:24:36 $
+ * Version: $Revision: 1.69 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michaela Schleich
- * @version $Revision: 1.68 $ $Date: 2000/02/20 14:53:37 $
+ * @version $Revision: 1.69 $ $Date: 2000/02/20 15:24:36 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3798,8 +3798,38 @@ System.err.println(">>> readFile(2) error for\n" +
 			// resources was null - nothing was changed - ignore it
 		}
 	}
+
+	//////////////////////////////////////////////////////////////////
+	// task-stuff	
 	
-	// task-stuff
+	 /**
+	  * Creates a new project for task handling.
+	  * 
+	  * @param owner User who creates the project
+	  * @param projectname Name of the project
+	  * @param projectType Type of the Project
+	  * @param role Usergroup for the project
+	  * @param timeout Time when the Project must finished
+	  * @param priority Priority for the Project
+	  * 
+	  * @return The new task project
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public A_CmsTask createProject(A_CmsUser currentUser, String projectname, int projectType,
+									String roleName, long timeout, 
+									int priority)
+		 throws CmsException {
+		 
+		 // read the role
+		 A_CmsGroup role = readGroup(currentUser, null, roleName);
+		 // create the timestamp
+		 java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
+						 
+		 return m_taskRb.createProject(currentUser, projectname, projectType, 
+									   role, timestamp, priority);
+	 }
+
 
 	 /**
 	  * Creates a new task.
@@ -3836,6 +3866,56 @@ System.err.println(">>> readFile(2) error for\n" +
 		 return m_taskRb.createTask(currentUser, currentProject, agent, role, 
 									taskname, taskcomment, timestamp, priority);
 	 }
+	 
+	 /**
+	  * Creates a new task.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param projectid The Id of the current project task of the user.
+	  * @param agentname User who will edit the task 
+	  * @param rolename Usergroup for the task
+	  * @param taskname Name of the task
+	  * @param tasktype Type of the task 
+	  * @param taskcomment Description of the task
+	  * @param timeout Time when the task must finished
+	  * @param priority Id for the priority
+	  * 
+	  * @return A new Task Object
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public A_CmsTask createTask(A_CmsUser currentUser, int projectid, String agentName, String roleName, 
+								 String taskname, String taskcomment, int tasktype,
+								 long timeout, int priority)
+		 throws CmsException {
+		 
+		 // read agent
+		 A_CmsUser agent = readUser(currentUser, null, agentName);
+		 // read the role
+		 A_CmsGroup role = readGroup(currentUser, null, roleName);
+		 // create the timestamp
+		 java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
+	 
+		 return m_taskRb.createTask(currentUser,projectid,agent,role,
+									taskname,taskcomment,tasktype,timestamp,priority);
+	 } 
+	 
+	  /**
+	 * Get the template task id fo a given taskname.
+	 * 
+	 * @param taskname Name of the Task
+	 * 
+	 * @return id from the task template
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public int getTaskType(String taskname)
+		throws CmsException {
+			 return  m_taskRb.getTaskType(taskname);		
+	}
 
 	 /**
 	  * Set a Parameter for a task.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessTask.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/02/20 15:24:36 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.8 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/20 15:24:36 $
  */
 class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	
@@ -248,6 +248,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * 
 	 * @param owner User who creates the project
 	 * @param projectname Name of the project
+	 * @param projectType Type of the Project
 	 * @param role Usergroup for the project
 	 * @param taskcomment Description of the task
 	 * @param timeout Time when the Project must finished
@@ -257,27 +258,10 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsTask createProject(A_CmsUser owner, String projectname, A_CmsGroup role, java.sql.Timestamp timeout, int priority)
+	public A_CmsTask createProject(A_CmsUser owner, String projectname, int projectType, A_CmsGroup role, java.sql.Timestamp timeout, int priority)
 		throws CmsException {
-/*
-		CmsTask task = (CmsTask)this.createTask(null, null, 1, 
-												owner, 
-												owner, //agent, 
-												role, 
-												projectname, "", //comment 
-												new java.sql.Timestamp(System.currentTimeMillis()), timeout, 
-												priority);
-*/		
-		return (CmsTask)this.createTask(0, // root
-										0, //parent
-										1, // tasktype
-										owner.getId(), //owner
-										owner.getId(), //agent
-										role.getId(),
-										projectname,
-										new java.sql.Timestamp(System.currentTimeMillis()),
-										timeout, priority);
-		
+	
+		return this.createTask(0, owner, owner, role, projectType,projectname,timeout,priority);		
 	}
 	
 	/**
@@ -298,18 +282,62 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	 */
 	
 	public A_CmsTask createTask(A_CmsProject project, A_CmsUser owner, A_CmsUser agent, A_CmsGroup role, 
-								String taskname, java.sql.Timestamp timeout, int priority)
+								int taskType, String taskname, java.sql.Timestamp timeout, int priority)
 		
 		throws CmsException {
 		
-		return this.createTask(project.getTaskId(),project.getTaskId(), 1, 
-							   owner.getId(), agent.getId(), role.getId(), 
+		return this.createTask(project.getTaskId(), owner, agent, role, 
+							   taskType, taskname, timeout,  priority);
+	}
+	
+	/**
+	 * Creates a new task.
+	 * 
+	 * @param project Project to witch the task belongs.
+	 * @param owner User who hast created the task 
+	 * @param agent User who will edit the task 
+	 * @param role Usergroup for the task
+	 * @param taskname Name of the task
+	 * @param timeout Time when the task must finished
+	 * @param priority Id for the priority
+	 * 
+	 * @return A new Task Object
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	
+	public A_CmsTask createTask(int projectid, A_CmsUser owner, A_CmsUser agent, A_CmsGroup role, 
+								int taskType, String taskname, java.sql.Timestamp timeout, int priority)
+		
+		throws CmsException {
+		
+		int ownerId = C_UNKNOWN_ID;
+		int agentId = C_UNKNOWN_ID;
+		int roleId = C_UNKNOWN_ID;
+		
+		if(owner!=null)
+		{
+			ownerId = owner.getId();
+		}
+		
+		if(agent!=null)
+		{
+			agentId = agent.getId();
+		}
+		
+		if(role!=null)
+		{
+			roleId = role.getId();
+		}
+		
+		return this.createTask(projectid ,projectid, taskType, 
+							   ownerId, agentId, roleId, 
 							   taskname, 
 							   new java.sql.Timestamp(System.currentTimeMillis()), timeout, 
 							   priority);
 	}
-	
-		/**
+		
+	/**
 	 * Creates a new task.
 	 * 
 	 * @return The id  of the generated Task Object
@@ -488,7 +516,6 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 		}
 	}
 	
-	
 	/**
 	 * Forwards a task to another user.
 	 * 
@@ -560,6 +587,11 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 		String sqlstr = "SELECT * FROM " + C_TABLE_TASK+" WHERE ";
 		if(project!=null){
 			sqlstr = sqlstr + C_TASK_ROOT + "=" + project.getTaskId();
+			first = false;
+		}
+		else
+		{
+			sqlstr = sqlstr + C_TASK_ROOT + "<>0 AND " + C_TASK_PARENT + "<>0";
 			first = false;
 		}
 		
@@ -648,10 +680,46 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 		return tasks;
 	}
 	
-	private int findAgent(int roleid){
+	
+	/**
+	 * Finds an agent for a given role (group).
+	 * @param roleId The Id for the role (group).
+	 * 
+	 * @return A vector with the tasks
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	private int findAgent(int roleid)
+		throws CmsException {
 		
-		// todo to be implemented
-		return C_UNKNOWN_ID;
+		int result = C_UNKNOWN_ID;
+		String sqlstr;
+		Statement statement = null;
+		ResultSet recset = null; 
+		
+		try {
+			
+			sqlstr = "SELECT uai.USER_ID as userid, usr.USER_NAME AS login, uai.USER_EMAIL AS email " +
+					 "FROM CMS_GROUPUSERS, CMS_USERS usr, CMS_USERS_ADDITIONALINFO uai " +
+					 "WHERE GROUP_ID =" + roleid + " AND CMS_GROUPUSERS.USER_ID =usr.USER_ID AND CMS_GROUPUSERS.USER_ID =uai.USER_ID " +
+					 "ORDER BY USER_LASTUSED ASC";
+			
+			statement = m_Con.createStatement();
+			System.out.println(sqlstr);
+			recset = statement.executeQuery(sqlstr);
+
+			if(recset.next()) {
+				result = recset.getInt("userid");
+			} else {
+				System.out.println("No User for role "+ roleid + " found");
+			}
+			
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} catch( Exception exc ) {
+			  throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);		  
+		}
+		return result;
 	}
 	
 	/**
@@ -937,6 +1005,38 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 		}
 		return result;
 	}
+	
+	
+	/**
+	 * Get the template task id fo a given taskname.
+	 * 
+	 * @param taskName Name of the TAsk
+	 * 
+	 * @return id from the task template
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public int getTaskType(String taskName)
+		throws CmsException {
+		
+		int result = 1;
+		String sqlstr = " SELECT id FROM GlobeTaskType where name=?";
+		PreparedStatement statement = null;
+		ResultSet res = null;
+			
+		try {		
+			statement = m_Con.prepareStatement(sqlstr);
+			statement.setString(1, taskName);
+			res = statement.executeQuery();
+			if (res.next()) {
+				result = res.getInt("id");
+			}
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		}
+		return result;
+	}
+
 	
 	/**
 	 * Connects to the property database.

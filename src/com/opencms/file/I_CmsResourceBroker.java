@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/20 14:53:37 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2000/02/20 15:24:36 $
+ * Version: $Revision: 1.45 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michaela Schleich
- * @version $Revision: 1.44 $ $Date: 2000/02/20 14:53:37 $
+ * @version $Revision: 1.45 $ $Date: 2000/02/20 15:24:36 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -1778,6 +1778,26 @@ interface I_CmsResourceBroker {
 		throws CmsException;
 
 	/**
+	  * Creates a new project for task handling.
+	  * 
+	  * @param owner User who creates the project
+	  * @param projectname Name of the project
+	  * @param projectType Type of the Project
+	  * @param role Usergroup for the project
+	  * @param timeout Time when the Project must finished
+	  * @param priority Priority for the Project
+	  * 
+	  * @return The new task project
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public A_CmsTask createProject(A_CmsUser currentUser, String projectname, int projectType,
+									String roleName, long timeout, 
+									int priority)
+		 throws CmsException;
+	
+	
+	/**
 	 * This method can be called, to determine if the file-system was changed 
 	 * in the past. A module can compare its previosly stored number with this
 	 * returned number. If they differ, a change was made.
@@ -1792,6 +1812,10 @@ interface I_CmsResourceBroker {
 	 */
 	public long getFileSystemChanges(A_CmsUser currentUser, A_CmsProject currentProject);
 
+	
+	/////////////////////////////////////////////
+	// task stuff
+	
 	 /**
 	  * Creates a new task.
 	  * 
@@ -1817,7 +1841,48 @@ interface I_CmsResourceBroker {
 								 String taskname, String taskcomment, 
 								 long timeout, int priority)
 		 throws CmsException;
-	
+	 
+	 
+	 
+	 /**
+	  * Creates a new task.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param projectid The Id of the current project task of the user.
+	  * @param agentname User who will edit the task 
+	  * @param rolename Usergroup for the task
+	  * @param taskname Name of the task
+	  * @param tasktype Type of the task 
+	  * @param taskcomment Description of the task
+	  * @param timeout Time when the task must finished
+	  * @param priority Id for the priority
+	  * 
+	  * @return A new Task Object
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public A_CmsTask createTask(A_CmsUser currentUser, int projectid, String agentName, String roleName, 
+								 String taskname, String taskcomment, int tasktype,
+								 long timeout, int priority)
+		 throws CmsException;
+	 
+	 
+
+	 /**
+	 * Get the template task id fo a given taskname.
+	 * 
+	 * @param taskname Name of the Task
+	 * 
+	 * @return id from the task template
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public int getTaskType(String taskname)
+		throws CmsException; 
+	 
 	
 	// database import and export stuff
 	/**

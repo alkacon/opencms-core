@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbTask.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/02/20 15:24:36 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Rüdiger Gutfleisch
- * @version $Revision: 1.5 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/20 15:24:36 $
  */
  class CmsRbTask implements I_CmsRbTask, I_CmsConstants {
 	 
@@ -63,6 +63,29 @@ import com.opencms.core.*;
 	  * 
 	  * @param owner User who creates the project
 	  * @param projectname Name of the project
+	  * @param projectType Type of the Project
+	  * @param role Usergroup for the project
+	  * @param timeout Time when the Project must finished
+	  * @param priority Priority for the Project
+	  * 
+	  * @return The new task project
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public A_CmsTask createProject(A_CmsUser owner, String projectname, int projectType,
+									A_CmsGroup role, java.sql.Timestamp timeout, 
+									int priority)
+		 throws CmsException {
+		 
+		 return m_accessTask.createProject(owner, projectname, projectType, role, timeout, priority);
+	 }
+	 
+	 /**
+	  * Creates a new project for task handling.
+	  * 
+	  * @param owner User who creates the project
+	  * @param projectname Name of the project
+	  * @param projectType Type of the Project
 	  * @param role Usergroup for the project
 	  * @param timeout Time when the Project must finished
 	  * @param priority Priority for the Project
@@ -76,7 +99,7 @@ import com.opencms.core.*;
 									int priority)
 		 throws CmsException {
 		 
-		 return m_accessTask.createProject(owner, projectname, role, timeout, priority);
+		 return createProject(owner, projectname, 1, role, timeout, priority);
 	 }
 	 
 	 /**
@@ -102,7 +125,7 @@ import com.opencms.core.*;
 		 throws CmsException {
 		 
 		 A_CmsTask task = m_accessTask.createTask(project, currentUser, agent, role, 
-												  taskname, timeout, priority);
+												  1, taskname, timeout, priority);
 		 
 		 if(!taskcomment.equals("")) {
 			m_accessTask.writeTaskLog(task.getId(), currentUser, taskcomment);
@@ -110,6 +133,111 @@ import com.opencms.core.*;
 										   
 		 return task;
 	 }
+	 
+	 /**
+	  * Creates a new task.
+	  * 
+	  * @param currentUser User who create the task 
+	  * @param project Project to witch the task belongs.
+	  * @param agent User who will edit the task 
+	  * @param role Usergroup for the task
+	  * @param taskname Name of the task
+	  * @param taskcomment Description of the task
+	  * @param tasktype Template Type of the task
+	  * @param timeout Time when the task must finished
+	  * @param priority Id for the priority
+	  * 
+	  * @return A new Task Object
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 
+	 public A_CmsTask createTask(A_CmsUser currentUser, A_CmsProject project, A_CmsUser agent, A_CmsGroup role, 
+								 String taskname, String taskcomment, int tasktype,
+								 java.sql.Timestamp timeout, int priority)
+		 throws CmsException {
+		 
+		 A_CmsTask task = m_accessTask.createTask(project, currentUser, agent, role, 
+												  1, taskname, timeout, priority);
+		 
+		 
+		 if(!taskcomment.equals("")) {
+			m_accessTask.writeTaskLog(task.getId(), currentUser, taskcomment);
+		 }
+										   
+		 return task;
+	 }
+	 
+	 /**
+	  * Creates a new task.
+	  * 
+	  * @param currentUser User who create the task 
+	  * @param project Project to witch the task belongs.
+	  * @param agent User who will edit the task 
+	  * @param role Usergroup for the task
+	  * @param taskname Name of the task
+	  * @param taskcomment Description of the task
+	  * @param tasktype Template Type of the task
+	  * @param timeout Time when the task must finished
+	  * @param priority Id for the priority
+	  * 
+	  * @return A new Task Object
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 
+	 public A_CmsTask createTask(A_CmsUser currentUser, A_CmsProject project, A_CmsUser agent, A_CmsGroup role, 
+								 int taskType, String taskname, String taskcomment, int tasktype,
+								 java.sql.Timestamp timeout, int priority)
+		 throws CmsException {
+		 
+		 A_CmsTask task = m_accessTask.createTask(project, currentUser, agent, role, 
+												  taskType, taskname, timeout, priority);
+		 
+		
+		 
+		 if(!taskcomment.equals("")) {
+			m_accessTask.writeTaskLog(task.getId(), currentUser, taskcomment);
+		 }
+										   
+		 return task;
+	 }
+	 
+	 /**
+	  * Creates a new task.
+	  * 
+	  * @param currentUser User who create the task 
+	  * @param projectid TaskProject to witch the task belongs.
+	  * @param agent User who will edit the task 
+	  * @param role Usergroup for the task
+	  * @param taskname Name of the task
+	  * @param taskcomment Description of the task
+	  * @param tasktype Template Type of the task
+	  * @param timeout Time when the task must finished
+	  * @param priority Id for the priority
+	  * 
+	  * @return A new Task Object
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 
+	 public A_CmsTask createTask(A_CmsUser currentUser, int projectid, A_CmsUser agent, A_CmsGroup role, 
+								 String taskname, String taskcomment, int tasktype,
+								 java.sql.Timestamp timeout, int priority)
+		 throws CmsException {
+		 
+		 A_CmsTask task = m_accessTask.createTask(projectid, currentUser, agent, role, 
+												  tasktype, taskname, timeout, priority);
+		 
+		
+		 
+		 if(!taskcomment.equals("")) {
+			m_accessTask.writeTaskLog(task.getId(), currentUser, taskcomment);
+		 }
+										   
+		 return task;
+	 }
+	 
 
 	 /**
 	  * Ends a task from the Cms.
@@ -123,9 +251,15 @@ import com.opencms.core.*;
 		 throws CmsException {
 		 
 		 m_accessTask.endTask(taskid);
-		 m_accessTask.writeSytemTaskLog(taskid, "Task finished by " + 
-											  currentUser.getFirstname() + " " +
-											  currentUser.getLastname() + ".");
+		 if(currentUser == null)			 
+		 {
+			 m_accessTask.writeSytemTaskLog(taskid, "Task finished.");
+			 
+		 } else {
+			 m_accessTask.writeSytemTaskLog(taskid, "Task finished by " + 
+													currentUser.getFirstname() + " " +
+													currentUser.getLastname() + ".");
+		 }
 	 }	
 	 
 	 /**
@@ -418,4 +552,18 @@ import com.opencms.core.*;
 		 
 		 return( m_accessTask.getTaskPar(taskid, parname));		
 	 }
+	 
+	 /**
+	 * Get the template task id fo a given taskname.
+	 * 
+	 * @param taskname Name of the Task
+	 * 
+	 * @return id from the task template
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public int getTaskType(String taskname)
+		throws CmsException {
+			 return  m_accessTask.getTaskType(taskname);		
+	}
  }

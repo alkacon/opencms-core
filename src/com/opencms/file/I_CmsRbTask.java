@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRbTask.java,v $
- * Date   : $Date: 2000/02/20 14:11:55 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/02/20 15:24:36 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,10 +41,29 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Rüdiger Gutfleisch
- * @version $Revision: 1.12 $ $Date: 2000/02/20 14:11:55 $
+ * @version $Revision: 1.13 $ $Date: 2000/02/20 15:24:36 $
  */
 interface I_CmsRbTask { 	
 
+	 /**
+	  * Creates a new project for task handling.
+	  * 
+	  * @param owner User who creates the project
+	  * @param projectname Name of the project
+	  * @param projectType Type of the Project
+	  * @param role Usergroup for the project
+	  * @param timeout Time when the Project must finished
+	  * @param priority Priority for the Project
+	  * 
+	  * @return The new task project
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public A_CmsTask createProject(A_CmsUser owner, String projectname, int projectType,
+									A_CmsGroup role, java.sql.Timestamp timeout, 
+									int priority)
+		 throws CmsException;
+	 
 	 /**
 	  * Creates a new project for task handling.
 	  * 
@@ -82,6 +101,52 @@ interface I_CmsRbTask {
 	 
 	 public A_CmsTask createTask(A_CmsUser currentUser, A_CmsProject project, A_CmsUser agent, A_CmsGroup role, 
 								 String taskname, String taskcomment, 
+								 java.sql.Timestamp timeout, int priority)
+		 throws CmsException;
+	 
+	 	 /**
+	  * Creates a new task.
+	  * 
+	  * @param currentUser User who create the task 
+	  * @param project Project to witch the task belongs.
+	  * @param agent User who will edit the task 
+	  * @param role Usergroup for the task
+	  * @param taskname Name of the task
+	  * @param taskcomment Description of the task
+	  * @param tasktype Template Type of the task
+	  * @param timeout Time when the task must finished
+	  * @param priority Id for the priority
+	  * 
+	  * @return A new Task Object
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 
+	 public A_CmsTask createTask(A_CmsUser currentUser, A_CmsProject project, A_CmsUser agent, A_CmsGroup role, 
+								 String taskname, String taskcomment, int tasktype,
+								 java.sql.Timestamp timeout, int priority)
+		 throws CmsException;
+	 
+	 	 /**
+	  * Creates a new task.
+	  * 
+	  * @param currentUser User who create the task 
+	  * @param projectid TaskProject to witch the task belongs.
+	  * @param agent User who will edit the task 
+	  * @param role Usergroup for the task
+	  * @param taskname Name of the task
+	  * @param taskcomment Description of the task
+	  * @param tasktype Template Type of the task
+	  * @param timeout Time when the task must finished
+	  * @param priority Id for the priority
+	  * 
+	  * @return A new Task Object
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 
+	 public A_CmsTask createTask(A_CmsUser currentUser, int projectid, A_CmsUser agent, A_CmsGroup role, 
+								 String taskname, String taskcomment, int tasktype,
 								 java.sql.Timestamp timeout, int priority)
 		 throws CmsException;
 
@@ -299,6 +364,20 @@ interface I_CmsRbTask {
 	  */
 	 public String getTaskPar(int taskid, String parname)
 		 throws CmsException;
+
+	 
+	 /**
+	 * Get the template task id fo a given taskname.
+	 * 
+	 * @param taskName Name of the Task
+	 * 
+	 * @return id from the task template
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public int getTaskType(String taskName)
+		throws CmsException;
+
 
 	 /**
 	  * Writes a new user tasklog for a task.
