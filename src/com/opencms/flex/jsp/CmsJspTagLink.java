@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagLink.java,v $
-* Date   : $Date: 2002/09/03 19:43:38 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/10/30 10:25:06 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,14 +29,20 @@
 
 package com.opencms.flex.jsp;
 
+import com.opencms.flex.cache.CmsFlexRequest;
+import com.opencms.flex.cache.CmsFlexResponse;
+
 /**
  * This Tag is used to add OpenCms managed links to a JSP.
  * Required for the static export to work.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
-public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport implements I_CmsJspConstants {
+public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport {
+
+    /** Attribute to store link substituions on a page in */
+    public static final String C_JSP_ATTR_TAGLINK = "com.opencms.flex.CmsJspTagLink";
     
     /** One static substitutor should be enough */
     private static com.opencms.util.LinkSubstitution m_substitutor = new com.opencms.util.LinkSubstitution();   
@@ -53,10 +59,7 @@ public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport imple
 
             com.opencms.flex.cache.CmsFlexRequest c_req = (com.opencms.flex.cache.CmsFlexRequest)req;
                 
-            try {       
-
-                com.opencms.file.CmsObject cms = c_req.getCmsObject();
-
+            try {
                 // Get link-string from the body and reset body 
                 javax.servlet.jsp.tagext.BodyContent body = this.getBodyContent();
                 String link = body.getString();            
@@ -82,12 +85,9 @@ public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport imple
                     newlink = (String)substitutions.get(link);
                     if (DEBUG) System.err.println("Reused link substitution for :" + link);
                 } else {
-                    // Substitution is not stored, so we must calculate it
-                    if (link.indexOf(':') >= 0) {
-                        newlink = m_substitutor.getLinkSubstitution(cms, link);
-                    } else {
-                        newlink = m_substitutor.getLinkSubstitution(cms, c_req.toAbsolute(link));
-                    }
+                    // Substitution is not stored, so we must calculate it                    
+                    newlink = linkTagAction(link, c_req);
+                                        
                     substitutions.put(link, newlink);
                     changed = true;
                     if (DEBUG) System.err.println("Stored new link substitution for :" + link);
@@ -109,5 +109,14 @@ public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport imple
             }            
         }
         return EVAL_PAGE;        
+    }
+    
+    public static String linkTagAction(String link, CmsFlexRequest req) {
+        if (link.indexOf(':') >= 0) {
+            return m_substitutor.getLinkSubstitution(req.getCmsObject(), link);
+        } else {
+            System.err.println("link=" + link + " absolute=" + req.toAbsolute(link));
+            return m_substitutor.getLinkSubstitution(req.getCmsObject(), req.toAbsolute(link));
+        }        
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
-* Date   : $Date: 2002/09/19 16:01:42 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/10/30 10:25:35 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,22 +29,29 @@
 
 package com.opencms.flex.jsp;
 
+import com.opencms.file.CmsObject;
+import com.opencms.flex.cache.CmsFlexRequest;
+import com.opencms.flex.cache.CmsFlexResponse;
 import com.opencms.flex.util.CmsPropertyLookup;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * This Tag is used to include another OpenCms managed resource in a JSP.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
-public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspConstants, I_CmsJspParamParent { 
+public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspParamParent { 
     
+    // Attribute member variables
     private String m_target = null;
     private String m_page = null;
     private String m_suffix = null;
@@ -52,6 +59,9 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspConstant
     private String m_attribute = null;    
     private String m_body = null;
     
+    /** Hashmap to save paramters to the include in */
+    private HashMap m_parameterMap = null;
+        
     /** Debugging on / off */
     private static final boolean DEBUG = false;
     
@@ -192,16 +202,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspConstant
             com.opencms.flex.cache.CmsFlexRequest c_req = (com.opencms.flex.cache.CmsFlexRequest)req;
             com.opencms.flex.cache.CmsFlexResponse c_res = (com.opencms.flex.cache.CmsFlexResponse)res;    
 
-            String target = null;
-            
-            java.util.Map oldParamterMap = null;
-            
-            // Check parameters and update if required
-            if (m_parameterMap != null) {
-                oldParamterMap = c_req.getParameterMap();
-                Iterator i = m_parameterMap.keySet().iterator();
-                c_req.addParameterMap(m_parameterMap);                
-            }
+            String target = null;           
             
             // Try to find out what to do
             if (m_target != null) {
@@ -229,40 +230,48 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspConstant
                     }
                 }
             } 
-            
-            if (target == null) {
-                throw new JspException("CmsJspIncludeTag: No target specified!");
-            }
-                        
-            try {
-                javax.servlet.jsp.JspWriter out = pageContext.getOut();
-             
-                // Write out a C_FLEX_CACHE_DELIMITER char on the page, this is used as a parsing delimeter later
-                out.print((char)com.opencms.flex.cache.CmsFlexResponse.C_FLEX_CACHE_DELIMITER);
-                
-                // Add an element to the include list (will be initialized if empty)
-                c_res.addToIncludeList(target, m_parameterMap);
-                
-                // CmsResponse w_res = new CmsResponse(c_res, target, true);
-                c_req.getCmsRequestDispatcher(target).include(c_req, c_res);    
-                
-            } catch (javax.servlet.ServletException e) {
-                if (DEBUG) System.err.println("JspTagInclude: ServletException in Jsp 'include' tag processing: " + e);
-                if (DEBUG) System.err.println(com.opencms.util.Utils.getStackTrace(e));                
-                throw new JspException(e);            
-            } catch (java.io.IOException e) {
-                if (DEBUG) System.err.println("JspTagInclude: IOException in Jsp 'include' tag processing: " + e);
-                if (DEBUG) System.err.println(com.opencms.util.Utils.getStackTrace(e));                
-                throw new JspException(e);
-            } finally {
-                if (oldParamterMap != null) c_req.setParameterMap(oldParamterMap);
-            }        
+              
+            includeTagAction(pageContext, target, m_parameterMap, c_req, c_res);
         }
         
         return EVAL_PAGE;
     }
     
-    private HashMap m_parameterMap = null;
+    public static void includeTagAction(PageContext context, String target, Map parameterMap, CmsFlexRequest req, CmsFlexResponse res) 
+    throws JspException {
+        if (target == null) {
+            throw new JspException("CmsJspIncludeTag: No target specified!");
+        }
+                                  
+        java.util.Map oldParamterMap = null;        
+        // Check parameters and update if required
+        if (parameterMap != null) {
+            oldParamterMap = req.getParameterMap();
+            req.addParameterMap(parameterMap);                
+        }
+                                            
+        try {         
+            // Write out a C_FLEX_CACHE_DELIMITER char on the page, this is used as a parsing delimeter later
+            context.getOut().print((char)com.opencms.flex.cache.CmsFlexResponse.C_FLEX_CACHE_DELIMITER);
+            
+            // Add an element to the include list (will be initialized if empty)
+            res.addToIncludeList(target, parameterMap);
+            
+            // CmsResponse w_res = new CmsResponse(c_res, target, true);
+            req.getCmsRequestDispatcher(target).include(req, res);    
+            
+        } catch (javax.servlet.ServletException e) {
+            if (DEBUG) System.err.println("JspTagInclude: ServletException in Jsp 'include' tag processing: " + e);
+            if (DEBUG) System.err.println(com.opencms.util.Utils.getStackTrace(e));                
+            throw new JspException(e);            
+        } catch (java.io.IOException e) {
+            if (DEBUG) System.err.println("JspTagInclude: IOException in Jsp 'include' tag processing: " + e);
+            if (DEBUG) System.err.println(com.opencms.util.Utils.getStackTrace(e));                
+            throw new JspException(e);
+        } finally {
+            if (oldParamterMap != null) req.setParameterMap(oldParamterMap);
+        }           
+    }
     
 	/**
      * This methods adds parameters to the FlexRequest. 

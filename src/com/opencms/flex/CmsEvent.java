@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsEvent.java,v $
- * Date   : $Date: 2002/08/21 11:29:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2002/10/30 10:26:50 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,16 @@ package com.opencms.flex;
 import com.opencms.file.CmsObject;
 
 /**
- * Description of the class CmsEvent here.
+ * Event class for OpenCms for system wide events that are thrown by various 
+ * operations (e.g. publishing) and can be catched and processed by 
+ * classes that implement the {@link I_CmsEventListener} interface.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ *
+ * @version $Revision: 1.4 $
+ * @since FLEX alpha 1
+ * 
+ * @see I_CmsEventListener
  */
 public class CmsEvent extends java.util.EventObject {
     
@@ -54,7 +60,8 @@ public class CmsEvent extends java.util.EventObject {
     private boolean m_isClusterEvent;
 
     /**
-     * Construct a new CmsEvent with the specified parameters.
+     * Construct a new CmsEvent with the specified parameters, 
+     * this constructor just calls <code>this(cms, type, data, false)</code>.
      *
      * @param cms CmsObject on which this event occurred
      * @param type Event type
@@ -65,12 +72,26 @@ public class CmsEvent extends java.util.EventObject {
     }
     
     /**
-     * Construct a new CmsEvent with the specified parameters.
+     * Construct a new CmsEvent with the specified parameters.<p>
+     * 
+     * The event data <code>Map</code> provides a facility to 
+     * pass objects with the event that contain information about 
+     * the event environment. For example, if the event is of type
+     * {@link I_CmsEventListener#EVENT_LOGIN_USER} the Map contains 
+     * a single object with the key <code>"data"</code> and a value 
+     * that is the OpenCms user object that represents the user that just logged in.<p>
+     * 
+     * If <code>isClusterEvent</code> is <code>true</code>,
+     * the event should be forwarded to all servers in the OpenCms cluster.
+     * If it is <code>false</code>, is is important only for server
+     * running this instance of OpenCms. 
      *
      * @param cms CmsObject on which this event occurred
      * @param type Event type
      * @param data Event data
      * @param isClusterEvent true if this event should be forwarded to the other servers in the cluster
+     * 
+     * @see I_CmsEventListener
      */    
     public CmsEvent(CmsObject cms, int type, java.util.Map data, boolean isClusterEvent ) {
         super(cms);
@@ -82,7 +103,7 @@ public class CmsEvent extends java.util.EventObject {
     }
 
     /**
-     * Provides access to the event data.
+     * Provides access to the event data that was passed with this event.
      * 
      * @return The event data of this event
      */
@@ -91,7 +112,7 @@ public class CmsEvent extends java.util.EventObject {
     }
 
     /**
-     * Provides access to the CmsObject.
+     * Provides access to the CmsObject that was passed with this event.
      *
      * @return The CmsObject on which this event occurred
      */
@@ -100,16 +121,23 @@ public class CmsEvent extends java.util.EventObject {
     }
 
     /**
-     * Provides access to the event type.
+     * Provides access to the event type that was passed with this event.<p>
+     * 
+     * Event types of the core OpenCms classes are defined in {@link I_CmsEventListener}.
+     * For your extensions, you should define them in a central class 
+     * or interface as public member variables. Make sure the integer values 
+     * do not confict with the values from the core classes. 
      * 
      * @return The event type of this event
+     * 
+     * @see I_CmsEventListener
      */
     public int getType() {
         return (m_type);
     }
 
     /**
-     * Method overloaded from the standard Object API.
+     * Return a String representation of this CmsEvent.
      *
      * @return A string representation of this event
      */
@@ -118,7 +146,8 @@ public class CmsEvent extends java.util.EventObject {
     }
 
     /**
-     * Set the boolean condition whether this event should be forwarded to the other servers in the cluster.
+     * Set the boolean condition whether this event should be forwarded 
+     * to the other servers in the cluster.
      *
      * @param value true if this event should be forwarded to the other servers in the cluster, false otherwise
      */
@@ -127,7 +156,8 @@ public class CmsEvent extends java.util.EventObject {
     }
     
     /**
-     * Prove whether this event should be forwarded to the other servers in the cluster or not
+     * Check whether this event should be forwarded to the other servers 
+     * in the cluster or not.
      *
      * @return true if this event should be forwarded to the other servers in the cluster, false otherwise
      */

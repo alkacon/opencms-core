@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequest.java,v $
-* Date   : $Date: 2002/09/16 10:31:07 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/10/30 10:22:17 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.core.A_OpenCms;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper {
     
@@ -78,7 +78,7 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
     private boolean m_doRecompile = false; 
     
     /** Debug - flag */
-    private static boolean DEBUG = false;
+    private static final boolean DEBUG = false;
     
     /** Set of all include calls (to prevent an endless inclusion loop) */
     private java.util.Set m_includeCalls;    
@@ -267,8 +267,7 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
      */
     public String toAbsolute(String location) {
 
-        if (DEBUG) System.err.println("FlexRequest.toAbsolute(): location=" + location);
-        
+        if (DEBUG) System.err.println("FlexRequest.toAbsolute(): location=" + location);        
         if (location == null) return (location);
 
         // Construct a new absolute URL if possible (cribbed from Tomcat)
@@ -291,6 +290,7 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
         if (uri.startsWith(context)) {
             uri = uri.substring(context.length());
         }
+        if (url.getQuery() != null) uri += "?" + url.getQuery();                    
         
         if (DEBUG) System.err.println("FlexRequest.toAbsolute(): result=" + uri);                
         return uri;

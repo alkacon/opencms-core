@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagCache.java,v $
-* Date   : $Date: 2002/08/21 11:29:32 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/10/30 10:24:26 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,9 +33,9 @@ package com.opencms.flex.jsp;
  * This is an experimental tag for caching element support.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
-public class CmsJspTagCache extends javax.servlet.jsp.tagext.BodyTagSupport implements I_CmsJspConstants {
+public class CmsJspTagCache extends javax.servlet.jsp.tagext.BodyTagSupport {
 
     private String m_key = null;
     

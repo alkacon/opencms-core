@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagWpLabel.java,v $
-* Date   : $Date: 2002/08/21 11:29:32 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/10/30 10:25:45 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,15 +29,33 @@
 
 package com.opencms.flex.jsp;
 
+import com.opencms.core.CmsException;
+import com.opencms.flex.cache.CmsFlexRequest;
+
 /**
  * This Tag provides access to the labels stored in the
- * language files of the OpenCms workplace.
+ * language files of the OpenCms workplace.<p>
+ * 
+ * This is rather a "proof-of-concept" then a perfect implementation.
+ * The overhead required to read and parse the XML language files 
+ * is to high and performance would be hit seriously if this tag 
+ * is used often on a page.<p>
+ * 
+ * Instead of using the XML based workplace tags one should 
+ * consider using standard Java resource bundles to provide language independent 
+ * implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
-public class CmsJspTagWpLabel extends javax.servlet.jsp.tagext.BodyTagSupport implements I_CmsJspConstants {
+public class CmsJspTagWpLabel extends javax.servlet.jsp.tagext.BodyTagSupport {
     
+    /** Attribute to store WP label definition file */
+    public static final String C_JSP_ATTR_TAGLABEL_DEF = "com.opencms.flex.CmsJspTagWpLabel.labeldeffile";
+    
+    /** Attribute to store WP language file */
+    public static final String C_JSP_ATTR_TAGLABEL_LANG = "com.opencms.flex.CmsJspTagWpLabel.langfile";
+            
     public int doAfterBody() throws javax.servlet.jsp.JspException {
         
         javax.servlet.ServletRequest req = pageContext.getRequest();
@@ -54,32 +72,9 @@ public class CmsJspTagWpLabel extends javax.servlet.jsp.tagext.BodyTagSupport im
                 String label = body.getString();            
                 body.clearBody();  
                 
-                // Get Cms Object
-                com.opencms.file.CmsObject cms = c_req.getCmsObject();
-                
-                com.opencms.workplace.CmsXmlWpLabelDefFile labeldeffile;
-                com.opencms.workplace.CmsXmlLanguageFile langfile;
-                
-                Object o = pageContext.getAttribute(this.C_JSP_ATTR_TAGLABEL_DEF);
-                if (o == null) {                                
-                    // Get OpenCms Workplace label
-                    labeldeffile = new com.opencms.workplace.CmsXmlWpLabelDefFile(cms, "/system/workplace/templates/" + com.opencms.workplace.I_CmsWpConstants.C_LABELTEMPLATE);
-                    langfile = new com.opencms.workplace.CmsXmlLanguageFile(cms);
-                    
-                    pageContext.setAttribute(this.C_JSP_ATTR_TAGLABEL_DEF, labeldeffile);
-                    pageContext.setAttribute(this.C_JSP_ATTR_TAGLABEL_LANG, langfile);
-                } else {
-                    labeldeffile = (com.opencms.workplace.CmsXmlWpLabelDefFile)o;
-                    langfile = (com.opencms.workplace.CmsXmlLanguageFile)pageContext.getAttribute(this.C_JSP_ATTR_TAGLABEL_LANG);
-                }
-                
-                String value = langfile.getLanguageValue(label);
-                String result = labeldeffile.getLabel(value);
-                
-                this.getPreviousOut().print(result);       
-                
-                // body.print(result);
-                // body.writeOut(pageContext.getOut()); 
+                // Get the result...
+                String result = wpLabelTagAction(label, c_req);
+                this.getPreviousOut().print(result);
                 
             } catch (Exception ex) {
                 System.err.println("Error in Jsp 'label' tag processing: " + ex);
@@ -88,6 +83,17 @@ public class CmsJspTagWpLabel extends javax.servlet.jsp.tagext.BodyTagSupport im
             }            
         }
         return SKIP_BODY;
+    }
+    
+    public static String wpLabelTagAction(String label, CmsFlexRequest req) 
+    throws CmsException {
+        com.opencms.workplace.CmsXmlWpLabelDefFile labeldeffile;
+        com.opencms.workplace.CmsXmlLanguageFile langfile;
+        
+        labeldeffile = new com.opencms.workplace.CmsXmlWpLabelDefFile(req.getCmsObject(), "/system/workplace/templates/" + com.opencms.workplace.I_CmsWpConstants.C_LABELTEMPLATE);
+        langfile = new com.opencms.workplace.CmsXmlLanguageFile(req.getCmsObject());
+        
+        return labeldeffile.getLabel(langfile.getLanguageValue(label));                        
     }
 
 }

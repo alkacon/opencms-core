@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexResponse.java,v $
-* Date   : $Date: 2002/09/16 11:53:42 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2002/10/30 10:22:55 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.PrintWriter;
  * A wrapper class for a HttpServletRequest that controls the Flex cache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapper {
     
@@ -103,7 +103,7 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
     public static final String C_SETHEADER = "[setHeader]";
                 
     /** Flag for debugging output */
-    private static boolean DEBUG = false;
+    private static final boolean DEBUG = false;
     
     /** The cache delimiter char */
     public static final char C_FLEX_CACHE_DELIMITER = (char)0;
@@ -738,7 +738,7 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
         private javax.servlet.ServletOutputStream servletStream = null;
         
         /** Debug flag */
-        private boolean DEBUG = false;
+        private static final boolean DEBUG = false;
 
         /**
          * Constructor that must be used if the stream should write 

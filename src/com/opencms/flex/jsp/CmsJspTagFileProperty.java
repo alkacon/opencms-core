@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagFileProperty.java,v $
-* Date   : $Date: 2002/09/19 12:16:40 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/10/30 10:25:29 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,15 +29,17 @@
 
 package com.opencms.flex.jsp;
 
+import com.opencms.core.CmsException;
+import com.opencms.flex.cache.CmsFlexRequest;
 import com.opencms.flex.util.CmsPropertyLookup;
 
 /**
  * This Tag provides access to the currently included files OpenCms properties.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
-public class CmsJspTagFileProperty extends javax.servlet.jsp.tagext.TagSupport implements I_CmsJspConstants {
+public class CmsJspTagFileProperty extends javax.servlet.jsp.tagext.TagSupport {
     
     private String m_propertyName = null;
     
@@ -92,36 +94,8 @@ public class CmsJspTagFileProperty extends javax.servlet.jsp.tagext.TagSupport i
             com.opencms.flex.cache.CmsFlexRequest c_req = (com.opencms.flex.cache.CmsFlexRequest)req;
 
             try {       
-
-                com.opencms.file.CmsObject cms = c_req.getCmsObject();
-
-                javax.servlet.jsp.JspWriter out = pageContext.getOut();
-                java.util.Hashtable props = null;
-
-                String file = null;
-                String prop = null;
-                
-                if ("parent".equals(getFile())) {                    
-                    // Read properties of parent (i.e. top requested) file
-                    prop = CmsPropertyLookup.lookupProperty(cms, c_req.getCmsRequestedResource(), getName(), false);                  
-                } else if ("this".equals(getFile())) {
-                    // Read properties of this file
-                    prop = CmsPropertyLookup.lookupProperty(cms, c_req.getCmsResource(), getName(), false);
-                } else if ("search-this".equals(getFile())) {
-                    // Try to find property on this file and all parent folders
-                    prop = CmsPropertyLookup.lookupProperty(cms, c_req.getCmsResource(), getName(), true);
-                } else if ("search-parent".equals(getFile()) || "search".equals(getFile())) {
-                    // Try to find property on parent file and all parent folders
-                    prop = CmsPropertyLookup.lookupProperty(cms, c_req.getCmsRequestedResource(), getName(), true);
-                } else {
-                    // Read properties of the file named in the attribute
-                    prop = CmsPropertyLookup.lookupProperty(cms, c_req.toAbsolute(getFile()), getName(), false);                  
-                }
-
-                if ((m_defaultValue != null) && (prop == null)) {
-                    prop = m_defaultValue;
-                }
-                out.print(prop);
+                String prop = propertyTagAction(getName(), getFile(), m_defaultValue, c_req);
+                pageContext.getOut().print(prop);
                 
             } catch (Exception ex) {
                 System.err.println("Error in Jsp 'property' tag processing: " + ex);
@@ -130,6 +104,35 @@ public class CmsJspTagFileProperty extends javax.servlet.jsp.tagext.TagSupport i
             }
         }
         return SKIP_BODY;
+    }
+
+    public static String propertyTagAction(String property, String action, String defaultValue, CmsFlexRequest req) 
+    throws CmsException
+    {
+        String result = null;
+        
+        if ("parent".equals(action)) {                    
+            // Read properties of parent (i.e. top requested) file
+            result = CmsPropertyLookup.lookupProperty(req.getCmsObject(), req.getCmsRequestedResource(), property, false);                  
+        } else if ("this".equals(action)) {
+            // Read properties of this file
+            result = CmsPropertyLookup.lookupProperty(req.getCmsObject(), req.getCmsResource(), property, false);
+        } else if ("search-this".equals(action)) {
+            // Try to find property on this file and all parent folders
+            result = CmsPropertyLookup.lookupProperty(req.getCmsObject(), req.getCmsResource(), property, true);
+        } else if ("search-parent".equals(action) || "search".equals(action)) {
+            // Try to find property on parent file and all parent folders
+            result = CmsPropertyLookup.lookupProperty(req.getCmsObject(), req.getCmsRequestedResource(), property, true);
+        } else {
+            // Read properties of the file named in the attribute
+            result = CmsPropertyLookup.lookupProperty(req.getCmsObject(), req.toAbsolute(action), property, false);                  
+        }
+
+        if ((defaultValue != null) && (result == null)) {
+            result = defaultValue;
+        }
+                        
+        return result;
     }
 
 }

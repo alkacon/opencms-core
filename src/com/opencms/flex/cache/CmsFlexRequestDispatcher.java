@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequestDispatcher.java,v $
-* Date   : $Date: 2002/08/30 14:06:22 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/10/30 10:22:36 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,9 @@
 
 package com.opencms.flex.cache;
 
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
+
 import javax.servlet.ServletException;
 
 /** 
@@ -40,7 +43,7 @@ import javax.servlet.ServletException;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsFlexRequestDispatcher implements javax.servlet.RequestDispatcher {
         
@@ -60,7 +63,7 @@ public class CmsFlexRequestDispatcher implements javax.servlet.RequestDispatcher
     private com.opencms.file.CmsObject m_cms = null;    
     
     /** Internal DEBUG flag. Set to 9 for maximum verbosity. */
-    private int DEBUG = 0;
+    private static final int DEBUG = 0;
     
     /** 
      * Creates a new instance of CmsFlexRequestDispatcher.
@@ -206,7 +209,8 @@ public class CmsFlexRequestDispatcher implements javax.servlet.RequestDispatcher
                     } catch (com.opencms.core.CmsException e) {
                         if (e.getType() == e.C_FLEX_CACHE) {
                             // Invalid key is ignored but logged, used key is cache=never
-                            log("Invalid cache key for external resource \"" + m_target + "\": " + cache);
+                            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) 
+                                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[FlexCache] Invalid cache key for external resource \"" + m_target + "\": " + cache);
                             // There will be a vaild key in the response ("cache=never") even after an exception
                             m_cache.putKey(w_res.getCmsCacheKey());
                         } else {
@@ -264,16 +268,5 @@ public class CmsFlexRequestDispatcher implements javax.servlet.RequestDispatcher
         // Indicate to response that include is finished
         res.setCmsIncludeMode(false);
         req.removeIncludeCall(m_target);
-    }
-        
-    /**     
-     * Logs a message to the OpenCms log in the channel "flex_cache".
-     *
-     * @param message The string to write in the log file
-     */    
-    private void log(String message) {
-        if (com.opencms.boot.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-            com.opencms.boot.CmsBase.log(com.opencms.boot.CmsBase.C_FLEX_CACHE, "[CmsFlexRequestDispatcher] " + message);
-        }
     }
 }

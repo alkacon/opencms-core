@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCache.java,v $
- * Date   : $Date: 2002/09/16 11:44:28 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2002/10/30 10:21:55 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,8 @@ package com.opencms.flex.cache;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
 import com.opencms.flex.util.*;
 import com.opencms.file.CmsObject;
 
@@ -76,7 +78,9 @@ import com.opencms.file.CmsObject;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $
+ * 
+ * @version $Revision: 1.8 $
+ * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
  * @see com.opencms.flex.util.CmsFlexLruCache
@@ -84,7 +88,7 @@ import com.opencms.file.CmsObject;
  */
 public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I_CmsEventListener {
     
-    /** Initial Cache size, this should be a prime number of best results in the hash algorithms */
+    /** Initial Cache size, this should be a prime number for best results in the hash algorithms */
     public static final int C_INITIAL_CAPACITY_CACHE = 509;
     // Alternatives: 127 257 509 1021 2039 4099 8191
     // TODO: Check is this should be a constructor variable,
@@ -361,7 +365,8 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
             
         }
         clear();
-        log("JSP repository purged - purgeJspRepository() called");
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) 
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "JSP repository purged - purgeJspRepository() called");
     }
     
     /**
@@ -674,7 +679,6 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
         if (! isEnabled()) return;
         
         m_resourceMap.clear();
-        //m_resourceMap = java.util.Collections.synchronizedMap(new HashMap(C_INITIAL_CAPACITY_CACHE));
         m_resourceMap = java.util.Collections.synchronizedMap(new CmsLruHashMap(C_INITIAL_CAPACITY_CACHE));
         
         m_size = 0;
@@ -682,7 +686,8 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
         this.m_EntryLruCache.clear();
         this.m_VariationCache.clear();
         
-        log("Complete cache cleared - clear() called" );
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_CACHE)) 
+            A_OpenCms.log(I_CmsLogChannels.C_FLEX_CACHE, "[FlexCache] Complete cache cleared - clear() called" );
     }
     
     /**
@@ -779,18 +784,8 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
                 }
             }
         }
-        log("Part of the FlexCache cleared - clearOneHalf(" + suffix + ", " + entriesOnly + ") called" );
-    }
-    
-    /**
-     * Logs a message to the OpenCms log in the channel "flex_cache".
-     *
-     * @param message The string to write in the log file
-     */
-    private void log(String message) {
-        if (com.opencms.boot.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-            com.opencms.boot.CmsBase.log(com.opencms.boot.CmsBase.C_FLEX_CACHE, "[CmsFlexCache] " + message);
-        }
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_CACHE)) 
+            A_OpenCms.log(I_CmsLogChannels.C_FLEX_CACHE, "[FlexCache] Part of the FlexCache cleared - clearOneHalf(" + suffix + ", " + entriesOnly + ") called" );
     }
     
     /**
@@ -809,7 +804,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.7 $ 
+     * @version $Revision: 1.8 $ 
      */
     class CmsFlexCacheVariation extends Object implements com.opencms.flex.util.I_CmsFlexLruCacheObject {
         

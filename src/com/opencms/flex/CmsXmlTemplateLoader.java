@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2002/09/19 15:49:34 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2002/10/30 10:27:38 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,41 +43,80 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * Description of the class CmsDumpLoader here.
+ * Implementation of the {@link I_CmsResourceLoader} interface for 
+ * XMLTemplates, used to include XMLTemplates as sub-elements on a JSP page.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ *
+ * @version $Revision: 1.7 $
+ * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader extends com.opencms.launcher.CmsXmlLauncher implements I_CmsResourceLoader {
     
-    private static CmsFlexCache m_cache;    
-    
-    private static int DEBUG = 0;
+    /** The CmsFlexCache used to store generated cache entries in */
+    private static CmsFlexCache m_cache;
 
-    private A_OpenCms m_openCms = null;
-    
-    // ---------------------------- Implementation of interface com.opencms.launcher.I_CmsLauncher          
-    
-    /** Destroy this ResourceLoder  */
+    /** Required to access the XMLTemplate load mechanism */    
+    private A_OpenCms m_openCms = null;    
+
+    /** Flag for debugging output. Set to 9 for maximum verbosity. */ 
+    private static final int DEBUG = 0;
+        
+    /**
+     * The constructor of the class is empty and does nothing.
+     */
+    public CmsXmlTemplateLoader() {
+        // NOOP
+    }
+        
+    /** Destroy this ResourceLoder, this is a NOOP so far.  */
     public void destroy() {
         // NOOP
     }
     
-    /** Return a String describing the ResourceLoader  */
+    /**
+     * Return a String describing the ResourceLoader,
+     * which is <code>"A XMLTemplate loader that extends from com.opencms.launcher.CmsXmlLauncher"</code>
+     * 
+     * @return a describing String for the ResourceLoader 
+     */
     public String getResourceLoaderInfo() {
-        return "A XmlTemplate loader that extends from com.opencms.launcher.CmsXmlLauncher";
+        return "A XMLTemplate loader that extends from com.opencms.launcher.CmsXmlLauncher";
     }
     
-    /** Initialize the ResourceLoader  */
+    /** 
+     * Initialize the ResourceLoader, the OpenCms parameter is
+     * saved here for later access to <code>generateOutput()</code>.
+     * 
+     * @param openCms used to access <code>generateOutput()</code> later
+     * 
+     * @see com.opencms.launcher.CmsXmlLauncher#generateOutput(CmsObject, CmsFile, String, I_CmsRequest, A_OpenCms)
+     */
     public void init(A_OpenCms openCms) {
         // This must be saved for call to this.generateOutput();
         m_openCms = openCms;
-        m_cache = (CmsFlexCache)openCms.getRuntimeProperty(this.C_LOADER_CACHENAME);
-        
-        log(this.getClass().getName() + " initialized!");     
+        m_cache = (CmsFlexCache)openCms.getRuntimeProperty(this.C_LOADER_CACHENAME);        
+        if (C_LOGGING && A_OpenCms.isLogging(C_FLEX_LOADER)) 
+            A_OpenCms.log(C_FLEX_LOADER, this.getClass().getName() + " initialized!");     
     }
     
-    /** Basic processing method with CmsFile  */
+    /**
+     * Basic top-page processing method for this I_CmsResourceLoader,
+     * this method is called if the page is called as a sub-element 
+     * on a page not already loded with a I_CmsResourceLoader,
+     * which most often would be an I_CmsLauncher then.
+     *
+     * @param cms The initialized CmsObject which provides user permissions
+     * @param file The requested OpenCms VFS resource
+     * @param req The original servlet request
+     * @param res The original servlet response
+     * 
+     * @throws ServletException might be thrown in the process of including the JSP 
+     * @throws IOException might be thrown in the process of including the JSP 
+     * 
+     * @see I_CmsResourceLoader
+     * @see #service(CmsObject, CmsResource, CmsFlexRequest, CmsFlexResponse)
+     */
     public void load(com.opencms.file.CmsObject cms, com.opencms.file.CmsFile file, javax.servlet.http.HttpServletRequest req, javax.servlet.http.HttpServletResponse res) 
     throws ServletException, IOException {    
         CmsFlexRequest w_req; 
@@ -95,12 +134,21 @@ public class CmsXmlTemplateLoader extends com.opencms.launcher.CmsXmlLauncher im
         service(cms, file, w_req, w_res);
     }
     
-    // --------------------------- Overloaded methods from launcher interface
-
-    public void setOpenCms(A_OpenCms openCms) {
-        init(openCms);
-    }
-    
+    /**
+     * Does the job of including the XMLTemplate, 
+     * this method is called directly if the element is 
+     * called as a sub-element from another I_CmsResourceLoader.
+     * 
+     * @param cms Used to access the OpenCms VFS
+     * @param file The reqested JSP file resource in the VFS
+     * @param req The current request
+     * @param res The current response
+     * 
+     * @throws ServletException might be thrown in the process of including the JSP 
+     * @throws IOException might be thrown in the process of including the JSP 
+     * 
+     * @see com.opencms.flex.cache.CmsFlexRequestDispatcher
+     */    
     public void service(CmsObject cms, CmsResource file, CmsFlexRequest req, CmsFlexResponse res)
     throws ServletException, IOException {
         long timer1 = 0;
@@ -116,9 +164,12 @@ public class CmsXmlTemplateLoader extends com.opencms.launcher.CmsXmlLauncher im
             HttpServletRequest originalreq = (HttpServletRequest)cms_req.getOriginalRequest();            
             com.opencms.file.CmsFile fx = req.getCmsObject().readFile(file.getAbsolutePath());            
             
+            // fake the called URI (otherwise XMLTemplate / ElementCache would not work)
             cms.getRequestContext().setUri(fx.getAbsolutePath());            
             cms_req.setOriginalRequest(req);
+            // process the included XMLTemplate
             result = generateOutput(cms, fx, fx.getLauncherClassname(), cms_req, m_openCms);            
+            // reset the called URI to the originally requested resource
             cms_req.setOriginalRequest(originalreq);
             cms.getRequestContext().setUri(null);
 
@@ -134,11 +185,5 @@ public class CmsXmlTemplateLoader extends com.opencms.launcher.CmsXmlLauncher im
             long timer2 = System.currentTimeMillis() - timer1;        
             System.err.println("========== Time delivering XmlTemplate for " + file.getAbsolutePath() + ": " + timer2 + "ms");            
         }
-    }
-    
-    private void log(String message) {
-        if (com.opencms.boot.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-            com.opencms.boot.CmsBase.log(com.opencms.boot.CmsBase.C_FLEX_LOADER, "[CmsXmlTemplateLoader] " + message);
-        }
-    }    
+    }   
 }
