@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/07/27 12:53:59 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2000/07/28 07:28:52 $
+ * Version: $Revision: 1.101 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.100 $ $Date: 2000/07/27 12:53:59 $ 
+ * @version $Revision: 1.101 $ $Date: 2000/07/28 07:28:52 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -124,6 +124,17 @@ public class CmsObject implements I_CmsConstants {
 		m_rb = broker;
 		m_context = new CmsRequestContext();
 		m_context.init(m_rb, req, resp, user, currentGroup, currentProjectId);
+	}
+	
+	/**
+	 * Initialises the CmsObject without a request-context (current-user, 
+	 * current-group, current-project).
+	 * 
+	 * @param broker the resourcebroker to access the database.
+	 */
+	public void init(I_CmsResourceBroker broker ) 
+		throws CmsException {
+		m_rb = broker;
 	}
 	
 	/**

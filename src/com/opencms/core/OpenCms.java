@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/07/27 12:53:59 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2000/07/28 07:28:52 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.32 $ $Date: 2000/07/27 12:53:59 $  
+* @version $Revision: 1.33 $ $Date: 2000/07/28 07:28:52 $  
 * 
 * */
 
@@ -301,7 +301,8 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
      */
     public void destroy() 
         throws CmsException {
-        CmsObject cms=new CmsObject();        
+        CmsObject cms=new CmsObject();
+		cms.init(c_rb);
         cms.destroy();
     }
     
