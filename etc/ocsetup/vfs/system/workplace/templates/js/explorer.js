@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/01/04 14:48:31 $
-  * Version: $Revision: 1.12 $
+  * Date   : $Date: 2001/01/09 13:17:51 $
+  * Version: $Revision: 1.13 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -469,6 +469,7 @@
  	doc.write("<a href=javascript:top.toggleNode(document,"+ id +")><img src='"+ pic +"' height=16 width=16 border=0 vspace=0 hspace=0 align=left></a>");
  }
  
+ 
  function dfsTree(doc, node, depth, last, shape) {
      var loop1;
  
@@ -486,6 +487,7 @@
  		if (last) {
  			if (node.childs.length > 0) {
  				if (node.open) {
+				//wenn actdir ein child vom knopf ist
  					showPicLink(doc, tree.icon[5].src, node.id); //corner to close
  				} else {
  					showPicLink(doc, tree.icon[7].src, node.id); //corner to open 
@@ -664,13 +666,13 @@
              "<tr valign=center>"+
              "<td class=menu nowrap width=32px>"+
              "<a href=javascript:top.histGoBack(); onmouseover=\"top.chon(document,'bt_back');\" onmouseout=\"top.choff(document,'bt_back');\" >"+
-             "<img alt='"+vr.langback+"' width=32 height=32  border=0 name='bt_back'></a></td>"+ 
+             "<img alt='"+vr.langback+"' src='"+vi.iconPath+"bt_back_off.gif' width=32 height=32  border=0 name='bt_back'></a></td>"+ 
              "<td class=menu nowrap width=32px>"+
  			dirup+
-             "<img alt='"+vr.langup+"' width=32 height=32 border=0 name=bt_up ></a></td>";
+             "<img alt='"+vr.langup+"' name='bt_up' src='"+vi.iconPath+"bt_up_off.gif' width=32 height=32 border=0 name=bt_up ></a></td>";
  
      var headFoot="<td class=menu width=30px nowrap align=right>&nbsp;</td>"+
-             "<td class=menubold nowrap align=right valign=middle><img border=0 id='bt_folder' name='bt_folder' width=16 height=16></td>"+ 
+             "<td class=menubold nowrap align=right valign=middle><img border=0 id='bt_folder' src='"+vi.iconPath+"ic_file_folder.gif' width=16 height=16></td>"+ 
              "<td class=menubold nowrap align=right valign=middle><p class=einzug> <b>&nbsp;"+vr.langadress+"&nbsp;</b> </td>"+
              "<td class=menu nowrap align=left valign=middle>"+
              "<input value="+vr.actDirectory+" size=50 maxlength=255 name=url id=url class=textfeld2>"+
@@ -685,7 +687,7 @@
              "<a href='explorer_files_new.html' target='explorer_files' "+
              "onmouseout=\"top.choff(document, 'bt_new');\" "+
              "onmouseover=\"top.chon(document, 'bt_new');\">");
-         doc.writeln("<img alt='"+vr.langnew+"' width=32  height=32 border=0 name='bt_new'></a></td>"); 
+         doc.writeln("<img alt='"+vr.langnew+"' src='"+vi.iconPath+"bt_new_off.gif' width=32  height=32 border=0 name='bt_new'></a></td>"); 
      } else {
          doc.writeln("<td class=menu nowrap width=32px>");
          doc.writeln("<img alt='"+vr.langnew+"' width=32 height=32 border=0 name='bt_new_in'></a></td>"); 
