@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/07/09 08:10:51 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2001/07/12 13:42:17 $
+ * Version: $Revision: 1.57 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -50,7 +50,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.56 $ $Date: 2001/07/09 08:10:51 $ *
+ * @version $Revision: 1.57 $ $Date: 2001/07/12 13:42:17 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -243,9 +243,9 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
         } catch (CmsException e) {
 		    // if the file is maked as deleted remove it!
 			if (e.getType()==CmsException.C_RESOURCE_DELETED) {
-                //removeFile(project.getId(),filename);
-                //state=C_STATE_CHANGED;
-                throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
+                removeFile(project.getId(),filename);
+                state=C_STATE_CHANGED;
+                //throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
             }
             if (e.getType()==CmsException.C_FILE_EXISTS) {
 		        throw e;
