@@ -207,7 +207,7 @@
                     </tr>
                     <tr>
                         <td class=formular>
-                            navtext:
+                             ]]><LABEL value="input.navtext" /><![CDATA[:
                         </td>
                         <td class=dialogtxt>
                             <input type="textfield" id="navtext" maxlength=100 style="width:400px;" class="textfeld2"> 
@@ -215,7 +215,7 @@
                     </tr>
                     <tr>
                         <td class=formular>
-                            navpos:
+                            ]]><LABEL value="input.insert" /><![CDATA[
                         </td>
                         <td class=dialogtxt>
                             ]]><SELECT class="textfeld" name="navpos" width="400" method="getNavPos" /><![CDATA[
