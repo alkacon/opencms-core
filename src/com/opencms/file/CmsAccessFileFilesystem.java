@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileFilesystem.java,v $
- * Date   : $Date: 2000/04/07 15:57:37 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/04/10 10:08:48 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/04/07 15:57:37 $
+ * @version $Revision: 1.21 $ $Date: 2000/04/10 10:08:48 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -1195,14 +1195,40 @@ import com.opencms.core.*;
      */
     public void deleteProject(A_CmsProject project)
         throws CmsException {
-        
-         // all files in a file system mounpoint belong to the online project,
-         // so nothing is done here.
-        
-        return;
+		
+		// get the current project-folder.
+		File projectFolder = new File(m_mountpoint.getMountPath() + C_INV_PROJECTS +
+									  C_INV_CHAR + project.getId());
+		if(( projectFolder != null) && ( projectFolder.exists() ) ) {
+			// delete the project
+			helperDeleteFolder(projectFolder);
+			// delete the project-header-file
+			File projectFile = new File(m_mountpoint.getMountPath() + C_INV_PROJECTS +
+										  C_INV_CHAR + C_INV_CHAR + C_INV_CHAR + project.getId());
+			projectFile.delete();
+		}
     }
+		
+	private void helperDeleteFolder(File folder) {
+		String[] fileList = folder.list();
+		File currentFile;
+		
+		// walk throug all files
+		for( int i = 0; i < fileList.length; i++ ) {
+			// creta current file opbject
+			currentFile = new File(folder.getAbsolutePath() + m_fileseperator + fileList[i]);
+			if(currentFile.isDirectory()) {
+				// current file is a directory - store it for later deletion
+				helperDeleteFolder(currentFile);
+			} else {
+				// current file is not a directory - delete it
+				currentFile.delete();
+			}
+		}
+		// folder is empty: delete the folder, too
+		folder.delete();
+	}
 	
-    
     /**
      * Gets all resources - files and subfolders - of a given folder.
      * @param rootFolder The name of the given folder.
@@ -1279,8 +1305,8 @@ import com.opencms.core.*;
 
       
      /**
-      * Checks if the requires project folder si already available and creates this
-      * folder if newscessary.
+      * Checks if the requires project folder is already available and creates this
+      * folder if nessessary.
       * @param project The current project.
       * @param onlineProject The online project.
       */
