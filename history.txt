@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/10/15 12:22:00 $
- * Version: $Revision: 1.570 $
+ * Date   : $Date: 2004/10/22 13:20:25 $
+ * Version: $Revision: 1.571 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,14 @@ OpenCms 5.5.2 Caladan (aka 6.0 xxx) - xxx, 2004
 ! New "content-conversion" property allows automatic conversion of
   XML page HTML content to XHTML, also optionally corrects HTML errors etc.
 ! Added configurable password class encryption handler to opencms-system.xml
+! Added new XML content widgets: Boolean, Colorpicker, VfsFile
+! Refactored XML content filters to resource collectors
+! Allowed passing of property value to JSP "contentload" tag using "property" attribute
+! XML content editor now correctly supports locales, including locale switch
+! XML content editor now allows scrolling in case of many widgets on the screen
+! XML content can now be created with the "New" dialog wizard
+! XML content elements titles can now be localized in editor
+! XML content editor now supports optional "help bubbles" using special locale keys
 
 OpenCms 5.5.1 Caladan (aka 6.0 alpha 1) - September 20, 2004
 ! Junit test suites now have nice display names
