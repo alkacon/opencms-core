@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2002/10/23 18:28:57 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2002/11/05 09:33:42 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.37 $ $Date: 2002/10/23 18:28:57 $
+ * @version $Revision: 1.38 $ $Date: 2002/11/05 09:33:42 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -592,11 +592,13 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         try{
         	resowner = cms.readUser(user);
         } catch (CmsException e){
+        	System.err.println("User "+user+" not found");
         	resowner = cms.getRequestContext().currentUser();	
         }
         try{
         	resgroup = cms.readGroup(group);
         } catch (CmsException e){
+        	System.err.println("Group "+group+" not found");
         	resgroup = cms.getRequestContext().currentGroup();	
         }        
         try {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2002/10/23 15:15:42 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2002/11/05 09:33:27 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -742,11 +742,13 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         try{
         	resowner = cms.readUser(user);
         } catch (CmsException e){
+        	System.err.println("User "+user+" not found");
         	resowner = cms.getRequestContext().currentUser();	
         }
         try{
         	resgroup = cms.readGroup(group);
         } catch (CmsException e){
+        	System.err.println("Group "+group+" not found");
         	resgroup = cms.getRequestContext().currentGroup();	
         } 
         // try to create the resource		

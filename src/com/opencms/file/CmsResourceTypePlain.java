@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2002/10/23 15:12:46 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/11/05 09:33:59 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -383,11 +383,13 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
         try{
         	resowner = cms.readUser(user);
         } catch (CmsException e){
+        	System.err.println("User "+user+" not found");
         	resowner = cms.getRequestContext().currentUser();	
         }
         try{
         	resgroup = cms.readGroup(group);
         } catch (CmsException e){
+        	System.err.println("Group "+group+" not found");
         	resgroup = cms.getRequestContext().currentGroup();	
         }        
         try {
