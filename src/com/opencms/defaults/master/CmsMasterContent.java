@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2002/08/21 11:32:45 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2002/08/23 16:49:33 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.23 $
- * $Date: 2002/08/21 11:32:45 $
+ * $Revision: 1.24 $
+ * $Date: 2002/08/23 16:49:33 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -635,6 +635,16 @@ public abstract class CmsMasterContent
     public void undelete(CmsObject cms) throws Exception {
         getDbAccessObject(getSubId()).undelete(m_cms, this, m_dataSet);
     }
+    
+    /**
+     * Overwrite this method in your subclasses to execute any tasks before the resources are published.
+     */
+    public static boolean beforePublish( CmsObject cms, Boolean enableHistory,
+        Integer projectId, Integer versionId, Long publishingDate,
+        Vector changedRessources, Vector changedModuleData, CmsMasterDataSet dataset ) {
+            
+        return true;
+    }
 
     /**
      * Publishes all modified content definitions for this project.
@@ -656,10 +666,10 @@ public abstract class CmsMasterContent
         String contentDefinitionClassName, Vector changedRessources,
         Vector changedModuleData) throws CmsException {
 
-        // now publish the project
-        getDbAccessObject(subId).publishProject(cms, enableHistory, projectId,
-            versionId, publishingDate, subId, contentDefinitionClassName,
-            changedRessources, changedModuleData );
+         // now publish the project
+         getDbAccessObject(subId).publishProject(cms, enableHistory, projectId,
+             versionId, publishingDate, subId, contentDefinitionClassName,
+             changedRessources, changedModuleData );
     }
 
     /**
