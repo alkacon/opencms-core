@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/09 12:35:50 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2000/06/09 15:19:09 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.32 $ $Date: 2000/06/09 12:35:50 $
+ * @version $Revision: 1.33 $ $Date: 2000/06/09 15:19:09 $
  */
 public interface I_CmsQuerys {
     
@@ -84,7 +84,7 @@ public interface I_CmsQuerys {
 															 + "WHERE PROJECT_ID = ?";
    	
 	public static final Integer C_RESOURCES_DELETE_KEY = new Integer(106);
-	public static final String C_RESOURCE_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
+	public static final String C_RESOURCES_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
         														 
     public static final Integer C_RESOURCES_UPDATE_KEY = new Integer(107);
 	public static final String C_RESOURCES_UPDATE ="UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET "
@@ -102,6 +102,13 @@ public interface I_CmsQuerys {
                                                +"RESOURCE_LASTMODIFIED_BY = ? ,"
                                                +"SIZE = ? "
                                                +"WHERE RESOURCE_ID = ?";
+    
+    public static final Integer C_RESOURCES_ID_DELETE_KEY = new Integer(108);
+	public static final String C_RESOURCES_ID_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE RESOURCE_ID = ?";
+    
+    public static final Integer C_RESOURCES_GET_SUBFOLDER_KEY = new Integer(109);
+	public static final String C_RESOURCES_GET_SUBFOLDER = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE PARENT_ID = ? AND RESOURCE_TYPE = "
+																	+ I_CmsConstants.C_TYPE_FOLDER;
     
     public static final Integer C_RESOURCES_PUBLISH_PROJECT_READFILE_KEY = new Integer(110);
 	public static final String C_RESOURCES_PUBLISH_PROJECT_READFILE =  "SELECT " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_NAME, "
@@ -140,6 +147,11 @@ public interface I_CmsQuerys {
 	
 	public static final Integer C_RESOURCES_READBYPROJECT_KEY = new Integer(122);
 	public static final String C_RESOURCES_READBYPROJECT = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES where PROJECT_ID = ?";
+
+    public static final Integer C_RESOURCES_GET_FILESINFOLDER_KEY = new Integer(130);
+	public static final String C_RESOURCES_GET_FILESINFOLDER = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE PARENT_ID = ? AND RESOURCE_TYPE <> "
+																	+ I_CmsConstants.C_TYPE_FOLDER;
+
 
 	// Constants for files table
 	public static final String C_FILE_ID="FILE_ID";

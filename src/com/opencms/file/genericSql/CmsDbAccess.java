@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/09 13:57:31 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2000/06/09 15:19:09 $
+ * Version: $Revision: 1.51 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.50 $ $Date: 2000/06/09 13:57:31 $ * 
+ * @version $Revision: 1.51 $ $Date: 2000/06/09 15:19:09 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -3154,9 +3154,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
                                                res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
                                                res.getInt(C_RESOURCES_LASTMODIFIED_BY));
                         // check if this resource is marked as deleted
-                        if (folder.getState() == C_STATE_DELETED) {
-                            throw new CmsException("["+this.getClass().getName()+"]"+folder.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);  
-                        }
+                       // if (folder.getState() == C_STATE_DELETED) {
+                       //     throw new CmsException("["+this.getClass().getName()+"]"+folder.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);  
+                       // }
                    }else {
                  throw new CmsException("["+this.getClass().getName()+"] "+foldername,CmsException.C_NOT_FOUND);  
                }
@@ -3275,6 +3275,292 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
          return readFolder(project.getId(),foldername);
      }
 
+	/**
+	 * Creates a new folder from an existing folder object.
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param folder The folder to be written to the Cms.
+     *
+	 * @param foldername The complete path of the new name of this folder.
+	 * 
+	 * @return The created folder.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	 public CmsFolder createFolder(CmsProject project,
+                                   CmsProject onlineProject,
+                                   CmsFolder folder,
+                                   int resourceId, int parentId,int fileId,
+                                   String foldername,int resourceLastModifiedBy)
+         throws CmsException{
+          CmsFolder oldFolder = null;
+          int state=0;         
+          if (project.equals(onlineProject)) {
+             state= folder.getState();
+          } else {
+             state=C_STATE_NEW;
+          }
+         
+           // Test if the file is already there and marked as deleted.
+           // If so, delete it
+           try {
+				 oldFolder = readFolder(project.getId(),foldername);
+				 if (oldFolder.getState() == C_STATE_DELETED){
+					removeFolder(oldFolder);
+					state = C_STATE_CHANGED;
+				 }	     
+           } catch (CmsException e) {}
+		   if (resourceId == C_UNKNOWN_ID){
+				resourceId = nextId(C_TABLE_RESOURCES);
+		   }
+           if (fileId == C_UNKNOWN_ID){
+				fileId = nextId(C_TABLE_FILES);
+		   }
+		   PreparedStatement statement = null;
+            try {   
+                // write new resource to the database
+                statement = m_pool.getPreparedStatement(C_RESOURCES_WRITE_KEY);
+                statement.setInt(1,resourceId);
+                statement.setInt(2,parentId);
+                statement.setString(3, foldername);
+                statement.setInt(4,folder.getType());
+                statement.setInt(5,folder.getFlags());
+                statement.setInt(6,folder.getOwnerId());
+                statement.setInt(7,folder.getGroupId());
+                statement.setInt(8,project.getId());
+                statement.setInt(9,fileId);
+                statement.setInt(10,folder.getAccessFlags());
+                statement.setInt(11,C_STATE_NEW);
+                statement.setInt(12,folder.isLockedBy());
+                statement.setInt(13,folder.getLauncherType());
+                statement.setString(14,folder.getLauncherClassname());
+                statement.setTimestamp(15,new Timestamp(folder.getDateCreated()));
+                statement.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
+                statement.setInt(17,0);
+                statement.setInt(18,resourceLastModifiedBy);
+                statement.executeUpdate();
+
+            } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+			}finally {
+				if( statement != null) {
+					m_pool.putPreparedStatement(C_RESOURCES_WRITE_KEY, statement);
+				}
+			 }  
+         //return readFolder(project,folder.getAbsolutePath());
+         return readFolder(project.getId(),foldername);
+     }
+
+	 /**
+      * Deletes a folder in the database. 
+      * This method is used to physically remove a folder form the database.
+      * 
+      * @param project The project in which the resource will be used.
+	  * @param foldername The complete path of the folder.
+      * @exception CmsException Throws CmsException if operation was not succesful
+      */
+     public void removeFolder(CmsFolder folder) 
+        throws CmsException{
+         
+         // the current implementation only deletes empty folders
+         // check if the folder has any files in it
+         Vector files= getFilesInFolder(folder);
+         files=getUndeletedResources(files);
+         if (files.size()==0) {
+             // check if the folder has any folders in it
+             Vector folders= getSubFolders(folder);
+             folders=getUndeletedResources(folders);
+             if (folders.size()==0) {
+             //this folder is empty, delete it
+		     PreparedStatement statement = null;
+                 try {          
+                    // delete the folder
+		            statement = m_pool.getPreparedStatement(C_RESOURCES_ID_DELETE_KEY);
+		            statement.setInt(1,folder.getResourceId());
+		            statement.executeUpdate();
+                 } catch (SQLException e){
+                      throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		         }finally {
+					if( statement != null) {
+						m_pool.putPreparedStatement(C_RESOURCES_ID_DELETE_KEY, statement);
+					}
+				  } 
+             } else {
+                 throw new CmsException("["+this.getClass().getName()+"] "+folder.getAbsolutePath(),CmsException.C_NOT_EMPTY);  
+              }
+         } else {
+                 throw new CmsException("["+this.getClass().getName()+"] "+folder.getAbsolutePath(),CmsException.C_NOT_EMPTY);  
+         }
+	 }
+     
+   	/**
+	 * Returns a Vector with all subfolders.<BR/>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param foldername the complete path to the folder.
+	 * 
+	 * @return Vector with all subfolders for the given folder.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	 public Vector getSubFolders(CmsFolder parentFolder)
+         throws CmsException {
+         Vector folders=new Vector();
+         CmsFolder folder=null;
+         ResultSet res =null;
+         PreparedStatement statement = null;
+           try {
+             //  get all subfolders
+             statement = m_pool.getPreparedStatement(C_RESOURCES_GET_SUBFOLDER_KEY);
+             statement.setInt(1,parentFolder.getResourceId()); 
+             res = statement.executeQuery();             
+            
+            // create new folder objects
+		    while ( res.next() ) {
+               folder = new CmsFolder(res.getInt(C_RESOURCES_RESOURCE_ID),
+											   res.getInt(C_RESOURCES_PARENT_ID),
+											   res.getInt(C_RESOURCES_FILE_ID),
+											   res.getString(C_RESOURCES_RESOURCE_NAME),
+                                               res.getInt(C_RESOURCES_RESOURCE_TYPE),
+                                               res.getInt(C_RESOURCES_RESOURCE_FLAGS),
+                                               res.getInt(C_RESOURCES_USER_ID),
+                                               res.getInt(C_RESOURCES_GROUP_ID),
+                                               res.getInt(C_PROJECT_ID_RESOURCES),
+                                               res.getInt(C_RESOURCES_ACCESS_FLAGS),
+                                               res.getInt(C_RESOURCES_STATE),
+                                               res.getInt(C_RESOURCES_LOCKED_BY),
+                                               res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
+                                               res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
+                                               res.getInt(C_RESOURCES_LASTMODIFIED_BY)
+                                               );
+			   folders.addElement(folder);             
+             }
+             res.close();
+
+         } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);		
+		} catch( Exception exc ) {
+     		throw new CmsException("getSubFolders "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_RESOURCES_GET_SUBFOLDER_KEY, statement);
+			}
+		 } 
+         return SortEntrys(folders);
+     }
+	
+	/**
+	 * Returns a Vector with all file headers of a folder.<BR/>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param foldername the complete path to the folder.
+	 * 
+	 * @return subfiles A Vector with all file headers of the folder.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	 public Vector getFilesInFolder(CmsFolder parentFolder)
+         throws CmsException {
+         Vector files=new Vector();
+         CmsResource file=null;
+         ResultSet res =null;
+         PreparedStatement statement  = null;
+            try {
+            //  get all files in folder
+            statement = m_pool.getPreparedStatement(C_RESOURCES_GET_FILESINFOLDER_KEY);
+            statement.setInt(1,parentFolder.getResourceId()); 
+            res = statement.executeQuery();             
+             
+            // create new file objects
+		    while ( res.next() ) {
+                     file = new CmsFile(res.getInt(C_RESOURCES_RESOURCE_ID),
+										   res.getInt(C_RESOURCES_PARENT_ID),
+										   res.getInt(C_RESOURCES_FILE_ID),
+										   res.getString(C_RESOURCES_RESOURCE_NAME),
+                                           res.getInt(C_RESOURCES_RESOURCE_TYPE),
+                                           res.getInt(C_RESOURCES_RESOURCE_FLAGS),
+                                           res.getInt(C_RESOURCES_USER_ID),
+                                           res.getInt(C_RESOURCES_GROUP_ID),
+                                           res.getInt(C_PROJECT_ID_RESOURCES),
+                                           res.getInt(C_RESOURCES_ACCESS_FLAGS),
+                                           res.getInt(C_RESOURCES_STATE),
+                                           res.getInt(C_RESOURCES_LOCKED_BY),
+                                           res.getInt(C_RESOURCES_LAUNCHER_TYPE),
+                                           res.getString(C_RESOURCES_LAUNCHER_CLASSNAME),
+                                           res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
+                                           res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
+                                           res.getInt(C_RESOURCES_LASTMODIFIED_BY),
+                                           new byte[0],
+                                           res.getInt(C_RESOURCES_SIZE)
+                                           );
+                     files.addElement(file);
+             }
+             res.close();
+
+         } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);		
+		} catch( Exception exc ) {
+            throw new CmsException("getFilesInFolder "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_RESOURCES_GET_FILESINFOLDER_KEY, statement);
+			}
+		 } 
+         return SortEntrys(files);
+     }
+
+     /**
+	 * Sorts a vector of files or folders alphabetically. 
+	 * This method uses an insertion sort algorithem.
+	 * 
+	 * @param unsortedList Array of strings containing the list of files or folders.
+	 * @return Array of sorted strings.
+	 */
+	private Vector SortEntrys(Vector list) {
+		int in,out;
+		int nElem = list.size();
+		
+        CmsResource[] unsortedList = new CmsResource[list.size()];
+        for (int i=0;i<list.size();i++) {
+            unsortedList[i]=(CmsResource)list.elementAt(i);
+        }
+        
+ 		for(out=1; out < nElem; out++) {
+			 CmsResource temp= unsortedList[out];
+			in = out;
+			while (in >0 && unsortedList[in-1].getAbsolutePath().compareTo(temp.getAbsolutePath()) >= 0){
+				unsortedList[in]=unsortedList[in-1];
+				--in;
+			}
+			unsortedList[in]=temp;
+		}
+        
+        Vector sortedList=new Vector();
+        for (int i=0;i<list.size();i++) {
+            sortedList.addElement(unsortedList[i]);
+        }
+               
+		return sortedList;
+	}
+    
+     
+    /**
+     * Gets all resources that are marked as undeleted.
+     * @param resources Vector of resources
+     * @return Returns all resources that are markes as deleted
+     */
+    private Vector getUndeletedResources(Vector resources) {
+        Vector undeletedResources=new Vector();
+                
+        for (int i=0;i<resources.size();i++) {
+            CmsResource res=(CmsResource)resources.elementAt(i);
+            if (res.getState() != C_STATE_DELETED) {
+                undeletedResources.addElement(res);
+            }
+        }
+        
+        return undeletedResources;
+    }
 	 
     /**
 	 * Deletes all files in CMS_FILES without fileHeader in CMS_RESOURCES
@@ -3388,6 +3674,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         m_pool.initPreparedStatement(C_FILES_MAXID_KEY,C_FILES_MAXID);
         m_pool.initPreparedStatement(C_RESOURCES_READ_KEY,C_RESOURCES_READ);
         m_pool.initPreparedStatement(C_RESOURCES_WRITE_KEY,C_RESOURCES_WRITE);
+        m_pool.initPreparedStatement(C_RESOURCES_GET_SUBFOLDER_KEY,C_RESOURCES_GET_SUBFOLDER);
+        m_pool.initPreparedStatement(C_RESOURCES_DELETE_KEY,C_RESOURCES_DELETE);
+        m_pool.initPreparedStatement(C_RESOURCES_ID_DELETE_KEY,C_RESOURCES_ID_DELETE);
+        m_pool.initPreparedStatement(C_RESOURCES_GET_FILESINFOLDER_KEY,C_RESOURCES_GET_FILESINFOLDER);
         m_pool.initPreparedStatement(C_RESOURCES_PUBLISH_PROJECT_READFILE_KEY,C_RESOURCES_PUBLISH_PROJECT_READFILE);
         m_pool.initPreparedStatement(C_RESOURCES_PUBLISH_PROJECT_READFOLDER_KEY,C_RESOURCES_PUBLISH_PROJECT_READFOLDER);
         m_pool.initPreparedStatement(C_RESOURCES_UPDATE_KEY,C_RESOURCES_UPDATE);
