@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/Attic/todo.txt,v $
- * Date   : $Date: 2002/08/23 13:38:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2002/08/26 13:37:39 $
+ * Version: $Revision: 1.3 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,15 +55,16 @@ Description:
   This new folder structure would achive the same result, but without 
   clustering the root folder:
 
-  /system
-  /system/content
-  /system/download
-  /system/externallinks
-  /system/htmlgalleries
-  /system/moduledemos
-  /system/pics
+  /system (remains)
+  /system/bodies (former /content/bodys)
+  /system/galleries/download (former /download)
+  /system/galleries/externallinks (former /externallinks)
+  /system/galleries/htmlgalleries (former /htmlgalleries)
+  /system/moduledemos (former /moduledemos)
+  /system/pics (former /pics/system)
+  /system/modules/default (former /content directory without /content/bodys)
   [other directories already below /system remain]
-    
+
 Issues: 
    This changes require re-coding a lot of path information that might
    be clustered in the Java sources and the workplace files. 
@@ -74,8 +75,21 @@ Issues:
    using the old structure to the new structure. This might be achived
    with a special import / export filter method.
 
-Assigned to: 
-  (No volunteer yet)
+Volunteers: 
+  Alexander Kandzior (a.kandzior@alkacon.com) 
+
+Updates:
+  (08/26/02) Alexander Kandzior:
+  I updated several Workplace files that used hard - coded path information
+  to use constants from com.opencms.workplace.I_CmsWpConstants instead. It's now
+  possible to move the "/content" directory in a fresh installation below 
+  "/system" by just changing the constants in I_CmsWpConstants, recompiling, 
+  installing the new JAR and moving the directories to the new locations in 
+  the wrokplace (see above).
+  I assume moving most of the galleries would no be to difficult either. 
+  Changing the "/pics" path requires a lot of search and replace in existing
+  templates, but should be doable in an acceptable time frame. The true issue is 
+  finding a way to migrate an old system to the new structure.
 
 
 [ ? ] Logfile rotation
@@ -90,7 +104,7 @@ Description:
 Issues:
     None known. Someone has to do the work.
 
-Assigned to: 
+Volunteers: 
   (No volunteer yet)
 
 
@@ -110,7 +124,7 @@ Issues:
   Adding a new resource type in OpenCms is tricky. Also, there must be a way devised
   that binds the Velocity template to a corrosponding Velocity class. 
 
-Assigned to: 
+Volunteers:  
   (No volunteer yet)
 
 
@@ -126,7 +140,7 @@ Description:
 Issues:
   None known. Someone has to do the work.
 
-Assigned to: 
+Volunteers: 
   (No volunteer yet)
 
 
@@ -145,7 +159,7 @@ Description:
 Issues:
   None known. Someone has to do the work.
 
-Assigned to: 
+Volunteers: 
   (No volunteer yet)
 
 
@@ -165,7 +179,7 @@ Description:
 Issues:
   None known.
 
-Assigned to: 
+Volunteers: 
   (No volunteer yet)
 
 
@@ -181,11 +195,11 @@ Description:
 Issues:
   Make sure old modules that still use "uk" locale are still running.
 
-Assigned to: 
+Volunteers: 
   (No volunteer yet)
 
 
-[ ? ] Add i18n changes to release version
+[ + ] Add i18n changes to release version
 ================================================================================
 From:  
   Alexander Kandzior (a.kandzior@alkacon.com) 
@@ -203,8 +217,49 @@ Description:
 Issues:
   Make sure the changes have no side - effect on the rest of the system.
 
-Assigned to: 
-  (No volunteer yet)
+Volunteers: 
+  Michael Emmerich (Michael.Emmerich@framfab.de)
+
+Updates:
+  (08/26/02) Michael Emmerich:
+  Integration of Gridnine code so far has been successful. 
+  Some issues regarding German umlauts have been resolved in latest code 
+  version from Gridnine. Test have been succesful so for. 
+  Some changes to new "content-encoding" property still needed.
+  After final test have been made the code will be merged into the 5.0 branch.  
+
+  Other comments for this release:
+  Features:
+  Workplace is converted to UTF-8 encoding.
+
+  New variable in opencms.properties file: defaultContentEncoding - 
+  sets the default encoding of the pages.
+
+  New property "content-encoding" of the page is added. Content-encoding 
+  property sets the encoding of the specific page. If not specified the 
+  defaultContentEncoding from opencms.properties file will be used.
+
+  New user method getEncoding() in order to insert in XML templates 
+  (<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD
+  name="getEncoding"/><![CDATA[">)
+
+  Property_value field in all *_properties tables is changed to TEXT from
+  VARCHAR(255) in MySQL database. This change is required since now properties 
+  are url-encoded to avoid Unicode problem (MySQL doesn't support Unicode yet). 
+  Therefore the length of the property string is bigger and it is not enough to 
+  have 255 characters. Attention: Developers shouldn't use ORDER BY clause in 
+  SQL statements since it will be not Unicode sort order but url-encoded 
+  sorting. There are no ORDER BY clauses for property_value in the current code.
+
+  Known issues:
+  Change property_value field in all *_properties tables for supported databases. 
+  If database supports Unicode property_value should not be url-encoded. 
+  For example it is possible to use nvarchar(4000) in SQL Server. It is better
+  to use more then 255 symbols since there is always need for more characters 
+  (description, keywords, etc) 
+  
+  Netscape Navigator 6.2 doesn't show the 
+  "Code editor" page properly. We are working on this now.  
 
 
 [ ? ] English help file translations
@@ -226,6 +281,11 @@ Issues:
   in turn requires changing the reference to the helpfiles in all workplace 
   files. 
 
-Assigned to: 
-  (No volunteer yet)
+Volunteers: 
+  Massimiliano Alessandri (m.alessandri@tiscali.it)
+
+Updates:
+  (08/26/02) Alexander Kandzior:
+  Massimiliano Alessandri from Italy has volunteerd to do an Italian translation
+  after an english translation is available.
 
