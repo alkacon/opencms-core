@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/Attic/CmsXmlDefaultContentFilter.java,v $
- * Date   : $Date: 2004/08/03 07:19:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/09/27 17:13:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public class CmsXmlDefaultContentFilter implements I_CmsXmlContentFilter {
@@ -109,6 +109,10 @@ public class CmsXmlDefaultContentFilter implements I_CmsXmlContentFilter {
      */
     protected List getAllInFolder(CmsObject cms, String param) throws CmsException {
 
+        if (param == null) {
+            throw new CmsException("Filter requires a parameter in the form '/sites/default/myfolder/|11'");            
+        }
+        
         int pos1 = param.indexOf('|');
         if (pos1 == -1) {
             throw new CmsException("Malformed filter parameter '" + param + "'");
@@ -154,6 +158,10 @@ public class CmsXmlDefaultContentFilter implements I_CmsXmlContentFilter {
      */
     protected String getAllInFolderCreate(CmsObject cms, String param) throws CmsException {
 
+        if (param == null) {
+            throw new CmsException("Filter requires a parameter e.g. in the form '/sites/default/myfolder/file_${number}.html|11'");            
+        }
+        
         int pos1 = param.indexOf('|');
         if (pos1 == -1) {
             throw new CmsException("Malformed filter parameter '" + param + "'");
