@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/09 11:47:58 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2000/06/09 11:52:20 $
+ * Version: $Revision: 1.44 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.43 $ $Date: 2000/06/09 11:47:58 $ * 
+ * @version $Revision: 1.44 $ $Date: 2000/06/09 11:52:20 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -2470,41 +2470,23 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
             try {   
                 statement=m_pool.getPreparedStatement(C_RESOURCES_WRITE_KEY);
                 // write new resource to the database
-                //RESOURCE_ID
                 statement.setInt(1,nextId(C_TABLE_RESOURCES));
-                //PARENT_ID
                 statement.setInt(2,resource.getParentId());
-                //RESOURCE_NAME
                 statement.setString(3,resource.getAbsolutePath());
-                //RESOURCE_TYPE
                 statement.setInt(4,resource.getType());
-                //RESOURCE_FLAGS
                 statement.setInt(5,resource.getFlags());
-                //USER_ID
                 statement.setInt(6,resource.getOwnerId());
-                //GROUP_ID
                 statement.setInt(7,resource.getGroupId());
-                //PROJECT_ID
                 statement.setInt(8,project.getId());
-                //FILE_ID
                 statement.setInt(9,resource.getFileId());
-                //ACCESS_FLAGS
                 statement.setInt(10,resource.getAccessFlags());
-                //STATE
                 statement.setInt(11,resource.getState());
-                //LOCKED_BY
                 statement.setInt(12,resource.isLockedBy());
-                //LAUNCHER_TYPE
                 statement.setInt(13,resource.getLauncherType());
-                //LAUNCHER_CLASSNAME
                 statement.setString(14,resource.getLauncherClassname());
-                //DATE_CREATED
                 statement.setTimestamp(15,new Timestamp(resource.getDateCreated()));
-                //DATE_LASTMODIFIED
                 statement.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
-                //SIZE
                 statement.setInt(17,resource.getLength());
-                //RESOURCE_LASTMODIFIED_BY
                 statement.setInt(18,resource.getResourceLastModifiedBy());
                 statement.executeUpdate();
                 
@@ -2604,7 +2586,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
                // or form the online project.
                
                // get the file header
-               file=readFileHeader(project,filename);
+               file=readFileHeader(project.getId(),filename);
                // check if the file is marked as deleted
                if (file.getState() == C_STATE_DELETED) {
                    throw new CmsException("["+this.getClass().getName()+"] "+CmsException.C_NOT_FOUND); 
@@ -2650,7 +2632,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 public CmsFile readFileHeader(CmsProject project, String filename)
+	 public CmsFile readFileHeader(int projectId, String filename)
          throws CmsException {
          
          CmsFile file=null;
@@ -2660,7 +2642,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
                statement=m_pool.getPreparedStatement(C_RESOURCES_READ_KEY);
                // read file data from database
                statement.setString(1, filename);
-               statement.setInt(2, project.getId());
+               statement.setInt(2, projectId);
                res = statement.executeQuery();
                // create new file
                if(res.next()) {
@@ -2736,7 +2718,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
            // Test if the file is already there and marked as deleted.
            // If so, delete it
            try {
-            readFileHeader(project,filename);     
+            readFileHeader(project.getId(),filename);     
            } catch (CmsException e) {
                // if the file is maked as deleted remove it!
                if (e.getType()==CmsException.C_RESOURCE_DELETED) {
@@ -2755,48 +2737,28 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
            try {             
                 statement = m_pool.getPreparedStatement(C_RESOURCES_WRITE_KEY);
                 // write new resource to the database
-                //RESOURCE_ID
                 statement.setInt(1,resourceId);
-                //PARENT_ID
                 statement.setInt(2,parentId);
-                //RESOURCE_NAME
                 statement.setString(3, filename);
-                //RESOURCE_TYPE
                 statement.setInt(4,resourceType.getResourceType());
-                //RESOURCE_FLAGS
                 statement.setInt(5,flags);
-                //USER_ID
                 statement.setInt(6,user.getId());
-                //GROUP_ID
                 statement.setInt(7,user.getDefaultGroupId());
-                //PROJECT_ID
                 statement.setInt(8,project.getId());
-                //FILE_ID
                 statement.setInt(9,fileId);
-                //ACCESS_FLAGS
                 statement.setInt(10,C_ACCESS_DEFAULT_FLAGS);
-                //STATE
                 statement.setInt(11,state);
-                //LOCKED_BY
                 statement.setInt(12,C_UNKNOWN_ID);
-                //LAUNCHER_TYPE
                 statement.setInt(13,resourceType.getLauncherType());
-                //LAUNCHER_CLASSNAME
                 statement.setString(14,resourceType.getLauncherClass());
-                //DATE_CREATED
                 statement.setTimestamp(15,new Timestamp(System.currentTimeMillis()));
-                //DATE_LASTMODIFIED
                 statement.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
-                //SIZE
                 statement.setInt(17,contents.length);
-                //RESOURCE_LASTMODIFIED_BY
                 statement.setInt(18,resourceLastModifiedBy);
                 statement.executeUpdate();
                 
                 statementFileWrite = m_pool.getPreparedStatement(C_FILES_WRITE_KEY);
-                //FILE_ID
                 statementFileWrite.setInt(1,fileId);
-                //FILE_CONTENT
                 statementFileWrite.setBytes(2,contents);
                 statementFileWrite.executeUpdate();
          } catch (SQLException e){                        
@@ -2811,6 +2773,90 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 			 }	
          return readFile(project,onlineProject,filename);
      }
+	
+    /**
+	 * Creates a new file from an given CmsFile object and a new filename.
+     *
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param file The file to be written to the Cms.
+	 * @param filename The complete new name of the file (including pathinformation).
+	 * 
+	 * @return file The created file.
+	 * 
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */    
+	 public CmsFile createFile(CmsProject project,
+                               CmsProject onlineProject,
+                               CmsFile file,int resourceId,
+                               int parentId,int fileId, String filename,
+                               int resourceLastModifiedBy)
+         throws CmsException {
+          int state=0;         
+          if (project.equals(onlineProject)) {
+             state= file.getState();
+          } else {
+             state=C_STATE_NEW;
+          }
+           
+           // Test if the file is already there and marked as deleted.
+           // If so, delete it
+           try {
+            readFileHeader(project.getId(),filename);     
+           } catch (CmsException e) {
+               // if the file is maked as deleted remove it!
+               if (e.getType()==CmsException.C_RESOURCE_DELETED) {
+                    removeFile(project,filename);
+                    state=C_STATE_CHANGED;
+               }              
+           }
+           if (resourceId == C_UNKNOWN_ID){
+				resourceId = nextId(C_TABLE_RESOURCES);
+		   }
+		   fileId = nextId(C_TABLE_FILES);
+		   PreparedStatement statementResourceWrite = null;
+		   PreparedStatement statementFileWrite = null;
+           try {   
+                statementResourceWrite = m_pool.getPreparedStatement(C_RESOURCES_WRITE_KEY);
+                statementResourceWrite.setInt(1,resourceId);
+                statementResourceWrite.setInt(2,parentId);
+                statementResourceWrite.setString(3, filename);
+                statementResourceWrite.setInt(4,file.getType());
+                statementResourceWrite.setInt(5,file.getFlags());
+                statementResourceWrite.setInt(6,file.getOwnerId());
+                statementResourceWrite.setInt(7,file.getGroupId());
+                statementResourceWrite.setInt(8,project.getId());
+                statementResourceWrite.setInt(9,fileId);
+                statementResourceWrite.setInt(10,file.getAccessFlags());
+                statementResourceWrite.setInt(11,state);
+                statementResourceWrite.setInt(12,file.isLockedBy());
+                statementResourceWrite.setInt(13,file.getLauncherType());
+                statementResourceWrite.setString(14,file.getLauncherClassname());
+                statementResourceWrite.setTimestamp(15,new Timestamp(file.getDateCreated()));
+                statementResourceWrite.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
+                statementResourceWrite.setInt(17,file.getContents().length);
+                statementResourceWrite.setInt(18,resourceLastModifiedBy);
+                statementResourceWrite.executeUpdate();
+                
+                statementFileWrite = m_pool.getPreparedStatement(C_FILES_WRITE_KEY);
+                statementFileWrite.setInt(1,fileId);
+                statementFileWrite.setBytes(2,file.getContents());
+                statementFileWrite.executeUpdate();
+                   
+         } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }finally {
+				if( statementResourceWrite != null) {
+					m_pool.putPreparedStatement(C_RESOURCES_WRITE_KEY, statementResourceWrite);
+				}
+				if( statementFileWrite != null) {
+					m_pool.putPreparedStatement(C_FILES_WRITE_KEY, statementFileWrite);
+				}
+			 }	 
+         return readFile(project,onlineProject,filename);
+      }
+     
+    
 	
 	 /**
       * Deletes a file in the database. 
@@ -2840,6 +2886,79 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 				}
 			 }         
      }
+     
+     /**
+      * Deletes a folder in the database. 
+      * This method is used to physically remove a folder form the database.
+      * It is internally used by the publish project method.
+      * 
+      * @param project The project in which the resource will be used.
+	  * @param foldername The complete path of the folder.
+      * @exception CmsException Throws CmsException if operation was not succesful
+      */
+     private void removeFolderForPublish(CmsProject project, String foldername) 
+        throws CmsException{
+        
+         PreparedStatement statement = null;
+         try {    
+            // delete the folder
+		    statement = m_pool.getPreparedStatement(C_RESOURCES_DELETE_KEY);
+		    statement.setString(1, foldername);
+		    statement.setInt(2,project.getId());
+		    statement.executeUpdate();
+        } catch (SQLException e){
+      	    throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+	    }finally {
+				if( statement != null) {
+					m_pool.putPreparedStatement(C_RESOURCES_DELETE_KEY, statement);
+				}
+			 } 
+     }
+
+     /**
+	 * Writes a folder to the Cms.<BR/>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param foldername The complete name of the folder (including pathinformation).
+	 * @param changed Flag indicating if the file state must be set to changed.
+	 * 
+     * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void writeFolder(CmsProject project, CmsFolder folder, boolean changed)
+         throws CmsException {
+           PreparedStatement statement = null;
+           try {   
+                // update resource in the database
+                statement = m_pool.getPreparedStatement(C_RESOURCES_UPDATE_KEY);
+                statement.setInt(1,folder.getType());
+                statement.setInt(2,folder.getFlags());
+                statement.setInt(3,folder.getOwnerId());
+                statement.setInt(4,folder.getGroupId());
+                statement.setInt(5,folder.getProjectId());
+                statement.setInt(6,folder.getAccessFlags());
+                int state=folder.getState();
+                if ((state == C_STATE_NEW) || (state == C_STATE_CHANGED)) {
+                    statement.setInt(7,state);
+                } else {                                                                       
+                    if (changed==true) {
+                        statement.setInt(7,C_STATE_CHANGED);
+                    } else {
+                        statement.setInt(7,folder.getState());
+                    }
+                }        
+                statement.setInt(8,folder.isLockedBy());
+                statement.setInt(9,folder.getLauncherType());
+                statement.setString(10,folder.getLauncherClassname());
+                statement.setTimestamp(11,new Timestamp(System.currentTimeMillis()));
+                statement.setInt(12,folder.getResourceLastModifiedBy());
+                statement.setInt(13,0);
+                statement.setInt(14,folder.getResourceId());
+                statement.executeUpdate();
+            } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }
+     }
+
 
 	 
     /**
@@ -2954,6 +3073,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         m_pool.initPreparedStatement(C_FILES_MAXID_KEY,C_FILES_MAXID);
         m_pool.initPreparedStatement(C_RESOURCES_READ_KEY,C_RESOURCES_READ);
         m_pool.initPreparedStatement(C_RESOURCES_WRITE_KEY,C_RESOURCES_WRITE);
+        m_pool.initPreparedStatement(C_RESOURCES_UPDATE_KEY,C_RESOURCES_UPDATE);
         m_pool.initPreparedStatement(C_RESOURCES_GET_LOST_ID_KEY,C_RESOURCES_GET_LOST_ID);
         m_pool.initPreparedStatement(C_FILE_DELETE_KEY,C_FILE_DELETE);
         m_pool.initPreparedStatement(C_RESOURCES_DELETE_PROJECT_KEY,C_RESOURCES_DELETE_PROJECT);

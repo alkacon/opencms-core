@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/09 09:51:02 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/06/09 11:52:20 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.29 $ $Date: 2000/06/09 09:51:02 $
+ * @version $Revision: 1.30 $ $Date: 2000/06/09 11:52:20 $
  */
 public interface I_CmsQuerys {
     
@@ -82,7 +82,25 @@ public interface I_CmsQuerys {
     public static final Integer C_RESOURCES_DELETE_PROJECT_KEY = new Integer(105);
 	public static final String C_RESOURCES_DELETE_PROJECT = "DELETE FROM " + C_DATABASE_PREFIX + "RESOURCES "
 															 + "WHERE PROJECT_ID = ?";
-    public static final Integer C_RESOURCES_UNLOCK_KEY = new Integer(120);
+															 
+    public static final Integer C_RESOURCES_UPDATE_KEY = new Integer(106);
+	public static final String C_RESOURCES_UPDATE ="UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET "
+                                               +"RESOURCE_TYPE = ? , "
+                                               +"RESOURCE_FLAGS = ? , "
+                                               +"USER_ID = ? , "
+                                               +"GROUP_ID = ? , "
+                                               +"PROJECT_ID = ? ,"
+                                               +"ACCESS_FLAGS = ? ,"
+                                               +"STATE = ? , "
+                                               +"LOCKED_BY = ? , "
+                                               +"LAUNCHER_TYPE = ? , "
+                                               +"LAUNCHER_CLASSNAME = ? ," 
+                                               +"DATE_LASTMODIFIED = ? ,"
+                                               +"RESOURCE_LASTMODIFIED_BY = ? ,"
+                                               +"SIZE = ? "
+                                               +"WHERE RESOURCE_ID = ?";
+
+	public static final Integer C_RESOURCES_UNLOCK_KEY = new Integer(120);
 	public static final String C_RESOURCES_UNLOCK = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET "
 													+"LOCKED_BY = " + I_CmsConstants.C_UNKNOWN_ID
 													+"WHERE PROJECT_ID = ?";	
