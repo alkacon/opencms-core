@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2001/09/11 15:12:59 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2001/09/12 08:11:16 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -116,7 +116,7 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
                         A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Could not initialize (sub-)element for class \"" + desc.getClassName() + "\". ");
                         A_OpenCms.log(C_OPENCMS_CRITICAL, e.toString());
                         throw new CmsException("Could not initialize (sub-)element for class \"" +
-                                             desc.getClassName() + "\".", CmsException.C_CLASSLOADER_ERROR);
+                                             desc.getClassName() + "\". " +e.toString() , CmsException.C_XML_WRONG_TEMPLATE_CLASS);
                     }
                 }
             }

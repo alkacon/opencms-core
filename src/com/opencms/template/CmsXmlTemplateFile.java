@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2001/09/12 08:10:05 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -41,7 +41,7 @@ import java.io.*;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.46 $ $Date: 2001/07/31 15:50:16 $
+ * @version $Revision: 1.47 $ $Date: 2001/09/12 08:10:05 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -661,7 +661,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                 templateDatablockName = "template." + templateSelector;
             }
             else {
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                if((I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) && (!"script".equals(templateSelector))) {
                     A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "cannot load selected template file section " + templateSelector + " in template file " + getFilename() + ". Fallback to default section.");
                 }
             }
