@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsFlexLruCache.java,v $
- * Date   : $Date: 2002/09/18 10:39:04 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2002/10/30 10:26:16 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,6 +29,8 @@
 package com.opencms.flex.util;
 
 import java.util.*;
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
 
 /**
  * The idea of this cache is, to separate the caching policy from the data structure
@@ -47,7 +49,7 @@ import java.util.*;
  *
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsFlexLruCache extends java.lang.Object {
     
@@ -167,7 +169,8 @@ public class CmsFlexLruCache extends java.lang.Object {
         
         // only objects with cache costs < the max. allowed object cache costs can be cached!
         if ( (this.m_MaxObjectCosts!=-1) && (theCacheObject.getLruCacheCosts()>this.m_MaxObjectCosts) ) {
-            this.log( "you are trying to cache objects with cache costs " + theCacheObject.getLruCacheCosts() + " which is bigger than the max. allowed costs " + this.m_MaxObjectCosts );
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_CACHE))
+                A_OpenCms.log(I_CmsLogChannels.C_FLEX_CACHE, "[FlexLruCache] you are trying to cache objects with cache costs " + theCacheObject.getLruCacheCosts() + " which is bigger than the max. allowed costs " + this.m_MaxObjectCosts );
             return false;
         }
         
@@ -224,7 +227,8 @@ public class CmsFlexLruCache extends java.lang.Object {
         
         // only objects with cache costs < the max. allowed object cache costs can be cached!
         if ( (this.m_MaxObjectCosts!=-1) && (theCacheObject.getLruCacheCosts()>this.m_MaxObjectCosts) ) {
-            this.log( "you are trying to cache objects with cache costs " + theCacheObject.getLruCacheCosts() + " which is bigger than the max. allowed costs " + this.m_MaxObjectCosts );
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_CACHE))
+                A_OpenCms.log(I_CmsLogChannels.C_FLEX_CACHE, "[FlexLruCache] you are trying to cache objects with cache costs " + theCacheObject.getLruCacheCosts() + " which is bigger than the max. allowed costs " + this.m_MaxObjectCosts );
             this.remove( theCacheObject );
             return false;
         }
@@ -406,17 +410,6 @@ public class CmsFlexLruCache extends java.lang.Object {
             // force a finalization/system garbage collection optionally
             Runtime.getRuntime().runFinalization();
             System.gc();
-        }
-    }
-    
-    /**
-     * Write a message to the log media.
-     *
-     * @param theLogMessage the message being logged
-     */
-    private void log( String theLogMessage ) {
-        if (com.opencms.core.A_OpenCms.isLogging() && com.opencms.boot.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-            com.opencms.boot.CmsBase.log(com.opencms.boot.CmsBase.C_FLEX_CACHE, "[" + this.getClass().getName() + "] " + theLogMessage );
         }
     }
     

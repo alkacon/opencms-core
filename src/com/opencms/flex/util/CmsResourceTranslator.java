@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsResourceTranslator.java,v $
- * Date   : $Date: 2002/10/22 12:41:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2002/10/30 10:26:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,10 +75,10 @@ import org.apache.oro.text.regex.MalformedPatternException;
  * </pre><p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.0 beta 2
  */
-public class CmsResourceTranslator {
+public class CmsResourceTranslator implements I_CmsLogChannels {
 
     /** Internal array containing the translations from opencms.properties */
     private String[] m_translations = null;
@@ -111,16 +111,16 @@ public class CmsResourceTranslator {
             try {
                 m_perlPatternCache.addPattern(m_translations[i]);
             } catch(MalformedPatternException e){
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] Malformed resource translation rule:\""+m_translations[i]+"\"");
+                if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL) ) {
+                    A_OpenCms.log(C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] Malformed resource translation rule:\""+m_translations[i]+"\"");
                 }
             }
         }        
         // Initialize the Perl5Util
         m_perlUtil = new Perl5Util(m_perlPatternCache);
         if (DEBUG > 0) System.out.println("["+this.getClass().getName()+"] Resource translation: Iinitialized " + translations.length + " rules.");        
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "["+this.getClass().getName()+"] Resource translation: Iinitialized " + translations.length + " rules.");
+        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO) ) {
+            A_OpenCms.log(C_OPENCMS_INFO, "["+this.getClass().getName()+"] Resource translation: Iinitialized " + translations.length + " rules.");
         }          
     }    
     
@@ -142,7 +142,7 @@ public class CmsResourceTranslator {
             try {
                 if(m_perlUtil.substitute(result, m_translations[i], resourceName) != 0) {
                     // The pattern matched, return the result
-                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_DEBUG) ) {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "["+this.getClass().getName()+"] Resource translation: " + resourceName + " --> " + result);
                     }                    
                     if (DEBUG > 0) System.out.println(this.getClass().getName()+"] Resource translation: " + resourceName + " --> " + result);
@@ -156,8 +156,8 @@ public class CmsResourceTranslator {
                     
                 }
             } catch(MalformedPerl5PatternException e){
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] Malformed resource translation rule:\""+m_translations[i]+"\"");
+                if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL) ) {
+                    A_OpenCms.log(C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] Malformed resource translation rule:\""+m_translations[i]+"\"");
                 }
             }
         }
