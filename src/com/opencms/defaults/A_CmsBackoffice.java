@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/10/24 09:58:00 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2001/10/24 11:41:28 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1925,20 +1925,14 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
     }
 
     /**
-     * Checks if the publishProject method exists in the cd class
+     * Checks if the extended list should be used for displaying the cd
      *
-     * @return boolean Is true if the method exist in the class
+     * @return boolean Is true the extended list should be used
      */
-    private boolean isExtendedList() {
-        // get the publishProject method of the cd class
-        Class cdClass = this.getContentDefinitionClass();
-        try{
-            Boolean theValue = (Boolean)cdClass.getMethod("isExtendedList", new Class[]{}).invoke(null, new Object[]{});
-            return theValue.booleanValue();
-        } catch (Exception e){
-            return false;
-        }
+    public boolean isExtendedList() {
+        return false;
     }
+
   /**
   * This method creates the selectbox in the head-frame
   * @author Tilo Kellermeier
