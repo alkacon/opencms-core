@@ -45,33 +45,36 @@ public abstract class A_ContentDefinition implements I_CmsContent{
 public static Vector applyFilter(CmsObject cms, FilterMethod filterMethod) throws Exception {
 	return applyFilter(cms, filterMethod, null);
 }
+
 /**
  * applies the filter through the method object and the user parameters
  * @returns a vector with the filtered content 
  */
 public static Vector applyFilter(CmsObject cms, FilterMethod filterMethod, String userParameter) throws Exception {
-
-	Vector retValue = new Vector();
-
-	//System.err.println("UserParameter:" + userParameter);
 	Method method = filterMethod.getFilterMethod();
-	Object[] params;
-	if (userParameter != null) {
-		int defaultParameterLength = filterMethod.getDefaultParameter().length;
-		Object[] allParams = new Object[defaultParameterLength + 1];
-		System.arraycopy(filterMethod.getDefaultParameter(), 0, allParams, 0, defaultParameterLength);
-		allParams[defaultParameterLength] = userParameter;
-		params = allParams;
-	} else {
-		params = filterMethod.getDefaultParameter();
+	Object[] defaultParams = filterMethod.getDefaultParameter();
+	Vector allParameters = new Vector();
+	Object[] allParametersArray;
+	Class[] paramTypes = method.getParameterTypes();
+
+	if( (paramTypes.length > 0) && (paramTypes[0] == CmsObject.class) ) {
+		allParameters.addElement(cms);
 	}
-	//System.err.println("has userparam:" + filterMethod.hasUserParameter());
-	if (filterMethod.hasUserParameter() == true) {
-		return (Vector) method.invoke(null, new Object[] {cms, userParameter});
-	} else {
-		return (Vector) method.invoke(null, new Object[] {cms});
-	}		
+	
+	for(int i = 0; i < defaultParams.length; i++) {
+		allParameters.addElement(defaultParams[i]);
+	}
+	
+	if (filterMethod.hasUserParameter()) {
+		allParameters.addElement(userParameter);
+	}
+	
+	allParametersArray = new Object[allParameters.size()];
+	allParameters.copyInto(allParametersArray);
+	
+	return (Vector) method.invoke(null, allParametersArray);	
 }
+
 /**
  * abstract delete method
  * for delete instance of content definition

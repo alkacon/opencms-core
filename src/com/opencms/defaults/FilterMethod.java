@@ -26,6 +26,7 @@ package com.opencms.defaults;
  */
  
 import java.lang.reflect.*;
+import com.opencms.file.*;
 
 /**
  * Insert the type's description here.
@@ -73,10 +74,14 @@ public String getFilterName() {
  */
 public boolean hasUserParameter() {
 	
-	if( m_filterMethod.getParameterTypes().length > 1 ) {
-		return true;
+	// check if this filter needs a user-parameter
+	
+	Class[] paramTypes = m_filterMethod.getParameterTypes();
+	
+	if( (paramTypes.length > 0) && (paramTypes[0] == CmsObject.class) ) {
+		return (paramTypes.length > (m_defaultParameter.length + 1) );
 	} else {
-		return false;
+		return (paramTypes.length > m_defaultParameter.length );
 	}
 }
 /**
