@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/02/15 13:41:27 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2001/04/23 08:59:42 $
+* Version: $Revision: 1.18 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.17 $ $Date: 2001/02/15 13:41:27 $
+ * @version $Revision: 1.18 $ $Date: 2001/04/23 08:59:42 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -144,8 +144,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         if((currentFolder != null) && (!"".equals(currentFolder)) && folderExists(cms,
                 currentFolder)) {
             session.putValue(C_PARA_FILELIST, currentFolder);
-        }
-        else {
+        }else {
             currentFolder = (String)session.getValue(C_PARA_FILELIST);
             if((currentFolder == null) || (!folderExists(cms, currentFolder))) {
                 currentFolder = cms.rootFolder().getAbsolutePath();
@@ -162,106 +161,77 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             if(check == cms.getFileSystemFolderChanges()) {
                 newTreePlease = false;
             }
-        }
-        catch(Exception e) {
-
+        }catch(Exception e) {
         }
         check = cms.getFileSystemFolderChanges();
-
         // get the currentFolder Id
         int currentFolderId = (cms.readFolder(currentFolder)).getResourceId();
-
         // start creating content
         StringBuffer content = new StringBuffer();
         content.append("<html> \n<head> \n<script language=JavaScript>\n");
         content.append("function initialize() {\n");
-
         // the help_url
         content.append(" top.help_url='ExplorerAnsicht/index.html';\n");
-
         // the project
         content.append(" top.setProject(" + cms.getRequestContext().currentProject().getId() + ");\n");
-
         // the onlineProject
         content.append(" top.setOnlineProject(" + cms.onlineProject().getId() + ");\n");
-
         // set the checksum for the tree
         content.append(" top.setChecksum(" + check + ");\n");
-
         // set the writeAccess for the current Folder
         CmsFolder test = cms.readFolder(currentFolder);
         boolean writeAccess = test.getProjectId() == cms.getRequestContext().currentProject().getId();
         content.append(" top.enableNewButton(" + writeAccess + ");\n");
-
         // the folder
         content.append(" top.setDirectory(" + currentFolderId + ",\"" + currentFolder + "\");\n");
         content.append(" top.rD();\n\n");
-
         // now the entries for the filelist
         Vector resources = cms.getResourcesInFolder(currentFolder);
         for(int i = 0;i < resources.size();i++) {
             CmsResource res = (CmsResource)resources.elementAt(i);
             content.append(" top.aF(");
-
             // the name
             content.append("\"" + res.getName() + "\", ");
-
             // the path
             content.append("\"" + res.getPath() + "\", ");
-
             // the title
             String title = "";
             try {
                 title = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_TITLE);
-            }
-            catch(CmsException e) {
-
+            }catch(CmsException e) {
             }
             if(title == null) {
                 title = "";
             }
             content.append("\"" + getChars(title) + "\", ");
-
             // the type
             content.append("\"" + res.getType() + "\", ");
-
             // date of last change
             content.append("\"" + Utils.getNiceDate(res.getDateLastModified()) + "\", ");
-
             // TODO:user who changed it
             content.append("\"" + "TODO" + "\", ");
-
             // date
             content.append("\"" + Utils.getNiceDate(res.getDateCreated()) + "\", ");
-
             // size
             if(res.isFolder()) {
                 content.append("\"" + "" + "\", ");
-            }
-            else {
+            }else {
                 content.append("\"" + res.getLength() + "\", ");
             }
-
             // state
             content.append("" + res.getState() + ", ");
-
             // project
             content.append("\"" + res.getProjectId() + "\", ");
-
             // owner
             content.append("\"" + cms.readUser(res.getOwnerId()).getName() + "\", ");
-
             // group
             content.append("\"" + cms.readGroup(res).getName() + "\", ");
-
             // accessFlags
             content.append("\"" + res.getAccessFlags() + "\", ");
-
             // locked by
             if(res.isLockedBy() == C_UNKNOWN_ID) {
                 content.append("\"" + "" + "\");\n");
-            }
-            else {
+            }else {
                 content.append("\"" + cms.lockedBy(res).getName() + "\");\n");
             }
         }
@@ -285,19 +255,14 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 for(int i = startAt;i < tree.size();i++) {
                     CmsFolder folder = (CmsFolder)tree.elementAt(i);
                     content.append("top.aC(");
-
                     // id
                     content.append(folder.getResourceId() + ", ");
-
                     // name
                     content.append("\"" + folder.getName() + "\", ");
-
                     // parentId
                     content.append(folder.getParentId() + ", false);\n");
                 }
-            }
-            else {
-
+            }else {
                 // offline Project
                 Hashtable idMixer = new Hashtable();
                 CmsFolder rootFolder = (CmsFolder)tree.elementAt(0);
@@ -307,8 +272,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                     grey = false;
                     idMixer.put(new Integer(((CmsFolder)tree.elementAt(1)).getResourceId()),
                             new Integer(rootFolder.getResourceId()));
-                }
-                else {
+                }else {
                     grey = true;
                 }
                 content.append("top.aC(");
@@ -321,27 +285,21 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
 
                         // if the folder is deleted - ignore it and the following online res
                         folderToIgnore = folder.getAbsolutePath();
-                    }
-                    else {
+                    }else {
                         if(folder.getProjectId() != onlineProjectId) {
                             grey = false;
                             parentId = folder.getParentId();
                             try {
-
                                 // the next res is the same res in the online-project: ignore it!
                                 if(folder.getAbsolutePath().equals(((CmsFolder)tree.elementAt(i + 1)).getAbsolutePath())) {
                                     i++;
                                     idMixer.put(new Integer(((CmsFolder)tree.elementAt(i)).getResourceId()),
                                             new Integer(folder.getResourceId()));
                                 }
-                            }
-                            catch(IndexOutOfBoundsException exc) {
-
-
+                            }catch(IndexOutOfBoundsException exc) {
                             // ignore the exception, this was the last resource
                             }
-                        }
-                        else {
+                        }else {
                             grey = true;
                             parentId = folder.getParentId();
                             if(idMixer.containsKey(new Integer(parentId))) {
@@ -349,13 +307,10 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                             }
                         }
                         content.append("top.aC(");
-
                         // id
                         content.append(folder.getResourceId() + ", ");
-
                         // name
                         content.append("\"" + folder.getName() + "\", ");
-
                         // parentId
                         content.append(parentId + ", " + grey + ");\n");
                     }
