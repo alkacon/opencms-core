@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/06 13:35:45 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2000/07/06 15:33:07 $
+ * Version: $Revision: 1.89 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,7 +26,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file.genericSql;
+package com.opencms.file.Oracle;
 
 import javax.servlet.http.*;
 import java.util.*;
@@ -49,7 +49,11 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.88 $ $Date: 2000/07/06 13:35:45 $ * 
+<<<<<<< CmsDbAccess.java
+ * @version $Revision: 1.89 $ $Date: 2000/07/06 15:33:07 $ * 
+=======
+ * @version $Revision: 1.89 $ $Date: 2000/07/06 15:33:07 $ * 
+>>>>>>> 1.88
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
