@@ -13,6 +13,8 @@ OpenCms 4.5.32 Chusuk       - xx January 2001
 * when the property export is set to https, the 404 error is thrown only in the online project
   and it works for folders too.
 * Bugfix in subressource-cache. Now the subressource-cache is user dependend.
+* Bugfix in channel-backoffice (Bug 2204): now the right channel is read after the parent channel
+  was changed. Revision of id-handling when saving a new channel twice.
 - The static message parts of the system-errormessage are stored now in the errormsg.properties.
 - Index added on field sub_id in table cms_module_master and cms_module_online_master
 - Prepared mechanism for showing preview of ressources with a special class and template.
