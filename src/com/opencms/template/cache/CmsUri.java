@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2001/08/01 13:57:44 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -95,6 +95,9 @@ public class CmsUri implements I_CmsConstants {
         checkReadAccess(cms);
         A_CmsElement elem = elementCache.getElementLocator().get(cms, m_startingElement, parameters);
 
+        if(elem == null){
+            throw new CmsException("Couldn't create start element for this uri, have a look at the log file for details.");
+        }
         // check the proxistuff and set the response header
         CmsCacheDirectives proxySettings = new CmsCacheDirectives(true);
         elem.checkProxySettings(cms, proxySettings, parameters);
@@ -108,6 +111,9 @@ public class CmsUri implements I_CmsConstants {
                 A_CmsElement currentEle = elementCache.getElementLocator().get(
                                         cms, new CmsElementDescriptor(currentDef.getClassName(),
                                         currentDef.getTemplateName()), parameters);
+                if(currentEle == null){
+                    throw new CmsException("Couldn't create element '"+name+"', have a look at the log file for details.");
+                }
                 currentEle.checkProxySettings(cms, proxySettings, parameters);
             }
         }
