@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/11/18 14:40:30 $
- * Version: $Revision: 1.451 $
+ * Date   : $Date: 2004/11/22 08:50:56 $
+ * Version: $Revision: 1.452 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.451 $ $Date: 2004/11/18 14:40:30 $
+ * @version $Revision: 1.452 $ $Date: 2004/11/22 08:50:56 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -7802,7 +7802,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     continue;
                 }
 
-                if (!I_CmsConstants.C_ROOT.equals(res.getRootPath()) && !checkParentResource(context, folderList, res)) {
+                if (!I_CmsConstants.C_ROOT.equals(res.getRootPath()) && !(checkParentResource(context, folderList, res) || checkParentResource(context, result, res))) {
                     continue;
                 }
 
