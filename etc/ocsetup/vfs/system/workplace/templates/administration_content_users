@@ -78,9 +78,8 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA[" onLoad="window.top.body.admin_he
 			<tr><td class=dialogtxt>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=right width=50%><INPUT class=button width ="100" type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id="OK" name="OK" onClick="location.href='administration_content_usermanagement.html'"></td>
-					<td class=formular align=left width=50%><INPUT class=button width ="100" type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href='administration_content_usermanagement.html'" onDblClick="CHANGE='yes';submit"></td>
-				</tr>
+					<td class=formular align=center width=50%><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id="OK" name="OK" onClick="location.href='administration_content_usermanagement.html'"></td> 
+				</tr> 
 				</table>
 			</td>
 			</tr>
