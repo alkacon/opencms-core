@@ -44,6 +44,10 @@ case CmsSimplePageEditor.ACTION_SAVE:
 //////////////////// ACTION: save the modified content
 
 	wp.actionSave();
+	if (wp.getAction() == CmsSimpleEditor.ACTION_CANCEL) {
+		// an error occured during save
+		break;
+	}
 
 case CmsSimplePageEditor.ACTION_DEFAULT:
 case CmsSimplePageEditor.ACTION_SHOW:

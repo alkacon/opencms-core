@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/05/03 07:26:51 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2004/05/04 09:27:25 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,10 +38,12 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
+import org.opencms.page.CmsXmlPageException;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -55,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  * 
  * @since 5.1.12
  */
@@ -196,6 +198,10 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * @see org.opencms.workplace.editor.CmsEditor#actionExit()
      */
     public void actionExit() throws IOException, JspException {
+        if (getAction() == ACTION_CANCEL) {
+            // save and exit was canceled
+            return;
+        }        
         // clear temporary file and unlock resource, if in directedit mode
         actionClear(false);
         // close the editor
@@ -227,14 +233,30 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     public void actionSave() throws JspException { 
         try {
-            // save content to temporary file
-            performSaveContent(getParamElementname(), getElementLocale());
-            // copy the temporary file content back to the original file
-            commitTempFile();
-        } catch (CmsException e) {
-            // error during saving, show error dialog
-            showErrorPage(this, e, "save");
-        }
+    
+             // save content to temporary file
+             performSaveContent(getParamElementname(), getElementLocale());
+             // copy the temporary file content back to the original file
+             commitTempFile();
+
+         } catch (CmsXmlPageException e) {
+             // reset the action parameter            
+             setParamAction("");                               
+             showErrorPage(this, e, "xml", C_PATH_EDITORS + "dialogs/confirm.html");
+             // save not successful, set cancel action 
+             setAction(ACTION_CANCEL);
+             return;
+         } catch (CmsException e) {
+             // reset the action parameter            
+             setParamAction("");                               
+             showErrorPage(this, e, "save", C_PATH_EDITORS + "dialogs/confirm.html");
+             // save not successful, set cancel action 
+             setAction(ACTION_CANCEL);
+             return;
+         }
+     
+         // save was successful, set save action 
+         setAction(ACTION_SAVE);              
     }
     
     /**
@@ -508,7 +530,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     protected void initContent() {
         // get the content from the temporary file     
-        try {
+        try {                                  
             CmsXmlPage page = CmsXmlPage.read(getCms(), getCms().readFile(this.getParamTempfile()));
             String elementData = page.getContent(getCms(), getParamElementname(), getElementLocale(), true);
             if (elementData != null) {

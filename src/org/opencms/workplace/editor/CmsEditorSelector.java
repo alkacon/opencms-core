@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorSelector.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/05/04 09:27:25 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.workplace.editor;
 
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.I_CmsWpConstants;
@@ -47,7 +48,7 @@ import org.opencms.workplace.I_CmsWpConstants;
  * @see org.opencms.workplace.editor.I_CmsEditorHandler
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1.14
  */
@@ -83,12 +84,16 @@ public class CmsEditorSelector {
         }
         // get the handler class from the OpenCms runtime property
         I_CmsEditorHandler editorClass = OpenCms.getWorkplaceManager().getEditorHandler();
+
+        // the resourcenameparameter could be encoded, so decode it
+        String resource = getParamResource();
+        resource = CmsEncoder.unescape(resource, CmsEncoder.C_UTF8_ENCODING);
         if (editorClass == null) {
             // error getting the dialog class, return to file list
             return I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "jsp/explorer_files.html";
         }
         // get the dialog URI from the class defined in the registry 
-        return editorClass.getEditorUri(getParamResource(), getJsp());      
+        return editorClass.getEditorUri(resource, getJsp());      
     }
     
     /**
