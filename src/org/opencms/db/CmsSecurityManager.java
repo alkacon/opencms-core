@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/12/17 13:07:00 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/12/17 16:15:23 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -458,7 +458,8 @@ public final class CmsSecurityManager {
     }
     
     /**
-     * Changes the value of the specified propertydefinition on resources from the old value to the new value.<p>
+     * Returns a list with all sub resources of a given folder that have set the given property, 
+     * matching the current property's value with the given old value and replacing it by a given new value.<p>
      *
      * @param context the current request context
      * @param resource the resource on which property definition values are changed
@@ -467,11 +468,11 @@ public final class CmsSecurityManager {
      * @param newValue the new value of the propertydefinition
      * @param recursive if true, change recursively all property values on sub-resources (only for folders)
      * 
-     * @return the resources where the property value has been changed
+     * @return a list with the <code>{@link CmsResource}</code>'s where the property value has been changed.
      *
      * @throws CmsException if operation was not successful
      */
-    public List changePropertyValue(CmsRequestContext context, CmsResource resource, String propertyDefinition, String oldValue, String newValue, boolean recursive) throws CmsException {
+    public List changeResourcesInFolderWithProperty(CmsRequestContext context, CmsResource resource, String propertyDefinition, String oldValue, String newValue, boolean recursive) throws CmsException {
         
         // collect the resources to look up
         List resources = new ArrayList();
@@ -609,6 +610,10 @@ public final class CmsSecurityManager {
     /**
      * Changes the resource flags of a resource.<p>
      * 
+     * The resource flags are used to indicate various "special" conditions
+     * for a resource. Most notably, the "internal only" setting which signals 
+     * that a resource can not be directly requested with it's URL.<p>
+     * 
      * @param context the current request context
      * @param resource the resource to change the flags for
      * @param flags the new resource flags for this resource
@@ -632,11 +637,20 @@ public final class CmsSecurityManager {
     /**
      * Changes the resource type of a resource.<p>
      * 
+     * OpenCms handles resources according to the resource type,
+     * not the file suffix. This is e.g. why a JSP in OpenCms can have the 
+     * suffix ".html" instead of ".jsp" only. Changing the resource type
+     * makes sense e.g. if you want to make a plain text file a JSP resource,
+     * or a binary file an image, etc.<p> 
+     * 
      * @param context the current request context
      * @param resource the resource to change the type for
      * @param type the new resource type for this resource
+     * 
      * @throws CmsException if something goes wrong
+     * 
      * @see org.opencms.file.types.I_CmsResourceType#chtype(CmsObject, CmsSecurityManager, CmsResource, int)
+     * @see CmsObject#chtype(String, int)
      */
     public void chtype(CmsRequestContext context, CmsResource resource, int type) throws CmsException {
 
@@ -679,15 +693,18 @@ public final class CmsSecurityManager {
     /**
      * Copies a resource.<p>
      * 
-     * You must ensure that the destination path is an absolute, vaild and
+     * You must ensure that the destination path is an absolute, valid and
      * existing VFS path. Relative paths from the source are currently not supported.<p>
+     * 
+     * The copied resource will always be locked to the current user
+     * after the copy operation.<p>
      * 
      * In case the target resource already exists, it is overwritten with the 
      * source resource.<p>
      * 
      * The <code>siblingMode</code> parameter controls how to handle siblings 
-     * during the copy operation.
-     * Possible values for this parameter are: 
+     * during the copy operation.<br>
+     * Possible values for this parameter are: <br>
      * <ul>
      * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_AS_NEW}</code></li>
      * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_AS_SIBLING}</code></li>
@@ -1285,12 +1302,11 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Deletes a resource.<p>
+     * Deletes a resource given its name.<p>
      * 
      * The <code>siblingMode</code> parameter controls how to handle siblings 
-     * during the delete operation.<p>
-     * 
-     * Possible values for this parameter are: 
+     * during the delete operation.<br>
+     * Possible values for this parameter are: <br>
      * <ul>
      * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_DELETE_SIBLINGS}</code></li>
      * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_PRESERVE_SIBLINGS}</code></li>
@@ -2321,8 +2337,8 @@ public final class CmsSecurityManager {
     /**
      * Locks a resource.<p>
      *
-     * The <code>mode</code> parameter controls what kind of lock is used.
-     * Possible values for this parameter are: 
+     * The <code>mode</code> parameter controls what kind of lock is used.<br>
+     * Possible values for this parameter are: <br>
      * <ul>
      * <li><code>{@link org.opencms.lock.CmsLock#C_MODE_COMMON}</code></li>
      * <li><code>{@link org.opencms.lock.CmsLock#C_MODE_TEMP}</code></li>
@@ -2426,6 +2442,10 @@ public final class CmsSecurityManager {
      * in the "lost and found" folder only without actually moving the
      * the resource. To do this, the <code>returnNameOnly</code> flag
      * must be set to <code>true</code>.<p>
+     * 
+     * In general, it is the same name as the given resource has, the only exception is
+     * if a resource in the "lost and found" folder with the same name already exists. 
+     * In such case, a counter is added to the resource name.<p>
      * 
      * @param context the current request context
      * @param resourcename the name of the resource to apply this operation to
@@ -2724,8 +2744,18 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reads a file (including it's content) from the OpenCms VFS.<p>
+     * Reads a file resource (including it's binary content) from the VFS,
+     * using the specified resource filter.<p>
      * 
+     * In case you do not need the file content, 
+     * use <code>{@link #readResource(CmsRequestContext, String, CmsResourceFilter)}</code> instead.<p>
+     * 
+     * The specified filter controls what kind of resources should be "found" 
+     * during the read operation. This will depend on the application. For example, 
+     * using <code>{@link CmsResourceFilter#DEFAULT}</code> will only return currently
+     * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
+     * will ignore the date release / date expired information of the resource.<p>
+     *
      * @param context the current request context
      * @param filename the name of the file to be read
      * @param filter the filter object
@@ -3207,16 +3237,18 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reads a property object from the database specified by it's key name mapped to a resource.<p>
+     * Reads a property object from a resource specified by a property name.<p>
      * 
-     * Returns null if the property is not found.<p>
+     * Returns <code>{@link CmsProperty#getNullProperty()}</code> if the property is not found.<p>
      * 
      * @param context the context of the current request
      * @param resourceName the name of resource where the property is mapped to
      * @param key the property key name
-     * @param search true, if the property should be searched on all parent folders  if not found on the resource
+     * @param search if <code>true</code>, the property is searched on all parent folders of the resource. 
+     *      if it's not found attached directly to the resource.
      * 
-     * @return a CmsProperty object containing the structure and/or resource value
+     * @return the required property, or <code>{@link CmsProperty#getNullProperty()}</code> if the property was not found.
+     * 
      * @throws CmsException if something goes wrong
      */
     public CmsProperty readPropertyObject(CmsRequestContext context, String resourceName, String key, boolean search)
@@ -3237,15 +3269,24 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reads all property objects mapped to a specified resource from the database.<p>
+     * Reads all property objects from a resource.<p>
      * 
-     * Returns an empty list if no properties are found at all.<p>
+     * Returns an empty list if no properties are found.<p>
+     * 
+     * If the <code>search</code> parameter is <code>true</code>, the properties of all 
+     * parent folders of the resource are also read. The results are merged with the 
+     * properties directly attached to the resource. While merging, a property
+     * on a parent folder that has already been found will be ignored.
+     * So e.g. if a resource has a property "Title" attached, and it's parent folder 
+     * has the same property attached but with a differrent value, the result list will
+     * contain only the property with the value from the resource, not form the parent folder(s).<p>
      * 
      * @param context the context of the current request
      * @param resourceName the name of resource where the property is mapped to
-     * @param search true, if the properties should be searched on all parent folders  if not found on the resource
+     * @param search <code>true</code>, if the properties should be searched on all parent folders  if not found on the resource
      * 
-     * @return a list of CmsProperty objects containing the structure and/or resource value
+     * @return a list of <code>{@link CmsProperty}</code> objects.
+     * 
      * @throws CmsException if something goes wrong
      */
     public List readPropertyObjects(CmsRequestContext context, String resourceName, boolean search) 
@@ -4033,19 +4074,19 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Change the timestamp information of a resource.<p>
+     * Changes the timestamp information of a resource.<p>
      * 
      * This method is used to set the "last modified" date
      * of a resource, the "release" date of a resource, 
-     * and also the "expires" date of a resource.<p>
+     * and also the "expire" date of a resource.<p>
      * 
      * @param context the current request context
      * @param resource the resource to touch
-     * @param dateLastModified the new last modified date of the resource
-     * @param dateReleased the new release date of the resource, 
-     *      use <code>{@link org.opencms.main.I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged
-     * @param dateExpired the new expire date of the resource, 
-     *      use <code>{@link org.opencms.main.I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged
+     * @param dateLastModified timestamp the new timestamp of the changed resource.
+     * @param dateReleased the new release date of the changed resource. 
+     *              Set it to <code>{@link I_CmsConstants#C_DATE_UNCHANGED}<code> to keep it unchanged.
+     * @param dateExpired the new expire date of the changed resource. 
+     *              Set it to <code>{@link I_CmsConstants#C_DATE_UNCHANGED}<code> to keep it unchanged.
      * 
      * @throws CmsException if something goes wrong
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/12/17 13:07:00 $
- * Version: $Revision: 1.458 $
+ * Date   : $Date: 2004/12/17 16:15:23 $
+ * Version: $Revision: 1.459 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.458 $ $Date: 2004/12/17 13:07:00 $
+ * @version $Revision: 1.459 $ $Date: 2004/12/17 16:15:23 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1014,6 +1014,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Changes the resource flags of a resource.<p>
      * 
+     * The resource flags are used to indicate various "special" conditions
+     * for a resource. Most notably, the "internal only" setting which signals 
+     * that a resource can not be directly requested with it's URL.<p>
+     * 
      * @param dbc the current database context
      * @param resource the resource to change the flags for
      * @param flags the new resource flags for this resource
@@ -1034,6 +1038,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
     /**
      * Changes the resource type of a resource.<p>
+     * 
+     * OpenCms handles resources according to the resource type,
+     * not the file suffix. This is e.g. why a JSP in OpenCms can have the 
+     * suffix ".html" instead of ".jsp" only. Changing the resource type
+     * makes sense e.g. if you want to make a plain text file a JSP resource,
+     * or a binary file an image, etc.<p> 
      * 
      * @param dbc the current database context
      * @param resource the resource to change the type for
@@ -3064,9 +3074,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public List getAllBackupProjects(CmsDbContext dbc) throws CmsException {
 
-        List projects = new Vector();
-        projects = m_backupDriver.readBackupProjects(dbc);
-        return projects;
+        return m_backupDriver.readBackupProjects(dbc);
     }
 
     /**
@@ -3583,7 +3591,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public List getResourcesInTimeRange(CmsDbContext dbc, String folder, long starttime, long endtime)
     throws CmsException {
 
-        List extractedResources = m_vfsDriver.readResourceTree(
+        return m_vfsDriver.readResourceTree(
                 dbc,
                 dbc.currentProject().getId(),
                 folder,
@@ -3592,8 +3600,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 starttime,
                 endtime,
                 I_CmsConstants.C_READMODE_INCLUDE_TREE);
-
-        return extractedResources;
     }
 
     /**
@@ -4945,7 +4951,17 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Reads a file (including it's content) from the OpenCms VFS.<p>
+     * Reads a file resource (including it's binary content) from the VFS,
+     * using the specified resource filter.<p>
+     * 
+     * In case you do not need the file content, 
+     * use <code>{@link #readResource(CmsDbContext, String, CmsResourceFilter)}</code> instead.<p>
+     * 
+     * The specified filter controls what kind of resources should be "found" 
+     * during the read operation. This will depend on the application. For example, 
+     * using <code>{@link CmsResourceFilter#DEFAULT}</code> will only return currently
+     * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
+     * will ignore the date release / date expired information of the resource.<p>
      * 
      * @param dbc the current database context
      * @param resource the base file resource (without content)
@@ -5468,16 +5484,18 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Reads a property object from the database specified by it's key name mapped to a resource.<p>
+     * Reads a property object from a resource specified by a property name.<p>
      * 
-     * Returns null if the property is not found.<p>
+     * Returns <code>{@link CmsProperty#getNullProperty()}</code> if the property is not found.<p>
      * 
      * @param dbc the current database context
      * @param resource the resource where the property is read from
      * @param key the property key name
-     * @param search true, if the property should be searched on all parent folders  if not found on the resource
+     * @param search if <code>true</code>, the property is searched on all parent folders of the resource. 
+     *      if it's not found attached directly to the resource.
      * 
-     * @return a CmsProperty object containing the structure and/or resource value
+     * @return the required property, or <code>{@link CmsProperty#getNullProperty()}</code> if the property was not found.
+     * 
      * @throws CmsException if something goes wrong
      */
     public CmsProperty readPropertyObject(CmsDbContext dbc, CmsResource resource, String key, boolean search)
