@@ -3133,30 +3133,6 @@
             <properties/>
         </file>
         <file>
-            <destination>system/workplace/help/content/bodys/de/ExplorerAnsicht/allgemeineAktionen</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties/>
-        </file>
-        <file>
-            <destination>system/workplace/help/content/bodys/de/ExplorerAnsicht/bearbeitungsAktionen</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties/>
-        </file>
-        <file>
-            <destination>system/workplace/help/content/bodys/de/ExplorerAnsicht/eigenschaftsAktionen</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties/>
-        </file>
-        <file>
             <destination>system/workplace/help/content/bodys/de/ExplorerAnsicht/Kontextmenue</destination>
             <type>folder</type>
             <user>Admin</user>
@@ -3242,7 +3218,7 @@
             <access>383</access>
             <properties/>
         </file>
-        <file>
+        <file>           
             <destination>system/workplace/help/content/bodys/de/ExplorerAnsicht/Kontextmenue/bearbeitungsAktionen</destination>
             <type>folder</type>
             <user>Admin</user>
@@ -3369,14 +3345,6 @@
             <source>help/content/bodys/de/ExplorerAnsicht/Kontextmenue/zugriffsAktionen/Zugriff.html</source>
             <destination>system/workplace/help/content/bodys/de/ExplorerAnsicht/Kontextmenue/zugriffsAktionen/Zugriff.html</destination>
             <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties/>
-        </file>
-        <file>
-            <destination>system/workplace/help/content/bodys/de/ExplorerAnsicht/zugriffsAktionen</destination>
-            <type>folder</type>
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
