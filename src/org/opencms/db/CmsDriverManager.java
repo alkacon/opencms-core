@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/21 16:35:21 $
- * Version: $Revision: 1.279 $
+ * Date   : $Date: 2003/10/22 15:46:27 $
+ * Version: $Revision: 1.280 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.279 $ $Date: 2003/10/21 16:35:21 $
+ * @version $Revision: 1.280 $ $Date: 2003/10/22 15:46:27 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -8282,6 +8282,11 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             i = exportPoints.keySet().iterator();
             while (i.hasNext()) {
                 currentExportPoint = (String) i.next();
+                
+                // print some report messages
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info("Writing export point " + currentExportPoint);
+                }
 
                 try {
                     resources = readAllSubResourcesInDfs(context, currentExportPoint, -1);
@@ -8323,8 +8328,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                     OpenCms.getLog(this).error("Error setting back current project in request context", e);
                 }
             }
-
-            report.println(report.key("report.export_points_write_end"), I_CmsReport.C_FORMAT_HEADLINE);
         }
     }
 
