@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/07 16:09:53 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2000/06/07 16:12:32 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.24 $ $Date: 2000/06/07 16:09:53 $ * 
+ * @version $Revision: 1.25 $ $Date: 2000/06/07 16:12:32 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -1160,11 +1160,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
            statement = m_pool.getPreparedStatement(C_SYSTEMPROPERTIES_DELETE_KEY);
            statement.setString(1,name);
            statement.executeUpdate();   
-           m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_DELETE_KEY, statement);   
 		}catch (SQLException e){
-			m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_DELETE_KEY, statement);   
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		}
+		}finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_DELETE_KEY, statement);
+			}
+		  }	
     }
     
      /**
@@ -1192,16 +1194,19 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
             
             // create the object
                 statement=m_pool.getPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY);
-                statement.setString(1,name);
-                statement.setBytes(2,value);
+                statement.setInt(1,nextId(C_TABLE_SYSTEMPROPERTIES));
+                statement.setString(2,name);
+                statement.setBytes(3,value);
                 statement.executeUpdate();
-                m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY,statement);
         } catch (SQLException e){
-			m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY,statement);
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		} catch (IOException e){
             throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
-		}
+		}finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY, statement);
+			}
+		  }	
         return readProperty(name);
      }
      
@@ -1227,8 +1232,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
           statement=m_pool.getPreparedStatement(C_SYSTEMPROPERTIES_READ_KEY);
           statement.setString(1,name);
           res = statement.executeQuery();
-          m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_READ_KEY,statement);
-       		
           if(res.next()) {
 				value = res.getBytes(C_SYSTEMPROPERTY_VALUE);
                 // now deserialize the object
@@ -1239,16 +1242,18 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
            res.close();
 		}
 		catch (SQLException e){
-			 m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_READ_KEY,statement);
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}	
         catch (IOException e){
 			throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
 		}
 	    catch (ClassNotFoundException e){
-			
             throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
-		}	
+		}finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_READ_KEY, statement);
+			}
+		  }	
         return property;
     }
    
@@ -1280,18 +1285,304 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
             statement.setBytes(1,value);
             statement.setString(2,name);
 		    statement.executeUpdate();
-		    m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_UPDATE_KEY,statement);
-        }
+		 }
         catch (SQLException e){
-			m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_UPDATE_KEY,statement);
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
         catch (IOException e){
 	        throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
-		}
+		}finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_UPDATE_KEY, statement);
+			}
+		  }
 
           return readProperty(name);
     }
+
+	// methods working with propertydef and properties
+	
+	/**
+	 * Reads a propertydefinition for the given resource type.
+	 * 
+	 * @param name The name of the propertydefinition to read.
+	 * @param type The resource type for which the propertydefinition is valid.
+	 * 
+	 * @return propertydefinition The propertydefinition that corresponds to the overgiven
+	 * arguments - or null if there is no valid propertydefinition.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public CmsPropertydefinition readPropertydefinition(String name, CmsResourceType type)
+		throws CmsException {
+		return( readPropertydefinition(name, type.getResourceType() ) );
+	}
+	
+	/**
+	 * Reads a propertydefinition for the given resource type.
+	 * 
+	 * @param name The name of the propertydefinition to read.
+	 * @param type The resource type for which the propertydefinition is valid.
+	 * 
+	 * @return propertydefinition The propertydefinition that corresponds to the overgiven
+	 * arguments - or null if there is no valid propertydefinition.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public CmsPropertydefinition readPropertydefinition(String name, int type)
+		throws CmsException {
+		 CmsPropertydefinition propDef=null;
+		 ResultSet res;
+		 PreparedStatement statement = null;
+		 try {
+			 // create statement
+			 statement = m_pool.getPreparedStatement(C_PROPERTYDEF_READ_KEY);
+			 statement.setString(1,name);
+			 statement.setInt(2,type);
+			 res = statement.executeQuery();
+			 
+			// if resultset exists - return it
+			if(res.next()) {
+			    propDef = new CmsPropertydefinition( res.getInt(C_PROPERTYDEF_ID),
+			   								res.getString(C_PROPERTYDEF_NAME),
+			   								res.getInt(C_PROPERTYDEF_RESOURCE_TYPE),
+			   								res.getInt(C_PROPERTYDEF_TYPE) );
+			    res.close();
+			} else {
+			    // not found!
+			    throw new CmsException("[" + this.getClass().getName() + "] " + name, 
+					CmsException.C_NOT_FOUND);
+			}
+		 } catch( SQLException exc ) {
+			throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				 CmsException.C_SQL_ERROR, exc);
+		 }finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_PROPERTYDEF_READ_KEY, statement);
+			}
+		  }
+		 return propDef;
+	}
+	
+	/**
+	 * Reads all propertydefinitions for the given resource type.
+	 * 
+	 * @param resourcetype The resource type to read the propertydefinitions for.
+	 * 
+	 * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
+	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */	
+	public Vector readAllPropertydefinitions(CmsResourceType resourcetype)
+		throws CmsException {
+		return(readAllPropertydefinitions(resourcetype.getResourceType()));
+	}
+	
+	/**
+	 * Reads all propertydefinitions for the given resource type.
+	 * 
+	 * @param resourcetype The resource type to read the propertydefinitions for.
+	 * 
+	 * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
+	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */	
+	public Vector readAllPropertydefinitions(int resourcetype)
+		throws CmsException {
+ 		 Vector metadefs = new Vector();
+ 		 ResultSet result = null;
+		 PreparedStatement statement = null;
+		 try {
+			 // create statement
+			 statement = m_pool.getPreparedStatement(C_PROPERTYDEF_READALL_A_KEY);
+			 statement.setInt(1,resourcetype);
+			 result = statement.executeQuery();
+			 
+			 while(result.next()) {
+				 metadefs.addElement( new CmsPropertydefinition( result.getInt(C_PROPERTYDEF_ID),
+															 result.getString(C_PROPERTYDEF_NAME),
+															 result.getInt(C_PROPERTYDEF_RESOURCE_TYPE),
+															 result.getInt(C_PROPERTYDEF_TYPE) ) );
+			 }
+			 result.close();
+		 } catch( SQLException exc ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				 CmsException.C_SQL_ERROR, exc);
+		 }finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_PROPERTYDEF_READALL_A_KEY, statement);
+			}
+		  }
+		return(metadefs);
+	}
+	
+		/**
+	 * Reads all propertydefinitions for the given resource type.
+	 * 
+	 * @param resourcetype The resource type to read the propertydefinitions for.
+	 * @param type The type of the propertydefinition (normal|mandatory|optional).
+	 * 
+	 * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
+	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */	
+	public Vector readAllPropertydefinitions(CmsResourceType resourcetype, int type)
+		throws CmsException {
+		return(readAllPropertydefinitions(resourcetype.getResourceType(), type));
+	}
+
+	/**
+	 * Reads all propertydefinitions for the given resource type.
+	 * 
+	 * @param resourcetype The resource type to read the propertydefinitions for.
+	 * @param type The type of the propertydefinition (normal|mandatory|optional).
+	 * 
+	 * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
+	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */	
+	public Vector readAllPropertydefinitions(int resourcetype, int type)
+		throws CmsException {
+ 		 Vector metadefs = new Vector();
+		 PreparedStatement statement = null;
+		 ResultSet result = null;		
+		 try {
+			 // create statement
+			 statement = m_pool.getPreparedStatement(C_PROPERTYDEF_READALL_B_KEY);			 
+			 statement.setInt(1,resourcetype);
+			 statement.setInt(2,type);
+			 result = statement.executeQuery();
+			 
+			 while(result.next()) {
+				 metadefs.addElement( new CmsPropertydefinition( result.getInt(C_PROPERTYDEF_ID),
+															 result.getString(C_PROPERTYDEF_NAME),
+															 result.getInt(C_PROPERTYDEF_RESOURCE_TYPE),
+															 result.getInt(C_PROPERTYDEF_TYPE) ) );
+			 }
+			 result.close();
+		 } catch( SQLException exc ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				 CmsException.C_SQL_ERROR, exc);
+		 }finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_PROPERTYDEF_READALL_B_KEY, statement);
+			}
+		  }
+		 return(metadefs);
+	}
+	
+	/**
+	 * Creates the propertydefinitions for the resource type.<BR/>
+	 * 
+	 * Only the admin can do this.
+	 * 
+	 * @param name The name of the propertydefinitions to overwrite.
+	 * @param resourcetype The resource-type for the propertydefinitions.
+	 * @param type The type of the propertydefinitions (normal|mandatory|optional)
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public CmsPropertydefinition createPropertydefinitions(String name,
+													 CmsResourceType resourcetype, int type)
+		throws CmsException {
+		PreparedStatement statement = null;
+		try {
+			// create statement
+			statement = m_pool.getPreparedStatement(C_PROPERTYDEF_CREATE_KEY);
+			statement.setInt(1,nextId(C_TABLE_PROPERTYDEF));
+			statement.setString(2,name);
+			statement.setInt(3,resourcetype.getResourceType());
+			statement.setInt(4,type);
+			statement.executeUpdate();
+		 } catch( SQLException exc ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				CmsException.C_SQL_ERROR, exc);
+		 }finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_PROPERTYDEF_READ_KEY, statement);
+			}
+		  }
+		 return(readPropertydefinition(name, resourcetype));
+	}
+	
+	/**
+	 * Delete the propertydefinitions for the resource type.<BR/>
+	 * 
+	 * Only the admin can do this.
+	 * 
+	 * @param metadef The propertydefinitions to be deleted.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void deletePropertydefinition(CmsPropertydefinition metadef)
+		throws CmsException {
+		PreparedStatement statement = null;
+		try {
+			if(countProperties(metadef) != 0) {
+				throw new CmsException("[" + this.getClass().getName() + "] " + metadef.getName(), 
+					CmsException.C_MANDATORY_PROPERTY);
+			}
+			// create statement
+			statement = m_pool.getPreparedStatement(C_PROPERTYDEF_DELETE_KEY);
+			statement.setInt(1, metadef.getId() ); 
+			statement.executeUpdate();
+		 } catch( SQLException exc ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				CmsException.C_SQL_ERROR, exc);
+		 }finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_PROPERTYDEF_DELETE_KEY, statement);
+			}
+		  }
+	}
+	
+	/**
+	 * Returns the amount of properties for a propertydefinition.
+	 * 
+	 * @param metadef The propertydefinition to test.
+	 * 
+	 * @return the amount of properties for a propertydefinition.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	private int countProperties(CmsPropertydefinition metadef)
+		throws CmsException {
+		ResultSet result = null;	
+		PreparedStatement statement = null;
+		int value;
+		try {
+			// create statement
+			statement = m_pool.getPreparedStatement(C_PROPERTIES_READALL_COUNT_KEY);
+			
+			statement.setInt(1, metadef.getId());
+			result = statement.executeQuery();
+			
+			if( result.next() ) {
+				value = result.getInt(1) ;
+			} else {
+				throw new CmsException("[" + this.getClass().getName() + "] " + metadef.getName(), 
+					CmsException.C_UNKNOWN_EXCEPTION);
+			}
+			result.close();
+			return value;
+		} catch(SQLException exc) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				CmsException.C_SQL_ERROR, exc);
+		}finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_PROPERTYDEF_READ_KEY, statement);
+			}
+		  }		
+	}
+
+
+
+
+
 
 	/**
 	 * Private method to init all statements in the pool.
@@ -1334,6 +1625,18 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		m_pool.initPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY,C_SYSTEMPROPERTIES_WRITE);
 		m_pool.initPreparedStatement(C_SYSTEMPROPERTIES_UPDATE_KEY,C_SYSTEMPROPERTIES_UPDATE);
 		m_pool.initPreparedStatement(C_SYSTEMPROPERTIES_DELETE_KEY,C_SYSTEMPROPERTIES_DELETE);
+		
+		// init statements for propertydef
+		m_pool.initPreparedStatement(C_PROPERTYDEF_MAXID_KEY,C_PROPERTYDEF_MAXID);
+		m_pool.initPreparedStatement(C_PROPERTYDEF_READ_KEY,C_PROPERTYDEF_READ);
+		m_pool.initPreparedStatement(C_PROPERTYDEF_READALL_A_KEY,C_PROPERTYDEF_READALL_A);
+		m_pool.initPreparedStatement(C_PROPERTYDEF_READALL_B_KEY,C_PROPERTYDEF_READALL_B);
+		m_pool.initPreparedStatement(C_PROPERTYDEF_CREATE_KEY,C_PROPERTYDEF_CREATE);
+		
+		// init statements for properties
+		m_pool.initPreparedStatement(C_PROPERTIES_MAXID_KEY,C_PROPERTIES_MAXID);
+		m_pool.initPreparedStatement(C_PROPERTIES_READALL_COUNT_KEY,C_PROPERTIES_READALL_COUNT);
+		
 	}
 	
 	/**
@@ -1365,6 +1668,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		m_maxIds[C_TABLE_PROJECTS] = initMaxId(C_PROJECTS_MAXID_KEY);
 		m_maxIds[C_TABLE_USERS] = initMaxId(C_USERS_MAXID_KEY);
 		m_maxIds[C_TABLE_SYSTEMPROPERTIES] = initMaxId(C_SYSTEMPROPERTIES_MAXID_KEY);
+		m_maxIds[C_TABLE_PROPERTYDEF] = initMaxId(C_PROPERTYDEF_MAXID_KEY);
+		m_maxIds[C_TABLE_PROPERTIES] = initMaxId(C_PROPERTIES_MAXID_KEY);
+		
 	}
 	
 	/**

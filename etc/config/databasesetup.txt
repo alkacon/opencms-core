@@ -1,5 +1,5 @@
 create table CMS_SYSTEMPROPERTIES       (SYSTEMPROPERTY_ID int not null,
-										 SYSTEMPROPERTY_NAME VARCHAR(40) not null, 
+                                         SYSTEMPROPERTY_NAME VARCHAR(40) not null, 
                                          SYSTEMPROPERTY_VALUE blob,
                                          primary key(SYSTEMPROPERTY_ID),
 										 unique(SYSTEMPROPERTY_NAME));
@@ -50,18 +50,17 @@ create table CMS_PROJECTS               (PROJECT_ID int not null,
 										 PROJECT_TYPE int not null,
                                          primary key(PROJECT_ID), unique(PROJECT_NAME, PROJECT_CREATEDATE));
 
-create table CMS_METADEF                (METADEF_ID int not null auto_increment, 
-                                         METADEF_NAME VARCHAR(64) not null,
+create table CMS_PROPERTYDEF            (PROPERTYDEF_ID int not null, 
+                                         PROPERTYDEF_NAME VARCHAR(64) not null,
                                          RESOURCE_TYPE int not null,
-                                         METADEF_TYPE int not null,
-                                         primary key(METADEF_ID), unique(METADEF_NAME, RESOURCE_TYPE));
+                                         PROPERTYDEF_TYPE int not null,
+                                         primary key(PROPERTYDEF_ID), unique(PROPERTYDEF_NAME, RESOURCE_TYPE));
 
-create table CMS_METAINFO               (METAINFO_ID int not null auto_increment,
-                                         METADEF_ID int not null,
-                                         RESOURCE_NAME VARCHAR(248) not null,
-                                         PROJECT_ID int not null,
-                                         METAINFO_VALUE VARCHAR(255) not null,
-                                         primary key(METAINFO_ID), unique(METADEF_ID, RESOURCE_NAME, PROJECT_ID));
+create table CMS_PROPERTIES             (PROPERTY_ID int not null,
+                                         PROPERTYDEF_ID int not null,
+                                         RESOURCE_ID int not null,
+                                         PROPERTY_VALUE VARCHAR(255) not null,
+                                         primary key(PROPERTY_ID), unique(PROPERTYDEF_ID, RESOURCE_ID, PROJECT_ID));
 
 create table CMS_RESOURCES              (RESOURCE_NAME VARCHAR(248) not null,
                                          RESOURCE_TYPE int not null,

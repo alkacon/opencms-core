@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/07 16:09:53 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/06/07 16:12:32 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.13 $ $Date: 2000/06/07 16:09:53 $
+ * @version $Revision: 1.14 $ $Date: 2000/06/07 16:12:32 $
  */
 public interface I_CmsQuerys {
     
@@ -100,7 +100,7 @@ public interface I_CmsQuerys {
 	public static final String C_SYSTEMPROPERTIES_READ = "SELECT * FROM " + C_DATABASE_PREFIX + "SYSTEMPROPERTIES WHERE SYSTEMPROPERTY_NAME = ? ";
 
     public static final Integer C_SYSTEMPROPERTIES_WRITE_KEY = new Integer(602);
-    public static final String C_SYSTEMPROPERTIES_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "SYSTEMPROPERTIES VALUES(?,?)";
+    public static final String C_SYSTEMPROPERTIES_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "SYSTEMPROPERTIES VALUES(?,?,?)";
     
     public static final Integer C_SYSTEMPROPERTIES_UPDATE_KEY = new Integer(603);
     public static final String C_SYSTEMPROPERTIES_UPDATE="UPDATE " + C_DATABASE_PREFIX + "SYSTEMPROPERTIES SET SYSTEMPROPERTY_VALUE = ? WHERE SYSTEMPROPERTY_NAME = ? ";
@@ -108,6 +108,49 @@ public interface I_CmsQuerys {
     public static final Integer C_SYSTEMPROPERTIES_DELETE_KEY = new Integer(604);
 	public static final String C_SYSTEMPROPERTIES_DELETE="DELETE FROM " + C_DATABASE_PREFIX + "SYSTEMPROPERTIES WHERE SYSTEMPROPERTY_NAME = ?";
     
+	// Constants for PropertyDef table
+    public static final String C_PROPERTYDEF_ID = "PROPERTYDEF_ID";
+	public static final String C_PROPERTYDEF_NAME = "PROPERTYDEF_NAME";
+	public static final String C_PROPERTYDEF_RESOURCE_TYPE = "RESOURCE_TYPE";
+	public static final String C_PROPERTYDEF_TYPE = "PROPERTYDEF_TYPE";
+
+	
+	// Constans for PropertyDef
+	public static final Integer C_PROPERTYDEF_MAXID_KEY = new Integer(300);	
+	public static final String C_PROPERTYDEF_MAXID = "SELECT MAX(PROPERTYDEF_ID) FROM " + C_DATABASE_PREFIX + "PROPERTYDEF";
+	
+	public static final Integer C_PROPERTYDEF_READ_KEY = new Integer(301);	
+	public static final String C_PROPERTYDEF_READ = "Select * from " + C_DATABASE_PREFIX + "PROPERTYDEF where " + 
+												 C_PROPERTYDEF_NAME + " = ? and " +
+												 C_PROPERTYDEF_RESOURCE_TYPE + " = ? ";
+	public static final Integer C_PROPERTYDEF_READALL_A_KEY = new Integer(302);	
+    public static final String C_PROPERTYDEF_READALL_A = "Select * from " + C_DATABASE_PREFIX + "PROPERTYDEF where " + 
+													  C_PROPERTYDEF_RESOURCE_TYPE + " = ? ";
+
+	public static final Integer C_PROPERTYDEF_READALL_B_KEY = new Integer(303);	
+    public static final String C_PROPERTYDEF_READALL_B = "Select * from " + C_DATABASE_PREFIX + "PROPERTYDEF where " + 
+													  C_PROPERTYDEF_RESOURCE_TYPE + " = ? and " +
+													  C_PROPERTYDEF_TYPE + " = ? ";
+	
+	public static final Integer C_PROPERTYDEF_CREATE_KEY = new Integer(304);	
+    public static final String C_PROPERTYDEF_CREATE = "INSERT INTO " + C_DATABASE_PREFIX + "PROPERTYDEF VALUES(?,?,?,?)";
+ 
+	public static final Integer C_PROPERTYDEF_DELETE_KEY = new Integer(305);
+	public static final String C_PROPERTYDEF_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "PROPERTYDEF WHERE " + 
+												   C_PROPERTYDEF_ID + " = ? ";
+		
+    
+	
+	// Constants for properties
+	public static final Integer C_PROPERTIES_MAXID_KEY = new Integer(350);	
+	public static final String C_PROPERTIES_MAXID = "SELECT MAX(PROPERTY_ID) FROM " + C_DATABASE_PREFIX + "PROPERTIES";
+	
+	public static final Integer C_PROPERTIES_READALL_COUNT_KEY = new Integer(351);	
+	public static final String C_PROPERTIES_READALL_COUNT = "SELECT count(*) FROM " + C_DATABASE_PREFIX + "PROPERTIES WHERE " +
+														   C_PROPERTYDEF_ID + " = ?";
+	
+	
+	
 	
     // Constants for Projects table
 	public static final String C_PROJECTS_PROJECT_ID = "PROJECT_ID";

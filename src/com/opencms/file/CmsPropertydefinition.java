@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsPropertydefinition.java,v $
- * Date   : $Date: 2000/06/05 13:37:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/06/07 16:12:32 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.file;
  * This class describes a Propertydefinition in the Cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/06/05 13:37:55 $
+ * @version $Revision: 1.3 $ $Date: 2000/06/07 16:12:32 $
  */
 public class CmsPropertydefinition {
 	/**
@@ -63,7 +63,7 @@ public class CmsPropertydefinition {
 	 * @param resourcetype The type of the resource for this Propertydefinition.
 	 * @param type The type of the Propertydefinition (e.g. mandatory)
 	 */
-	CmsPropertydefinition(int id, String name, int resourcetype, int type) {
+	public CmsPropertydefinition(int id, String name, int resourcetype, int type) {
 		m_id = id;
 		m_name = name;
 		m_resourceType = resourcetype;
@@ -84,7 +84,7 @@ public class CmsPropertydefinition {
 	 * 
 	 * @return id The id of this Propertydefinition.
 	 */
-	int getId() {
+	public int getId() {
 		return m_id;
 	}
 	
