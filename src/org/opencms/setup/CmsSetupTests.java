@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTests.java,v $
- * Date   : $Date: 2004/11/08 10:52:55 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/12/09 13:49:52 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
@@ -56,10 +55,10 @@ import org.xml.sax.InputSource;
  * Runs various tests to give users infos about whether their system is compatible to OpenCms.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2004/11/08 10:52:55 $
+ * @version $Revision: 1.14 $ $Date: 2004/12/09 13:49:52 $
  * @since 5.3
  */
-public class CmsSetupTests extends Object implements Serializable, Cloneable {
+public class CmsSetupTests {
 
     private transient CmsSetupBean m_setupBean;
     private boolean m_red;
@@ -154,21 +153,10 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
             testResult.setResult(JDKVersion);
 
             boolean supportedJDK = compareJDKVersions(JDKVersion, requiredJDK);
-            boolean tigerJDK = false;
-            if (supportedJDK) {
-                if (JDKVersion.startsWith("1.5") || JDKVersion.startsWith("5")) {
-                    tigerJDK = true;
-                    supportedJDK = false;
-                }
-            }
             
             if (!supportedJDK) {
                 testResult.setRed();
-                if (tigerJDK) {
-                    testResult.setHelp("OpenCms does not yet run with Java version " + JDKVersion + ". Please use Java 1.4.x");
-                } else {
-                    testResult.setHelp("OpenCms requires at least Java version " + requiredJDK + " to run. Please update your JDK");
-                }
+                testResult.setHelp("OpenCms requires at least Java version " + requiredJDK + " to run. Please update your JDK");
             } else {
                 testResult.setGreen();
             }
