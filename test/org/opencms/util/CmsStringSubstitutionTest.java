@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/Attic/CmsStringSubstitutionTest.java,v $
- * Date   : $Date: 2004/04/13 13:02:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/05/08 03:11:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import junit.framework.TestCase;
  * Test cases for the class "CmsStringSubstitution"
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.0
  */
@@ -177,6 +177,28 @@ public class CmsStringSubstitutionTest extends TestCase {
         test = CmsStringSubstitution.substituteContextPath(content, context);  
         assertEquals(test, result);            
     }
+    
+    /**
+     * Tests the xml encoding extraction 
+     */
+    public void testExtractXmlEncoding() {
+        String xml, result;
+        
+        xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" 
+            + "<!DOCTYPE opencms SYSTEM"
+            + "\"http://www.opencms.org/dtd/6.0/opencms-importexport.dtd\">\n"
+            + "<opencms/>";
+        
+        result = CmsStringSubstitution.extractXmlEncoding(xml);        
+        assertEquals(result, "UTF-8");
+        
+        xml = "<?xml version=\"1.0\" encoding='ISO-8859-1'?>\n" 
+            + "<opencms/>";
+
+        result = CmsStringSubstitution.extractXmlEncoding(xml);        
+        assertEquals(result, "ISO-8859-1");        
+    }
+                                         
     
     /**
      * Tests the body tag extraction.<p> 

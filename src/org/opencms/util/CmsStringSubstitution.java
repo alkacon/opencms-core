@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2004/04/13 13:02:34 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/05/08 03:11:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.util;
 
 import org.opencms.workplace.I_CmsWpConstants;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -46,7 +47,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.0
  */
 public final class CmsStringSubstitution {
@@ -68,6 +69,12 @@ public final class CmsStringSubstitution {
         
     /** Second constant */
     private static final long C_SECONDS = 1000;
+
+    /** Regex that matches an encoding String in an xml head */
+    private static final Pattern C_XML_ENCODING_REGEX = Pattern.compile("encoding\\s*=\\s*[\"'].+[\"']", Pattern.CASE_INSENSITIVE);
+
+    /** Regex that matches an xml head */
+    private static final Pattern C_XML_HEAD_REGEX = Pattern.compile("<\\s*\\?.*\\?\\s*>", Pattern.CASE_INSENSITIVE);
 
     /** DEBUG flag */
     private static final int DEBUG = 0;
@@ -188,6 +195,41 @@ public final class CmsStringSubstitution {
         }
         
         return content.substring(start, end);
+    }
+
+    /**
+     * Extracts the xml encoding setting from an xml file that is contained in a String by parsing 
+     * the xml head.<p>
+     * 
+     * This is useful if you have a byte array that contains a xml String, 
+     * but you do not know the xml encoding setting. Since the encoding setting 
+     * in the xml head is usually encoded with standard US-ASCII, you usually
+     * just create a String of the byte array without encoding setting,
+     * and use this method to find the 'true' encoding. Then create a String
+     * of the byte array again, this time using the found encoding.<p>   
+     * 
+     * This method will return <code>null</code> in case no xml head 
+     * or encoding information is contained in the input.<p>
+     * 
+     * @param content the xml content to extract the encoding from
+     * @return the extracted encoding, or null if no xml encoding setting was found in the input 
+     */
+    public static String extractXmlEncoding(String content) {
+        String result = null;
+        Matcher xmlHeadMatcher = C_XML_HEAD_REGEX.matcher(content);
+        if (xmlHeadMatcher.find()) {
+            String xmlHead = xmlHeadMatcher.group();
+            Matcher encodingMatcher = C_XML_ENCODING_REGEX.matcher(xmlHead);
+            if (encodingMatcher.find()) {
+                String encoding = encodingMatcher.group();
+                int pos1 = encoding.indexOf('=') + 2;
+                String charset = encoding.substring(pos1, encoding.length()-1);
+                if (Charset.isSupported(charset)) {
+                    result = charset;
+                }
+            }
+        }
+        return result;
     }
     
     /**
