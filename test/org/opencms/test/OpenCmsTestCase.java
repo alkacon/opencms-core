@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/05/28 09:18:10 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/05/28 10:52:46 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.3.5
  */
@@ -91,8 +91,11 @@ public class OpenCmsTestCase extends TestCase {
     /** The path to the additional test data files */
     private static String m_testDataPath;
         
-    /** The internal resource storage */
-    private OpenCmsTestResourceStorage m_resourceStrorage;
+    /** The current resource storage */
+    private OpenCmsTestResourceStorage m_currentResourceStrorage;
+    
+    /** The internal storages */
+    private HashMap m_resourceStorages;
     
     /** The initialized OpenCms shell instance */
     private CmsShell m_shell;    
@@ -104,6 +107,7 @@ public class OpenCmsTestCase extends TestCase {
      */    
     public OpenCmsTestCase(String arg0) {
         super(arg0);
+        m_resourceStorages = new HashMap();
     }
     
     /**
@@ -161,7 +165,7 @@ public class OpenCmsTestCase extends TestCase {
 
         try {
             // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
+            OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
         
             // get the actual resource from the vfs
             CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
@@ -348,7 +352,7 @@ public class OpenCmsTestCase extends TestCase {
     public void assertPropertyChanged(CmsObject cms, String resourceName, CmsProperty property) {
         try {
             // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
+            OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
             
             // create the exclude list
             List excludeList = new ArrayList();
@@ -389,7 +393,7 @@ public class OpenCmsTestCase extends TestCase {
         
         try {
             // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);    
+            OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);    
             
             String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
             
@@ -440,7 +444,7 @@ public class OpenCmsTestCase extends TestCase {
     public void assertPropertyEqual(CmsObject cms, String resourceName) {
         try {
             // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
+            OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
             String noMatches = compareProperties(cms, resourceName, storedResource, null);   
             
             // now see if we have collected any no-matches
@@ -463,7 +467,7 @@ public class OpenCmsTestCase extends TestCase {
     public void assertPropertyNew(CmsObject cms, String resourceName, CmsProperty property) {
         try {
             // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
+            OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
             
             // create the exclude list
             List excludeList = new ArrayList();
@@ -504,7 +508,7 @@ public class OpenCmsTestCase extends TestCase {
         
         try {
             // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);    
+            OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);    
             
             String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
             
@@ -555,7 +559,7 @@ public class OpenCmsTestCase extends TestCase {
     public void assertPropertyRemoved(CmsObject cms, String resourceName, CmsProperty property) {
         try {
             // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
+            OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
             
             // create the exclude list
             List excludeList = new ArrayList();
@@ -596,7 +600,7 @@ public class OpenCmsTestCase extends TestCase {
         
         try {
             // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);    
+            OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);    
             
             String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
             
@@ -683,6 +687,16 @@ public class OpenCmsTestCase extends TestCase {
     
     
     /**
+     * Creates a new storage object.<p>
+     * @param cms the current CmsObject
+     * @param name the name of the storage
+     */
+    public void createStorage(CmsObject cms, String name) {
+        OpenCmsTestResourceStorage storage = new OpenCmsTestResourceStorage(cms, name);
+        m_resourceStorages.put(name, storage);
+    }
+    
+    /**
      * Gets an precalculate resource state from the storage.<p>
      * 
      * @param resourceName the name of the resource to get  the state
@@ -690,7 +704,7 @@ public class OpenCmsTestCase extends TestCase {
      * @throws CmsException in case something goes wrong
      */
     public int getPreCalculatedState(String resourceName) throws CmsException {
-         return m_resourceStrorage.getPreCalculatedState(resourceName);
+         return m_currentResourceStrorage.getPreCalculatedState(resourceName);
     }
     
     
@@ -722,12 +736,29 @@ public class OpenCmsTestCase extends TestCase {
         
         // remove the database
         removeDatabase();
+        
+        // remove the default storage        
+        removeStorage(OpenCmsTestResourceStorage.DEFAULT_STORAGE);
 
         // get the name of the folder for the backup configuration files
         File configBackupDir = new File(getTestDataPath() + "WEB-INF/config/backup/");
         
         // remove the backup configuration files
         CmsStaticExportManager.purgeDirectory(configBackupDir);        
+    }
+    
+    
+    
+    /**
+     * Removes and deletes a storage object.<p>
+     * @param name the name of the storage
+     */
+    public void removeStorage(String name) {
+        OpenCmsTestResourceStorage storage = (OpenCmsTestResourceStorage)m_resourceStorages.get(name);
+        if (storage != null) {
+            m_resourceStorages.remove(name);
+            storage = null;
+        } 
     }
     
     /**
@@ -792,7 +823,8 @@ public class OpenCmsTestCase extends TestCase {
         cms.getRequestContext().setSiteRoot("/sites/default/");               
 
         // init the storage
-        m_resourceStrorage = new OpenCmsTestResourceStorage(cms);
+        createStorage(cms, OpenCmsTestResourceStorage.DEFAULT_STORAGE);
+        switchStorage(OpenCmsTestResourceStorage.DEFAULT_STORAGE);
         
         // output a message 
         System.out.println("----- Starting test cases -----");
@@ -818,10 +850,10 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource resource = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
             // test if the name belongs to a file or folder
             if (resource.isFile()) {
-                m_resourceStrorage.add(resourceName, resource);
+                m_currentResourceStrorage.add(resourceName, resource);
             } else {
                 // this is a folder, so first add the folder itself to the storeage
-                m_resourceStrorage.add(resourceName, resource);
+                m_currentResourceStrorage.add(resourceName, resource);
                 
                 // now get all subresources and add them as well
                 List resources = getSubtree(cms, resourceName);
@@ -829,12 +861,28 @@ public class OpenCmsTestCase extends TestCase {
                 while (i.hasNext()) {
                     CmsResource res = (CmsResource) i.next();
                     resName = cms.readAbsolutePath(resource, CmsResourceFilter.ALL) + res.getName();
-                    m_resourceStrorage.add(resName, res);
+                    m_currentResourceStrorage.add(resName, res);
                 }
             }
             } catch (CmsException e) {
                 fail("cannot read resource "+resourceName+" or " +resName + " "+CmsException.getStackTraceAsString(e));                
             }
+    }
+    
+    
+    /**
+     * Switches the internal resource storage.<p>
+     * @param name the name of the storage
+     * @throws CmsException if the storage was not found
+     */
+    public void switchStorage(String name) throws CmsException {
+        OpenCmsTestResourceStorage storage = (OpenCmsTestResourceStorage)m_resourceStorages.get(name);
+        if (storage != null) {
+            m_currentResourceStrorage = storage;
+        } else {
+            throw new CmsException("Resource storage "+name+" not found", CmsException.C_UNKNOWN_EXCEPTION);
+        }
+        
     }
     
     /**
@@ -1066,7 +1114,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param target the target resource name
      */
     protected void setMapping(String source, String target) {        
-        m_resourceStrorage.setMapping(source, target);
+        m_currentResourceStrorage.setMapping(source, target);
     }
     
     /**

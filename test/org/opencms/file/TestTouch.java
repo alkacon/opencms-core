@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestTouch.java,v $
- * Date   : $Date: 2004/05/28 08:21:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/05/28 10:52:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.List;
  * Unit test for the "touch" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestTouch extends OpenCmsTestCase {
   
@@ -82,9 +82,9 @@ public class TestTouch extends OpenCmsTestCase {
      * @throws Throwable if something goes wrong
      */
     public static void touchResource(OpenCmsTestCase tc, CmsObject cms, String resource1) throws Throwable {            
-
-        tc.storeResources(cms, resource1);
        
+        tc.storeResources(cms, resource1);
+
         long timestamp = System.currentTimeMillis();
         cms.touch(resource1, timestamp, false);
 

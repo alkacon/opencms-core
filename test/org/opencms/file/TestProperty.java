@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2004/05/28 09:18:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/28 10:52:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.List;
  * Unit test for the "touch" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestProperty extends OpenCmsTestCase {
         
@@ -61,7 +61,7 @@ public class TestProperty extends OpenCmsTestCase {
      * 
      * @throws Throwable if something goes wrong
      */
-    public void testCmsObjectWriteProperetyObject() throws Throwable {
+    public void testWritePropertyObject() throws Throwable {
         
         // setup OpenCms
         CmsObject cms = setupOpenCms("simpletest", "/sites/default/");

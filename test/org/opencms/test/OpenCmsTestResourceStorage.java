@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorage.java,v $
- * Date   : $Date: 2004/05/28 08:38:16 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/05/28 10:52:46 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,12 +43,18 @@ import java.util.Map;
  * Storage object for storing all attributes of vfs resources.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class OpenCmsTestResourceStorage {
 
+    /** the name of the default storage */
+    public static String DEFAULT_STORAGE = "default";
+
     /** A CmsObject to use to access resources */
     private CmsObject m_cms;
+    
+    /** the name of the storage */
+    private String m_name;
     
     /** storeage for precalculation of states **/
     private Map m_precalcState;
@@ -61,19 +67,21 @@ public class OpenCmsTestResourceStorage {
 
     /** Prefix mapping for target name */
     private String m_targetNameMapping;
-
+    
     /**
      * Creates a new OpenCmsTestResourceStorage.<p>
      * 
      * @param cms the current CmsObject
+     * @param name the name of the storage
      */
-    public OpenCmsTestResourceStorage(CmsObject cms) {
+    public OpenCmsTestResourceStorage(CmsObject cms, String name) {
 
         m_storage = new HashMap();
         m_precalcState = new HashMap();
         m_sourceNameMapping = null;
         m_targetNameMapping = null;
         m_cms = cms;
+        m_name = name;
     }
 
     /** 
@@ -88,6 +96,7 @@ public class OpenCmsTestResourceStorage {
         m_storage.put(resourceName, new OpenCmsTestResourceStorageEntry(m_cms, resourceName, resource));
         m_precalcState.put(resourceName, preCalculateState(resource));
     }
+    
     
     /**
      * Gets an entry from the storage.<p>
@@ -110,6 +119,15 @@ public class OpenCmsTestResourceStorage {
         }
 
         return entry;
+    }
+    
+    /**
+     * Gets the name of the storage.<p>
+     * 
+     * @return the name of the storage
+     */
+    public String getName() {
+        return m_name;
     }
     
     /**
