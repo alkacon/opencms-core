@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/07/14 08:08:23 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/07/14 09:41:47 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.2 $ $Date: 2000/07/14 08:08:23 $
+ * @version $Revision: 1.3 $ $Date: 2000/07/14 09:41:47 $
  */
 public interface I_CmsQuerys {
     
@@ -519,12 +519,12 @@ public interface I_CmsQuerys {
 	
 	
 	// Constants for Task table
-	public static final String C_TABLENAME_TASK     = C_DATABASE_PREFIX + "Task";
+    public static final String C_TABLENAME_TASK     = C_DATABASE_PREFIX + "Task";
 	public static final String C_TABLENAME_TASKLOG  = C_DATABASE_PREFIX + "TaskLog";
 	public static final String C_TABLENAME_TASKTYPE = C_DATABASE_PREFIX + "TaskType";
 	public static final String C_TABLENAME_TASKPAR  = C_DATABASE_PREFIX + "TaskPar";
-	public static final String C_ID				  = "id";
-	public static final String C_TASK_ID			  = "id";
+    public static final String C_ID				  = "id"; 
+    public static final String C_TASK_ID			  = "id";
 	public static final String C_TASK_NAME			  = "name";
 	public static final String C_TASK_STATE		  = "state";
 	public static final String C_TASK_ROOT			  = "root";
@@ -563,12 +563,12 @@ public interface I_CmsQuerys {
 	
 	public static final String C_TASK_TYPE_FIELDS = "autofinish, escalationtyperef, htmllink, name, permission, priorityref, roleref";
 	
-	public static final Integer C_TASK_TYPE_COPY_KEY = new Integer(601);	
+	public static final Integer C_TASK_TYPE_COPY_KEY = new Integer(801);	
 	public static final String C_TASK_TYPE_COPY = "INSERT INTO " +  C_TABLENAME_TASK + "  (id," + C_TASK_TYPE_FIELDS + ") " +
 												   "SELECT ?," + C_TASK_TYPE_FIELDS + 
 												   " FROM  " + C_TABLENAME_TASKTYPE + "  WHERE id=?";
 	
-	public static final Integer C_TASK_UPDATE_KEY = new Integer(602);
+	public static final Integer C_TASK_UPDATE_KEY = new Integer(802);
 	public static final String C_TASK_UPDATE ="UPDATE  " + C_TABLENAME_TASK + "  SET " +
 											   "name=?, " +
 											   "state=?, " +
@@ -592,61 +592,61 @@ public interface I_CmsQuerys {
 											   "autofinish=? " +
 											   " WHERE id=?";
 
-	public static final Integer C_TASK_READ_KEY = new Integer(603);
+	public static final Integer C_TASK_READ_KEY = new Integer(803);
 	public static final String C_TASK_READ = "SELECT * FROM  " + C_TABLENAME_TASK + "  WHERE id=?";
 
-	public static final Integer C_TASK_END_KEY = new Integer(604);
+	public static final Integer C_TASK_END_KEY = new Integer(804);
 	public static final String C_TASK_END = "UPDATE  " + C_TABLENAME_TASK + "  Set " +
 											 "state=" + CmsDbAccess.C_TASK_STATE_ENDED + ", " +
 											 "percentage=?, " +
 											 "endtime=? " +
 											 "WHERE id=?";
 	
-	public static final Integer C_TASKLOG_WRITE_KEY = new Integer(605);
+	public static final Integer C_TASKLOG_WRITE_KEY = new Integer(805);
 	public static final String C_TASKLOG_WRITE = "INSERT INTO " + C_TABLENAME_TASKLOG + " " +
 												   "(" + C_LOG_ID + "," + C_LOG_TASK + ", " + C_LOG_USER + "," + C_LOG_STARTTIME + "," + C_LOG_COMMENT + "," + C_LOG_TYPE + ") " +
 												   "VALUES (?,?,?,?,?,?)";
 	
-	public static final Integer C_TASKLOG_READ_KEY = new Integer(606);
+	public static final Integer C_TASKLOG_READ_KEY = new Integer(806);
 	public static final String C_TASKLOG_READ = "SELECT * FROM " + C_TABLENAME_TASKLOG + " WHERE " + C_LOG_ID + "=?";
 	
-	public static final Integer C_TASK_FIND_AGENT_KEY = new Integer(607);
+	public static final Integer C_TASK_FIND_AGENT_KEY = new Integer(807);
 	public static final String C_TASK_FIND_AGENT = "SELECT * " +
 													"FROM "+C_DATABASE_PREFIX+"GROUPUSERS, "+C_DATABASE_PREFIX+"USERS " +
 													"WHERE GROUP_ID=? AND "+
 													C_DATABASE_PREFIX+"GROUPUSERS.USER_ID="+C_DATABASE_PREFIX+"USERS.USER_ID " +
 													"ORDER BY USER_LASTUSED ASC";
 	
-	public static final Integer C_TASK_FORWARD_KEY = new Integer(608);
+	public static final Integer C_TASK_FORWARD_KEY = new Integer(808);
 	public static final String C_TASK_FORWARD = "UPDATE " + C_TABLENAME_TASK+" SET " + 
 												C_TASK_ROLE + "=? ," +
 												C_TASK_AGENTUSER + "=? " +
 												"WHERE " + C_TASK_ID+"=?";
 	
-	public static final Integer C_TASKLOG_READ_LOGS_KEY = new Integer(609);
+	public static final Integer C_TASKLOG_READ_LOGS_KEY = new Integer(809);
 	public static final String C_TASKLOG_READ_LOGS = "SELECT * FROM "+ C_TABLENAME_TASKLOG + 
 													 " WHERE " + C_LOG_TASK + "=? "+ 
 													 " ORDER BY " + C_LOG_STARTTIME;
 	
-	public static final Integer C_TASKLOG_READ_PPROJECTLOGS_KEY = new Integer(610);
+	public static final Integer C_TASKLOG_READ_PPROJECTLOGS_KEY = new Integer(810);
 	public static final String C_TASKLOG_READ_PPROJECTLOGS =  "SELECT " + C_LOG_ID + ","+C_LOG_COMMENT+","+C_LOG_TASK+","+C_LOG_USER+"," + C_LOG_STARTTIME + "," + C_LOG_TYPE + "," + C_LOG_EXUSERNAME + " " +
 															  "FROM " + C_TABLENAME_TASKLOG + ", " + C_TABLENAME_TASK + " " +
 															  "WHERE " + C_LOG_TASK + "="+C_DATABASE_PREFIX+"Task.id AND "+C_DATABASE_PREFIX+"Task.root=? " + 
 															  "ORDER BY " + C_LOG_STARTTIME;
 
-	public static final Integer C_TASKPAR_TEST_KEY = new Integer(611);
+	public static final Integer C_TASKPAR_TEST_KEY = new Integer(811);
 	public static final String C_TASKPAR_TEST = "SELECT * FROM " + C_TABLENAME_TASKPAR + " WHERE "+C_PAR_TASK+"=? AND " + C_PAR_NAME + "=?";
 	
-	public static final Integer C_TASKPAR_UPDATE_KEY = new Integer(612);
+	public static final Integer C_TASKPAR_UPDATE_KEY = new Integer(812);
 	public static final String C_TASKPAR_UPDATE = "UPDATE " + C_TABLENAME_TASKPAR + " SET " + C_PAR_VALUE + "=? WHERE "+C_PAR_ID+"=?";
 	
-	public static final Integer C_TASKPAR_INSERT_KEY = new Integer(613);
+	public static final Integer C_TASKPAR_INSERT_KEY = new Integer(813);
 	public static final String C_TASKPAR_INSERT = "INSERT INTO " + C_TABLENAME_TASKPAR + "(" + C_PAR_ID + "," + C_PAR_TASK+"," + C_PAR_NAME + "," + C_PAR_VALUE + ") VALUES (?,?,?,?)";
 	
-	public static final Integer C_TASKPAR_GET_KEY = new Integer(614);
+	public static final Integer C_TASKPAR_GET_KEY = new Integer(814);
 	public static final String C_TASKPAR_GET = "SELECT * FROM " + C_TABLENAME_TASKPAR + " WHERE " + C_PAR_TASK + "=? AND " + C_PAR_NAME + "=?";
 	
-	public static final Integer C_TASK_GET_TASKTYPE_KEY = new Integer(614);
+	public static final Integer C_TASK_GET_TASKTYPE_KEY = new Integer(815);
 	public static final String C_TASK_GET_TASKTYPE = "SELECT id FROM " + C_TABLENAME_TASKTYPE + " where name=?";
 
 	// Constants for systemid table
