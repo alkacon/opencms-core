@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2004/07/18 16:33:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/19 17:05:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,10 +69,10 @@ public class CmsModuleManager {
     /** The list of module export points. */
     private Set m_moduleExportPoints;
 
-    /** The map of initialized module instances. */
-    private Map m_moduleInstances;
+    /** The map of initialized module action instances. */
+    private Map m_moduleActionInstances;
 
-    /** The map of configured module descriptions. */
+    /** The map of configured modules. */
     private Map m_modules;
 
     /**
@@ -88,11 +88,11 @@ public class CmsModuleManager {
 
         m_modules = new HashMap();
         for (int i = 0; i < configuredModules.size(); i++) {
-            CmsModule moduleInfo = (CmsModule)configuredModules.get(i);
-            m_modules.put(moduleInfo.getName(), moduleInfo);
+            CmsModule module = (CmsModule)configuredModules.get(i);
+            m_modules.put(module.getName(), module);
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                    ". Module configuration : configured module " + moduleInfo.getName());
+                    ". Module configuration : configured module " + module.getName());
             }
         }
 
@@ -100,7 +100,7 @@ public class CmsModuleManager {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
                 ". Module configuration : " + m_modules.size() + " modules configured");
         }
-        m_moduleInstances = new HashMap();
+        m_moduleActionInstances = new HashMap();
         m_moduleExportPoints = Collections.EMPTY_SET;
     }
 
@@ -133,7 +133,7 @@ public class CmsModuleManager {
         m_modules.put(module.getName(), module);
         
         try {
-            I_CmsModuleAction moduleAction = (I_CmsModuleAction)m_moduleInstances.get(module.getName());
+            I_CmsModuleAction moduleAction = (I_CmsModuleAction)m_moduleActionInstances.get(module.getName());
             // handle module action instance if initialized
             if (moduleAction != null) {
                 moduleAction.moduleUpdate(module);
@@ -240,10 +240,12 @@ public class CmsModuleManager {
                 throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_ERROR);                
             }
             try {
-                I_CmsModuleAction moduleAction = (I_CmsModuleAction)m_moduleInstances.get(moduleName);
+                I_CmsModuleAction moduleAction = (I_CmsModuleAction)m_moduleActionInstances.get(moduleName);
                 // handle module action instance if initialized
                 if (moduleAction != null) {
-                    moduleAction.moduleUninstall();
+                    moduleAction.moduleUninstall(module);
+                    // remove instance from list of configured instances
+                    m_moduleActionInstances.remove(moduleName);
                 }    
             } catch (Throwable t) {
                 OpenCms.getLog(this).error("Error during module action instance uninstall for module '" + moduleName + "'", t);
@@ -268,6 +270,8 @@ public class CmsModuleManager {
                 // update the report
                 report.print(report.key("report.deleting"), I_CmsReport.C_FORMAT_NOTE);
                 report.println(currentResource);
+                // unlock the resource (so it gets deleted with next publish)
+                adminCms.unlockResource(currentResource);                
             } catch (CmsException e) {
                 // ignore the exception and delete the next resource
                 OpenCms.getLog(this).error("Exception deleting module resource '" + currentResource + "'", e);
@@ -294,11 +298,11 @@ public class CmsModuleManager {
     }
 
     /**
-     * Returns the module information for the given module name,
+     * Returns the module with the given module name,
      * or <code>null</code> if no module with the given name is configured.<p>
      * 
      * @param name the name of the module to return
-     * @return the module information for the given module name
+     * @return the module with the given module name
      */
     public CmsModule getModule(String name) {
 
@@ -310,9 +314,21 @@ public class CmsModuleManager {
      * 
      * @return  an iterator that iterates the initialized module action instances
      */
-    public Iterator getModuleInstances() {
+    public Iterator getActionInstances() {
         
-        return new ArrayList(m_moduleInstances.values()).iterator();
+        return new ArrayList(m_moduleActionInstances.values()).iterator();
+    }
+    
+    /**
+     * Returns the module aciton instance of the module with the given name, or <code>null</code>
+     * if no module action instance with that name is configured.<p>
+     * 
+     * @param name the module name to get the action instance for
+     * @return the module aciton instance of the module with the given name
+     */
+    public I_CmsModuleAction getActionInstance(String name) {
+        
+        return (I_CmsModuleAction)m_moduleActionInstances.get(name);
     }
 
     /**
@@ -352,9 +368,9 @@ public class CmsModuleManager {
 
             if (module.getActionClass() != null) {
                 // create module instance class
-                I_CmsModuleAction moduleInstance = null;
+                I_CmsModuleAction moduleAction = null;
                 try {
-                    moduleInstance = (I_CmsModuleAction)Class.forName(module.getActionClass()).newInstance();
+                    moduleAction = (I_CmsModuleAction)Class.forName(module.getActionClass()).newInstance();
                 } catch (InstantiationException e) {
                     OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
                         ". Module configuration : could not create instance for module " + module.getName(),
@@ -372,46 +388,42 @@ public class CmsModuleManager {
                         ". Module configuration : could not create instance for module " + module.getName(),
                         e);
                 }
-                m_moduleInstances.put(module.getName(), moduleInstance);
+
+                if (moduleAction != null) {
+                    // store and initialize module action class    
+                    m_moduleActionInstances.put(module.getName(), moduleAction);                    
+                    if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                        OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                            ". Module configuration : initializing module class " + moduleAction.getClass().getName());
+                    }
+                    try {
+                        // create a copy of the adminCms so that each module instance does have 
+                        // it's own context, a shared context might introduce side - effects
+                        CmsContextInfo contextInfo = 
+                            new CmsContextInfo(
+                                adminCms.getRequestContext().currentUser(),
+                                adminCms.getRequestContext().currentProject(),
+                                adminCms.getRequestContext().getUri(),
+                                adminCms.getRequestContext().getSiteRoot(),
+                                adminCms.getRequestContext().getLocale(),
+                                adminCms.getRequestContext().getEncoding(),
+                                adminCms.getRequestContext().getRemoteAddress());
+                        CmsObject adminCmsCopy = OpenCms.initCmsObject(adminCms, contextInfo);
+                        // initialize the module
+                        moduleAction.initialize(adminCmsCopy, module);
+                    } catch (Throwable t) {
+                        OpenCms.getLog(this).error("Error during module action instance initialize for class '" + moduleAction.getClass().getName() + "'", t);
+                    }                    
+                }
             }
         }
 
         // initialize the export points
         initModuleExportPoints();
 
-        it = m_moduleInstances.keySet().iterator();
-        while (it.hasNext()) {
-            // get the module action instance
-            I_CmsModuleAction moduleAction = (I_CmsModuleAction)m_moduleInstances.get(it.next());
-
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                    ". Module configuration : initializing module class " + moduleAction.getClass().getName());
-            }
-            
-            try {
-                // create a copy of the adminCms so that each module instance does have 
-                // it's own context, a shared context might introduce side - effects
-                CmsContextInfo contextInfo = 
-                    new CmsContextInfo(
-                        adminCms.getRequestContext().currentUser(),
-                        adminCms.getRequestContext().currentProject(),
-                        adminCms.getRequestContext().getUri(),
-                        adminCms.getRequestContext().getSiteRoot(),
-                        adminCms.getRequestContext().getLocale(),
-                        adminCms.getRequestContext().getEncoding(),
-                        adminCms.getRequestContext().getRemoteAddress());
-                CmsObject adminCmsCopy = OpenCms.initCmsObject(adminCms, contextInfo);
-                // initialize the module
-                moduleAction.initialize(adminCmsCopy);
-            } catch (Throwable t) {
-                OpenCms.getLog(this).error("Error during module action instance initialize for class '" + moduleAction.getClass().getName() + "'", t);
-            }            
-        }
-
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Module configuration : " + m_moduleInstances.size() + " module classes initialized");
+                ". Module configuration : " + m_moduleActionInstances.size() + " module classes initialized");
         }
     }
 
@@ -420,10 +432,13 @@ public class CmsModuleManager {
      */
     public synchronized void shutDown() {
 
-        Iterator it = m_moduleInstances.keySet().iterator();
+        Iterator it = m_moduleActionInstances.keySet().iterator();
         while (it.hasNext()) {
-            // get the module action instance
-            I_CmsModuleAction moduleAction = (I_CmsModuleAction)m_moduleInstances.get(it.next());
+            String moduleName = (String)it.next();
+            // get the module
+            CmsModule module = (CmsModule)m_modules.get(moduleName);
+            // get the module action instance            
+            I_CmsModuleAction moduleAction = (I_CmsModuleAction)m_moduleActionInstances.get(moduleName);
 
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
@@ -431,7 +446,7 @@ public class CmsModuleManager {
             }
             try {
                 // shut down the module
-                moduleAction.shutDown();
+                moduleAction.shutDown(module);
             } catch (Throwable t) {
                 OpenCms.getLog(this).error("Error during module action instance shutDown for class '" + moduleAction.getClass().getName() + "'", t);
             }                  
@@ -439,7 +454,7 @@ public class CmsModuleManager {
 
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Module configuration : " + m_moduleInstances.size() + " module classes have been shut down");
+                ". Module configuration : " + m_moduleActionInstances.size() + " module classes have been shut down");
         }
     }
 
@@ -482,7 +497,7 @@ public class CmsModuleManager {
         m_modules.put(module.getName(), module);
 
         try {
-            I_CmsModuleAction moduleAction = (I_CmsModuleAction)m_moduleInstances.get(module.getName());
+            I_CmsModuleAction moduleAction = (I_CmsModuleAction)m_moduleActionInstances.get(module.getName());
             // handle module action instance if initialized
             if (moduleAction != null) {
                 moduleAction.moduleUpdate(module);

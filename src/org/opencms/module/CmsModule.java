@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2004/07/18 16:33:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/19 17:05:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,15 +45,24 @@ import java.util.StringTokenizer;
 /**
  * Describes an OpenCms module.<p>
  * 
+ * OpenCms modules provide a standard mechanism to extend the OpenCms functionality.
+ * Modules can contain VFS data, Java classes and a number of configuration options.<p> 
+ * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @since 5.3.6
+ * 
+ * @see org.opencms.module.I_CmsModuleAction
+ * @see org.opencms.module.A_CmsModuleAction
  */
-public class CmsModule {
+public class CmsModule implements Comparable {
 
     /** The default date for module created / installed if not provided. */
     public static final long C_DEFAULT_DATE = 0L;
-    
-    /** The email of the module author. */
+
+    /** The module action class name. */
+    private String m_actionClass;
+
+    /** The email of the author of this module. */
     private String m_authorEmail;
 
     /** The name of the author of this module. */
@@ -71,16 +80,10 @@ public class CmsModule {
     /** The description of this module. */
     private String m_description;
 
-    /** List of export point added by this module. */
+    /** List of export points added by this module. */
     private List m_exportPoints;
-    
-    /** The module action class name. */
-    private String m_actionClass;
 
-    /** List of VFS resources that belong to this module. */
-    private List m_resources;
-
-    /** The name of this module, usually looks like a java package name. */
+    /** The name of this module, must be a valid Java package name. */
     private String m_name;
 
     /** The "nice" display name of this module. */
@@ -89,22 +92,25 @@ public class CmsModule {
     /** The additional configuration parameters of this module. */
     private Map m_parameters;
 
+    /** List of VFS resources that belong to this module. */
+    private List m_resources;
+
     /** The name of the user who installed this module. */
     private String m_userInstalled;
 
     /** The version of this module. */
     private CmsModuleVersion m_version;
-    
+
     /**
      * Creates a new module description with the specified values.<p>
      * 
-     * @param name the name of this module, usually looks like a java package name
+     * @param name the name of this module, must be a valid Java package name
      * @param niceName the "nice" display name of this module
      * @param actionClass the (optional) module class name
      * @param description the description of this module
      * @param version the version of this module
      * @param authorName the name of the author of this module
-     * @param authorEmail the email of the module author
+     * @param authorEmail the email of the author of this module
      * @param dateCreated the date this module was created by the author
      * @param userInstalled the name of the user who uploaded this module
      * @param dateInstalled the date this module was uploaded
@@ -129,8 +135,8 @@ public class CmsModule {
         List moduleResources,
         Map parameters) {
 
-        super();        
-        if (! CmsStringUtil.isValidJavaClassName(name)) {
+        super();
+        if (!CmsStringUtil.isValidJavaClassName(name)) {
             throw new IllegalArgumentException("Module name must be a valid Java class name");
         }
         m_name = name;
@@ -142,9 +148,9 @@ public class CmsModule {
         if (CmsStringUtil.isEmpty(actionClass)) {
             m_actionClass = null;
         } else {
-            if (! CmsStringUtil.isValidJavaClassName(actionClass)) {
+            if (!CmsStringUtil.isValidJavaClassName(actionClass)) {
                 throw new IllegalArgumentException("Module action class name must be a valid Java class name");
-            }            
+            }
             m_actionClass = actionClass;
         }
         if (CmsStringUtil.isEmpty(description)) {
@@ -172,7 +178,7 @@ public class CmsModule {
         }
         m_dateInstalled = (dateInstalled / 1000L) * 1000L;
         if (dependencies == null) {
-            m_dependencies = Collections.EMPTY_LIST;   
+            m_dependencies = Collections.EMPTY_LIST;
         } else {
             m_dependencies = Collections.unmodifiableList(dependencies);
         }
@@ -189,7 +195,7 @@ public class CmsModule {
         if (parameters == null) {
             m_parameters = Collections.EMPTY_MAP;
         } else {
-            m_parameters = Collections.unmodifiableMap(parameters); 
+            m_parameters = Collections.unmodifiableMap(parameters);
         }
         // handle old style "additional resources" for backward compatiblity
         initOldAdditionalResources();
@@ -199,69 +205,40 @@ public class CmsModule {
     }
 
     /**
-     * Resolves the module property "additionalresources" to the resource list and
-     * vice versa.<p>
-     * 
-     * This "special" module property is required as long as we do not have a new 
-     * GUI for editing of module resource entries. Once we have the new GUI, the 
-     * handling of "additionalresources" will be moved to the import of the module 
-     * and done only if the imported module is a 5.0 module.<p>
-     */
-    private void initOldAdditionalResources() {
-        
-        Map parameters = new HashMap(m_parameters);
-        List resources = new ArrayList(m_resources);
-        
-        String additionalResources;
-        additionalResources = (String)parameters.get(I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES);
-        if (additionalResources != null) {
-            StringTokenizer tok = new StringTokenizer(additionalResources, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR);
-            while (tok.hasMoreTokens()) {
-                String resource = tok.nextToken().trim();
-                if ((! "-".equals(resource)) && (! resources.contains(resource))) {
-                    resources.add(resource);
-                }
-            }
-        }
-        Collections.sort(resources);
-        StringBuffer buf = new StringBuffer(512);
-        for (int i=0; i<resources.size(); i++) {
-            String resource = (String)resources.get(i);
-            buf.append(resource);
-            if ((i+1) < resources.size()) {
-                buf.append(I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR);
-            }
-        }
-        parameters.put(I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES, buf.toString());
-
-        m_parameters = Collections.unmodifiableMap(parameters);
-        m_resources = Collections.unmodifiableList(resources);
-    }
-    
-    /**
      * Checks if this module depends on another given module,
-     * will return the dependency, or null if no dependency was found.<p>
+     * will return the dependency, or <code>null</code> if no dependency was found.<p>
      * 
      * @param module the other module to check against
      * @return the dependency, or null if no dependency was found
-     */    
+     */
     public CmsModuleDependency checkDependency(CmsModule module) {
-        
+
         CmsModuleDependency otherDepdendency = new CmsModuleDependency(module.getName(), module.getVersion());
-        
+
         // loop through all the dependencies
-        for (int i=0; i<m_dependencies.size(); i++) {
+        for (int i = 0; i < m_dependencies.size(); i++) {
             CmsModuleDependency dependency = (CmsModuleDependency)m_dependencies.get(i);
             if (dependency.dependesOn(otherDepdendency)) {
                 // short circuit here
                 return dependency;
-            }            
+            }
         }
-        
+
         // no dependency was found
         return null;
-    }    
-    
+    }
+
+    /**
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object obj) {
+
+        if ((obj == null) || (!(obj instanceof CmsModule))) {
+            return 0;
+        }
+        return m_name.compareTo(((CmsModule)obj).m_name);
+    }
+
     /**
      * Two instances of a module are considered equal if their name is equal.<p>
      *
@@ -277,15 +254,25 @@ public class CmsModule {
         if (obj == null) {
             return false;
         }
-        
-        if (! (obj instanceof CmsModule)) {
+
+        if (!(obj instanceof CmsModule)) {
             return false;
         }
-        
+
         CmsModule other = (CmsModule)obj;
-        
+
         return m_name.equals(other.m_name);
-    }    
+    }
+
+    /**
+     * Returns the (optional) class name of the modules action class.<p>
+     *
+     * @return the (optional) class name of the modules action class
+     */
+    public String getActionClass() {
+
+        return m_actionClass;
+    }
 
     /**
      * Returns the email of the module author.<p>
@@ -358,26 +345,6 @@ public class CmsModule {
     }
 
     /**
-     * Returns the (optional) class name of the modules action class.<p>
-     *
-     * @return the (optional) class name of the modules action class
-     */
-    public String getActionClass() {
-
-        return m_actionClass;
-    }
-
-    /**
-     * Returns the list of VFS resources that belong to this module.<p>
-     *
-     * @return the list of VFS resources that belong to this module
-     */
-    public List getResources() {
-
-        return m_resources;
-    }
-
-    /**
      * Returns the name of this module.<p>
      * 
      * The module name usually looks like a java package name.<p>
@@ -398,7 +365,7 @@ public class CmsModule {
 
         return m_niceName;
     }
-    
+
     /**
      * Returns a parameter value from the module parameters.<p>
      * 
@@ -406,10 +373,10 @@ public class CmsModule {
      * @return the parameter value from the module parameters
      */
     public String getParameter(String key) {
-        
+
         return (String)m_parameters.get(key);
     }
-    
+
     /**
      * Returns a parameter value from the module parameters,
      * or a given default value in case the parameter is not set.<p>
@@ -419,9 +386,9 @@ public class CmsModule {
      * @return the parameter value from the module parameters
      */
     public String getParameter(String key, String defaultValue) {
-        
+
         String value = (String)m_parameters.get(key);
-        return (value != null)?value:defaultValue;
+        return (value != null) ? value : defaultValue;
     }
 
     /**
@@ -432,6 +399,16 @@ public class CmsModule {
     public Map getParameters() {
 
         return m_parameters;
+    }
+
+    /**
+     * Returns the list of VFS resources that belong to this module.<p>
+     *
+     * @return the list of VFS resources that belong to this module
+     */
+    public List getResources() {
+
+        return m_resources;
     }
 
     /**
@@ -453,7 +430,7 @@ public class CmsModule {
 
         return m_version;
     }
-    
+
     /**
      * @see java.lang.Object#hashCode()
      */
@@ -461,7 +438,7 @@ public class CmsModule {
 
         return m_name.hashCode();
     }
-    
+
     /**
      * Checks if this module is identical with another module.<p>
      * 
@@ -469,7 +446,7 @@ public class CmsModule {
      * The values from {@link #getUserInstalled()} and {@link #getDateInstalled()} 
      * are ignored for this test.<p>
      *  
-     * Modules A, B are <b>equal</b> if just the name of A equal is equal to the name of B.<p>
+     * Modules A, B are <b>equal</b> if just the name of A is equal to the name of B.<p>
      * 
      * @param other the module to compare with
      * 
@@ -480,43 +457,85 @@ public class CmsModule {
     public boolean isIdentical(CmsModule other) {
 
         // some code redundancy here but this is easier to debug 
-        if (! isEqual(m_name, other.m_name)) {
+        if (!isEqual(m_name, other.m_name)) {
             return false;
         }
-        if (! isEqual(m_niceName, other.m_niceName)) {
-            return false;            
-        }
-        if (! isEqual(m_version, other.m_version)) {
+        if (!isEqual(m_niceName, other.m_niceName)) {
             return false;
         }
-        if (! isEqual(m_actionClass, other.m_actionClass)) {
+        if (!isEqual(m_version, other.m_version)) {
             return false;
         }
-        if (! isEqual(m_description, other.m_description)) {
+        if (!isEqual(m_actionClass, other.m_actionClass)) {
             return false;
         }
-        if (! isEqual(m_authorName, other.m_authorName)) {
+        if (!isEqual(m_description, other.m_description)) {
             return false;
         }
-        if (! isEqual(m_authorEmail, other.m_authorEmail)) {
+        if (!isEqual(m_authorName, other.m_authorName)) {
+            return false;
+        }
+        if (!isEqual(m_authorEmail, other.m_authorEmail)) {
             return false;
         }
         if (m_dateCreated != other.m_dateCreated) {
             return false;
         }
-            
+
         return true;
     }
-    
+
     /**
-     * Checks if two object are either both null, or equal.<p>
+     * Resolves the module property "additionalresources" to the resource list and
+     * vice versa.<p>
+     * 
+     * This "special" module property is required as long as we do not have a new 
+     * GUI for editing of module resource entries. Once we have the new GUI, the 
+     * handling of "additionalresources" will be moved to the import of the module 
+     * and done only if the imported module is a 5.0 module.<p>
+     */
+    private void initOldAdditionalResources() {
+
+        Map parameters = new HashMap(m_parameters);
+        List resources = new ArrayList(m_resources);
+
+        String additionalResources;
+        additionalResources = (String)parameters.get(I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES);
+        if (additionalResources != null) {
+            StringTokenizer tok = new StringTokenizer(
+                additionalResources,
+                I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR);
+            while (tok.hasMoreTokens()) {
+                String resource = tok.nextToken().trim();
+                if ((!"-".equals(resource)) && (!resources.contains(resource))) {
+                    resources.add(resource);
+                }
+            }
+        }
+        Collections.sort(resources);
+        StringBuffer buf = new StringBuffer(512);
+        for (int i = 0; i < resources.size(); i++) {
+            String resource = (String)resources.get(i);
+            buf.append(resource);
+            if ((i + 1) < resources.size()) {
+                buf.append(I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR);
+            }
+        }
+        parameters.put(I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES, buf.toString());
+
+        m_parameters = Collections.unmodifiableMap(parameters);
+        m_resources = Collections.unmodifiableList(resources);
+    }
+
+    /**
+     * Checks if two objects are either both null, or equal.<p>
      * 
      * @param a the first object to check
      * @param b the second object to check 
      * @return true if the two object are either both null, or equal
      */
     private boolean isEqual(Object a, Object b) {
-        
+
         if (a == null) {
             return (b == null);
         }

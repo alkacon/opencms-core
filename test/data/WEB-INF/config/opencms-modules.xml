@@ -6,28 +6,23 @@
     	<module>
     		<name>org.opencms.configuration.TestModule1</name>
     		<nicename>OpenCms configuration test module</nicename>
-    		<class/>
+    		<class>org.opencms.module.TestModuleActionImpl</class>
 			<description><![CDATA[A module to test the OpenCms module configuration]]></description>
 			<version>1.0</version>
 			<authorname>Alexander Kandzior</authorname>
 			<authoremail>alex@opencms.org</authoremail>
-			<datecreated>?</datecreated>
+			<datecreated>Min, 19 Jul 2004 09:00:00 CEST</datecreated>
 			<userinstalled>Admin</userinstalled>
-			<dateinstalled>?</dateinstalled>
-			<dependencies>
-				<dependency name="org.opencms.configuration.TestModule2" version="2.0" />
-			</dependencies>
-			<exportpoints>
-				<exportpoint uri="/system/modules/org.opencms.configuration.TestModule1/classes" destination="classes/"/>
-				<exportpoint uri="/system/modules/org.opencms.configuration.TestModule1/lib" destination="lib/"/>
-			</exportpoints>	
+			<dateinstalled>Mon, 19 Jul 2004 12:00:00 CEST</dateinstalled>
+			<dependencies/>
+			<exportpoints/>
 			<resources>
-				<resource uri="/system/modules/org.opencms.configuration.TestModule1/"/>
+				<resource uri="/types/"/>
 			</resources>		
 			<parameters>
 				<param name="param1">value1</param>
 				<param name="param2">value2</param>
 			</parameters>				
     	</module>
-    </modules>  
+    </modules>    
 </opencms>    

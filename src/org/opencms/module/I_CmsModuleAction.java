@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/I_CmsModuleAction.java,v $
- * Date   : $Date: 2004/07/18 16:33:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/19 17:05:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,9 +39,9 @@ import org.opencms.report.I_CmsReport;
 /**
  * Module action classes in OpenCms must implement this interface.<p>
  * 
- * A module action class allows to perform special functions on special 
- * OpenCms lifecycle system events, like {@link #initialize(CmsObject)} or 
- * {@link #shutDown()}.<p>
+ * A module action class allows to perform special functions on certain 
+ * OpenCms lifecycle system events, like {@link #initialize(CmsObject, CmsModule)} or 
+ * {@link #shutDown(CmsModule)}.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @since 5.3.6
@@ -63,8 +63,9 @@ public interface I_CmsModuleAction extends I_CmsEventListener {
      * exist create them as needed.<p> 
      * 
      * @param adminCms an initialized CmsObject with "Admin" permissions
+     * @param module the module of this action instance
      */
-    void initialize(CmsObject adminCms);
+    void initialize(CmsObject adminCms, CmsModule module);
     
     /**
      * Will be called if a module is uninstalled from an OpenCms system.<p>
@@ -75,21 +76,23 @@ public interface I_CmsModuleAction extends I_CmsEventListener {
      * Please note that there is no <code>install()</code> method. 
      * This is because the class loader will not have the module class 
      * instance available after module installation/upload. If you 
-     * need to execute setup/install code, do this in the {@link #initialize(CmsObject)}
+     * need to execute setup/install code, do this in the {@link #initialize(CmsObject, CmsModule)}
      * method during the next server startup.<p>
      * 
      * This method is <i>not</i> called if the module this action instance belongs to 
      * is "replaced". In this case {@link #moduleUpdate(CmsModule)} is called after the 
      * new version of the module is installed.<p> 
+     * 
+     * @param module the module of this action instance
      *
-     * @see #initialize(CmsObject)
+     * @see #initialize(CmsObject, CmsModule)
      */
-    void moduleUninstall();
+    void moduleUninstall(CmsModule module);
     
     /**
      * Will be called if the module this action instance belongs to is updated.<p>
      * 
-     * @param module the of this action instance with the updated values
+     * @param module the module of this action instance with the updated values
      */
     void moduleUpdate(CmsModule module);
     
@@ -113,6 +116,8 @@ public interface I_CmsModuleAction extends I_CmsEventListener {
      * If a module requires special "clean up" functions,
      * for example removing temporary files, this is a good place
      * to implement this functions.<p> 
+     * 
+     * @param module the module of this action instance
      */
-    void shutDown();
+    void shutDown(CmsModule module);
 }

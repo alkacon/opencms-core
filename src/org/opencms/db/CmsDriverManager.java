@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/07/18 16:31:47 $
- * Version: $Revision: 1.400 $
+ * Date   : $Date: 2004/07/19 17:04:30 $
+ * Version: $Revision: 1.401 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.400 $ $Date: 2004/07/18 16:31:47 $
+ * @version $Revision: 1.401 $ $Date: 2004/07/19 17:04:30 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5619,7 +5619,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                     maxVersions);
 
                 // iterate the initialized module action instances
-                Iterator i = OpenCms.getModuleManager().getModuleInstances();
+                Iterator i = OpenCms.getModuleManager().getActionInstances();
                 while (i.hasNext()) {
                     I_CmsModuleAction moduleActionInstance = (I_CmsModuleAction)i.next();
                     moduleActionInstance.publishProject(cms, publishList, tagId, report);

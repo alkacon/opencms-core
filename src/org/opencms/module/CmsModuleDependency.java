@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleDependency.java,v $
- * Date   : $Date: 2004/07/18 16:33:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/19 17:05:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,10 @@ package org.opencms.module;
 /**
  * Describes an OpenCms module dependency.<p>
  * 
+ * Module dependencies are checked if a module is imported or deleted.
+ * If a module A requires certain resources (like Java classes) 
+ * from another module B, a should be made dependend on B.<p>
+ 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @since 5.3.6
  */

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/A_CmsModuleAction.java,v $
- * Date   : $Date: 2004/07/19 17:05:08 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleActionImpl.java,v $
+ * Date   : $Date: 2004/07/19 17:05:34 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,66 +34,90 @@ package org.opencms.module;
 import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsEvent;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 
 /**
- * Simple base implementation of the {@link I_CmsModuleAction} interface,
- * extend this class for more sophisticated module action implementations.<p>
- * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @since 5.3.6
+ * Simple test implementation of the module action interface.<p> 
  */
-public abstract class A_CmsModuleAction implements I_CmsModuleAction {
+public class TestModuleActionImpl extends A_CmsModuleAction {
+    
+    /** Indicates the last event type catched. */
+    public static int m_cmsEvent = -1;  
+
+    /** Indicates if the initialize() method was called. */
+    public static boolean m_initialize = false;
+    
+    /** Indicates if the moduleUninstall() method was called. */
+    public static boolean m_moduleUninstall = false;    
+    
+    /** Indicates if the moduleUpdate() method was called. */
+    public static boolean m_moduleUpdate = false;     
+
+    /** Indicates if the publishProject() method was called. */
+    public static boolean m_publishProject = false;   
+
+    /** Indicates if the shutDown() method was called. */
+    public static boolean m_shutDown = false;   
+    
+    /**
+     * Default constructor.<p>
+     */
+    public TestModuleActionImpl() {
+    
+        // noop
+    }
 
     /**
      * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
      */
     public void cmsEvent(CmsEvent event) {
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(this.getClass().getName() + " caugth event: " + event.getType());
-        }
+        super.cmsEvent(event);    
+        m_cmsEvent = event.getType();
     }
-
+    
     /**
      * @see org.opencms.module.I_CmsModuleAction#initialize(org.opencms.file.CmsObject, CmsModule)
      */
     public void initialize(CmsObject adminCms, CmsModule module) {
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Module '" + module.getName() + "' " + this.getClass().getName() + " initialized");
-        }      
+        super.initialize(adminCms, module);
+        m_initialize = true;
+        
+        // register as event listener for publish events
+        OpenCms.addCmsEventListener(this, new int[]{I_CmsEventListener.EVENT_PUBLISH_PROJECT});
     }
-    
+
     /**
      * @see org.opencms.module.I_CmsModuleAction#moduleUninstall(CmsModule)
      */
     public void moduleUninstall(CmsModule module) {
-
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Module '" + module.getName() + "' " + this.getClass().getName() + " uninstalled");
-        }        
-    }    
     
+        super.moduleUninstall(module);
+        m_moduleUninstall = true;
+        
+        // remove event listener
+        OpenCms.removeCmsEventListener(this);
+    }
+
     /**
      * @see org.opencms.module.I_CmsModuleAction#moduleUpdate(org.opencms.module.CmsModule)
      */
     public void moduleUpdate(CmsModule module) {
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Module '" + module.getName() + "' " + this.getClass().getName() + " updated");
-        }         
-    }    
-        
+        super.moduleUpdate(module);
+        m_moduleUpdate = true;
+    }
+
     /**
      * @see org.opencms.module.I_CmsModuleAction#publishProject(org.opencms.file.CmsObject, org.opencms.db.CmsPublishList, int, org.opencms.report.I_CmsReport)
      */
     public void publishProject(CmsObject cms, CmsPublishList publishList, int backupTagId, I_CmsReport report) {
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(this.getClass().getName() + " publishing");
-        }
+        super.publishProject(cms, publishList, backupTagId, report);
+        m_publishProject = true;
     }
 
     /**
@@ -101,8 +125,8 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
      */
     public void shutDown(CmsModule module) {
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Module '" + module.getName() + "' " + this.getClass().getName() + " shutting down");
-        }         
+        super.shutDown(module);
+        m_shutDown = true;
     }
+
 }
