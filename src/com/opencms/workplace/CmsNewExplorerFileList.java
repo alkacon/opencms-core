@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/01/26 09:44:30 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/01/26 10:47:38 $
+* Version: $Revision: 1.14 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -45,7 +45,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2001/01/26 09:44:30 $
+ * @version $Revision: 1.14 $ $Date: 2001/01/26 10:47:38 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -188,7 +188,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         // set the writeAccess for the current Folder
         CmsFolder test = cms.readFolder(currentFolder);
         boolean writeAccess = test.getProjectId() == cms.getRequestContext().currentProject().getId();
-        content.append(" //top.setNewButton(" + writeAccess + ");\n");
+        content.append(" top.enableNewButton(" + writeAccess + ");\n");
         
         // the folder
         content.append(" top.setDirectory(" + currentFolderId + ",\"" + currentFolder + "\");\n");
