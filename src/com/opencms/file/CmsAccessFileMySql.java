@@ -4,6 +4,7 @@ import java.util.*;
 import java.sql.*;
 
 import com.opencms.core.*;
+import com.opencms.util.*;
 
 /**
  * This class describes the access to files and folders in the Cms.<BR/>
@@ -12,7 +13,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2000/02/03 15:23:31 $
+ * @version $Revision: 1.22 $ $Date: 2000/02/10 17:13:41 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -516,8 +517,8 @@ import com.opencms.core.*;
                                             res.getInt(C_LOCKED_BY),
                                             res.getInt(C_LAUNCHER_TYPE),
                                             res.getString(C_LAUNCHER_CLASSNAME),
-                                            res.getTimestamp(C_DATE_CREATED).getTime(),
-                                            res.getTimestamp(C_DATE_LASTMODIFIED).getTime(),
+											SqlHelper.getTimestamp(res,C_DATE_CREATED).getTime(),
+                                            SqlHelper.getTimestamp(res,C_DATE_LASTMODIFIED).getTime(),
                                             (res.getString(C_FILE_CONTENT)).getBytes(),
                                             res.getInt(C_SIZE)
                                            );
@@ -561,7 +562,9 @@ import com.opencms.core.*;
              }                
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-         }
+ 		} catch( Exception exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}
          return file;
      }
 	
@@ -603,8 +606,8 @@ import com.opencms.core.*;
                                            res.getInt(C_LOCKED_BY),
                                            res.getInt(C_LAUNCHER_TYPE),
                                            res.getString(C_LAUNCHER_CLASSNAME),
-                                           res.getTimestamp(C_DATE_CREATED).getTime(),
-                                           res.getTimestamp(C_DATE_LASTMODIFIED).getTime(),
+                                           SqlHelper.getTimestamp(res,C_DATE_CREATED).getTime(),
+                                           SqlHelper.getTimestamp(res,C_DATE_LASTMODIFIED).getTime(),
                                            new byte[0],
                                            res.getInt(C_SIZE)
                                            );
@@ -617,7 +620,9 @@ import com.opencms.core.*;
                }
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-         }
+		} catch( Exception exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}
         return file;
        }
 	 
@@ -656,8 +661,8 @@ import com.opencms.core.*;
                                            res.getInt(C_LOCKED_BY),
                                            res.getInt(C_LAUNCHER_TYPE),
                                            res.getString(C_LAUNCHER_CLASSNAME),
-                                           res.getTimestamp(C_DATE_CREATED).getTime(),
-                                           res.getTimestamp(C_DATE_LASTMODIFIED).getTime(),
+                                           SqlHelper.getTimestamp(res,C_DATE_CREATED).getTime(),
+                                           SqlHelper.getTimestamp(res,C_DATE_LASTMODIFIED).getTime(),
                                            new byte[0],
                                            res.getInt(C_SIZE)
                                            );
@@ -666,7 +671,9 @@ import com.opencms.core.*;
                }
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-         }
+		} catch( Exception exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}
          return allHeaders;
      }
      
@@ -982,8 +989,8 @@ import com.opencms.core.*;
                                                res.getInt(C_ACCESS_FLAGS),
                                                res.getInt(C_STATE),
                                                res.getInt(C_LOCKED_BY),
-                                               res.getTimestamp(C_DATE_CREATED).getTime(),
-                                               res.getTimestamp(C_DATE_LASTMODIFIED).getTime()
+                                               SqlHelper.getTimestamp(res,C_DATE_CREATED).getTime(),
+                                               SqlHelper.getTimestamp(res,C_DATE_LASTMODIFIED).getTime()
                                                );
                         // check if this resource is marked as deleted
                         if (folder.getState() == C_STATE_DELETED) {
@@ -994,7 +1001,9 @@ import com.opencms.core.*;
                }
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-         }
+		} catch( Exception exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}
         return folder;
     }
 	
@@ -1121,15 +1130,17 @@ import com.opencms.core.*;
                                                res.getInt(C_ACCESS_FLAGS),
                                                res.getInt(C_STATE),
                                                res.getInt(C_LOCKED_BY),
-                                               res.getTimestamp(C_DATE_CREATED).getTime(),
-                                               res.getTimestamp(C_DATE_LASTMODIFIED).getTime()
+                                               SqlHelper.getTimestamp(res,C_DATE_CREATED).getTime(),
+                                               SqlHelper.getTimestamp(res,C_DATE_LASTMODIFIED).getTime()
                                                );
 			   folders.addElement(folder);             
              }
 
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);		
-         }
+		} catch( Exception exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}
          return folders;
      }
 	
@@ -1169,8 +1180,8 @@ import com.opencms.core.*;
                                            res.getInt(C_LOCKED_BY),
                                            res.getInt(C_LAUNCHER_TYPE),
                                            res.getString(C_LAUNCHER_CLASSNAME),
-                                           res.getTimestamp(C_DATE_CREATED).getTime(),
-                                           res.getTimestamp(C_DATE_LASTMODIFIED).getTime(),
+                                           SqlHelper.getTimestamp(res,C_DATE_CREATED).getTime(),
+                                           SqlHelper.getTimestamp(res,C_DATE_LASTMODIFIED).getTime(),
                                            new byte[0],
                                            res.getInt(C_SIZE)
                                            );
@@ -1179,7 +1190,9 @@ import com.opencms.core.*;
 
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);		
-         }
+		} catch( Exception exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}
            return files;
      }
 
@@ -1236,8 +1249,8 @@ import com.opencms.core.*;
                                            res.getInt(C_LOCKED_BY),
                                            res.getInt(C_LAUNCHER_TYPE),
                                            res.getString(C_LAUNCHER_CLASSNAME),
-                                           res.getTimestamp(C_DATE_CREATED).getTime(),
-                                           res.getTimestamp(C_DATE_LASTMODIFIED).getTime(),
+                                           SqlHelper.getTimestamp(res,C_DATE_CREATED).getTime(),
+                                           SqlHelper.getTimestamp(res,C_DATE_LASTMODIFIED).getTime(),
                                            res.getBytes(C_FILE_CONTENT),
                                            res.getInt(C_SIZE)
                                            );
@@ -1275,8 +1288,8 @@ import com.opencms.core.*;
                                                res.getInt(C_ACCESS_FLAGS),
                                                res.getInt(C_STATE),
                                                res.getInt(C_LOCKED_BY),
-                                               res.getTimestamp(C_DATE_CREATED).getTime(),
-                                               res.getTimestamp(C_DATE_LASTMODIFIED).getTime()
+                                               SqlHelper.getTimestamp(res,C_DATE_CREATED).getTime(),
+                                               SqlHelper.getTimestamp(res,C_DATE_LASTMODIFIED).getTime()
                                                );
                      // check the state of the folder
                      // Any folder in the offline project is written to the online project
@@ -1299,7 +1312,9 @@ import com.opencms.core.*;
 
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);		
-         }
+		} catch( Exception exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}
            return resources;
     }
      
@@ -1340,8 +1355,8 @@ import com.opencms.core.*;
                                            res.getInt(C_LOCKED_BY),
                                            res.getInt(C_LAUNCHER_TYPE),
                                            res.getString(C_LAUNCHER_CLASSNAME),
-                                           res.getTimestamp(C_DATE_CREATED).getTime(),
-                                           res.getTimestamp(C_DATE_LASTMODIFIED).getTime(),
+                                           SqlHelper.getTimestamp(res,C_DATE_CREATED).getTime(),
+                                           SqlHelper.getTimestamp(res,C_DATE_LASTMODIFIED).getTime(),
                                            res.getInt(C_SIZE)
                                            );
                } else {
@@ -1350,7 +1365,9 @@ import com.opencms.core.*;
  
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-         }
+		} catch( Exception exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}
         return file;
        }
     

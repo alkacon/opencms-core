@@ -4,6 +4,7 @@ import java.util.*;
 import java.sql.*;
 
 import com.opencms.core.*;
+import com.opencms.util.*;
 
 /**
  * This class describes the access to projects in the Cms.<BR/>
@@ -11,7 +12,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.15 $ $Date: 2000/02/07 10:46:45 $
+ * @version $Revision: 1.16 $ $Date: 2000/02/10 17:13:41 $
  */
 class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 
@@ -148,7 +149,7 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	 public A_CmsProject readProject(String name)
-		 throws CmsException {		 
+		 throws CmsException {
 		 try {
 			 ResultSet result;
 			 // create the statement
@@ -160,23 +161,23 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 			
 			 // if resultset exists - return it
 			 if(result.next()) {
-				 return( new CmsProject(result.getInt(C_PROJECT_ID),
-										result.getString(C_PROJECT_NAME),
-										result.getString(C_PROJECT_DESCRIPTION),
-										result.getInt(C_TASK_ID),
-										result.getInt(C_USER_ID),
-										result.getInt(C_GROUP_ID),
-										result.getInt(C_MANAGERGROUP_ID),
-										result.getInt(C_PROJECT_FLAGS),
-										result.getTimestamp(C_PROJECT_CREATEDATE),
-										result.getTimestamp(C_PROJECT_PUBLISHDATE)));
+				 return new CmsProject(result.getInt(C_PROJECT_ID),
+									   result.getString(C_PROJECT_NAME),
+									   result.getString(C_PROJECT_DESCRIPTION),
+									   result.getInt(C_TASK_ID),
+									   result.getInt(C_USER_ID),
+									   result.getInt(C_GROUP_ID),
+									   result.getInt(C_MANAGERGROUP_ID),
+									   result.getInt(C_PROJECT_FLAGS),
+									   SqlHelper.getTimestamp(result,C_PROJECT_CREATEDATE),
+									   SqlHelper.getTimestamp(result,C_PROJECT_PUBLISHDATE));
 			 } else {
 				 // project not found!
 				 throw new CmsException("[" + this.getClass().getName() + "] " + name, 
 					 CmsException.C_NOT_FOUND);
 			 }
-		 } catch( SQLException exc ) {
-			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+		 } catch( Exception exc ) {
+			 throw new CmsException( "[" + this.getClass().getName() + "] " + exc.getMessage(), 
 				 CmsException.C_SQL_ERROR, exc);
 		 }
 	 }
@@ -285,11 +286,11 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 													 result.getInt(C_GROUP_ID),
 													 result.getInt(C_MANAGERGROUP_ID),
 													 result.getInt(C_PROJECT_FLAGS),
-													 result.getTimestamp(C_PROJECT_CREATEDATE),
-													 result.getTimestamp(C_PROJECT_PUBLISHDATE)));
+													 SqlHelper.getTimestamp(result,C_PROJECT_CREATEDATE),
+													 SqlHelper.getTimestamp(result,C_PROJECT_PUBLISHDATE)));
 			 }
 			 return(projects);
-		 } catch( SQLException exc ) {
+		 } catch( Exception exc ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 				 CmsException.C_SQL_ERROR, exc);
 		 }
@@ -325,11 +326,11 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 													 result.getInt(C_GROUP_ID),
 													 result.getInt(C_MANAGERGROUP_ID),
 													 result.getInt(C_PROJECT_FLAGS),
-													 result.getTimestamp(C_PROJECT_CREATEDATE),
-													 result.getTimestamp(C_PROJECT_PUBLISHDATE)));
+													 SqlHelper.getTimestamp(result,C_PROJECT_CREATEDATE),
+													 SqlHelper.getTimestamp(result,C_PROJECT_PUBLISHDATE)));
 			 }
 			 return(projects);
-		 } catch( SQLException exc ) {
+		 } catch( Exception exc ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 				 CmsException.C_SQL_ERROR, exc);
 		 }
@@ -365,11 +366,11 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 													 result.getInt(C_GROUP_ID),
 													 result.getInt(C_MANAGERGROUP_ID),
 													 result.getInt(C_PROJECT_FLAGS),
-													 result.getTimestamp(C_PROJECT_CREATEDATE),
-													 result.getTimestamp(C_PROJECT_PUBLISHDATE)));
+													 SqlHelper.getTimestamp(result,C_PROJECT_CREATEDATE),
+													 SqlHelper.getTimestamp(result,C_PROJECT_PUBLISHDATE)));
 			 }
 			 return(projects);
-		 } catch( SQLException exc ) {
+		 } catch( Exception exc ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 				 CmsException.C_SQL_ERROR, exc);
 		 }
@@ -405,11 +406,11 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 													 result.getInt(C_GROUP_ID),
 													 result.getInt(C_MANAGERGROUP_ID),
 													 result.getInt(C_PROJECT_FLAGS),
-													 result.getTimestamp(C_PROJECT_CREATEDATE),
-													 result.getTimestamp(C_PROJECT_PUBLISHDATE)));
+													 SqlHelper.getTimestamp(result,C_PROJECT_CREATEDATE),
+													 SqlHelper.getTimestamp(result,C_PROJECT_PUBLISHDATE)));
 			 }
 			 return(projects);
-		 } catch( SQLException exc ) {
+		 } catch( Exception exc ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 				 CmsException.C_SQL_ERROR, exc);
 		 }

@@ -5,6 +5,7 @@ import java.sql.*;
 import java.io.*;
 
 import com.opencms.core.*;
+import com.opencms.util.*;
 
 /**
  * This class contains the methods to read, write and delete  additional
@@ -13,7 +14,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/02/04 08:59:46 $
+ * @version $Revision: 1.13 $ $Date: 2000/02/10 17:13:41 $
  */
  class CmsAccessUserInfoMySql implements I_CmsAccessUserInfo, I_CmsConstants {
 
@@ -179,8 +180,8 @@ import com.opencms.core.*;
 				user.setFirstname(res.getString(C_USER_FIRSTNAME));
 				user.setLastname(res.getString(C_USER_LASTNAME));
 				user.setEmail(res.getString(C_USER_EMAIL));
-				user.setLastlogin(res.getTimestamp(C_USER_LASTLOGIN).getTime());
-				user.setLastUsed(res.getTimestamp(C_USER_LASTUSED).getTime());
+				user.setLastlogin(SqlHelper.getTimestamp(res,C_USER_LASTLOGIN).getTime());
+				user.setLastUsed(SqlHelper.getTimestamp(res,C_USER_LASTUSED).getTime());
 				user.setFlags(res.getInt(C_USER_FLAGS));
 		     } else {
                 throw new CmsException("["+this.getClass().getName()+"]"+user.getId(),CmsException.C_NO_USER);
@@ -190,12 +191,9 @@ import com.opencms.core.*;
 		catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}	
-        catch (IOException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
+		catch (Exception e) {
+            throw new CmsException("["+this.getClass().getName()+"]", e);			
 		}
-	    catch (ClassNotFoundException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
-		}	
         return user;
     }
 

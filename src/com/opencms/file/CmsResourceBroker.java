@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.48 $ $Date: 2000/02/10 07:55:58 $
+ * @version $Revision: 1.49 $ $Date: 2000/02/10 17:13:41 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -57,6 +57,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	private long m_fileSystemChanges = 0;
 	
 	/**
+	 * The onlineproject is stored here, because it is needed very often.
+	 */
+	private A_CmsProject m_onlineProject = null;
+	
+	/**
 	 * The constructor for this ResourceBroker. It gets all underlaying 
 	 * resource-brokers.
 	 */
@@ -89,7 +94,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public A_CmsProject onlineProject(A_CmsUser currentUser, 
 									  A_CmsProject currentProject)
 		throws CmsException {
-		return( readProject(currentUser, currentProject, C_PROJECT_ONLINE) );
+		// is the online project in cache already?
+		if( m_onlineProject == null ) {
+			// no - get it
+			m_onlineProject = readProject(currentUser, currentProject, C_PROJECT_ONLINE);
+		}
+		return( m_onlineProject );
 	}
 
 	/**
@@ -1906,8 +1916,6 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 									  A_CmsProject currentProject,
                                       String resource)
         throws CmsException {
-		
-		// TODO: all subdirs and subfiles of the resource must be copied, too!
 		
 		// read the onlineproject
 		A_CmsProject online = onlineProject(currentUser, currentProject);

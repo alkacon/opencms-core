@@ -5,6 +5,7 @@ import java.io.*;
 import java.sql.*;
 
 import com.opencms.core.*;
+import com.opencms.util.*;
 
 /**
  * This class contains the methods to read, write and delete CmsTask 
@@ -13,7 +14,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.6 $ $Date: 2000/02/09 19:11:28 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/10 17:13:41 $
  */
 class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	
@@ -403,10 +404,10 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 								   result.getInt(C_TASK_ROLE),
 								   result.getInt(C_TASK_AGENTUSER),
 								   result.getInt(C_TASK_ORIGINALUSER),
-								   result.getTimestamp(C_TASK_STARTTIME),
-								   result.getTimestamp(C_TASK_WAKEUPTIME),
-								   result.getTimestamp(C_TASK_TIMEOUT),
-								   result.getTimestamp(C_TASK_ENDTIME),
+								   SqlHelper.getTimestamp(result,C_TASK_STARTTIME),
+								   SqlHelper.getTimestamp(result,C_TASK_WAKEUPTIME),
+								   SqlHelper.getTimestamp(result,C_TASK_TIMEOUT),
+								   SqlHelper.getTimestamp(result,C_TASK_ENDTIME),
 								   result.getInt(C_TASK_PERCENTAGE),
 								   result.getString(C_TASK_PERMISSION),
 								   result.getInt(C_TASK_PRIORITY),
@@ -420,6 +421,8 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 			}
 		} catch( SQLException exc ) {
 			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} catch( Exception exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
 	}
 
@@ -592,10 +595,10 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 									recset.getInt(C_TASK_ROLE),
 									recset.getInt(C_TASK_AGENTUSER),
 									recset.getInt(C_TASK_ORIGINALUSER),
-									recset.getTimestamp(C_TASK_STARTTIME),
-									recset.getTimestamp(C_TASK_WAKEUPTIME),
-									recset.getTimestamp(C_TASK_TIMEOUT),
-									recset.getTimestamp(C_TASK_ENDTIME),
+									SqlHelper.getTimestamp(recset,C_TASK_STARTTIME),
+									SqlHelper.getTimestamp(recset,C_TASK_WAKEUPTIME),
+									SqlHelper.getTimestamp(recset,C_TASK_TIMEOUT),
+									SqlHelper.getTimestamp(recset,C_TASK_ENDTIME),
 									recset.getInt(C_TASK_PERCENTAGE),
 									recset.getString(C_TASK_PERMISSION),
 									recset.getInt(C_TASK_PRIORITY),
@@ -610,7 +613,9 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 			
 		} catch( SQLException exc ) {
 			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
-		}		
+		} catch( Exception exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}
 		
 		return tasks;
 	}
@@ -727,7 +732,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 									  result.getString(C_LOG_COMMENT), 
 									  result.getInt(C_LOG_TASK),
 									  result.getInt(C_LOG_USER),
-									  result.getTimestamp(C_LOG_STARTTIME),
+									  SqlHelper.getTimestamp(result,C_LOG_STARTTIME),
 									  result.getInt(C_LOG_TYPE));
 			} else {
 				// tasklog not found!
@@ -735,6 +740,8 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 			}
 		} catch( SQLException exc ) {
 			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} catch( Exception exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
 	}
 	
@@ -764,7 +771,7 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 									 recset.getString(C_LOG_COMMENT), 
 									 recset.getInt(C_LOG_TASK),
 									 recset.getInt(C_LOG_USER),
-									 recset.getTimestamp(C_LOG_STARTTIME),
+									 SqlHelper.getTimestamp(recset,C_LOG_STARTTIME),
 									 recset.getInt(C_LOG_TYPE));
 				
 				logs.addElement(log);
@@ -772,6 +779,8 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 			
 		} catch( SQLException exc ) {
 			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} catch( Exception exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
 		return logs;
 	}
@@ -804,13 +813,15 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 									 recset.getString(C_LOG_COMMENT), 
 									 recset.getInt(C_LOG_TASK),
 									 recset.getInt(C_LOG_USER),
-									 recset.getTimestamp(C_LOG_STARTTIME),
+									 SqlHelper.getTimestamp(recset,C_LOG_STARTTIME),
 									 recset.getInt(C_LOG_TYPE));
 				logs.addElement(log);
 			}	 
 			
 		} catch( SQLException exc ) {
 			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} catch( Exception exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
 		return logs;
 	}
