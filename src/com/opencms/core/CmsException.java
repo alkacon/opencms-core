@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
- * Date   : $Date: 2000/06/06 08:23:07 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/06/13 10:14:10 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,21 +32,21 @@ package com.opencms.core;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2000/06/06 08:23:07 $
+ * @version $Revision: 1.28 $ $Date: 2000/06/13 10:14:10 $
  */
 public class CmsException extends Exception {
 	
     /**
      * Stores the error code of the CmsException.
      */
-    private int m_Type = 0;
+    protected int m_Type = 0;
     
-    private String m_message="NO MESSAGE";
+    protected String m_message="NO MESSAGE";
 	
     /**
      * Stores a forwared exception.
      */
-    private Exception m_Exception = null;
+    protected Exception m_Exception = null;
 	
     /**
      * Definition of error code for unknown exception.
