@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHighlightExtractor.java,v $
- * Date   : $Date: 2004/02/17 12:10:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/03/29 09:05:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,11 +42,21 @@ import org.apache.lucene.util.PriorityQueue;
  * This class describes a fragment within a document.<p>
  */
 class DocumentFragment {
-    int m_fragNum;
-    int m_score;
-    int m_textEndPos;
-    int m_textStartPos;
-    HashSet m_uniqueTerms = new HashSet();
+    
+    /** The fragment number */
+    protected int m_fragNum;
+        
+    /** The score */
+    protected int m_score;
+    
+    /** The text end position */
+    protected int m_textEndPos; 
+    
+    /** The test start position*/
+    protected int m_textStartPos;
+    
+    /** All unique terms found */
+    protected HashSet m_uniqueTerms = new HashSet();
 
     /**
      * @param textStartPos textStartPos
@@ -114,11 +124,18 @@ class FragmentQueue extends PriorityQueue {
  *         (mark@searcharea.co.uk)
  */
 public final class CmsHighlightExtractor {
-    Analyzer m_analyzer;
-    I_TermHighlighter m_highlighter;
+    
+    /** The analyzer */
+    private Analyzer m_analyzer;
+    
+    /** The term highlighter */
+    private I_TermHighlighter m_highlighter;
 
-    Query m_query;
-    HashSet m_terms = new HashSet();
+    /** The query */
+    private Query m_query;
+    
+    /** A set of all terms */
+    private HashSet m_terms = new HashSet();
 
     /**
      * @param highlighter
@@ -138,7 +155,7 @@ public final class CmsHighlightExtractor {
         this.m_query = query;
         this.m_analyzer = analyzer;
         // get m_terms in m_query
-        getTerms(query, m_terms, false);
+        getTerms(m_query, m_terms, false);
     }
 
     /**
