@@ -3,8 +3,8 @@ package com.opencms.file.mySql;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2000/09/06 15:50:07 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/09/11 16:11:32 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -94,54 +94,6 @@ public class CmsDbPool implements I_CmsDbPool {
 	private int count = 0;
 	
 	/**
-	 * Init the pool with a specified number of connections.
-	 * 
-	 * @param driver - driver for the database
-	 * @param url - the URL of the database to which to connect
-	 * @param user - the username to connect to the db.
-	 * @param passwd - the passwd of the user to connect to the db.
-	 * @param maxConn - maximum connections
-	 */
-	public CmsDbPool(String driver, String url, String user, String passwd, int maxConn) throws CmsException {
-		this.m_driver = driver;
-		this.m_url = url;
-		this.m_user = user;
-		this.m_passwd = passwd;
-		this.m_maxConn = maxConn;
-		
-		// register the driver for the database
-		try {
-			Class.forName(m_driver);
-		}
-		catch (ClassNotFoundException e) {
-		   	throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
-		}
-		// init the hashtables and vector(s)
-		m_prepStatements = new Hashtable();
-		m_prepStatementsCache  = new Hashtable();
-		m_connections = new Vector(m_maxConn+1);
-		
-		// init connections
-		for (int i = 0; i < m_maxConn; i++) {
-			Connection conn = null;
-	
-			try {
-	  			conn = DriverManager.getConnection(m_url, m_user, m_passwd);
-   				m_connections.addElement(conn);
-			}
-			catch (SQLException e) {
-				throw new CmsException(CmsException.C_SQL_ERROR, e);
-			}
-		}
-		// init IdConnection
-		try {
-			m_idConnection = DriverManager.getConnection(m_url, m_user, m_passwd);
-			m_connections.addElement(m_idConnection);
-		}catch (SQLException e) {	
-			throw new CmsException(CmsException.C_SQL_ERROR, e);
-		}
-	}
-	/**
 	 * Returns a vector with all connections.
 	 * 
 	 * @return a vector with all connections
@@ -149,14 +101,6 @@ public class CmsDbPool implements I_CmsDbPool {
 	public Vector getAllConnections() {
 		
 		return m_connections;
-	}
-	/**
-	 * Returns all statements.
-	 * 
-	 * @return all prepared statements
-	 */
-	public Hashtable getAllPreparedStatement() {
-		return m_prepStatements;
 	}
 	/**
 	 * Returns all statements matching the key.
@@ -170,13 +114,24 @@ public class CmsDbPool implements I_CmsDbPool {
 		return temp;
 	}
 	/**
+	 * Returns all statements.
+	 * 
+	 * @return all prepared statements
+	 */
+	public Hashtable getAllPreparedStatement() {
+		return m_prepStatements;
+	}
+	/**
 	 * Gets a PreparedStatement object for Id access.
 	 * 
 	 * @param key - the hashtable key
 	 * @return a prepared statement matching the key
 	 */
 	public PreparedStatement getIdStatement(Integer key){
-		return (PreparedStatement)m_prepStatements.get(key);
+		System.err.println("afu: " + m_prepStatements.getClass().getName());
+		Object preparedStatement = m_prepStatements.get(key);
+		System.err.println("afu: " + preparedStatement.getClass().getName());
+		return (PreparedStatement) preparedStatement; 
 	}
 	/**
 	 * Gets a PreparedStatement object and remove it from the list of available statements.
@@ -286,6 +241,54 @@ public class CmsDbPool implements I_CmsDbPool {
 		}
 		
 		m_prepStatements.put(key, temp);
+	}
+	/**
+	 * Init the pool with a specified number of connections.
+	 * 
+	 * @param driver - driver for the database
+	 * @param url - the URL of the database to which to connect
+	 * @param user - the username to connect to the db.
+	 * @param passwd - the passwd of the user to connect to the db.
+	 * @param maxConn - maximum connections
+	 */
+	public CmsDbPool(String driver, String url, String user, String passwd, int maxConn) throws CmsException {
+		this.m_driver = driver;
+		this.m_url = url;
+		this.m_user = user;
+		this.m_passwd = passwd;
+		this.m_maxConn = maxConn;
+		
+		// register the driver for the database
+		try {
+			Class.forName(m_driver);
+		}
+		catch (ClassNotFoundException e) {
+		   	throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
+		}
+		// init the hashtables and vector(s)
+		m_prepStatements = new Hashtable();
+		m_prepStatementsCache  = new Hashtable();
+		m_connections = new Vector(m_maxConn+1);
+		
+		// init connections
+		for (int i = 0; i < m_maxConn; i++) {
+			Connection conn = null;
+	
+			try {
+	  			conn = DriverManager.getConnection(m_url, m_user, m_passwd);
+   				m_connections.addElement(conn);
+			}
+			catch (SQLException e) {
+				throw new CmsException(CmsException.C_SQL_ERROR, e);
+			}
+		}
+		// init IdConnection
+		try {
+			m_idConnection = DriverManager.getConnection(m_url, m_user, m_passwd);
+			m_connections.addElement(m_idConnection);
+		}catch (SQLException e) {	
+			throw new CmsException(CmsException.C_SQL_ERROR, e);
+		}
 	}
 	/**
 	 * Add the given statement to the list of available statements.

@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/08 08:16:42 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2000/09/11 16:11:32 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,7 +50,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.32 $ $Date: 2000/09/08 08:16:42 $
+ * @version $Revision: 1.33 $ $Date: 2000/09/11 16:11:32 $
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -95,28 +95,25 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	private String m_refresh=null;
 
 
-	/**
-	 * Accept a task from the Cms.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param taskid The Id of the task to accept.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskId)
-		throws CmsException  {
-		CmsTask task = m_dbAccess.readTask(taskId);
-		task.setPercentage(1);
-		task = m_dbAccess.writeTask(task);
-		m_dbAccess.writeSystemTaskLog(taskId,
-									  "Task was accepted from " + 					
-									  currentUser.getFirstname() + " " +
-									  currentUser.getLastname() + ".");
-	}
+/**
+ * Accept a task from the Cms.
+ * 
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param taskid The Id of the task to accept.
+ * 
+ * @exception CmsException Throws CmsException if something goes wrong.
+ */
+public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskId) throws CmsException
+{
+	CmsTask task = m_dbAccess.readTask(taskId);
+	task.setPercentage(1);
+	task = m_dbAccess.writeTask(task);
+	m_dbAccess.writeSystemTaskLog(taskId, "Task was accepted from " + currentUser.getFirstname() + " " + currentUser.getLastname() + ".");
+}
 	/**
 	 * Checks, if the user may create this resource.
 	 * 
@@ -251,26 +248,27 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		// all checks are done positive
 		return(true);
 	}
-	/**
-	 * Checks, if others may access this resource.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param resource The resource to check.
-	 * @param flags The flags to check.
-	 * 
-	 * @return wether the user has access, or not.
-	 */
-	private boolean accessOther(CmsUser currentUser, CmsProject currentProject, 
-								CmsResource resource, int flags)
-		throws CmsException {
-		
-		if( (resource.getAccessFlags() & flags) == flags ) {
-			return true;
-		} else {
-			return false ;
-		}	
+/**
+ * Checks, if others may access this resource.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param resource The resource to check.
+ * @param flags The flags to check.
+ * 
+ * @return wether the user has access, or not.
+ */
+private boolean accessOther(CmsUser currentUser, CmsProject currentProject, CmsResource resource, int flags) throws CmsException
+{
+	if ((resource.getAccessFlags() & flags) == flags)
+	{
+		return true;
 	}
+	else
+	{
+		return false;
+	}
+}
 		/**
 	 * Checks, if the owner may access this resource.
 	 * 
@@ -600,56 +598,6 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	}
 	/**
 	 * Adds a new CmsMountPoint. 
-	 * A new mountpoint for a mysql filesystem is added.
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param mountpoint The mount point in the Cms filesystem.
-	 * @param driver The driver for the db-system. 
-	 * @param connect The connectstring to access the db-system.
-	 * @param name A name to describe the mountpoint.
-	 */
-	public void addMountPoint(CmsUser currentUser, CmsProject currentProject, 
-							  String mountpoint, String driver, String connect,
-							  String name)
-		throws CmsException {
-			if( isAdmin(currentUser, currentProject) ) {
-			
-			// read the folder, to check if it exists.
-			// if it dosen't exist a exception will be thrown
-			readFolder(currentUser, onlineProject(currentUser, currentProject), 
-					   mountpoint, "");
-			
-			// create the new mountpoint			
-			CmsMountPoint newMountPoint = new CmsMountPoint(mountpoint, driver,
-															  connect, name);
-			
-			// read all mountpoints from propertys
-			Hashtable mountpoints = (Hashtable) 
-									 m_dbAccess.readSystemProperty(C_SYSTEMPROPERTY_MOUNTPOINT);
-			
-			// if mountpoints dosen't exists - create them.
-			if(mountpoints == null) {
-				mountpoints = new Hashtable();
-				m_dbAccess.addSystemProperty(C_SYSTEMPROPERTY_MOUNTPOINT, mountpoints);
-			}
-			
-			// add the new mountpoint
-			mountpoints.put(newMountPoint.getMountpoint(), newMountPoint);
-			
-			// write the mountpoints back to the properties
-			m_dbAccess.writeSystemProperty(C_SYSTEMPROPERTY_MOUNTPOINT, mountpoints);			
-			
-		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + mountpoint, 
-				CmsException.C_NO_ACCESS);
-		}	
-	}
-	/**
-	 * Adds a new CmsMountPoint. 
 	 * A new mountpoint for a disc filesystem is added.
 	 * 
 	 * <B>Security:</B>
@@ -709,6 +657,56 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			throw new CmsException("[" + this.getClass().getName() + "] " + mountpoint, 
 				CmsException.C_NO_ACCESS);
 		}		
+	}
+	/**
+	 * Adds a new CmsMountPoint. 
+	 * A new mountpoint for a mysql filesystem is added.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 * @param driver The driver for the db-system. 
+	 * @param connect The connectstring to access the db-system.
+	 * @param name A name to describe the mountpoint.
+	 */
+	public void addMountPoint(CmsUser currentUser, CmsProject currentProject, 
+							  String mountpoint, String driver, String connect,
+							  String name)
+		throws CmsException {
+			if( isAdmin(currentUser, currentProject) ) {
+			
+			// read the folder, to check if it exists.
+			// if it dosen't exist a exception will be thrown
+			readFolder(currentUser, onlineProject(currentUser, currentProject), 
+					   mountpoint, "");
+			
+			// create the new mountpoint			
+			CmsMountPoint newMountPoint = new CmsMountPoint(mountpoint, driver,
+															  connect, name);
+			
+			// read all mountpoints from propertys
+			Hashtable mountpoints = (Hashtable) 
+									 m_dbAccess.readSystemProperty(C_SYSTEMPROPERTY_MOUNTPOINT);
+			
+			// if mountpoints dosen't exists - create them.
+			if(mountpoints == null) {
+				mountpoints = new Hashtable();
+				m_dbAccess.addSystemProperty(C_SYSTEMPROPERTY_MOUNTPOINT, mountpoints);
+			}
+			
+			// add the new mountpoint
+			mountpoints.put(newMountPoint.getMountpoint(), newMountPoint);
+			
+			// write the mountpoints back to the properties
+			m_dbAccess.writeSystemProperty(C_SYSTEMPROPERTY_MOUNTPOINT, mountpoints);			
+			
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + mountpoint, 
+				CmsException.C_NO_ACCESS);
+		}	
 	}
 	/**
 	 * Adds a CmsResourceTypes.
@@ -2109,6 +2107,35 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 		}
 	}
 	/**
+	 * Delete the propertydefinition for the resource type.<BR/>
+	 * 
+	 * <B>Security</B>
+	 * Only the admin can do this.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param name The name of the propertydefinition to read.
+	 * @param resourcetype The name of the resource type for which the 
+	 * propertydefinition is valid.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void deletePropertydefinition(CmsUser currentUser, CmsProject currentProject, 
+									 String name, String resourcetype)
+		throws CmsException {
+		// check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			// first read and then delete the metadefinition.
+			m_propertyDefVectorCache.clear();
+			m_propertyDefCache.remove(name + (getResourceType(currentUser,currentProject,resourcetype)).getResourceType());
+			m_dbAccess.deletePropertydefinition(
+			    readPropertydefinition(currentUser,currentProject,name,resourcetype));
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + name,
+				CmsException.C_NO_ACCESS);
+		}
+	}
+	/**
 	 * Deletes a propertyinformation for a file or folder.
 	 * 
 	 * <B>Security</B>
@@ -2167,35 +2194,6 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 			// yes - throw exception
 			 throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
 				CmsException.C_MANDATORY_PROPERTY);
-		}
-	}
-	/**
-	 * Delete the propertydefinition for the resource type.<BR/>
-	 * 
-	 * <B>Security</B>
-	 * Only the admin can do this.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param name The name of the propertydefinition to read.
-	 * @param resourcetype The name of the resource type for which the 
-	 * propertydefinition is valid.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public void deletePropertydefinition(CmsUser currentUser, CmsProject currentProject, 
-									 String name, String resourcetype)
-		throws CmsException {
-		// check the security
-		if( isAdmin(currentUser, currentProject) ) {
-			// first read and then delete the metadefinition.
-			m_propertyDefVectorCache.clear();
-			m_propertyDefCache.remove(name + (getResourceType(currentUser,currentProject,resourcetype)).getResourceType());
-			m_dbAccess.deletePropertydefinition(
-			    readPropertydefinition(currentUser,currentProject,name,resourcetype));
-		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + name,
-				CmsException.C_NO_ACCESS);
 		}
 	}
 	/** 
@@ -2797,36 +2795,36 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 		throws CmsException {
 	 return null;
 	}
-	/**
-	 * Returns the parent group of a group<P/>
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param groupname The name of the group.
-	 * @return group The parent group or null.
-	 * @exception CmsException Throws CmsException if operation was not succesful.
-	 */
-	public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, 
-								String groupname) 
-		throws CmsException {
-		CmsGroup group=readGroup(currentUser,currentProject,groupname);
-	 
-		if (group.getParentId()==C_UNKNOWN_ID) {
-			return null;
-		}
-		  
-		// try to read from cache
-		CmsGroup parent=(CmsGroup)m_groupCache.get(group.getParentId());
-		if (parent==null) {
-			parent=m_dbAccess.readGroup(group.getParentId());
-			m_groupCache.put(group.getParentId(),parent);
-		}
-		return parent;
-		//return m_dbAccess.getParent(groupname);
+/**
+ * Returns the parent group of a group<P/>
+ * 
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param groupname The name of the group.
+ * @return group The parent group or null.
+ * @exception CmsException Throws CmsException if operation was not succesful.
+ */
+public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, String groupname) throws CmsException
+{
+	CmsGroup group = readGroup(currentUser, currentProject, groupname);
+	if (group.getParentId() == C_UNKNOWN_ID)
+	{
+		return null;
 	}
+
+	// try to read from cache
+	CmsGroup parent = (CmsGroup) m_groupCache.get(group.getParentId());
+	if (parent == null)
+	{
+		parent = m_dbAccess.readGroup(group.getParentId());
+		m_groupCache.put(group.getParentId(), parent);
+	}
+	return parent;
+	//return m_dbAccess.getParent(groupname);
+}
 	/**
 	 * Returns the parent resource of a resouce.
 	 * 
@@ -3070,27 +3068,6 @@ public CmsSite getSite(CmsUser user, CmsProject project, String siteName)
 		return m_dbAccess.getTaskType(taskName);
 	}
 	/**
-	 * Returns all users<P/>
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted, except the anonymous user.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @return users A Vector of all existing users.
-	 * @exception CmsException Throws CmsException if operation was not succesful.
-	 */
-	public Vector getUsers(CmsUser currentUser, CmsProject currentProject)
-		throws CmsException {
-		// check security
-		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
-			return m_dbAccess.getUsers(C_USER_TYPE_SYSTEMUSER);
-		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + currentUser.getName(), 
-				CmsException.C_NO_ACCESS);
-		}
-	}
-	/**
 	 * Returns all users from a given type<P/>
 	 * 
 	 * <B>Security:</B>
@@ -3107,6 +3084,27 @@ public CmsSite getSite(CmsUser user, CmsProject project, String siteName)
 		// check security
 		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
 			return m_dbAccess.getUsers(type);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + currentUser.getName(), 
+				CmsException.C_NO_ACCESS);
+		}
+	}
+	/**
+	 * Returns all users<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return users A Vector of all existing users.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public Vector getUsers(CmsUser currentUser, CmsProject currentProject)
+		throws CmsException {
+		// check security
+		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
+			return m_dbAccess.getUsers(C_USER_TYPE_SYSTEMUSER);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + currentUser.getName(), 
 				CmsException.C_NO_ACCESS);
@@ -3928,6 +3926,29 @@ public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) 
 		
 		return returnValue;
 	}
+	 /**
+	 * Reads all propertydefinitions for the given resource type.
+	 * 
+	 * <B>Security</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resourcetype The name the resource type to read the propertydefinitions for.
+	 * @param type The type of the propertydefinition (normal|mandatory|optional).
+	 * 
+	 * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
+	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */	
+	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
+										 String resourcetype, int type)
+		throws CmsException {
+	   
+		CmsResourceType restype=getResourceType(currentUser,currentProject,resourcetype);
+		return readAllPropertydefinitions(currentUser, currentProject, restype.getResourceType(),type);
+	}
 	/**
 	 * Reads all propertydefinitions for the given resource type.
 	 * 
@@ -3956,29 +3977,6 @@ public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) 
 		}
 		return returnValue;
 	}
-	 /**
-	 * Reads all propertydefinitions for the given resource type.
-	 * 
-	 * <B>Security</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param resourcetype The name the resource type to read the propertydefinitions for.
-	 * @param type The type of the propertydefinition (normal|mandatory|optional).
-	 * 
-	 * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
-	 * The Vector is maybe empty.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */	
-	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
-										 String resourcetype, int type)
-		throws CmsException {
-	   
-		CmsResourceType restype=getResourceType(currentUser,currentProject,resourcetype);
-		return readAllPropertydefinitions(currentUser, currentProject, restype.getResourceType(),type);
-	}
 	// Methods working with system properties
 	
 	
@@ -3997,99 +3995,6 @@ public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) 
 		throws CmsException  {
 		return (String) m_dbAccess.readSystemProperty(C_SYSTEMPROPERTY_EXPORTPATH);
 	}
-	 /**
-	 * Reads a file from a previous project of the Cms.<BR/>
-	 * 
-	 * <B>Security:</B>
-	 * Access is granted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read the resource</li>
-	 * </ul>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param projectId The id of the project to read the file from.
-	 * @param filename The name of the file to be read.
-	 * 
-	 * @return The file read from the Cms.
-	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 * */
-	 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject,
-							 int projectId, String filename)
-		throws CmsException {
-		 CmsFile cmsFile = null;
-		 // read the resource from the projectId, 
-		 try {
-			 cmsFile = m_dbAccess.readFile(projectId, 
-										 onlineProject(currentUser, currentProject).getId(),
-										 filename);
-			 if( accessRead(currentUser, currentProject, (CmsResource)cmsFile) ) {
-				
-			// acces to all subfolders was granted - return the file.
-			    return cmsFile;
-		    } else {
-			     throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
-				 CmsException.C_ACCESS_DENIED);
-		}
-		 } catch(CmsException exc) {
-			throw exc;
-		 }
-		 
-	 }
-	//  Methods working with resources
-	
-	/**
-	 * Reads a file from the Cms.<BR/>
-	 * 
-	 * <B>Security:</B>
-	 * Access is granted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read the resource</li>
-	 * </ul>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param filename The name of the file to be read.
-	 * 
-	 * @return The file read from the Cms.
-	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 * */
-	 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject,
-							 String filename)
-		 throws CmsException {
-		 CmsFile cmsFile = null;
-		 // read the resource from the currentProject, or the online-project
-		 try {
-			 cmsFile = m_dbAccess.readFile(currentProject.getId(), 
-										   onlineProject(currentUser, currentProject).getId(),
-										   filename);
-		 } catch(CmsException exc) {
-			 // the resource was not readable
-			 if (exc.getType()==CmsException.C_RESOURCE_DELETED) {
-				throw exc;
-			 } else if(currentProject.equals(onlineProject(currentUser, currentProject))) {
-				 // this IS the onlineproject - throw the exception
-				 throw exc;
-			 } else {
-				 // try to read the resource in the onlineproject
-				 cmsFile = m_dbAccess.readFile(onlineProject(currentUser, currentProject).getId(), 
-											   onlineProject(currentUser, currentProject).getId(),
-											   filename);
-			 }
-		 }
-		 if( accessRead(currentUser, currentProject, (CmsResource)cmsFile) ) {
-				
-			// acces to all subfolders was granted - return the file.
-			return cmsFile;
-		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
-				 CmsException.C_ACCESS_DENIED);
-		}
-	 }
 	/**
 	 * Gets the known file extensions (=suffixes) 
 	 * 
@@ -4294,6 +4199,99 @@ public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) 
 		
 		return retValue;
 	}
+	 /**
+	 * Reads a file from a previous project of the Cms.<BR/>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param projectId The id of the project to read the file from.
+	 * @param filename The name of the file to be read.
+	 * 
+	 * @return The file read from the Cms.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 * */
+	 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject,
+							 int projectId, String filename)
+		throws CmsException {
+		 CmsFile cmsFile = null;
+		 // read the resource from the projectId, 
+		 try {
+			 cmsFile = m_dbAccess.readFile(projectId, 
+										 onlineProject(currentUser, currentProject).getId(),
+										 filename);
+			 if( accessRead(currentUser, currentProject, (CmsResource)cmsFile) ) {
+				
+			// acces to all subfolders was granted - return the file.
+			    return cmsFile;
+		    } else {
+			     throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
+				 CmsException.C_ACCESS_DENIED);
+		}
+		 } catch(CmsException exc) {
+			throw exc;
+		 }
+		 
+	 }
+	//  Methods working with resources
+	
+	/**
+	 * Reads a file from the Cms.<BR/>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param filename The name of the file to be read.
+	 * 
+	 * @return The file read from the Cms.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 * */
+	 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject,
+							 String filename)
+		 throws CmsException {
+		 CmsFile cmsFile = null;
+		 // read the resource from the currentProject, or the online-project
+		 try {
+			 cmsFile = m_dbAccess.readFile(currentProject.getId(), 
+										   onlineProject(currentUser, currentProject).getId(),
+										   filename);
+		 } catch(CmsException exc) {
+			 // the resource was not readable
+			 if (exc.getType()==CmsException.C_RESOURCE_DELETED) {
+				throw exc;
+			 } else if(currentProject.equals(onlineProject(currentUser, currentProject))) {
+				 // this IS the onlineproject - throw the exception
+				 throw exc;
+			 } else {
+				 // try to read the resource in the onlineproject
+				 cmsFile = m_dbAccess.readFile(onlineProject(currentUser, currentProject).getId(), 
+											   onlineProject(currentUser, currentProject).getId(),
+											   filename);
+			 }
+		 }
+		 if( accessRead(currentUser, currentProject, (CmsResource)cmsFile) ) {
+				
+			// acces to all subfolders was granted - return the file.
+			return cmsFile;
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
+				 CmsException.C_ACCESS_DENIED);
+		}
+	 }
 /**
  * Reads a folder from the Cms.<BR/>
  * 
@@ -4769,6 +4767,38 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 		return m_dbAccess.readProjectLogs(projectid);
 	}
 	/**
+	 * Reads a definition for the given resource type.
+	 * 
+	 * <B>Security</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param name The name of the propertydefinition to read.
+	 * @param resourcetype The name of the resource type for which the propertydefinition 
+	 * is valid.
+	 * 
+	 * @return propertydefinition The propertydefinition that corresponds to the overgiven
+	 * arguments - or null if there is no valid propertydefinition.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public CmsPropertydefinition readPropertydefinition(CmsUser currentUser, 
+												  CmsProject currentProject, 
+												  String name, String resourcetype)
+		throws CmsException {
+
+		CmsResourceType resType = getResourceType(currentUser,currentProject,resourcetype);
+		CmsPropertydefinition returnValue = null;
+		returnValue = (CmsPropertydefinition)m_propertyDefCache.get(name + resType.getResourceType());
+
+		if (returnValue == null){
+			returnValue = m_dbAccess.readPropertydefinition(name, resType);
+			m_propertyDefCache.put(name + resType.getResourceType(), returnValue);
+		}	       
+		return returnValue;            
+	}
+	/**
 	 * Returns a propertyinformation of a file or folder.
 	 * 
 	 * <B>Security</B>
@@ -4819,38 +4849,6 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 			}
 		}	
 		return returnValue;
-	}
-	/**
-	 * Reads a definition for the given resource type.
-	 * 
-	 * <B>Security</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param name The name of the propertydefinition to read.
-	 * @param resourcetype The name of the resource type for which the propertydefinition 
-	 * is valid.
-	 * 
-	 * @return propertydefinition The propertydefinition that corresponds to the overgiven
-	 * arguments - or null if there is no valid propertydefinition.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public CmsPropertydefinition readPropertydefinition(CmsUser currentUser, 
-												  CmsProject currentProject, 
-												  String name, String resourcetype)
-		throws CmsException {
-
-		CmsResourceType resType = getResourceType(currentUser,currentProject,resourcetype);
-		CmsPropertydefinition returnValue = null;
-		returnValue = (CmsPropertydefinition)m_propertyDefCache.get(name + resType.getResourceType());
-
-		if (returnValue == null){
-			returnValue = m_dbAccess.readPropertydefinition(name, resType);
-			m_propertyDefCache.put(name + resType.getResourceType(), returnValue);
-		}	       
-		return returnValue;            
 	}
 	/**
 	 * Read a task by id.
@@ -4998,31 +4996,6 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 			return new CmsUser(C_UNKNOWN_ID, id + "", "deleted user");
 		}
 	}
-	/**
-	 * Returns a user object.<P/>
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param username The name of the user that is to be read.
-	 * @return User
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
-							  String username)
-		throws CmsException {
-		
-		CmsUser user=null;
-		// try to read the user from cache
-		user=(CmsUser)m_userCache.get(username);
-		if (user==null) {
-			user=m_dbAccess.readUser(username, C_USER_TYPE_SYSTEMUSER);
-			m_userCache.put(username,user);
-		} 
-		return user;
-	}
 	 /**
 	 * Returns a user object.<P/>
 	 * 
@@ -5045,6 +5018,31 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 		user=(CmsUser)m_userCache.get(username);
 		if (user==null) {
 			user=m_dbAccess.readUser(username, type);
+			m_userCache.put(username,user);
+		} 
+		return user;
+	}
+	/**
+	 * Returns a user object.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The name of the user that is to be read.
+	 * @return User
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
+							  String username)
+		throws CmsException {
+		
+		CmsUser user=null;
+		// try to read the user from cache
+		user=(CmsUser)m_userCache.get(username);
+		if (user==null) {
+			user=m_dbAccess.readUser(username, C_USER_TYPE_SYSTEMUSER);
 			m_userCache.put(username,user);
 		} 
 		return user;
@@ -5377,37 +5375,6 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 	/** 
 	 * Sets the password for a user.
 	 * 
-	 * Only a adminstrator can do this.<P/>
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param username The name of the user.
-	 * @param newPassword The new password.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 */
-	public void setPassword(CmsUser currentUser, CmsProject currentProject, 
-							String username, String newPassword)
-		throws CmsException {
-		// check the length of the new password.
-		if(newPassword.length() < C_PASSWORD_MINIMUMSIZE) {
-			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
-				CmsException.C_SHORT_PASSWORD);
-		}
-		
-		if( isAdmin(currentUser, currentProject) ) {
-			m_dbAccess.setPassword(username, newPassword);
-		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
-				CmsException.C_NO_ACCESS);
-		}
-	}
-	/** 
-	 * Sets the password for a user.
-	 * 
 	 * Only a adminstrator or the curretuser can do this.<P/>
 	 * 
 	 * <B>Security:</B>
@@ -5441,6 +5408,37 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 		}
 		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) && 
 			( isAdmin(user, currentProject) || user.equals(currentUser)) ) {
+			m_dbAccess.setPassword(username, newPassword);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+				CmsException.C_NO_ACCESS);
+		}
+	}
+	/** 
+	 * Sets the password for a user.
+	 * 
+	 * Only a adminstrator can do this.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The name of the user.
+	 * @param newPassword The new password.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public void setPassword(CmsUser currentUser, CmsProject currentProject, 
+							String username, String newPassword)
+		throws CmsException {
+		// check the length of the new password.
+		if(newPassword.length() < C_PASSWORD_MINIMUMSIZE) {
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+				CmsException.C_SHORT_PASSWORD);
+		}
+		
+		if( isAdmin(currentUser, currentProject) ) {
 			m_dbAccess.setPassword(username, newPassword);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
@@ -5790,52 +5788,6 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 				CmsException.C_NO_ACCESS);
 		}		
 	}
-	 /**
-	 * Writes a file to the Cms.<br>
-	 * 
-	 * A file can only be written to an offline project.<br>
-	 * The state of the resource is set to  CHANGED (1). The file content of the file
-	 * is either updated (if it is already existing in the offline project), or created
-	 * in the offline project (if it is not available there).<br>
-	 * 
-	 * <B>Security:</B>
-	 * Access is granted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can write the resource</li>
-	 * <li>the resource is locked by the callingUser</li>
-	 * </ul>
-	 * 
-	 * @param currentUser The user who own this file.
-	 * @param currentProject The project in which the resource will be used.
-	 * @param file The name of the file to write.
-	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */	
-	public void writeFile(CmsUser currentUser, CmsProject currentProject, 
-						  CmsFile file)
-		throws CmsException {
-		// has the user write-access?
-		if( accessWrite(currentUser, currentProject, (CmsResource)file) ) {
-			
-		  			
-			// write-acces  was granted - write the file.
-			m_dbAccess.writeFile(currentProject, 
-							   onlineProject(currentUser, currentProject), file,true );
-		    
-		    if (file.getState()==C_STATE_UNCHANGED) {
-				file.setState(C_STATE_CHANGED);
-			}	
-			// update the cache
-			m_resourceCache.put(C_FILE+currentProject.getId()+file.getAbsolutePath(),file);
-			m_subresCache.clear();	
-			// inform about the file-system-change
-			fileSystemChanged();
-		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(), 
-				CmsException.C_NO_ACCESS);
-		}
-	}
 	/**
 	 * Writes the file extensions  
 	 * 
@@ -5910,6 +5862,52 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 		}
 	}
 	 /**
+	 * Writes a file to the Cms.<br>
+	 * 
+	 * A file can only be written to an offline project.<br>
+	 * The state of the resource is set to  CHANGED (1). The file content of the file
+	 * is either updated (if it is already existing in the offline project), or created
+	 * in the offline project (if it is not available there).<br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who own this file.
+	 * @param currentProject The project in which the resource will be used.
+	 * @param file The name of the file to write.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void writeFile(CmsUser currentUser, CmsProject currentProject, 
+						  CmsFile file)
+		throws CmsException {
+		// has the user write-access?
+		if( accessWrite(currentUser, currentProject, (CmsResource)file) ) {
+			
+		  			
+			// write-acces  was granted - write the file.
+			m_dbAccess.writeFile(currentProject, 
+							   onlineProject(currentUser, currentProject), file,true );
+		    
+		    if (file.getState()==C_STATE_UNCHANGED) {
+				file.setState(C_STATE_CHANGED);
+			}	
+			// update the cache
+			m_resourceCache.put(C_FILE+currentProject.getId()+file.getAbsolutePath(),file);
+			m_subresCache.clear();	
+			// inform about the file-system-change
+			fileSystemChanged();
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(), 
+				CmsException.C_NO_ACCESS);
+		}
+	}
+	 /**
 	 * Writes an already existing group in the Cms.<BR/>
 	 * 
 	 * Only the admin can do this.<P/>
@@ -5976,6 +5974,33 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 		m_subresCache.clear(); 
 	}
 	/**
+	 * Updates the propertydefinition for the resource type.<BR/>
+	 * 
+	 * <B>Security</B>
+	 * Only the admin can do this.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param propertydef The propertydef to be deleted.
+	 * 
+	 * @return The propertydefinition, that was written.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public CmsPropertydefinition writePropertydefinition(CmsUser currentUser, 
+												   CmsProject currentProject, 
+												   CmsPropertydefinition propertydef)
+		throws CmsException {
+	 // check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			m_propertyDefVectorCache.clear();
+			return( m_dbAccess.writePropertydefinition(propertydef) );
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + propertydef.getName(), 
+				CmsException.C_NO_ACCESS);
+		}
+	}
+	/**
 	 * Writes a propertyinformation for a file or folder.
 	 * 
 	 * <B>Security</B>
@@ -6025,31 +6050,26 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 
 	}
 	/**
-	 * Updates the propertydefinition for the resource type.<BR/>
+	 * Writes a new user tasklog for a task.
 	 * 
-	 * <B>Security</B>
-	 * Only the admin can do this.
+	 * <B>Security:</B>
+	 * All users are granted.
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param propertydef The propertydef to be deleted.
-	 * 
-	 * @return The propertydefinition, that was written.
+	 * @param taskid The Id of the task .
+	 * @param comment Description for the log
+	 * @param tasktype Type of the tasklog. User tasktypes must be greater then 100.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public CmsPropertydefinition writePropertydefinition(CmsUser currentUser, 
-												   CmsProject currentProject, 
-												   CmsPropertydefinition propertydef)
+	public void writeTaskLog(CmsUser currentUser, CmsProject currentProject, 
+							 int taskid, String comment, int type)
 		throws CmsException {
-	 // check the security
-		if( isAdmin(currentUser, currentProject) ) {
-			m_propertyDefVectorCache.clear();
-			return( m_dbAccess.writePropertydefinition(propertydef) );
-		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + propertydef.getName(), 
-				CmsException.C_NO_ACCESS);
-		}
+		
+		m_dbAccess.writeTaskLog(taskid, currentUser.getId(), 
+								new java.sql.Timestamp(System.currentTimeMillis()), 
+								comment, type);
 	}
 	/**
 	 * Writes a new user tasklog for a task.
@@ -6071,28 +6091,6 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 		m_dbAccess.writeTaskLog(taskid, currentUser.getId(), 
 								new java.sql.Timestamp(System.currentTimeMillis()), 
 								comment, C_TASKLOG_USER);
-	}
-	/**
-	 * Writes a new user tasklog for a task.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param taskid The Id of the task .
-	 * @param comment Description for the log
-	 * @param tasktype Type of the tasklog. User tasktypes must be greater then 100.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public void writeTaskLog(CmsUser currentUser, CmsProject currentProject, 
-							 int taskid, String comment, int type)
-		throws CmsException {
-		
-		m_dbAccess.writeTaskLog(taskid, currentUser.getId(), 
-								new java.sql.Timestamp(System.currentTimeMillis()), 
-								comment, type);
 	}
 	/**
 	 * Updates the user information.<BR/>

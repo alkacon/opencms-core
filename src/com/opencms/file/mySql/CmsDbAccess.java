@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/09/08 12:19:20 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2000/09/11 16:11:32 $
+ * Version: $Revision: 1.29 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,20 +52,9 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.28 $ $Date: 2000/09/08 12:19:20 $ * 
+ * @version $Revision: 1.29 $ $Date: 2000/09/11 16:11:32 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
-	
-	/**
-	 * Instanciates the access-module and sets up all required modules and connections.
-	 * @param config The OpenCms configuration.
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public CmsDbAccess(Configurations config) 
-		throws CmsException {
-
-		super(config);
-	}
 	/**
 	 * Adds a user to the database.
 	 * 
@@ -105,7 +94,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 			value=bout.toByteArray();
 			
 			// write data to database     
-			statement = m_pool.getPreparedStatement(CmsQuerys.C_USERS_ADD_KEY);
+			statement = m_pool.getPreparedStatement(m_cq.C_USERS_ADD_KEY);
 			
 			statement.setInt(1,id);
 			statement.setString(2,name);
@@ -133,7 +122,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 			throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:"+CmsException. C_SERIALIZATION, e);			
 		} finally {
 			if( statement != null) {
-				m_pool.putPreparedStatement(CmsQuerys.C_USERS_ADD_KEY, statement);
+				m_pool.putPreparedStatement(m_cq.C_USERS_ADD_KEY, statement);
 			}
 		}
 		return readUser(id);
@@ -214,7 +203,7 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 	
 		   try {
 	  
-				statement = m_pool.getPreparedStatement(CmsQuerys.C_RESOURCES_WRITE_KEY);
+				statement = m_pool.getPreparedStatement(m_cq.C_RESOURCES_WRITE_KEY);
 				 // write new resource to the database
 				statement.setInt(1,resourceId);
 				statement.setInt(2,parentId);
@@ -236,7 +225,7 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 				statement.setInt(18,user.getId());
 				statement.executeUpdate();
 				
-				statementFileWrite = m_pool.getPreparedStatement(CmsQuerys.C_FILES_WRITE_KEY);
+				statementFileWrite = m_pool.getPreparedStatement(m_cq.C_FILES_WRITE_KEY);
 				statementFileWrite.setInt(1,fileId);
 				statementFileWrite.setBytes(2,contents);
 				statementFileWrite.executeUpdate();
@@ -245,10 +234,10 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		 }finally {
 				if( statement != null) {
-					m_pool.putPreparedStatement(CmsQuerys.C_RESOURCES_WRITE_KEY, statement);
+					m_pool.putPreparedStatement(m_cq.C_RESOURCES_WRITE_KEY, statement);
 				}
 				if( statementFileWrite != null) {
-					m_pool.putPreparedStatement(CmsQuerys.C_FILES_WRITE_KEY, statementFileWrite);
+					m_pool.putPreparedStatement(m_cq.C_FILES_WRITE_KEY, statementFileWrite);
 				}
 			 }	
 		 return readFile(project.getId(),onlineProject.getId(),filename);
@@ -329,10 +318,23 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 		return super.findAgent(roleid);
 	}
 /**
- * Insert the method's description here.
- * Creation date: (08-09-2000 13:00:11)
+ * retrieve the correct instance of the queries holder.
+ * This method should be overloaded if other query strings should be used.
  */
-public void newMethod() {}
+com.opencms.file.genericSql.CmsQueries getQueries()
+{
+	return new com.opencms.file.mySql.CmsQueries();
+}
+	/**
+	 * Instanciates the access-module and sets up all required modules and connections.
+	 * @param config The OpenCms configuration.
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public CmsDbAccess(Configurations config) 
+		throws CmsException {
+
+		super(config);
+	}
 	/**
 	 * Private method to get the next id for a table.
 	 * This method is synchronized, to generate unique id's.
@@ -340,31 +342,31 @@ public void newMethod() {}
 	 * @param key A key for the table to get the max-id from.
 	 * @return next-id The next possible id for this table.
 	 */
-	private synchronized int nextId(int key) 
+	protected synchronized int nextId(int key) 
 		 throws CmsException {
 		
 		int newId = C_UNKNOWN_INT;
 		PreparedStatement statement = null;
 		ResultSet res = null;
 		try {
-			statement = ((com.opencms.file.mySql.CmsDbPool)m_pool).getIdStatement(CmsQuerys.C_SYSTEMID_LOCK_KEY);
+			statement = ((com.opencms.file.mySql.CmsDbPool)m_pool).getIdStatement(m_cq.C_SYSTEMID_LOCK_KEY);
 			statement.executeUpdate();
 			
-			statement = ((com.opencms.file.mySql.CmsDbPool)m_pool).getIdStatement(CmsQuerys.C_SYSTEMID_READ_KEY);
+			statement = ((com.opencms.file.mySql.CmsDbPool)m_pool).getIdStatement(m_cq.C_SYSTEMID_READ_KEY);
 			statement.setInt(1,key);
 			res = statement.executeQuery();
 			if (res.next()){
-				newId = res.getInt(CmsQuerys.C_SYSTEMID_ID);
+				newId = res.getInt(m_cq.C_SYSTEMID_ID);
 				res.close();
 			}else{
 				 throw new CmsException("[" + this.getClass().getName() + "] "+" cant read Id! ",CmsException.C_NO_GROUP);		
 			}
-			statement = ((com.opencms.file.mySql.CmsDbPool)m_pool).getIdStatement(CmsQuerys.C_SYSTEMID_WRITE_KEY);
+			statement = ((com.opencms.file.mySql.CmsDbPool)m_pool).getIdStatement(m_cq.C_SYSTEMID_WRITE_KEY);
 			statement.setInt(1,newId+1);
 			statement.setInt(2,key);
 			statement.executeUpdate();
 			
-			statement = ((com.opencms.file.mySql.CmsDbPool)m_pool).getIdStatement(CmsQuerys.C_SYSTEMID_UNLOCK_KEY);
+			statement = ((com.opencms.file.mySql.CmsDbPool)m_pool).getIdStatement(m_cq.C_SYSTEMID_UNLOCK_KEY);
 			statement.executeUpdate();
 			
 		} catch (SQLException e){
@@ -471,7 +473,7 @@ public void newMethod() {}
 	           PreparedStatement statement = null;
 	           try {   
 					// update the onlineFolder with data from offlineFolder
-				    statement = m_pool.getPreparedStatement(CmsQuerys.C_RESOURCES_UPDATE_KEY);
+				    statement = m_pool.getPreparedStatement(m_cq.C_RESOURCES_UPDATE_KEY);
 					statement.setInt(1,currentFolder.getType());
 	                statement.setInt(2,currentFolder.getFlags());
 		            statement.setInt(3,currentFolder.getOwnerId());
@@ -492,7 +494,7 @@ public void newMethod() {}
 					throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 				}finally {
 						if( statement != null) {
-							m_pool.putPreparedStatement(CmsQuerys.C_RESOURCES_UPDATE_KEY, statement);
+							m_pool.putPreparedStatement(m_cq.C_RESOURCES_UPDATE_KEY, statement);
 						}
 				} 
 				folderIdIndex.put(new Integer(currentFolder.getResourceId()), new Integer(onlineFolder.getResourceId()));
@@ -612,7 +614,7 @@ public void newMethod() {}
 				PreparedStatement statement = null;
 				try {  
 					// update the onlineFile with data from offlineFile
-				    statement = m_pool.getPreparedStatement(CmsQuerys.C_RESOURCES_UPDATE_FILE_KEY);
+				    statement = m_pool.getPreparedStatement(m_cq.C_RESOURCES_UPDATE_FILE_KEY);
 					statement.setInt(1,currentFile.getType());
 	                statement.setInt(2,currentFile.getFlags());
 		            statement.setInt(3,currentFile.getOwnerId());
@@ -635,7 +637,7 @@ public void newMethod() {}
 					throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 				}finally {
 						if( statement != null) {
-							m_pool.putPreparedStatement(CmsQuerys.C_RESOURCES_UPDATE_FILE_KEY, statement);
+							m_pool.putPreparedStatement(m_cq.C_RESOURCES_UPDATE_FILE_KEY, statement);
 						}
 				}	
 				// copy properties
@@ -725,28 +727,28 @@ public void newMethod() {}
 			 // if the actual project is the online project read file header and content
 			 // from the online project
 			 if (projectId == onlineProjectId) {
-					statement = m_pool.getPreparedStatement(CmsQuerys.C_FILE_READ_ONLINE_KEY);
+					statement = m_pool.getPreparedStatement(m_cq.C_FILE_READ_ONLINE_KEY);
 					statement.setString(1, filename);
 					statement.setInt(2,onlineProjectId);
 					res = statement.executeQuery();  
 					if(res.next()) {
-					  int resId=res.getInt(CmsQuerys.C_RESOURCES_RESOURCE_ID);
-					  int parentId=res.getInt(CmsQuerys.C_RESOURCES_PARENT_ID);
-					  int resType= res.getInt(CmsQuerys.C_RESOURCES_RESOURCE_TYPE);
-					  int resFlags=res.getInt(CmsQuerys.C_RESOURCES_RESOURCE_FLAGS);
-					  int userId=res.getInt(CmsQuerys.C_RESOURCES_USER_ID);
-					  int groupId= res.getInt(CmsQuerys.C_RESOURCES_GROUP_ID);
-					  int fileId=res.getInt(CmsQuerys.C_RESOURCES_FILE_ID);
-					  int accessFlags=res.getInt(CmsQuerys.C_RESOURCES_ACCESS_FLAGS);
-					  int state= res.getInt(CmsQuerys.C_RESOURCES_STATE);
-					  int lockedBy= res.getInt(CmsQuerys.C_RESOURCES_LOCKED_BY);
-					  int launcherType= res.getInt(CmsQuerys.C_RESOURCES_LAUNCHER_TYPE);
-					  String launcherClass=  res.getString(CmsQuerys.C_RESOURCES_LAUNCHER_CLASSNAME);
-					  long created=SqlHelper.getTimestamp(res,CmsQuerys.C_RESOURCES_DATE_CREATED).getTime();
-					  long modified=SqlHelper.getTimestamp(res,CmsQuerys.C_RESOURCES_DATE_LASTMODIFIED).getTime();
-					  int modifiedBy=res.getInt(CmsQuerys.C_RESOURCES_LASTMODIFIED_BY);
-					  int resSize= res.getInt(CmsQuerys.C_RESOURCES_SIZE);
-					  byte[] content=res.getBytes(CmsQuerys.C_RESOURCES_FILE_CONTENT);
+					  int resId=res.getInt(m_cq.C_RESOURCES_RESOURCE_ID);
+					  int parentId=res.getInt(m_cq.C_RESOURCES_PARENT_ID);
+					  int resType= res.getInt(m_cq.C_RESOURCES_RESOURCE_TYPE);
+					  int resFlags=res.getInt(m_cq.C_RESOURCES_RESOURCE_FLAGS);
+					  int userId=res.getInt(m_cq.C_RESOURCES_USER_ID);
+					  int groupId= res.getInt(m_cq.C_RESOURCES_GROUP_ID);
+					  int fileId=res.getInt(m_cq.C_RESOURCES_FILE_ID);
+					  int accessFlags=res.getInt(m_cq.C_RESOURCES_ACCESS_FLAGS);
+					  int state= res.getInt(m_cq.C_RESOURCES_STATE);
+					  int lockedBy= res.getInt(m_cq.C_RESOURCES_LOCKED_BY);
+					  int launcherType= res.getInt(m_cq.C_RESOURCES_LAUNCHER_TYPE);
+					  String launcherClass=  res.getString(m_cq.C_RESOURCES_LAUNCHER_CLASSNAME);
+					  long created=SqlHelper.getTimestamp(res,m_cq.C_RESOURCES_DATE_CREATED).getTime();
+					  long modified=SqlHelper.getTimestamp(res,m_cq.C_RESOURCES_DATE_LASTMODIFIED).getTime();
+					  int modifiedBy=res.getInt(m_cq.C_RESOURCES_LASTMODIFIED_BY);
+					  int resSize= res.getInt(m_cq.C_RESOURCES_SIZE);
+					  byte[] content=res.getBytes(m_cq.C_RESOURCES_FILE_CONTENT);
 			  
 									 
 					  file=new CmsFile(resId,parentId,fileId,filename,resType,resFlags,userId,
@@ -774,11 +776,11 @@ public void newMethod() {}
 			   }
 			   // read the file content
 		 
-				   statement = m_pool.getPreparedStatement(CmsQuerys.C_FILE_READ_KEY);
+				   statement = m_pool.getPreparedStatement(m_cq.C_FILE_READ_KEY);
 				   statement.setInt(1,file.getFileId());
 				   res = statement.executeQuery();
 				   if (res.next()) {
-					   file.setContents(res.getBytes(CmsQuerys.C_FILE_CONTENT));
+					   file.setContents(res.getBytes(m_cq.C_FILE_CONTENT));
 				   } else {
 						 throw new CmsException("["+this.getClass().getName()+"]"+filename,CmsException.C_NOT_FOUND);  
 				   }
@@ -793,11 +795,11 @@ public void newMethod() {}
 		}finally {
 			if (projectId == onlineProjectId) {
 				if( statement != null) {
-					m_pool.putPreparedStatement(CmsQuerys.C_FILE_READ_ONLINE_KEY, statement);
+					m_pool.putPreparedStatement(m_cq.C_FILE_READ_ONLINE_KEY, statement);
 				}
 			}else{
 				if( statement != null) {
-					m_pool.putPreparedStatement(CmsQuerys.C_FILE_READ_KEY, statement);
+					m_pool.putPreparedStatement(m_cq.C_FILE_READ_KEY, statement);
 				}
 			}	
 		  }
@@ -817,7 +819,7 @@ public void newMethod() {}
 		Hashtable session = null;
 		
 		try	{			
-			statement = m_pool.getPreparedStatement(CmsQuerys.C_SESSION_READ_KEY);
+			statement = m_pool.getPreparedStatement(m_cq.C_SESSION_READ_KEY);
 			statement.setString(1,sessionId);
 			statement.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis() - C_SESSION_TIMEOUT ));
 			
@@ -845,7 +847,7 @@ public void newMethod() {}
 			throw new CmsException("["+this.getClass().getName()+"]", e);			
 		} finally {
 			if( statement != null) {
-				m_pool.putPreparedStatement(CmsQuerys.C_SESSION_READ_KEY, statement);
+				m_pool.putPreparedStatement(m_cq.C_SESSION_READ_KEY, statement);
 			}
 		}
 		return session;
@@ -866,31 +868,31 @@ public void newMethod() {}
 		PreparedStatement statement = null;
 		
 		try {
-			statement = m_pool.getPreparedStatement(CmsQuerys.C_TASK_READ_KEY);
+			statement = m_pool.getPreparedStatement(m_cq.C_TASK_READ_KEY);
 			statement.setInt(1,id);
 			res = statement.executeQuery();
 			if(res.next()) {
-				id = res.getInt(CmsQuerys.C_TASK_ID);
-				String name = res.getString(CmsQuerys.C_TASK_NAME);
-				int autofinish = res.getInt(CmsQuerys.C_TASK_AUTOFINISH);
-				java.sql.Timestamp starttime = SqlHelper.getTimestamp(res,CmsQuerys.C_TASK_STARTTIME);
-				java.sql.Timestamp timeout = SqlHelper.getTimestamp(res,CmsQuerys.C_TASK_TIMEOUT);
-				java.sql.Timestamp endtime = SqlHelper.getTimestamp(res,CmsQuerys.C_TASK_ENDTIME);
-				java.sql.Timestamp wakeuptime = SqlHelper.getTimestamp(res,CmsQuerys.C_TASK_WAKEUPTIME);
-				int escalationtype = res.getInt(CmsQuerys.C_TASK_ESCALATIONTYPE);
-				int initiatoruser = res.getInt(CmsQuerys.C_TASK_INITIATORUSER);
-				int originaluser = res.getInt(CmsQuerys.C_TASK_ORIGINALUSER);
-				int agentuser = res.getInt(CmsQuerys.C_TASK_AGENTUSER);
-				int role = res.getInt(CmsQuerys.C_TASK_ROLE);
-				int root = res.getInt(CmsQuerys.C_TASK_ROOT);
-				int parent = res.getInt(CmsQuerys.C_TASK_PARENT);
-				int milestone = res.getInt(CmsQuerys.C_TASK_MILESTONE);
-				int percentage = res.getInt(CmsQuerys.C_TASK_PERCENTAGE);
-				String permission = res.getString(CmsQuerys.C_TASK_PERMISSION);
-				int priority = res.getInt(CmsQuerys.C_TASK_PRIORITY);
-				int state = res.getInt(CmsQuerys.C_TASK_STATE);
-				int tasktype = res.getInt(CmsQuerys.C_TASK_TASKTYPE);
-				String htmllink = res.getString(CmsQuerys.C_TASK_HTMLLINK);
+				id = res.getInt(m_cq.C_TASK_ID);
+				String name = res.getString(m_cq.C_TASK_NAME);
+				int autofinish = res.getInt(m_cq.C_TASK_AUTOFINISH);
+				java.sql.Timestamp starttime = SqlHelper.getTimestamp(res,m_cq.C_TASK_STARTTIME);
+				java.sql.Timestamp timeout = SqlHelper.getTimestamp(res,m_cq.C_TASK_TIMEOUT);
+				java.sql.Timestamp endtime = SqlHelper.getTimestamp(res,m_cq.C_TASK_ENDTIME);
+				java.sql.Timestamp wakeuptime = SqlHelper.getTimestamp(res,m_cq.C_TASK_WAKEUPTIME);
+				int escalationtype = res.getInt(m_cq.C_TASK_ESCALATIONTYPE);
+				int initiatoruser = res.getInt(m_cq.C_TASK_INITIATORUSER);
+				int originaluser = res.getInt(m_cq.C_TASK_ORIGINALUSER);
+				int agentuser = res.getInt(m_cq.C_TASK_AGENTUSER);
+				int role = res.getInt(m_cq.C_TASK_ROLE);
+				int root = res.getInt(m_cq.C_TASK_ROOT);
+				int parent = res.getInt(m_cq.C_TASK_PARENT);
+				int milestone = res.getInt(m_cq.C_TASK_MILESTONE);
+				int percentage = res.getInt(m_cq.C_TASK_PERCENTAGE);
+				String permission = res.getString(m_cq.C_TASK_PERMISSION);
+				int priority = res.getInt(m_cq.C_TASK_PRIORITY);
+				int state = res.getInt(m_cq.C_TASK_STATE);
+				int tasktype = res.getInt(m_cq.C_TASK_TASKTYPE);
+				String htmllink = res.getString(m_cq.C_TASK_HTMLLINK);
 				res.close();
 				task =  new CmsTask(id, name, state, tasktype, root, parent,
 									initiatoruser, role, agentuser, originaluser,
@@ -904,10 +906,127 @@ public void newMethod() {}
 			  throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		} finally {
 			if(statement != null) {
-				m_pool.putPreparedStatement(CmsQuerys.C_TASK_READ_KEY, statement);
+				m_pool.putPreparedStatement(m_cq.C_TASK_READ_KEY, statement);
 			}
 		}
 		return task;
+	}
+		/**
+	 * Reads all tasks of a user in a project.
+	 * @param project The Project in which the tasks are defined.
+	 * @param agent The task agent   
+	 * @param owner The task owner .
+	 * @param group The group who has to process the task.	 
+	 * @tasktype C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
+	 * @param orderBy Chooses, how to order the tasks.
+	 * @param sort Sort Ascending or Descending (ASC or DESC)
+	 * 
+	 * @return A vector with the tasks
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, 
+							CmsGroup role, int tasktype, 
+							String orderBy, String sort)
+		throws CmsException {
+		boolean first = true;
+		Vector tasks = new Vector(); // vector for the return result
+		CmsTask task = null;		 // tmp task for adding to vector
+		ResultSet recset = null; 
+		
+		// create the sql string depending on parameters
+		// handle the project for the SQL String
+		String sqlstr = "SELECT * FROM " + m_cq.C_TABLENAME_TASK+" WHERE ";
+		if(project!=null){
+			sqlstr = sqlstr + m_cq.C_TASK_ROOT + "=" + project.getTaskId();
+			first = false;
+		}
+		else
+		{
+			sqlstr = sqlstr + m_cq.C_TASK_ROOT + "<>0 AND " + m_cq.C_TASK_PARENT + "<>0";
+			first = false;
+		}
+		
+		// handle the agent for the SQL String
+		if(agent!=null){
+			if(!first){
+				sqlstr = sqlstr + " AND ";
+			}
+			sqlstr = sqlstr + m_cq.C_TASK_AGENTUSER + "=" + agent.getId();
+			first = false;
+		}
+		
+		// handle the owner for the SQL String
+		if(owner!=null){
+			if(!first){
+				sqlstr = sqlstr + " AND ";
+			}
+			sqlstr = sqlstr + m_cq.C_TASK_INITIATORUSER + "=" + owner.getId();
+			first = false;
+		}
+		
+		// handle the role for the SQL String
+		if(role!=null){
+			if(!first){
+				sqlstr = sqlstr+" AND ";
+			}
+			sqlstr = sqlstr + m_cq.C_TASK_ROLE + "=" + role.getId();
+			first = false;
+		}
+		
+		sqlstr = sqlstr + getTaskTypeConditon(first, tasktype);
+		
+		// handel the order and sort parameter for the SQL String
+		if(orderBy!=null) {
+			if(!orderBy.equals("")) {
+				sqlstr = sqlstr + " ORDER BY " + orderBy;
+				if(orderBy!=null) {
+					if(!orderBy.equals("")) {
+						sqlstr = sqlstr + " " + sort;
+					}
+				}
+			}
+		}	
+		
+		try {
+			
+			Statement statement = m_pool.getStatement();
+			recset = statement.executeQuery(sqlstr);
+			
+			// if resultset exists - return vector of tasks
+			while(recset.next()) {
+					task =  new CmsTask(recset.getInt(m_cq.C_TASK_ID),
+									recset.getString(m_cq.C_TASK_NAME),
+									recset.getInt(m_cq.C_TASK_STATE),
+									recset.getInt(m_cq.C_TASK_TASKTYPE),
+									recset.getInt(m_cq.C_TASK_ROOT),
+									recset.getInt(m_cq.C_TASK_PARENT),
+									recset.getInt(m_cq.C_TASK_INITIATORUSER),
+									recset.getInt(m_cq.C_TASK_ROLE),
+									recset.getInt(m_cq.C_TASK_AGENTUSER),
+									recset.getInt(m_cq.C_TASK_ORIGINALUSER),
+									SqlHelper.getTimestamp(recset,m_cq.C_TASK_STARTTIME),
+									SqlHelper.getTimestamp(recset,m_cq.C_TASK_WAKEUPTIME),
+									SqlHelper.getTimestamp(recset,m_cq.C_TASK_TIMEOUT),
+									SqlHelper.getTimestamp(recset,m_cq.C_TASK_ENDTIME),
+									recset.getInt(m_cq.C_TASK_PERCENTAGE),
+									recset.getString(m_cq.C_TASK_PERMISSION),
+									recset.getInt(m_cq.C_TASK_PRIORITY),
+									recset.getInt(m_cq.C_TASK_ESCALATIONTYPE),
+									recset.getString(m_cq.C_TASK_HTMLLINK),
+									recset.getInt(m_cq.C_TASK_MILESTONE),
+									recset.getInt(m_cq.C_TASK_AUTOFINISH));
+				
+				tasks.addElement(task);
+			}
+			
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} catch( Exception exc ) {
+			  throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}
+		
+		return tasks;
 	}
 	/**
 	 * Writes a property for a file or folder.
@@ -935,7 +1054,7 @@ public void newMethod() {}
 				if( readProperty(propdef.getName(), resourceId, resourceType) != null) {
 					// property exists already - use update.
 					// create statement
-					statement = m_pool.getPreparedStatement(CmsQuerys.C_PROPERTIES_UPDATE_KEY);
+					statement = m_pool.getPreparedStatement(m_cq.C_PROPERTIES_UPDATE_KEY);
 					statement.setString(1, value);
 					statement.setInt(2, resourceId);
 					statement.setInt(3, propdef.getId());
@@ -944,7 +1063,7 @@ public void newMethod() {}
 				} else {
 					// property dosen't exist - use create.
 					// create statement
-					statement = m_pool.getPreparedStatement(CmsQuerys.C_PROPERTIES_CREATE_KEY);
+					statement = m_pool.getPreparedStatement(m_cq.C_PROPERTIES_CREATE_KEY);
 					statement.setInt(1, nextId(C_TABLE_PROPERTIES));
 					statement.setInt(2, propdef.getId());
 					statement.setInt(3, resourceId);
@@ -958,9 +1077,9 @@ public void newMethod() {}
 			}finally {
 				if( statement != null) {
 					if (newprop) {
-						m_pool.putPreparedStatement(CmsQuerys.C_PROPERTIES_CREATE_KEY, statement);
+						m_pool.putPreparedStatement(m_cq.C_PROPERTIES_CREATE_KEY, statement);
 					} else {
-						m_pool.putPreparedStatement(CmsQuerys.C_PROPERTIES_UPDATE_KEY, statement);
+						m_pool.putPreparedStatement(m_cq.C_PROPERTIES_UPDATE_KEY, statement);
 					}					
 				}
 			 }
@@ -986,7 +1105,7 @@ public void newMethod() {}
 			value=bout.toByteArray();
 			
 			// write data to database     
-			statement = m_pool.getPreparedStatement(CmsQuerys.C_USERS_WRITE_KEY);
+			statement = m_pool.getPreparedStatement(m_cq.C_USERS_WRITE_KEY);
 			
 			statement.setString(1,user.getDescription());
 			statement.setString(2,user.getFirstname());
@@ -1010,7 +1129,7 @@ public void newMethod() {}
 			throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:"+CmsException. C_SERIALIZATION, e);			
 		} finally {
 			if( statement != null) {
-				m_pool.putPreparedStatement(CmsQuerys.C_USERS_WRITE_KEY, statement);
+				m_pool.putPreparedStatement(m_cq.C_USERS_WRITE_KEY, statement);
 			}
 		}
 	}
