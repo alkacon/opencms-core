@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/02/11 16:12:05 $
- * Version: $Revision: 1.517 $
+ * Date   : $Date: 2004/02/12 18:27:00 $
+ * Version: $Revision: 1.518 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -26,6 +26,7 @@ OpenCms 5.3.2 Ix - February xx, 2004
 ! New CmsSystemInfo object contains all read-only system information
 * New/deleted/copied etc. folders in the explorer tree view are now correctly updated
 - Removed resource type "newpage" as xmlpage is now finished
+- Removed dependency on Xerces1, OpenCms should now run with any Xerces version
 
 OpenCms 5.3.1 Ix - January 23, 2004
 ! New XmlPage API finished

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlXercesParser.java,v $
-* Date   : $Date: 2004/02/11 16:12:05 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2004/02/12 18:26:03 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.apache.xerces.parsers.DOMParser;
 import org.apache.xml.serialize.DOMSerializer;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -52,7 +53,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.29 $ $Date: 2004/02/11 16:12:05 $
+ * @version $Revision: 1.30 $ $Date: 2004/02/12 18:26:03 $
  */
 public class CmsXmlXercesParser implements I_CmsXmlParser {
     
@@ -181,15 +182,37 @@ public class CmsXmlXercesParser implements I_CmsXmlParser {
         return "Apache Xerces XML Parser";
     }
 
+    private static int m_xercesVersion = 0;
+    
     public String getOriginalEncoding(Document doc) {
         // this functionality has experimental status in Apache Xerces parser 1.4.x and 2.x
         // as it implements DOM level 3 functionality not completly and W3C' DOM3 API
         // is in working draft stage
         if (doc instanceof org.apache.xerces.dom.CoreDocumentImpl) {
-            String result = ((org.apache.xerces.dom.CoreDocumentImpl)doc).getEncoding();
+            org.apache.xerces.dom.CoreDocumentImpl d = (org.apache.xerces.dom.CoreDocumentImpl)doc;
+            String result = null;
+            
+            // Xerces 1 and 2 APIs are different, we need to accomondate...
+            if ((m_xercesVersion == 2) || (m_xercesVersion == 0)) {
+                try {
+                    result = (String)d.getClass().getMethod("getXmlEncoding", new Class[]{}).invoke(d, new Object[]{});
+                    m_xercesVersion = 2;
+                } catch (Throwable t) {
+                    OpenCms.getLog(this).debug("Xerces 2 not found - getXmlEncoding() did not work", t);
+                }
+            }
+            if ((m_xercesVersion == 1) || (m_xercesVersion == 0)) {
+                try {
+                    result = (String)d.getClass().getMethod("getEncoding", new Class[]{}).invoke(d, new Object[]{});
+                    m_xercesVersion = 1;
+                } catch (Throwable t) {
+                    OpenCms.getLog(this).debug("Xerces 1 not found - getEncoding() did not work", t);
+                }
+            }           
+            // String result = ((org.apache.xerces.dom.CoreDocumentImpl)doc).getEncoding();
             if ((result != null) && !"".equals(result.trim())) {
                 return result;
-            }
+            }            
         }
         // in other cases we just return default encoding
         return OpenCms.getSystemInfo().getDefaultEncoding();
