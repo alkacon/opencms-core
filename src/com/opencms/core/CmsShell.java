@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/09/22 08:25:13 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2000/09/22 09:44:42 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.33 $ $Date: 2000/09/22 08:25:13 $
+ * @version $Revision: 1.34 $ $Date: 2000/09/22 09:44:42 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -616,6 +616,31 @@ public class CmsShell implements I_CmsConstants {
 			printException(exc);
 		}		
 	}
+/**
+ * Insert the method's description here.
+ * Creation date: (22-09-2000 11:34:54)
+ */
+public void getAllCategories()
+{
+	try
+	{
+		Vector categories = m_cms.getAllCategories();
+		for (int i=0; i<categories.size(); i++)
+		{
+			CmsCategory category = (CmsCategory) categories.elementAt(i);
+			System.out.println("Category id: "+category.getId());
+			System.out.println("Category name: "+category.getName());	
+			System.out.println("Category description: "+category.getDescription());
+			System.out.println("Category shortname: "+category.getShortName());
+			System.out.println("Category priority: "+category.getPriority());
+		}
+		
+	}
+	catch (Exception exc)
+	{
+		printException(exc);
+	}
+}
 	/**
 	 * Returns  all I_CmsResourceTypes.
 	 */

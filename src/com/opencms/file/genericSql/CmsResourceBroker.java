@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/22 08:25:16 $
- * Version: $Revision: 1.132 $
+ * Date   : $Date: 2000/09/22 09:44:42 $
+ * Version: $Revision: 1.133 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.132 $ $Date: 2000/09/22 08:25:16 $
+ * @version $Revision: 1.133 $ $Date: 2000/09/22 09:44:42 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2445,6 +2445,21 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
 		// return the vector of projects
 		return(projects);
 	 }
+/*
+ * Returns all categories.
+ *
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @return all categories
+ * @exception CmsException Throws CmsException if something goes wrong.
+ */
+public Vector getAllCategories(CmsUser currentUser, CmsProject currentProject) throws CmsException
+{
+	return m_dbAccess.getAllCategories();
+}
 	/**
 	 * Returns all projects, which are owned by the user or which are manageable
 	 * for the group of the user.

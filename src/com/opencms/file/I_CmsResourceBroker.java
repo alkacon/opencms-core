@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/22 08:25:13 $
- * Version: $Revision: 1.110 $
+ * Date   : $Date: 2000/09/22 09:44:42 $
+ * Version: $Revision: 1.111 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.110 $ $Date: 2000/09/22 08:25:13 $
+ * @version $Revision: 1.111 $ $Date: 2000/09/22 09:44:42 $
  * 
  */
 
@@ -921,6 +921,15 @@ public interface I_CmsResourceBroker {
 	 public Vector getAllAccessibleProjects(CmsUser currentUser, 
 											CmsProject currentProject)
 		 throws CmsException;
+/**
+ * Insert the method's description here.
+ * Creation date: (22-09-2000 11:30:10)
+ * @return java.util.Vector
+ * @param currentUser com.opencms.file.CmsUser
+ * @param currentProject com.opencms.file.CmsProject
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+Vector getAllCategories(CmsUser currentUser, CmsProject currentProject) throws com.opencms.core.CmsException;
 	/**
 	 * Returns all projects, which are owned by the user or which are manageable
 	 * for the group of the user.

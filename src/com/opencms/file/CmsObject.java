@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/09/22 08:25:13 $
- * Version: $Revision: 1.115 $
+ * Date   : $Date: 2000/09/22 09:44:42 $
+ * Version: $Revision: 1.116 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.115 $ $Date: 2000/09/22 08:25:13 $ 
+ * @version $Revision: 1.116 $ $Date: 2000/09/22 09:44:42 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -792,6 +792,16 @@ public void forwardTask(int taskid, String newRoleName, String newUserName) thro
  */
 public Vector getAllAccessibleProjects() throws CmsException {
 	return (m_rb.getAllAccessibleProjects(m_context.currentUser(), m_context.currentProject()));
+}
+/**
+ * Insert the method's description here.
+ * Creation date: (22-09-2000 11:31:23)
+ * @return java.util.Vector
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public Vector getAllCategories() throws com.opencms.core.CmsException
+{
+	return m_rb.getAllCategories(m_context.currentUser(), m_context.currentProject());
 }
 /**
  * Returns all projects which are owned by the current user or which are manageable

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/09/22 09:22:45 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/09/22 09:44:42 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.9 $ $Date: 2000/09/22 09:22:45 $
+ * @version $Revision: 1.10 $ $Date: 2000/09/22 09:44:42 $
  */
 public class CmsQueries
 {
@@ -291,6 +291,9 @@ public class CmsQueries
 	public String C_SITES_GETALLSITES = "SELECT SITE_ID, NAME, DESCRIPTION,CATEGORY_ID,LANGUAGE_ID, COUNTRY_ID, ONLINEPROJECT_ID FROM " + C_DATABASE_PREFIX + "SITES";
 	public Integer C_CATEGORY_GETCATEGORYFROMID_KEY = new Integer(457);
 	public String C_CATEGORY_GETCATEGORYFROMID = "SELECT NAME, DESCRIPTION, SHORTNAME, PRIORITY FROM " + C_DATABASE_PREFIX + "CATEGORY WHERE CATEGORY_ID = ?";
+	public Integer C_CATEGORY_GETALLCATEGORIES_KEY = new Integer(458);
+	public String C_CATEGORY_GETALLCATEGORIES = "SELECT CATEGORY_ID, NAME, DESCRIPTION, SHORTNAME, PRIORITY FROM " + C_DATABASE_PREFIX + "CATEGORY";
+	
 	
 	//statements needen for newSite
 	public Integer C_SITES_MAXID_KEY = new Integer(452);
