@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorManager.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/29 16:19:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,8 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +62,7 @@ import java.util.TreeMap;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.1
  */
@@ -167,6 +169,7 @@ public class CmsWorkplaceEditorManager {
      * @return configurable editors for the workplace preferences dialog
      */
     public Map getConfigurableEditors() {
+        
         Map configurableEditors = new HashMap();
         Iterator i = m_editorConfigurations.iterator();
         while (i.hasNext()) {
@@ -176,6 +179,14 @@ public class CmsWorkplaceEditorManager {
             while (k.hasNext()) {
                 // key is the current resource type of the configuration
                 String key = (String)k.next();
+                
+                // check if the current resource type is only a reference to another resource type
+                CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(key);
+                if (CmsStringUtil.isNotEmpty(settings.getReference())) {
+                    // skip this resource type
+                    continue;    
+                }
+                
                 if (currentConfig.getMappingForResourceType(key) == null) {
                     // editor is configurable for specified resource type
                     SortedMap editorConfigs = (SortedMap)configurableEditors.get(key);
