@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/10/29 09:55:10 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2001/10/30 15:48:10 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import com.opencms.defaults.*;
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.core.exceptions.*;
+import com.opencms.util.*;
 import java.util.*;
 import java.lang.reflect.*;
 
@@ -135,6 +136,16 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
   }
 
   /**
+  * Gets the history url of the module.
+  * @returns A string with the history url
+  */
+  public String getHistoryUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+                             Object userObject) throws Exception {
+
+    return getBackofficeUrl(cms, tagcontent,doc,userObject);
+  }
+
+  /**
   * Gets the redirect url of the module. This URL is called, when an entry of the file list is selected
   * @returns A string with the  url.
   */
@@ -194,7 +205,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     String setaction = (String) parameters.get("setaction");
     String idundelete = (String)parameters.get("idundelete");
     String idpublish = (String)parameters.get("idpublish");
-
+    String idhistory = (String)parameters.get("idhistory");
         // debug-code
 /*
         System.err.println("### "+this.getContentDefinitionClass().getName());
@@ -230,7 +241,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	} else {
 	  template.setData("filternumber", (String)session.getValue("filter"));
 	}
-
 	//move id values to id, remove old markers
 	if (idlock != null) {
 	  id = idlock;
@@ -240,6 +250,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	  session.removeValue("iddelete");
       session.removeValue("idundelete");
       session.removeValue("idpublish");
+      session.removeValue("idhistory");
 	}
 	if (idedit != null) {
 	  id = idedit;
@@ -249,6 +260,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	  session.removeValue("iddelete");
       session.removeValue("idundelete");
       session.removeValue("idpublish");
+      session.removeValue("idhistory");
 	}
 	if (iddelete != null) {
 	  id = iddelete;
@@ -258,6 +270,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	  session.removeValue("idlock");
       session.removeValue("idundelete");
       session.removeValue("idpublish");
+      session.removeValue("idhistory");
 	}
 	if (idundelete != null) {
 	  id = idundelete;
@@ -267,6 +280,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	  session.removeValue("idlock");
       session.removeValue("iddelete");
       session.removeValue("idpublish");
+      session.removeValue("idhistory");
 	}
 	if (idpublish != null) {
 	  id = idpublish;
@@ -276,6 +290,18 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	  session.removeValue("idlock");
       session.removeValue("iddelete");
       session.removeValue("idundelete");
+      session.removeValue("idhistory");
+	}
+
+	if (idhistory != null) {
+	  id = idhistory;
+	  session.putValue("idhistory", idhistory);
+	  session.removeValue("idedit");
+	  session.removeValue("idnew");
+	  session.removeValue("idlock");
+      session.removeValue("iddelete");
+      session.removeValue("idundelete");
+      session.removeValue("idpublish");
 	}
 	if ((id != null) && (id.equals("new"))) {
 	  session.putValue("idnew", id);
@@ -285,8 +311,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	  session.removeValue("idlock");
       session.removeValue("idundelete");
       session.removeValue("idpublish");
+      session.removeValue("idhistory");
 	}
-
 	//get marker id from session
 	String idsave = (String) session.getValue("idsave");
 	if (ok == null) {
@@ -300,7 +326,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 
     //get marker for accessing the new dialog
     String idnewsave = (String) session.getValue("idnew");
-
 
         // --- This is the part when getContentNew is called ---
     //access to new dialog
@@ -316,9 +341,9 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 
         // --- This was the part when getContentNew is called ---
     }
-
     //go to the appropriate getContent methods
-    if ((id == null) && (idsave == null) && (action == null) && (idlock==null) && (iddelete == null) && (idundelete == null) && (idpublish == null) && (idedit == null))  {
+    if ((id == null) && (idsave == null) && (action == null) && (idlock==null) && (iddelete == null) && (idedit == null)
+        && (idundelete == null) && (idpublish == null) && (idhistory == null))  {
       //process the head frame containing the filter
       returnProcess = getContentHead(cms, template, elementName, parameters, templateSelector);
       //finally return processed data
@@ -340,7 +365,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             //finally return processed data
             return returnProcess;
       } else {
-
            // --- This is the part where getContentEdit is called ---
 
         //get marker for accessing the edit dialog
@@ -377,6 +401,13 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         String idpublishsave = (String) session.getValue("idpublish");
         if(idpublish != null || idpublishsave != null){
             returnProcess = getContentDirectPublish(cms, template, elementName, parameters, templateSelector);
+            return returnProcess;
+        }
+        //get marker for accessing the history dialog
+        //check if the history of cd should be dispayed
+        String idhistorysave = (String) session.getValue("idhistory");
+        if(idhistory != null || idhistorysave != null){
+            returnProcess = getContentHistory(cms, template, elementName, parameters, templateSelector);
             return returnProcess;
         }
         //get marker for accessing the delete dialog
@@ -645,7 +676,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             //access content definition constructor by reflection
             Object o = null;
             o = getContentDefinition(cms, cdClass, id);
-            //get undelete method and delete content definition instance
+            //get undelete method and undelete content definition instance
             try {
                 ((I_CmsExtendedContentDefinition) o).undelete(cms);
             } catch (Exception e1) {
@@ -769,6 +800,221 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         //finally start the processing
         processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
         return processResult;
+    }
+
+    /**
+     * Gets the content of a given template file.
+     * <P>
+     * While processing the template file the table entry
+     * <code>entryTitle<code> will be displayed in the history dialog
+     *
+     * @param cms A_CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file
+     * @param elementName not used here
+     * @param parameters get the parameters action for the button activity
+     * and id for the used content definition instance object
+     * @param templateSelector template section that should be processed.
+     * @return Processed content of the given template file.
+     * @exception CmsException
+     */
+    public byte[] getContentHistory(CmsObject cms, CmsXmlWpTemplateFile template, String elementName,
+                                          Hashtable parameters, String templateSelector) throws CmsException {
+        //return var
+        byte[] processResult = null;
+
+        // session will be created or fetched
+        I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
+        //get the class of the content definition
+        Class cdClass = getContentDefinitionClass();
+
+        //get (stored) id parameter
+        String id = (String) parameters.get("id");
+        if (id == null) {
+            id = "";
+        }
+
+        // get value of hidden input field action
+        String action = (String) parameters.get("action");
+        //no button pressed, go to the default section!
+        //history dialog, displays the versions of the cd in the history
+        if (action == null || action.equals("")) {
+            if (id != "") {
+                //set template section
+                templateSelector = "history";
+                //create new language file object
+                CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+                //get the dialog from the langauge file and set it in the template
+                template.setData("historytitle", lang.getLanguageValue("messagebox.title.history"));
+                // build the history list
+                template.setData("id", id);
+                template.setData("setaction", "detail");
+            } else {
+                //set template section
+                templateSelector = "done";
+                //remove marker
+                session.removeValue("idhistory");
+            }
+            // confirmation button pressed, process data!
+        } else if (action.equalsIgnoreCase("detail")){
+            String versionId = (String)parameters.get("version");
+            if(versionId != null && !"".equals(versionId)){
+                templateSelector = "historydetail";
+                //access content definition constructor by reflection
+                Object o = null;
+                o = getContentDefinition(cms, cdClass, new Integer(id));
+                //get the version from history
+                try {
+                    I_CmsExtendedContentDefinition curVersion = (I_CmsExtendedContentDefinition)((I_CmsExtendedContentDefinition)o).getVersionFromHistory(cms, Integer.parseInt(versionId));
+                    String projectName = "";
+                    String projectDescription = "";
+                    String userName = "";
+                    try{
+                        CmsProject theProject = cms.readBackupProject(curVersion.getLockedInProject());
+                        projectName = theProject.getName();
+                        projectDescription = theProject.getDescription();
+                    } catch (CmsException ex){
+                        projectName = "";
+                    }
+                    try{
+                        CmsUser theUser= cms.readUser(curVersion.getLastModifiedBy());
+                        userName = theUser.getName()+" "+theUser.getFirstname()+" "+theUser.getLastname();
+                    } catch (CmsException ex){
+                        userName = curVersion.getLastModifiedByName();
+                    }
+                    template.setData("histproject", projectName);
+                    template.setData("version", versionId);
+                    template.setData("id", id);
+                    template.setData("histid", Integer.toString(curVersion.getId()));
+                    template.setData("histtitle", curVersion.getTitle());
+                    template.setData("histlastmodified", Utils.getNiceDate(curVersion.getDateLastModified()));
+                    template.setData("histpublished", Utils.getNiceDate(curVersion.getDateCreated()));
+                    template.setData("histmodifiedby", userName);
+                    template.setData("histdescription", projectDescription);
+                    int curUser = cms.getRequestContext().currentUser().getId();
+                    int curProject = cms.getRequestContext().currentProject().getId();
+                    if(((A_CmsContentDefinition) o).getLockstate() == curUser &&
+                        ((I_CmsExtendedContentDefinition) o).getLockedInProject() == curProject){
+                        // enable restore button
+                        template.setData("BUTTONRESTORE",template.getProcessedDataValue("ENABLERESTORE", this));
+                        template.setData("setaction", "restore");
+                    } else {
+                        template.setData("BUTTONRESTORE",template.getProcessedDataValue("DISABLERESTORE", this));
+                        template.setData("setaction", "");
+                    }
+                }catch (Exception e) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                        A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: history method throwed an exception! "+e.getMessage());
+                    }
+                    templateSelector = "historyerror";
+                    template.setData("historyerror", e.getMessage());
+                    //remove marker
+                    session.removeValue("idhistory");
+                }
+            } else {
+                // no version selected
+                //set template section
+                templateSelector = "history";
+                //create new language file object
+                CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+                //get the dialog from the langauge file and set it in the template
+                template.setData("historytitle", lang.getLanguageValue("messagebox.title.history"));
+                // build the history list
+                template.setData("id", id);
+                template.setData("setaction", "detail");
+            }
+        } else if (action.equalsIgnoreCase("restore")){
+            String versionId = (String)parameters.get("version");
+            //set template section
+            templateSelector = "history";
+            //create new language file object
+            CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+            //get the dialog from the langauge file and set it in the template
+            template.setData("historytitle", lang.getLanguageValue("messagebox.title.history"));
+            // build the history list
+            template.setData("id", id);
+            template.setData("setaction", "detail");
+            if(versionId != null && !"".equals(versionId)){
+                //access content definition constructor by reflection
+                Object o = null;
+                o = getContentDefinition(cms, cdClass, new Integer(id));
+                //get restore method and restore content definition instance
+                try {
+                    ((I_CmsExtendedContentDefinition)o).restore(cms, Integer.parseInt(versionId));
+                }catch (Exception e) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                        A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: restore method throwed an exception! "+e.getMessage());
+                    }
+                    templateSelector = "historyerror";
+                    template.setData("historyerror", e.getMessage());
+                    //remove marker
+                    session.removeValue("idhistory");
+                }
+            }
+        }
+        //finally start the processing
+        processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
+        return processResult;
+    }
+
+    /**
+     * Gets all versions of the resource from the history.
+     * <P>
+     * The given vectors <code>names</code> and <code>values</code> will
+     * be filled with the appropriate information to be used for building
+     * a select box.
+     *
+     * @param cms CmsObject Object for accessing system resources.
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return Index representing the current value in the vectors.
+     * @exception CmsException
+     */
+
+    public Integer getHistory(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
+            Vector values, Hashtable parameters) throws CmsException {
+        I_CmsSession session = cms.getRequestContext().getSession(true);
+        String id = (String) parameters.get("id");
+        if(id != null && !"".equals(id)) {
+            Vector cdHistory = new Vector();
+            //get the class of the content definition
+            Class cdClass = getContentDefinitionClass();
+            //access content definition constructor by reflection
+            Object o = null;
+            o = getContentDefinition(cms, cdClass, new Integer(id));
+            //get history method and return the vector of the versions
+            try {
+                cdHistory = ((I_CmsExtendedContentDefinition) o).getHistory(cms);
+            }catch (Exception e) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: history method throwed an exception!");
+                }
+            }
+            // fill the names and values
+            for(int i = 0;i < cdHistory.size();i++) {
+                try{
+                    I_CmsExtendedContentDefinition curCd = ((I_CmsExtendedContentDefinition)cdHistory.elementAt(i));
+                    long updated = curCd.getDateCreated();
+                    String userName = "";
+                    try{
+                        userName = cms.readUser(curCd.getLastModifiedBy()).getName();
+                    } catch(CmsException exc){
+                        userName = "";
+                    }
+                    long lastModified = curCd.getDateLastModified();
+                    String output = Utils.getNiceDate(lastModified) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                                    + Utils.getNiceDate(updated) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                                    + userName;
+                    names.addElement(output);
+                    values.addElement(curCd.getVersionId()+"");
+                } catch (Exception e){
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                        A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: history method throwed an exception!");
+                    }
+                }
+            }
+        }
+        return new Integer(-1);
     }
 
   /**

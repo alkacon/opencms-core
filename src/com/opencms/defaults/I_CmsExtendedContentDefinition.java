@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/I_CmsExtendedContentDefinition.java,v $
-* Date   : $Date: 2001/10/29 09:55:11 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/10/30 15:48:10 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,6 +43,13 @@ import com.opencms.core.exceptions.*;
 public interface I_CmsExtendedContentDefinition {
 
     /**
+     * Returns the unique id of the content definition
+     *
+     * @return int The unique id of the cd
+     */
+    public int getId();
+
+    /**
      * Returns the projectId of the content definition.
      * If the cd belongs to the current project the value
      * is the id of the current project otherwise its
@@ -65,9 +72,51 @@ public interface I_CmsExtendedContentDefinition {
      * that is stored in the cd table after the cd
      * was locked
      *
-     * @return int The id of the cd
+     * @return int The id of the project
      */
     public int getLockedInProject();
+
+    /**
+     * Returns the date of the last modification of the content definition
+     *
+     * @return long The date of the last modification
+     */
+    public long getDateLastModified();
+
+    /**
+     * Returns the date of the creation of the content definition
+     *
+     * @return long The date of the creation
+     */
+    public long getDateCreated();
+
+    /**
+     * Returns the id of the user who has modified the content definition
+     *
+     * @return int The id of the user who has modified the cd
+     */
+    public int getLastModifiedBy();
+
+    /**
+     * Returns the name of the user who has modified the content definition
+     *
+     * @return String The name of the user who has modified the cd
+     */
+    public String getLastModifiedByName();
+
+    /**
+     * Returns the id of the version in the history of the content definition
+     *
+     * @return int The id of the version
+     */
+    public int getVersionId();
+
+    /**
+     * Returns the title of the content definition
+     *
+     * @return String The title of the cd
+     */
+    public String getTitle();
 
     /**
      * Publishes the content definition directly
@@ -83,4 +132,33 @@ public interface I_CmsExtendedContentDefinition {
      * @param cms The CmsObject
      */
     public void undelete(CmsObject cms) throws Exception;
+
+
+    /**
+     * Restore method
+     * for restore instance of content definition from the history
+     *
+     * @param cms The CmsObject
+     * @param versionId The id of the version to restore
+     */
+    public void restore(CmsObject cms, int versionId) throws Exception;
+
+    /**
+     * History method
+     * returns the vector of the versions of content definition in the history
+     *
+     * @param cms The CmsObject
+     * @return Vector The versions of the cd in the history
+     */
+    public Vector getHistory(CmsObject cms) throws Exception;
+
+    /**
+     * History method
+     * returns the cd of the version with the given versionId
+     *
+     * @param cms The CmsObject
+     * @param versionId The version id
+     * @return Object The object with the version of the cd
+     */
+    public Object getVersionFromHistory(CmsObject cms, int versionId);
 }
