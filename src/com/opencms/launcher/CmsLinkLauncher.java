@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLinkLauncher.java,v $
-* Date   : $Date: 2001/08/02 12:50:36 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2002/03/07 13:42:40 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,9 +46,14 @@ import java.io.*;
  * be used to create output.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2001/08/02 12:50:36 $
+ * @version $Revision: 1.12 $ $Date: 2002/03/07 13:42:40 $
  */
 public class CmsLinkLauncher extends A_CmsLauncher {
+
+    /**
+     * The currently running OpenCms instance.
+     */
+    private A_OpenCms m_openCms;
 
     /**
      * Gets the ID that indicates the type of the launcher.
@@ -75,6 +80,11 @@ public class CmsLinkLauncher extends A_CmsLauncher {
     protected void launch(CmsObject cms, CmsFile file,
                           String startTemplateClass,
                           A_OpenCms openCms) throws CmsException {
+
+        // get the current running OpenCms instance.
+        if(openCms == null) {
+            openCms = m_openCms;
+        }
         String link = new String(file.getContents());
         if(link == null || "".equals(link) || " ".equals(link)){
             throw new CmsException(CmsException.C_NOT_FOUND);
@@ -94,5 +104,12 @@ public class CmsLinkLauncher extends A_CmsLauncher {
 
             }
         }
+    }
+
+    /**
+     * Sets the currently running OpenCms instance.
+     */
+    public void setOpenCms(A_OpenCms openCms) {
+        m_openCms = openCms;
     }
 }

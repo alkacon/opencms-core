@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.6.0 Tleilax - 07 March 2001
+* Fixed bug in static export. Nullpointer exception for link resources was fixed.
+
 OpenCms 4.5.36 Chusuk - 05 March 2001
 ! New function for HTML-Editor: inserting internal links
 ! Added menu entry for folders, pages and links: changing the navigation informations (Navigation Text and Position)
@@ -34,7 +37,7 @@ OpenCms 4.5.35 Release Candidate Chusuk - 15 February 2001
 * New way to encode the passwords.
 - Removed old Usermanual. The usermanual is now part of the complete OpenCms documentation.
 
-OpenCms 4.5.34 Chusuk       - 05 February 2001
+OpenCms 4.5.34 Chusuk - 05 February 2001
 ! The copy method of the mastermodule now returns the id of the new content definition. 
   The dataset can be cloned.
 ! Modules may have a new Method witch is called after publishing.
@@ -46,7 +49,7 @@ OpenCms 4.5.34 Chusuk       - 05 February 2001
 - Removed file.encoding warnings about passwords. file.encoding for passwords can be
   set manually in the opencms.properties.
 
-OpenCms 4.5.33 Chusuk       - 30 January 2001
+OpenCms 4.5.33 Chusuk - 30 January 2001
 * Change current project to online project after publishing a temporary project.
 - Addind mechanism of redirect to the correct ressource based on the current project
   for showing preview of ressources from explorer-view.
@@ -58,7 +61,7 @@ OpenCms 4.5.33 Chusuk       - 30 January 2001
   have changed.
 - Removed the redirect points. They are not needed since we have the static export.
 
-OpenCms 4.5.32 Chusuk       - 18 January 2001
+OpenCms 4.5.32 Chusuk - 18 January 2001
 ! The digest-method for encrypting passwords is now available in the CmsObject.
 ! Static export. Only changed or new files are exported. 
 * when the property export is set to https, the 404 error is thrown only in the online project
@@ -72,7 +75,7 @@ OpenCms 4.5.32 Chusuk       - 18 January 2001
   This allows control about the used protocol-sheme (http or https) for previews in the online
   project.
 
-OpenCms 4.5.31 Chusuk       - 09 January 2001
+OpenCms 4.5.31 Chusuk - 09 January 2001
 ! Modification on Explorer-View for "Gecko" support. The "Gecko-Support" is not finished yet.
   ATTENTION: The workplace has currently some problems displaying german umlauts. We will fix 
   that in the next release.
@@ -102,7 +105,7 @@ OpenCms 4.5.31 Chusuk       - 09 January 2001
 - Media selectbox can now start at zero (0). Changes were made to A_CmsChannelBackoffice.
 - Added catch of exception on marking sessions as dirty.
 
-OpenCms 4.5si.30 Chusuk     - 14 December 2001
+OpenCms 4.5si.30 Chusuk - 14 December 2001
 * bugfix static export: if a extern link is in a link tag (should not happen) no strange folders are created.
 - Changed the configuration of the static export. It now enabled and configured by default.
   You can browse the exported ressource by pointing your browser to: 
@@ -111,12 +114,12 @@ OpenCms 4.5si.30 Chusuk     - 14 December 2001
   you can rename your webapplication without changing the opencms.properties.
 - Now members of the groups projectmanagers and users are allowed to export static resources, too.
 
-OpenCms 4.5.29 Chusuk       - 10 December 2001
+OpenCms 4.5.29 Chusuk - 10 December 2001
 - Changed the xmttemplate editor. If a templatefile is not found at a default location, it is usewd anyway.
 - Corrected color for "changed resources" in backoffices.
 - Changed the apperance of two selectboxes in editors.
 
-OpenCms 4.5.28 Chusuk       - 07 December 2001
+OpenCms 4.5.28 Chusuk - 07 December 2001
 ! Added 3 new methods to the Template for getting the keywords and description property and one for
   getting a property named in the tagcontent.
 ! When creating a project you can choose if you want to export static resources after the project is published.
@@ -125,7 +128,7 @@ OpenCms 4.5.28 Chusuk       - 07 December 2001
 - Changed the returnurl (in error templates) for the actions in the context menu for using them in the galeries
   and the projectview.
 
-OpenCms 4.5.27 Chusuk       - 04 December 2001
+OpenCms 4.5.27 Chusuk - 04 December 2001
 * Bugfix in language files and templates: the tagname "link" was renamed to "linkto" because of problems with the
   registered HTML-tag "LINK".
 * Bugfix in PL/SQL-Package opencmsproject: when publishing a resource an exception is thrown if the parent folder
@@ -133,51 +136,51 @@ OpenCms 4.5.27 Chusuk       - 04 December 2001
 * Bugfix set the default propertie for link replacement so the editor created links work again.
 ! The recovery password can be set by anybody who knows the users name and password.
 
-OpenCms 4.5.26 Chusuk       - 03 December 2001
+OpenCms 4.5.26 Chusuk - 03 December 2001
 ! Changes in picturegallery and downloadgallery: the resources can now be edited by the menu
 * Bugfix when reading module parameters from registry: now the given default value is returned if the
   value can not be read from the registry.
 
-OpenCms 4.5si.25 Chusuk     - 27 November 2001
+OpenCms 4.5si.25 Chusuk - 27 November 2001
 * Bugfixing mastermodule.
 * Bugfixing linkmechanism.
 
-OpenCms 4.5si.24 Chusuk     - 23 November 2001
+OpenCms 4.5si.24 Chusuk - 23 November 2001
 * Bugfixing mastermodule.
 
-OpenCms 4.5.23 Chusuk       - 22 November 2001
+OpenCms 4.5.23 Chusuk - 22 November 2001
 ! Added Tidy library to Opencms. 
 ! The html editor can handle link tags now.
 * Bugfixing mastermodule.
 * Bugfixing generic backoffice.
 
-OpenCms 4.5.22 Chusuk       - 20 November 2001
+OpenCms 4.5.22 Chusuk - 20 November 2001
 * Bugfix in import. Importing groups with empty description (null) caused errors.
 - Added templates for generic media-chooser for mastermodules.
 
-OpenCms 4.5.21 Chusuk       - 19 November 2001
+OpenCms 4.5.21 Chusuk - 19 November 2001
 ! Added schedule task management to the workplace.
 ! Added method to create channels directly via CmsObject.
 ! Added generic handling of media in the backoffice.
 
-OpenCms 4.5.20 Chusuk       - 15 November 2001
+OpenCms 4.5.20 Chusuk - 15 November 2001
 ! Added AdditionalChangeDate for timed contentdefinitions. 
 ! Initial checkin of CmsCronScheduler to launch jobs "cronlike".
 * Worked at the static export.
 * Bugfixing mastermodule.
 - Enabled variant caching for class "CmsShowMedia".
 
-OpenCms 4.5.19 Chusuk       - 13 November 2001
+OpenCms 4.5.19 Chusuk - 13 November 2001
 * Bugfixing mastermodule.
 - The setup-wizard can now setup a oracle oci database.
 
-OpenCms 4.5.18 Chusuk       - 12 November 2001
+OpenCms 4.5.18 Chusuk - 12 November 2001
 * Bugfixing mastermodule.
 - Added systemproperty to registry.xml: UseWpPicturesFromVFS - if this is set to true
   the system loads all workplace-images from the VFS (default false).
   This should only be done, if there is no possible export to a http-docroot.
 
-OpenCms 4.5.17 Chusuk       - 09 November 2001
+OpenCms 4.5.17 Chusuk - 09 November 2001
 ! Added class "com.opencms.defaults.master.CmsShowMedia" to show media in a generic way.
 ! New property "description" for type image. The description can be inserted when uploading
   a picture in the picturegallery.
@@ -188,10 +191,10 @@ OpenCms 4.5.17 Chusuk       - 09 November 2001
   and statement for online or offline projects.
 - Added some fileds to the mastermodule.
 
-OpenCms 4.5.16 Chusuk       - 06 November 2001
+OpenCms 4.5.16 Chusuk - 06 November 2001
 * Completing the generic master for modules in projectcycle.
 
-OpenCms 4.5.15 Chusuk       - 05 November 2001
+OpenCms 4.5.15 Chusuk - 05 November 2001
 ! Added generic master for modules in projectcycle.
 ! It is now easier to add a new page resource type that gets its templates 
   in a different way.
@@ -210,16 +213,16 @@ OpenCms 4.5.15 Chusuk       - 05 November 2001
 - Changed the build.xml. Therefor you need ant 1.4.
 - Posted files are no longer limited to 8MB.
 
-OpenCms 4.4.6  Gom Jabbar   - XX October 2001
+OpenCms 4.4.6  Gom Jabbar - XX October 2001
 * if a body file in a folder is deleted the folder can nevertheless be deleted.
 * The Import works again (body files where not imported).
 * Bugfix 1796: temporary files are not exported.
 
-OpenCms 4.4.5  Gom Jabbar   - 12 October 2001
+OpenCms 4.4.5  Gom Jabbar - 12 October 2001
 * When an exception occurs while changing the owner, group or access flags of the files in a folder
   keep on changing the next file and write the error message into log file.
 
-OpenCms 4.5.14 Gom Jabbar   - 05 September 2001
+OpenCms 4.5.14 Gom Jabbar - 05 September 2001
 ! A simple broadcast message service is availabla for Administrators.
 * Temporary projects are now created with the right type and will be deleted after publish.
 * Corrupt language files will not destroy the complete system.
@@ -237,17 +240,17 @@ OpenCms 4.5.14 Gom Jabbar   - 05 September 2001
 - System startup time decreased. The system starts faster, even with a full registry.
 - Removed unused method createResource in resourcebroker and DbAccess.
 
-OpenCms 4.5.13 Gom Jabbar   - 28 September 2001
+OpenCms 4.5.13 Gom Jabbar - 28 September 2001
 ! Now webusers can be read from the CmsObject and the Shell with and without password..
   
-OpenCms 4.5.12 Gom Jabbar   - 28 September 2001
+OpenCms 4.5.12 Gom Jabbar - 28 September 2001
 ! Now groups can be added to webusers, too. If the user can not be read as user for OpenCms, he is read
   as Webuser.
 
-OpenCms 4.4.4 Gom Jabbar    - 27 September 2001
+OpenCms 4.4.4 Gom Jabbar - 27 September 2001
 * Bugfix in PL/SQL-packages 
 
-OpenCms 4.5.11 Gom Jabbar   - 24 September 2001
+OpenCms 4.5.11 Gom Jabbar - 24 September 2001
 ! Now there is a history of published projects in the project backoffice. The number of displayed
   projects is limited to the last 300.
 ! When copying a resource only one entry is needed. If the path is not given the resource will be copied
@@ -267,34 +270,34 @@ OpenCms 4.5.11 Gom Jabbar   - 24 September 2001
 - A new project includes /content/elements/ if the extendedNavigation-flag is set.
 - Changes for compatibility with Tomcat 4.0
   
-OpenCms 4.4.3   Gom Jabbar   - 13 September 2001
+OpenCms 4.4.3   Gom Jabbar - 13 September 2001
 - new major release created
 
-OpenCms 4.5.10  Gom Jabbar   - 13 September 2001
+OpenCms 4.5.10  Gom Jabbar - 13 September 2001
 * explorer filelist: the current page is stored in the session now so if you look
   a file you will see the same page again.
 * removed changes for temporary files of editor.
 
-OpenCms 4.5.9  Gom Jabbar   - 13 September 2001
+OpenCms 4.5.9  Gom Jabbar - 13 September 2001
 ! The filelist was very slow for folder with many entrys. Now if there are more than 
   50 entrys the list is divided in pages of 50 entrys. In the explorer head there is
   a new select box to switch the pages.
 * Bugfix 1735: when creating a resource the subfolders lockstate is checked now
 - Disabled static export.
 
-OpenCms 4.5.8  Gom Jabbar   - 12 September 2001
+OpenCms 4.5.8  Gom Jabbar - 12 September 2001
 * Bugfix 1228: if a class is not found you now get a nice Exception.
 * Bugfix 1696: before creating the project and copying the resources the wait template is shown.
 - Optimized the explorerfilelist. Useless bytes are no longer submitted.
 
-OpenCms 4.5.7  Gom Jabbar   - 11 September 2001
+OpenCms 4.5.7  Gom Jabbar - 11 September 2001
 * Now the templates will be displayed correct again in the html-editor.
 * When creating a project with folders that does not exist in the virtual file system
   the errorbox of the template is used
 * If no class is set in the elementdefinition the standart class is used
 - Added missing "Sectionlogo" to the extended Navigation.
 
-OpenCms 4.4.2  Gom Jabbar   - 07 September 2001
+OpenCms 4.4.2  Gom Jabbar - 07 September 2001
 * Bugfix 1548: For editing a page file the temporary file is created in a special
   temporary file project. This project can be created with the method createTempfileProject().
   The projectid of the temp file project is stored in the registry.xml (<tempfileproject>).
@@ -302,7 +305,7 @@ OpenCms 4.4.2  Gom Jabbar   - 07 September 2001
   feature caused trouble with the new project-mechanism.
 - Changed last button of dialog "New Ressource Of Other Type" from "next" to "finish".
 
-OpenCms 4.5.6  Gom Jabbar   - 06 September 2001
+OpenCms 4.5.6  Gom Jabbar - 06 September 2001
 * After an redirect (redirect-rules configurated in opencms.properites) a ressource
   should not be delivered by OpenCms. 
 * Now only the visible Templates are selectable in the HTML-Editor.
@@ -311,7 +314,7 @@ OpenCms 4.5.6  Gom Jabbar   - 06 September 2001
 - Added logging-informations about jdk, servlet-engine and os.
 - Added "image" for upload dialog again. Now it is possible to choose "image" for uploaded files.
 
-OpenCms 4.5.5  Gom Jabbar   - 03 September 2001
+OpenCms 4.5.5  Gom Jabbar - 03 September 2001
 ! Now a ressource can have a group-id that was already deleted.
 ! Now the stylesheet-tag is used again for displaying stylesheets in the 
   HTML-Editor control.
@@ -326,11 +329,11 @@ OpenCms 4.5.5  Gom Jabbar   - 03 September 2001
 * Create Folder in extended navigation works again, it was not possible to 
   insert an logo via the picgallerywindow.
 
-OpenCms 4.5.4  Gom Jabbar   - 19 August 2001
+OpenCms 4.5.4  Gom Jabbar - 19 August 2001
 * Added missing element._TEMPLATE_, element._TEMPLATECLASS_, and 
   element._TEMPLATESELECTOR_ - parameters.
 
-OpenCms 4.4.1  Gom Jabbar   - 17 August 2001
+OpenCms 4.4.1  Gom Jabbar - 17 August 2001
 ! Added mimetype-properties. So now you can easy edit the mimetypes in 
   TOMCAT_HOME/web-apps/opencms/WEB-INF/occlasses/mimtypes.properties.
 * Added the name of the element to the parameters with the key  _ELEMENT_.

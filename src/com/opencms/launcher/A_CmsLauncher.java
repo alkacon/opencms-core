@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
-* Date   : $Date: 2001/12/04 08:07:56 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2002/03/07 13:42:40 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.http.*;
  * </UL>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.31 $ $Date: 2001/12/04 08:07:56 $
+ * @version $Revision: 1.32 $ $Date: 2002/03/07 13:42:40 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsConstants {
 
@@ -319,5 +319,13 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
             String errorMessage = "Cannot write output to HTTP response stream";
             handleException(cms, e, errorMessage);
         }
+    }
+
+    /**
+     * Sets the currently running OpenCms instance.
+     */
+    public void setOpenCms(A_OpenCms openCms) {
+        // normally we don't need the instance - ignoring
+        // if a launcher uses this, it should overload this method
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsJavascriptLauncher.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/03/07 13:42:40 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -35,7 +35,7 @@ import com.opencms.file.*;
  * Document the purpose of this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2001/07/31 15:50:16 $
+ * @version $Revision: 1.9 $ $Date: 2002/03/07 13:42:40 $
  */
 class CmsJavascriptLauncher extends A_CmsLauncher {
 
