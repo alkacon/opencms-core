@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/04/05 14:23:13 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/05/06 12:24:51 $
+ * Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -1813,7 +1813,14 @@ public class CmsRegistry extends A_CmsXmlContent {
 
         // are there any dependencies not fulfilled?
         if (dependencies.size() != 0) {
-            throw new CmsException("the dependencies for the module are not fulfilled.", CmsException.C_REGISTRY_ERROR);
+            String missingModules = "";
+            Enumeration enu = dependencies.elements();
+            while (enu.hasMoreElements()) {
+                missingModules += "[" + (String)enu.nextElement() + "]";                
+            }
+            
+            
+            throw new CmsException("the dependencies for the module are not fulfilled. " + missingModules, CmsException.C_REGISTRY_ERROR);
         }
 
         Vector resourceNames = new Vector();

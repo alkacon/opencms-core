@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2004/04/10 23:12:14 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2004/05/06 12:24:51 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  * 
  * @since 5.1
  */
@@ -90,7 +90,7 @@ public class CmsExplorer extends CmsWorkplace {
         }
         
         // get filter parameter for project view
-        String filter = request.getParameter("filter");
+        String filter = request.getParameter("projectfilter");
         if (filter == null || "".equals(filter)) {
             settings.setExplorerProjectFilter("all");
         } else {

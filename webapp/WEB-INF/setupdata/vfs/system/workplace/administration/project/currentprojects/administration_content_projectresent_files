@@ -25,11 +25,11 @@ top.head.helpUrl=']]><LABEL value="help.administration.project.current.details"/
 
 <LOADHEADER>
 <![CDATA[window.top.body.admin_head.location.href=']]><method name="getServletPath"/><![CDATA[system/workplace/administration/project/currentprojects/administration_head_4.html';
-document.location.href="]]><method name="getServletPath"/><![CDATA[system/workplace/jsp/explorer_files.html?mode=projectview&filter=]]><PROCESS>filter</PROCESS><![CDATA[&projectid=]]><PROCESS>projectid</PROCESS><![CDATA[";]]>
+document.location.href="]]><method name="getServletPath"/><![CDATA[system/workplace/jsp/explorer_files.html?mode=projectview&projectfilter=]]><PROCESS>filter</PROCESS><![CDATA[&projectid=]]><PROCESS>projectid</PROCESS><![CDATA[";]]>
 </LOADHEADER>
 
 <NOTLOADHEADER>
-<![CDATA[document.location.href="]]><method name="getServletPath"/><![CDATA[system/workplace/jsp/explorer_files.html?mode=projectview&filter=]]><PROCESS>filter</PROCESS><![CDATA[&projectid=]]><PROCESS>projectid</PROCESS><![CDATA[";]]>
+<![CDATA[document.location.href="]]><method name="getServletPath"/><![CDATA[system/workplace/jsp/explorer_files.html?mode=projectview&projectfilter=]]><PROCESS>filter</PROCESS><![CDATA[&projectid=]]><PROCESS>projectid</PROCESS><![CDATA[";]]>
 </NOTLOADHEADER>
 
 </WORKPLACE>
