@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
-* Date   : $Date: 2002/09/12 08:58:15 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/09/12 15:20:35 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.flex.util.CmsPropertyLookup;
  * to the OpenCms Template mechanism.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConstants, I_CmsJspConstants, I_CmsResourceLoader {
 
@@ -69,6 +69,9 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
 
     /** Special JSP directive tag start */
     public static final String C_DIRECTIVE_END ="%>";
+    
+    /** Encoding to write JSP files to disk */
+    public static final String C_DEFAULT_JSP_ENCODING = "ISO-8859-1";
     
     /** Flag for debugging output. Set to 9 for maximum verbosity. */ 
     private static int DEBUG = 0;
@@ -244,13 +247,16 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
                     if (! res.isCommitted()) {
                         // If a JSP errorpage was triggered the response will be already committed here
                         byte[] result = w_res.getWriterBytes();
-                                        
-                        // TESTFIX: Ak for encoding property   
+                        
                         // Encoding project:  
-                        String dnc = OpenCms.getDefaultEncoding().trim().toLowerCase();  
+                        // The byte array will internally be encoded in the OpenCms 
+                        // default encoding. In case another encoding is set 
+                        // in the 'content-encoding' property of the file, 
+                        // we need to re-encode the output here. 
+                        String dnc = A_OpenCms.getDefaultEncoding().trim().toLowerCase();  
                         String enc = cms.getRequestContext().getEncoding().trim().toLowerCase();
                         if (! dnc.equals(enc)) {
-                            System.err.println("CmsJspLoader.load(): Encoding result from " + dnc + " to " + enc);
+                            if (DEBUG > 1) System.err.println("CmsJspLoader.load(): Encoding result from " + dnc + " to " + enc);
                             result = (new String(result, dnc)).getBytes(enc);                            
                         }
                                                         
@@ -436,16 +442,26 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
         if (mustUpdate) {
             if (DEBUG > 2) System.err.println("JspLoader writing new file: " + jspfilename);         
             byte[] contents = null;
+            String jspEncoding = null;
             try {
                 contents = req.getCmsObject().readFile(file.getAbsolutePath()).getContents();
+                // Encoding project:
+                // Check the JSP "content-encoding" property
+                jspEncoding = CmsPropertyLookup.lookupProperty(cms, file.getAbsolutePath(), C_PROPERTY_CONTENT_ENCODING, false);
+                if (jspEncoding == null) jspEncoding = C_DEFAULT_JSP_ENCODING;
+                jspEncoding = jspEncoding.trim().toLowerCase();
             } catch (CmsException e) {
                 throw new ServletException("JspLoader: Could not read contents for file '" + file.getAbsolutePath() + "'", e);
             }
             
             try {
                 FileOutputStream fs = new FileOutputStream(f);                
-                                                
-                String page = new String(contents);
+                // Encoding project:
+                // We need to use some encoding to convert bytes to String
+                // corectly. Internally a JSP will always be stored in the 
+                // system default encoding since they are just a variation of
+                // the "plain" resource type.
+                String page = new String(contents, A_OpenCms.getDefaultEncoding());
                 StringBuffer buf = new StringBuffer(contents.length);
 
                 int p0 = 0, i2 = 0, slen = C_DIRECTIVE_START.length(), elen = C_DIRECTIVE_END.length();
@@ -518,22 +534,21 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
                 }
                 if (i2 > 0) {
                     buf.append(page.substring(p0, page.length()));
-                    contents = buf.toString().getBytes();
-                }
-                           
-                           
-                try {
-                // TESTFIX: Ak for encoding property     
-               	// Encoding project:
-                String dnc = OpenCms.getDefaultEncoding().trim().toLowerCase();  
-                String enc = CmsPropertyLookup.lookupProperty(cms, file.getAbsolutePath(), C_PROPERTY_CONTENT_ENCODING, true);
-                if (enc != null) enc = enc.trim().toLowerCase();
-                if ((enc != null) && (! dnc.equals(enc))) {
-                    System.err.println("CmsJspLoader.updateJsp(): Encoding result from " + dnc + " to " + enc);
-                    contents = (new String(contents, dnc)).getBytes(enc);                            
-                }     
-                } catch (Exception ex) {};
-                
+                    // Encoding project:
+                    // Now we are ready to store String data in file system.
+                    // To convert String to bytes we also need to provide
+                    // some encoding. The default (by the JSP standard) encoding 
+                    // for JSP is ISO-8859-1.
+                    contents = buf.toString().getBytes(jspEncoding);
+                } else {
+                    // Encoding project:
+                    // Contents of original file where not modified,
+                    // just translate to the required JSP encoding (if necessary)
+                    String defaultEncoding = A_OpenCms.getDefaultEncoding().trim().toLowerCase();  
+                    if (! jspEncoding.equals(defaultEncoding)) {
+                        contents = (new String(contents, defaultEncoding)).getBytes(jspEncoding); 
+                    }                    
+                }                                         
                 fs.write(contents);                
                 fs.close();
                 

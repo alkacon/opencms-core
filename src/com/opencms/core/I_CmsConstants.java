@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2002/09/11 13:34:26 $
-* Version: $Revision: 1.204 $
+* Date   : $Date: 2002/09/12 15:21:22 $
+* Version: $Revision: 1.205 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.204 $ $Date: 2002/09/11 13:34:26 $
+ * @version $Revision: 1.205 $ $Date: 2002/09/12 15:21:22 $
  */
 public interface I_CmsConstants {
 
@@ -205,8 +205,8 @@ public interface I_CmsConstants {
     /**
      * Property for content encoding
      */
-    // Gridnine AB Aug 1, 2002
-    static final String C_PROPERTY_CONTENT_ENCODING = "Content-encoding";
+    // Encoding project:
+    static final String C_PROPERTY_CONTENT_ENCODING = "content-encoding";
 
     /**
      * This is the group for guests.

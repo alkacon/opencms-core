@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexResponse.java,v $
-* Date   : $Date: 2002/08/21 11:29:32 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/09/12 15:20:53 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,16 +29,22 @@
 
 package com.opencms.flex.cache;
 
+import com.opencms.core.A_OpenCms;
+
 import java.util.Map;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletResponse;
+
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
 /**
  * A wrapper class for a HttpServletRequest that controls the Flex cache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapper {
     
@@ -484,7 +490,10 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
             }
         }
         if (m_writer == null) {
-            m_writer = new java.io.PrintWriter(m_out);
+            // Encoding project:
+            // Create a PrintWriter that uses the OpenCms default encoding
+            //m_writer = new java.io.PrintWriter(m_out);
+            m_writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(m_out, A_OpenCms.getDefaultEncoding())), false);
         }
     }
     
@@ -739,7 +748,7 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
          */        
         public CmsServletOutputStream(javax.servlet.ServletOutputStream servletStream) {
             this.servletStream = servletStream;
-            clear();
+            clear();                  
         }   
                 
         /**

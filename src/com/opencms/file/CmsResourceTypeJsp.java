@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeJsp.java,v $
-* Date   : $Date: 2002/08/22 08:21:41 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/09/12 15:21:12 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 package com.opencms.file;
 
+import com.opencms.flex.CmsJspLoader;
+
 /**
  * This class describes the resource-type JSP.
  * It was needed because JSP should have property "export" set to "false" by default.
@@ -47,6 +49,8 @@ public class CmsResourceTypeJsp extends com.opencms.file.CmsResourceTypePlain {
         cms.lockResource(filename);
         // Attach default JSP properties
         cms.writeProperty(filename, C_PROPERTY_EXPORT, "false");
+        // JSP content encoding default it "ISO-8859-1" by JSP standard
+        cms.writeProperty(filename, C_PROPERTY_CONTENT_ENCODING, CmsJspLoader.C_DEFAULT_JSP_ENCODING);
         return res;
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2002/09/03 11:57:07 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2002/09/12 15:19:14 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2002/09/03 11:57:07 $
+ * @version $Revision: 1.28 $ $Date: 2002/09/12 15:19:14 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
@@ -174,8 +174,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                 xmlTemplateDocument.setData("PROPERTYDEF", propertydef);
 
                 // check if a edited property is available
-                String newValue = Encoder.unescape((String)parameters.get("EDITEDPROPERTY"),
-                    cms.getRequestContext().getEncoding());
+                String newValue = (String)parameters.get("EDITEDPROPERTY");
                 if(newValue != null) {
 
                     // update the property
@@ -213,8 +212,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
 
             // check if the ok button was selected
             if(newproperty.equals("true")) {
-                String newValue = Encoder.unescape((String)parameters.get("NEWPROPERTYVALUE"),
-                    cms.getRequestContext().getEncoding());
+                String newValue = (String)parameters.get("NEWPROPERTYVALUE");
                 if((newValue != null) && (propertydef != null)) {
 
                     // test if this property is already existing
