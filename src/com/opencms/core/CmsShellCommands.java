@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2001/01/24 09:41:40 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2001/01/30 14:02:19 $
+* Version: $Revision: 1.27 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -41,7 +41,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.26 $ $Date: 2001/01/24 09:41:40 $
+ * @version $Revision: 1.27 $ $Date: 2001/01/30 14:02:19 $
  */
 public class CmsShellCommands implements I_CmsConstants {
     
@@ -2857,7 +2857,23 @@ public class CmsShellCommands implements I_CmsConstants {
             }
         }
     }
-    
+
+	/**
+	* Synchronize cms-resources on virtual filesystem with the server filesystem.
+	* 
+	* @param resourceName the name (absolute Path) of the resource that should be synchronized.
+	* 
+	* @exception CmsException if operation was not successful.
+	*/
+	public void syncFolder(String resourceName){
+		// synchronize the resources
+		try {
+			m_cms.syncFolder(resourceName);
+		} catch (Exception exc) {
+			CmsShell.printException(exc);
+		}	
+	}	
+	
     /**
      * Unlocks all resources of a project.
      * 

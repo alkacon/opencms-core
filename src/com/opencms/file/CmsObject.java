@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/01/09 14:26:22 $
- * Version: $Revision: 1.149 $
+ * Date   : $Date: 2001/01/30 14:01:53 $
+ * Version: $Revision: 1.150 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.launcher.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.149 $ $Date: 2001/01/09 14:26:22 $ 
+ * @version $Revision: 1.150 $ $Date: 2001/01/30 14:01:53 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -68,7 +68,6 @@ public class CmsObject implements I_CmsConstants {
 	 * Is needed to clear the template caches.
 	 */
 	private CmsLauncherManager m_launcherManager = null;
-
 
 	/**
 	 * The default constructor.
@@ -1676,6 +1675,7 @@ public String readProperty(String name, String property) throws CmsException {
 public CmsPropertydefinition readPropertydefinition(String name, String resourcetype) throws CmsException {
 	return (m_rb.readPropertydefinition(m_context.currentUser(), m_context.currentProject(), name, resourcetype));
 }
+
 /**
  * Reads the task with the given id.
  * 
@@ -1941,6 +1941,18 @@ public void setTimeout(int taskId, long timeout) throws CmsException {
 	m_rb.setTimeout(m_context.currentUser(), m_context.currentProject(), taskId, timeout);
 }
 /**
+ * Synchronize cms-resources on virtual filesystem with the server filesystem.
+ * 
+ * @param syncFile the name (absolute Path) of the resource that should be synchronized.
+ * @param syncPath the name of path on server filesystem where the resource should be synchronized.
+ * 
+ * @exception CmsException if operation was not successful.
+ */
+public void syncFolder(String resourceName) throws CmsException {
+	// synchronize the resources
+	CmsSynchronize sync = new CmsSynchronize(this, resourceName);
+}
+/**
  * Unlocks all resources of a project.
  * 
  * @param id the id of the project to be unlocked.
@@ -2073,6 +2085,7 @@ public void writeProperty(String name, String property, String value) throws Cms
 public CmsPropertydefinition writePropertydefinition(CmsPropertydefinition definition) throws CmsException {
 	return (m_rb.writePropertydefinition(m_context.currentUser(), m_context.currentProject(), definition));
 }
+
 /**
  * Writes a new user tasklog for a task.
  * 
