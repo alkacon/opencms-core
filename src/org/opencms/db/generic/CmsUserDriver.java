@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/07/03 14:35:25 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/04 09:38:07 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.9 $ $Date: 2003/07/03 14:35:25 $
+ * @version $Revision: 1.10 $ $Date: 2003/07/04 09:38:07 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1081,7 +1081,9 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	 * @throws throws CmsException if something goes wrong
 	 */
 	public CmsUser readUser(String name, String password, String remoteAddress, int type) throws CmsException {
-		return readUser(name, password, type);
+		CmsUser user = readUser(name, password, type);
+		user.setLastRemoteAddress(remoteAddress);
+		return user;
 	}
 
     /**
