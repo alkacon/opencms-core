@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/05/31 08:11:56 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2004/06/08 15:13:50 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
+import org.opencms.i18n.CmsEncoder;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -69,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.57 $ $Date: 2004/05/31 08:11:56 $
+ * @version $Revision: 1.58 $ $Date: 2004/06/08 15:13:50 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -367,7 +368,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
                 for (int i = 0; i < bytesFromDigest.length; i++) {
                     addZerro = Integer.toHexString(128 + bytesFromDigest[i]);
                     if (addZerro.length() < 2) {
-                        addZerro = "0" + addZerro;
+                        addZerro = '0' + addZerro;
                     }
                     result.append(addZerro);
                 }
@@ -466,7 +467,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Digest configured    : " + digest);
         }
 
-        m_digestFileEncoding = configuration.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.encoding", "UTF-8");
+        m_digestFileEncoding = configuration.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.encoding", CmsEncoder.C_UTF8_ENCODING);
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Digest file encoding : " + m_digestFileEncoding);
         }

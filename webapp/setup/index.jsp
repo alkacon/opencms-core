@@ -3,7 +3,7 @@
 --%><jsp:setProperty name="Bean" property="*" /><%
 
 // next page 
-String nextPage = "step_1_content_encoding.jsp";
+String nextPage = "step_2_check_components.jsp";
 
 boolean isInitialized = false;
 boolean wizardEnabled = false;

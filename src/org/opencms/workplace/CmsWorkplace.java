@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/06/03 13:14:28 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2004/06/08 15:14:54 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.75 $
+ * @version $Revision: 1.76 $
  * 
  * @since 5.1
  */
@@ -987,17 +987,16 @@ public abstract class CmsWorkplace {
                 if (name != null && item.getName() == null) {
                     // only put to map if current item is no file and not null
                     try {
-                        value = item.getString(CmsEncoder.C_UTF8_ENCODING);
+                        value = item.getString(getCms().getRequestContext().getEncoding());
                     } catch (UnsupportedEncodingException e) {
+                        OpenCms.getLog(this).error("Encoding error parsing multipart request in workplace");  
                         value = item.getString();
                     }
                     parameterMap.put(name, value);
                 }
             }
         } catch (FileUploadException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error parsing multipart request in workplace");
-            }      
+            OpenCms.getLog(this).error("Error parsing multipart request in workplace");    
         }
         return parameterMap;
     }

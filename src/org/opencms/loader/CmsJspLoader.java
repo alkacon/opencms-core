@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/06/06 10:35:29 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2004/06/08 15:14:19 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.flex.CmsFlexResponse;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
@@ -96,7 +97,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -963,7 +964,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                         jspVfsName,
                         I_CmsConstants.C_PROPERTY_CONTENT_ENCODING,
                         false).getValue(C_DEFAULT_JSP_ENCODING);
-                    encoding = encoding.trim().toUpperCase();
+                    encoding = CmsEncoder.lookupEncoding(encoding.trim(), encoding);
                 } catch (CmsException e) {
                     controller.setThrowable(e, jspVfsName);
                     throw new ServletException("JspLoader: Could not access JSP file '" + jspVfsName + "'", e);

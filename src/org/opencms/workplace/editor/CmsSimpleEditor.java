@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimpleEditor.java,v $
- * Date   : $Date: 2004/05/21 15:18:54 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/06/08 15:15:45 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1.12
  */
@@ -134,7 +134,7 @@ public class CmsSimpleEditor extends CmsEditor {
             try {
                 content = new String(editFile.getContents(), getFileEncoding());
             } catch (UnsupportedEncodingException e) {
-                content = new String(editFile.getContents());
+                throw new CmsException("Invalid content encoding encountered while editing file '" + getParamResource() + "'");
             }
         } catch (CmsException e) {
             // reading of file contents failed, show error dialog
@@ -176,14 +176,14 @@ public class CmsSimpleEditor extends CmsEditor {
             try {
                 editFile.setContents(decodedContent.getBytes(getFileEncoding()));
             } catch (UnsupportedEncodingException e) {
-                editFile.setContents(decodedContent.getBytes());
+                throw new CmsException("Invalid content encoding encountered while editing file '" + getParamResource() + "'");
             }        
             // the file content might have been modified during the write operation
             CmsFile writtenFile = getCms().writeFile(editFile);
             try {
                 decodedContent = new String(writtenFile.getContents(), getFileEncoding());
             } catch (UnsupportedEncodingException e) {
-                decodedContent = new String(writtenFile.getContents());
+                throw new CmsException("Invalid content encoding encountered while editing file '" + getParamResource() + "'");
             }
             setParamContent(encodeContent(decodedContent));            
         } catch (CmsXmlException e) {

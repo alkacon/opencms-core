@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/06/07 08:10:51 $
- * Version: $Revision: 1.548 $
+ * Date   : $Date: 2004/06/08 15:16:41 $
+ * Version: $Revision: 1.549 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,6 +55,10 @@ OpenCms 5.3.5 Ix - xx, 2004
 - Flex Cache now invalidates entries according to "Relase Date" and "Expire Date"
 - Added org.opencms.file-CmsResourceFilter to filter results from VFS queries
 - Added patch for OpenCms to run on JBoss
+! Added support for additional JDBC options during setup
+- The default encoding has been set to UTF-8
+* It's not longer required to run OpenCms with the same encoding as the default system encoding
+! "Relase Date" and "Expire Date" are now also displayed in the OpenCms Explorer
 
 OpenCms 5.3.4 Ix - April 14, 2004
 - Updated all jars, also added version numbers to all jars

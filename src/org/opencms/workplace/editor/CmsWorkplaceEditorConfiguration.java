@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsWorkplaceEditorConfiguration.java,v $
- * Date   : $Date: 2004/02/21 17:11:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/08 15:15:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,9 @@
 package org.opencms.workplace.editor;
 
 import org.opencms.main.OpenCms;
+import org.opencms.xml.CmsXmlEntityResolver;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,8 +45,8 @@ import java.util.regex.PatternSyntaxException;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 
 
 /**
@@ -56,7 +58,7 @@ import org.dom4j.Element;
  * Provides methods to get the editor information for the editor manager.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.1
  */
@@ -105,10 +107,13 @@ public class CmsWorkplaceEditorConfiguration {
      * @param xmlData the XML data String containing the information about the editor
      * @param editorUri the editor workplace URI
      */
-    public CmsWorkplaceEditorConfiguration(String xmlData, String editorUri) {
+    public CmsWorkplaceEditorConfiguration(byte[] xmlData, String editorUri) {
         setValidConfiguration(true);
         try {
-            Document document = DocumentHelper.parseText(xmlData);
+            SAXReader reader = new SAXReader();
+            reader.setEntityResolver(CmsXmlEntityResolver.getResolver());
+            reader.setMergeAdjacentText(true);
+            Document document = reader.read(new ByteArrayInputStream(xmlData));
             initialize(document, editorUri);
         } catch (DocumentException e) {
             // xml String could not be parsed

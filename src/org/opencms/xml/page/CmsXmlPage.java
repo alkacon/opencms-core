@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2004/06/08 14:13:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/08 15:15:59 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsXmlPage {
     
@@ -173,8 +173,8 @@ public class CmsXmlPage {
      * @param encoding the encoding of the xml page
      */
     public CmsXmlPage(Document document, String encoding) {
+        m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
         m_document = document;
-        m_encoding = encoding;
         initBookmarks();
     }
 
@@ -187,7 +187,7 @@ public class CmsXmlPage {
      * @param encoding the encoding of the xml page
      */
     public CmsXmlPage(String encoding) {
-        m_encoding = encoding;
+        m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
         initDocument();
         initBookmarks();
     }
@@ -219,25 +219,33 @@ public class CmsXmlPage {
      * @throws CmsXmlException if something goes wrong
      */
     public static CmsXmlPage read(CmsObject cms, CmsFile file, boolean keepEncoding) throws CmsXmlException {
-
-        CmsXmlPage newPage = null;
         
         byte[] content = file.getContents();
 
-        String allowRelative;
+        String fileName = cms.readAbsolutePath(file);
+        boolean allowRelative = false;
         try {
-            allowRelative = cms.readPropertyObject(cms.readAbsolutePath(file), C_PROPERTY_ALLOW_RELATIVE, false).getValue("false");
+            allowRelative = Boolean.valueOf(cms.readPropertyObject(fileName, C_PROPERTY_ALLOW_RELATIVE, false).getValue()).booleanValue();
         } catch (CmsException e) {
-            allowRelative = Boolean.toString(false);
+            // allowRelative will be false
         }
         
-        String encoding;
+        String encoding = null;
         try { 
-            encoding = cms.readPropertyObject(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true).getValue(OpenCms.getSystemInfo().getDefaultEncoding());
+            encoding = cms.readPropertyObject(fileName, I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true).getValue();
         } catch (CmsException e) {
-            encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+            // encoding will be null 
         }        
-                
+        if (encoding == null) {
+            encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+        } else {
+            encoding = CmsEncoder.lookupEncoding(encoding, null);
+            if (encoding == null) {
+                throw new CmsXmlException("Invalid content-encoding property set for xml page '" + fileName + "'");
+            }
+        }
+                 
+        CmsXmlPage newPage;        
         if (content.length > 0) {
             // content is initialized
             if (keepEncoding) {
@@ -250,7 +258,8 @@ public class CmsXmlPage {
                     String contentStr = new String(content, encoding);
                     newPage = read(contentStr, encoding); 
                 } catch (UnsupportedEncodingException e) {
-                    throw new CmsXmlException("Invalid encoding selected for xmlPage: " + encoding, e);
+                    // this will not happen since the encodig has already been validated
+                    throw new CmsXmlException("Invalid content-encoding property set for xml page '" + fileName + "'", e);
                 }                
             }
         } else {
@@ -259,7 +268,7 @@ public class CmsXmlPage {
         }
         
         newPage.m_file = file;
-        newPage.m_allowRelativeLinks = Boolean.valueOf(allowRelative).booleanValue();
+        newPage.m_allowRelativeLinks = allowRelative;
         
         return newPage;
     }    

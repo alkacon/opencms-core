@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/05/24 15:48:24 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/06/08 15:15:45 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 5.1.12
  */
@@ -591,7 +591,7 @@ public abstract class CmsEditor extends CmsDialog {
      * @param value the encoding value to set
      */
     protected void setFileEncoding(String value) {
-        m_fileEncoding = value;
+        m_fileEncoding = CmsEncoder.lookupEncoding(value, value);
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsWorkplaceEditorManager.java,v $
- * Date   : $Date: 2004/05/05 21:25:09 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/06/08 15:15:45 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,10 +37,8 @@ import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -61,7 +59,7 @@ import java.util.TreeMap;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.1
  */
@@ -110,16 +108,7 @@ public class CmsWorkplaceEditorManager {
                 continue;
             }
             // get the file contents
-            byte[] content = configFile.getContents();
-            // determine the encoding of the current file
-            String encoding = getFileEncoding(cms, configFile);
-            // get the xml String from the file contents
-            String xmlData;
-            try {
-                xmlData = new String(content, encoding);
-            } catch (UnsupportedEncodingException e) {
-                xmlData = new String(content);
-            }
+            byte[] xmlData = configFile.getContents();
             CmsWorkplaceEditorConfiguration editorConfig = new CmsWorkplaceEditorConfiguration(xmlData, folderName + C_EDITOR_FILENAME);
             if (editorConfig.isValidConfiguration()) {
                 m_editorConfigurations.add(editorConfig);
@@ -199,22 +188,6 @@ public class CmsWorkplaceEditorManager {
             }
         }
         return configurableEditors;
-    }
-    
-    /**
-     * Helper method to determine the encoding of the given file in the VFS,
-     * which must be set using the "content-encoding" property.<p>
-     * 
-     * @param cms the CmsObject
-     * @param file the file which is to be checked
-     * @return the encoding for the file
-     */
-    protected String getFileEncoding(CmsObject cms, CmsFile file) {
-        try { 
-            return cms.readPropertyObject(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false).getValue(OpenCms.getSystemInfo().getDefaultEncoding());
-        } catch (CmsException e) {
-            return OpenCms.getSystemInfo().getDefaultEncoding();
-        }
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/06/07 15:49:07 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/06/08 15:14:00 $
+ * Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -387,7 +387,7 @@ public class CmsRegistry extends A_CmsXmlContent {
         try {
             doc = parse(moduleString.toString().getBytes(OpenCms.getSystemInfo().getDefaultEncoding()));
         } catch (UnsupportedEncodingException uee) {
-            // use default system encoding
+            // fallback to system encoding, should never happen since the OpenCms encoding is always valid
             doc = parse(moduleString.toString().getBytes());
         }
         m_xmlReg.getElementsByTagName("modules").item(0).appendChild(getXmlParser().importNode(m_xmlReg, doc.getFirstChild()));
