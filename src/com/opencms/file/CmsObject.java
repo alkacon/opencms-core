@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/10/10 13:18:22 $
-* Version: $Revision: 1.427 $
+* Date   : $Date: 2003/10/24 13:20:19 $
+* Version: $Revision: 1.428 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.file;
  
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsPublishedResource;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsEvent;
@@ -80,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.427 $
+ * @version $Revision: 1.428 $
  */
 public class CmsObject {
 
@@ -4336,6 +4337,29 @@ public class CmsObject {
      */
     public List readPublishedResources(CmsUUID publishHistoryId) throws CmsException {
         return m_driverManager.readPublishedResources(m_context, publishHistoryId);
+    }
+    
+    /**
+     * Completes all post-publishing tasks for a "directly" published COS resource.<p>
+     * 
+     * @param publishedBoResource the CmsPublishedResource onject representing the published COS resource
+     * @param publishId unique int ID to identify each publish task in the publish history
+     * @param tagId the backup tag revision
+     */
+    public void postPublishBoResource(CmsPublishedResource publishedBoResource, CmsUUID publishId, int tagId) {
+        try {
+            m_driverManager.postPublishBoResource(m_context, publishedBoResource, publishId, tagId);
+        } catch (CmsException e) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error writing publish history entry for COS resource " + publishedBoResource.toString(), e);
+            }
+        } finally {
+            Map eventData = (Map) new HashMap();
+            eventData.put("publishHistoryId", publishId.toString());
+            
+            // a "directly" published COS resource can be handled totally equal to a published project            
+            OpenCms.fireCmsEvent(new CmsEvent(this, I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData));
+        }
     }
 
 }

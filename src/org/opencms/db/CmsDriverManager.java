@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/22 15:46:27 $
- * Version: $Revision: 1.280 $
+ * Date   : $Date: 2003/10/24 13:20:19 $
+ * Version: $Revision: 1.281 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.280 $ $Date: 2003/10/22 15:46:27 $
+ * @version $Revision: 1.281 $ $Date: 2003/10/24 13:20:19 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -8491,5 +8491,17 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             throw new CmsException("Error writing export point of " + file.toString(), e);
         }        
     }
+    
+    /**
+     * Completes all post-publishing tasks for a "directly" published COS resource.<p>
+     * 
+     * @param context the current request context
+     * @param publishedBoResource the CmsPublishedResource onject representing the published COS resource
+     * @param publishId unique int ID to identify each publish task in the publish history
+     * @param tagId the backup tag revision
+     */    
+    public void postPublishBoResource(CmsRequestContext context, CmsPublishedResource publishedBoResource, CmsUUID publishId, int tagId) throws CmsException {
+        m_projectDriver.writePublishHistory(context.currentProject(), publishId, tagId, publishedBoResource.getContentDefinitionName(), publishedBoResource.getMasterId(), publishedBoResource.getType(), publishedBoResource.getState());
+    }   
 
 }
