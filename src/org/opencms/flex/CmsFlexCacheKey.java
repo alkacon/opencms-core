@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2003/09/15 10:51:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/18 07:47:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
  
 package org.opencms.flex;
 
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
 import com.opencms.file.CmsObject;
@@ -50,50 +52,56 @@ import javax.servlet.ServletRequest;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsFlexCacheKey {
     
+    /** Marker to identify use of certain String key members (m_uri, m_ip) */
+    private static final String IS_USED = "///";
+    
     /** The OpenCms resource that this key is used for. */    
-    public String m_resource = null;
+    public String m_resource;
     
     /** The cache behaviour description for the resource. */    
-    public String m_variation = null;
+    public String m_variation;
 
     /** Cache key variable: Determines if this resource can be cached alwys, never or under certain conditions. -1 = never, 0=check, 1=always */
-    public int m_always = -1; // 
+    public int m_always; 
     
     /** Cache key variable: The uri of the original request */
-    public String m_uri = null;
+    public String m_uri;
     
     /** Cache key variable: The user id */
-    public CmsUUID m_user = null;
+    public CmsUUID m_user;
 
     /** Cache key variable: List of parameters */
-    public java.util.Map m_params = null;
+    public java.util.Map m_params;
     
     /** Cache key variable: List of "blocking" parameters */
-    public java.util.Set m_noparams = null;
+    public java.util.Set m_noparams;
     
     /** Cache key variable: Timeout of the resource */
-    public long m_timeout = -1;
+    public long m_timeout;
     
     /** Cache key variable: Determines if the resource sould be always cleared at publish time */
-    public boolean m_publish = false;
+    public boolean m_publish;
+    
+    /** Cache key variable: The ip address of the request */
+    public String m_ip; 
         
     /** Cache key variable: Distinguishes request schemes (http, https etc.) */
-    public java.util.Set m_schemes = null;
+    public java.util.Set m_schemes;
     
     /** Cache key variable: The request TCP/IP port */
-    public java.util.Set m_ports = null;
+    public java.util.Set m_ports;
 
     /** The list of keywords of the Flex cache language */
-    private List m_cacheCmds = Arrays.asList(new String[] {
-        "always", "never", "uri", "user", "params", "no-params", "timeout", "publish-clear", "schemes", "ports", "false", "parse-error", "true"});
-    //   0         1        2      3       4         5            6          7                8          9        10       11             12
+    private static final List m_cacheCmds = Arrays.asList(new String[] {
+        "always", "never", "uri", "user", "params", "no-params", "timeout", "publish-clear", "schemes", "ports", "false", "parse-error", "true", "ip"});
+    //   0         1        2      3       4         5            6          7                8          9        10       11             12      13
     
     /** Flag raised in case a key parse error occured */
-    private boolean m_parseError = false;
+    private boolean m_parseError;
     
     /** Debugging flag */
     private static final boolean DEBUG = false;
@@ -138,7 +146,11 @@ public class CmsFlexCacheKey {
         m_schemes = java.util.Collections.singleton(request.getScheme().toLowerCase());
         // Save the request port
         m_ports = java.util.Collections.singleton(new Integer(request.getServerPort()));
-        if (DEBUG) System.err.println("Creating CmsFlexCacheKey for Request:\n" + this.toString());        
+        // Save the request ip
+        m_ip = cms.getRequestContext().getRemoteAddress();
+        if (OpenCms.getLog(CmsLog.CHANNEL_FLEX).isDebugEnabled()) {        
+            OpenCms.getLog(CmsLog.CHANNEL_FLEX).debug("Creating CmsFlexCacheKey for Request: " + this.toString());
+        }        
     }
     
     /**
@@ -161,7 +173,11 @@ public class CmsFlexCacheKey {
     public CmsFlexCacheKey(String resourcename, String cacheDirectives, boolean online, boolean workplace) {
         m_resource = getKeyName(resourcename, online, workplace);     
         m_variation = "never";
-        if (cacheDirectives != null) parseFlexKey(cacheDirectives);
+        m_always = -1;
+        m_timeout = -1;
+        if (cacheDirectives != null) { 
+            parseFlexKey(cacheDirectives);
+        }
         if (DEBUG) System.err.println("CmsFlexCacheKey for response generated:\n" + this.toString());
     }
     
@@ -244,6 +260,12 @@ public class CmsFlexCacheKey {
             str.append(");");
         }
         
+        if (m_ip != null) {
+            str.append("ip=(");
+            str.append(key.m_ip);
+            str.append(");");
+        }
+                
         if (m_user != null) {
             str.append("user=(");
             str.append(key.m_user);
@@ -347,7 +369,7 @@ public class CmsFlexCacheKey {
             return str.toString();
         }
         if (m_uri != null) {
-            if (m_uri.equals("uri")) {
+            if (m_uri == IS_USED) {
                 str.append("uri;");
             } else {
                 str.append("uri=(");
@@ -355,6 +377,15 @@ public class CmsFlexCacheKey {
                 str.append(");");
             }
         }
+        if (m_ip != null) {
+            if (m_ip == IS_USED) {
+                str.append("ip;");
+            } else {
+                str.append("ip=(");
+                str.append(m_ip);
+                str.append(");");
+            }
+        }        
         if (m_user != null) {
             // Add user data
             if (m_user.isNullUUID()) {
@@ -469,12 +500,10 @@ public class CmsFlexCacheKey {
                         // No need for any further processing
                         return;
                     case 2: // uri
-                        m_uri = "uri";
-                        // being != null is enough
+                        m_uri = IS_USED; // marks m_uri as being used
                         break;
                     case 3: // user
                         m_user = CmsUUID.getNullUUID();
-                        // being > 0 is enough
                         break;
                     case 4: // params
                         m_params = parseValueMap(v);
@@ -501,6 +530,9 @@ public class CmsFlexCacheKey {
                         m_ports = parseValueMap(v).keySet();
                         break;
                     case 11: // previous parse error - ignore
+                        break;
+                    case 13: // ip
+                        m_ip = IS_USED; // marks m_ip as being used
                         break;
                     default: // unknown directive, throw error
                         m_parseError = true;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2003/09/17 08:31:30 $
- * Version: $Revision: 1.98 $
+ * Date   : $Date: 2003/09/18 07:47:08 $
+ * Version: $Revision: 1.99 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.98 $
+ * @version $Revision: 1.99 $
  */
 public class CmsRequestContext {
 
@@ -96,6 +96,9 @@ public class CmsRequestContext {
 
     /** In export mode the links in pages will be stored in this vector for further processing */
     private Vector m_links;
+    
+    /** The remote ip address */
+    String m_remoteAddr;
 
     /** The current CmsRequest */
     private I_CmsRequest m_req;
@@ -318,17 +321,26 @@ public class CmsRequestContext {
     /**
      * Returns the remote ip address.<p>
      * 
-     * @return the ip addresss as string
+     * @return the renote ip addresss as string
      */
     public String getRemoteAddress() {
-
-        String remoteAddr = null;
-        if ((m_req != null) && (m_req.getOriginalRequestType() == I_CmsConstants.C_REQUEST_HTTP)) {
-            remoteAddr = ((HttpServletRequest)m_req.getOriginalRequest()).getHeader(I_CmsConstants.C_REQUEST_FORWARDED_FOR);
-            if (remoteAddr == null)
-                remoteAddr = ((HttpServletRequest)m_req.getOriginalRequest()).getRemoteAddr();
+        if (m_remoteAddr == null) {
+            try {
+                if ((m_req != null) && (m_req.getOriginalRequestType() == I_CmsConstants.C_REQUEST_HTTP)) {
+                    m_remoteAddr = ((HttpServletRequest)m_req.getOriginalRequest()).getHeader(I_CmsConstants.C_REQUEST_FORWARDED_FOR);
+                    if (m_remoteAddr == null) {
+                        m_remoteAddr = ((HttpServletRequest)m_req.getOriginalRequest()).getRemoteAddr();
+                    }
+                }
+            } catch (Throwable t) {
+                // This will happen only in very rare circumstances
+                m_remoteAddr = "0.0.0.0";
+                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isWarnEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).warn("Error reading remote ip address in request context", t);
+                }
+            }
         }
-        return remoteAddr;
+        return m_remoteAddr;
     }
     
     /**
