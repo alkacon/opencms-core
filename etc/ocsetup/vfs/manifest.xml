@@ -174,7 +174,13 @@
             <user>Admin</user>
             <group>Users</group>
             <access>95</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>export</name>
+                    <type>0</type>
+                    <value><![CDATA[true]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>moduledemos</destination>
@@ -220,7 +226,13 @@
             <user>Admin</user>
             <group>Users</group>
             <access>95</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>export</name>
+                    <type>0</type>
+                    <value><![CDATA[true]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>pics/system</destination>
@@ -228,13 +240,7 @@
             <user>Admin</user>
             <group>Users</group>
             <access>79</access>
-            <properties>
-                <property>
-                    <name>export</name>
-                    <type>0</type>
-                    <value><![CDATA[false]]></value>
-                </property>
-            </properties>
+            <properties/>
         </file>
         <file>
             <source>pics/system/bg_grau.gif</source>

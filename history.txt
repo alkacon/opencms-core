@@ -10,6 +10,7 @@ Legend:
 
 OpenCms 4.7.6 Ecaz - XX Xpril 2002
 - Added some resource types that should be exported when the default is set to dynamic. 
+- Added pic and download folder to the static export if default is set to dynamic.
 
 OpenCms 4.7.5 Ecaz - 12 April 2002
 ! Database import can now upload the zip file from the local client. It will be
