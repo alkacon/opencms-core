@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/03/15 18:13:11 $
- * Version: $Revision: 1.111 $
+ * Date   : $Date: 2005/03/16 10:48:35 $
+ * Version: $Revision: 1.112 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import java.util.Map;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.111 $
+ * @version $Revision: 1.112 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -1992,6 +1992,41 @@ public class CmsObject {
     public List readAllPropertyDefinitions() throws CmsException {
 
         return m_securityManager.readAllPropertyDefinitions(m_context, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
+    }
+    
+    /**
+     * Returns the first ancestor folder matching the filter criteria.<p>
+     * 
+     * If no folder matching the filter criteria is found, null is returned.<p>
+     * 
+     * @param resourcename the name of the resource to start (full path)
+     * @param filter the resource filter to match while reading the ancestors
+     * 
+     * @return the first ancestor folder matching the filter criteria or null if no folder was found
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsFolder readAncestor(String resourcename, CmsResourceFilter filter) throws CmsException {
+
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
+        return m_securityManager.readAncestor(m_context, resource, filter);
+    }
+    
+    /**
+     * Returns the first ancestor folder matching the resource type.<p>
+     * 
+     * If no folder with the requested resource type is found, null is returned.<p>
+     * 
+     * @param resourcename the name of the resource to start (full path)
+     * @param type the resource type of the folder to match
+     * 
+     * @return the first ancestor folder matching the filter criteria or null if no folder was found
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsFolder readAncestor(String resourcename, int type) throws CmsException {
+
+        return readAncestor(resourcename, CmsResourceFilter.requireType(type));
     }
 
     /**

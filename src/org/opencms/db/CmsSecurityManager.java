@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/03/15 18:05:55 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/03/16 10:48:35 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
@@ -70,7 +71,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -2694,6 +2695,40 @@ public final class CmsSecurityManager {
             dbc.clear();
         }        
         return result;
+    }
+    
+    /**
+     * Returns the first ancestor folder matching the filter criteria.<p>
+     * 
+     * If no folder matching the filter criteria is found, null is returned.<p>
+     * 
+     * @param context the context of the current request
+     * @param resource the resource to start
+     * @param filter the resource filter to match while reading the ancestors
+     * 
+     * @return the first ancestor folder matching the filter criteria or null if no folder was found
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsFolder readAncestor(CmsRequestContext context, CmsResource resource, CmsResourceFilter filter) throws CmsException {
+
+        // get the full folder path of the resource to start from
+        String path = CmsResource.getFolderPath(resource.getRootPath());
+        do {
+            // check if the current folder matches the given filter
+            if (existsResource(context, path, filter)) {
+                // folder matches, return it
+                return readFolder(context, path, filter);
+            } else {
+                // folder does not match filter criteria, go up one folder
+                path = CmsResource.getParentFolder(path);
+            }
+            
+            if (CmsStringUtil.isEmpty(path) || ! path.startsWith(context.getSiteRoot())) {
+                // site root or root folder reached and no matching folder found
+                return null;
+            }            
+        } while (true);
     }
 
     /**

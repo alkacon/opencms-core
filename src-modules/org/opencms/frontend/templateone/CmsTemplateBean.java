@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/03/11 10:44:58 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/03/16 10:48:35 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.frontend.templateone;
 
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -65,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
 
@@ -624,7 +625,6 @@ public class CmsTemplateBean extends CmsJspActionElement {
 
         if (m_startFolder == null) {
             // start folder has not yet been determined, so try to get it
-            String path = CmsResource.getFolderPath(getRequestContext().getUri());
             int folderTypeId = -1;
             try {
                 folderTypeId = OpenCms.getResourceManager().getResourceType(C_RESOURCE_TYPE_MICROSITE_NAME).getTypeId();
@@ -634,30 +634,18 @@ public class CmsTemplateBean extends CmsJspActionElement {
                     OpenCms.getLog(this).error("Resource type id for microsite folder could not be determined in template one bean");
                 }
             }
-            do {
-                // check if the current folder is a microsite type folder
-                try {
-                    // read the currently checked folder
-                    CmsResource folder = getCmsObject().readResource(path);
-                    if (folder.getTypeId() != folderTypeId) {
-                        // this is no microsite type folder
-                        path = CmsResource.getParentFolder(path);
-                        if (CmsStringUtil.isEmpty(path) || "/".equals(path)) {
-                            // root folder reached, use it as start folder
-                            m_startFolder = "/";
-                            return m_startFolder;
-                        }
-                    } else {
-                        // found the folder to use as start folder
-                        m_startFolder = path;
-                        return m_startFolder;
-                    }
-                } catch (CmsException e) {
-                    // error reading a folder, use root folder as start folder
-                    m_startFolder = "/";
-                    return m_startFolder;
+            m_startFolder = "/";
+            try {
+                CmsFolder startFolder = getCmsObject().readAncestor(getRequestContext().getUri(), folderTypeId);
+                if (startFolder != null) {
+                    m_startFolder = getCmsObject().getRequestContext().removeSiteRoot(startFolder.getRootPath());
                 }
-            } while (true);
+            } catch (CmsException e) {
+                // no matching start folder found    
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error reading microsite start folder");
+                }
+            }
         }
         return m_startFolder;
     }
