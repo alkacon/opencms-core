@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2003/09/01 09:09:17 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2003/10/02 15:51:48 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.51 $ $Date: 2003/09/01 09:09:17 $
+ * @version $Revision: 1.52 $ $Date: 2003/10/02 15:51:48 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault {
     
@@ -319,13 +319,13 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
                         // return to the filelist
                         try {
 
-                            //cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
-                            if((lastUrl != null) && (lastUrl != "")) {
-                                cms.getRequestContext().getResponse().sendRedirect(lastUrl);
-                            }
-                            else {
-                                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms));
-                            }
+                            cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+CmsWorkplaceAction.getExplorerFileUri(cms));
+//                            if((lastUrl != null) && (lastUrl != "")) {
+//                                cms.getRequestContext().getResponse().sendRedirect(lastUrl);
+//                            }
+//                            else {
+//                                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms));
+//                            }
                         }
                         catch(Exception ex) {
                             throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, ex);
@@ -380,12 +380,13 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
 
                         // return to the filelist
                         try {
-                            if((lastUrl != null) && (lastUrl != "")) {
-                                cms.getRequestContext().getResponse().sendRedirect(lastUrl);
-                            }
-                            else {
-                                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms));
-                            }
+                            cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms));
+//                            if((lastUrl != null) && (lastUrl != "")) {
+//                                cms.getRequestContext().getResponse().sendRedirect(lastUrl);
+//                            }
+//                            else {
+//                                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms));
+//                            }
                         }
                         catch(Exception ex) {
                             throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, ex);
