@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestReleaseExpirationDate.java,v $
- * Date   : $Date: 2004/06/01 15:46:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/01 16:07:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.test.OpenCmsTestCase;
  * Unit test for the "readFileHeader" method of the CmsObject to test the release and expiration date.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestReleaseExpirationDate extends OpenCmsTestCase {
   
@@ -68,6 +68,9 @@ public class TestReleaseExpirationDate extends OpenCmsTestCase {
         suite.addTest(new TestReleaseExpirationDate("testReadBeforeReleaseDate"));
         suite.addTest(new TestReleaseExpirationDate("testReadInValidTimeRange"));
         suite.addTest(new TestReleaseExpirationDate("testReadAfterExpirationDate"));
+        suite.addTest(new TestReleaseExpirationDate("testReadBeforeReleaseDateIgnore"));
+        suite.addTest(new TestReleaseExpirationDate("testReadInValidTimeRangeIgnore"));
+        suite.addTest(new TestReleaseExpirationDate("testReadAfterExpirationDateIgnore"));
         
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -211,6 +214,45 @@ public class TestReleaseExpirationDate extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing readFileHeader of a file in its valid time range");
         readInValidTimeRange(this, cms, "/folder1/page3.html", CmsResourceFilter.DEFAULT);
+    }
+    
+    /**
+     * Test readFileHeader of a file before its release date.<p>
+     * The valid time range will be ignored.
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testReadBeforeReleaseDateIgnore() throws Throwable {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing readFileHeader of a file before the release date, ignoring valid timerange");
+        readBeforeReleaseDate(this, cms, "/folder1/page1.html", CmsResourceFilter.ALL);
+    }
+    
+    /**
+     * Test readFileHeader of a file after its expiration date.<p>
+     * The valid time range will be ignored.
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testReadAfterExpirationDateIgnore() throws Throwable {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing readFileHeader of a file after the expiration date, ignoring valid timerange");
+        readAfterExpirationDate(this, cms, "/folder1/page2.html", CmsResourceFilter.ALL);
+    }
+
+    /**
+     * Test readFileHeader of a file in its valid time range.<p>
+     * The valid time range will be ignored.
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testReadInValidTimeRangeIgnore() throws Throwable {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing readFileHeader of a file in its valid time range, ignoring valid timerange");
+        readInValidTimeRange(this, cms, "/folder1/page3.html", CmsResourceFilter.ALL);
     }
     
 }
