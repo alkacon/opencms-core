@@ -1,30 +1,33 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/08/03 15:11:59 $
-* Version: $Revision: 1.107 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2001  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
+ * Date   : $Date: 2003/08/04 11:19:42 $
+ * Version: $Revision: 1.108 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.opencms.core;
 
@@ -64,7 +67,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.107 $ $Date: 2003/08/03 15:11:59 $
+ * @version $Revision: 1.108 $ $Date: 2003/08/04 11:19:42 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -286,6 +289,79 @@ class CmsShellCommands {
     }
 
     /**
+     * Changes the access control for a given resource and a given principal(user/group).<p>
+     * 
+     * @param resourceName the name of the resource
+     * @param principalType the principalType (user or group)
+     * @param principalName the name of the principal
+     * @param allowedPermissions bitset of allowed permissions
+     * @param deniedPermissions bitset of denied permissions
+     * @param flags flags
+     */
+    public void chacc(String resourceName, String principalType, String principalName, int allowedPermissions, int deniedPermissions, int flags) {
+        try {
+            m_cms.chacc(resourceName, principalType, principalName, allowedPermissions, deniedPermissions, flags);
+        } catch (Exception e) {
+            CmsShell.printException(e);
+        }
+    }
+
+    /**
+     * Changes the access control for a given resource and a given principal(user/group).<p>
+     * 
+     * @param resourceName the name of the reosurce
+     * @param principalType the type of the principal (user or group)
+     * @param principalName the name of the principal
+     * @param permissionString the permissions in the format ((+|-)(r|w|v|c|i))*
+     */
+    public void chacc(String resourceName, String principalType, String principalName, String permissionString) {
+        try {
+            m_cms.chacc(resourceName, principalType, principalName, permissionString);
+        } catch (Exception e) {
+            CmsShell.printException(e);
+        }
+    }
+
+    /**
+     * Changes the type of the user to webusertype
+     *
+     * @param username The name of the user to change
+     * @param userType The new type of the user
+     */
+    public void changeUserType(String username, String userType) {
+        try {
+            m_cms.changeUserType(username, Integer.parseInt(userType));
+            CmsUser user = null;
+            try {
+                user = m_cms.readWebUser(username);
+            } catch (CmsException ex) {
+                if (ex.getType() == CmsException.C_NO_USER) {
+                    user = m_cms.readUser(username);
+                }
+            }
+            System.out.println(user.toString());
+        } catch (Exception e) {
+            CmsShell.printException(e);
+        }
+    }
+
+    /**
+     * Changes the type of the user
+     *
+     * @param userId The id of the user to change
+     * @param userType The new type of the user
+     */
+    public void changeUserTypeByUserid(String userId, String userType) {
+        try {
+            m_cms.changeUserType(new CmsUUID(userId), Integer.parseInt(userType));
+            CmsUser user = m_cms.readUser(new CmsUUID(userId));
+            System.out.println(user.toString());
+        } catch (Exception e) {
+            CmsShell.printException(e);
+        }
+    }
+
+    /**
      * Changes the resourcetype for this resource<BR/>
      *
      * The user may change this, if he is admin of the resource.
@@ -395,6 +471,33 @@ class CmsShellCommands {
     }
 
     /**
+     * Creates a default cms project.
+     * This default project has the following properties:<ul>
+     * <li>The users groups is "Users"
+     * <li>The project managers group is "Projectmanager"
+     * <li>All resources are contained in the project
+     * <li>The project will remain after publishing</ul>
+     * 
+     * @param name The name of the project to create
+     * @param description The description for the new project
+     * 
+     */
+    public void createDefaultProject(String name, String description) {
+        try {
+            m_cms.getRequestContext().saveSiteRoot();
+            m_cms.getRequestContext().setSiteRoot("/");
+            CmsProject project = m_cms.createProject(name, description, I_CmsConstants.C_GROUP_USERS, I_CmsConstants.C_GROUP_PROJECTLEADER, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
+            m_cms.getRequestContext().setCurrentProject(project.getId());
+            // copy the VFS folders to the project
+            m_cms.copyResourceToProject("/");
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        } finally {
+            m_cms.getRequestContext().restoreSiteRoot();
+        }
+    }
+
+    /**
      * Creates a new folder.
      *
      * @param folder The complete path to the folder in which the new folder
@@ -467,46 +570,6 @@ class CmsShellCommands {
     }
 
     /**
-     * Creates a default cms project.
-     * This default project has the following properties:<ul>
-     * <li>The users groups is "Users"
-     * <li>The project managers group is "Projectmanager"
-     * <li>All resources are contained in the project
-     * <li>The project will remain after publishing</ul>
-     * 
-     * @param name The name of the project to create
-     * @param description The description for the new project
-     * 
-     */
-    public void createDefaultProject(String name, String description) {
-        try {
-            m_cms.getRequestContext().saveSiteRoot();
-            m_cms.getRequestContext().setSiteRoot("/");
-            CmsProject project = m_cms.createProject(name, description, I_CmsConstants.C_GROUP_USERS, I_CmsConstants.C_GROUP_PROJECTLEADER, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
-            m_cms.getRequestContext().setCurrentProject(project.getId());
-            // copy the VFS folders to the project
-            m_cms.copyResourceToProject("/");
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        } finally {
-            m_cms.getRequestContext().restoreSiteRoot();
-        }
-    }
-
-    /**
-     * Creates a new project for the temporary files.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public void createTempfileProject() throws CmsException {
-        try {
-            System.out.println(m_cms.createTempfileProject());
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
      * Creates a property definition for the resource type.<p>
      *
      * @param name the name of the propertydefinition to create
@@ -568,6 +631,19 @@ class CmsShellCommands {
     }
 
     /**
+     * Creates a new project for the temporary files.
+     *
+     * @throws CmsException if operation was not successful.
+     */
+    public void createTempfileProject() throws CmsException {
+        try {
+            System.out.println(m_cms.createTempfileProject());
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
      * Deletes all propertyinformation for a file or folder.
      *
      * @param resource The name of the resource of which the propertyinformations
@@ -578,6 +654,19 @@ class CmsShellCommands {
             m_cms.deleteAllProperties(resource);
         } catch (Exception exc) {
             CmsShell.printException(exc);
+        }
+    }
+
+    /**
+     * Deletes the versions from the backup tables that are older then the given weeks
+     * 
+     * @param weeks The number of weeks: the max age of the remaining versions
+     */
+    public void deleteBackups(String weeks) {
+        try {
+            System.out.println("Oldest remaining version: " + m_cms.deleteBackups(Integer.parseInt(weeks)));
+        } catch (Exception e) {
+            CmsShell.printException(e);
         }
     }
 
@@ -602,31 +691,6 @@ class CmsShellCommands {
     public void deleteFolder(String foldername) {
         try {
             m_cms.deleteResource(foldername, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Deletes a Resource.
-     *
-     * @param filename the complete path of the sourcefolder.
-     */
-    public void deleteResource(String filename) {
-        try {
-            m_cms.deleteResource(filename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-    /**
-     * Undeletes the resource.
-     *
-     * @param resourcename The complete path of the resource.
-     */
-    public void undeleteResource(String resourcename) {
-        try {
-            m_cms.undeleteResource(resourcename);
         } catch (Exception exc) {
             CmsShell.printException(exc);
         }
@@ -709,6 +773,19 @@ class CmsShellCommands {
     public void deletepropertydefinition(String name, String resourcetype) {
         try {
             m_cms.deletePropertydefinition(name, m_cms.getResourceTypeId(resourcetype));
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
+     * Deletes a Resource.
+     *
+     * @param filename the complete path of the sourcefolder.
+     */
+    public void deleteResource(String filename) {
+        try {
+            m_cms.deleteResource(filename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
         } catch (Exception exc) {
             CmsShell.printException(exc);
         }
@@ -949,11 +1026,43 @@ class CmsShellCommands {
     }
 
     /**
+     * Displays the access control list of a given resource.<p>
+     * 
+     * @param resourceName the name of the resource
+     */
+    public void getAcl(String resourceName) {
+        try {
+            CmsAccessControlList acList = m_cms.getAccessControlList(resourceName);
+            Iterator principals = acList.getPrincipals().iterator();
+            while (principals.hasNext()) {
+                I_CmsPrincipal p = m_cms.lookupPrincipal((CmsUUID)principals.next());
+                System.out.println(p.getName() + ": " + acList.getPermissions(p).getPermissionString());
+            }
+        } catch (Exception e) {
+            CmsShell.printException(e);
+        }
+    }
+
+    /**
      * Displays all projects, which the user may access.
      */
     public void getAllAccessibleProjects() {
         try {
             Vector projects = m_cms.getAllAccessibleProjects();
+            for (int i = 0; i < projects.size(); i++) {
+                System.out.println(projects.elementAt(i));
+            }
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
+     * Returns the project history
+     */
+    public void getAllBackupProjects() {
+        try {
+            Vector projects = m_cms.getAllBackupProjects();
             for (int i = 0; i < projects.size(); i++) {
                 System.out.println(projects.elementAt(i));
             }
@@ -1285,6 +1394,33 @@ class CmsShellCommands {
     }
 
     /**
+     * Displays the permissions of the current user on a given resource
+     * 
+     * @param resourceName the name of the resource
+     */
+    public void getPermissions(String resourceName) {
+        try {
+            System.out.println(m_cms.getPermissions(resourceName).getPermissionString());
+        } catch (Exception e) {
+            CmsShell.printException(e);
+        }
+    }
+
+    /**
+     * Displays the current permissions of a user on a given resource.<p>
+     * 
+     * @param resourceName the name of the resource
+     * @param userName the name of the user
+     */
+    public void getPermissions(String resourceName, String userName) {
+        try {
+            System.out.println(m_cms.getPermissions(resourceName, userName).getPermissionString());
+        } catch (Exception e) {
+            CmsShell.printException(e);
+        }
+    }
+
+    /**
      * Returns a Vector with the subresources for a folder.<br>
      *
      * @param folder The name of the folder to get the subresources from.
@@ -1429,22 +1565,6 @@ class CmsShellCommands {
     }
 
     /**
-     * Returns all groups of a user.
-     *
-     * @param groupname The name of the group.
-     */
-    public void getUsersOfGroup(String groupname) {
-        try {
-            Vector users = m_cms.getUsersOfGroup(groupname);
-            for (int i = 0; i < users.size(); i++) {
-                System.out.println(users.elementAt(i));
-            }
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
      * Returns all users matching the given criteria.<p>
      *
      * @param Lastname the lastname of the users
@@ -1497,6 +1617,22 @@ class CmsShellCommands {
 
         try {
             Vector users = m_cms.getUsersByLastname(Lastname, iUserType, iUserStatus, iWasLoggedIn, iNMax);
+            for (int i = 0; i < users.size(); i++) {
+                System.out.println(users.elementAt(i));
+            }
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
+     * Returns all groups of a user.
+     *
+     * @param groupname The name of the group.
+     */
+    public void getUsersOfGroup(String groupname) {
+        try {
+            Vector users = m_cms.getUsersOfGroup(groupname);
             for (int i = 0; i < users.size(); i++) {
                 System.out.println(users.elementAt(i));
             }
@@ -1708,6 +1844,22 @@ class CmsShellCommands {
     }
 
     /**
+     * Imports an import-resource (folder or zipfile) to the cms.
+     *
+     * @param importFile the name (absolute Path) of the import resource (zip or folder)
+     * @param importPath the name (absolute Path) of folder in which should be imported
+     */
+    public void importResources(String importFile, String importPath) {
+
+        // import the resources
+        try {
+            m_cms.importResources(importFile, importPath);
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
      * Imports an import-resource (folder or zipfile) to the cms,
      * and generates a special temp project for that import which is published right 
      * after the file has successfully been imported.
@@ -1723,22 +1875,6 @@ class CmsShellCommands {
             m_cms.importResources(importFile, I_CmsConstants.C_ROOT);
             m_cms.unlockProject(id);
             m_cms.publishProject();
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Imports an import-resource (folder or zipfile) to the cms.
-     *
-     * @param importFile the name (absolute Path) of the import resource (zip or folder)
-     * @param importPath the name (absolute Path) of folder in which should be imported
-     */
-    public void importResources(String importFile, String importPath) {
-
-        // import the resources
-        try {
-            m_cms.importResources(importFile, importPath);
         } catch (Exception exc) {
             CmsShell.printException(exc);
         }
@@ -1863,6 +1999,50 @@ class CmsShellCommands {
     }
 
     /**
+     * Lists the access control entries of a given resource.<p>
+     * 
+     * @param resourceName the name of the resource
+     */
+    public void lsacc(String resourceName) {
+        try {
+            Vector acList = m_cms.getAccessControlEntries(resourceName);
+            for (int i = 0; i < acList.size(); i++) {
+                CmsAccessControlEntry ace = (CmsAccessControlEntry)acList.elementAt(i);
+                I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
+                if (true) {
+                    String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();
+                    System.out.println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
+                }
+            }
+        } catch (Exception e) {
+            CmsShell.printException(e);
+        }
+    }
+
+    /**
+     * Lists the access control entries belonging to the given principal.<p>
+     *  
+     * @param resourceName the name of the resource
+     * @param principalName the name of the principal
+     */
+    public void lsacc(String resourceName, String principalName) {
+        try {
+            I_CmsPrincipal principal = m_cms.lookupPrincipal(principalName);
+            Vector acList = m_cms.getAccessControlEntries(resourceName);
+            for (int i = 0; i < acList.size(); i++) {
+                CmsAccessControlEntry ace = (CmsAccessControlEntry)acList.elementAt(i);
+                I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
+                if (acePrincipal.equals(principal)) {
+                    String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();
+                    System.out.println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
+                }
+            }
+        } catch (Exception e) {
+            CmsShell.printException(e);
+        }
+    }
+
+    /**
      * Moves a file to the given destination.
      *
      * @param source the complete path of the sourcefile.
@@ -1978,27 +2158,6 @@ class CmsShellCommands {
     }
 
     /**
-     * Returns a list of all propertyinformations of a file or folder.
-     *
-     * @param resource The name of the resource of which the propertyinformation has to be
-     * read.
-     */
-    public void readProperties(String resource) {
-        try {
-            Map properties = m_cms.readProperties(resource);
-            Iterator i = properties.keySet().iterator();
-            Object key;
-            while (i.hasNext()) {
-                key = i.next();
-                System.out.print(key + "=");
-                System.out.println(properties.get(key));
-            }
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
      * Reads all propertydefinitions for the given resource type.<p>
      *
      * @param resourcetype The name of the resource type to read the
@@ -2010,6 +2169,17 @@ class CmsShellCommands {
             for (int i = 0; i < propertydefs.size(); i++) {
                 System.out.println(propertydefs.elementAt(i));
             }
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
+     * Gets the Crontable.
+     */
+    public void readCronTable() {
+        try {
+            System.out.println(m_cms.readCronTable());
         } catch (Exception exc) {
             CmsShell.printException(exc);
         }
@@ -2327,6 +2497,27 @@ class CmsShellCommands {
     }
 
     /**
+     * Returns a list of all propertyinformations of a file or folder.
+     *
+     * @param resource The name of the resource of which the propertyinformation has to be
+     * read.
+     */
+    public void readProperties(String resource) {
+        try {
+            Map properties = m_cms.readProperties(resource);
+            Iterator i = properties.keySet().iterator();
+            Object key;
+            while (i.hasNext()) {
+                key = i.next();
+                System.out.print(key + "=");
+                System.out.println(properties.get(key));
+            }
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
      * Returns a propertyinformation of a file or folder.
      *
      * @param name The resource-name of which the propertyinformation has to be read.
@@ -2351,6 +2542,30 @@ class CmsShellCommands {
             System.out.println(m_cms.readPropertydefinition(name, m_cms.getResourceTypeId(resourcetype)));
         } catch (Exception exc) {
             CmsShell.printException(exc);
+        }
+    }
+
+    /**
+     * Returns the resources that contains the given part in the resourcename.<br>
+     *
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the user has access to the project</li>
+     * <li>the user can read and view this resource</li>
+     * </ul>
+     *
+     * @param resourcename A part of resourcename
+     */
+    public void readResourcesLikeName(String resourcename) {
+        try {
+            Vector resources = m_cms.readResourcesLikeName(resourcename);
+            for (int i = 0; i < resources.size(); i++) {
+                CmsResource res = (CmsResource)resources.elementAt(i);
+                System.out.println(res.toString());
+            }
+        } catch (Exception e) {
+            CmsShell.printException(e);
         }
     }
 
@@ -2582,6 +2797,21 @@ class CmsShellCommands {
     }
 
     /**
+     * Removes an access control entry of a given resource for a given user/group.<p>
+     * 
+     * @param resourceName the name of the resource
+     * @param principalType the principalType (user or group)
+     * @param principalName the name of the principal
+     */
+    public void rmacc(String resourceName, String principalType, String principalName) {
+        try {
+            m_cms.rmacc(resourceName, principalType, principalName);
+        } catch (Exception e) {
+            CmsShell.printException(e);
+        }
+    }
+
+    /**
      * Returns the root-folder object.
      */
     public void rootFolder() {
@@ -2590,6 +2820,14 @@ class CmsShellCommands {
         } catch (Exception exc) {
             CmsShell.printException(exc);
         }
+    }
+
+    /**
+     * Sets the name of the current site root
+     * of the content objects system
+     */
+    public void setContextToCos() {
+        m_cms.setContextToCos();
     }
 
     /**
@@ -2831,6 +3069,15 @@ class CmsShellCommands {
     }
 
     /**
+     * Set the site root.<p>
+     * 
+     * @param siteRoot the site root to set
+     */
+    public void setSiteRoot(String siteRoot) {
+        m_cms.getRequestContext().setSiteRoot(siteRoot);
+    }
+
+    /**
      * Set a parameter for a task.
      *
      * @param taskid the Id of the task.
@@ -2883,6 +3130,18 @@ class CmsShellCommands {
         // synchronize the resources
         try {
             m_cms.syncFolder(resourceName);
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+    /**
+     * Undeletes the resource.
+     *
+     * @param resourcename The complete path of the resource.
+     */
+    public void undeleteResource(String resourcename) {
+        try {
+            m_cms.undeleteResource(resourcename);
         } catch (Exception exc) {
             CmsShell.printException(exc);
         }
@@ -2981,6 +3240,19 @@ class CmsShellCommands {
      */
     public void whoami() {
         System.out.println(m_cms.getRequestContext().currentUser());
+    }
+
+    /**
+     * Writes the Crontable.
+     * 
+     * @param crontable a crontable entry
+     */
+    public void writeCronTable(String crontable) {
+        try {
+            m_cms.writeCronTable(crontable);
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }
     }
 
     /**
@@ -3110,275 +3382,6 @@ class CmsShellCommands {
             m_cms.writeUser(user);
         } catch (Exception exc) {
             CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Sets the name of the current site root
-     * of the content objects system
-     */
-    public void setContextToCos() {
-        m_cms.setContextToCos();
-    }
-
-    /**
-     * Set the site root.<p>
-     * 
-     * @param siteRoot the site root to set
-     */
-    public void setSiteRoot(String siteRoot) {
-        m_cms.getRequestContext().setSiteRoot(siteRoot);
-    }
-
-    /**
-     * Gets the Crontable.
-     */
-    public void readCronTable() {
-        try {
-            System.out.println(m_cms.readCronTable());
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Writes the Crontable.
-     * 
-     * @param crontable a crontable entry
-     */
-    public void writeCronTable(String crontable) {
-        try {
-            m_cms.writeCronTable(crontable);
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Returns the project history
-     */
-    public void getAllBackupProjects() {
-        try {
-            Vector projects = m_cms.getAllBackupProjects();
-            for (int i = 0; i < projects.size(); i++) {
-                System.out.println(projects.elementAt(i));
-            }
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Changes the type of the user
-     *
-     * @param userId The id of the user to change
-     * @param userType The new type of the user
-     */
-    public void changeUserTypeByUserid(String userId, String userType) {
-        try {
-            m_cms.changeUserType(new CmsUUID(userId), Integer.parseInt(userType));
-            CmsUser user = m_cms.readUser(new CmsUUID(userId));
-            System.out.println(user.toString());
-        } catch (Exception e) {
-            CmsShell.printException(e);
-        }
-    }
-
-    /**
-     * Changes the type of the user to webusertype
-     *
-     * @param username The name of the user to change
-     * @param userType The new type of the user
-     */
-    public void changeUserType(String username, String userType) {
-        try {
-            m_cms.changeUserType(username, Integer.parseInt(userType));
-            CmsUser user = null;
-            try {
-                user = m_cms.readWebUser(username);
-            } catch (CmsException ex) {
-                if (ex.getType() == CmsException.C_NO_USER) {
-                    user = m_cms.readUser(username);
-                }
-            }
-            System.out.println(user.toString());
-        } catch (Exception e) {
-            CmsShell.printException(e);
-        }
-    }
-
-    /**
-     * Returns the resources that contains the given part in the resourcename.<br>
-     *
-     * <B>Security:</B>
-     * Access is granted, if:
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user can read and view this resource</li>
-     * </ul>
-     *
-     * @param resourcename A part of resourcename
-     */
-    public void readResourcesLikeName(String resourcename) {
-        try {
-            Vector resources = m_cms.readResourcesLikeName(resourcename);
-            for (int i = 0; i < resources.size(); i++) {
-                CmsResource res = (CmsResource)resources.elementAt(i);
-                System.out.println(res.toString());
-            }
-        } catch (Exception e) {
-            CmsShell.printException(e);
-        }
-    }
-
-    /**
-     * Deletes the versions from the backup tables that are older then the given weeks
-     * 
-     * @param weeks The number of weeks: the max age of the remaining versions
-     */
-    public void deleteBackups(String weeks) {
-        try {
-            System.out.println("Oldest remaining version: " + m_cms.deleteBackups(Integer.parseInt(weeks)));
-        } catch (Exception e) {
-            CmsShell.printException(e);
-        }
-    }
-
-    /**
-     * Changes the access control for a given resource and a given principal(user/group).<p>
-     * 
-     * @param resourceName the name of the reosurce
-     * @param principalType the type of the principal (user or group)
-     * @param principalName the name of the principal
-     * @param permissionString the permissions in the format ((+|-)(r|w|v|c|i))*
-     */
-    public void chacc(String resourceName, String principalType, String principalName, String permissionString) {
-        try {
-            m_cms.chacc(resourceName, principalType, principalName, permissionString);
-        } catch (Exception e) {
-            CmsShell.printException(e);
-        }
-    }
-
-    /**
-     * Changes the access control for a given resource and a given principal(user/group).<p>
-     * 
-     * @param resourceName the name of the resource
-     * @param principalType the principalType (user or group)
-     * @param principalName the name of the principal
-     * @param allowedPermissions bitset of allowed permissions
-     * @param deniedPermissions bitset of denied permissions
-     * @param flags flags
-     */
-    public void chacc(String resourceName, String principalType, String principalName, int allowedPermissions, int deniedPermissions, int flags) {
-        try {
-            m_cms.chacc(resourceName, principalType, principalName, allowedPermissions, deniedPermissions, flags);
-        } catch (Exception e) {
-            CmsShell.printException(e);
-        }
-    }
-
-    /**
-     * Removes an access control entry of a given resource for a given user/group.<p>
-     * 
-     * @param resourceName the name of the resource
-     * @param principalType the principalType (user or group)
-     * @param principalName the name of the principal
-     */
-    public void rmacc(String resourceName, String principalType, String principalName) {
-        try {
-            m_cms.rmacc(resourceName, principalType, principalName);
-        } catch (Exception e) {
-            CmsShell.printException(e);
-        }
-    }
-
-    /**
-     * Lists the access control entries of a given resource.<p>
-     * 
-     * @param resourceName the name of the resource
-     */
-    public void lsacc(String resourceName) {
-        try {
-            Vector acList = m_cms.getAccessControlEntries(resourceName);
-            for (int i = 0; i < acList.size(); i++) {
-                CmsAccessControlEntry ace = (CmsAccessControlEntry)acList.elementAt(i);
-                I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
-                if (true) {
-                    String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();
-                    System.out.println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
-                }
-            }
-        } catch (Exception e) {
-            CmsShell.printException(e);
-        }
-    }
-
-    /**
-     * Lists the access control entries belonging to the given principal.<p>
-     *  
-     * @param resourceName the name of the resource
-     * @param principalName the name of the principal
-     */
-    public void lsacc(String resourceName, String principalName) {
-        try {
-            I_CmsPrincipal principal = m_cms.lookupPrincipal(principalName);
-            Vector acList = m_cms.getAccessControlEntries(resourceName);
-            for (int i = 0; i < acList.size(); i++) {
-                CmsAccessControlEntry ace = (CmsAccessControlEntry)acList.elementAt(i);
-                I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
-                if (acePrincipal.equals(principal)) {
-                    String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();
-                    System.out.println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
-                }
-            }
-        } catch (Exception e) {
-            CmsShell.printException(e);
-        }
-    }
-
-    /**
-     * Displays the access control list of a given resource.<p>
-     * 
-     * @param resourceName the name of the resource
-     */
-    public void getAcl(String resourceName) {
-        try {
-            CmsAccessControlList acList = m_cms.getAccessControlList(resourceName);
-            Iterator principals = acList.getPrincipals().iterator();
-            while (principals.hasNext()) {
-                I_CmsPrincipal p = m_cms.lookupPrincipal((CmsUUID)principals.next());
-                System.out.println(p.getName() + ": " + acList.getPermissions(p).getPermissionString());
-            }
-        } catch (Exception e) {
-            CmsShell.printException(e);
-        }
-    }
-
-    /**
-     * Displays the current permissions of a user on a given resource.<p>
-     * 
-     * @param resourceName the name of the resource
-     * @param userName the name of the user
-     */
-    public void getPermissions(String resourceName, String userName) {
-        try {
-            System.out.println(m_cms.getPermissions(resourceName, userName).getPermissionString());
-        } catch (Exception e) {
-            CmsShell.printException(e);
-        }
-    }
-
-    /**
-     * Displays the permissions of the current user on a given resource
-     * 
-     * @param resourceName the name of the resource
-     */
-    public void getPermissions(String resourceName) {
-        try {
-            System.out.println(m_cms.getPermissions(resourceName).getPermissionString());
-        } catch (Exception e) {
-            CmsShell.printException(e);
         }
     }
 }
