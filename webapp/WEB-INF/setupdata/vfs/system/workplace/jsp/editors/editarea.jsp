@@ -31,8 +31,8 @@ if (editElement != null) {
 <form name="form_<%= editId %>" method="post" action="<%= editLink %>" class="nomargin">
 <input type="hidden" name="resource" value="<%= editTarget %>">
 <input type="hidden" name="directedit" value="true">
-<input type="hidden" name="bodylanguage" value="<%= editLanguage %>">
-<input type="hidden" name="bodyname" value="<%= editElement %>">
+<input type="hidden" name="elementlanguage" value="<%= editLanguage %>">
+<input type="hidden" name="elementname" value="<%= editElement %>">
 <input type="hidden" name="backlink" value="<%= uri %>">
 </form>
 <span class="editarea_button" onmouseover="activate('<%= editId %>');" onmouseout="deactivate('<%= editId %>');">
