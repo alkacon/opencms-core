@@ -8,6 +8,10 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.5.12 Gom Jabbar   - 28 September 2001
+! Now groups can be added to webusers, too. If the user can not be read as user for OpenCms, he is read
+  as Webuser.
+
 OpenCms 4.4.4 Gom Jabbar    - 27 September 2001
 * Bugfix in PL/SQL-packages 
 
