@@ -48,7 +48,7 @@
 		</form>
 		
 		<td class=dialogtxt><p class=tab>]]><BUTTON href="javascript:window.location.reload(true)" name="bt_reload" action="" alt="reload"/><![CDATA[</td>
-		<td class=dialogtxt>]]><BUTTON href="#" name="bt_einstellungen" action="javascript:window.top.body.location.href='preferences.html?panel=explorer'" alt="preferences"/><![CDATA[</td>
+		<td class=dialogtxt>]]><BUTTON href="#" name="bt_einstellungen" action="javascript:window.top.body.location.href='preferences.html?initial=true'" alt="preferences"/><![CDATA[</td>
 		]]><PROCESS>SYNC</PROCESS><![CDATA[
 		<td class=dialogtxt>]]><BUTTON href="#" action="javascript:url='../help/de/index.html'; openwin(url, 'Hilfe', 310, 600);" name="bt_hilfe" alt="help"/><![CDATA[</td>
 		<td class=dialogtxt width="90%">&nbsp;</td>
