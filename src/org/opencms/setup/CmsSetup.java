@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetup.java,v $
- * Date   : $Date: 2004/02/20 15:26:21 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/02/20 16:29:29 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.dom4j.io.SAXReader;
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  */
 public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsShellCommands {
 
@@ -296,23 +296,12 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         String workflowDriver = getDbProperty(m_databaseKey + ".workflow.driver");
         String backupDriver = getDbProperty(m_databaseKey + ".backup.driver");
 
-        // Change/write configuration only if not available or database changed
         setExtProperty("db.name", m_databaseKey);
-        if (getExtProperty("db.vfs.driver") == null || "".equals(getExtProperty("db.vfs.driver"))) {
-            setExtProperty("db.vfs.driver", vfsDriver);
-        }
-        if (getExtProperty("db.user.driver") == null || "".equals(getExtProperty("db.user.driver"))) {
-            setExtProperty("db.user.driver", userDriver);
-        }
-        if (getExtProperty("db.project.driver") == null || "".equals(getExtProperty("db.project.driver"))) {
-            setExtProperty("db.project.driver", projectDriver);
-        }
-        if (getExtProperty("db.workflow.driver") == null || "".equals(getExtProperty("db.workflow.driver"))) {
-            setExtProperty("db.workflow.driver", workflowDriver);
-        }
-        if (getExtProperty("db.backup.driver") == null || "".equals(getExtProperty("db.backup.driver"))) {
-            setExtProperty("db.backup.driver", backupDriver);
-        }
+        setExtProperty("db.vfs.driver", vfsDriver);
+        setExtProperty("db.user.driver", userDriver);
+        setExtProperty("db.project.driver", projectDriver);
+        setExtProperty("db.workflow.driver", workflowDriver);
+        setExtProperty("db.backup.driver", backupDriver);
     }
 
     /** 
