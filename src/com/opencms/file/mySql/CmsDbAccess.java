@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/08/15 16:25:31 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/08/21 10:10:20 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.19 $ $Date: 2000/08/15 16:25:31 $ * 
+ * @version $Revision: 1.20 $ $Date: 2000/08/21 10:10:20 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -3628,6 +3628,8 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, CmsProject onlin
 			 }                
 		 } catch (SQLException e){
 			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+ 		} catch (CmsException ex) {
+			throw ex;
  		} catch( Exception exc ) {
 			throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}finally {

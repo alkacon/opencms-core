@@ -2,8 +2,8 @@ package com.opencms.template;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateClassManager.java,v $
- * Date   : $Date: 2000/08/18 15:45:46 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/08/21 10:10:21 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * be cached and re-used. 
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2000/08/18 15:45:46 $
+ * @version $Revision: 1.14 $ $Date: 2000/08/21 10:10:21 $
  */
 public class CmsTemplateClassManager implements I_CmsLogChannels { 
 	
@@ -137,15 +137,15 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
 			for (int i=0; i < repositoriesFromConfigFile.length; i++)
 				repositories.addElement(repositoriesFromConfigFile[i]);
 
-
 			// add the repositories from the registry
-			/*
+			
 			I_CmsRegistry reg=cms.getRegistry();
-			repositoriesFromRegistry = reg.getRepositories();
 
+			repositoriesFromRegistry = reg.getRepositories();
+			
 			for (int i=0; i < repositoriesFromRegistry.length; i++)
 				repositories.addElement(repositoriesFromRegistry[i]);
-			*/			
+						
 			try {
 				CmsClassLoader loader = new CmsClassLoader(cms, repositories, null);
 				Class c = loader.loadClass(classname);        

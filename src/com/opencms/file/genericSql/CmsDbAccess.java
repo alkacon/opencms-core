@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/08/15 16:25:30 $
- * Version: $Revision: 1.113 $
+ * Date   : $Date: 2000/08/21 10:10:18 $
+ * Version: $Revision: 1.114 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.113 $ $Date: 2000/08/15 16:25:30 $ * 
+ * @version $Revision: 1.114 $ $Date: 2000/08/21 10:10:18 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -3632,9 +3632,11 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, in
 			 }                
 		 } catch (SQLException e){
 			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+ 		} catch (CmsException ex) {
+			throw ex;
  		} catch( Exception exc ) {
 			throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-		}finally {
+		} finally {
 			if (projectId == onlineProjectId) {
 				if( statement != null) {
 					m_pool.putPreparedStatement(C_FILE_READ_ONLINE_KEY, statement);
@@ -3739,7 +3741,7 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, in
 			throw ex;       
 		 } catch( Exception exc ) {
 			throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-		}finally {
+		} finally {
 			if( statement != null) {
 				m_pool.putPreparedStatement(C_RESOURCES_READBYID_KEY, statement);
 			}

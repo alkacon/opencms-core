@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/18 15:19:58 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/08/21 10:10:21 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2000/08/18 15:19:58 $
+ * @version $Revision: 1.22 $ $Date: 2000/08/21 10:10:21 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3333,7 +3333,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] init registry.");
 		}
-		m_registry= new CmsRegistryDummy(config.getString(C_CONFIGURATION_REGISTRY));
+		m_registry= new CmsRegistry(config.getString(C_CONFIGURATION_REGISTRY));
 	}
 	/**
 	 * Determines, if the users current group is the admin-group.
