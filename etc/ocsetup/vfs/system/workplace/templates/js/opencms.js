@@ -103,6 +103,27 @@ function openwin(url, name, w, h) //opens a new window with parameter URL, Windo
 }
 
 //------------------------------------------------------------------------------------
+// open new window
+// m.schleich 26.01.2000
+//------------------------------------------------------------------------------------
+
+var smallwindow;
+
+function opensmallwin(url, name, w, h) //opens a new window with parameter URL, Windowname (free choosable), width and height
+{
+	smallwindow = window.open(url, name, 'toolbar=no,location=no,directories=no,status=no,menubar=0,scrollbars=no,resizable=no,width='+w+',height='+h);
+	if(smallwindow != null)
+	   {
+	      if (smallwindow.opener == null)
+	      {
+	         smallwindow.opener = self;
+	      }
+   		}
+	//smallwindow.focus();
+
+}
+
+//------------------------------------------------------------------------------------
 // which radiobutton is checked
 // m.schleich 11.01.1999
 // 
