@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/02/15 17:51:19 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/02/15 18:03:11 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2000/02/15 17:51:19 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/15 18:03:11 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -86,21 +86,18 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         A_CmsRequestContext reqCont = cms.getRequestContext();
         HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(true);
         CmsFile editFile = null;
+        Encoder encoder = new Encoder();
         
         String content = (String)parameters.get("CONTENT");
         String file = (String)parameters.get("file");
-        String exit = (String)parameters.get("EXIT");
-        String save = (String)parameters.get("save");
         String body = (String)parameters.get("body");
-        String bodychange = (String)parameters.get("bodychange");
-        String newbody = (String)parameters.get("newbody");
         String editor = (String)parameters.get("editor");
         String title = (String)parameters.get("title");
         String bodytitle = (String)parameters.get("bodytitle");
         String layoutTemplateFilename = (String)parameters.get("template");
         String bodyElementClassName = (String)parameters.get("bodyclass");
         String bodyElementFilename = (String)parameters.get("bodyfile");
-        String preview = (String)parameters.get("preview");
+        String action = (String)parameters.get("action");
         String oldEdit = (String)session.getValue("te_oldedit");
         String bodytag = (String)session.getValue("bodytag");
         String oldLayoutFilename = (String)session.getValue("te_oldlayout");
@@ -110,20 +107,17 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         String layoutTemplateClassName = (String)session.getValue("te_templateclass");
         String tempPageFilename = (String)session.getValue("te_temppagefile");
         String tempBodyFilename = (String)session.getValue("te_tempbodyfile");
-        
-        
+                
         boolean existsContentParam = (content!=null && (!"".equals(content)));
         boolean existsFileParam = (file!=null && (!"".equals(file)));
-        boolean existsBodyParam = (body!=null && (!"".equals(body)));
-        boolean existsTemplateParam = (layoutTemplateFilename!=null && (!"".equals(layoutTemplateFilename)));
-        boolean saveRequested = ((save != null) && "1".equals(save));
-        boolean exitRequested = ((exit != null) && "1".equals(exit));
+        boolean saveRequested = ((action != null) && ("save".equals(action) || "saveexit".equals(action)));
+        boolean exitRequested = ((action != null) && ("exit".equals(action) || "saveexit".equals(action)));
         boolean bodychangeRequested = ((oldBody != null) && (body != null) && (!(oldBody.equals(body))));
         boolean templatechangeRequested = (oldLayoutFilename != null && layoutTemplateFilename != null
                                            && (!(oldLayoutFilename.equals(layoutTemplateFilename))));
         boolean titlechangeRequested = (oldTitle != null && title != null && (!(oldTitle.equals(title))));
-        boolean previewRequested = ((preview != null) && "1".equals(preview));
-        boolean newbodyRequested = ((newbody != null) && "1".equals(newbody));
+        boolean newbodyRequested = ((action != null) && "newbody".equals(action));        
+        boolean previewRequested = ((action != null) && "preview".equals(action));        
         boolean bodytitlechangeRequested = (oldBodytitle != null && bodytitle != null
                                            && (!(oldBodytitle.equals(bodytitle))));
         // Check if there is a file parameter in the request
@@ -132,10 +126,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         }
                 
         if(!existsContentParam) {
-            System.err.println("***************************");
-            System.err.println("*** no content given!!! ***");
-            System.err.println("***************************");
-
             CmsXmlControlFile originalControlFile = new CmsXmlControlFile(cms, file);
                         
             if(originalControlFile.isElementClassDefined("body")) {
@@ -169,20 +159,16 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             layoutTemplateFilename = originalControlFile.getMasterTemplate();
             layoutTemplateClassName = originalControlFile.getTemplateClass();
             
-            oldLayoutFilename = layoutTemplateFilename;          
-            
-           if(editor == null || "".equals(editor)) {
+            if(editor == null || "".equals(editor)) {
                 editor = this.C_SELECTBOX_EDITORVIEWS[C_SELECTBOX_EDITORVIEWS_DEFAULT];    
                 parameters.put("editor", editor);
             }
-            oldEdit = editor; 
             
             // And finally the document title
             title = cms.readMetainformation(file, C_METAINFO_TITLE);
             if(title == null) {
                 title = "";
             }
-            oldTitle = title;                    
 
             // Okay. All values are initialized. Now we can create
             // the temporary files.
@@ -194,7 +180,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         
         if(templatechangeRequested) {
             // The user requested a change of the layout template
-            System.err.println("*** TEMPLATECHANGE to " + layoutTemplateFilename);
             CmsXmlControlFile temporaryControlFile = new CmsXmlControlFile(cms, tempPageFilename);
             temporaryControlFile.setMasterTemplate(layoutTemplateFilename);
             temporaryControlFile.write();
@@ -202,7 +187,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         
         if(titlechangeRequested) {
             // The user entered a new document title
-            System.err.println("Changing document title to \"" + title + "\".");
             try {
                 cms.writeMetainformation(tempPageFilename, C_METAINFO_TITLE, title);
             } catch(CmsException e) {
@@ -252,7 +236,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         
         if(bodytitlechangeRequested) {
             // The user entered a new title for the current body
-            System.err.println("Changing body title to \"" + title + "\".");
             bodyTemplateFile.setSectionTitle(oldBody, bodytitle);
         }
  
@@ -277,7 +260,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         
         if(existsContentParam) {
             // save file contents to our temporary file.
-            Encoder encoder = new Encoder();
             content = encoder.unescape(content);
             
             try {
@@ -295,7 +277,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         // If the user requested a preview then send a redirect
         // to the temporary page file.
         if(previewRequested) {
-            HttpServletRequest srvReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();
+/*            HttpServletRequest srvReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();
             
             String servletPath = srvReq.getServletPath();
             try {
@@ -303,6 +285,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             } catch(IOException e) {
                 throwException("Could not send redirect preview file " + servletPath + tempPageFilename, e);
             }
+            return "".getBytes();*/
+            preview(tempPageFilename, reqCont);
             return "".getBytes();
         }
         
@@ -325,10 +309,11 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         // Check if we should leave th editor instead of start processing
         if(exitRequested) {
             // First delete temporary files
+            CmsXmlControlFile temporaryControlFile = new CmsXmlControlFile(cms, tempPageFilename);
+            temporaryControlFile.removeFromFileCache();
+            bodyTemplateFile.removeFromFileCache();
             cms.deleteFile(tempBodyFilename);
             cms.deleteFile(tempPageFilename);
-            A_CmsXmlContent.clearFileCache(tempBodyFilename);
-            A_CmsXmlContent.clearFileCache(tempPageFilename);            
             try {
                 cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceMainPath());
             } catch(IOException e) {
@@ -338,13 +323,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         }
 
         // Load the body!                                        
-        if(editor.equals(C_SELECTBOX_EDITORVIEWS[0])) {
-            // HTML editor
-            content = bodyTemplateFile.getEditableTemplateContent(this, parameters, body);
-        } else {                                            
-            content = bodyTemplateFile.getTextEditableTemplateContent(this, parameters, body);
-        }
-        Encoder encoder = new Encoder();
+        content = bodyTemplateFile.getEditableTemplateContent(this, parameters, body, editor.equals(C_SELECTBOX_EDITORVIEWS[0]));        
+
         content = encoder.escape(content);
         parameters.put("CONTENT", content);
         
@@ -569,7 +549,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
     }
     
     private String createTemporaryFile(A_CmsObject cms, A_CmsResource file) throws CmsException{
-        String temporaryFilename = file.getPath() + "_" + file.getName();
+        String temporaryFilename = file.getPath() + C_WP_TEMP_PREFIX + file.getName();
         
         // This is the code for single temporary files.
         // re-activate it, if the cms object provides a special
@@ -627,6 +607,16 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         while(keys.hasMoreElements()) {
             String keyName = (String)keys.nextElement();
             cms.writeMetainformation(originalFilename, keyName, (String)minfos.get(keyName));
+        }
+    }
+
+    private void preview(String previewPath, A_CmsRequestContext reqCont) throws CmsException {
+        HttpServletRequest srvReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();            
+        String servletPath = srvReq.getServletPath();
+        try {
+            reqCont.getResponse().sendCmsRedirect(previewPath);            
+        } catch(IOException e) {
+            throwException("Could not send redirect preview file " + servletPath + previewPath, e);
         }
     }
 }

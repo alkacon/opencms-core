@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/02/15 18:02:29 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import org.xml.sax.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.12 $ $Date: 2000/02/15 18:02:29 $
  */
 public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -101,6 +101,7 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
         Vector v = new Vector();
         A_CmsRequestContext reqContext = cms.getRequestContext();
         
+        v.addElement(reqContext.currentProject().getName());
         v.addElement(reqContext.getUri());
         v.addElement(templateFile);
         v.addElement(parameters);
@@ -179,7 +180,7 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
         } catch(Throwable e) {
             // There were errors while generating output for this template.
             // Clear HTML cache and then throw exception again
-            xmlTemplateDocument.clearFileCache(xmlTemplateDocument);
+            xmlTemplateDocument.removeFromFileCache();
             if(isCacheable(cms, xmlTemplateDocument.getAbsoluteFilename(), elementName, parameters, templateSelector)) {
                 m_cache.clearCache(getKey(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters, templateSelector));
             }
@@ -271,7 +272,7 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
             loadedObject = CmsTemplateClassManager.getClassInstance(cms, templateClass);
         } catch(CmsException e) {
             // There was an error. First remove the template file from the file cache
-            templateFile.clearFileCache(templateFile);     
+            templateFile.removeFromFileCache();     
 
             if(isAnonymousUser) {
                 // The current user is the anonymous user

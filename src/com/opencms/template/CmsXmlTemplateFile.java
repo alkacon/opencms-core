@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/02/15 18:02:19 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import java.io.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.10 $ $Date: 2000/02/15 18:02:19 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -306,13 +306,9 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     }        
     
  
-    public void setEditedTemplateContent(String content, String templateSelector, boolean html) throws CmsException {
-        System.err.println("*** NOW WRITING BACK CONTENT. HTML = " + html);
-        System.err.println("*** TEMPLATE SELECTOR IS: " + templateSelector);
-        System.err.println(content);
-        System.err.println("-----------------");
+    public void setEditedTemplateContent(String content, String templateSelector, 
+                                         boolean html) throws CmsException {
         String datablockName = this.getTemplateDatablockName(templateSelector);
-        System.err.println("*** DATABLOCK NAME IS: " + datablockName);
         Element data = getData(datablockName);
 
         if(html) {
@@ -332,7 +328,6 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         if(html) {
             tempXmlString.append("<![CDATA[");
             content = replace(content, "[", "]]><");
-            //content = replace(content, "]", "><![CDATA[");             
             tempXmlString.append(content);
             tempXmlString.append("]]>");
         } else {
@@ -353,48 +348,18 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         }
         
         Element templateNode = (Element)tempDoc.getDocumentElement().getFirstChild();
-        System.err.println("### NOW SETTING DATABLOCK WITH NEW CONTENT: " + datablockName);
         setData(datablockName, templateNode);
     }
                                         
-    public String getTextEditableTemplateContent(Object callingObject, Hashtable parameters, String templateSelector) throws CmsException {
-        String datablockName = this.getTemplateDatablockName(templateSelector);
-        Element data = getData(datablockName);
-        StringBuffer result = new StringBuffer();
-        
-        Document tempDoc = (Document)getXmlDocument().cloneNode(true);
-        Element rootElem = tempDoc.getDocumentElement();
-        
-        while(rootElem.hasChildNodes()) {
-            rootElem.removeChild(rootElem.getFirstChild());
-        }
-        data = (Element)getXmlParser().importNode(tempDoc, data);
-        rootElem.appendChild(data);       
-        StringWriter out = new StringWriter();        
-        getXmlParser().getXmlText(tempDoc, out);
-        String xmlString = out.toString();
-        
-        int endOpeningXmlTag = xmlString.indexOf(">");
-        int endOpeningDocTag = xmlString.indexOf(">", endOpeningXmlTag + 1);
-        int endOpeningBodyTag = xmlString.indexOf(">", endOpeningDocTag + 1) + 1;
-        
-        int startClosingDocTag = xmlString.lastIndexOf("<");
-        int startClosingBodyTag = xmlString.lastIndexOf("<", startClosingDocTag - 1);
-        
-        xmlString = xmlString.substring(endOpeningBodyTag, startClosingBodyTag);
-        xmlString = xmlString.trim();
-                
-        return xmlString;
-    }
-        
-    public String getEditableTemplateContent(Object callingObject, Hashtable parameters, String templateSelector) throws CmsException {
 
-            System.err.println("### And still the content is:");
-            System.err.println(getXmlText());
-        
+    
+    public String getEditableTemplateContent(Object callingObject, Hashtable parameters, String templateSelector, 
+                                             boolean html) throws CmsException {
+
+        Vector cdatas = new Vector();
+                
         String datablockName = this.getTemplateDatablockName(templateSelector);
         Element data = getData(datablockName);
-        System.err.println("+++++++++ " + getDataValue(datablockName));
         StringBuffer result = new StringBuffer();
         
         Document tempDoc = (Document)getXmlDocument().cloneNode(true);
@@ -406,17 +371,18 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         data = (Element)getXmlParser().importNode(tempDoc, data);
         rootElem.appendChild(data);       
         
-        // Scan for cdatas
-        Node n = data;
-        Vector cdatas = new Vector();
-        while(n != null) {
-            if(n.getNodeType() == n.CDATA_SECTION_NODE) {
-                cdatas.addElement(n.getNodeValue());                
-                n.setNodeValue("");
+        if(html) {
+            // Scan for cdatas
+            Node n = data;
+            while(n != null) {
+                if(n.getNodeType() == n.CDATA_SECTION_NODE) {
+                    cdatas.addElement(n.getNodeValue());                
+                    n.setNodeValue("");
+                }
+                n = treeWalker(n);
             }
-            n = treeWalker(n);
         }
-                
+        
         StringWriter out = new StringWriter();        
         getXmlParser().getXmlText(tempDoc, out);
         String xmlString = out.toString();
@@ -435,28 +401,28 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             xmlString = xmlString.trim();
         }
         
-        int cdataStart = xmlString.indexOf("<![CDATA[");
-        int currentPos = 0;
-        int loop = 0;
+        if(html) {            
+            int cdataStart = xmlString.indexOf("<![CDATA[");
+            int currentPos = 0;
+            int loop = 0;
         
-        result.append("<HTML>\n<HEAD></HEAD>\n");
-        result.append("<BODY " + getProcessedDataValue("bodytag", callingObject, parameters) + ">\n");
+            result.append("<HTML>\n<HEAD></HEAD>\n");
+            result.append("<BODY " + getProcessedDataValue("bodytag", callingObject, parameters) + ">\n");
                 
-        while(cdataStart != -1) {
-            result.append(xmlString.substring(currentPos, cdataStart).replace('<', '[').replace('>', ']'));
-            result.append((String)cdatas.elementAt(loop++));
-            cdataStart = xmlString.indexOf("<![CDATA[", cdataStart + 1);
-            currentPos = xmlString.indexOf("]]>", currentPos + 1) + 3;
+            while(cdataStart != -1) {
+                result.append(xmlString.substring(currentPos, cdataStart).replace('<', '[').replace('>', ']'));
+                result.append((String)cdatas.elementAt(loop++));
+                cdataStart = xmlString.indexOf("<![CDATA[", cdataStart + 1);
+                currentPos = xmlString.indexOf("]]>", currentPos + 1) + 3;
+            }
+            result.append(xmlString.substring(currentPos).replace('<', '[').replace('>', ']'));
+        
+            result.append("\n</BODY>\n</HTML>");        
+            xmlString = result.toString();
         }
-        result.append(xmlString.substring(currentPos).replace('<', '[').replace('>', ']'));
-        
-        result.append("\n</BODY>\n</HTML>");        
-        return result.toString();
+        return xmlString;
     }
-        
-        
-   
-                            
+    
             
     /**
      * Gets the processed data of the default <code>&lt;TEMPLATE&gt;</code> section of

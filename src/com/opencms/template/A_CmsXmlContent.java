@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/02/15 18:02:44 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -72,7 +72,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.15 $ $Date: 2000/02/15 18:02:44 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -190,12 +190,15 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      */    
     public void init(A_CmsObject cms, CmsFile file) throws CmsException {
         String filename = file.getAbsolutePath();
+        String currentProject = cms.getRequestContext().currentGroup().getName();
         Document parsedContent = null;
+
+        m_cms = cms;
         parsedContent = loadCachedDocument(filename);
         if(parsedContent == null) {            
             m_filename = filename;            
             parsedContent = parse(file);                
-            m_filecache.put(filename, parsedContent.cloneNode(true));
+            m_filecache.put(currentProject + ":" + filename, parsedContent.cloneNode(true));
         }    
         init(cms, parsedContent, filename);
     }                               
@@ -218,7 +221,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         if(! docRootElementName.equals(getXmlDocumentTagName().toLowerCase())) {
             // Hey! This is a wrong XML document!
             // We will throw an execption and the document away :-)
-            clearFileCache(this);
+            removeFromFileCache();
             m_content = null;
             String errorMessage = "XML document " + getAbsoluteFilename() + " is not of the expected type. This document is \"" 
                     + docRootElementName + "\", but it should be \"" + getXmlDocumentTagName() + "\" (" + getContentDescription() + ").";
@@ -435,9 +438,18 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         m_cms.writeFile(file);        
         
         // update the internal parsed content cache with the new file data.
-        m_filecache.put(filename, m_content.cloneNode(true));        
+        String currentProject = m_cms.getRequestContext().currentProject().getName();
+        m_filecache.put(currentProject + ":" + filename, m_content.cloneNode(true));        
     }
 
+    /**
+     * Deletes this object from the internal XML file cache
+     */
+    public void removeFromFileCache() {
+        String currentProject = m_cms.getRequestContext().currentProject().getName();
+        m_filecache.remove(currentProject + ":" + getAbsoluteFilename());
+    }
+    
     /**
      * Deletes all files from the file cache.
      */
@@ -464,7 +476,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      */
     public static void clearFileCache(A_CmsXmlContent doc) {
         if(doc != null) {
-            m_filecache.remove(doc.getAbsoluteFilename());
+            String currentProject = doc.m_cms.getRequestContext().currentUser().getName();
+            m_filecache.remove(currentProject + ":" + doc.getAbsoluteFilename());
         }
     }
 
@@ -1526,7 +1539,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      */    
     private Document loadCachedDocument(String filename) { 
         Document cachedDoc = null;
-        Document lookup = (Document)m_filecache.get(filename);
+        String currentProject = m_cms.getRequestContext().currentProject().getName();
+        Document lookup = (Document)m_filecache.get(currentProject + ":" + filename);
         if(lookup != null) {
             cachedDoc = lookup.cloneNode(true).getOwnerDocument();
         }
