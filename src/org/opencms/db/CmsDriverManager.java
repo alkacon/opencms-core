@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/11 12:22:26 $
- * Version: $Revision: 1.207 $
+ * Date   : $Date: 2003/09/11 16:56:43 $
+ * Version: $Revision: 1.208 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.207 $ $Date: 2003/09/11 12:22:26 $
+ * @version $Revision: 1.208 $ $Date: 2003/09/11 16:56:43 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1493,7 +1493,7 @@ public class CmsDriverManager extends Object {
            
         clearResourceCache();
         
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", newFile)));        
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTY_MAP_MODIFIED, Collections.singletonMap("resource", newFile)));        
         
         return newFile;
     }
@@ -1895,11 +1895,12 @@ public class CmsDriverManager extends Object {
             // "empty" properties are represented by an empty property map
             linkProperties = Collections.EMPTY_MAP;
         }
+        
         // write its properties
         m_vfsDriver.writeProperties(linkProperties, context.currentProject().getId(), linkResource, linkResource.getType());
         
         if (lockResource) {
-        // lock the resource
+            // lock the resource
             lockResource(context, linkName);
         }
 
@@ -2302,6 +2303,8 @@ public class CmsDriverManager extends Object {
                     // then undo all changes in the file
                     undoChanges(context, currentResourceName);
                 }
+                
+                OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTY_MAP_MODIFIED, Collections.singletonMap("resource", currentFile)));
             }
             // now delete folders or undo changes in folders
             for (int i = 0; i < allFolders.size(); i++) {
@@ -2334,6 +2337,8 @@ public class CmsDriverManager extends Object {
                     // then undo all changes in the folder
                     undoChanges(context, currentResourceName);
                 }
+                
+                OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTY_MAP_MODIFIED, Collections.singletonMap("resource", currentFolder)));
             }
             // now delete the folders in the vector
             for (int i = deletedFolders.size() - 1; i > -1; i--) {
@@ -2341,6 +2346,8 @@ public class CmsDriverManager extends Object {
                 m_vfsDriver.removeFolder(context.currentProject(), delFolder);
                 // remove the access control entries
                 m_userDriver.removeAllAccessControlEntries(context.currentProject(), delFolder.getResourceAceId());
+                
+                OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTY_MAP_MODIFIED, Collections.singletonMap("resource", delFolder)));
             }
             // unlock all resources in the project
             m_projectDriver.unlockProject(deleteProject);
@@ -2354,13 +2361,13 @@ public class CmsDriverManager extends Object {
             // delete the project
             m_projectDriver.deleteProject(deleteProject);
             m_projectCache.remove(new Integer(projectId));
+            
+            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", deleteProject)));
         } else if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) { 
             throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteProject() " + deleteProject.getName(), CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteProject() " + deleteProject.getName(), CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
-        }
-        
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", deleteProject)));
+        }        
     }
 
     /**
@@ -7738,7 +7745,7 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public void undoChanges(CmsRequestContext context, String resourceName) throws CmsException {
+    public void undoChanges(CmsRequestContext context, String resourceName) throws CmsException {        
         if(context.currentProject().isOnlineProject()) {
             // this is the onlineproject
             throw new CmsSecurityException("Can't undo changes to the online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
@@ -7841,13 +7848,11 @@ public class CmsDriverManager extends Object {
         }                        
 
         // update the cache
-        //clearResourceCache(resourceName, context.currentProject(), context.currentUser());
         clearResourceCache();
-
         m_propertyCache.clear();
         m_accessCache.clear();
         
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));        
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTY_MAP_MODIFIED, Collections.singletonMap("resource", resource)));        
     }
 
     /**
