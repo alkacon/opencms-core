@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/A_CmsXmlWidget.java,v $
- * Date   : $Date: 2004/12/07 16:53:59 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/12/16 08:44:10 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
@@ -173,8 +173,8 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
         String locKey = C_MESSAGE_PREFIX + contentDefinitionName + "." + value + "." + C_HELP_POSTFIX;
         String locValue = widgetDialog.key(locKey);
         if (locValue.startsWith("???")) {
-            // there was no help message found for this key, so return an empty string
-            return "<td></td>";
+            // there was no help message found for this key, so return a spacer cell
+            return widgetDialog.buttonBarSpacer(16);
         } else {
             result.append("<td>");
             result.append("<img id=\"img");
