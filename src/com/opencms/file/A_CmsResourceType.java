@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2004/01/25 12:42:45 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2004/02/12 11:14:41 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package com.opencms.file;
 
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
 import com.opencms.core.CmsException;
@@ -42,7 +43,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -192,35 +193,32 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      */
     public CmsResource importResource(CmsObject cms, CmsResource resource, byte[] content, Map properties, String destination) throws CmsException {
         CmsResource importedResource = null;
-
-        boolean changed = true;
+        CmsResource existingResource = null;
 
         try {
             importedResource = cms.doImportResource(resource, content, properties, destination);
             cms.lockResource(destination);
-            changed = (importedResource == null);
         } catch (CmsException e) {
-            // an exception is thrown if the resource already exists
-        }
-
-        if (changed) { 
-            // the resource already exists
-            // check if the resource uuids are the same, if so, update the content
-            CmsResource existingResource = cms.readFileHeader(destination);
-            if (existingResource.getResourceId().equals(resource.getResourceId())) {
-                // resource with the same name and same uuid does exist,
-                // update the existing resource
-                cms.lockResource(destination);
-                cms.doWriteResource(destination, properties, content);
-                importedResource = cms.readFileHeader(destination);
-                cms.touch(destination, resource.getDateLastModified(), false, resource.getUserLastModified());
-            } else {
-                // a resource with the same name but different uuid does exist,
-                // copy the new resource to the lost&found folder 
-                String target = copyToLostAndFound(cms, destination, false);                             
-                CmsResource newRes = new CmsResource(resource.getStructureId(), resource.getResourceId(), resource.getParentStructureId(), resource.getFileId(),  CmsResource.getName(target), resource.getType(), resource.getFlags(), resource.getProjectLastModified(), resource.getState(), resource.getLoaderId(), resource.getDateLastModified(), resource.getUserLastModified(), resource.getDateCreated(), resource.getUserCreated(), resource.getLength(), 1);                        
-                importedResource = cms.doImportResource(newRes, content, properties, target);
-            }       
+            if (e.getType() == CmsException.C_FILE_EXISTS) {
+                // read the existing resource                
+                existingResource = cms.readFileHeader(destination);
+                
+                // check if the resource uuids are the same, if so, update the content
+                if (OpenCms.getImportExportManager().overwriteCollidingResources() || existingResource.getResourceId().equals(resource.getResourceId())) {
+                    // resource with the same name and same uuid does exist, 
+                    // update the existing resource
+                    cms.lockResource(destination);
+                    cms.doWriteResource(destination, properties, content);
+                    importedResource = cms.readFileHeader(destination);
+                    cms.touch(destination, resource.getDateLastModified(), false, resource.getUserLastModified());
+                } else {
+                    // a resource with the same name but different uuid does exist,
+                    // copy the new resource to the lost+found folder 
+                    String target = copyToLostAndFound(cms, destination, false);                             
+                    CmsResource newRes = new CmsResource(resource.getStructureId(), resource.getResourceId(), resource.getParentStructureId(), resource.getFileId(),  CmsResource.getName(target), resource.getType(), resource.getFlags(), resource.getProjectLastModified(), resource.getState(), resource.getLoaderId(), resource.getDateLastModified(), resource.getUserLastModified(), resource.getDateCreated(), resource.getUserCreated(), resource.getLength(), 1);                        
+                    importedResource = cms.doImportResource(newRes, content, properties, target);
+                }
+            }
         }
 
         return importedResource;

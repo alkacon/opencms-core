@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/02/11 16:12:04 $
- * Version: $Revision: 1.116 $
+ * Date   : $Date: 2004/02/12 11:14:41 $
+ * Version: $Revision: 1.117 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.116 $
+ * @version $Revision: 1.117 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -1978,7 +1978,7 @@ public class CmsRegistry extends A_CmsXmlContent {
         } else {
             // traditional module requires weird "module" property             
             // get list of unwanted properties
-            List deleteProperties = (List)OpenCms.getRuntimeProperty("compatibility.support.import.remove.propertytags");
+            List deleteProperties = OpenCms.getImportExportManager().getIgnoredProperties();
             if ((deleteProperties != null) && (deleteProperties.contains("module"))) {
                 propertyName = null;
                 propertyValue = null;

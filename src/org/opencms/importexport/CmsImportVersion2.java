@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/02/11 14:23:48 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/02/12 11:14:41 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -129,7 +129,7 @@ public class CmsImportVersion2 extends A_CmsImport {
      * @param propertyValue value of that property
      * @throws CmsException if something goes wrong
      */
-    public void importResources(CmsObject cms, String importPath, I_CmsReport report, MessageDigest digest, File importResource, ZipFile importZip, Document docXml, Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
+    public synchronized void importResources(CmsObject cms, String importPath, I_CmsReport report, MessageDigest digest, File importResource, ZipFile importZip, Document docXml, Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
         // initialize the import
         m_cms = cms;
         m_importPath = importPath;
@@ -294,6 +294,7 @@ public class CmsImportVersion2 extends A_CmsImport {
         long lastmodified = 0;
         int resType;
         Map properties = null;
+        boolean old_overwriteCollidingResources = false;
 
         if (m_importingChannelData) {
             m_cms.getRequestContext().saveSiteRoot();
@@ -310,7 +311,7 @@ public class CmsImportVersion2 extends A_CmsImport {
         }
 
         // get the old webapp url from the OpenCms properties
-        m_webappUrl = (String)OpenCms.getRuntimeProperty("compatibility.support.import.old.webappurl");
+        m_webappUrl = OpenCms.getImportExportManager().getWebAppUrl();
         if (m_webappUrl == null) {
             // use a default value
             m_webappUrl = "http://localhost:8080/opencms/opencms";
@@ -321,25 +322,25 @@ public class CmsImportVersion2 extends A_CmsImport {
         }
 
         // get list of unwanted properties
-        List deleteProperties = (List)OpenCms.getRuntimeProperty("compatibility.support.import.remove.propertytags");
+        List deleteProperties = OpenCms.getImportExportManager().getIgnoredProperties();
         if (deleteProperties == null) {
             deleteProperties = new ArrayList();
         }
 
         // get list of immutable resources
-        List immutableResources = (List)OpenCms.getRuntimeProperty("import.immutable.resources");
+        List immutableResources = OpenCms.getImportExportManager().getImmutableResources();
         if (immutableResources == null) {
             immutableResources = new ArrayList();
         }
         if (DEBUG > 0) {
             System.err.println("Import: Immutable resources size is " + immutableResources.size());
         }
-
-        // get the wanted page type for imported pages
-        String convertToXmlPage = (String)OpenCms.getRuntimeProperty("import.convert.xmlpage");
-        if (convertToXmlPage != null) {
-            m_convertToXmlPage = "true".equals(convertToXmlPage);
-        }
+        
+        // save the value of the boolean flag whether colliding resources should be overwritten
+        old_overwriteCollidingResources = OpenCms.getImportExportManager().overwriteCollidingResources();
+        // force v1 and v2 imports to overwrite colliding resources, because they dont have resource 
+        // UUIDSs in their manifest anyway
+        OpenCms.getImportExportManager().setOverwriteCollidingResources(true);
         
         try {
             // get all file-nodes
@@ -459,6 +460,9 @@ public class CmsImportVersion2 extends A_CmsImport {
             if (m_importingChannelData) {
                 m_cms.getRequestContext().restoreSiteRoot();
             }
+            
+            // set the flag to overwrite colliding resources back to its original value
+            OpenCms.getImportExportManager().setOverwriteCollidingResources(old_overwriteCollidingResources);
         }
     }
 
@@ -512,45 +516,6 @@ public class CmsImportVersion2 extends A_CmsImport {
              if (source != null) {
                  content = getFileBytes(source);
              }
-             
-//             // check and convert old import files    
-//             if (m_importVersion < 2) {
-//
-//                 // convert content from pre 5.x must be activated
-//                 if ("page".equals(type) || ("plain".equals(type)) || ("XMLTemplate".equals(type))) {
-//                     if (DEBUG > 0) {
-//                         System.err.println("#########################");
-//                         System.err.println("[" + this.getClass().getName() + ".importResource()]: starting conversion of \"" + type + "\" resource " + source + ".");
-//                     }
-//                     // change the filecontent for encoding if necessary
-//                     content = convertFile(source, content);
-//                 }
-//                 // only check the file type if the version of the export is 0
-//                 if (m_importVersion == 0) {
-//                     // ok, a (very) old system exported this, check if the file is ok
-//                     if (!(new CmsCompatibleCheck()).isTemplateCompatible(m_importPath + destination, content, type)) {
-//                         type = CmsResourceTypeCompatiblePlain.C_RESOURCE_TYPE_NAME;
-//                         m_report.print(m_report.key("report.must_set_to") + type + " ", I_CmsReport.C_FORMAT_WARNING);
-//                     }
-//                 }
-//             }
-
-//             // if the import is older than version 3, some additional conversions must be made
-//             if (m_importVersion < 3) {
-//                 if ("page".equals(type)) {
-//
-//                     // if the imported resource is a page, store its path inside the VFS for later
-//                     // integration with its body
-//                     m_pageStorage.add(destination);
-//                 } else if ("folder".equals(type)) {
-//                     // check if the imported resource is a folder. Folders created in the /system/bodies/ folder
-//                     // must be remove since we do not use body files anymore.
-//                     if (destination.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES.substring(1))) {
-//                         m_folderStorage.add(destination);
-//                     }
-//                 }
-//
-//             } 
              
              content = convertContent(source, destination, content, type);
              

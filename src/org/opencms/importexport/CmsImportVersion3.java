@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/02/11 16:12:04 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/02/12 11:14:41 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ public class CmsImportVersion3 extends A_CmsImport {
      * @param propertyValue value of that property
      * @throws CmsException if something goes wrong
      */
-    public void importResources(CmsObject cms, String importPath, I_CmsReport report, MessageDigest digest, File importResource, ZipFile importZip, Document docXml, Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
+    public synchronized void importResources(CmsObject cms, String importPath, I_CmsReport report, MessageDigest digest, File importResource, ZipFile importZip, Document docXml, Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
         // initialize the import        
         m_cms = cms;
         m_importPath = importPath;
@@ -282,20 +282,17 @@ public class CmsImportVersion3 extends A_CmsImport {
             excludeList = new Vector();
         }
         // get list of unwanted properties
-        List deleteProperties = (List)OpenCms.getRuntimeProperty("compatibility.support.import.remove.propertytags");
+        List deleteProperties = OpenCms.getImportExportManager().getIgnoredProperties();
         if (deleteProperties == null) {
             deleteProperties = new ArrayList();
         }
         // get list of immutable resources
-        List immutableResources = (List)OpenCms.getRuntimeProperty("import.immutable.resources");
+        List immutableResources = OpenCms.getImportExportManager().getImmutableResources();
         if (immutableResources == null) {
             immutableResources = new ArrayList();
         }
         // get the wanted page type for imported pages
-        String convertToXmlPage = (String)OpenCms.getRuntimeProperty("import.convert.xmlpage");
-        if (convertToXmlPage != null) {
-            m_convertToXmlPage = "true".equals(convertToXmlPage);
-        }        
+        m_convertToXmlPage = OpenCms.getImportExportManager().convertToXmlPage();       
         
         try {
             // get all file-nodes

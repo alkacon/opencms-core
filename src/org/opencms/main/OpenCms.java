@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/02/11 16:12:04 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/02/12 11:14:41 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,10 @@
 
 package org.opencms.main;
 
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRegistry;
-
 import org.opencms.db.CmsDefaultUsers;
-import org.opencms.loader.CmsLoaderManager;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.importexport.CmsImportExportManager;
+import org.opencms.loader.CmsLoaderManager;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.search.CmsSearchManager;
@@ -44,6 +42,9 @@ import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.workplace.CmsWorkplaceManager;
+
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRegistry;
 
 import java.util.List;
 
@@ -56,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public final class OpenCms {
     
@@ -264,6 +265,16 @@ public final class OpenCms {
     public static CmsSiteManager getSiteManager() {
         return OpenCmsCore.getInstance().getSiteManager();
     }
+    
+    /**
+     * Returns the initialized import/export manager, 
+     * which contains information about how to handle imported resources.<p> 
+     * 
+     * @return the initialized import/export manager
+     */
+    public static CmsImportExportManager getImportExportManager() {
+        return OpenCmsCore.getInstance().getImportExportManager();
+    }    
 
     /**
      * Returns the initialized search manager,

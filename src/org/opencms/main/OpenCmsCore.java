@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/12 10:17:45 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2004/02/12 11:14:41 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.flex.CmsFlexCache;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsLoaderManager;
 import org.opencms.loader.I_CmsResourceLoader;
@@ -104,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.74 $
+ * @version $Revision: 1.75 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -199,6 +200,9 @@ public final class OpenCmsCore {
     
     /** The site manager contains information about all configured sites */
     private CmsSiteManager m_siteManager;
+    
+    /** The site manager contains information about the Cms import/export */
+    private CmsImportExportManager m_importExportManager;    
     
     /** The search manager provides indexing and searching */
     private CmsSearchManager m_searchManager;
@@ -397,10 +401,10 @@ public final class OpenCmsCore {
         } else {
             // no accepted locales found, use english locale for messages
             locale = Locale.ENGLISH;
-        }
+    }
         // get localized message bundle
         CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.C_BUNDLE_NAME, locale);
-        
+
         // create the html for the output
         result.append(this.getErrormsg("C_ERRORPART_1"));
         // the document title
@@ -903,6 +907,16 @@ public final class OpenCmsCore {
     protected CmsSiteManager getSiteManager() {
         return m_siteManager;
     }
+    
+    /**
+     * Returns the initialized import/export manager,
+     * which contains information about the Cms import/export.<p>
+     * 
+     * @return the initialized import/export manager
+     */
+    protected CmsImportExportManager getImportExportManager() {
+        return m_importExportManager;
+    }
 
     /**
      * Returns the initialized search manager,
@@ -1388,33 +1402,6 @@ public final class OpenCmsCore {
         if (m_defaultFilenames == null) {
             m_defaultFilenames = new String[0];
         }
-            
-        // read the immutable import resources
-        String[] immuResources = configuration.getStringArray("import.immutable.resources");
-        if (immuResources == null) {
-            immuResources = new String[0];
-        }
-        List immutableResourcesOri = java.util.Arrays.asList(immuResources);
-        ArrayList immutableResources = new ArrayList();
-        for (int i = 0; i < immutableResourcesOri.size(); i++) {
-            // remove possible white space
-            String path = ((String)immutableResourcesOri.get(i)).trim();
-            if (path != null && !"".equals(path)) {
-                immutableResources.add(path);
-                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).info(". Immutable resource   : " + (i + 1) + " - " + path);
-                }
-            }
-        }
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". Immutable resources  : " + ((immutableResources.size() > 0) ? "enabled" : "disabled"));
-        }
-        setRuntimeProperty("import.immutable.resources", immutableResources);
-        
-        // read the conversion setting
-        // TODO: check how to set this
-        String convertToXmlPage = configuration.getString("import.convert.xmlpage");
-        setRuntimeProperty("import.convert.xmlpage", convertToXmlPage);
         
         // read the default user settings
         try {
@@ -1464,37 +1451,6 @@ public final class OpenCmsCore {
             getLog(CmsLog.CHANNEL_INIT).info(". Old locale support   : " + (supportOldLocales.booleanValue() ? "enabled" : "disabled"));
         }
 
-        // convert import files from 4.x versions old webapp URL
-        String webappUrl = configuration.getString("compatibility.support.import.old.webappurl", null);
-        if (webappUrl != null) {
-            setRuntimeProperty("compatibility.support.import.old.webappurl", webappUrl);
-        }
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". Old webapp URL       : " + ((webappUrl == null) ? "not set!" : webappUrl));
-        }
-
-        // unwanted resource properties which are deleted during import
-        String[] propNames = configuration.getStringArray("compatibility.support.import.remove.propertytags");
-        if (propNames == null) {
-            propNames = new String[0];
-        }
-        List propertyNamesOri = java.util.Arrays.asList(propNames);
-        ArrayList propertyNames = new ArrayList();
-        for (int i = 0; i < propertyNamesOri.size(); i++) {
-            // remove possible white space
-            String name = ((String)propertyNamesOri.get(i)).trim();
-            if (name != null && !"".equals(name)) {
-                propertyNames.add(name);
-                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).info(". Clear import property: " + (i + 1) + " - " + name);
-                }
-            }
-        }
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". Remove properties    : " + ((propertyNames.size() > 0) ? "enabled" : "disabled"));
-        }
-        setRuntimeProperty("compatibility.support.import.remove.propertytags", propertyNames);
-
         // old web application names (for editor macro replacement) 
         String[] appNames = configuration.getStringArray("compatibility.support.webAppNames");
         if (appNames == null) {
@@ -1527,6 +1483,8 @@ public final class OpenCmsCore {
         m_siteManager = CmsSiteManager.initialize(configuration, adminCms);
         // initialize the search manager
         m_searchManager = CmsSearchManager.initialize(configuration, adminCms);
+        // initialize the import/export manager
+        m_importExportManager = CmsImportExportManager.initialize(configuration);
                 
         // initializes the cron manager
         // TODO enable the cron manager
