@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/09/06 13:19:23 $
-* Version: $Revision: 1.187 $
+* Date   : $Date: 2001/09/13 11:54:21 $
+* Version: $Revision: 1.188 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.187 $ $Date: 2001/09/06 13:19:23 $
+ * @version $Revision: 1.188 $ $Date: 2001/09/13 11:54:21 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2304,11 +2304,34 @@ public CmsProject onlineProject() throws CmsException {
  */
 public void publishProject(int id) throws CmsException {
     clearcache();
-    Vector changedResources = m_rb.publishProject(m_context.currentUser(), m_context.currentProject(), id);
+    Vector changedResources = null;//mgm
+    boolean success = false;
     try{
+        changedResources = m_rb.publishProject(m_context.currentUser(), m_context.currentProject(), id);
         getOnlineElementCache().cleanupCache(changedResources);
-    }catch (Exception e){}
-    clearcache();
+        clearcache();
+        success = true;
+    }catch (Exception e){
+        System.err.println("###################################");
+        System.err.println("PublishProject "+id+" CmsObject Time:"+new Date());
+        System.err.println("currentUser:"+m_context.currentUser().toString());
+        e.printStackTrace();
+        System.err.println("Vector of changed resources:");
+        for(int i=0; i<changedResources.size(); i++){
+            System.err.println("    -- "+i+" -->"+(String)changedResources.elementAt(i)+"<--");
+        }
+    }finally{
+        if(changedResources == null || changedResources.size()<1){
+            System.err.println("###################################");
+            System.err.println("PublishProject "+id+" CmsObject Time:"+new Date());
+            System.err.println("currentUser:"+m_context.currentUser().toString());
+            System.err.println("Vector was null or empty");
+            success = false;
+        }
+        if(!success){
+            getOnlineElementCache().clearCache();
+        }
+    }
 }
 
 /**
