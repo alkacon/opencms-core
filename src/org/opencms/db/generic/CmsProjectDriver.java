@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/06/17 08:02:31 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/06/25 16:20:43 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.6 $ $Date: 2003/06/17 08:02:31 $
+ * @version $Revision: 1.7 $ $Date: 2003/06/25 16:20:43 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -706,10 +706,10 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         }
 
         // set the groups
-        CmsGroup guests = m_driverManager.getUserDriver().createGroup(I_CmsConstants.C_GROUP_GUEST, "the guest-group", I_CmsConstants.C_FLAG_ENABLED, null);
-        CmsGroup administrators = m_driverManager.getUserDriver().createGroup(I_CmsConstants.C_GROUP_ADMIN, "the admin-group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER, null);
-        CmsGroup users = m_driverManager.getUserDriver().createGroup(I_CmsConstants.C_GROUP_USERS, "the users-group to access the workplace", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_ROLE | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER, I_CmsConstants.C_GROUP_GUEST);
-        CmsGroup projectleader = m_driverManager.getUserDriver().createGroup(I_CmsConstants.C_GROUP_PROJECTLEADER, "the projectmanager-group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER | I_CmsConstants.C_FLAG_GROUP_ROLE, users.getName());
+        CmsGroup guests = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(I_CmsConstants.C_GROUP_GUEST), I_CmsConstants.C_GROUP_GUEST, "the guest-group", I_CmsConstants.C_FLAG_ENABLED, null);
+        CmsGroup administrators = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(I_CmsConstants.C_GROUP_ADMIN), I_CmsConstants.C_GROUP_ADMIN, "the admin-group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER, null);
+        CmsGroup users = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(I_CmsConstants.C_GROUP_USERS), I_CmsConstants.C_GROUP_USERS, "the users-group to access the workplace", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_ROLE | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER, I_CmsConstants.C_GROUP_GUEST);
+        CmsGroup projectleader = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(I_CmsConstants.C_GROUP_PROJECTLEADER), I_CmsConstants.C_GROUP_PROJECTLEADER, "the projectmanager-group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER | I_CmsConstants.C_FLAG_GROUP_ROLE, users.getName());
 
         // add the users
         CmsUser guest = m_driverManager.getUserDriver().addUser(I_CmsConstants.C_USER_GUEST, "", "the guest-user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
