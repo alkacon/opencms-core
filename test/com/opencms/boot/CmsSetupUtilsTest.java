@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/boot/Attic/CmsSetupUtilsTest.java,v $
- * Date   : $Date: 2003/11/10 08:12:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/11/13 11:42:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.apache.commons.collections.ExtendedProperties;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.0
  */
@@ -51,7 +51,7 @@ public class CmsSetupUtilsTest extends TestCase {
     // private static final boolean DEBUG = true;
      
     private static final String PROPERTIES = "/opencms/etc/config/opencms.properties";
-    // private static final String PROPERTIES = "/opencms/test/com/opencms/boot/input.properties";
+    // private static final String PROPERTIES = "/../OpenCms6-Setup/webapp/WEB-INF/config/opencms.properties";
     
     /**
      * Default JUnit constructor.<p>
@@ -94,18 +94,19 @@ public class CmsSetupUtilsTest extends TestCase {
                 
                 buf = new StringBuffer();
                 for (Iterator j = ((Vector)obj).iterator(); j.hasNext();)
-                    buf.append("\"" + (String)j.next() + "\"");
+                    buf.append("[" + (String)j.next() + "]");
                 oldValue = buf.toString();
                 
                 buf = new StringBuffer();
                 for (Iterator j = ((Vector)newProperties.get(key)).iterator(); j.hasNext();)
-                    buf.append("\"" + (String)j.next() + "\"");
+                    buf.append("[" + (String)j.next() + "]");
                 newValue = buf.toString();
 
             } else {
                 oldValue = (String)obj;
                 newValue = (String)newProperties.get(key);
             }
+            System.err.println(key);
             System.err.println(oldValue);
             System.err.println(newValue);
             System.err.println("---");
