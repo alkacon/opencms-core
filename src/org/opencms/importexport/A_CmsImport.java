@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/11/11 13:10:09 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2004/11/12 14:29:22 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -280,6 +280,17 @@ public abstract class A_CmsImport implements I_CmsImport {
                         
                         m_cms.importResource(key, resource, null, properties);
                         m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                        
+                        if (OpenCms.getLog(this).isInfoEnabled()) {
+                            OpenCms.getLog(this).info(
+                                
+                                "( " + (i) + " / " + linksSize + " ) "
+                                + m_report.key("report.convert_link")
+                                + key
+                                + " "
+                                + m_report.key("report.dots")
+                                + m_report.key("report.ok"));
+                        }                              
         
                     } else {
                         
@@ -296,6 +307,16 @@ public abstract class A_CmsImport implements I_CmsImport {
                         
                         m_cms.createResource(key, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, link.getBytes(), properties);
                         m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                        
+                        if (OpenCms.getLog(this).isInfoEnabled()) {
+                            OpenCms.getLog(this).info(
+                                
+                                "( " + (i) + " / " + linksSize + " ) "
+                                + m_report.key("report.convert_link")
+                                + key
+                                + " "
+                                + m_report.key("report.ok"));
+                        }                          
                         
                     }
                 } catch (CmsException e) {

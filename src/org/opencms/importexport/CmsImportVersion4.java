@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/11/11 13:10:09 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2004/11/12 11:34:48 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -271,15 +271,6 @@ public class CmsImportVersion4 extends A_CmsImport {
                 newUuidresource = new CmsUUID();
             }
             
-            // extract the name of the resource form the destination
-            String resname = destination;
-            if (resname.endsWith("/")) {
-                resname = resname.substring(0, resname.length() - 1);
-            }
-            if (resname.lastIndexOf("/") > 0) {
-                resname = resname.substring(resname.lastIndexOf("/") + 1, resname.length());
-            }
-            
             // create a new CmsResource                         
             CmsResource resource = new CmsResource(
                 new CmsUUID(), // structure ID is always a new UUID
@@ -303,19 +294,19 @@ public class CmsImportVersion4 extends A_CmsImport {
             if (C_RESOURCE_TYPE_LINK_ID == resType) {
                 // store links for later conversion
                 m_report.print(m_report.key("report.storing_link"), I_CmsReport.C_FORMAT_NOTE);
-                m_linkStorage.put(/* m_importPath + */destination, new String(content));
-                m_linkPropertyStorage.put(/* m_importPath + */destination, properties);                
+                m_linkStorage.put(destination, new String(content));
+                m_linkPropertyStorage.put(destination, properties);                
                 res = resource;
             } else {             
                 // import this resource in the VFS   
-                res = m_cms.importResource(/* m_importPath + */destination, resource, content, properties);
+                res = m_cms.importResource(destination, resource, content, properties);
             }
 
             if (res != null) {
                 if (C_RESOURCE_TYPE_PAGE_ID == resType) {
-                    m_importedPages.add(/* I_CmsConstants.C_FOLDER_SEPARATOR + */destination);
+                    m_importedPages.add(destination);
                 }
-                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);                               
             }          
         } catch (Exception exc) {
             // an error while importing the file
@@ -472,14 +463,19 @@ public class CmsImportVersion4 extends A_CmsImport {
                 flags = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
 
                 // apply name translation and import path
-                String translatedName = destination;
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug("Original import resource name is: " + destination);
+                }                
+                String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);                
                 if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(type)) {
                     // ensure folders end with a "/"
                     if (! CmsResource.isFolder(translatedName)) {
                         translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
                     }
                 }
-                translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + translatedName);
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug("Translated import resource name is: " + translatedName);
+                }
                 
                 // check if this resource is immutable
                 boolean resourceNotImmutable = checkImmutable(translatedName, immutableResources);
@@ -570,16 +566,42 @@ public class CmsImportVersion4 extends A_CmsImport {
                         }
                         
                         importAccessControlEntries(res, aceList);
+                        
+                        if (OpenCms.getLog(this).isInfoEnabled()) {
+                            OpenCms.getLog(this).info(
+                                "( " + (i + 1) + " / " + importSize + " ) "
+                                + m_report.key("report.importing")
+                                + translatedName
+                                + " ("
+                                + destination
+                                + ")"
+                                + m_report.key("report.dots")
+                                + m_report.key("report.ok"));
+                        }                          
                     } else {
                         // resource import failed, since no CmsResource was created
                         m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
                         m_report.println(translatedName);
+                        
+                        if (OpenCms.getLog(this).isInfoEnabled()) {
+                            OpenCms.getLog(this).info(
+                                " ( " + (i + 1) + " / " + importSize + " ) "
+                                + m_report.key("report.skipping")
+                                + translatedName);
+                        }                        
                     }
 
                 } else {
                     // skip the file import, just print out the information to the report
                     m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
                     m_report.println(translatedName);
+                    
+                    if (OpenCms.getLog(this).isInfoEnabled()) {
+                        OpenCms.getLog(this).info(
+                            " ( " + (i + 1) + " / " + importSize + " ) "
+                            + m_report.key("report.skipping")
+                            + translatedName);
+                    }                    
                 }
             }
         } catch (Exception exc) {
