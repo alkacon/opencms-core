@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2004/10/27 17:15:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/01/03 13:24:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.12
  */
@@ -414,9 +414,9 @@ public class CmsPublishProject extends CmsReport {
             if (Boolean.valueOf(getParamDirectpublish()).booleanValue()) {
                 // direct publish: check sub resources of a folder
                 CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-                if (res.getState() != I_CmsConstants.C_STATE_DELETED && res.isFolder()) {
+                if ((res.getState() != I_CmsConstants.C_STATE_DELETED) && res.isFolder()) {
                     return (getCms().countLockedResources(getParamResource()) > 0);
-                }               
+                }           
             } else {
                 // publish project: check all project resources
                 int id = Integer.parseInt(getParamProjectid());
