@@ -205,6 +205,13 @@ TEXTAREA.textarea
     FONT-SIZE: 8pt;
 	WIDTH: 300px
 }
+TEXTAREA.textarea1
+{
+    COLOR: #000000;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+	WIDTH: 500px
+}
 a.reiterinaktiv
 {
     COLOR: #ffffff;
