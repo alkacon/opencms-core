@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/07/14 11:05:23 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2003/07/15 07:41:42 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  *
  * @author Michael Emmerich
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.56 $ $Date: 2003/07/14 11:05:23 $
+ * @version $Revision: 1.57 $ $Date: 2003/07/15 07:41:42 $
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
     
@@ -419,10 +419,12 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * Returns the group id of this resource.<p>
      *
      * @return the group id of this resource
+     * @deprecated group is not longer used
      */
      public CmsUUID getGroupId() {
          return  m_groupId;
-      }
+     }
+     
     /**
      * Gets the launcher class name of this resource.<p>
      *
@@ -452,10 +454,11 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * Returns the userid of the resource owner.<p>
      *
      * @return the userid of the resource owner
+     * @deprecated owner is not longer used
      */
     public CmsUUID getOwnerId() {
          return m_userId;
-      }
+    }
       
     /**
      * Returns the absolute parent folder name of a resource.<p>
@@ -719,6 +722,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * Sets the group id of this resource.<p>
      *
      * @param group the group id to set
+     * @deprecated group not longer used
      */
     public void setGroupId(CmsUUID group) {
         m_groupId = group;
@@ -788,6 +792,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * Sets the user id of this resource.<p>
      *
      * @param user a user id
+     * @deprecated user (owner) not longer used
      */
     public void setUserId(CmsUUID user) {
         m_userId = user;
