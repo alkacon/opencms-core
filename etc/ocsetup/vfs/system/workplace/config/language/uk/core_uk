@@ -190,7 +190,7 @@
                 <chtype>You don't have the needed permissions.</chtype>
                 <copy>possible the target folder does not exist.</copy>
                 <copytoproject>Maybe you don't have the needed permissions.</copytoproject>
-                <delete>The file is locked by</delete>
+                <delete>Maybe you don't have the needed permissions.</delete>
                 <deleteuser>The users Admin and Guest can not be deleted.</deleteuser>
                 <deleteextension>see details</deleteextension>
                 <deletegroup>There are still users in the group.</deletegroup>
@@ -253,7 +253,7 @@
                 <chtype>Please contact your system administrator.</chtype>
                 <copy></copy>
                 <copytoproject>Please contact the manager of the project or your system administrator.</copytoproject>
-                <delete>Please try again later, or contact your system administrator.</delete>
+                <delete>Check the access rights and the lock state, or contact the projectmanager or your system administrator.</delete>
                 <deleteextension>Please contact your system administrator.</deleteextension>
                 <deleteuser>Please contact your system administrator.</deleteuser>
                 <deletegroup>Please contact your system administrator.</deletegroup>

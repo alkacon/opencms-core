@@ -189,7 +189,7 @@
                 <chtype>Sie haben dazu keine Berechtigung.</chtype>
                 <copy>Eventuell existiert der Zielordner nicht.</copy>
                 <copytoproject>Eventuell haben Sie nicht die Berechtigung für diese Aktion.</copytoproject>
-                <delete>Die Datei ist gesperrt von</delete>
+                <delete>Eventuell haben Sie nicht die Berechtigung für diese Aktion.</delete>
                 <deleteuser>Die Benutzer Admin und Guest können nicht gelöscht werden.</deleteuser>
                 <deleteextension>siehe Details</deleteextension>
                 <deletegroup>Zu dieser Gruppe gehörten noch Benutzer.</deletegroup>
@@ -253,7 +253,7 @@
                 <chtype>Kontaktieren Sie Ihren Systemadministrator.</chtype>
                 <copy></copy>
                 <copytoproject>Bitte kontaktieren Sie den Manager des Projektes oder Ihren Systemadministrator.</copytoproject>
-                <delete>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</delete>
+                <delete>Bitte überprüfen Sie Zugriffsrechte und Sperrung des Verzeichnisses oder kontaktieren Sie den Projektmanager oder Ihren Systemadministrator.</delete>
                 <deleteextension>Kontaktieren Sie Ihren Systemadministrator.</deleteextension>
                 <deleteuser></deleteuser>
                 <deletegroup>Kontaktieren Sie Ihren Systemadministrator.</deletegroup>
