@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/01/24 11:13:05 $
- * Version: $Revision: 1.226 $
+ * Date   : $Date: 2001/01/24 14:35:40 $
+ * Version: $Revision: 1.227 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.226 $ $Date: 2001/01/24 11:13:05 $
+ * @version $Revision: 1.227 $ $Date: 2001/01/24 14:35:40 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1714,7 +1714,9 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
 {
 	if (isAdmin(currentUser, currentProject) || isProjectManager(currentUser, currentProject))
 	{
-
+		if (C_PROJECT_ONLINE.equals(name)){
+			throw new CmsException ("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
+		}
 		// read the needed groups from the cms
 		CmsGroup group = readGroup(currentUser, currentProject, groupname);
 		CmsGroup managergroup = readGroup(currentUser, currentProject, managergroupname);
