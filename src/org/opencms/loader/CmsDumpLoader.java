@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2004/06/11 19:22:18 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/06/11 19:42:08 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -217,7 +217,8 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         }
         
         // make sure we have the file contents available
-        CmsFile file = CmsFile.upgrade(resource, cms);               
+        CmsFile file = CmsFile.upgrade(resource, cms);
+                
         // set response status to "200 - OK" (required for export since a 404 status might have been set before)
         res.setStatus(HttpServletResponse.SC_OK);           
         // set content length header
@@ -229,11 +230,16 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         } else {
             // set date last modified header
             res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, file.getDateLastModified());
-            // set expire and chache headers        
-            int expireTime = 86400;
-            // set default headers for cache control only if not already set
-            if (!res.containsHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL)) {
-                res.setDateHeader(I_CmsConstants.C_HEADER_EXPIRES, System.currentTimeMillis() + (expireTime * 1000)); // HTTP 1.0
+
+            // set "Expires" only if cache control is not already set
+            if (!res.containsHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL)) {                
+                long expireTime = resource.getDateExpired();
+                if (expireTime == CmsResource.DATE_EXPIRED_DEFAULT) {
+                    expireTime--;
+                    // flex controller will automatically reduce this to a reasonable value
+                }
+                // now set "Expire" header        
+                CmsFlexController.setDateExpiresHeader(res, expireTime);
             }
         }
                          
