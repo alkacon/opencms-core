@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsFilterMethod.java,v $
-* Date   : $Date: 2003/01/20 23:59:23 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/07/14 12:41:52 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,14 +43,23 @@ public class CmsFilterMethod {
   private String m_defaultFilterParam = "";
 
 /**
- * FilterMethod constructor
+ * FilterMethod constructor.<p>
+ * 
+ * @param filterName name of the filter
+ * @param filterMethod the filter method
+ * @param filterParameters additional filter parameters
  */
 public CmsFilterMethod(String filterName, Method filterMethod, Object [] filterParameters) {
   this(filterName, filterMethod, filterParameters, "");
 }
 
 /**
- * FilterMethod constructor with a default value in the Selectbox
+ * FilterMethod constructor with a default value in the Selectbox.<p>
+ * 
+ * @param filterName name of the filter
+ * @param filterMethod the filter method
+ * @param filterParameters additional filter parameters
+ * @param defaultFilterParam the default value of the filter
  */
 public CmsFilterMethod(String filterName, Method filterMethod, Object [] filterParameters, String defaultFilterParam) {
 
@@ -62,21 +71,27 @@ public CmsFilterMethod(String filterName, Method filterMethod, Object [] filterP
 
 
 /**
- * gets the default parameter
+ * Gets the default parameter.<p>
+ * 
+ * @return the default parameters
  */
 public Object [] getDefaultParameter() {
 
     return m_defaultParameter;
     }
 /**
- * gets the filter method
+ * Gets the filter method.<p>
+ * 
+ * @return the filter method
  */
 public Method getFilterMethod() {
 
     return m_filterMethod;
     }
 /**
- * gets the filtername
+ * Gets the filtername.
+ * 
+ * @return the name of the filter
  */
 public String getFilterName() {
 
@@ -92,10 +107,10 @@ public boolean hasUserParameter() {
 
     Class[] paramTypes = m_filterMethod.getParameterTypes();
 
-    if( (paramTypes.length > 0) && (paramTypes[0] == CmsObject.class) ) {
-        return (paramTypes.length > (m_defaultParameter.length + 1) );
+    if ((paramTypes.length > 0) && (paramTypes[0] == CmsObject.class)) {
+        return paramTypes.length > (m_defaultParameter.length + 1);
     } else {
-        return (paramTypes.length > m_defaultParameter.length );
+        return paramTypes.length > m_defaultParameter.length;
     }
 }
 /**
@@ -123,6 +138,12 @@ public void setFilterName(String name) {
     m_filterName = name;
 }
 
+
+/**
+ * Gets the value of the default filter parameter.<p>
+ * 
+ * @return the default value
+ */
 public String getDefaultFilterParam() {
   return m_defaultFilterParam;
 }
