@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/22 08:28:43 $
- * Version: $Revision: 1.247 $
+ * Date   : $Date: 2003/09/22 09:21:06 $
+ * Version: $Revision: 1.248 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.247 $ $Date: 2003/09/22 08:28:43 $
+ * @version $Revision: 1.248 $ $Date: 2003/09/22 09:21:06 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -2099,6 +2099,32 @@ public class CmsDriverManager extends Object {
 
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", res)));
     }
+
+
+    /**
+     * Deletes all backup versions of a single resource.<p>
+     * 
+     * @param res the resource to delete all backups from
+     * @throws CmsException if operation was not succesful
+     */
+    public void deleteBackup(CmsResource res) throws CmsException {
+       // we need a valid CmsBackupResource, so get all backup file headers of the
+       // requested resource
+       List backupFileHeaders=m_backupDriver.readBackupFileHeaders(res.getResourceId());
+       // check if we have some results
+       if (backupFileHeaders.size()>0) {
+           // get the first backup resource
+           CmsBackupResource backupResource=(CmsBackupResource)backupFileHeaders.get(0);
+           // create a timestamp slightly in the future
+           long timestamp=System.currentTimeMillis()+100000;
+           // get the maximum tag id and add ne to include the current publish process as well
+           int maxTag = m_backupDriver.readBackupProjectTag(timestamp)+1;
+           int resVersions = m_backupDriver.readBackupMaxVersion(res.getResourceId());
+           // delete the backups
+           m_backupDriver.deleteBackup(backupResource, maxTag, resVersions);     
+       }     
+    }
+
 
     /**
      * Deletes the versions from the backup tables that are older then the given timestamp  and/or number of remaining versions.<p>

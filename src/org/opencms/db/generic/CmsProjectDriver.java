@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/22 08:28:42 $
- * Version: $Revision: 1.108 $
+ * Date   : $Date: 2003/09/22 09:21:06 $
+ * Version: $Revision: 1.109 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.108 $ $Date: 2003/09/22 08:28:42 $
+ * @version $Revision: 1.109 $ $Date: 2003/09/22 09:21:06 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -875,7 +875,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 try {
                     // write the file to the backup and publishing history
                     if (backupEnabled) {
-                        if (offlineFile == null) {
+                        /*if (offlineFile == null) {
                             offlineFile = m_driverManager.getVfsDriver().readFile(context.currentProject().getId(), true, offlineFileHeader.getStructureId());
                             offlineFile.setFullResourceName(offlineFileHeader.getRootPath());
                         }
@@ -883,8 +883,11 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         if (offlineProperties == null) {
                             offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFileHeader, offlineFileHeader.getType());
                         }
-                        
                         m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), offlineFile, offlineProperties, backupTagId, publishDate, maxVersions);
+                        */
+                        //TODO: this feature might be removed or modified for future backup implementations
+                        // delete all backups as well
+                        m_driverManager.deleteBackup(offlineFile);                                                                 
                     }
                     
                     writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, offlineFileHeader.getRootPath(), offlineFileHeader);
@@ -1190,7 +1193,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
         try {
             // binary content gets only published once while a project is published
-            if (!offlineFileHeader.getFileId().isNullUUID() && !publishedContentIds.contains((CmsUUID) offlineFileHeader.getFileId())) {
+            if (!offlineFileHeader.getFileId().isNullUUID() && !publishedContentIds.contains(offlineFileHeader.getFileId())) {
                 // read the file offline
                 offlineFile = m_driverManager.getVfsDriver().readFile(context.currentProject().getId(), false, offlineFileHeader.getStructureId());
                 offlineFile.setFullResourceName(offlineFileHeader.getRootPath());
