@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/12 09:38:39 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/06/12 15:16:32 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,13 +101,13 @@ import com.opencms.workplace.CmsAdminVfsLinkManagement;
 
 
 /**
- * @version $Revision: 1.20 $ $Date: 2003/06/12 09:38:39 $
+ * @version $Revision: 1.21 $ $Date: 2003/06/12 15:16:32 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.20 $ $Date: 2003/06/12 09:38:39 $
+ * @version $Revision: 1.21 $ $Date: 2003/06/12 15:16:32 $
  */
 public class CmsDriverManager implements I_CmsConstants {
    
@@ -151,11 +151,12 @@ public class CmsDriverManager implements I_CmsConstants {
 				!isAdmin(getUser(),getProject()) ) 
 				denied |= C_PERMISSION_WRITE;	
 			
-			
-			if(resource.isLocked()) {
-				//	if the resource is locked by another user, read and write are rejected
+			// TODO: handling of locked resources 
+			if(false && resource.isLocked()) {
+				//	if the resource is locked by another user, write is rejected
+				//  read must still be possible, since the explorer file list needs some properties
 				if (!this.getUser().getId().equals(resource.isLockedBy()))
-					denied |= C_PERMISSION_WRITE | C_PERMISSION_READ;
+					denied |= C_PERMISSION_WRITE;
 				 
 				// if the resource is locked in another project, read and write are rejected
 				// exception: if the current project is the tempfileProject, reading from other projects is allowed
@@ -166,7 +167,7 @@ public class CmsDriverManager implements I_CmsConstants {
 					if (isTempfileProject(this.getProject())) {
 						denied |= C_PERMISSION_WRITE;
 					} else {
-						denied |= C_PERMISSION_WRITE | C_PERMISSION_READ;
+						denied |= C_PERMISSION_WRITE;
 					}
 				}
 			}
@@ -1774,6 +1775,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
         m_propertyDefVectorCache.clear();
         m_onlineProjectCache = null;
         m_accessCache.clear();
+        m_accessControlListCache.clear();
     }
     
     /**
@@ -8346,6 +8348,13 @@ protected void validName(String name, boolean blank) throws CmsException {
         m_accessCache.clear();
         m_resourceListCache.clear();
     }
+    
+    /**
+	 * Clears the access control list cache when access control entries are changed
+	 */
+	protected void clearAccessControlListCache() {
+    	m_accessControlListCache.clear();
+    }
 
     /**
      * Method to encrypt the passwords.
@@ -8759,6 +8768,11 @@ protected void validName(String name, boolean blank) throws CmsException {
             m_uuid = group.getId();
         }
         
+        public CacheId(CmsResource resource) {
+        	m_name = resource.getName();
+        	m_uuid = resource.getResourceId();
+        }
+        
         /**
          * @see java.lang.Object#equals(java.lang.Object)
          */        
@@ -9108,7 +9122,8 @@ protected void validName(String name, boolean blank) throws CmsException {
 	 */
 	public CmsAccessControlEntry createAccessControlEntry(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsUUID principal, CmsPermissionSet permissions, int flags) throws CmsException {
 		
-		m_userDriver.createAccessControlEntry(currentProject, resource.getResourceId(), principal, permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), flags);
+		m_userDriver.createAccessControlEntry(currentProject, resource.getResourceAceId(), principal, permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), flags);
+		clearAccessControlListCache();
 		return new CmsAccessControlEntry(resource.getResourceAceId(), principal, permissions, flags); 
 	}
 	
@@ -9124,6 +9139,7 @@ protected void validName(String name, boolean blank) throws CmsException {
 	public void removeAccessControlEntry(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsUUID principal) throws CmsException {
 		
 		m_userDriver.removeAccessControlEntry(currentProject,resource.getResourceId(), principal);
+		clearAccessControlListCache();
 	}
 	
 	/**
@@ -9137,6 +9153,7 @@ protected void validName(String name, boolean blank) throws CmsException {
 	public void removeAllAccessControlEntries(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
 		
 		m_userDriver.removeAllAccessControlEntries(currentProject,resource.getResourceId());		
+		clearAccessControlListCache();
 	}
 	
 	/**
@@ -9150,6 +9167,7 @@ protected void validName(String name, boolean blank) throws CmsException {
 	public void deleteAllAccessControlEntries(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
 		
 		m_userDriver.deleteAllAccessControlEntries(currentProject,resource.getResourceId());
+		clearAccessControlListCache();
 	}
 	
 	/**
@@ -9163,6 +9181,7 @@ protected void validName(String name, boolean blank) throws CmsException {
 	public void undeleteAllAccessControlEntries(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
 		
 		m_userDriver.undeleteAllAccessControlEntries(currentProject,resource.getResourceId());		
+		clearAccessControlListCache();		
 	}
 	
 	/**
@@ -9175,6 +9194,7 @@ protected void validName(String name, boolean blank) throws CmsException {
 	public void writeAccessControlEntry(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsAccessControlEntry acEntry) throws CmsException {
 
 		m_userDriver.writeAccessControlEntry(currentProject,acEntry);
+		clearAccessControlListCache();
 	}
 	
 	public void writeAccessControlEntries(CmsUser currentUser, CmsProject currentProject, CmsResource resource, Vector acEntries) throws CmsException {
@@ -9270,7 +9290,12 @@ protected void validName(String name, boolean blank) throws CmsException {
 	
 		CmsResource res = resource;
 		CmsUUID resId = res.getResourceId();
-		CmsAccessControlList acList = new CmsAccessControlList();
+		CmsAccessControlList acList = (CmsAccessControlList)m_accessControlListCache.get(new CacheId(resource));
+		
+		if (acList != null)
+			return acList;
+			
+		acList = new CmsAccessControlList();
 		
 		// add the aces of the resource itself
 		ListIterator acEntries = getAccessControlEntries(currentUser, currentProject, resId).listIterator();
@@ -9287,6 +9312,8 @@ protected void validName(String name, boolean blank) throws CmsException {
 				acList.add((CmsAccessControlEntry)acEntries.next());
 			}
 		}
+		
+		m_accessControlListCache.put(new CacheId(resource), acList);
 		
 		return acList;
 	}

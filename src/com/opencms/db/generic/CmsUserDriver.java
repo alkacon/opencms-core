@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/11 17:03:42 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/06/12 15:16:32 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,6 @@ import com.opencms.db.CmsDriverManager;
 import com.opencms.db.I_CmsUserDriver;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsProject;
-import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.security.CmsAccessControlEntry;
@@ -68,7 +67,7 @@ import com.opencms.util.SqlHelper;
  * Generic (ANSI-SQL) database server implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.15 $ $Date: 2003/06/11 17:03:42 $
+ * @version $Revision: 1.16 $ $Date: 2003/06/12 15:16:32 $
  * @since 5.1.2
  */
 public class CmsUserDriver extends Object implements I_CmsUserDriver {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/security/Attic/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2003/06/09 17:07:08 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/06/12 15:16:32 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,12 +30,11 @@
  */
 package com.opencms.security;
 
+import java.util.StringTokenizer;
+
+import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
 
-/**
- * @version $Revision: 1.4 $ $Date: 2003/06/09 17:07:08 $
- * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
- */
 /**
  * An access control entry defines the permissions of an user or group for a distinct resource.
  * 
@@ -43,7 +42,7 @@ import com.opencms.flex.util.CmsUUID;
  * The access control entry contains two binary permission sets, the first grants permissions
  * and the second revokes permissions explicitly (second should have precedence)
  * 
- * @version $Revision: 1.4 $ $Date: 2003/06/09 17:07:08 $
+ * @version $Revision: 1.5 $ $Date: 2003/06/12 15:16:32 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlEntry {
@@ -59,52 +58,118 @@ public class CmsAccessControlEntry {
 	private CmsUUID m_principal;
 	
 	/*
+	 * Flags of this access control entry
+	 */
+	private int m_flags;
+	
+	/*
 	 * the permission set
 	 */
 	private CmsPermissionSet m_permissions;
 	
 	/**
-	 * Constructor to create a new access control entry on a given resource and a given entity.
+	 * Constructor to create a new access control entry on a given resource and a given principal.
+	 * Permissions and flags are specified as bitsets.
+	 * 
+	 * @see CmsPermissionSet
 	 * 
 	 * @param resource	the resource
-	 * @param principal	the id of an entity
+	 * @param principal	the id of a principal (user or group)
 	 * @param allowed	the set of allowed permissions
 	 * @param denied	set set of explicitly denied permissions
+	 * @param flags		additional flags of the access control entry
 	 */
 	public CmsAccessControlEntry(CmsUUID resource, CmsUUID principal, int allowed, int denied, int flags) {
 	
 		m_resource = resource;
 		m_principal = principal;
 		m_permissions = new CmsPermissionSet(allowed, denied);
-		m_permissions.setFlags(flags);
+		m_flags = flags;
 	}
 	
+	/**
+	 * Constructor to create a new access control entry on a given resource and a given principal.
+	 * Permissions are specified as permission set, flags as bitset.
+	 * 
+	 * @param resource		the resource
+	 * @param principal		the id of a principal (user or group)
+	 * @param permissions	the set of allowed and denied permissions as permission set
+	 * @param flags			additional flags of the access control entry
+	 */
 	public CmsAccessControlEntry(CmsUUID resource, CmsUUID principal, CmsPermissionSet permissions, int flags) {
 		
 		m_resource = resource;
 		m_principal = principal;
 		m_permissions = permissions;
-		m_permissions.setFlags(flags);
+		m_flags = flags;
 	}
 	
-	public CmsAccessControlEntry(CmsUUID resource, CmsUUID principal, String permissionString) {
+	/**
+	 * Constructor to create a new access control entry on a given resource and a given principal.
+	 * Permission and flags are specified as string of the format {{+|-}{r|w|v|c|i}}*
+	 * 
+	 * @param resource				the resource
+	 * @param principal				the id of a principal (user or group)
+	 * @param acPermissionString	allowed and denied permissions and also flags
+	 */
+	public CmsAccessControlEntry(CmsUUID resource, CmsUUID principal, String acPermissionString) {
 		
 		m_resource = resource;
 		m_principal = principal;
-		m_permissions = new CmsPermissionSet (permissionString);
+		m_flags = 0;
+		
+		StringTokenizer tok = new StringTokenizer(acPermissionString, "+-", true);
+		StringBuffer permissionString = new StringBuffer();
+		
+		while(tok.hasMoreElements()) {
+			String prefix = tok.nextToken();
+			String suffix = tok.nextToken();
+			switch (suffix.charAt(0)) {
+				case 'I': case 'i':
+					if (prefix.charAt(0) == '+') m_flags |= I_CmsConstants.C_ACCESSFLAGS_INHERITED;
+					if (prefix.charAt(0) == '-') m_flags &= ~I_CmsConstants.C_ACCESSFLAGS_INHERITED;
+					break;
+				default:
+					permissionString.append(prefix);
+					permissionString.append(suffix);
+					break;
+			}
+		}
+				
+		m_permissions = new CmsPermissionSet(permissionString.toString());
 	}
-	
+
 	/**
-	 * Sets the allowed permissions in the access control entry
+	 * Sets the allowed and denied permissions of the access control entry.
 	 * 
-	 * @param allowed	the set of allowed permissions
+	 * @param permissions the set of permissions
+	 */
+	public void setPermissions(CmsPermissionSet permissions) {
+		
+		m_permissions.setPermissions(permissions);
+	}
+		
+	/**
+	 * Sets the allowed permissions in the access control entry.
+	 * 
+	 * @param allowed	the allowed permissions as bitset
 	 */
 	public void grantPermissions(int allowed) {
+		
 		m_permissions.grantPermissions (allowed);
 	}
-	
+		
 	/**
-	 * Returns the allowed permissions
+	 * Sets the explicitly denied permissions in the access control entry.
+	 * 
+	 * @param denied the denied permissions as bitset
+	 */
+	public void denyPermissions(int denied) {
+		
+		m_permissions.denyPermissions(denied);
+	}	
+	/**
+	 * Returns the current permission set (both allowed and denied permissions).
 	 * 
 	 * @return	the set of permissions
 	 */
@@ -113,31 +178,28 @@ public class CmsAccessControlEntry {
 		return m_permissions;
 	}
 	
+	/**
+	 * Returns the currently allowed permissions as bitset.
+	 * 
+	 * @return the allowed permissions
+	 */
 	public int getAllowedPermissions() {
+		
 		return m_permissions.getAllowedPermissions();
 	}
 	
+	/**
+	 * Return the currently denied permissions as bitset.
+	 * 
+	 * @return the denied permissions
+	 */
 	public int getDeniedPermissions() {
+		
 		return m_permissions.getDeniedPermissions();
 	}
-	
+
 	/**
-	 * Sets the explicitly denied permissions in the access control entry
-	 * 
-	 * @param denied
-	 */
-	public void denyPermissions(int denied) {
-		
-		m_permissions.denyPermissions(denied);
-	}
-		
-	public void setPermissions(CmsPermissionSet permissions) {
-		
-		m_permissions.setPermissions(permissions);
-	}
-	
-	/**
-	 * Returns the resource of the access control entry.
+	 * Returns the resource assigned with this access control entry.
 	 * 
 	 * @return the resource 
 	 */
@@ -147,7 +209,7 @@ public class CmsAccessControlEntry {
 	}
 	
 	/**
-	 * Returns the principal of the access control entry.
+	 * Returns the principal assigned with this access control entry.
 	 * 
 	 * @return the principal
 	 */
@@ -155,14 +217,42 @@ public class CmsAccessControlEntry {
 		
 		return m_principal;
 	}
-	
-	public int getFlags() {
+
+	/**
+	 * Sets the given flags in the access control entry.
+	 * 
+	 * @param flags bitset with flag values to set
+	 */
+	public void setFlags(int flags) {
 		
-		return m_permissions.getFlags();
+		m_flags |= flags;
 	}
 	
+	/**
+	 * Resets the given flags in the access control entry.
+	 * 
+	 * @param flags bitset with flag values to reset
+	 */
+	public void resetFlags(int flags) {
+		
+		m_flags &= ~flags;
+	}
+	
+	/**
+	 * Returns the current flags of the access control entry.
+	 * 
+	 * @return bitset with flag values
+	 */
+	public int getFlags() {
+		
+		return m_flags;
+	}	
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
 		
-		return "[Ace:] " + "ResourceId=" + m_resource + ", PrincipalId=" + m_principal + ", Permissions=" + m_permissions.toString();
+		return "[Ace:] " + "ResourceId=" + m_resource + ", PrincipalId=" + m_principal + ", Permissions=" + m_permissions.toString() + ", Flags=" + m_flags;
 	}
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/security/Attic/I_CmsPrincipal.java,v $
- * Date   : $Date: 2003/06/03 16:06:21 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/12 15:16:32 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,23 +33,26 @@ package com.opencms.security;
 import com.opencms.flex.util.CmsUUID;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/06/03 16:06:21 $
+ * Representation of an identity in the cms (currently user or group) 
+ * used to define permissions on a resource.
+ * 
+ * @version $Revision: 1.2 $ $Date: 2003/06/12 15:16:32 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public interface I_CmsPrincipal {
 	
 	/**
-	 * Compares the given object with this principal
+	 * Compares the given object with this principal.
 	 * 
-	 * @param obj
-	 * @return
+	 * @param obj	object to comapre
+	 * @return		true if the object is equal
 	 */
 	public boolean equals(Object obj);
 	
 	/**
 	 * Gets the id of this principal.
 	 * 
-	 * @return
+	 * @return the unique id of the principal.
 	 */
 	public CmsUUID getId();
 	
@@ -57,7 +60,7 @@ public interface I_CmsPrincipal {
 	/**
 	 * Gets the name of this principal.
 	 * 
-	 * @return
+	 * @return the name of the principal
 	 */
 	public String getName();
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSyncFolder.java,v $
-* Date   : $Date: 2003/06/09 17:09:25 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/06/12 15:16:32 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,16 +33,13 @@ import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
-import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsRequestContext;
-import com.opencms.file.CmsResource;
 import com.opencms.report.A_CmsReportThread;
 import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.util.Utils;
 
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -51,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.16 $ $Date: 2003/06/09 17:09:25 $
+ * @version $Revision: 1.17 $ $Date: 2003/06/12 15:16:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

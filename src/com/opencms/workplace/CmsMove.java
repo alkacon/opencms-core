@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2003/06/10 16:21:29 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2003/06/12 15:16:32 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,9 +36,7 @@ import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
-import com.opencms.file.CmsUser;
 import com.opencms.util.Encoder;
-import com.opencms.util.Utils;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -50,7 +48,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.52 $ $Date: 2003/06/10 16:21:29 $
+ * @version $Revision: 1.53 $ $Date: 2003/06/12 15:16:32 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {

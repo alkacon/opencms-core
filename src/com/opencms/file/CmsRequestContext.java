@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/06/09 17:06:35 $
-* Version: $Revision: 1.71 $
+* Date   : $Date: 2003/06/12 15:16:32 $
+* Version: $Revision: 1.72 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,9 +48,6 @@ import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import javax.jcr.Credentials;
-import javax.jcr.LoginException;
-import javax.jcr.Repository;
 import javax.jcr.Ticket;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -67,7 +64,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.71 $ $Date: 2003/06/09 17:06:35 $
+ * @version $Revision: 1.72 $ $Date: 2003/06/12 15:16:32 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {

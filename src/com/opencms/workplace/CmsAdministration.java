@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2003/06/09 17:07:51 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/06/12 15:16:32 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
-import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.template.CmsTemplateClassManager;
@@ -44,7 +43,6 @@ import com.opencms.template.CmsXmlTemplateFile;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
@@ -54,7 +52,7 @@ import java.util.Vector;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.33 $ $Date: 2003/06/09 17:07:51 $
+ * @version $Name:  $ $Revision: 1.34 $ $Date: 2003/06/12 15:16:32 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
-* Date   : $Date: 2003/06/10 16:21:29 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/06/12 15:16:32 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.file.CmsUser;
 import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
@@ -46,7 +45,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.45 $ $Date: 2003/06/10 16:21:29 $
+ * @version $Revision: 1.46 $ $Date: 2003/06/12 15:16:32 $
  */
 
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/06/10 16:21:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/06/12 15:16:32 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,13 +40,12 @@ import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.security.CmsAccessControlEntry;
 import com.opencms.util.Encoder;
-import com.opencms.util.Utils;
 
 /**
  * Template class for displaying the chmod screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2003/06/10 16:21:29 $
+ * @version $Revision: 1.5 $ $Date: 2003/06/12 15:16:32 $
  */
 
 public class CmsChacc extends CmsWorkplaceDefault implements I_CmsWpConstants {

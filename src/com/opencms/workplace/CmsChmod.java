@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChmod.java,v $
- * Date   : $Date: 2003/06/10 16:21:29 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2003/06/12 15:16:32 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,9 +32,7 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
-import com.opencms.file.CmsUser;
 import com.opencms.util.Encoder;
-import com.opencms.util.Utils;
 
 import java.util.Hashtable;
 
@@ -42,7 +40,7 @@ import java.util.Hashtable;
  * Template class for displaying the chmod screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.32 $ $Date: 2003/06/10 16:21:29 $
+ * @version $Revision: 1.33 $ $Date: 2003/06/12 15:16:32 $
  */
 
 public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants {

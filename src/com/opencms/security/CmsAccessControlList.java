@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/security/Attic/CmsAccessControlList.java,v $
- * Date   : $Date: 2003/06/09 17:07:17 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/06/12 15:16:32 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,10 +38,10 @@ import java.util.Vector;
 import com.opencms.file.CmsUser;
 
 /**
- * An access control list contains a permission set for a distinct resource
- * that is calculated on the permissions given by various access control entries
+ * An access control list contains the permission sets of all principals for a distinct resource
+ * that are calculated on the permissions given by various access control entries.
  * 
- * @version $Revision: 1.6 $ $Date: 2003/06/09 17:07:17 $
+ * @version $Revision: 1.7 $ $Date: 2003/06/12 15:16:32 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlList {
@@ -55,7 +55,8 @@ public class CmsAccessControlList {
 	 * Constructor to create an empty access control list for a given resource
 	 *
 	 */
-	public CmsAccessControlList(){
+	public CmsAccessControlList() {
+		
 		m_permissions = new Hashtable();
 	}
 	
@@ -64,7 +65,7 @@ public class CmsAccessControlList {
 	 * 
 	 * @param entry the access control entry to add
 	 */
-	public void add(CmsAccessControlEntry entry){
+	public void add(CmsAccessControlEntry entry) {
 
 		CmsPermissionSet permissions = (CmsPermissionSet)m_permissions.get(entry.getPrincipal());
 		if (permissions == null)
@@ -73,16 +74,29 @@ public class CmsAccessControlList {
 		permissions.addPermissions(entry.getPermissions());
 		m_permissions.put(entry.getPrincipal(),permissions); 
 	}
-	
+
 	/**
-	 * Calculates the permission set of the access control list
-	 * for a given user and his groups
-	 *  
-	 * @param principal	the user
+	 * Returns the permission set of a principal as stored in the access control list.
 	 * 
-	 * @return the current permission set of the list
+	 * @param principal the principal (group or user)
+	 * 
+	 * @return the current permissions of this single principal
 	 */
-	public CmsPermissionSet getPermissions(CmsUser user, Vector groups){
+	public CmsPermissionSet getPermissions(I_CmsPrincipal principal) {
+		
+		return (CmsPermissionSet)m_permissions.get(principal.getId());
+	}
+		
+	/**
+	 * Calculates the permission set of the given user from the access control list.
+	 *  
+	 * @param user		the user
+	 * @param groups	the groups of this user
+	 * 
+	 * @return the summarized permission set of the user
+	 */
+	public CmsPermissionSet getPermissions(CmsUser user, Vector groups) {
+		
 		CmsPermissionSet sum = new CmsPermissionSet();
 		ListIterator pIterator = null;
 		if (groups != null)
@@ -103,25 +117,29 @@ public class CmsAccessControlList {
 		
 		return sum;
 	}
-	
-	public CmsPermissionSet getPermissions(I_CmsPrincipal principal) {
-		return (CmsPermissionSet)m_permissions.get(principal.getId());
-	}
-	
+		
 	/**
-	 * Calculates the permission set of the access control list
-	 * for a given user and his groups and returns it as permission string
+	 * Calculates the permission set of the given user from the access control list
+	 * and returns it as permission string in the format {{+|-}{r|w|v|c|i}}*
 	 * 
-	 * @param user
-	 * @param groups
-	 * @return
+	 * @param user		the user
+	 * @param groups	the groups oft this user
+	 * 
+	 * @return			a string that displays the permissions
 	 */
-	public String getPermissionString(CmsUser user, Vector groups){
+	public String getPermissionString(CmsUser user, Vector groups) {
+		
 		CmsPermissionSet permissions = getPermissions(user, groups);
 		return permissions.getPermissionString();
 	}
 	
+	/**
+	 * Returns the principals with specific permissions stored in this access control list.
+	 * 
+	 * @return enumeration of principals (each group or user)
+	 */
 	public Enumeration getPrincipals() {
+		
 		return m_permissions.keys();
 	}
 }
