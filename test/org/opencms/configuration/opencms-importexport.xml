@@ -7,7 +7,7 @@
 	        <importexporthandler class="com.opencms.legacy.CmsCosImportExportHandler"/>
     	    <importexporthandler class="org.opencms.importexport.CmsVfsImportExportHandler"/>
         	<importexporthandler class="org.opencms.importexport.CmsModuleImportExportHandler"/>
-        </importexporthandlers>
+        </importexporthandlers>        
         <import>      
         	<overwrite>true</overwrite>        	
         	<convert>true</convert>
@@ -16,7 +16,7 @@
 				<importversion class="com.opencms.legacy.CmsImportVersion1"/>
 				<importversion class="org.opencms.importexport.CmsImportVersion2"/>
 				<importversion class="org.opencms.importexport.CmsImportVersion3"/>
-				<importversion class="org.opencms.importexport.CmsImportVersion4"/>
+				<importversion class="org.opencms.importexport.CmsImportVersion4"/>	
 			</importversions>          	   	
 			<immutables>
 				<resource uri="/system/"/>

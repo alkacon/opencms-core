@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/03/17 09:41:01 $
- * Version: $Revision: 1.104 $
+ * Date   : $Date: 2004/03/18 15:03:17 $
+ * Version: $Revision: 1.105 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,6 @@ import org.opencms.workplace.I_CmsWpConstants;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 
 import javax.servlet.ServletContext;
@@ -105,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.104 $
+ * @version $Revision: 1.105 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1129,11 +1128,10 @@ public final class OpenCmsCore {
             }
         }        
         
-        // load the XML configuration
-        CmsConfigurationManager configurationManager = new CmsConfigurationManager();
-        // first generate the base URL for all configurations 
-        URL baseUrl = (new File(getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("config/"))).toURL();
-        configurationManager.loadXmlConfiguration(baseUrl);
+        // create the configuration manager instance    
+        CmsConfigurationManager configurationManager = new CmsConfigurationManager(getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("config/"));
+        // now load the XML configuration
+        configurationManager.loadXmlConfiguration();
         
         // get the system configuration
         CmsSystemConfiguration systemConfiguration = (CmsSystemConfiguration)configurationManager.getConfiguration(CmsSystemConfiguration.class);

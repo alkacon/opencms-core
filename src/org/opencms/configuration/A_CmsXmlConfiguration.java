@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/A_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/03/18 15:03:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,9 +89,11 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
     }
 
     /**
-     * @see org.opencms.configuration.I_CmsXmlConfiguration#setXmlFileName(java.lang.String)
+     * Sets the file name of this XML configuration.<p>
+     * 
+     * @param fileName the file name to set
      */
-    public void setXmlFileName(String fileName) {
+    protected void setXmlFileName(String fileName) {
         m_xmlFileName = fileName;     
     }    
 }

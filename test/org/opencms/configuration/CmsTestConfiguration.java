@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/CmsTestConfiguration.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/03/18 15:04:26 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -128,15 +128,14 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_Cms
         // set "OpenCms" system property to "test" for allowing the logger to be used
         System.setProperty("OpenCmsLog", "opencms_test.log");
         
-        // generate registy singleton
-        CmsConfigurationManager manager = new CmsConfigurationManager();
-
         // get URL of test input resource
         URL inputUrl = ClassLoader.getSystemResource("org/opencms/configuration/");
-        
+        // generate the configuration manager
+        CmsConfigurationManager manager = new CmsConfigurationManager(inputUrl.getFile());
         // now digest the XML
-        manager.loadXmlConfiguration(inputUrl);
+        manager.loadXmlConfiguration();
        
+        
         List allConfigurations = new ArrayList();
         allConfigurations.add(manager);
         allConfigurations.addAll(manager.getConfigurations());

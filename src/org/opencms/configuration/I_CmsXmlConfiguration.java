@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/03/18 15:03:17 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -125,7 +125,8 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
     Element generateXml(Element parent);
     
     /**
-     * Returns the name of the DTD file for this XML configuration.<p>
+     * Returns the name of the DTD file for this XML configuration,
+     * e.g. <code>opencms-configuration.dtd</code>.<p>
      * 
      * @return the name of the DTD file for this XML configuration
      * @see #getDtdSystemLocation()
@@ -134,7 +135,8 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
     String getDtdFilename();
     
     /**
-     * Returns the system location of the DTD file for this XML configuration.<p>
+     * Returns the internal system location of the DTD file for this XML configuration,
+     * e.g. <code>org/opencms/configuration/</code>.<p>
      * 
      * If this is not <code>null</code>, then the DTD is not read through the
      * web URL, but an internal name resolution is added that resolves the 
@@ -148,7 +150,8 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
     String getDtdSystemLocation();
     
     /**
-     * Returns the system id prefix of the DTD file for this XML configuration.<p>
+     * Returns the external system id prefix of the DTD file for this XML configuration,
+     * e.g. <code>http://www.opencms.org/dtd/6.0/</code>.<p>
      * 
      * The full system id for the DTD is calculated lile this:
      * <code>{@link #getDtdSystemLocation()} + {@link #getDtdUrlPrefix()}</code>.<p>
@@ -160,16 +163,10 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
     String getDtdUrlPrefix();
     
     /**
-     * Returns the name of the XML input file for this configuration.<p>
+     * Returns the name of the XML input file for this configuration,
+     * e.g. <code>opencms.xml</code>.<p>
      * 
      * @return the name of the XML input file for this configuration
      */
     String getXmlFileName();
-    
-    /**
-     * Sets the name of the XML input file for this configuration.<p>
-     * 
-     * @param fileName the name of the XML input file for this configuration
-     */
-    void setXmlFileName(String fileName);
 }

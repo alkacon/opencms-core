@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/03/18 15:03:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,14 @@ package org.opencms.configuration;
 
 import org.opencms.main.OpenCms;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -104,6 +109,9 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     /** The name of the DTD file for this configuration */
     private static final String C_DTD_FILE_NAME = "opencms-configuration.dtd";
     
+    /** The number of days to keep old backups for */
+    private static final long C_MAX_BACKUP_DAYS = 30; 
+    
     /** The config node */
     protected static final String N_CONFIG = "config";
     
@@ -122,14 +130,41 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     /** A map of DTD prefix values for lookup */
     protected Map m_dtdPrefixes;
     
+    /** The base folder where the configuration files are located */
+    private File m_baseFolder;
+    
+    /** The folder where to stor the backup files of the configuration */
+    private File m_backupFolder;
+    
+    /** Formatting for the backup file time prefix */
+    private static final SimpleDateFormat m_backupDateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss_");
+    
     /**
      * Creates a new OpenCms configuration manager.<p>
+     * 
+     * @param baseFolder base folder where XML configurations to load are located
      */
-    public CmsConfigurationManager() {
+    public CmsConfigurationManager(String baseFolder) {
+        m_baseFolder = new File(baseFolder);
+        if (! m_baseFolder.exists()) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Configuration base folder " + m_baseFolder.getAbsolutePath() + " does not exist!");
+            }
+        }
+        m_backupFolder = new File(m_baseFolder.getAbsolutePath() + File.separatorChar + "backup");
+        if (! m_backupFolder.exists()) {
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("Creating configuration backup folder " + m_backupFolder.getAbsolutePath());
+            }
+            m_backupFolder.mkdirs();
+        }
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Configuration base folder is " + m_baseFolder.getAbsolutePath());
+            OpenCms.getLog(this).debug("Configuration backup folder is " + m_backupFolder.getAbsolutePath());
+        }        
         m_dtdPrefixes = new HashMap();
-        m_dtdPrefixes.put(C_DEFAULT_DTD_PREFIX, C_DEFAULT_DTD_LOCATION);
-        m_configurations = new ArrayList();
-        // m_configurations.add(this);
+        addDtdPrefixMapping(this);
+        m_configurations = new ArrayList();        
     }
     
     /**
@@ -142,6 +177,26 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
             OpenCms.getLog(this).debug("Adding configuration: " + configuration);
         }        
         m_configurations.add(configuration);
+        addDtdPrefixMapping(configuration);
+    }
+    
+    /**
+     * Adds a new DTD system id prefix mapping for internal resolution of external URLs.<p>
+     * 
+     * @param configuration the configuration to add the mapping from
+     */
+    private void addDtdPrefixMapping(I_CmsXmlConfiguration configuration) {
+        if (! m_dtdPrefixes.containsKey(configuration.getDtdUrlPrefix())) {
+            // this configuration requires a new DTD prefix mapping
+            m_dtdPrefixes.put(configuration.getDtdUrlPrefix(), configuration.getDtdSystemLocation());
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("Adding DTD prefix mapping: " + configuration.getDtdUrlPrefix() + " --> " + configuration.getDtdSystemLocation());
+            }
+        } else {
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("Duplicate DTD prefix not added to mapping: " + configuration.getDtdUrlPrefix() + " --> " + configuration.getDtdSystemLocation());
+            }            
+        }
     }
 
     /**
@@ -227,9 +282,9 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     }
     
     /**
-     * Returns the list of initialized configurations.<p>
+     * Returns the list of all initialized configurations.<p>
      * 
-     * @return the list of initialized configurations
+     * @return the list of all initialized configurations
      */
     public List getConfigurations() {
         return m_configurations;
@@ -266,13 +321,13 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     /**
      * Loads the OpenCms configuration from the given XML file.<p>
      * 
-     * @param baseUrl base URL of the XML configurations to load
      * @throws SAXException in case of XML parse errors
      * @throws IOException in case of file IO errors
      */    
-    public void loadXmlConfiguration(URL baseUrl) throws SAXException, IOException {
+    public void loadXmlConfiguration() throws SAXException, IOException { 
+        URL baseUrl = m_baseFolder.toURL();                        
         if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).error("Base URL is " + baseUrl);
+            OpenCms.getLog(this).debug("Base URL is " + baseUrl);
         }
         
         // first load the base configuration
@@ -284,6 +339,9 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
             I_CmsXmlConfiguration config = (I_CmsXmlConfiguration)i.next();
             loadXmlConfiguration(baseUrl, config);
         }
+        
+        // remove the old backups
+        removeOldBackups(C_MAX_BACKUP_DAYS);
     }
     
     /**
@@ -294,13 +352,16 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      * @throws SAXException in case of XML parse errors
      * @throws IOException in case of file IO errors
      */
-    public void loadXmlConfiguration(URL url, I_CmsXmlConfiguration configuration) throws SAXException, IOException {     
+    private void loadXmlConfiguration(URL url, I_CmsXmlConfiguration configuration) throws SAXException, IOException {     
         
         // generate the file URL for the XML input
         URL fileUrl = new URL(url, configuration.getXmlFileName());        
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("XML input file URL is " + fileUrl);
         }
+        
+        // create a backup of the configuration
+        backupXmlConfiguration(configuration);
         
         // instantiate Digester and enable XML validation
         m_digester = new Digester();
@@ -316,12 +377,69 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         // start the parsing process        
         m_digester.parse(fileUrl.openStream());        
     }
-
-
+    
     /**
-     * @see org.opencms.configuration.I_CmsXmlConfiguration#setXmlFileName(java.lang.String)
+     * Creates a backup of the given XML configurations input file.<p>
+     * 
+     * @param configuration the configuration for which the input file should be backed up
      */
-    public void setXmlFileName(String fileName) {
-        // noop, file name is fixed for this mater configuration to "opencms.xml"
+    private void backupXmlConfiguration(I_CmsXmlConfiguration configuration) {
+        
+        String fromName = m_baseFolder.getAbsolutePath() + File.separatorChar + configuration.getXmlFileName();
+        String toDatePrefix = m_backupDateFormat.format(new Date());
+        String toName = m_backupFolder.getAbsolutePath() + File.separatorChar + toDatePrefix + configuration.getXmlFileName();
+         
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Creating configuration backup of " + fromName + " in " + toName);
+        }
+        
+        try {
+            copy(fromName, toName);
+        } catch (IOException e) {
+            OpenCms.getLog(this).error("Could not generate configuration backup file " + toName, e);
+        }        
     }
+    
+    /**
+     * Removes all backups that are older then the given number of days.<p>
+     * 
+     * @param daysToKeep the days to keep the backups for
+     */
+    private void removeOldBackups(long daysToKeep) {
+        long maxAge = (System.currentTimeMillis() - (daysToKeep * 24 * 60 * 60 * 1000)); 
+        File[] files = m_backupFolder.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            File file = files[i];
+            long lastMod = file.lastModified();
+            if (lastMod < maxAge) {
+                file.delete();
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug("Deleting old configuration " + file.getAbsolutePath());
+                }                
+            }
+        }
+    }
+    
+    /**
+     * Simply version of a 1:1 binary file copy.<p>
+     * 
+     * @param fromFile the name of the file to copy
+     * @param toFile the name of the target file
+     * @throws IOException if any IO error occurs during the copy operation
+     */
+    public static void copy(String fromFile, String toFile) throws IOException {
+        File inputFile = new File(fromFile);
+        File outputFile = new File(toFile);
+
+        FileInputStream in = new FileInputStream(inputFile);
+        FileOutputStream out = new FileOutputStream(outputFile);
+        int c;
+
+        while ((c = in.read()) != -1) {
+           out.write(c);
+        }
+        
+        in.close();
+        out.close();
+    }    
 }
