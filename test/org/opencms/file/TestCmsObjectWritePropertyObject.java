@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestCmsObjectWritePropertyObject.java,v $
- * Date   : $Date: 2004/05/26 14:58:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/26 15:52:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.test.OpenCmsTestResourceFilter;
  * Unit test for the "touch" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestCmsObjectWritePropertyObject extends OpenCmsTestCase {
         
@@ -87,6 +87,8 @@ public class TestCmsObjectWritePropertyObject extends OpenCmsTestCase {
         assertDateLastModifiedAfter(cms, resource1, timestamp);
         // the user last modified must be the current user
         assertUserLastModified(cms, resource1, cms.getRequestContext().currentUser());
+        // the property must have the new value
+        assertPropertyChanged(cms, resource1, property1);
         
         // remove OpenCms
         removeOpenCms();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestCmsObjectTouch.java,v $
- * Date   : $Date: 2004/05/26 14:58:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/05/26 15:52:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.test.OpenCmsTestResourceFilter;
  * Unit test for the "touch" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestCmsObjectTouch extends OpenCmsTestCase {
         
@@ -73,7 +73,7 @@ public class TestCmsObjectTouch extends OpenCmsTestCase {
         // do the touch operation
         long timestamp = System.currentTimeMillis();
         cms.touch(resource1, timestamp, false);
-       
+
         // now evaluate the result
         assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_TOUCH);
         // project must be current project

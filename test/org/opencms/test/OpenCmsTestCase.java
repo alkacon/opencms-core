@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/05/26 14:58:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/05/26 15:52:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.test;
 import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
@@ -50,6 +51,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -71,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.5
  */
@@ -121,7 +123,57 @@ public class OpenCmsTestCase extends TestCase {
             }
             
         } catch (CmsException e) {
-            fail("cannot read resource "+resourceName+" "+e);     
+            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
+        }
+    }
+     
+    /**
+     * Compares the current properties of a resource with the stored values.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     */
+    protected void assertPropertyEqual(CmsObject cms, String resourceName) {
+        try {
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
+            String noMatches = compareProperties(cms, resourceName, storedResource, null);   
+            
+            // now see if we have collected any no-matches
+            if (noMatches.length() > 0) {
+                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
+            }   
+            
+        } catch (CmsException e) {
+            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
+        }
+    }
+    
+     /**
+     * Compares the current properties of a resource with the stored values and a given, changed property.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param property the changed property
+     */
+    protected void assertPropertyChanged(CmsObject cms, String resourceName, CmsProperty property) {
+        try {
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
+            
+            // create the exclude list
+            List excludeList = new ArrayList();
+            excludeList.add(property);            
+            
+            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
+            
+            // now see if we have collected any no-matches
+            if (noMatches.length() > 0) {
+                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
+            }   
+            
+        } catch (CmsException e) {
+            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
         }
     }
     
@@ -142,9 +194,39 @@ public class OpenCmsTestCase extends TestCase {
             }
             
         } catch (CmsException e) {
-            fail("cannot read resource "+resourceName+" "+e);     
+            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
         }
     }
+    
+    
+    
+    /**
+     * Compares two lists of CmsProperty objects and creates a list of all properties which are
+     * not included in a seperate exclude list.
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource the properties belong to
+     * @param storedResource the stored resource corresponding to the resourcename
+     * @param excludeList the list of properies to exclude in the test or null
+     * @return list of CmsProperty objects 
+     * @throws CmsException if something goes wrong
+     */
+    private String compareProperties(CmsObject cms, String resourceName, OpenCmsTestResourceStorageEntry storedResource, List excludeList) 
+        throws CmsException {
+            String noMatches = "";
+            List storedProperties = storedResource.getProperties();
+            List properties = cms.readPropertyObjects(resourceName, false);
+            List unmatchedProperties;
+            unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(storedProperties, properties, excludeList);
+            if (unmatchedProperties.size() >0 ) {
+                noMatches += "[Properies missing "+unmatchedProperties.toString()+"]";   
+            }
+            unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(properties, storedProperties, excludeList);
+            if (unmatchedProperties.size() >0 ) {
+                noMatches += "[Properies additional "+unmatchedProperties.toString()+"]";   
+            } 
+            return noMatches;
+    }
+    
     
     /**
      * Compares a resource to its stored version containing the state before a CmsObject
@@ -258,17 +340,7 @@ public class OpenCmsTestCase extends TestCase {
             }
             // compare the properties if nescessary
             if (filter.testProperties()) {
-                List storedProperties = storedResource.getProperties();
-                List properties = cms.readPropertyObjects(resourceName, false);
-                List unmatchedProperties;
-                unmatchedProperties = filter.compareProperties(storedProperties, properties);
-                if (unmatchedProperties.size() >0 ) {
-                    noMatches += "[Properies missing "+unmatchedProperties.toString()+"]";   
-                }
-                unmatchedProperties = filter.compareProperties(properties, storedProperties);
-                if (unmatchedProperties.size() >0 ) {
-                    noMatches += "[Properies additional "+unmatchedProperties.toString()+"]";   
-                }                
+                noMatches += compareProperties(cms, resourceName, storedResource, null);                
             }  
             // compare the resource id if nescessary
             if (filter.testResourceId()) {
@@ -319,7 +391,7 @@ public class OpenCmsTestCase extends TestCase {
             }
             
         } catch (CmsException e) {
-            fail("cannot read resource "+resourceName+" "+e);     
+            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
         }
     }
     
@@ -341,7 +413,7 @@ public class OpenCmsTestCase extends TestCase {
             }
             
         } catch (CmsException e) {
-            fail("cannot read resource "+resourceName+" "+e);     
+            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
         }
     }
     
@@ -362,7 +434,7 @@ public class OpenCmsTestCase extends TestCase {
             }
             
         } catch (CmsException e) {
-            fail("cannot read resource "+resourceName+" "+e);     
+            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
         }
     }
     
@@ -383,7 +455,7 @@ public class OpenCmsTestCase extends TestCase {
             }
             
         } catch (CmsException e) {
-            fail("cannot read resource "+resourceName+" "+e);     
+            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
         }
     }
     
@@ -732,7 +804,7 @@ public class OpenCmsTestCase extends TestCase {
                 // TODO: add handling for subtrees here
             }
             } catch (CmsException e) {
-                fail("cannot read resource "+resourceName+" "+e);                
+                fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));                
             }
     }
     
