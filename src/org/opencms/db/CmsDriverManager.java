@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/15 16:01:39 $
- * Version: $Revision: 1.218 $
+ * Date   : $Date: 2003/09/16 07:25:39 $
+ * Version: $Revision: 1.219 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.218 $ $Date: 2003/09/15 16:01:39 $
+ * @version $Revision: 1.219 $ $Date: 2003/09/16 07:25:39 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1350,9 +1350,9 @@ public class CmsDriverManager extends Object {
             if ((offlineRes == null) || (offlineRes.getProjectLastModified() != context.currentProject().getId())) {
                 // check if there are already any subfolders of this resource
                 if (resource.endsWith("/")) {
-                    Vector projectResources = m_projectDriver.readProjectResources(context.currentProject().getId());
+                    List projectResources = m_projectDriver.readProjectResources(context.currentProject());
                     for (int i = 0; i < projectResources.size(); i++) {
-                        String resname = (String) projectResources.elementAt(i);
+                        String resname = (String) projectResources.get(i);
                         if (resname.startsWith(resource)) {
                             // delete the existing project resource first
                             m_projectDriver.deleteProjectResource(context.currentProject().getId(), resname);
@@ -2369,7 +2369,6 @@ public class CmsDriverManager extends Object {
                 OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTIES_MODIFIED, Collections.singletonMap("resource", delFolder)));
             }
             // unlock all resources in the project
-            m_projectDriver.unlockResources(deleteProject);
             m_lockDispatcher.removeResourcesInProject(deleteProject.getId());
             clearAccessControlListCache();
             clearResourceCache();
@@ -5196,7 +5195,8 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector readAllProjectResources(CmsRequestContext context, int projectId) throws CmsException {
-        List result=getAllFullPaths(context, m_projectDriver.readProjectResources(projectId));
+        CmsProject project = m_projectDriver.readProject(projectId);
+        List result = getAllFullPaths(context, m_projectDriver.readProjectResources(project));
         return new Vector(result);
     }
 
@@ -7438,17 +7438,6 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * This method loads old sessiondata from the database. It is used
-     * for sessionfailover.
-     *
-     * @param oldSessionId the id of the old session.
-     * @return the old sessiondata.
-     */
-    public Hashtable restoreSession(String oldSessionId) throws CmsException {
-        return m_projectDriver.readSession(oldSessionId);
-    }
-
-    /**
      * Set a new name for a task
      *
      * <B>Security:</B>
@@ -7660,24 +7649,6 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * This method stores sessiondata into the database. It is used
-     * for sessionfailover.
-     *
-     * @param sessionId the id of the session.
-     * @param isNew determines, if the session is new or not.
-     * @return data the sessionData.
-     */
-    public void storeSession(String sessionId, Hashtable sessionData) throws CmsException {
-
-        // update the session
-        int rowCount = m_projectDriver.writeSession(sessionId, sessionData);
-        if (rowCount != 1) {
-            // the entry doesn't exist - create it
-            m_projectDriver.createSession(sessionId, sessionData);
-        }
-    }
-
-    /**
      * Access the driver underneath to change the timestamp of a resource.
      * 
      * @param context the current request context
@@ -7881,7 +7852,6 @@ public class CmsDriverManager extends Object {
         if ((isAdmin(context) || isManagerOfProject(context)) && (project.getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED)) {
 
             // unlock all resources in the project
-            m_projectDriver.unlockResources(project);
             m_lockDispatcher.removeResourcesInProject(projectId);
             clearResourceCache();
             m_projectCache.clear();

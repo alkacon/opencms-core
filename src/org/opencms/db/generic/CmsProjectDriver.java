@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/15 16:01:39 $
- * Version: $Revision: 1.96 $
+ * Date   : $Date: 2003/09/16 07:25:39 $
+ * Version: $Revision: 1.97 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,9 @@
 
 package org.opencms.db.generic;
 
+import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsExportPointDriver;
-import org.opencms.db.CmsDbUtil;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.lock.CmsLock;
@@ -60,7 +60,6 @@ import com.opencms.linkmanagement.CmsPageLinks;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -86,7 +85,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.96 $ $Date: 2003/09/15 16:01:39 $
+ * @version $Revision: 1.97 $ $Date: 2003/09/16 07:25:39 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -161,7 +160,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @param exportpoints the exportpoints
      * @return key in exportpoints or null
      */
-    protected String checkExport(String filename, Hashtable exportpoints) {
+    protected String internalCheckExport(String filename, Hashtable exportpoints) {
 
         String key = null;
         String exportpoint = null;
@@ -335,38 +334,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * This method creates a new session in the database. It is used
-     * for sessionfailover.<p>
-     *
-     * @param sessionId the id of the session
-     * @param data the session data
-     * @throws CmsException if something goes wrong
-     */
-    public void createSession(String sessionId, Hashtable data) throws CmsException {
-        byte[] value = null;
-
-        Connection conn = null;
-        PreparedStatement stmt = null;
-
-        try {
-            value = serializeSession(data);
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_SESSION_CREATE");
-            // write data to database
-            stmt.setString(1, sessionId);
-            stmt.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
-            m_sqlManager.setBytes(stmt, 3, value);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
      * Creates a serializable object in the systempropertys.
      *
      * @param name The name of the property.
@@ -466,7 +433,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     public void deleteProject(CmsProject project) throws CmsException {
 
         // delete the resources from project_resources
-        deleteProjectResources(project.getId());
+        deleteProjectResources(project);
 
         // finally delete the project
         Connection conn = null;
@@ -482,32 +449,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
-    }
-
-    /**
-     * Deletes all properties for a project.
-     *
-     * @param project The project to delete.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public void deleteProjectProperties(CmsProject project) throws CmsException {
-
-        // delete properties with one statement
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_DELETEALLPROP");
-            // create statement
-            stmt.setInt(1, project.getId());
-            stmt.executeQuery();
-        } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-
     }
 
     /**
@@ -543,66 +484,14 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     public void deleteProjectResources(CmsProject project) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
-        try {
-            conn = m_sqlManager.getConnection();
-            // stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_DELETE_PROJECT");
-            // delete all project-resources.
-            // stmt.setInt(1, project.getId());
-            // stmt.executeQuery();
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_DELETE_BY_PROJECTID");
-            stmt.setInt(1, project.getId());
-            stmt.executeUpdate();
-
-            m_sqlManager.closeAll(null, stmt, null);
-
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_DELETE_BY_PROJECTID");
-            stmt.setInt(1, project.getId());
-            stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * Deletes all projectResource from an given CmsProject.<p>
-     *
-     * @param projectId The project in which the resource is used
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public void deleteProjectResources(int projectId) throws CmsException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
+        
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_DELETEALL");
-            // delete all projectResources from the database
-            stmt.setInt(1, projectId);
+            stmt.setInt(1, project.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * Deletes old sessions.
-     */
-    public void deleteSessions() {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_SESSION_DELETE");
-            stmt.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis() - C_SESSION_TIMEOUT));
-            stmt.execute();
-        } catch (Exception e) {
-            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error while deleting old sessions: " + com.opencms.util.Utils.getStackTrace(e));
-            }
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -616,9 +505,11 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void deleteSystemProperty(String name) throws CmsException {
-
         Connection conn = null;
         PreparedStatement stmt = null;
+
+        // this method is currently unused- dont delete it anyway!
+
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_SYSTEMPROPERTIES_DELETE");
@@ -744,6 +635,42 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      */
     public org.opencms.db.generic.CmsSqlManager initQueries() {
         return new org.opencms.db.generic.CmsSqlManager();
+    }
+
+    /**
+     * Reads the online id of a offline file.<p>
+     * 
+     * @param filename name of the file
+     * @return the id or -1 if not found (should not happen)
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsUUID internalReadOnlineId(String filename) throws CmsException {
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        CmsUUID resourceId = CmsUUID.getNullUUID();
+
+        try {
+            conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_LM_READ_ONLINE_ID");
+            // read file data from database
+            stmt.setString(1, filename);
+            res = stmt.executeQuery();
+            // read the id
+            if (res.next()) {
+                resourceId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_STRUCTURE_ID")));
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
+            }
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception exc) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+        return resourceId;
     }
 
     /**
@@ -1410,7 +1337,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             while (i.hasNext()) {
                 currentResourceName = (String) i.next();
                 currentFolder = (CmsFolder) sortedFolderMap.get(currentResourceName);
-                currentExportKey = checkExport(currentResourceName, exportpoints);
+                currentExportKey = internalCheckExport(currentResourceName, exportpoints);
 
                 if (currentFolder.getState() == I_CmsConstants.C_STATE_DELETED) {
                     // C_STATE_DELETE
@@ -1543,7 +1470,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             while (i.hasNext()) {
                 currentFileHeader = (CmsResource) i.next();
                 currentResourceName = currentFileHeader.getRootPath();
-                currentExportKey = checkExport(currentResourceName, exportpoints);
+                currentExportKey = internalCheckExport(currentResourceName, exportpoints);
 
                 currentFile = m_driverManager.getVfsDriver().readFile(context.currentProject().getId(), true, currentFileHeader.getStructureId());
                 currentFile.setFullResourceName(currentResourceName);
@@ -1675,7 +1602,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             while (i.hasNext()) {
                 currentResourceName = (String) i.next();
                 currentFolder = (CmsFolder) sortedFolderMap.get(currentResourceName);
-                currentExportKey = checkExport(currentResourceName, exportpoints);
+                currentExportKey = internalCheckExport(currentResourceName, exportpoints);
 
                 if (currentExportKey != null) {
                     discAccess.removeResource(currentResourceName, currentExportKey);
@@ -1987,52 +1914,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * Reads the online id of a offline file.<p>
-     * 
-     * @param filename name of the file
-     * @return the id or -1 if not found (should not happen)
-     * @throws CmsException if something goes wrong
-     */
-    private CmsUUID readOnlineId(String filename) throws CmsException {
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        CmsUUID resourceId = CmsUUID.getNullUUID();
-
-        try {
-            conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_LM_READ_ONLINE_ID");
-            // read file data from database
-            stmt.setString(1, filename);
-            res = stmt.executeQuery();
-            // read the id
-            if (res.next()) {
-                resourceId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_STRUCTURE_ID")));
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        return resourceId;
-    }
-
-    /**
-     * Retrieves the online project from the database.
-     *
-     * @return com.opencms.file.CmsProject the  onlineproject for the given project.
-     * @throws CmsException Throws CmsException if the resource is not found, or the database communication went wrong.
-     */
-    public CmsProject readOnlineProject() throws CmsException {
-        return readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
-    }
-
-    /**
      * Reads a project by task-id.<p>
      *
      * @param task the task to read the project for
@@ -2213,36 +2094,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }
 
         return result;
-    }
-
-    /**
-     * Select all projectResources from an given project.<p>
-     *
-     * @param projectId the project in which the resource is used
-     * @return Vector of resources belongig to the project
-     * @throws CmsException if something goes wrong
-     */
-    public Vector readProjectResources(int projectId) throws CmsException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Vector projectResources = new Vector();
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_READALL");
-            // select all resources from the database
-            stmt.setInt(1, projectId);
-            res = stmt.executeQuery();
-            while (res.next()) {
-                projectResources.addElement(res.getString("RESOURCE_NAME"));
-            }
-            res.close();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-        return projectResources;
     }
 
     /**
@@ -2441,60 +2292,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * Reads a session from the database.<p>
-     *
-     * @param sessionId the id og the session to read
-     * @return the session data as Hashtable
-     * @throws CmsException if something goes wrong
-     */
-    public Hashtable readSession(String sessionId) throws CmsException {
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Hashtable sessionData = new Hashtable();
-        Hashtable data = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_SESSION_READ");
-            stmt.setString(1, sessionId);
-            stmt.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis() - C_SESSION_TIMEOUT));
-
-            res = stmt.executeQuery();
-
-            // create new Cms user object
-            if (res.next()) {
-                // read the additional infos.
-                byte[] value = m_sqlManager.getBytes(res, "SESSION_DATA");
-                // now deserialize the object
-                ByteArrayInputStream bin = new ByteArrayInputStream(value);
-                ObjectInputStream oin = new ObjectInputStream(bin);
-                data = (Hashtable) oin.readObject();
-                try {
-                    for (;;) {
-                        Object key = oin.readObject();
-                        Object sessionValue = oin.readObject();
-                        sessionData.put(key, sessionValue);
-                    }
-                } catch (EOFException exc) {
-                    // reached eof - stop reading all is done now.
-                }
-                data.put(I_CmsConstants.C_SESSION_DATA, sessionData);
-            } else {
-                deleteSessions();
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        return data;
-    }
-
-    /**
      * Reads a serializable object from the systempropertys.
      *
      * @param name The name of the property.
@@ -2535,132 +2332,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * Helper method to serialize the hashtable.<p>
-     * This method is used by updateSession() and createSession().
-     * @param data the data to be serialized
-     * @return byte array of serialized data
-     * @throws IOException if something goes wrong 
-     */
-    private byte[] serializeSession(Hashtable data) throws IOException {
-        // serialize the hashtable
-        byte[] value;
-        Hashtable sessionData = (Hashtable) data.remove(I_CmsConstants.C_SESSION_DATA);
-        StringBuffer notSerializable = new StringBuffer();
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        ObjectOutputStream oout = new ObjectOutputStream(bout);
-
-        // first write the user data
-        oout.writeObject(data);
-        if (sessionData != null) {
-            Enumeration keys = sessionData.keys();
-            while (keys.hasMoreElements()) {
-                Object key = keys.nextElement();
-                Object sessionValue = sessionData.get(key);
-                if (sessionValue instanceof Serializable) {
-                    // this value is serializeable -> write it to the outputstream
-                    oout.writeObject(key);
-                    oout.writeObject(sessionValue);
-                } else {
-                    // this object is not serializeable -> remark for warning
-                    notSerializable.append(key);
-                    notSerializable.append("; ");
-                }
-            }
-        }
-        oout.close();
-        value = bout.toByteArray();
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO) && (notSerializable.length() > 0)) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] warning, following entrys are not serializeable in the session: " + notSerializable.toString() + ".");
-        }
-        return value;
-    }
-
-    /** 
-     * Sorts a vector of files or folders alphabetically.
-     * This method uses an insertion sort algorithm.
-     * NOT IN USE AT THIS TIME
-     *
-     * @param list array of strings containing the list of files or folders
-     * @return Vector of sorted strings
-     */
-    protected Vector SortEntrys(Vector list) {
-        int in, out;
-        int nElem = list.size();
-        CmsResource[] unsortedList = new CmsResource[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            unsortedList[i] = (CmsResource) list.elementAt(i);
-        }
-        for (out = 1; out < nElem; out++) {
-            CmsResource temp = unsortedList[out];
-            in = out;
-            while (in > 0 && unsortedList[in - 1].getName().compareTo(temp.getName()) >= 0) {
-                unsortedList[in] = unsortedList[in - 1];
-                --in;
-            }
-            unsortedList[in] = temp;
-        }
-        Vector sortedList = new Vector();
-        for (int i = 0; i < list.size(); i++) {
-            sortedList.addElement(unsortedList[i]);
-        }
-        return sortedList;
-    }
-
-    /**
-     * Unlocks all resources in this project.
-     *
-     * @param project The project to be unlocked.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    public void unlockResources(CmsProject project) throws CmsException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        try {
-            conn = m_sqlManager.getConnection(project);
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UNLOCK");
-            stmt.setString(1, CmsUUID.getNullUUID().toString());
-            stmt.setInt(2, project.getId());
-            stmt.executeUpdate();
-        } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
-        } finally {
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * Deletes a project from the cms.
-     * Therefore it deletes all files, resources and properties.
-     *
-     * @param project the project to delete.
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    public void writeProject(CmsProject project) throws CmsException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_WRITE");
-
-            stmt.setString(1, project.getOwnerId().toString());
-            stmt.setString(2, project.getGroupId().toString());
-            stmt.setString(3, project.getManagerGroupId().toString());
-            stmt.setInt(4, project.getFlags());
-            // no publishing data
-            stmt.setInt(7, project.getId());
-            stmt.executeUpdate();
-        } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
-        } finally {
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
      * Update the online link table (after a project is published).<p>
      *
      * @param deleted vector (of CmsResources) with the deleted resources of the project
@@ -2674,7 +2345,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             for (int i = 0; i < deleted.size(); i++) {
                 // delete the old values in the online table
                 if (((CmsResource) deleted.elementAt(i)).getType() == pageType) {
-                    CmsUUID id = readOnlineId(((CmsResource) deleted.elementAt(i)).getName());
+                    CmsUUID id = internalReadOnlineId(((CmsResource) deleted.elementAt(i)).getName());
                     if (!id.isNullUUID()) {
                         deleteLinkEntriesOnline(id);
                     }
@@ -2685,7 +2356,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             for (int i = 0; i < changed.size(); i++) {
                 // delete the old values and copy the new values from the project link table
                 if (((CmsResource) changed.elementAt(i)).getType() == pageType) {
-                    CmsUUID id = readOnlineId(((CmsResource) changed.elementAt(i)).getName());
+                    CmsUUID id = internalReadOnlineId(((CmsResource) changed.elementAt(i)).getName());
                     if (!id.isNullUUID()) {
                         deleteLinkEntriesOnline(id);
                         createLinkEntriesOnline(id, readLinkEntries(((CmsResource) changed.elementAt(i)).getResourceId()));
@@ -2697,7 +2368,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             for (int i = 0; i < newRes.size(); i++) {
                 // copy the values from the project link table
                 if (((CmsResource) newRes.elementAt(i)).getType() == pageType) {
-                    CmsUUID id = readOnlineId(((CmsResource) newRes.elementAt(i)).getName());
+                    CmsUUID id = internalReadOnlineId(((CmsResource) newRes.elementAt(i)).getName());
                     if (!id.isNullUUID()) {
                         createLinkEntriesOnline(id, readLinkEntries(((CmsResource) newRes.elementAt(i)).getResourceId()));
                     }
@@ -2730,40 +2401,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
-    }
-
-    /**
-     * This method updates a session in the database. It is used
-     * for sessionfailover.<p>
-     *
-     * @param sessionId the id of the session
-     * @param data the session data
-     * @return the amount of data written to the database
-     * @throws CmsException if something goes wrong
-     */
-    public int writeSession(String sessionId, Hashtable data) throws CmsException {
-        byte[] value = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        int retValue;
-
-        try {
-            value = serializeSession(data);
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_SESSION_UPDATE");
-            // write data to database
-            stmt.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
-            m_sqlManager.setBytes(stmt, 2, value);
-            stmt.setString(3, sessionId);
-            retValue = stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-        return retValue;
     }
 
     /**
