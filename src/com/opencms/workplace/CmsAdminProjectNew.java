@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2001/12/07 10:32:06 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2002/01/18 13:41:46 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.61 $ $Date: 2001/12/07 10:32:06 $
+ * @version $Revision: 1.62 $ $Date: 2002/01/18 13:41:46 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -72,9 +72,6 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 
     /** Session key */
     private static String C_NEWTYPE = "projecttype";
-
-    /** Session key */
-    private static String C_STATEXP = "staticexport";
 
     /** Session key */
     private static String C_NEWRESOURCES = "ALLRES";
@@ -211,16 +208,13 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
             session.removeValue(C_NEWRESOURCES);
             session.removeValue(C_NEWCHANNELS);
             session.removeValue(C_NEWTYPE);
-            session.removeValue(C_STATEXP);
             session.removeValue("lasturl");
             session.removeValue("newProjectCallingFrom");
             reqCont.setCurrentProject(cms.onlineProject().getId());
         }
         String newName, newGroup, newDescription, newManagerGroup, newFolder;
         int projectType = 0;
-        int statExp = 0;
         String newType = new String();
-        String newStatExp = new String();
         String action = new String();
         action = (String)parameters.get("action");
         CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile,
@@ -267,18 +261,13 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
         }
 
         xmlTemplateDocument.setData("onlineId", "" + cms.onlineProject().getId());
-        if(cms.isStaticExportEnabled()){
-            xmlTemplateDocument.setData("projectstatexp",xmlTemplateDocument.getProcessedDataValue("statexp_enabled", this));
-        } else {
-            xmlTemplateDocument.setData("projectstatexp",xmlTemplateDocument.getProcessedDataValue("statexp_disabled", this));
-        }
+
         newGroup = (String)parameters.get(C_PROJECTNEW_GROUP);
         newDescription = (String)parameters.get(C_PROJECTNEW_DESCRIPTION);
         newManagerGroup = (String)parameters.get(C_PROJECTNEW_MANAGERGROUP);
         String allResources = (String)parameters.get(C_NEWRESOURCES);
         String allChannels = (String)parameters.get(C_NEWCHANNELS);
         newType = (String)parameters.get(C_NEWTYPE);
-        newStatExp = (String)parameters.get(C_STATEXP);
 
         // if there are still values in the session (like after an error), use them
         if(newGroup == null) {
@@ -298,9 +287,6 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
         }
         if(newType == null) {
             newType = (String)session.getValue(C_NEWTYPE);
-        }
-        if(newStatExp == null) {
-            newStatExp = (String)session.getValue(C_STATEXP);
         }
         if(newName == null) {
             newName = "";
@@ -326,12 +312,6 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
         } else {
             projectType = I_CmsConstants.C_PROJECT_TYPE_TEMPORARY;
         }
-        if(newStatExp == null || "".equals(newStatExp)) {
-            statExp = I_CmsConstants.C_PROJECT_TYPE_NORMAL;
-            newStatExp = "";
-        } else {
-            statExp = I_CmsConstants.C_PROJECT_TYPE_STATICEXPORT;
-        }
 
         if(parameters.get("submitform") != null) {
             // the form has just been submitted, store the data in the session
@@ -340,7 +320,6 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
             session.putValue(C_NEWDESCRIPTION, newDescription);
             session.putValue(C_NEWMANAGERGROUP, newManagerGroup);
             session.putValue(C_NEWTYPE, newType);
-            session.putValue(C_STATEXP, newStatExp);
             session.putValue(C_NEWCHANNELS, allChannels);
             if(newName.equals("") || newGroup.equals("") || newManagerGroup.equals("")
                     || (allResources.equals("") && allChannels.equals(""))) {
@@ -393,7 +372,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                 numChan = channels.size();
                 // finally create the project
                 CmsProject project = cms.createProject(newName, newDescription, newGroup,
-                        newManagerGroup, projectType + statExp);
+                        newManagerGroup, projectType);
                 // change the current project
                 reqCont.setCurrentProject(project.getId());
                 // copy the resources to the current project
@@ -427,7 +406,6 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                 session.removeValue(C_NEWMANAGERGROUP);
                 session.removeValue(C_NEWFOLDER);
                 session.removeValue(C_NEWTYPE);
-                session.removeValue(C_STATEXP);
                 session.removeValue(C_NEWRESOURCES);
                 session.removeValue(C_NEWCHANNELS);
                 session.removeValue("lasturl");
@@ -442,7 +420,6 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
         xmlTemplateDocument.setData(C_NEWNAME, newName);
         xmlTemplateDocument.setData(C_NEWDESCRIPTION, newDescription);
         xmlTemplateDocument.setData(C_NEWTYPE, newType);
-        xmlTemplateDocument.setData(C_STATEXP, newStatExp);
 
         // Now load the template file and start the processing
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters,
