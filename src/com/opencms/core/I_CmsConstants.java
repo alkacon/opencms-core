@@ -6,7 +6,7 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @uathor Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/01/07 18:46:09 $
+ * @version $Revision: 1.17 $ $Date: 2000/01/12 16:38:14 $
  */
 public interface I_CmsConstants
 {
@@ -365,4 +365,17 @@ public interface I_CmsConstants
      */
     static final String C_SESSION_PROJECT="PROJECT";
      
+    /** Identifier for request type http */
+    public static final int C_REQUEST_HTTP = 0;
+    
+    /** Identifier for request type console */
+    public static final int C_REQUEST_CONSOLE = 1;
+    
+    
+    /** Identifier for request type http */
+    public static final int C_RESPONSE_HTTP = 0;
+    
+    /** Identifier for request type console */
+    public static final int C_RESPONSE_CONSOLE = 1;
+    
 }

@@ -37,7 +37,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.2 $ $Date: 2000/01/11 11:26:51 $  
+* @version $Revision: 1.3 $ $Date: 2000/01/12 16:38:14 $  
 * 
 */
 
@@ -132,17 +132,24 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
         res.setContentType("text/html");
         PrintWriter out=res.getWriter();
         
+        CmsRequestHttpServlet cmsreq=new CmsRequestHttpServlet(req);
+        
         out.println("<html>");
-        out.println("<head><title>Der Erdrotationshamster</title></head>");
         out.println("<body><h1>Hallo Mindfact</h1>");
         out.println("<br>"+req.getRequestURI());
         out.println("<br>"+req.getServletPath());
         out.println("<br>"+req.getPathInfo());
-
+        
+        Enumeration en=cmsreq.getParameterNames();
+        while (en.hasMoreElements()) {
+            out.println("<br>"+en.nextElement()); 
+        }
+      
         try {
             CmsObject cms=initUser(req,res);
             out.println("<br>"+cms.getRequestContext().currentUser());
             CmsFile file=m_opencms.initResource(cms);
+            out.println("<br><br><h2>"+file+"</h2>");
             out.println("<br><br><h2>"+new String(file.getContents())+"</h2>");
             out.println("<br><br>");
         } catch (CmsException e) {

@@ -1,3 +1,4 @@
+
 package com.opencms.core;
 
 import java.io.*;
@@ -18,7 +19,7 @@ import com.opencms.file.*;
 * <p>
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.4 $ $Date: 2000/01/06 11:52:08 $  
+* @version $Revision: 1.5 $ $Date: 2000/01/12 16:38:14 $  
 * 
 */
 
@@ -73,11 +74,12 @@ class OpenCms implements I_CmsConstants
         file =cms.readFile(cms.getRequestContext().currentUser(),
                            cms.getRequestContext().getCurrentProject(),
                            cms.getRequestContext().getUri());
+        if (file != null) {
         // test if this file is only available for internal access operations
         if ((file.getAccessFlags() & C_ACCESS_INTERNAL_READ) >0) {
             throw new CmsException (CmsException.C_EXTXT[CmsException.C_INTERNAL_FILE]+cms.getRequestContext().getUri(),
                                     CmsException.C_INTERNAL_FILE);
-        }
+        }}
         return file;
     }
     
