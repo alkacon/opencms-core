@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/12/05 16:22:27 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2003/12/05 16:25:09 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 5.1
  */
@@ -420,7 +420,7 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
                 // lock is not shared and belongs to the current user in the current project, so properties are editable
                 return true;
             }
-        } else if ("1".equals(getParamLock())) {
+        } else if (getSettings().getAutoLockResources()) {
             return true;
         }
         // lock is null or belongs to other user and/or project, properties are not editable

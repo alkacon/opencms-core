@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/12/05 16:22:27 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.main.OpenCms;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.1
  */
@@ -60,6 +60,7 @@ public class CmsWorkplaceSettings {
     private String m_explorerProjectFilter;
     private int m_explorerProjectId;
     private boolean m_explorerShowLinks;
+    private boolean m_autoLockResources;
     
     private int m_explorerPage;
     private String m_explorerFlaturl;
@@ -78,6 +79,24 @@ public class CmsWorkplaceSettings {
         m_treeSite = new HashMap();
         m_resourceTypes = new HashMap();
         m_currentSite = OpenCms.getSiteManager().getDefaultSite().getSiteRoot(); 
+    }
+    
+    /**
+     * Returns if auto locking of resources is enabled.<p>
+     * 
+     * @return true if auto locking is enabled, otherwise false
+     */
+    public boolean getAutoLockResources() {
+        return m_autoLockResources;
+    }
+    
+    /**
+     * Sets if auto locking of resources is enabled.<p>
+     * 
+     * @param enabled true if auto locking is enabled, otherwise false
+     */
+    public synchronized void setAutoLockResources(boolean enabled) {
+        m_autoLockResources = enabled;
     }
     
     /**

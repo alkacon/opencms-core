@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/11/20 13:03:07 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2003/12/05 16:22:27 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 5.1
  */
@@ -94,7 +94,7 @@ public abstract class CmsWorkplace {
     private HttpSession m_session;
     private CmsWorkplaceSettings m_settings;
     private String m_resourceUri = null;
-    
+      
     public static final int HTML_START = 0;
     public static final int HTML_END = 1;
     
@@ -231,6 +231,9 @@ public abstract class CmsWorkplace {
         
         // save current workplace user
         settings.setUser(cms.getRequestContext().currentUser());
+        
+        // save the autolock resources setting
+        settings.setAutoLockResources("true".equals(OpenCms.getRuntimeProperty("workplace.autolock.resources")));
 
         // save current project
         settings.setProject(cms.getRequestContext().currentProject().getId());
@@ -302,7 +305,7 @@ public abstract class CmsWorkplace {
             settings.setExplorerResource("/");
         }        
     }
-    
+     
     /**
      * Returns the initialized cms object for the current user.<p>
      * 
@@ -593,6 +596,23 @@ public abstract class CmsWorkplace {
     }
     
     /**
+     * Checks the lock state of the resource and locks it if the autolock feature is enabled.<p>
+     * 
+     * @param resource the resource name which is checked
+     * @throws CmsException if reading or locking the resource fails
+     */
+    public void checkLock(String resource) throws CmsException {
+        if (getSettings().getAutoLockResources()) {
+            // Autolock is enabled, check the lock state of the resource
+            CmsResource res = getCms().readFileHeader(resource);
+            if (getCms().getLock(res).isNullLock()) {
+                // resource is not locked, lock it automatically
+                getCms().lockResource(resource);
+            }           
+        }
+    }
+    
+    /**
      * Initializes a Map with all visible resource types for the current user.<p>
      * 
      * @param cms the CmsObject
@@ -762,10 +782,10 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns a list of all methods of the current class instance that 
-     * start with "setParam" and have exactle on String parameter.<p> 
+     * start with "setParam" and have exactly one String parameter.<p> 
      * 
      * @return a list of all methods of the current class instance that 
-     * start with "setParam" and have exactle on String parameter
+     * start with "setParam" and have exactly one String parameter
      */
     private List paramSetMethods() {
         List list = new ArrayList();
