@@ -621,7 +621,7 @@ PACKAGE BODY OpenCmsProject IS
   EXCEPTION
     WHEN OTHERS THEN
       rollback;
-      raise_application_error(-20004, 'error when backup project',true);
+      raise_application_error(-20004, '[opencmsproject.backupProject',true);
   END;
 -----------------------------------------------------------------------------------------
 -- returns a cursor with the online-project

@@ -448,7 +448,8 @@ PACKAGE BODY opencmsresource IS
       vState := opencmsConstants.C_STATE_CHANGED;
     END IF;
     vNewResourceId := getNextId(vTableName);
-    EXECUTE IMMEDIATE 'insert into '||vTableName||
+    BEGIN
+    	EXECUTE IMMEDIATE 'insert into '||vTableName||
                       ' (resource_id, parent_id, resource_name, resource_type, resource_flags, user_id, group_id,'||
                       ' project_id, file_id, access_flags, state, locked_by, launcher_type, launcher_classname,'||
                       ' date_created, date_lastmodified, resource_size, resource_lastmodified_by)'||
@@ -459,6 +460,12 @@ PACKAGE BODY opencmsresource IS
                       opencmsConstants.C_UNKNOWN_LAUNCHER||''', to_date('''||to_char(sysdate,'dd.mm.yyyy hh24:mi:ss')||
                       ''',''dd.mm.yyyy hh24:mi:ss''), to_date('''||to_char(sysdate,'dd.mm.yyyy hh24:mi:ss')||
                       ''',''dd.mm.yyyy hh24:mi:ss''), 0, '||pUserId||')';
+     EXCEPTION
+     	WHEN DUP_VAL_ON_INDEX THEN
+     		RAISE;
+     	WHEN OTHERS THEN
+     		raise_application_error(-20004,'[opencmsresource.createFolder] '||pFolderName,true);
+     END;
     -- if this is the rootfolder or if the parentfolder is the rootfolder
     -- try to create the projectresource
     IF ((pParentResId = opencmsConstants.C_UNKNOWN_ID) OR getParent(pFolderName) = opencmsConstants.C_ROOT) AND
@@ -485,7 +492,7 @@ PACKAGE BODY opencmsresource IS
         CLOSE curFolder;
       END IF;
       rollback;
-      raise_application_error(-20004, 'error when create folder',true);
+      RAISE;
   END createFolder;
 ----------------------------------------------------------------------------------------------
 -- creates the folder pResource
@@ -515,7 +522,8 @@ PACKAGE BODY opencmsresource IS
       vState := opencmsConstants.C_STATE_CHANGED;
     END IF;
     vNewResourceId := getNextId(vTableName);
-    EXECUTE IMMEDIATE 'insert into '||vTableName||
+    BEGIN
+    	EXECUTE IMMEDIATE 'insert into '||vTableName||
                       ' (resource_id, parent_id, resource_name, resource_type, resource_flags, user_id, group_id,'||
                       ' project_id, file_id, access_flags, state, locked_by, launcher_type, launcher_classname,'||
                       ' date_created, date_lastmodified, resource_size, resource_lastmodified_by)'||
@@ -526,6 +534,12 @@ PACKAGE BODY opencmsresource IS
                       ''', to_date('''||to_char(pResource.date_created,'dd.mm.yyyy hh24:mi:ss')||
                       ''',''dd.mm.yyyy hh24:mi:ss''), to_date('''||to_char(pResource.date_lastmodified,'dd.mm.yyyy hh24:mi:ss')||
                       ''',''dd.mm.yyyy hh24:mi:ss''), 0, '||pUserId||')';
+    EXCEPTION
+    	WHEN DUP_VAL_ON_INDEX THEN
+    		RAISE;
+    	WHEN OTHERS THEN
+    		raise_application_error(-20004,'[opencmsresource.createFolder] '||pFolderName,true);
+    END;
     -- if this is the rootfolder or if the parentfolder is the rootfolder
     -- try to create the projectresource
     IF ((pParentId = opencmsConstants.C_UNKNOWN_ID) OR getParent(pFolderName) = opencmsConstants.C_ROOT) AND
@@ -556,7 +570,7 @@ PACKAGE BODY opencmsresource IS
         CLOSE oResource;
       END IF;
       rollback;
-      raise_application_error(-20004, 'error when create folder',true);
+      RAISE;
   END createFolder;
 ----------------------------------------------------------------------------------------------
 -- create a resource for a file, if pCopy = 'TRUE' then copy the file-content (cms_files),
@@ -614,7 +628,9 @@ PACKAGE BODY opencmsresource IS
                         ''',''dd.mm.yyyy hh24:mi:ss''), '||pResource.resource_size||', '||pUserId||')';
     EXCEPTION
       WHEN DUP_VAL_ON_INDEX THEN
-        userErrors.raiseUserError(userErrors.C_FILE_EXISTS);
+        RAISE;
+      WHEN OTHERS THEN
+      	raise_application_error(-20004,'[opencmsresource.createFile] '||pFileName,true);
     END;
     commit;
     OPEN oResource FOR 'select r.*, f.file_content from '||vResourceTable||' r, '||vFileTable||' f'||
@@ -632,7 +648,7 @@ PACKAGE BODY opencmsresource IS
         CLOSE oResource;
       END IF;
       rollback;
-      raise_application_error(-20004, 'error when create file',true);
+      RAISE;
   END createFile;
 ----------------------------------------------------------------------------------------------
 -- removes the folder pResource
@@ -673,7 +689,7 @@ PACKAGE BODY opencmsresource IS
       	CLOSE curSubResource;
       END IF;
       rollback;
-      raise_application_error(-20004, 'error when create file',true);
+      RAISE;
   END removeFolder;
 ----------------------------------------------------------------------------------------------
 -- updates the folder pResource
@@ -715,7 +731,7 @@ PACKAGE BODY opencmsresource IS
     EXCEPTION
       WHEN OTHERS THEN
         rollback;
-        raise_application_error(-20004, 'error when write folder',true);
+        raise_application_error(-20004, '[opencmsresource.writeFolder] '||pResource.resource_name,true);
     END;
     commit;
   END writeFolder;
@@ -760,7 +776,7 @@ PACKAGE BODY opencmsresource IS
     EXCEPTION
       WHEN OTHERS THEN
         rollback;
-        raise_application_error(-20004, 'error when write file header',true);
+        raise_application_error(-20004, '[opencmsresource.writeFileHeader] '||pResource.resource_name,true);
     END;
     commit;
   END writeFileHeader;
@@ -800,7 +816,7 @@ PACKAGE BODY opencmsresource IS
   EXCEPTION
     WHEN OTHERS THEN
       rollback;
-      raise_application_error(-20004, 'error when write file',true);
+      RAISE;
   END writeFile;
 --------------------------------------------------------------------------------------------------
 -- Copy the file
@@ -870,7 +886,7 @@ PACKAGE BODY opencmsresource IS
       IF curNewResource%ISOPEN THEN
         CLOSE curNewResource;
       END IF;
-      raise_application_error(-20004, 'error when copy file',true);
+      RAISE;
   END copyFile;
 ----------------------------------------------------------------------------------------------
 -- returns a cursor for the files in this folder
@@ -1071,7 +1087,7 @@ PACKAGE BODY opencmsresource IS
         CLOSE curResource;
       END IF;
       rollback;
-      raise_application_error(-20004, 'error when change state',true);
+      RAISE;
   END chstate;
 ------------------------------------------------------------------------------
 -- backup of published folders
@@ -1142,7 +1158,7 @@ PACKAGE BODY opencmsresource IS
         CLOSE curProperties;
       END IF;
       rollback;
-      raise_application_error(-20004, 'error when backup folder',true);
+      raise_application_error(-20004, '[opencmsresources.backupFolder] '||pFolder.resource_name,true);
   END backupFolder;
 ------------------------------------------------------------------------------
 -- backup of published files
@@ -1216,7 +1232,7 @@ PACKAGE BODY opencmsresource IS
         CLOSE curProperties;
       END IF;
       rollback;
-      raise_application_error(-20004, 'error when backup file',true);
+      raise_application_error(-20004, '[opencmsresources.backupFile] '||pFile.resource_name,true);
   END backupFile;
 ------------------------------------------------------------------------------
 -- returns the superpath for the resource with resource_name = pResourceName

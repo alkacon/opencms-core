@@ -119,23 +119,33 @@ PACKAGE BODY opencmsProperty IS
       END IF;
       IF vCount > 0 THEN
         -- update
-        EXECUTE IMMEDIATE 'update '||vPropertiesTable||
+        BEGIN
+          EXECUTE IMMEDIATE 'update '||vPropertiesTable||
                           ' set property_value = '''||pValue||
                           ''' where resource_id = '||pResourceId||
                           ' and propertydef_id = '||vPropdefId;
+        EXCEPTION
+          WHEN OTHERS THEN
+            raise_application_error(-20004,'[opencmsproperty.writeProperty] update '||pMeta,true);
+        END;
       ELSE
         -- insert
         vNewPropId := getNextId(vPropertiesTable);
-        EXECUTE IMMEDIATE 'insert into '||vPropertiesTable||
+        BEGIN
+          EXECUTE IMMEDIATE 'insert into '||vPropertiesTable||
                           ' (property_id, propertydef_id, resource_id, property_value)'||
                           ' values ('||vNewPropId||', '||vPropdefId||', '||pResourceId||', '''||pValue||''')';
+        EXCEPTION
+          WHEN OTHERS THEN
+            raise_application_error(-20004,'[opencmsproperty.writeProperty] insert '||pMeta,true);
+        END;
       END IF;
     ELSE
       userErrors.raiseUserError(userErrors.C_NOT_FOUND);
     END IF;
   EXCEPTION
     WHEN OTHERS THEN
-      raise_application_error(-20004, 'error when write property',true);
+      RAISE;
   END writeProperty;
 ----------------------------------------------------------------------------------------
 END;
