@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsContentDefinition.java,v $
-* Date   : $Date: 2001/10/26 12:43:45 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/10/29 07:41:53 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -108,6 +108,12 @@ public static Vector applyFilter(CmsObject cms, CmsFilterMethod filterMethod, St
  * must be overwritten in your content definition
  */
 public abstract void delete(CmsObject cms) throws Exception;
+/**
+ * abstract undelete method
+ * for undelete instance of content definition
+ * must be overwritten in your content definition
+ */
+public abstract void undelete(CmsObject cms) throws Exception;
 /**
  * Gets the getXXX methods
  * You have to override this method in your content definition.
