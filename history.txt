@@ -10,6 +10,14 @@ Legend:
 
 OpenCms 4.3.33 Bela Tegeuse - ?? July 2001
 ! Added icons and there handling of locked ressources in the new filelist.
+* Fixed bug when publishing a project: update the state of the offline resources without
+  changing the date
+* Fixed bug when publishing a resource: check if the resource is locked. In this case
+  throw exception (access denied)
+* Fixed bug when copying a folder: check if the destinationname ends with a slash and
+  add the slash only if it is missing.
+* Fixed bug when unlock a resource: do not set the project id to the current project
+- When importing resources the group and user data is imported before the resources
 
 OpenCms 4.3.32 Bela Tegeuse - 23 July 2001
 ! Added a ecmascript-engine to the OpenCms-shell. You can start it with like this:
