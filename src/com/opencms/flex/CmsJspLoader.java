@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
-* Date   : $Date: 2002/09/05 12:50:48 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/09/11 13:36:09 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import com.opencms.launcher.*;
 import com.opencms.util.Utils;
 import com.opencms.flex.cache.*;
 import com.opencms.flex.jsp.*;
+import com.opencms.flex.util.CmsPropertyLookup;
 
 /**
  * This implements the JSP launcher. 
@@ -50,7 +51,7 @@ import com.opencms.flex.jsp.*;
  * to the OpenCms Template mechanism.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConstants, I_CmsJspConstants, I_CmsResourceLoader {
 
@@ -246,6 +247,16 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
                     if (! res.isCommitted()) {
                         // If a JSP errorpage was triggered the response will be already committed here
                         byte[] result = w_res.getWriterBytes();
+                                        
+                        // TESTFIX: Ak for encoding property   
+                        // Encoding project:  
+                        String dnc = OpenCms.getDefaultEncoding().trim().toLowerCase();  
+                        String enc = cms.getRequestContext().getEncoding().trim().toLowerCase();
+                        if (! dnc.equals(enc)) {
+                            System.err.println("CmsJspLoader.load(): Encoding result from " + dnc + " to " + enc);
+                            result = (new String(result, dnc)).getBytes(enc);                            
+                        }
+                                                        
                         res.setContentLength(result.length);
                         w_res.processHeaders(w_res.getHeaders(), res);
                         res.getOutputStream().write(result);
@@ -436,6 +447,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
             
             try {
                 FileOutputStream fs = new FileOutputStream(f);                
+                                                
                 String page = new String(contents);
                 StringBuffer buf = new StringBuffer(contents.length);
 
@@ -511,7 +523,20 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
                     buf.append(page.substring(p0, page.length()));
                     contents = buf.toString().getBytes();
                 }
-                                
+                           
+                           
+                try {
+                // TESTFIX: Ak for encoding property     
+               	// Encoding project:
+                String dnc = OpenCms.getDefaultEncoding().trim().toLowerCase();  
+                String enc = CmsPropertyLookup.lookupProperty(cms, file.getAbsolutePath(), C_PROPERTY_CONTENT_ENCODING, true);
+                if (enc != null) enc = enc.trim().toLowerCase();
+                if ((enc != null) && (! dnc.equals(enc))) {
+                    System.err.println("CmsJspLoader.updateJsp(): Encoding result from " + dnc + " to " + enc);
+                    contents = (new String(contents, dnc)).getBytes(enc);                            
+                }     
+                } catch (Exception ex) {};
+                
                 fs.write(contents);                
                 fs.close();
                 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2002/09/04 08:38:08 $
-* Version: $Revision: 1.203 $
+* Date   : $Date: 2002/09/11 13:34:26 $
+* Version: $Revision: 1.204 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.203 $ $Date: 2002/09/04 08:38:08 $
+ * @version $Revision: 1.204 $ $Date: 2002/09/11 13:34:26 $
  */
 public interface I_CmsConstants {
 
@@ -628,8 +628,8 @@ public interface I_CmsConstants {
      * Session key for storing the current charcter encoding to be used in HTTP
      * requests and responses.
      */
-    //Gridnine AB Aug 6, 2002
-    public static final String C_SESSION_CONTENT_ENCODING = "contentencoding";
+    // Encoding project:
+    public static final String C_SESSION_CONTENT_ENCODING = "content-encoding";
 
     /** Identifier for request type http */
     public static final int C_REQUEST_HTTP = 0;

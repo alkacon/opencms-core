@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
-* Date   : $Date: 2002/08/19 15:18:31 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2002/09/11 13:36:31 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.http.*;
  * </UL>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.33 $ $Date: 2002/08/19 15:18:31 $
+ * @version $Revision: 1.34 $ $Date: 2002/09/11 13:36:31 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsConstants {
 
@@ -331,8 +331,19 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
                 /* Only write any output to the response output stream, if
                 the current request is neither redirected nor streamed. */
                 OutputStream out = resp.getOutputStream();
+                
+                // TESTFIX: Ak for encoding property     
+                // Encoding project:
+                String dnc = OpenCms.getDefaultEncoding().trim().toLowerCase();  
+                String enc = cms.getRequestContext().getEncoding().trim().toLowerCase();
+                if (! dnc.equals(enc)) {
+                    System.err.println("A_CmsLauncher.writeBytesToResponse(): Encoding result from " + dnc + " to " + enc);
+                    result = (new String(result, dnc)).getBytes(enc); 
+                }
+                
                 resp.setContentLength(result.length);
                 resp.setHeader("Connection", "keep-alive");
+                                
                 out.write(result);
                 // DEBUG for BEA WEBLOGIC out.flush();
                 out.close();

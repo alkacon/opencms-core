@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2002/09/03 11:57:00 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2002/09/11 13:32:26 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.http.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.28 $ $Date: 2002/09/03 11:57:00 $
+ * @version $Revision: 1.29 $ $Date: 2002/09/11 13:32:26 $
  */
 public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_CmsRequest {
 
@@ -151,11 +151,11 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
         // Test if this is a multipart-request.
         // If it is, extract all files from it.
         String type = req.getHeader("content-type");
-        if((type != null) && type.startsWith("multipart/form-data")&& (req.getContentLength() > -1)) {
+        if((type != null) && type.startsWith("multipart/form-data") && (req.getContentLength() > -1)) {
             readRequest();
         } else {
-            //Gridnine AB Aug 6, 2002
-            // Set request content encoding.
+            // Encoding project:
+            // Set request content encoding
             String encoding = req.getCharacterEncoding();
             if (encoding == null) {
                 // First try to get current encoding from session
@@ -166,14 +166,15 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
                     encoding = (String)session.getValue(
                         I_CmsConstants.C_SESSION_CONTENT_ENCODING);
                 }
-                // if encoding not found in session - use default one
+                // If encoding not found in session - use default one
                 if (encoding == null) {
-                    encoding = OpenCms.getEncoding();
+                    encoding = OpenCms.getDefaultEncoding();
                 }
                 req.setCharacterEncoding(encoding);
             }
-            A_OpenCms.log(C_OPENCMS_DEBUG, "request character encoding - " + req.getCharacterEncoding());
+            A_OpenCms.log(C_OPENCMS_DEBUG, "Request character encoding is: '" + req.getCharacterEncoding() + "'");
         }
+        
         if(m_req.getPathInfo().indexOf("?") != -1) {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && m_req.getQueryString() != null && m_req.getQueryString().indexOf("/") != -1) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "WARNING: URL parameters were not extracted properly.");

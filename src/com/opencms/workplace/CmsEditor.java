@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2002/09/11 13:36:48 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.34 $ $Date: 2002/09/03 11:57:06 $
+ * @version $Revision: 1.35 $ $Date: 2002/09/11 13:36:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -334,7 +334,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
                 prop = cms.readProperty(file + "/", C_PROPERTY_CONTENT_ENCODING);
             } 
         } catch (Exception e) {}
-        if (prop == null) prop = OpenCms.getEncoding();
+        if (prop == null) prop = OpenCms.getDefaultEncoding();
         return prop;
     }
 }

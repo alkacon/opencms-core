@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/09/05 12:44:39 $
-* Version: $Revision: 1.92 $
+* Date   : $Date: 2002/09/11 13:31:59 $
+* Version: $Revision: 1.93 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.92 $ $Date: 2002/09/05 12:44:39 $
+ * @version $Revision: 1.93 $ $Date: 2002/09/11 13:31:59 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -139,9 +139,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      * like "ElementClass|ElementTemplate|VariantCacheKey"
      */
     private static Hashtable c_variantDeps = null;
-
-    // Gridnine AB Aug 1, 2002
-    private static String c_encoding = "ISO-8859-1";
 
     /**
      * Constructor, creates a new OpenCms object.
@@ -372,17 +369,21 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] Exception initializing link rules: " + e.toString());
             }
         }
-        // Gridnine AB Aug 1, 2002
-        c_encoding = conf.getString("defaultContentEncoding", "ISO-8859-1");
-        /*
+        
+        // Encoding project:
+        String defaultEncoding = conf.getString("defaultContentEncoding", "UTF-8");        
         try {
-            if (!java.nio.charset.Charset.isSupported(c_encoding)) {
-                c_encoding = "ISO-8859-1";
+            // This will work with Java 1.4+ only
+            if (!java.nio.charset.Charset.isSupported(defaultEncoding)) {
+                defaultEncoding = getDefaultEncoding();
             }
-        } catch (Exception e) {
-                c_encoding = "ISO-8859-1";
-        }
-        */
+        } catch (Throwable t) {
+            // Will be thrown in Java < 1.4 (NoSuchMethodException etc.)
+            // In Java < 1.4 there is no easy way to check if encoding is supported,
+            // so you must make sure your setting in "opencms.properties" is correct.             
+        }        
+        setDefaultEncoding(defaultEncoding);
+        
     }
 
     private boolean isInitialized = false;
@@ -745,10 +746,5 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCms] crontable corrupt. Scheduler is now disabled!");
             }
         }
-    }
-
-    // Gridnine AB Aug 1, 2002
-    public static String getEncoding() {
-        return c_encoding;
     }
 }
