@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2003/09/15 10:51:15 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/09/25 10:47:48 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.1
  */
 public final class CmsSite implements Cloneable {   
@@ -81,10 +81,7 @@ public final class CmsSite implements Cloneable {
      * @param siteMatcher the site matcher for this site
      */
     public CmsSite(String siteRoot, CmsSiteMatcher siteMatcher) {
-        setSiteRoot(siteRoot);
-        setSiteRootUUID(CmsUUID.getNullUUID());
-        setTitle(siteRoot);
-        setSiteMatcher(siteMatcher);
+        this(siteRoot, CmsUUID.getNullUUID(), siteRoot, siteMatcher);
     }
         
     /**
@@ -96,10 +93,7 @@ public final class CmsSite implements Cloneable {
      * @param title display name of this site
      */
     public CmsSite(String siteRoot, CmsUUID siteRootUUID, String title) {
-        setSiteRoot(siteRoot);
-        setSiteRootUUID(siteRootUUID);
-        setTitle(title);
-        setSiteMatcher(CmsSiteMatcher.C_DEFAULT_MATCHER);
+        this(siteRoot, siteRootUUID, title, CmsSiteMatcher.C_DEFAULT_MATCHER);
     }    
 
     /**
