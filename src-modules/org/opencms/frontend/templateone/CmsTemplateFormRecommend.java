@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateFormRecommend.java,v $
- * Date   : $Date: 2004/10/28 14:04:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/04 16:01:39 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to build the page recommendation form.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsTemplateFormRecommend extends CmsTemplateForm {
     
@@ -143,16 +143,18 @@ public class CmsTemplateFormRecommend extends CmsTemplateForm {
         theMail.setHtmlMsg(getContent("recommend_mail.html", "html", getRequestContext().getLocale()));
         theMail.setTextMsg(getContent("recommend_mail.html", "text", getRequestContext().getLocale()));
         try {
-            // set the recipient
+            // set the recipient and the reply to address
             theMail.addTo(getEmailRecipient());
-            String sender = getEmailSender();
-            if (sender == null || "".equals(sender.trim())) {
-                sender = OpenCms.getSystemInfo().getMailSettings().getMailFromDefault();    
+            String sender = OpenCms.getSystemInfo().getMailSettings().getMailFromDefault();
+            String replyTo = getEmailSender();
+            if (replyTo == null || "".equals(replyTo.trim())) {
+                replyTo = sender;    
             }
             theMail.setFrom(sender);
+            theMail.addReplyTo(replyTo);
             if (!"".equals(getCopy())) {
                 // send a copy of the mail to the sender
-                theMail.addCc(sender);
+                theMail.addCc(replyTo);
             }
             // send the mail
             theMail.send();

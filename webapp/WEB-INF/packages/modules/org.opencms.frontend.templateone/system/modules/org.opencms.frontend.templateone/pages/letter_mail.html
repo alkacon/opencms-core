@@ -41,7 +41,7 @@ String contentLinkVisited = style.getConfigValue("content.link.visited", content
 		a:visited	{ color: <%= contentLinkVisited %>; text-decoration: none; }
 		a:hover		{ color: <%= contentLinkHover %>; text-decoration: none; }
 		a:active	{ color: <%= contentLinkActive %>; text-decoration: none; }
-		div			{ <% 
+		div.mail	{ <% 
 	
 			if (showMainBorder) {
 				out.print("border: 1px solid " + mainBorder + "; ");
@@ -56,7 +56,7 @@ String contentLinkVisited = style.getConfigValue("content.link.visited", content
 <p>
 	<%= cms.getFormText("mail_head", false) %>
 </p>
-<div>
+<div class="mail">
 <p>
 	<%= cms.key("letter.text.page") %>
 	<a href="<%= cms.getPageUrl() %>);"><%= cms.getPageTitle() %></a><br />

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2004/10/28 14:04:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/04 16:01:39 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
     
@@ -93,6 +93,9 @@ public class CmsTemplateBean extends CmsJspActionElement {
     
     /** Request parameter name to show the common version of a page.<p> */
     public static final String C_PARAM_COMMON = "common";
+    
+    /** Request parameter name for the help page URI.<p> */
+    public static final String C_PARAM_HELPURI = "helpuri";
     
     /** Request parameter name to determine the displayed version of a page.<p> */
     public static final String C_PARAM_LAYOUT = "layout";
@@ -235,7 +238,8 @@ public class CmsTemplateBean extends CmsJspActionElement {
         
         if (!showPrintVersion()) {
             // build the foot links row
-            include(C_FOLDER_ELEMENTS + "foot_links.jsp");
+            m_properties.put(C_PARAM_HELPURI, getConfigurationValue("help.uri", "none"));
+            include(C_FOLDER_ELEMENTS + "foot_links.jsp", null, m_properties);
             boolean showMenus = Boolean.valueOf(getConfigurationValue("headnav.menus", "true")).booleanValue();
             if (showHeadNavigation() && showMenus) {
                 // create the head navigation dhtml menus
@@ -422,7 +426,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
         if (showMainLink) {
             // less than 10 links defined, main link should be shown
             String defaultLink = (String)m_properties.get(C_PROPERTY_HEAD_DEFAULTLINK);
-            if (defaultLink != null) {
+            if (defaultLink != null && !"none".equals(defaultLink)) {
                 String url = defaultLink;
                 String text = defaultLink;
                 String target = "";

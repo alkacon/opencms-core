@@ -5,7 +5,9 @@ CmsTemplateBean cms = new CmsTemplateBean(pageContext, request, response);
 
 // calculate image link
 String imageLink = cms.getRequest().getParameter("imagelink");
-if (!"".equals(imageLink) && imageLink.startsWith("/")) {
+boolean showLink = !"".equals(imageLink) && !"none".equals(imageLink);
+
+if (showLink && imageLink.startsWith("/")) {
 	// calculate absolute path (internal link)
 	imageLink = cms.link(imageLink);
 }
@@ -13,7 +15,7 @@ if (!"".equals(imageLink) && imageLink.startsWith("/")) {
 %>
  
 <div class="imagehead"><%
-if (!"".equals(imageLink)) {
+if (showLink) {
 	%><a href="<%= imageLink %>"><span class="imagelink"></span></a><%
 }
 %></div>

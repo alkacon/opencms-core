@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateFormLetter.java,v $
- * Date   : $Date: 2004/10/28 14:04:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/04 16:01:39 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to build the page "letter to the editor" form.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsTemplateFormLetter extends CmsTemplateForm {
     
@@ -320,14 +320,17 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
                 // set request context uri back because this is changed in imprint bean
                 getRequestContext().setUri(uri);
             }
-            String sender = getContactEmail();
-            if (sender == null || "".equals(sender.trim())) {
-                sender = OpenCms.getSystemInfo().getMailSettings().getMailFromDefault();    
+            // set the recipient and the reply to address
+            String sender = OpenCms.getSystemInfo().getMailSettings().getMailFromDefault();
+            String contactMail = getContactEmail();
+            if (contactMail == null || "".equals(contactMail.trim())) {
+                contactMail = sender;    
             }
             theMail.setFrom(sender);
+            theMail.addReplyTo(contactMail);
             if (!"".equals(getCopy())) {
                 // send a copy of the mail to the sender
-                theMail.addCc(sender);
+                theMail.addCc(contactMail);
             }
             // send the mail
             theMail.send();
