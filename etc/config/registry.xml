@@ -69,7 +69,7 @@
         </view>
         <view>
             <name>select.explorer</name>
-            <url>/system/workplace/jsp/explorer.html</url>
+            <url>/system/workplace/jsp/explorer_fs.html</url>
         </view>        
         <exportpoint>
             <source>/system/workplace/resources/</source>
