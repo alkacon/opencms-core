@@ -6,14 +6,14 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @uathor Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2000/02/08 09:51:35 $
+ * @version $Revision: 1.30 $ $Date: 2000/02/08 09:54:19 $
  */
 public interface I_CmsConstants
 {
 	/**
 	 * The version-string for the cvs.
 	 */
-	static String C_VERSION = "Release 3.3 Build 3 'Caladan: Jessica'";
+	static String C_VERSION = "Release 3.3 Build 5 'Caladan: Jessica'";
 	
 	/**
 	 * The prefix for all database-tables.

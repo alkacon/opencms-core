@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.36 $ $Date: 2000/02/07 10:46:45 $ 
+ * @version $Revision: 1.37 $ $Date: 2000/02/08 09:51:35 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -887,6 +887,46 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		throws CmsException {
 		return( c_rb.readGroup(m_context.currentUser(), m_context.currentProject(), 
 							   resource ) );
+	}
+	
+	/**
+	 * Reads the owner of a project from the OpenCms.
+	 * 
+	 * @return The owner of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsUser readOwner(A_CmsProject project) 
+		throws CmsException{
+		return( c_rb.readOwner(m_context.currentUser(), m_context.currentProject(), 
+							   project ) );
+	}
+	
+	/**
+	 * Reads the group of a project from the OpenCms.
+	 * 
+	 * @return The group of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsGroup readGroup(A_CmsProject project) 
+		throws CmsException{
+		return( c_rb.readGroup(m_context.currentUser(), m_context.currentProject(), 
+							   project ) );
+	}
+	
+	/**
+	 * Reads the managergroup of a project from the OpenCms.
+	 * 
+	 * @return The group of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsGroup readManagerGroup(A_CmsProject project) 
+		throws CmsException{
+		return( c_rb.readManagerGroup(m_context.currentUser(), 
+									  m_context.currentProject(), 
+									  project ) );
 	}
 	
 	/**

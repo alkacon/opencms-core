@@ -16,7 +16,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.36 $ $Date: 2000/02/07 10:46:45 $ 
+ * @version $Revision: 1.37 $ $Date: 2000/02/08 09:51:35 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -764,6 +764,36 @@ public abstract class A_CmsObject {
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	public abstract A_CmsGroup readGroup(A_CmsResource resource) 
+		throws CmsException ;
+	
+	/**
+	 * Reads the owner of a project from the OpenCms.
+	 * 
+	 * @return The owner of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public abstract A_CmsUser readOwner(A_CmsProject project) 
+		throws CmsException ;
+	
+	/**
+	 * Reads the group of a project from the OpenCms.
+	 * 
+	 * @return The group of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public abstract A_CmsGroup readGroup(A_CmsProject project) 
+		throws CmsException;
+	
+	/**
+	 * Reads the managergroup of a project from the OpenCms.
+	 * 
+	 * @return The group of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public abstract A_CmsGroup readManagerGroup(A_CmsProject project) 
 		throws CmsException ;
 	
 	/**

@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2000/02/07 10:46:45 $
+ * @version $Revision: 1.24 $ $Date: 2000/02/08 09:51:35 $
  */
 public interface I_CmsWpConstants {
 
@@ -80,6 +80,11 @@ public interface I_CmsWpConstants {
     */
    public static final String C_TAG_PROJECTLIST_DEFAULT = "defaultprojectlist";   
     
+   /**
+    * Name of the label tag in the label definition template
+    */
+   public static final String C_TAG_PROJECTLIST_SNAPLOCK = "snaplock";   
+   
    /**
     * Name of the label tag in the label definition template
     */
@@ -211,6 +216,9 @@ public interface I_CmsWpConstants {
     public static final String C_PROJECTLIST_METHOD = "method";    
 	
     /**  Method of the projectlist field  */
+    public static final String C_PROJECTLIST_LOCKSTATE = "lockstate";    
+	
+    /**  Method of the projectlist field  */
     public static final String C_PROJECTLIST_NAME = "name";    
 	
     /**  Method of the projectlist field  */
@@ -218,6 +226,12 @@ public interface I_CmsWpConstants {
 	
     /**  Method of the projectlist field  */
     public static final String C_PROJECTLIST_STATE = "STATE";    
+	
+    /**  Method of the projectlist field  */
+    public static final String C_PROJECTLIST_STATE_LOCKED = "project.state.FILESLOCKED";    
+
+    /**  Method of the projectlist field  */
+    public static final String C_PROJECTLIST_STATE_UNLOCKED = "project.state.FILESUNLOCKED";    
 	
     /**  Method of the projectlist field  */
     public static final String C_PROJECTLIST_PROJECTMANAGER = "projectmanager";    

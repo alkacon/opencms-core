@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.43 $ $Date: 2000/02/07 10:46:45 $
+ * @version $Revision: 1.44 $ $Date: 2000/02/08 09:51:35 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -820,6 +820,60 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							   A_CmsResource resource) 
 		throws CmsException {
 		return( m_userRb.readGroup(resource.getGroupId()) );
+	}
+	
+	/**
+	 * Reads the owner of a project from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return The owner of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsUser readOwner(A_CmsUser currentUser, A_CmsProject currentProject, 
+							   A_CmsProject project) 
+		throws CmsException {
+		return( m_userRb.readUser(project.getOwnerId()) );
+	}
+	
+	/**
+	 * Reads the group of a project from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return The group of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsGroup readGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+								A_CmsProject project) 
+		throws CmsException {
+		return( m_userRb.readGroup(project.getGroupId()) );
+	}
+	
+	/**
+	 * Reads the managergroup of a project from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return The group of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsGroup readManagerGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+									   A_CmsProject project) 
+		throws CmsException {
+		return( m_userRb.readGroup(project.getManagerGroupId()) );
 	}
 	
 	/**
@@ -1847,6 +1901,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 									  A_CmsProject currentProject,
                                       String resource)
         throws CmsException {
+		
+		// TODO: all subdirs and subfiles of the resource must be copied, too!
 		
 		// read the onlineproject
 		A_CmsProject online = onlineProject(currentUser, currentProject);

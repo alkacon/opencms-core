@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.32 $ $Date: 2000/02/07 10:46:45 $
+ * @version $Revision: 1.33 $ $Date: 2000/02/08 09:51:35 $
  */
 interface I_CmsResourceBroker {
 
@@ -419,6 +419,54 @@ interface I_CmsResourceBroker {
 							   A_CmsResource resource) 
 		throws CmsException ;
 							
+	/**
+	 * Reads the owner of a project from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return The owner of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsUser readOwner(A_CmsUser currentUser, A_CmsProject currentProject, 
+							   A_CmsProject project) 
+		throws CmsException;
+	
+	/**
+	 * Reads the group of a project from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return The group of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsGroup readGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+								A_CmsProject project) 
+		throws CmsException;
+	
+	/**
+	 * Reads the managergroup of a project from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return The group of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsGroup readManagerGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+									   A_CmsProject project) 
+		throws CmsException;
+	
 	/**
 	 * Determines, if the users current group is the admin-group.
 	 * 

@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.20 $ $Date: 2000/02/07 10:46:45 $
+ * @version $Revision: 1.21 $ $Date: 2000/02/08 09:51:35 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -49,14 +49,14 @@ public class CmsShell implements I_CmsConstants {
 				shell.version();
 		
 				// wait for user-input
-				// shell.commands();	
-				shell.initDb();
+				shell.commands();	
+				/* shell.initDb();
 				
 				// init 2
 				shell = new CmsShell();
 				args[0] = "com.opencms.file.CmsInitMySql";
 				shell.init(args);
-				shell.initDb2();
+				shell.initDb2(); */
 
 			}
 		} catch(Exception exc) {

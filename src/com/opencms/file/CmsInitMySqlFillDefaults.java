@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/02/04 08:50:42 $
+ * @version $Revision: 1.13 $ $Date: 2000/02/08 09:51:35 $
  */
 public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstants {
 	
@@ -47,8 +47,9 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 			A_CmsUser user = userRb.addUser(C_USER_GUEST, "", C_GROUP_GUEST, 
 											"the guest-user", new Hashtable(), 
 											C_FLAG_ENABLED);
-			userRb.addUser(C_USER_ADMIN, "admin", C_GROUP_ADMIN, "the admin-user", 
-						   new Hashtable(), C_FLAG_ENABLED);
+			A_CmsUser admin = userRb.addUser(C_USER_ADMIN, "admin", C_GROUP_ADMIN, 
+											 "the admin-user", new Hashtable(), 
+											 C_FLAG_ENABLED);
 			
 			I_CmsRbProject projectRb = new CmsRbProject(
 				new CmsAccessProjectMySql(propertyDriver, propertyConnectString));
@@ -106,7 +107,7 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 			I_CmsAccessFile accessFile = new CmsAccessFile(mountedAccessModules);
 			
 			// create the root-folder
-			accessFile.createFolder(user, project, C_ROOT, 0);
+			accessFile.createFolder(admin, project, C_ROOT, 0);
 									
 			I_CmsRbFile fileRb = new CmsRbFile(accessFile);
 

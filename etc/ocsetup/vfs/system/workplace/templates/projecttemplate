@@ -4,7 +4,7 @@
 	<![CDATA[
 	<tr>
 		<td nowrap valign=top><A href="javascript:showkontext('project_lock',0)"><img src="/pics/ic_project_small.gif" width=16 height=16 border=0></a></td>
-		<td nowrap valign=top><IMG src="/pics/ic_lock.gif" width=16 height=16 border=0></td>
+		<td nowrap valign=top>]]><PROCESS>lockstate</PROCESS><![CDATA[</td>
 		<td nowrap valign=top><p class=einzug><a href="administration_content_projectresent_lock.html" class=task>]]><PROCESS>name</PROCESS><![CDATA[</a></td>
 		<td><p class=einzug>]]><PROCESS>description</PROCESS><![CDATA[</td>
 		<td nowrap valign=top><p class=einzug>]]><PROCESS>state</PROCESS><![CDATA[</td>
@@ -15,4 +15,10 @@
 	</tr>
 	]]>
 	</defaultprojectlist>
+
+	<snaplock>
+	<![CDATA[
+		<IMG src="]]><METHOD name="picsUrl">ic_lock.gif</METHOD><![CDATA[" width=16 height=16 border=0>
+	]]>
+	</snaplock>
 </WORKPLACE>
