@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/05/30 11:44:51 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/05/30 13:01:31 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.25 $ $Date: 2000/05/30 11:44:51 $
+ * @version $Revision: 1.26 $ $Date: 2000/05/30 13:01:31 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -451,7 +451,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 	 /** Check whether some of the resources are redundant because a superfolder has also
 	  *  been selected. 
       *  
-      * @param cms The CmsObject 
+      * @param resources containts the full pathnames of all the resources
       * @return A vector with the same resources, but the paths in the return value are disjoint 
       */
 	 
@@ -466,7 +466,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		}
 		if (n<2) {
 			// no check needed
-			ret.addElement(resources[1]);
+			ret.addElement(resources[0]);
 			return ret;
 		}
 		redundant = new boolean[n];
