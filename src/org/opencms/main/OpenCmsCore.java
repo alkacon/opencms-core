@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/12 16:54:20 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2004/02/12 17:09:42 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.76 $
+ * @version $Revision: 1.77 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -400,10 +400,10 @@ public final class OpenCmsCore {
         } else {
             // no accepted locales found, use english locale for messages
             locale = Locale.ENGLISH;
-    }
+        }
         // get localized message bundle
         CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.C_BUNDLE_NAME, locale);
-
+        
         // create the html for the output
         result.append(this.getErrormsg("C_ERRORPART_1"));
         // the document title
@@ -417,12 +417,12 @@ public final class OpenCmsCore {
         result.append(this.getErrormsg("C_ERRORPART_4"));
         // show error message, if present
         if (t.getLocalizedMessage() != null) {
-            result.append("<b>" + CmsStringSubstitution.substitute(t.getLocalizedMessage(), "\n", "\n<br>") + "</b>");
+            result.append("<p><b>" + CmsStringSubstitution.substitute(t.getLocalizedMessage(), "\n", "\n<br>") + "</b></p>");
         }
         // show system infos
-        result.append(messages.key("error.system.resource") + ":<b> " + cms.getRequestContext().getRequest().getRequestedResource() + "</b><br>");
+        result.append("<p>" + messages.key("error.system.resource") + ":<b> " + cms.getRequestContext().getRequest().getRequestedResource() + "</b><br>");
         result.append(messages.key("error.system.version") + ":<b> " + this.getSystemInfo().getVersionName() + "</b><br>");
-        result.append(messages.key("error.system.context") + ":<b> " + this.getSystemInfo().getOpenCmsContext() + "</b>");      
+        result.append(messages.key("error.system.context") + ":<b> " + this.getSystemInfo().getOpenCmsContext() + "</b></p>");      
         result.append(this.getErrormsg("C_ERRORPART_5"));
         // detail button label
         result.append(messages.key("button.detail"));
@@ -906,7 +906,7 @@ public final class OpenCmsCore {
     protected CmsSiteManager getSiteManager() {
         return m_siteManager;
     }
-    
+
     /**
      * Returns the initialized import/export manager,
      * which contains information about the Cms import/export.<p>
@@ -1401,7 +1401,7 @@ public final class OpenCmsCore {
         if (m_defaultFilenames == null) {
             m_defaultFilenames = new String[0];
         }
-        
+            
         // read the default user settings
         try {
             m_userDefaultLanguage = configuration.getString("workplace.user.default.language", I_CmsWpConstants.C_DEFAULT_LANGUAGE);
