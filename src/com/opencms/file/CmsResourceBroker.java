@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/05/02 10:03:34 $
- * Version: $Revision: 1.111 $
+ * Date   : $Date: 2000/05/02 10:07:53 $
+ * Version: $Revision: 1.112 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.111 $ $Date: 2000/05/02 10:03:34 $
+ * @version $Revision: 1.112 $ $Date: 2000/05/02 10:07:53 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3133,7 +3133,6 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void lockResource(A_CmsUser currentUser, A_CmsProject currentProject,
                              String resourcename, boolean force)
 		throws CmsException {
-
            
 		// read the resource, that shold be locked
         A_CmsResource  cmsResource = m_fileRb.readFileHeader(currentProject,resourcename);
@@ -3148,6 +3147,25 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// update counter of locked resources for the project.
 			currentProject.incrementCountLockedResources();
 			m_projectRb.writeProject(currentProject);
+			
+			// if this resource is a folder -> lock all subresources, too
+			if(cmsResource.isFolder()) {
+				Vector files = m_fileRb.getFilesInFolder(currentProject, cmsResource.getAbsolutePath());
+				Vector folders = m_fileRb.getSubFolders(currentProject, cmsResource.getAbsolutePath());
+				A_CmsResource currentResource;
+				
+				// lock all files in this folder
+				for(int i = 0; i < files.size(); i++ ) {
+					currentResource = (A_CmsResource)files.elementAt(i);
+					lockResource(currentUser, currentProject, currentResource.getAbsolutePath(), true);
+				}
+
+				// lock all files in this folder
+				for(int i = 0; i < folders.size(); i++) {
+					currentResource = (A_CmsResource)folders.elementAt(i);
+					lockResource(currentUser, currentProject, currentResource.getAbsolutePath(), true);
+				}
+			}
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + resourcename, 
 				CmsException.C_NO_ACCESS);
@@ -3157,7 +3175,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	/**
 	 * Unlocks a resource.<br>
 	 * 
-	 * Only a resource in an offline project can be unlock. The state of the resource
+	 * Only a resource in an offline project can be unlocked. The state of the resource
 	 * is set to CHANGED (1).
 	 * If the content of this resource is not exisiting in the offline project already,
 	 * it is read from the online project and written into the offline project.
@@ -3188,6 +3206,28 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		// update counter of locked resources for the project.
 		currentProject.decrementCountLockedResources();
 		m_projectRb.writeProject(currentProject);
+		
+		// read the resource, that shold be unlocked
+        A_CmsResource  cmsResource = m_fileRb.readFileHeader(currentProject,resourcename);
+		
+		// if this resource is a folder -> lock all subresources, too
+		if(cmsResource.isFolder()) {
+			Vector files = m_fileRb.getFilesInFolder(currentProject, cmsResource.getAbsolutePath());
+			Vector folders = m_fileRb.getSubFolders(currentProject, cmsResource.getAbsolutePath());
+			A_CmsResource currentResource;
+				
+			// lock all files in this folder
+			for(int i = 0; i < files.size(); i++ ) {
+				currentResource = (A_CmsResource)files.elementAt(i);
+				unlockResource(currentUser, currentProject, currentResource.getAbsolutePath());
+			}
+
+			// lock all files in this folder
+			for(int i = 0; i < folders.size(); i++) {
+				currentResource = (A_CmsResource)folders.elementAt(i);
+				unlockResource(currentUser, currentProject, currentResource.getAbsolutePath());
+			}
+		}
 	}
 		
 	/**
@@ -4119,8 +4159,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) {
 				
 				// is the resource locked?
-				if(resource.isLocked()) {
-					// resource locked, no creation allowed
+				if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ) ) {
+					// resource locked by anopther user, no creation allowed
 					return(false);					
 				}
 				
@@ -4190,8 +4230,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) {
 				
 				// is the resource locked?
-				if(resource.isLocked()) {
-					// resource locked, no writing allowed
+				if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ) ) {
+					// resource locked by anopther user, no creation allowed
 					return(false);					
 				}
 				
@@ -4255,8 +4295,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) {
 				
 				// is the resource locked?
-				if(resource.isLocked()) {
-					// resource locked, no writing allowed
+				if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ) ) {
+					// resource locked by anopther user, no creation allowed
 					return(false);					
 				}
 				
