@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsSchedulerDbConnector.java,v $
- * Date   : $Date: 2000/02/16 18:57:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/02/19 10:13:56 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import com.opencms.file.*;
  * sending a query all <code>sleep</code> seconds.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/02/16 18:57:40 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/19 10:13:56 $
  */
 public class CmsSchedulerDbConnector extends Thread implements I_CmsLogChannels {
     /** Time to sleep */
@@ -64,21 +64,67 @@ public class CmsSchedulerDbConnector extends Thread implements I_CmsLogChannels 
 	 * This is done because the connection between Database and Servlet is cut after some time.
 	 */
     public void run() { 
+        // HACK: database connection is keeped alive by sending requesting all possible resource types via cms object.
         while(true) {
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_INFO, "[CmsSchedulerDbConnector] Keeping alive database connection.");
+            } 
             try {
-                if(A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsSchedulerDbConnector] Keeping alive database connection.");
-                }
                 m_cms.getFilesInFolder("/");
-                m_cms.getUsers();
-                m_cms.getAllAccessibleProjects();
-                m_cms.getGroups();
-                m_cms.readAllMetainformations("/");
-                m_cms.getGroupsOfUser("Admin");                
-                sleep(m_sleep);
             } catch(Exception e) {
-                System.err.println("*E*");
-                e.printStackTrace();
+                if(A_OpenCms.isLogging()){
+                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsSchedulerDbConnector] Could not read files. " + e);                                                                                                    
+                }
+            } 
+            try {
+                m_cms.getUsers();
+            } catch(Exception e) {
+                if(A_OpenCms.isLogging()){
+                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsSchedulerDbConnector] Could not read users. " + e);                                                                                                    
+                }
+            } 
+            try {
+                m_cms.getAllAccessibleProjects();
+            } catch(Exception e) {
+                if(A_OpenCms.isLogging()){
+                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsSchedulerDbConnector] Could not read projects. " + e);                                                                                                    
+                }
+            } 
+            try {
+                m_cms.getGroups();
+            } catch(Exception e) {
+                if(A_OpenCms.isLogging()){
+                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsSchedulerDbConnector] Could not read groups. " + e);                                                                                                    
+                }
+            } 
+            try {
+                m_cms.readAllMetainformations("/");
+            } catch(Exception e) {
+                if(A_OpenCms.isLogging()){
+                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsSchedulerDbConnector] Could not read metainfos. " + e);                                                                                                    
+                }
+            } 
+            try {
+                m_cms.getGroupsOfUser("Admin");
+            } catch(Exception e) {
+                if(A_OpenCms.isLogging()){
+                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsSchedulerDbConnector] Could not read groups of user. " + e);                                                                                                    
+                }
+            } 
+            try {
+                m_cms.readTask(1);
+            } catch(Exception e) {
+                if(A_OpenCms.isLogging()) {
+                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsSchedulerDbConnector] Could not read task. " + e);                                                                                                    
+                }
+            } 
+            try {              
+                sleep(m_sleep);            
+            } catch(Exception e) {
+                if(A_OpenCms.isLogging()) {
+                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsSchedulerDbConnector] Could not sleep. " + e);                                                                                                    
+                }                
+                return;
             }
         }
     }
