@@ -98,7 +98,7 @@ function continueReport() {
 	parent.disableButtons("buttonrowok");
 	parent.displayButtonRowOk();
 	parent.hasError = false;
-	parent.lastError = "";		
+	parent.lastError = "";	
 	setTimeout("reload('<%= wp.REPORT_END %>');", <%= wp.REPORT_UPDATE_TIME %>);
 	if (parent.document.main.<%= wp.PARAM_THREAD_HASNEXT %>) {
 		parent.document.main.<%= wp.PARAM_THREAD_HASNEXT %>.value = "false";
@@ -174,8 +174,6 @@ function appendHead(message) {
 function appendWarning(message) {
 	reportOutputFormats.push(FORMAT_WARNING);
 	reportOutputMessages.push(message);
-	hasError = true;
-	lastError = message;
 }
 
 function appendError(message) {
