@@ -25,7 +25,7 @@
 <tr><td align=middle valign=center>
 
 <!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
-<form id="SITENEW" name="SITENEW">
+<form id="SITEEDIT" name="SITEEDIT">
 <input type=hidden name="submitform" value="true">
 <table cellspacing=0 cellpadding=0 border=1 width=380>
 	<tr><td>
@@ -33,7 +33,7 @@
 			
 			<!-- Beginn Tabellenkopf blau-->
 			<tr> 
-           		<td class="head">]]><LABEL value="sitemanagement.label.createnewsite" /><![CDATA[</td>
+           		<td class="head">]]><LABEL value="sitemanagement.label.editsite" /><![CDATA[</td>
 			</tr>
 			<!-- Ende Tabellenkopf blau-->
 			
@@ -50,11 +50,11 @@
 						<table border=0 cellspacing=4 width=100% height=200px>
 							<tr>
 								<td class=formular width=10%>]]><LABEL value="sitemanagement.label.sitename" /><![CDATA[:</td>
-								<td class=dialogtxt><input type="text" name="NAME" class="textfeld3" size=31 maxlength=16 value="]]><PROCESS>new_site_name</PROCESS><![CDATA["> </td>
+								<td class=dialogtxt><input type="text" name="NAME" class="textfeld3" size=31 maxlength=16 value="]]><PROCESS>edit_site_name</PROCESS><![CDATA["> </td>
 							</tr>
 							<tr>
 								<td class=formular width=10%>]]><LABEL value="sitemanagement.label.domainname" /><![CDATA[:</td>
-								<td class=dialogtxt><input type="text" name="DOMAINNAME" class="textfeld3" size=31 maxlength=16 value="]]><PROCESS>new_site_domainname</PROCESS><![CDATA["> </td>
+								<td class=dialogtxt><input type="text" name="DOMAINNAME" class="textfeld3" size=31 maxlength=16 value="]]><PROCESS>edit_site_domainname</PROCESS><![CDATA["> </td>
 							</tr>
 							<tr>
 								<td class=formular width=10%>]]><LABEL value="sitemanagement.label.domain" /><![CDATA[:</td>
@@ -75,19 +75,7 @@
 							<tr>
 								<td class=formular valign=top>]]><LABEL value="label.description" /><![CDATA[:</td>
 								<td class=dialogtxt valign=top>
-									<TEXTAREA class="textarea" id=DESCRIPTION name=DESCRIPTION rows=5 cols=30>]]><PROCESS>new_site_description</PROCESS><![CDATA[</TEXTAREA>
-								</td>
-							</tr>
-							<tr>
-								<td class=formular width=10%>]]><LABEL value="label.groupsprojectworker" /><![CDATA[:</td>
-								<td class=dialogtxt>
-									]]><SELECT class="textfeld" name="GROUP" width="150" method="getGroups" onchange=""/><![CDATA[
-								</td>
-							</tr>
-							<tr>
-								<td class=formular valign=top>]]><LABEL value="label.groupsprojectmanager" /><![CDATA[:</td>
-								<td class=dialogtxt valign=top>
-									]]><SELECT class="textfeld" name="MANAGERGROUP" width="150" method="getManagerGroups" onchange=""/><![CDATA[
+									<TEXTAREA class="textarea" id=DESCRIPTION name=DESCRIPTION rows=5 cols=30>]]><PROCESS>edit_site_description</PROCESS><![CDATA[</TEXTAREA>
 								</td>
 							</tr>
 				</table>
@@ -97,7 +85,7 @@
 			<tr><td class=dialogtxt>
 				<table cellspacing=0 border=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="document.SITENEW.submit();" /><![CDATA[</td>
+					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="document.SITEEDIT.submit();" /><![CDATA[</td>
 					<td class=formular align=left width=50%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="100" action="document.location='sitematrix.html'" /><![CDATA[</td>
 				</tr>
 				</table>
@@ -123,12 +111,12 @@
 
 <TEMPLATE name="errornewsite">
 <![CDATA[
-]]><ERRORPAGE title="sitemanagement.error.title.newsite" message="sitemanagement.error.message.newsite" reason="sitemanagement.error.reason.newsite" suggestion="sitemanagement.error.suggestion.newsite" ref="administration_content_sitenew.html"><process>details</process></ERRORPAGE><![CDATA[
+]]><ERRORPAGE title="sitemanagement.error.title.editsite" message="sitemanagement.error.message.editsite" reason="sitemanagement.error.reason.editsite" suggestion="sitemanagement.error.suggestion.editsite" ref="administration_content_editnew.html"><process>details</process></ERRORPAGE><![CDATA[
 ]]>
 </TEMPLATE>
 
 <TEMPLATE name="datamissing">
-<ERRORPAGE title="sitemanagement.error.title.newsite" message="sitemanagement.error.message.datamissing" reason="sitemanagement.error.reason.datamissing" suggestion="error.suggestion.none" ref="administration_content_sitenew.html"></ERRORPAGE>
+<ERRORPAGE title="sitemanagement.error.title.editsite" message="sitemanagement.error.message.datamissing" reason="sitemanagement.error.reason.datamissing" suggestion="error.suggestion.none" ref="administration_content_siteedit.html"></ERRORPAGE>
 </TEMPLATE>
 
 <TEMPLATE name="done">
@@ -170,7 +158,7 @@
 <!--
 <BODY onload="updateFrame('body.admin_content', 'administration_content_sitenew.html?action=start');">
 -->
-<BODY onload="document.location='administration_content_sitenew.html?action=start'">
+<BODY onload="document.location='administration_content_siteedit.html?action=start'">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
