@@ -16,7 +16,7 @@
 
 <STYLE TYPE="text/css">
  BODY   {margin-left:10; font-family:Verdana; font-size:12; background:menu}
- BUTTON {width:5em}
+ BUTTON {width:7em}
  P      {text-align:center}
  TABLE  {cursor:hand}
 </STYLE>

@@ -11,7 +11,7 @@
 <!-- Style Sheet to the Table Dialog -->
 <STYLE TYPE="text/css">
  BODY   {margin-left:10; font-family:Verdana; font-size:12; background:menu}
- BUTTON {width:5em}
+ BUTTON {width:7em}
  TABLE  {font-family:Verdana; font-size:12}
  P      {text-align:center}
 </STYLE>
@@ -203,7 +203,7 @@ function setTBColor(arr)
 </TABLE>
 
 <P>
-<BUTTON ID=Ok  TYPE=SUBMIT>]]><LABEL value="button.ok"/><![CDATA[</BUTTON>
+<BUTTON ID=Ok TYPE=SUBMIT>]]><LABEL value="button.ok"/><![CDATA[</BUTTON>
 <BUTTON ONCLICK="window.close();">]]><LABEL value="button.cancel"/><![CDATA[</BUTTON>
 
 </BODY>
