@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/04/27 14:37:37 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2001/05/11 13:58:01 $
+* Version: $Revision: 1.8 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2001/04/27 14:37:37 $
+ * @version $Revision: 1.8 $ $Date: 2001/05/11 13:58:01 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -440,7 +440,6 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      * @exception IOException Thrown if user autherization fails.
      */
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
-
         // start time of this request
         if(C_DEBUG) {
             long reqStartTime = System.currentTimeMillis();
@@ -564,7 +563,6 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
 
                   // e.printStackTrace();
                   break;
-
 
               // file not found - display 404 error.
               case CmsException.C_NOT_FOUND:
@@ -766,7 +764,6 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
             // this is used to force the HTTP-Authentification to appear.
             loginParameter = cmsReq.getParameter("opencms");
             if(loginParameter != null) {
-
                 // do only show the authentication box if user is not already
                 // authenticated.
                 if(req.getHeader("Authorization") == null) {
@@ -787,7 +784,6 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
 
             // there is no session
             if((session == null)) {
-
                 // was there an old session-id?
                 String oldSessionId = req.getRequestedSessionId();
                 if(oldSessionId != null) {
@@ -818,10 +814,8 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
 
             // there was a session returned, now check if this user is already authorized
             if(session != null) {
-
                 // get the username
                 user = m_sessionStorage.getUserName(session.getId());
-
                 //System.err.println("Session authentifcation "+user.toString());
                 //check if a user was returned, i.e. the user is authenticated
                 if(user != null) {
@@ -831,7 +825,6 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                 }
             }
             else {
-
                 // there was either no session returned or this session was not
                 // found in the CmsCoreSession storage
                 String auth = req.getHeader("Authorization");
@@ -857,11 +850,15 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                         if(st.hasMoreTokens()) {
                             password = st.nextToken();
                         }
-
                         // autheification in the DB
                         try {
-                            user = cms.loginUser(username, password);
-
+                            try {
+                                // try to login as a user first ...
+                                user = cms.loginUser(username, password);
+                            } catch(CmsException exc) {
+                                // login as user failed, try as webuser ...
+                                user = cms.loginWebUser(username, password);
+                            }
                             // System.err.println("HTTP authentifcation "+user.toString());
                             // authentification was successful create a session
                             session = req.getSession(true);
