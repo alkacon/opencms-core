@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/11/06 08:06:36 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2001/11/08 14:11:42 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -3004,11 +3004,14 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
           session.removeValue("backofficepagetemplateselector");
           //do the redirect
           // to do: replace the getUri method with getPathInfo if aviable
-          String uri=  cms.getRequestContext().getUri();
-          uri = "/"+uri.substring(1,uri.lastIndexOf("/"));
-          cms.getRequestContext().getResponse().sendCmsRedirect(uri);
-          return null;
-        } catch (java.io.IOException e) {
+          //String uri=  cms.getRequestContext().getUri();
+          //uri = "/"+uri.substring(1,uri.lastIndexOf("/"));
+          //cms.getRequestContext().getResponse().sendCmsRedirect(uri);
+          //return null;
+          // EF 08.11.01: return the templateselector "done"
+          // there the backoffice url of the module will be called
+          return "done";
+        } catch (Exception e) {
            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
              A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while doing redirect "+e.toString());
           }
