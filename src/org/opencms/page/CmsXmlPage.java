@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/04/05 16:13:08 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/04/28 22:23:26 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  */
 public class CmsXmlPage {
     
@@ -484,10 +484,13 @@ public class CmsXmlPage {
         for (Iterator i = m_document.getRootElement().element(C_NODE_ELEMENTS).elementIterator(C_NODE_ELEMENT); i.hasNext();) {
    
             Element elem = (Element)i.next();
-            String elementName = elem.attribute(C_ATTRIBUTE_NAME).getValue();
-            String elementLang = elem.attribute(C_ATTRIBUTE_LANGUAGE).getValue();
-    
-            setBookmark(elementName, CmsLocaleManager.getLocale(elementLang), elem);              
+            try {
+                String elementName = elem.attribute(C_ATTRIBUTE_NAME).getValue();
+                String elementLang = elem.attribute(C_ATTRIBUTE_LANGUAGE).getValue();
+                setBookmark(elementName, CmsLocaleManager.getLocale(elementLang), elem);              
+            } catch (NullPointerException e) {
+                OpenCms.getLog(this).error("Error while initalizing xmlPage bookmarks", e);                
+            }    
         }
     }
     
@@ -533,19 +536,19 @@ public class CmsXmlPage {
             return (Element)m_bookmarks.remove(name);
         }
     }
-    
+
     /**
      * Removes an existing element with the given name and locale.<p>
      * 
      * @param name name of the element
      * @param locale the locale of the element
      */
-    public void removeElement(String name, String locale) {        
+    public void removeElement(String name, Locale locale) {        
         Element elements = m_document.getRootElement().element(C_NODE_ELEMENTS);        
-        Element element = removeBookmark(name, CmsLocaleManager.getLocale(locale));
+        Element element = removeBookmark(name, locale);
         elements.remove(element);
     }
-
+    
     /**
      * Adds a bookmark for the given element.<p>
      * 
