@@ -1,3 +1,31 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
+ * Date   : $Date: 2000/02/15 17:53:48 $
+ * Version: $Revision: 1.17 $
+ *
+ * Copyright (C) 2000  The OpenCms Group 
+ * 
+ * This File is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * For further information about OpenCms, please see the
+ * OpenCms Website: http://www.opencms.com
+ * 
+ * You should have received a copy of the GNU General Public License
+ * long with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
 
 package com.opencms.core;
 
@@ -27,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.16 $ $Date: 2000/01/28 11:09:43 $  
+* @version $Revision: 1.17 $ $Date: 2000/02/15 17:53:48 $  
 * 
 */
 
@@ -79,9 +107,11 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
      OpenCms(String driver, String connect, String classname) {
         // invoke the ResourceBroker via the initalizer
         try {
+			
   		    m_rb = ((A_CmsInit) Class.forName(classname).newInstance() ).init(driver, connect);
             CmsObject cms=new CmsObject();
             cms.init(m_rb);
+			printCopyrightInformation(cms);
             // initalize the Hashtable with all available mimetypes
             m_mt=cms.readMimeTypes();
         } catch (Exception e) {
@@ -211,5 +241,20 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
              cms.getRequestContext().getResponse().setContentType(C_DEFAULT_MIMETYPE);
         }
     }
+	
+	/**
+	 * Prints a copyright information to all log-files.
+	 */
+	private void printCopyrightInformation(A_CmsObject cms) {
+		System.err.println(cms.version());
+		System.out.println(cms.version());
+		
+		String copy[] = cms.copyright();
+		
+		for(int i = 0; i < copy.length; i++) {
+			System.err.println(copy[i]);
+			System.out.println(copy[i]);
+		}
+	}
     
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/setup/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/02/15 17:53:49 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.26 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.27 $ $Date: 2000/02/15 17:53:49 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -75,6 +75,7 @@ public class CmsShell implements I_CmsConstants {
 				
 				// print the version-string
 				shell.version();
+				shell.copyright();
 		
 				// wait for user-input
 				shell.commands();	
@@ -1108,6 +1109,16 @@ public class CmsShell implements I_CmsConstants {
 		 System.out.println(m_cms.version());
 	 }	 
 
+	/**
+	 * Returns a copyright-string for this OpenCms.
+	 */
+	 public void copyright() {
+		 String[] copy = m_cms.copyright();
+		 for(int i = 0; i < copy.length; i++) {
+			 System.out.println(copy[i]);
+		 }
+	 }	 
+	 
     /**
      * Copies a resource from the online project to a new, specified project.<br>
      * Copying a resource will copy the file header or folder into the specified 

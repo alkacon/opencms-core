@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2000/02/15 17:53:48 $
+ * Version: $Revision: 1.43 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.42 $ $Date: 2000/02/15 17:43:59 $ 
+ * @version $Revision: 1.43 $ $Date: 2000/02/15 17:53:48 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -1540,6 +1540,15 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 }	 
 
 	/**
+	 * Returns a copyright-string for this OpenCms.
+	 * 
+	 * @return copyright A copyright-string.
+	 */
+	 public String[] copyright() {
+		 return C_COPYRIGHT;
+	 }
+	
+	/**
 	 * This method can be called, to determine if the file-system was changed 
 	 * in the past. A module can compare its previosly stored number with this
 	 * returned number. If they differ, a change was made.
@@ -1660,4 +1669,20 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		return admin;
 	}
 
+	 /**
+	  * Reads all tasks for a user in a project.
+	  * 
+	  * @param project The Project in which the tasks are defined.
+	  * @param role The user who has to process the task.
+	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+	  * @param orderBy Chooses, how to order the tasks.
+	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public Vector readTasks(String projectName, String userName, int tasktype, 
+							 String orderBy, String sort) 
+		 throws CmsException {
+		 return( c_rb.readTasks(m_context.currentUser(), m_context.currentProject(), 
+								projectName, userName, tasktype, orderBy, sort) );
+	 }
 }

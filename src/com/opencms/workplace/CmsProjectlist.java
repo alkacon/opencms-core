@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjectlist.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/02/15 17:53:49 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/15 17:53:49 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
@@ -98,7 +98,6 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
             Throwable e = targetEx.getTargetException();
             if(!(e instanceof CmsException)) {
                 // Only print an error if this is NO CmsException
-                e.printStackTrace();
                 throwException("User method " + listMethod + " in calling class " + callingObject.getClass().getName() + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
             } else {
                 // This is a CmsException

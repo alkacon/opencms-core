@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsTask.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/02/15 17:53:49 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import java.util.*;
  * This abstract class describes a task in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.7 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/15 17:53:49 $
  */
 public class CmsTask extends A_CmsTask implements I_CmsConstants {
 
@@ -154,13 +154,13 @@ public class CmsTask extends A_CmsTask implements I_CmsConstants {
 	 * @param resourceName The name (including complete path) of the resouce.
 	 * 
 	 */
-	public CmsTask(int id, String name, int state, int tasktype,
-				   int root, int parent, int initiatoruser,
-				   int role, int agentuser, int originaluser,
-				   java.sql.Timestamp starttime, java.sql.Timestamp wakeuptime,
-				   java.sql.Timestamp timeout, java.sql.Timestamp endtime,
-				   int percentage, String permission, int priority,
-				   int escalationtype, String htmllink, int milestone,int autofinish){
+	CmsTask(int id, String name, int state, int tasktype,
+			int root, int parent, int initiatoruser,
+				int role, int agentuser, int originaluser,
+				java.sql.Timestamp starttime, java.sql.Timestamp wakeuptime,
+				java.sql.Timestamp timeout, java.sql.Timestamp endtime,
+				int percentage, String permission, int priority,
+				int escalationtype, String htmllink, int milestone,int autofinish){
 
 		m_Id = id;
 		m_Name = name;
@@ -288,63 +288,63 @@ public class CmsTask extends A_CmsTask implements I_CmsConstants {
 		return m_AutoFinish;
 	}
 	
-	public void setName(String taskname){
+	void setName(String taskname){
 		m_Name = taskname;
 	}
 	
-	public void setRoot(int root){
+	void setRoot(int root){
 		m_Root = root;
 	}
 	
-	public void setParent(int parent){
+	void setParent(int parent){
 		m_Parent = parent;
 	}
 	
-	public void setTaskType(int tasktype){
+	void setTaskType(int tasktype){
 		m_TaskType = tasktype;
 	}
 	
-	public void setRole(int role){
+	void setRole(int role){
 		m_Role = role;
 	}
 	
-	public void setAgentUser(int agentuser){
+	void setAgentUser(int agentuser){
 		m_AgentUser = agentuser;
 	}
 	
-	public void setOriginalUser(int originaluser){
+	void setOriginalUser(int originaluser){
 		m_OriginalUser = originaluser;
 	}
 	
-	public void setInitiatorUser(int initiatoruser){
+	void setInitiatorUser(int initiatoruser){
 		m_InitiatorUser = initiatoruser;
 	}
 	
-	public void setWakeupTime(java.sql.Timestamp wakeuptime){
+	void setWakeupTime(java.sql.Timestamp wakeuptime){
 		m_WakeupTime = wakeuptime;
 	}
 	
-	public void setTimeOut(java.sql.Timestamp timeout){
+	void setTimeOut(java.sql.Timestamp timeout){
 		m_TimeOut = timeout;
 	}
 	
-	public void setPriority(int priority){
+	void setPriority(int priority){
 		m_Priority = priority;
 	}
 	
-	public void setPercentage(int percentage){
+	void setPercentage(int percentage){
 		m_Percentage = percentage;
 	}
 	
-	public void setState(int state){
+	void setState(int state){
 		m_State = state;
 	}
 
-	public void setStartTime(java.sql.Timestamp starttime){
+	void setStartTime(java.sql.Timestamp starttime){
 		m_StartTime = starttime;
 	}
 	
-	public void setMilestone(int milestone){
+	void setMilestone(int milestone){
 		m_Milestone = milestone;
 	}
 	

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
- * Date   : $Date: 2000/02/15 17:51:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/02/15 17:53:49 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,13 +42,11 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/02/15 17:51:19 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/15 17:53:49 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 	
-	// TODO: read this constants from language or ini files!
-
 	/**
 	 * Constant for generating user javascriptlist
 	 */

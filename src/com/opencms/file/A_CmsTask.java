@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsTask.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/02/15 17:53:48 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import java.util.*;
  * This abstract class describes a task in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.8 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/15 17:53:48 $
  */
 public abstract class A_CmsTask
 {
@@ -51,7 +51,7 @@ public abstract class A_CmsTask
 	 * 
 	 * @return the name of this task.
 	 */
-	abstract String getName();
+	abstract public String getName();
 	
 	/**
 	 * Returns a string-representation for this object.
@@ -60,25 +60,25 @@ public abstract class A_CmsTask
 	 * @return string-representation for this object.
 	 */
 	
-	abstract int getState();
-	abstract int getTaskType();
-	abstract int getRoot();
-	abstract int getParent();
-	abstract int getInitiatorUser();
-	abstract int getRole();
-	abstract int getAgentUser();
-	abstract int getOriginalUser();
-	abstract java.sql.Timestamp getStartTime();
-	abstract java.sql.Timestamp getWakeupTime();
-	abstract java.sql.Timestamp getTimeOut();
-	abstract java.sql.Timestamp getEndTime();
-	abstract int getPercentage();
-	abstract String getPermission();
-	abstract int getPriority();
-	abstract int getEscalationType();
-	abstract String getHtmlLink();
-	abstract int getMilestone();
-	abstract int getAutoFinish();
+	abstract public int getState();
+	abstract public int getTaskType();
+	abstract public int getRoot();
+	abstract public int getParent();
+	abstract public int getInitiatorUser();
+	abstract public int getRole();
+	abstract public int getAgentUser();
+	abstract public int getOriginalUser();
+	abstract public java.sql.Timestamp getStartTime();
+	abstract public java.sql.Timestamp getWakeupTime();
+	abstract public java.sql.Timestamp getTimeOut();
+	abstract public java.sql.Timestamp getEndTime();
+	abstract public int getPercentage();
+	abstract public String getPermission();
+	abstract public int getPriority();
+	abstract public int getEscalationType();
+	abstract public String getHtmlLink();
+	abstract public int getMilestone();
+	abstract public int getAutoFinish();
 
 	abstract void setName(String taskname);
 	abstract void setRoot(int root);

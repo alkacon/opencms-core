@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2000/02/15 17:53:49 $
+ * Version: $Revision: 1.58 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.57 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.58 $ $Date: 2000/02/15 17:53:49 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -3726,5 +3726,39 @@ System.err.println(">>> readFile(2) error for\n" +
 							  int taskid, String parname)
 		 throws CmsException {
 		 return m_taskRb.getTaskPar(taskid, parname);
+	 }
+
+	 /**
+	  * Reads all tasks for a user in a project.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param project The Project in which the tasks are defined.
+	  * @param role The user who has to process the task.
+	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+	  * @param orderBy Chooses, how to order the tasks.
+	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public Vector readTasks(A_CmsUser currentUser, A_CmsProject currentProject,
+							 String projectName, String userName, int tasktype, 
+							 String orderBy, String sort) 
+		 throws CmsException{
+		 A_CmsProject project = null;
+		 
+		 A_CmsUser user = null;
+
+		 if(userName != null) {
+			 user = readUser(currentUser, currentProject, userName);
+		 }
+		 
+		 if(projectName != null) {
+			 project = readProject(currentUser, currentProject, projectName);
+		 }
+		 
+		 return m_taskRb.readTasks(project, user, tasktype, orderBy, sort);
 	 }
 }

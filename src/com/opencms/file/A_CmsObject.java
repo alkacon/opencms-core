@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2000/02/15 17:53:48 $
+ * Version: $Revision: 1.42 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.41 $ $Date: 2000/02/15 17:43:59 $ 
+ * @version $Revision: 1.42 $ $Date: 2000/02/15 17:53:48 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1239,6 +1239,13 @@ public abstract class A_CmsObject {
 	abstract public String version();
 
 	/**
+	 * Returns a copyright-string for this OpenCms.
+	 * 
+	 * @return copyright A copyright-string.
+	 */
+	abstract public String[] copyright();
+	
+	/**
 	 * This method can be called, to determine if the file-system was changed 
 	 * in the past. A module can compare its previosly stored number with this
 	 * returned number. If they differ, a change was made.
@@ -1326,4 +1333,18 @@ public abstract class A_CmsObject {
 	 */
 	abstract public boolean importDb(String importPath, String importFile)
 		throws Exception;
+
+	 /**
+	  * Reads all tasks for a user in a project.
+	  * 
+	  * @param project The Project in which the tasks are defined.
+	  * @param role The user who has to process the task.
+	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+	  * @param orderBy Chooses, how to order the tasks.
+	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 abstract public Vector readTasks(String projectName, String userName, int tasktype, 
+									  String orderBy, String sort) 
+		 throws CmsException;
 }

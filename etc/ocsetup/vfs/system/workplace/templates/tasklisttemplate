@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+	<defaulttasklist>
+	<![CDATA[
+	<tr>
+		<td nowrap><img src="pics/ic_task_new.gif" border=0 width=16 height=16 alt="Neue Aufgabe"></td>
+		<td nowrap></td>
+		<td nowrap><p class=einzug>]]><PROCESS>task</PROCESS><![CDATA[</td>
+		<td nowrap><p class=einzug>]]><PROCESS>foruser</PROCESS><![CDATA[</td>
+		<td nowrap><p class=einzug>]]><PROCESS>forrole</PROCESS><![CDATA[</td>
+		<td nowrap><p class=einzug>]]><PROCESS>actuator</PROCESS><![CDATA[</td>
+		<td nowrap><p class=einzug>]]><PROCESS>due</PROCESS><![CDATA[</td>
+		<td nowrap><p class=einzug>]]><PROCESS>from</PROCESS><![CDATA[</p></td>
+		<td nowrap><p class=einzug>]]><PROCESS>project</PROCESS><![CDATA[</p></td>
+	</tr>
+	]]>
+	</defaulttasklist>
+
+</WORKPLACE>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
- * Date   : $Date: 2000/02/15 17:51:20 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/02/15 17:53:49 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2000/02/15 17:51:20 $
+ * @version $Revision: 1.30 $ $Date: 2000/02/15 17:53:49 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
                                                                         I_CmsWpConstants {
@@ -134,6 +134,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
         registerTag("CONTEXTMENUE", "com.opencms.workplace.CmsContextmenue");
         registerTag("MESSAGEBOX", "com.opencms.workplace.CmsMessagebox");
         registerTag("RADIOBUTTON", "com.opencms.workplace.CmsRadioButtons");
+        registerTag("TASKLIST", "com.opencms.workplace.CmsTaskList");
     }    
     
     /**
