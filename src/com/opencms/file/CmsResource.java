@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2003/09/02 12:15:38 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2003/09/04 15:10:41 $
+ * Version: $Revision: 1.84 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.83 $ 
+ * @version $Revision: 1.84 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -64,16 +64,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** Boolean flag whether the timestamp of this resource was modified by a touch command */
     private boolean m_isTouched;
-    
+
     /** The size of the content */
     protected int m_length;
-    
+
     /** The number of references */
     protected int m_linkCount;
 
     /** The id of the loader which is used to process this resource */
     private int m_loaderId;
-
+    
     /** The name of this resource */
     private String m_name;
     
@@ -94,10 +94,10 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** The type of this resource */
     private int m_type;
-
+    
     /** The id of the user who created this resource */
     private CmsUUID m_userCreated;
-
+    
     /** The id of the user who modified this resource last */
     private CmsUUID m_userLastModified;
 
@@ -112,9 +112,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     * @param type the type of this resource
     * @param flags the flags of this resource
     * @param projectId the project id this resource was last modified in
-    * @param state the state of this resource
+     * @param state the state of this resource
     * @param loaderId the id for the that is used to load this recource
-    * @param dateCreated the creation date of this resource
+     * @param dateCreated the creation date of this resource
     * @param userCreated the id of the user who created this resource
     * @param dateLastModified the date of the last modification of this resource
     * @param userLastModified the id of the user who did the last modification of this resource
@@ -339,7 +339,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public boolean equals(Object obj) {
         if (obj instanceof CmsResource) {
             return ((CmsResource)obj).getId().equals(getId());
-        }
+            }
         return false;
     }
 
@@ -566,6 +566,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         if (m_structureId != null) {
             return m_structureId.hashCode();
         }
+
         return CmsUUID.getNullUUID().hashCode();
     }
 
@@ -598,6 +599,28 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public boolean isFolder() {
         return getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID;
+    }
+    
+    /**
+     * Checks if the resource is internal.<p>
+     * 
+     * This state is stored as bit 1 in the resource flags.<p>
+     * 
+     * @return true if the resource is internal, otherwise false
+     */
+    public boolean isInternal() {
+        return ((m_flags & I_CmsConstants.C_RESOURCEFLAG_INTERNAL) > 0);
+    }
+    
+    /**
+     * Checks if the link has to be labeled with a special icon in the explorer view.<p>
+     *
+     * This state is stored as bit 2 in the resource flags.<p>
+     * 
+     * @return true if a link to the resource has to be labeled, otherwise false
+     */
+    public boolean isLabeled() {
+        return ((m_flags & I_CmsConstants.C_RESOURCEFLAG_LABELLINK) > 0);
     }
 
     /**
@@ -642,9 +665,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Used to set the access flags of this resource,
-     * will now always throw a <code>RuntimeException</code><p>.
-     * 
+     * Sets the access flags of this resource.<p>
+     *
      * @deprecated the access flags are not longer maintained on the resource in the revised OpenCms ACL model
      * @param flags the access flags to set
      */
@@ -662,12 +684,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_dateLastModified = time;
     }
     
+    
     /**
     * Sets the flags of this resource.<p>
     *
-    * @param flags the flags to set
+    * @param flags int value with flag values to set
     */
-    void setFlags(int flags) {
+    public void setFlags(int flags) {
         m_flags = flags;
     }
 
@@ -783,7 +806,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * @see java.lang.Object#toString()            
+     * @see java.lang.Object#toString()
      */
     public String toString() {
         StringBuffer result = new StringBuffer();

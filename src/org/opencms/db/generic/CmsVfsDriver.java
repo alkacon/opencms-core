@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/04 13:00:39 $
- * Version: $Revision: 1.111 $
+ * Date   : $Date: 2003/09/04 15:10:41 $
+ * Version: $Revision: 1.112 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.111 $ $Date: 2003/09/04 13:00:39 $
+ * @version $Revision: 1.112 $ $Date: 2003/09/04 15:10:41 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -514,6 +514,14 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             // update the link Count
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_LINK_COUNT");
             stmt.setInt(1, this.countVfsLinks(project.getId(), resource.getResourceId()));
+            stmt.setString(2, resource.getResourceId().toString());
+            stmt.executeUpdate();
+            
+            m_sqlManager.closeAll(null, stmt, null);
+            
+            // update the resource flags
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_FLAGS");
+            stmt.setInt(1, resource.getFlags());
             stmt.setString(2, resource.getResourceId().toString());
             stmt.executeUpdate();
                                         
@@ -1080,6 +1088,14 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_LINK_COUNT");
                stmt.setInt(1, this.countVfsLinks(project.getId(),  newResource.getResourceId()));
                stmt.setString(2,  newResource.getResourceId().toString());
+               stmt.executeUpdate();
+               
+               m_sqlManager.closeAll(null, stmt, null);
+               
+               // update the resource flags
+               stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_FLAGS");
+               stmt.setInt(1, newResource.getFlags());
+               stmt.setString(2, newResource.getResourceId().toString());
                stmt.executeUpdate();
           }
             
@@ -2898,6 +2914,14 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 // update the link Count
                 stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_UPDATE_LINK_COUNT");
                 stmt.setInt(1, this.countVfsLinks(currentProject.getId(), resource.getResourceId()));
+                stmt.setString(2, resource.getResourceId().toString());
+                stmt.executeUpdate();
+                
+                m_sqlManager.closeAll(null, stmt, null);
+                
+                // update the resource flags
+                stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_UPDATE_FLAGS");
+                stmt.setInt(1, resource.getFlags());
                 stmt.setString(2, resource.getResourceId().toString());
                 stmt.executeUpdate();
                 

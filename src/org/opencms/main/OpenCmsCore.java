@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/09/03 08:28:08 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/09/04 15:10:41 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -117,7 +117,7 @@ public class OpenCmsCore {
     
     /** URI of the authentication form (read from properties) in case of form based authentication */
     private String m_authenticationFormURI;    
-    
+
     /** The OpenCms application base path */
     private String m_basePath;
 
@@ -174,7 +174,7 @@ public class OpenCmsCore {
 
     /** The name of the class used to validate a new password */
     private String m_passwordValidatingClass;
-    
+
     /** The runlevel of this OpenCmsCore object instance */
     private int m_runLevel;
 
@@ -210,7 +210,7 @@ public class OpenCmsCore {
 
     /** The version number of this OpenCms installation */
     private String m_versionNumber;
-        
+    
     /**
      * Protected constructor that will initialize the singleton OpenCms instance with runlevel 1.<p>
      * @throws CmsInitException in case of errors during the initialization
@@ -231,7 +231,7 @@ public class OpenCmsCore {
      * @param conf the OpenCms configuration
      * @throws CmsInitException in case of errors during the initialization
      */
-    protected OpenCmsCore(Configurations conf) throws CmsInitException {
+    protected OpenCmsCore(Configurations conf) throws CmsInitException  {
         synchronized (this) {
             synchronized (conf) {
                 if (m_instance != null && (m_instance.getRunLevel() > 1)) {
@@ -267,8 +267,8 @@ public class OpenCmsCore {
                 }
             }     
         }
-    }             
-            
+    }
+        
     /**
      * Returns the initialized OpenCms instance.<p>
      * 
@@ -282,7 +282,7 @@ public class OpenCmsCore {
                 new OpenCmsCore();
             } catch (CmsInitException e) {
                 // already initialized, this all we need
-            }
+        }
         }
         return m_instance;
     }
@@ -593,18 +593,18 @@ public class OpenCmsCore {
         }      
     }
 
-    /**
+    /** 
      * Returns the OpenCms application base path.<p>
-     * 
+     *
      * @return the OpenCms application base path
      */
     protected String getBasePath() {
         return m_basePath;
     }
 
-    /** 
+    /**
      * This method returns the runtime configuration.
-     *
+     * 
      * @return The runtime configuration.
      */
     protected Configurations getConfiguration() {
@@ -643,7 +643,7 @@ public class OpenCmsCore {
     protected CmsDefaultUsers getDefaultUsers() {
         return m_defaultUsers;
     }
-
+    
     /**
      * Returns the driver manager.<p>
      * 
@@ -821,8 +821,8 @@ public class OpenCmsCore {
         }
         return m_driverManager.getRegistry(null);
     }
-    
-    /**
+
+    /** 
      * Returns the runlevel of this OpenCmsCore object instance.<p>
      * 
      * @return the runlevel of this OpenCmsCore object instance
@@ -909,7 +909,7 @@ public class OpenCmsCore {
     protected String getVersionNumber() {
         return m_versionNumber;
     }
-
+    
     /**
      * Constructor to create a new OpenCms object.<p>
      * 
@@ -1298,6 +1298,25 @@ public class OpenCmsCore {
         }
         setRuntimeProperty("compatibility.support.webAppNames", webAppNames);
 
+        // site folders for which links should be labeled specially in the explorer
+        String[] labelSiteFolderString = conf.getStringArray("site.labeled.folders");
+        if (labelSiteFolderString == null) {
+            labelSiteFolderString = new String[0];
+        }
+        List labelSiteFoldersOri = java.util.Arrays.asList(labelSiteFolderString);
+        ArrayList labelSiteFolders = new ArrayList();
+        for (int i = 0; i < labelSiteFoldersOri.size(); i++) {
+            // remove possible white space
+            String name = ((String)labelSiteFoldersOri.get(i)).trim();
+            if (name != null && !"".equals(name)) {
+                labelSiteFolders.add(name);
+                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Label links in folder: " + (i + 1) + " - " + name);
+                }
+            }
+        }
+        setRuntimeProperty("site.labeled.folders", labelSiteFolders);
+
         // initialize static export variables
         m_exportProperties = new CmsStaticExportManager();
         
@@ -1351,7 +1370,7 @@ public class OpenCmsCore {
             }
         }        
     }
-    
+
     /**
      * Initialization of the OpenCms runtime environment.<p>
      *
@@ -1815,7 +1834,7 @@ public class OpenCmsCore {
             return m_log.isActive(channel);
         } else {
             return true;
-        }
+    }
     }
 
     /**
@@ -1833,7 +1852,7 @@ public class OpenCmsCore {
             m_log.log(channel, message);
         } else {
             System.out.println(message);
-        }
+    }
     }
     
     /**
@@ -1892,8 +1911,8 @@ public class OpenCmsCore {
             res.sendRedirect(redirectURL);
         }
     }    
-        
-    /** 
+    
+    /**
      * Sets the OpenCms base application path.<p>
      * 
      * @param path the base application path to set
@@ -1963,8 +1982,8 @@ public class OpenCmsCore {
         String mimetype = getMimeType(file.getResourceName(), cms.getRequestContext().getEncoding());
         cms.getRequestContext().getResponse().setContentType(mimetype);
     }
-    
-    /**
+
+    /**       
      * Sets the init level of this OpenCmsCore object instance.<p>
      * 
      * @param currentInstance the current instance

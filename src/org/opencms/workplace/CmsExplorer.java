@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/08/25 10:28:42 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2003/09/04 15:10:41 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 5.1
  */
@@ -403,7 +403,19 @@ public class CmsExplorer extends CmsWorkplace {
             content.append(",");
             
             // position 5: link count
-            content.append(res.getLinkCount() > 1 ? 1 : 0);
+            if (res.getLinkCount() > 1) {
+                // links are present
+                if (res.isLabeled()) {
+                    // there is at least one link in a marked site
+                    content.append("2");
+                } else {
+                    // common links are present
+                    content.append("1");
+                }
+            } else {
+                // no links to the resource are in the VFS
+                content.append("0");
+            }
             content.append(",");    
                     
             // position 6: size

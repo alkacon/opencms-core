@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/03 14:09:21 $
- * Version: $Revision: 1.192 $
+ * Date   : $Date: 2003/09/04 15:10:41 $
+ * Version: $Revision: 1.193 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.192 $ $Date: 2003/09/03 14:09:21 $
+ * @version $Revision: 1.193 $ $Date: 2003/09/04 15:10:41 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -789,7 +789,7 @@ public class CmsDriverManager extends Object {
         // include deleted resources, otherwise publishing of them will not work
         List path = readPath(context, resourcename, true);
         CmsResource resource = (CmsResource) path.get(path.size() - 1);
-        
+
         // update the project flag of a modified resource as "modified inside the current project"
         m_vfsDriver.updateProjectId(context.currentProject(), resource);
         //m_vfsDriver.changeLockedInProject(projectId, resource.getResourceId());        
@@ -853,9 +853,7 @@ public class CmsDriverManager extends Object {
         }
         changeUserType(context, theUser, userType);
     }
-    
-    
-    
+
     /**
      * Checks if all parents of a resource are already published in the online project.<p>
      * 
@@ -1120,9 +1118,10 @@ public class CmsDriverManager extends Object {
             return;
         }
 
+
         // validate the destination path/filename
         validFilename(destination.replace('/', 'a'));
-
+        
         // extract the destination folder and filename
         destinationFolderName = destination.substring(0, destination.lastIndexOf("/") + 1);
         destinationFileName = destination.substring(destination.lastIndexOf("/") + 1, destination.length());
@@ -1131,34 +1130,36 @@ public class CmsDriverManager extends Object {
         CmsFile sourceFile = readFile(context, source, false);
         CmsFolder destinationFolder = readFolder(context, destinationFolderName);
 
+
         // check the link mode to see if this resource has to be copied as a link.
         // only check this if the override flag "copyAsLink" is not set.
         if (!copyAsLink) {
             // if we have the copy mode "copy as link, set the override flag to true
-            if (copyMode == I_CmsConstants.C_COPY_AS_LINK) {
-                copyAsLink = true;
+            if (copyMode==I_CmsConstants.C_COPY_AS_LINK) {
+                copyAsLink=true;
             }
             // if the mode is "preservre links", we have to check the link counter
-            if (copyMode == I_CmsConstants.C_COPY_PRESERVE_LINK) {
-                if (sourceFile.getLinkCount() > 1) {
-                    copyAsLink = true;
+            if (copyMode==I_CmsConstants.C_COPY_PRESERVE_LINK) {
+                if (sourceFile.getLinkCount()>1) {
+                    copyAsLink=true;
                 }
             }
         }
+
 
         // checks, if the type is valid, i.e. the user can copy files of this type
         // we can't utilize the access guard to do this, since it needs a resource to check   
         if (!isAdmin(context) && (sourceFile.getType() == CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID || sourceFile.getType() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID)) {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] copyFile() " + source, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-
+        
         // check if the user has read access to the source file and write access to the destination folder
         checkPermissions(context, sourceFile, I_CmsConstants.C_READ_ACCESS);
         checkPermissions(context, destinationFolder, I_CmsConstants.C_WRITE_ACCESS);
 
         // read the source properties
         newResourceProps = readProperties(context, source, null, false);
-
+        
         // create a copy of the source file in the destination parent folder      
         if (copyAsLink) {
             newResource = createVfsLink(context, destination, source, newResourceProps, false);
@@ -1175,20 +1176,20 @@ public class CmsDriverManager extends Object {
                 m_userDriver.createAccessControlEntry(context.currentProject(), newResource.getResourceAceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
 
             }
-
-            m_vfsDriver.updateResourceState(context.currentProject(), newResource, C_UPDATE_ALL);
-
-            touch(context, destination, sourceFile.getDateLastModified(), sourceFile.getUserLastModified());
-
-            if (lockCopy) {
+                        
+            m_vfsDriver.updateResourceState(context.currentProject(),newResource,C_UPDATE_ALL);
+            
+            touch(context,destination,sourceFile.getDateLastModified(),sourceFile.getUserLastModified());            
+        
+        if (lockCopy) {
                 lockResource(context, destination);
-            }
+        }
         }
 
         clearAccessControlListCache();
         m_accessCache.clear();
         clearResourceCache();
-
+        
         List modifiedResources = (List) new ArrayList();
         modifiedResources.add(sourceFile);
         modifiedResources.add(newResource);
@@ -1378,7 +1379,7 @@ public class CmsDriverManager extends Object {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] countLockedResources()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
-    
+
     public int countLockedResources(CmsRequestContext context, String foldername) throws CmsException {
         // check the security
         if (isAdmin(context) || isManagerOfProject(context) || (context.currentProject().getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED)) {
@@ -1805,7 +1806,7 @@ public class CmsDriverManager extends Object {
      * @param linkName the name of the link
      * @param targetName the name of the target
      * @param linkProperties the properties to attach via the the link
-     * @param lockResource, true, if the new created link should be initially locked
+     * @param lockResource true, if the new created link should be initially locked
      * @return the new resource
      * @throws CmsException if something goes wrong
      */
@@ -1852,6 +1853,24 @@ public class CmsDriverManager extends Object {
                 0,
                 targetResource.getLinkCount()+1);
 
+        
+        // check if the target resource is already marked
+        if (!targetResource.isLabeled()) {
+            // check if the new link lies in the "marked sites"
+            List markedSites = (List)OpenCms.getRuntimeProperty("site.labeled.folders");
+            Iterator i = markedSites.iterator();
+            while (i.hasNext()) {
+                String curSite = (String)i.next();
+                if (linkName.startsWith(curSite)
+                        || targetResource.getFullResourceName().startsWith(curSite)) {
+                    // the link or target lies in the marked site, so update the file header!
+                    int flags = linkResource.getFlags();
+                    linkResource.setFlags(flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK);
+                    break;
+                }
+            }
+        }
+        
         // write the link
         linkResource = m_vfsDriver.createVfsLink(context.currentProject(), linkResource, context.currentUser().getId(), parentFolder.getId(), resourceName);
         linkResource.setFullResourceName(linkName);
@@ -1865,7 +1884,7 @@ public class CmsDriverManager extends Object {
         
         if (lockResource) {
         // lock the resource
-            lockResource(context,linkName);
+            lockResource(context, linkName);
         }
 
         // if the source
@@ -1885,9 +1904,9 @@ public class CmsDriverManager extends Object {
      * <li>the current user has write permission on the resource
      * </ul>
      * 
-     * @param context the current request context	
-     * @param resource			the resource
-     * @throws CmsException		if something goes wrong
+     * @param context the current request context
+     * @param resource the resource
+     * @throws CmsException if something goes wrong
      */
     private void deleteAllAccessControlEntries(CmsRequestContext context, CmsResource resource) throws CmsException {
 
@@ -2044,7 +2063,13 @@ public class CmsDriverManager extends Object {
                     deleteAllProperties(context, currentResource.getFullResourceName());
                     // remove the access control entries
                     m_userDriver.removeAllAccessControlEntries(context.currentProject(), currentResource.getResourceAceId());
-                    // the resource doesnt exist online => remove the file
+                    // the resource doesn't exist online => remove the file
+                    if (removeLabeledFlag(context, context.currentProject(), currentResource)) {
+                        // update the resource flags to "unlabel" the other siblings
+                        int flags = currentResource.getFlags();
+                        flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
+                        currentResource.setFlags(flags);
+                    }
                     m_vfsDriver.removeFile(context.currentProject(), currentResource);
                 } else {
                     // delete the access control entries
@@ -2053,8 +2078,8 @@ public class CmsDriverManager extends Object {
                     m_vfsDriver.deleteFile(context.currentProject(), currentResource);
                     // add the project id as a property, this is later used for publishing
                     m_vfsDriver.writeProperty(I_CmsConstants.C_PROPERTY_INTERNAL, context.currentProject().getId(), ""+context.currentProject().getId(), currentResource, currentResource.getType(), false);
-                    // TODO: still nescessary after we have the property?
-                    // update the project ID                    
+                    // TODO: still necessary after we have the property?
+                    // update the project ID
                     m_vfsDriver.updateProjectId(context.currentProject(), currentResource);
                 }
             }
@@ -3300,7 +3325,7 @@ public class CmsDriverManager extends Object {
     private Set getFolderIds(CmsRequestContext context, String folder) throws CmsException {
         CmsFolder parentFolder = readFolder(context, folder);        
         return (Set) new HashSet(m_vfsDriver.getFolderTree(context.currentProject(), parentFolder));
-    }
+            }
 
     /**
      * Returns all groups<P/>
@@ -4133,8 +4158,29 @@ public class CmsDriverManager extends Object {
          } else {
              folderName = newResourceName.substring(0, newResourceName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR, newResourceName.length()) + 1);
              resourceName = newResourceName.substring(folderName.length(), newResourceName.length());
-         }
-         
+             
+             // check if a link to the imported resource lies in a marked site
+             // get the list of marked sites from the runtime property
+             List markedSites = (List)OpenCms.getRuntimeProperty("site.labeled.folders");
+             // now check if one of the other vfs links lies in a marked site
+             List vfsLinkList = m_vfsDriver.getAllVfsSoftLinks(context.currentProject(), resource);
+             Iterator i = vfsLinkList.iterator();
+             boolean markedFound = false;
+             while (!markedFound && i.hasNext()) {
+                 CmsResource currentResource = (CmsResource)i.next();
+                 // read the full path of the current resource
+                 readPath(context, currentResource, true);
+                 String curPath = currentResource.getFullResourceName();
+                 for (int k = 0; k < markedSites.size(); k++) {
+                     if (curPath.startsWith((String)markedSites.get(k))) {
+                         // one link is in a marked site, so update the flags
+                         int flags = resource.getFlags();
+                         resource.setFlags(flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK);
+                         markedFound = true;
+                     }
+                 }
+             }              
+         }       
          
          // checks, if the filename is valid, if not it throws a exception
          validFilename(resourceName);
@@ -4467,29 +4513,29 @@ public class CmsDriverManager extends Object {
         CmsLock exclusiveLock = null;
 
         if (oldLock.isNullLock()) {
-            throw new CmsLockException("Unable to steal lock on a unlocked resource", CmsLockException.C_RESOURCE_UNLOCKED);
+            throw new CmsLockException( "Unable to steal lock on a unlocked resource", CmsLockException.C_RESOURCE_UNLOCKED);
         }
 
-        // stealing a lock: checking permissions will throw an exception coz the
-        // resource is still locked for the other user. thus, the resource is unlocked
-        // before the permissions of the new user are checked. if the new user 
-        // has insufficient permissions, the previous lock is restored.
+            // stealing a lock: checking permissions will throw an exception coz the
+            // resource is still locked for the other user. thus, the resource is unlocked
+            // before the permissions of the new user are checked. if the new user 
+            // has insufficient permissions, the previous lock is restored.
 
-        // save the lock of the resource's exclusive locked sibling
-        exclusiveLock = m_lockDispatcher.getExclusiveLockedSibling(this, context, resourcename);
-        // save the lock of the resource itself
-        oldLock = getLock(context, resourcename);
+            // save the lock of the resource's exclusive locked sibling
+            exclusiveLock = m_lockDispatcher.getExclusiveLockedSibling(this, context, resourcename);
+            // save the lock of the resource itself
+            oldLock = getLock(context, resourcename);
 
         // remove the lock
-        m_lockDispatcher.removeResource(this, context, resourcename, true);
+        m_lockDispatcher.removeResource(this, context, resourcename, true);  
 
         try {
             // check if the user has write access to the resource
             checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
         } catch (CmsSecurityException e) {
-            // restore the lock of the exclusive locked sibling in case a lock gets stolen by 
-            // a new user with insufficient permissions on the resource
-            m_lockDispatcher.addResource(this, context, exclusiveLock.getResourceName(), exclusiveLock.getUserId(), exclusiveLock.getProjectId());
+                // restore the lock of the exclusive locked sibling in case a lock gets stolen by 
+                // a new user with insufficient permissions on the resource
+                m_lockDispatcher.addResource(this, context, exclusiveLock.getResourceName(), exclusiveLock.getUserId(), exclusiveLock.getProjectId());
 
             throw e;
         }
@@ -4929,7 +4975,6 @@ public class CmsDriverManager extends Object {
         int publishProjectId = context.currentProject().getId();
         boolean backupEnabled = isHistoryEnabled(cms);
         int versionId = 0;
-  
 
         // check the security
         if ((isAdmin(context) || isManagerOfProject(context)) && (context.currentProject().getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED) && (publishProjectId != I_CmsConstants.C_PROJECT_ONLINE_ID)) {
@@ -4954,7 +4999,7 @@ public class CmsDriverManager extends Object {
                 }
                 
                 changedResources = m_projectDriver.publishProject(context, readProject(I_CmsConstants.C_PROJECT_ONLINE_ID), isHistoryEnabled(cms), versionId, report, m_registry.getExportpoints(), directPublishResource);
-                                
+
                 // now publish the module masters
                 Vector publishModules = new Vector();
                 cms.getRegistry().getModulePublishables(publishModules, null);
@@ -5454,7 +5499,7 @@ public class CmsDriverManager extends Object {
         if (resource.isFolder()) {
             resource.setFullResourceName(filename + I_CmsConstants.C_FOLDER_SEPARATOR);
         } else {
-            resource.setFullResourceName(filename);
+        resource.setFullResourceName(filename);
         }
 
         // access was granted - return the file-header.
@@ -7117,6 +7162,50 @@ public class CmsDriverManager extends Object {
         
         touchResource(context, resource, dateLastModified, userLastModified);
     }
+    
+    /**
+     * Checks if the resource which will be deleted is in a "marked" site.<p>
+     * 
+     * If so, the resource flags are updated during resource deletion.<p>
+     *   
+     * @param context the current request context
+     * @param project the project to check
+     * @param resource the resource
+     * @return true if the flag should be removed from the resource, otherwise false
+     * @throws CmsException if something goes wrong
+     */
+    public boolean removeLabeledFlag(CmsRequestContext context, CmsProject project, CmsResource resource) throws CmsException {
+        boolean removeMarkedFlag = false;
+        if (resource.isLabeled()) {
+            // get the list of labeled site folders from the runtime property
+            List markedSites = (List)OpenCms.getRuntimeProperty("site.labeled.folders");
+    
+            // check the site folders of the resource which will be deleted later
+            for (int k = 0; k < markedSites.size(); k++) {
+                if (resource.getFullResourceName().startsWith((String)markedSites.get(k))) {
+                    // the link or target lies in a marked site, so update the flags!
+                    removeMarkedFlag = true;
+                }
+            }             
+    
+            // now check if one of the other vfs links lies in a labeled site folder
+            List vfsLinkList = m_vfsDriver.getAllVfsSoftLinks(project, resource);
+            Iterator i = vfsLinkList.iterator();
+            while (i.hasNext()) {
+                CmsResource currentResource = (CmsResource)i.next();
+                // read the full path of the current resource
+                readPath(context, currentResource, true);
+                String curPath = currentResource.getFullResourceName();
+                for (int k = 0; k < markedSites.size(); k++) {
+                    if (curPath.startsWith((String)markedSites.get(k))) {
+                        // one link is still in the marked site, so don't update the flags
+                        return false;
+                    }
+                }
+            }              
+        }
+        return removeMarkedFlag;
+    }
 
     /**
      * Removes a user from a group.
@@ -7201,23 +7290,23 @@ public class CmsDriverManager extends Object {
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void renameResource(CmsRequestContext context, String oldname, String newname) throws CmsException {
-        String destination = oldname.substring(0, oldname.lastIndexOf("/") + 1);
+        
+        String destination = oldname.substring(0, oldname.lastIndexOf("/")+1);
         this.moveResource(context, oldname, destination + newname);
-
         /*
         // read the old file
         CmsResource resource = readFileHeader(context, oldname);
-        
+
         // checks, if the newname is valid, if not it throws a exception
         validFilename(newname);
-        
+
         // check if the user has write access to the file
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
-        
+
         m_vfsDriver.renameResource(context.currentUser(), context.currentProject(), resource, newname);
         clearResourceCache();
         */
-    }
+        }
 
     /**
      * Replaces the content and properties of an existing resource.<p>
@@ -7594,7 +7683,7 @@ public class CmsDriverManager extends Object {
         
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", res)));
     }
-
+    
     /**
      * Undeletes a file in the Cms.<br>
      *
@@ -7779,13 +7868,13 @@ public class CmsDriverManager extends Object {
      */
     public CmsLock unlockResource(CmsRequestContext context, String resourcename) throws CmsException {
         CmsLock oldLock = m_lockDispatcher.removeResource(this, context, resourcename, false);
-        clearResourceCache();
+        clearResourceCache();   
         
         //CmsResource resource = readFileHeader(context, resourcename);
         //OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
 
-        return oldLock;
-    }
+        return oldLock;     
+        }
         
     /**
      * When a project is published this method aktualises the online link table.
