@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
- * Date   : $Date: 2000/02/17 15:51:01 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/02/20 14:53:37 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/02/17 15:51:01 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/20 14:53:37 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -166,6 +166,11 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 				cms.setTaskPar(task.getId(),C_TASKPARA_ALL, paraAll);
 				cms.setTaskPar(task.getId(),C_TASKPARA_COMPLETION, paraCompletion);
 				cms.setTaskPar(task.getId(),C_TASKPARA_DELIVERY, paraDelivery);
+				// TODO: this must be read from a xml-language-file
+				String comment = "Rolle: " + roleName + "\n";
+				comment += "Bevorzugter Benutzer: " + agentName + "\n";
+				comment += taskcomment;
+				cms.writeTaskLog(task.getId(), comment, C_TASKLOGTYPE_CREATED);
 
 				templateSelector = "done";
 			} catch( Exception exc ) {

@@ -14,7 +14,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/02/20 10:14:00 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/20 14:53:37 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -65,7 +65,7 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
 		// is the checkbox checked?
 		if("OK".equals(parameters.get("ALL"))) {
 			session.removeValue(C_SESSION_TASK_PROJECTNAME);
-		} else {
+		} else if(parameters.get("ALL") != null) {
 			session.putValue(C_SESSION_TASK_PROJECTNAME, reqCont.currentProject().getName());
 		}
 		

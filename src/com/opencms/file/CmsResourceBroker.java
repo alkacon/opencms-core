@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/20 14:11:55 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2000/02/20 14:53:37 $
+ * Version: $Revision: 1.68 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michaela Schleich
- * @version $Revision: 1.67 $ $Date: 2000/02/20 14:11:55 $
+ * @version $Revision: 1.68 $ $Date: 2000/02/20 14:53:37 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -828,6 +828,23 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
 				CmsException.C_NO_ACCESS );
 		}		
+	}
+	
+	/**
+	 * Reads the owner of a tasklog from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return The owner of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsUser readOwner(A_CmsUser currentUser, A_CmsProject currentProject, A_CmsTaskLog log) 
+		throws CmsException{
+		return( m_userRb.readUser(log.getUser()) );
 	}
 	
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/02/20 14:11:55 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2000/02/20 14:53:36 $
+ * Version: $Revision: 1.48 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.47 $ $Date: 2000/02/20 14:11:55 $ 
+ * @version $Revision: 1.48 $ $Date: 2000/02/20 14:53:36 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -813,6 +813,16 @@ public abstract class A_CmsObject {
 	 */
 	public abstract A_CmsUser readOwner(A_CmsResource resource) 
 		throws CmsException ;
+	
+	/**
+	 * Reads the owner of a tasklog from the OpenCms.
+	 * 
+	 * @return The owner of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public abstract A_CmsUser readOwner(A_CmsTaskLog log) 
+		throws CmsException;
 	
 	/**
 	 * Reads the owner (initiator) of a task from the OpenCms.

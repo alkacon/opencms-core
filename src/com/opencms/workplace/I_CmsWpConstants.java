@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/02/20 10:14:00 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2000/02/20 14:53:37 $
+ * Version: $Revision: 1.48 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.47 $ $Date: 2000/02/20 10:14:00 $
+ * @version $Revision: 1.48 $ $Date: 2000/02/20 14:53:37 $
  */
 public interface I_CmsWpConstants {
 
@@ -546,4 +546,34 @@ public interface I_CmsWpConstants {
 
 	/** Constant for session-key */
 	public static final String C_SESSION_TASK_FILTER = "task_filter";
+	
+	/** Constant for task-log */
+	public static final int C_TASKLOGTYPE_CREATED = 100;
+
+	/** Constant for task-log */
+	public static final int C_TASKLOGTYPE_ACCEPTED = 101;
+
+	/** Constant for task-log */
+	public static final int C_TASKLOGTYPE_COMMENT = 102;
+
+	/** Constant for task-log */
+	public static final int C_TASKLOGTYPE_TAKE = 103;
+
+	/** Constant for task-log */
+	public static final int C_TASKLOGTYPE_OK = 104;
+
+	/** Constant for task-log */
+	public static final int C_TASKLOGTYPE_REACTIVATED = 105;
+
+	/** Constant for task-log */
+	public static final int C_TASKLOGTYPE_FORWARDED = 106;
+
+	/** Constant for task-log */
+	public static final int C_TASKLOGTYPE_CALL = 107;
+
+	/** Constant for task-log */
+	public static final int C_TASKLOGTYPE_DUECHANGED = 108;
+
+	/** Constant for task-log */
+	public static final int C_TASKLOGTYPE_PRIORITYCHANGED = 109;
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/02/20 14:11:55 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2000/02/20 14:53:36 $
+ * Version: $Revision: 1.49 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  *  
- * @version $Revision: 1.48 $ $Date: 2000/02/20 14:11:55 $ 
+ * @version $Revision: 1.49 $ $Date: 2000/02/20 14:53:36 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -927,6 +927,19 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 								   resourcename, meta);
 	}
 
+	/**
+	 * Reads the owner of a tasklog from the OpenCms.
+	 * 
+	 * @return The owner of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsUser readOwner(A_CmsTaskLog log) 
+		throws CmsException {
+		return( c_rb.readOwner(m_context.currentUser(), m_context.currentProject(), 
+							   log ) );
+	}
+	
 	/**
 	 * Reads the owner of a resource from the OpenCms.
 	 * 

@@ -14,7 +14,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/02/20 14:11:55 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/20 14:53:37 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -63,9 +63,15 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 			if("accept".equals((String)parameters.get("action"))){
 				// accept the task
 				cms.acceptTask(taskid);
+				// TODO: this must be read from a xml-language-file
+				String comment = "";
+				cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_ACCEPTED);
 			} else if("ok".equals((String)parameters.get("action"))){
 				// ok the task
 				cms.endTask(taskid);
+				// TODO: this must be read from a xml-language-file
+				String comment = "";
+				cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_OK);
 			}
 			
 			task = cms.readTask(taskid);
