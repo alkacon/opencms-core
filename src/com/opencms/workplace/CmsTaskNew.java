@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package com.opencms.workplace;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsUser;
@@ -47,11 +46,11 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.29 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.30 $ $Date: 2003/07/31 13:19:37 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
-public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
+public class CmsTaskNew extends CmsWorkplaceDefault {
 
 
     /**

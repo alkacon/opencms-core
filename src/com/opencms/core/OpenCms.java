@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2003/07/29 09:34:14 $
- * Version: $Revision: 1.149 $
+ * Date   : $Date: 2003/07/31 13:19:37 $
+ * Version: $Revision: 1.150 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,9 +89,9 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.149 $
+ * @version $Revision: 1.150 $
  */
-public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
+public final class OpenCms extends A_OpenCms {
 
     /** The default mimetype */
     private static final String C_DEFAULT_MIMETYPE = "text/html";
@@ -147,20 +147,20 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
         String defaultEncoding = getDefaultEncoding();
         // check the opencms.properties for a different setting
         defaultEncoding = conf.getString("defaultContentEncoding", defaultEncoding);
-        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-            log(C_OPENCMS_INIT, ". OpenCms encoding     : " + defaultEncoding);
+        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". OpenCms encoding     : " + defaultEncoding);
         String systemEncoding = null;
         try {
             systemEncoding = System.getProperty("file.encoding");
         } catch (SecurityException se) {
             // security manager is active, but we will try other options before giving up
         }
-        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-            log(C_OPENCMS_INIT, ". System file.encoding : " + systemEncoding);
+        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". System file.encoding : " + systemEncoding);
         if (!defaultEncoding.equals(systemEncoding)) {
             String msg = "OpenCms startup failure: System file.encoding '" + systemEncoding + "' not equal to OpenCms encoding '" + defaultEncoding + "'";
-            if (C_LOGGING && isLogging(C_OPENCMS_CRITICAL))
-                log(C_OPENCMS_CRITICAL, ". Critical init error/1: " + msg);
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL))
+                log(I_CmsLogChannels.C_OPENCMS_CRITICAL, ". Critical init error/1: " + msg);
             throw new Exception(msg);
         }
         try {
@@ -175,31 +175,31 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
             // so you must make sure your setting in "opencms.properties" is correct.             
         }
         setDefaultEncoding(defaultEncoding);
-        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-            log(C_OPENCMS_INIT, ". Encoding set to      : " + defaultEncoding);
+        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Encoding set to      : " + defaultEncoding);
 
         // Read server ethernet address (MAC) and init UUID generator
         String ethernetAddress = conf.getString("server.ethernet.address", CmsUUID.getDummyEthernetAddress());
-        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-            log(C_OPENCMS_INIT, ". Ethernet address used: " + ethernetAddress);
+        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Ethernet address used: " + ethernetAddress);
         CmsUUID.init(ethernetAddress);
 
         // invoke the ResourceBroker via the initalizer
         try {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT)) {
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
                 String jdkinfo = System.getProperty("java.vm.name") + " ";
                 jdkinfo += System.getProperty("java.vm.version") + " ";
                 jdkinfo += System.getProperty("java.vm.info") + " ";
                 jdkinfo += System.getProperty("java.vm.vendor") + " ";
-                log(C_OPENCMS_INIT, ". Java VM in use       : " + jdkinfo);
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Java VM in use       : " + jdkinfo);
                 String osinfo = System.getProperty("os.name") + " ";
                 osinfo += System.getProperty("os.version") + " ";
                 osinfo += System.getProperty("os.arch") + " ";
-                log(C_OPENCMS_INIT, ". Operating sytem      : " + osinfo);
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Operating sytem      : " + osinfo);
             }
         } catch (Exception e) {
-            if (C_LOGGING && isLogging(C_OPENCMS_CRITICAL))
-                log(C_OPENCMS_CRITICAL, ". Critical init error/2: " + e.getMessage());
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL))
+                log(I_CmsLogChannels.C_OPENCMS_CRITICAL, ". Critical init error/2: " + e.getMessage());
             // any exception here is fatal and will cause a stop in processing
             throw e;
         }
@@ -209,8 +209,8 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
             // and init the cms-object with the rb.
             m_driverManager = CmsDriverManager.newInstance(conf);            
         } catch (Exception e) {
-            if (C_LOGGING && isLogging(C_OPENCMS_CRITICAL))
-                log(C_OPENCMS_CRITICAL, ". Critical init error/3: " + e.getMessage());
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL))
+                log(I_CmsLogChannels.C_OPENCMS_CRITICAL, ". Critical init error/3: " + e.getMessage());
             // any exception here is fatal and will cause a stop in processing
             throw new CmsException("Database init failed", CmsException.C_RB_INIT_ERROR, e);
         }
@@ -218,23 +218,23 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
         try {
             // initalize the Hashtable with all available mimetypes
             m_mt = m_driverManager.readMimeTypes();
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Found mime types     : " + m_mt.size() + " entrys");
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Found mime types     : " + m_mt.size() + " entrys");
 
             // if the System property opencms.disableScheduler is set to true, don't start scheduling
             if (!new Boolean(System.getProperty("opencms.disableScheduler")).booleanValue()) {
                 // now initialise the OpenCms scheduler to launch cronjobs
                 m_table = new CmsCronTable(m_driverManager.readCronTable());
                 m_scheduler = new CmsCronScheduler(this, m_table);
-                if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                    log(C_OPENCMS_INIT, ". OpenCms scheduler    : enabled");
+                if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                    log(I_CmsLogChannels.C_OPENCMS_INIT, ". OpenCms scheduler    : enabled");
             } else {
-                if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                    log(C_OPENCMS_INIT, ". OpenCms scheduler    : disabled");
+                if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                    log(I_CmsLogChannels.C_OPENCMS_INIT, ". OpenCms scheduler    : disabled");
             }
         } catch (Exception e) {
-            if (C_LOGGING && isLogging(C_OPENCMS_CRITICAL))
-                log(C_OPENCMS_CRITICAL, ". Critical init error/5: " + e.getMessage());
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL))
+                log(I_CmsLogChannels.C_OPENCMS_CRITICAL, ". Critical init error/5: " + e.getMessage());
             // any exception here is fatal and will cause a stop in processing
             throw e;
         }
@@ -243,58 +243,58 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
         String flexExportUrl = conf.getString(CmsJspLoader.C_LOADER_JSPEXPORTURL, null);
         if (null != flexExportUrl) {
             // if JSP export URL is null it will be set in initStartupClasses()
-            if (flexExportUrl.endsWith(C_FOLDER_SEPARATOR)) {
+            if (flexExportUrl.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
                 flexExportUrl = flexExportUrl.substring(0, flexExportUrl.length() - 1);
             }
             setRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL, flexExportUrl);
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". JSP export URL       : using value from opencms.properties - " + flexExportUrl);
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". JSP export URL       : using value from opencms.properties - " + flexExportUrl);
         }
 
         // read flex jsp error page commit property and save in runtime configuration
         Boolean flexErrorPageCommit = conf.getBoolean(CmsJspLoader.C_LOADER_ERRORPAGECOMMIT, new Boolean(true));
         setRuntimeProperty(CmsJspLoader.C_LOADER_ERRORPAGECOMMIT, flexErrorPageCommit);
-        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-            log(C_OPENCMS_INIT, ". JSP errorPage commit : " + (flexErrorPageCommit.booleanValue() ? "enabled" : "disabled"));
+        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". JSP errorPage commit : " + (flexErrorPageCommit.booleanValue() ? "enabled" : "disabled"));
 
         // try to initialize the flex cache
         try {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Flex cache init      : starting");
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Flex cache init      : starting");
             // the flexCache has static members that must be initialized with "this" object
             new com.opencms.flex.cache.CmsFlexCache(this);
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Flex cache init      : finished");
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Flex cache init      : finished");
         } catch (Exception e) {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Flex cache init      : non-critical error " + e.toString());
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Flex cache init      : non-critical error " + e.toString());
         }
         
         // initialize the loaders
         try {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". ResourceLoader init  : starting");
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". ResourceLoader init  : starting");
             setLoaderManager(new CmsLoaderManager(this, conf));
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". ResourceLoader init  : finished");
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". ResourceLoader init  : finished");
         } catch (Exception e) {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". ResourceLoader init  : non-critical error " + e.toString());
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". ResourceLoader init  : non-critical error " + e.toString());
         }
 
         // try to initialize directory translations
         try {
             boolean translationEnabled = conf.getBoolean("directory.translation.enabled", false);
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Directory translation: " + (translationEnabled ? "enabled" : "disabled"));
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Directory translation: " + (translationEnabled ? "enabled" : "disabled"));
             if (translationEnabled) {
                 String[] translations = conf.getStringArray("directory.translation.rules");
                 // Directory translation stops after fist match, hence the "false" parameter
                 m_directoryTranslator = new CmsResourceTranslator(translations, false);
             }
         } catch (Exception e) {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Directory translation: non-critical error " + e.toString());
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Directory translation: non-critical error " + e.toString());
         }
         // make sure we always have at least an empty array      
         if (m_directoryTranslator == null)
@@ -303,16 +303,16 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
         // try to initialize filename translations
         try {
             boolean translationEnabled = conf.getBoolean("filename.translation.enabled", false);
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Filename translation : " + (translationEnabled ? "enabled" : "disabled"));
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Filename translation : " + (translationEnabled ? "enabled" : "disabled"));
             if (translationEnabled) {
                 String[] translations = conf.getStringArray("filename.translation.rules");
                 // Filename translations applies all rules, hence the true patameters
                 m_fileTranslator = new CmsResourceTranslator(translations, true);
             }
         } catch (Exception e) {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Filename translation : non-critical error " + e.toString());
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Filename translation : non-critical error " + e.toString());
         }
         // make sure we always have at last an emtpy array      
         if (m_fileTranslator == null)
@@ -324,12 +324,12 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
             for (int i = 0; i < m_defaultFilenames.length; i++) {
                 // remove possible white space
                 m_defaultFilenames[i] = m_defaultFilenames[i].trim();
-                if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                    log(C_OPENCMS_INIT, ". Default file         : " + (i + 1) + " - " + m_defaultFilenames[i]);
+                if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                    log(I_CmsLogChannels.C_OPENCMS_INIT, ". Default file         : " + (i + 1) + " - " + m_defaultFilenames[i]);
             }
         } catch (Exception e) {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Default file         : non-critical error " + e.toString());
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Default file         : non-critical error " + e.toString());
         }
         // make sure we always have at last an emtpy array      
         if (m_defaultFilenames == null)
@@ -346,35 +346,35 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
             String path = ((String)immutableResourcesOri.get(i)).trim();
             if (path != null && !"".equals(path)) {
                 immutableResources.add(path);
-                if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                    log(C_OPENCMS_INIT, ". Immutable resource   : " + (i + 1) + " - " + path);
+                if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                    log(I_CmsLogChannels.C_OPENCMS_INIT, ". Immutable resource   : " + (i + 1) + " - " + path);
             }
         }
-        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-            log(C_OPENCMS_INIT, ". Immutable resources  : " + ((immutableResources.size() > 0) ? "enabled" : "disabled"));
+        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Immutable resources  : " + ((immutableResources.size() > 0) ? "enabled" : "disabled"));
         setRuntimeProperty("import.immutable.resources", immutableResources);
         
         // read the default user settings
         try {
             String userDefaultLanguage = conf.getString("workplace.user.default.language", I_CmsWpConstants.C_DEFAULT_LANGUAGE);
             setUserDefaultLanguage(userDefaultLanguage);
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". User data init       : Default language is '" + userDefaultLanguage + "'");
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". User data init       : Default language is '" + userDefaultLanguage + "'");
         } catch (Exception e) {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". User data init       : non-critical error " + e.toString());
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". User data init       : non-critical error " + e.toString());
         }
                 
         // read the password validating class
         c_passwordValidatingClass = conf.getString("passwordvalidatingclass", "com.opencms.util.PasswordValidtation");
-        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-            log(C_OPENCMS_INIT, ". Password validation  : " + c_passwordValidatingClass);
+        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Password validation  : " + c_passwordValidatingClass);
         
         // read the maximum file upload size limit
         Integer fileMaxUploadSize = new Integer(conf.getInteger("workplace.file.maxuploadsize", -1));
         setRuntimeProperty("workplace.file.maxuploadsize", fileMaxUploadSize);
-        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-            log(C_OPENCMS_INIT, ". File max. upload size: " + (fileMaxUploadSize.intValue() > 0 ? (fileMaxUploadSize + " KB") : "unlimited"));
+        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". File max. upload size: " + (fileMaxUploadSize.intValue() > 0 ? (fileMaxUploadSize + " KB") : "unlimited"));
         
         // initialize "resourceinit" registry classes
         try {
@@ -384,16 +384,16 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
                 String currentClass = (String)i.next();
                 try {
                     m_checkFile.add(Class.forName(currentClass).newInstance());
-                    if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                        log(C_OPENCMS_INIT, ". Resource init class  : " + currentClass + " instanciated");
+                    if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                        log(I_CmsLogChannels.C_OPENCMS_INIT, ". Resource init class  : " + currentClass + " instanciated");
                 } catch (Exception e1) {
-                    if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                        log(C_OPENCMS_INIT, ". Resource init class  : non-critical error " + e1.toString());
+                    if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                        log(I_CmsLogChannels.C_OPENCMS_INIT, ". Resource init class  : non-critical error " + e1.toString());
                 }
             }
         } catch (Exception e2) {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Resource init class  : non-critical error " + e2.toString());
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Resource init class  : non-critical error " + e2.toString());
         }        
         
         // initialize the site manager
@@ -402,16 +402,16 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
         // read old (proprietary XML-style) locale backward compatibily support flag
         Boolean supportOldLocales = conf.getBoolean("compatibility.support.oldlocales", new Boolean(false));
         setRuntimeProperty("compatibility.support.oldlocales", supportOldLocales);
-        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-            log(C_OPENCMS_INIT, ". Old locale support   : " + (supportOldLocales.booleanValue() ? "enabled" : "disabled"));
+        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Old locale support   : " + (supportOldLocales.booleanValue() ? "enabled" : "disabled"));
 
         // convert import files from 4.x versions old webapp URL
         String webappUrl = conf.getString("compatibility.support.import.old.webappurl", null);
         if (webappUrl != null) {
             setRuntimeProperty("compatibility.support.import.old.webappurl", webappUrl);
         }
-        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-            log(C_OPENCMS_INIT, ". Old webapp URL       : " + ((webappUrl == null) ? "not set!" : webappUrl));
+        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Old webapp URL       : " + ((webappUrl == null) ? "not set!" : webappUrl));
 
         // unwanted resource properties which are deleted during import
         String[] propNames = conf.getStringArray("compatibility.support.import.remove.propertytags");
@@ -424,12 +424,12 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
             String name = ((String)propertyNamesOri.get(i)).trim();
             if (name != null && !"".equals(name)) {
                 propertyNames.add(name);
-                if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                    log(C_OPENCMS_INIT, ". Clear import property: " + (i + 1) + " - " + name);
+                if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                    log(I_CmsLogChannels.C_OPENCMS_INIT, ". Clear import property: " + (i + 1) + " - " + name);
             }
         }
-        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-            log(C_OPENCMS_INIT, ". Remove properties    : " + ((propertyNames.size() > 0) ? "enabled" : "disabled"));
+        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Remove properties    : " + ((propertyNames.size() > 0) ? "enabled" : "disabled"));
         setRuntimeProperty("compatibility.support.import.remove.propertytags", propertyNames);
 
         // old web application names (for editor macro replacement) 
@@ -443,24 +443,24 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
             String name = ((String)webAppNamesOri.get(i)).trim();
             if (name != null && !"".equals(name)) {
                 webAppNames.add(name);
-                if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                    log(C_OPENCMS_INIT, ". Old context path     : " + (i + 1) + " - " + name);
+                if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                    log(I_CmsLogChannels.C_OPENCMS_INIT, ". Old context path     : " + (i + 1) + " - " + name);
             }
         }
-        if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-            log(C_OPENCMS_INIT, ". Old context support  : " + ((webAppNames.size() > 0) ? "enabled" : "disabled"));
+        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Old context support  : " + ((webAppNames.size() > 0) ? "enabled" : "disabled"));
         setRuntimeProperty("compatibility.support.webAppNames", webAppNames);
 
         // now for the link replacement rules there are up to three rulesets for export online and offline
         try {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Link rules init      : starting");
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Link rules init      : starting");
 
             String[] staticUrlPrefix = new String[4];
-            staticUrlPrefix[0] = CmsStringSubstitution.substitute(conf.getString(C_URL_PREFIX_EXPORT, ""), C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
-            staticUrlPrefix[1] = CmsStringSubstitution.substitute(conf.getString(C_URL_PREFIX_HTTP, ""), C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
-            staticUrlPrefix[2] = CmsStringSubstitution.substitute(conf.getString(C_URL_PREFIX_HTTPS, ""), C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
-            staticUrlPrefix[3] = CmsStringSubstitution.substitute(conf.getString(C_URL_PREFIX_SERVERNAME, ""), C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
+            staticUrlPrefix[0] = CmsStringSubstitution.substitute(conf.getString(I_CmsConstants.C_URL_PREFIX_EXPORT, ""), I_CmsConstants.C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
+            staticUrlPrefix[1] = CmsStringSubstitution.substitute(conf.getString(I_CmsConstants.C_URL_PREFIX_HTTP, ""), I_CmsConstants.C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
+            staticUrlPrefix[2] = CmsStringSubstitution.substitute(conf.getString(I_CmsConstants.C_URL_PREFIX_HTTPS, ""), I_CmsConstants.C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
+            staticUrlPrefix[3] = CmsStringSubstitution.substitute(conf.getString(I_CmsConstants.C_URL_PREFIX_SERVERNAME, ""), I_CmsConstants.C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
             c_exportProperties.setUrlPrefixArray(staticUrlPrefix);
             // to get the right rulesets we need the default value for the export property
             String exportDefault = conf.getString("staticexport.default.export", "true");
@@ -471,11 +471,11 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
                 linkRulesExport = conf.getStringArray("ruleset." + export);
                 // now replace ${WEB_APP_NAME} with the correct name of the webapplication and replace the other variables
                 for (int i = 0; i < linkRulesExport.length; i++) {
-                    linkRulesExport[i] = CmsStringSubstitution.substitute(linkRulesExport[i], C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
-                    linkRulesExport[i] = CmsStringSubstitution.substitute(linkRulesExport[i], "${" + C_URL_PREFIX_EXPORT + "}", staticUrlPrefix[0]);
-                    linkRulesExport[i] = CmsStringSubstitution.substitute(linkRulesExport[i], "${" + C_URL_PREFIX_HTTP + "}", staticUrlPrefix[1]);
-                    linkRulesExport[i] = CmsStringSubstitution.substitute(linkRulesExport[i], "${" + C_URL_PREFIX_HTTPS + "}", staticUrlPrefix[2]);
-                    linkRulesExport[i] = CmsStringSubstitution.substitute(linkRulesExport[i], "${" + C_URL_PREFIX_SERVERNAME + "}", staticUrlPrefix[3]);
+                    linkRulesExport[i] = CmsStringSubstitution.substitute(linkRulesExport[i], I_CmsConstants.C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
+                    linkRulesExport[i] = CmsStringSubstitution.substitute(linkRulesExport[i], "${" + I_CmsConstants.C_URL_PREFIX_EXPORT + "}", staticUrlPrefix[0]);
+                    linkRulesExport[i] = CmsStringSubstitution.substitute(linkRulesExport[i], "${" + I_CmsConstants.C_URL_PREFIX_HTTP + "}", staticUrlPrefix[1]);
+                    linkRulesExport[i] = CmsStringSubstitution.substitute(linkRulesExport[i], "${" + I_CmsConstants.C_URL_PREFIX_HTTPS + "}", staticUrlPrefix[2]);
+                    linkRulesExport[i] = CmsStringSubstitution.substitute(linkRulesExport[i], "${" + I_CmsConstants.C_URL_PREFIX_SERVERNAME + "}", staticUrlPrefix[3]);
                 }
                 c_exportProperties.setLinkRulesExport(linkRulesExport);
             }
@@ -485,11 +485,11 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
                 linkRulesOnline = conf.getStringArray("ruleset." + online);
                 // now replace ${WEB_APP_NAME} with the correct name of the webapplication and replace the other variables
                 for (int i = 0; i < linkRulesOnline.length; i++) {
-                    linkRulesOnline[i] = CmsStringSubstitution.substitute(linkRulesOnline[i], C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
-                    linkRulesOnline[i] = CmsStringSubstitution.substitute(linkRulesOnline[i], "${" + C_URL_PREFIX_EXPORT + "}", staticUrlPrefix[0]);
-                    linkRulesOnline[i] = CmsStringSubstitution.substitute(linkRulesOnline[i], "${" + C_URL_PREFIX_HTTP + "}", staticUrlPrefix[1]);
-                    linkRulesOnline[i] = CmsStringSubstitution.substitute(linkRulesOnline[i], "${" + C_URL_PREFIX_HTTPS + "}", staticUrlPrefix[2]);
-                    linkRulesOnline[i] = CmsStringSubstitution.substitute(linkRulesOnline[i], "${" + C_URL_PREFIX_SERVERNAME + "}", staticUrlPrefix[3]);
+                    linkRulesOnline[i] = CmsStringSubstitution.substitute(linkRulesOnline[i], I_CmsConstants.C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
+                    linkRulesOnline[i] = CmsStringSubstitution.substitute(linkRulesOnline[i], "${" + I_CmsConstants.C_URL_PREFIX_EXPORT + "}", staticUrlPrefix[0]);
+                    linkRulesOnline[i] = CmsStringSubstitution.substitute(linkRulesOnline[i], "${" + I_CmsConstants.C_URL_PREFIX_HTTP + "}", staticUrlPrefix[1]);
+                    linkRulesOnline[i] = CmsStringSubstitution.substitute(linkRulesOnline[i], "${" + I_CmsConstants.C_URL_PREFIX_HTTPS + "}", staticUrlPrefix[2]);
+                    linkRulesOnline[i] = CmsStringSubstitution.substitute(linkRulesOnline[i], "${" + I_CmsConstants.C_URL_PREFIX_SERVERNAME + "}", staticUrlPrefix[3]);
                 }
                 c_exportProperties.setLinkRulesOnline(linkRulesOnline);
             }
@@ -499,11 +499,11 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
                 linkRulesOffline = conf.getStringArray("ruleset." + offline);
                 // now replace ${WEB_APP_NAME} with the correct name of the webapplication and replace the other variables
                 for (int i = 0; i < linkRulesOffline.length; i++) {
-                    linkRulesOffline[i] = CmsStringSubstitution.substitute(linkRulesOffline[i], C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
-                    linkRulesOffline[i] = CmsStringSubstitution.substitute(linkRulesOffline[i], "${" + C_URL_PREFIX_EXPORT + "}", staticUrlPrefix[0]);
-                    linkRulesOffline[i] = CmsStringSubstitution.substitute(linkRulesOffline[i], "${" + C_URL_PREFIX_HTTP + "}", staticUrlPrefix[1]);
-                    linkRulesOffline[i] = CmsStringSubstitution.substitute(linkRulesOffline[i], "${" + C_URL_PREFIX_HTTPS + "}", staticUrlPrefix[2]);
-                    linkRulesOffline[i] = CmsStringSubstitution.substitute(linkRulesOffline[i], "${" + C_URL_PREFIX_SERVERNAME + "}", staticUrlPrefix[3]);
+                    linkRulesOffline[i] = CmsStringSubstitution.substitute(linkRulesOffline[i], I_CmsConstants.C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
+                    linkRulesOffline[i] = CmsStringSubstitution.substitute(linkRulesOffline[i], "${" + I_CmsConstants.C_URL_PREFIX_EXPORT + "}", staticUrlPrefix[0]);
+                    linkRulesOffline[i] = CmsStringSubstitution.substitute(linkRulesOffline[i], "${" + I_CmsConstants.C_URL_PREFIX_HTTP + "}", staticUrlPrefix[1]);
+                    linkRulesOffline[i] = CmsStringSubstitution.substitute(linkRulesOffline[i], "${" + I_CmsConstants.C_URL_PREFIX_HTTPS + "}", staticUrlPrefix[2]);
+                    linkRulesOffline[i] = CmsStringSubstitution.substitute(linkRulesOffline[i], "${" + I_CmsConstants.C_URL_PREFIX_SERVERNAME + "}", staticUrlPrefix[3]);
                 }
                 c_exportProperties.setLinkRulesOffline(linkRulesOffline);
             }
@@ -513,11 +513,11 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
                 linkRulesExtern = conf.getStringArray("ruleset." + extern);
                 // now replace ${WEB_APP_NAME} with the correct name of the webapplication and replace the other variables
                 for (int i = 0; i < linkRulesExtern.length; i++) {
-                    linkRulesExtern[i] = CmsStringSubstitution.substitute(linkRulesExtern[i], C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
-                    linkRulesExtern[i] = CmsStringSubstitution.substitute(linkRulesExtern[i], "${" + C_URL_PREFIX_EXPORT + "}", staticUrlPrefix[0]);
-                    linkRulesExtern[i] = CmsStringSubstitution.substitute(linkRulesExtern[i], "${" + C_URL_PREFIX_HTTP + "}", staticUrlPrefix[1]);
-                    linkRulesExtern[i] = CmsStringSubstitution.substitute(linkRulesExtern[i], "${" + C_URL_PREFIX_HTTPS + "}", staticUrlPrefix[2]);
-                    linkRulesExtern[i] = CmsStringSubstitution.substitute(linkRulesExtern[i], "${" + C_URL_PREFIX_SERVERNAME + "}", staticUrlPrefix[3]);
+                    linkRulesExtern[i] = CmsStringSubstitution.substitute(linkRulesExtern[i], I_CmsConstants.C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
+                    linkRulesExtern[i] = CmsStringSubstitution.substitute(linkRulesExtern[i], "${" + I_CmsConstants.C_URL_PREFIX_EXPORT + "}", staticUrlPrefix[0]);
+                    linkRulesExtern[i] = CmsStringSubstitution.substitute(linkRulesExtern[i], "${" + I_CmsConstants.C_URL_PREFIX_HTTP + "}", staticUrlPrefix[1]);
+                    linkRulesExtern[i] = CmsStringSubstitution.substitute(linkRulesExtern[i], "${" + I_CmsConstants.C_URL_PREFIX_HTTPS + "}", staticUrlPrefix[2]);
+                    linkRulesExtern[i] = CmsStringSubstitution.substitute(linkRulesExtern[i], "${" + I_CmsConstants.C_URL_PREFIX_SERVERNAME + "}", staticUrlPrefix[3]);
                 }
                 c_exportProperties.setLinkRulesExtern(linkRulesExtern);
             }
@@ -528,7 +528,7 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
             c_exportProperties.setStartPoints(staticExportStart);
 
             // at last the target for the export
-            c_exportProperties.setExportPath(com.opencms.boot.CmsBase.getAbsoluteWebPath(CmsBase.getAbsoluteWebPath(conf.getString(C_STATICEXPORT_PATH))));
+            c_exportProperties.setExportPath(com.opencms.boot.CmsBase.getAbsoluteWebPath(CmsBase.getAbsoluteWebPath(conf.getString(I_CmsConstants.C_STATICEXPORT_PATH))));
 
             // should the links in static export be relative?
             c_exportProperties.setExportRelativeLinks(conf.getBoolean("relativelinks_in_export", false));
@@ -560,11 +560,11 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
                     c_exportProperties.setLinkRulesOnline(new String[] {"s#^#" + staticUrlPrefix[1] + "#"});
                 }
             }
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Link rules init      : finished");
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Link rules init      : finished");
         } catch (Exception e) {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Link rules init      : non-critical error " + e.toString());
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Link rules init      : non-critical error " + e.toString());
         }
     }
 
@@ -593,11 +593,11 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
         //create a valid cms-object
         CmsObject cms = new CmsObject();
         try {
-            initUser(cms, null, null, C_USER_ADMIN, C_GROUP_ADMIN, C_VFS_DEFAULT, C_PROJECT_ONLINE_ID, null);
+            initUser(cms, null, null, I_CmsConstants.C_USER_ADMIN, I_CmsConstants.C_GROUP_ADMIN, I_CmsConstants.C_VFS_DEFAULT, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
             new CmsStaticExport(cms, null, false, null, null, null, null);
         } catch (Exception e) {
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Dynamic link rules   : non-critical error " + e.toString());
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Dynamic link rules   : non-critical error " + e.toString());
         }
     }
 
@@ -718,7 +718,7 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
 
         if (file != null) {
             // test if this file is only available for internal access operations
-            if ((file.getAccessFlags() & C_ACCESS_INTERNAL_READ) > 0) {
+            if ((file.getAccessFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0) {
                 throw new CmsException(CmsException.C_EXTXT[CmsException.C_INTERNAL_FILE] + cms.getRequestContext().getUri(), CmsException.C_INTERNAL_FILE);
             }
         }
@@ -771,16 +771,16 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
                 // currently no init action depends on res, this might change in the future
             }
 
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". Startup class init   : starting");
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Startup class init   : starting");
 
             // set context once and for all
             String context = req.getContextPath() + req.getServletPath();
             if (context.endsWith("/"))
                 context = context.substring(0, context.lastIndexOf('/'));
             A_OpenCms.setOpenCmsContext(context);
-            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, ". OpenCms context      : " + context);
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". OpenCms context      : " + context);
 
             // check for old webapp names and extend with context
             ArrayList webAppNames = (ArrayList)A_OpenCms.getRuntimeProperty("compatibility.support.webAppNames");
@@ -805,13 +805,13 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
                 url.append(context);
                 String flexExportUrl = new String(url);
                 // check if the URL ends with a "/", this is not allowed
-                if (flexExportUrl.endsWith(C_FOLDER_SEPARATOR)) {
+                if (flexExportUrl.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
                     flexExportUrl = flexExportUrl.substring(0, flexExportUrl.length() - 1);
                 }
                 setRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL, flexExportUrl);
                 CmsJspLoader.setJspExportUrl(flexExportUrl);
-                if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                    log(C_OPENCMS_INIT, ". JSP export URL       : using value from first request - " + flexExportUrl);
+                if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                    log(I_CmsLogChannels.C_OPENCMS_INIT, ". JSP export URL       : using value from first request - " + flexExportUrl);
             }
 
             // initialize 1 instance per class listed in the startup node          
@@ -822,23 +822,23 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
                         String currentClass = (String)startupNode.get("class" + i);
                         try {
                             Class.forName(currentClass).newInstance();
-                            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                                log(C_OPENCMS_INIT, ". Startup class init   : " + currentClass + " instanciated");
+                            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Startup class init   : " + currentClass + " instanciated");
                         } catch (Exception e1) {
-                            if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                                log(C_OPENCMS_INIT, ". Startup class init   : non-critical error " + e1.toString());
+                            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Startup class init   : non-critical error " + e1.toString());
                         }
                     }
                 }
             } catch (Exception e2) {
-                if (C_LOGGING && isLogging(C_OPENCMS_INIT))
-                    log(C_OPENCMS_INIT, ". Startup class init   : non-critical error " + e2.toString());
+                if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                    log(I_CmsLogChannels.C_OPENCMS_INIT, ". Startup class init   : non-critical error " + e2.toString());
             }
 
-            if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) {
-                A_OpenCms.log(C_OPENCMS_INIT, ". Startup class init   : finished");
-                A_OpenCms.log(C_OPENCMS_INIT, ".                      ...............................................................");
-                A_OpenCms.log(C_OPENCMS_INIT, ".");
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Startup class init   : finished");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ".                      ...............................................................");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ".");
             }
         }
     }
@@ -930,13 +930,13 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
         // create a valid cms-object
         CmsObject cms = new CmsObject();
         try {
-            initUser(cms, null, null, entry.getUserName(), entry.getGroupName(), C_VFS_DEFAULT, C_PROJECT_ONLINE_ID, null);
+            initUser(cms, null, null, entry.getUserName(), entry.getGroupName(), I_CmsConstants.C_VFS_DEFAULT, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
             // create a new ScheduleJob and start it
             CmsCronScheduleJob job = new CmsCronScheduleJob(cms, entry);
             job.start();
         } catch (Exception exc) {
-            if (C_LOGGING && isLogging(C_OPENCMS_CRONSCHEDULER)) {
-                log(C_OPENCMS_CRONSCHEDULER, "Error initialising job for " + entry + " Error: " + Utils.getStackTrace(exc));
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_CRONSCHEDULER)) {
+                log(I_CmsLogChannels.C_OPENCMS_CRONSCHEDULER, "Error initialising job for " + entry + " Error: " + Utils.getStackTrace(exc));
             }
         }
     }
@@ -948,8 +948,8 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
         try {
             m_table.update(m_driverManager.readCronTable());
         } catch (Exception exc) {
-            if (C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) {
-                log(C_OPENCMS_CRITICAL, "[OpenCms] crontable corrupt. Scheduler is now disabled!");
+            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCms] crontable corrupt. Scheduler is now disabled!");
             }
         }
     }

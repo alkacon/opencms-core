@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2003/07/30 16:25:42 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,11 +32,9 @@ package com.opencms.workplace;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
-import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
 import com.opencms.util.Encoder;
 
@@ -51,10 +49,10 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.63 $ $Date: 2003/07/30 16:25:42 $
+ * @version $Revision: 1.64 $ $Date: 2003/07/31 13:19:36 $
  */
 
-public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
+public class CmsCopy extends CmsWorkplaceDefault {
 
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>

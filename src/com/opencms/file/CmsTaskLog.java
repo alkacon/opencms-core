@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsTaskLog.java,v $
-* Date   : $Date: 2003/06/25 13:52:12 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,15 +37,15 @@ import com.opencms.flex.util.CmsUUID;
  * Describes a tasklog in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.12 $ $Date: 2003/06/25 13:52:12 $
+ * @version $Revision: 1.13 $ $Date: 2003/07/31 13:19:37 $
  */
-public class CmsTaskLog implements I_CmsConstants {
+public class CmsTaskLog {
 
 
     /**
      * The Id of the tasklog.
      */
-    private int     m_Id = C_UNKNOWN_ID;
+    private int     m_Id = I_CmsConstants.C_UNKNOWN_ID;
     
     /**
      * The Description of the tasklog.
@@ -139,7 +139,7 @@ public class CmsTaskLog implements I_CmsConstants {
         output.append(" User=");
         output.append(getUser());
         
-        if(getType()== C_TASKLOG_SYSTEM) {
+        if(getType()== I_CmsConstants.C_TASKLOG_SYSTEM) {
             output.append(" Type=System");
         }
         else {

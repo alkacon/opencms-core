@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
-* Date   : $Date: 2003/07/30 16:25:42 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,10 +47,10 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.52 $ $Date: 2003/07/30 16:25:42 $
+ * @version $Revision: 1.53 $ $Date: 2003/07/31 13:19:37 $
  */
 
-public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
+public class CmsDelete extends CmsWorkplaceDefault {
 
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@ package com.opencms.workplace;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResourceTypeFolder;
@@ -51,7 +50,7 @@ import java.util.Vector;
  * Creation date: (27.10.00 10:28:08)
  * @author Hanjo Riege
  */
-public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsConstants {
+public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
     private final static String C_PACKETNAME = "packetname";
     private final static String C_STEP = "step";
     private final static String C_VERSION = "version";

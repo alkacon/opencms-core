@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsBackupProject.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.file;
 
+import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
 
 import java.sql.Timestamp;
@@ -38,14 +39,14 @@ import java.util.Vector;
  * one resource.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.5 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.6 $ $Date: 2003/07/31 13:19:37 $
  */
 public class CmsBackupProject extends CmsProject implements Cloneable{
 
     /**
      * The publishing date of this project.
      */
-    private long m_publishingdate = C_UNKNOWN_LONG;
+    private long m_publishingdate = I_CmsConstants.C_UNKNOWN_LONG;
 
     /**
      * The user-id of the publisher
@@ -55,7 +56,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable{
     /**
      * The version of the published project
      */
-    private int m_versionId = C_UNKNOWN_ID;
+    private int m_versionId = I_CmsConstants.C_UNKNOWN_ID;
 
     /**
      * The resources of the project
@@ -105,7 +106,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable{
         if( publishingdate != null) {
             m_publishingdate = publishingdate.getTime();
         } else {
-            m_publishingdate = C_UNKNOWN_LONG;
+            m_publishingdate = I_CmsConstants.C_UNKNOWN_LONG;
         }
         m_projectresources = projectresources;
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModule.java,v $
-* Date   : $Date: 2003/03/02 18:43:54 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@ package com.opencms.workplace;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.I_CmsRegistry;
@@ -48,7 +47,7 @@ import java.util.Vector;
  * Creation date: (30.08.00 17:59:38)
  * @author Hanjo Riege
  */
-public class CmsAdminModule extends CmsWorkplaceDefault implements I_CmsConstants {
+public class CmsAdminModule extends CmsWorkplaceDefault {
     
     /**
      * Gets the content of a defined section in a given template file and its subtemplates

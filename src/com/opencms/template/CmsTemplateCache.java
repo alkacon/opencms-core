@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateCache.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.flex.util.CmsLruHashMap;
 
-public class CmsTemplateCache implements I_CmsTemplateCache,I_CmsLogChannels {
+public class CmsTemplateCache implements I_CmsTemplateCache {
     
     /** Hashtable to store the cached data */
     
@@ -41,14 +41,14 @@ public class CmsTemplateCache implements I_CmsTemplateCache,I_CmsLogChannels {
     /** Default constructor to create a template cache */
     public CmsTemplateCache() {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_CACHE, "[CmsTemplateCache] Initialized successfully.");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CACHE, "[CmsTemplateCache] Initialized successfully.");
         }
     }
     
     /** Deletes all documents from the template cache. */
     public void clearCache() {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_CACHE, "[CmsTemplateCache] clearing template cache.");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CACHE, "[CmsTemplateCache] clearing template cache.");
         }
         templateCache.clear();
     }
@@ -64,7 +64,7 @@ public class CmsTemplateCache implements I_CmsTemplateCache,I_CmsLogChannels {
         }
         else {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_CACHE, "[CmsTemplateCache] clearCache failed: " + key);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CACHE, "[CmsTemplateCache] clearCache failed: " + key);
             }
         }
     }
@@ -76,14 +76,14 @@ public class CmsTemplateCache implements I_CmsTemplateCache,I_CmsLogChannels {
      */
     public byte[] get(Object key) {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_CACHE, "[CmsTemplateCache] Getting " + key + " from cache.");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CACHE, "[CmsTemplateCache] Getting " + key + " from cache.");
         }
         if(key instanceof String) {
             return (byte[])templateCache.get(key);
         }
         else {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_CACHE, "[CmsTemplateCache] Getting " + key + " from cache failed.");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CACHE, "[CmsTemplateCache] Getting " + key + " from cache failed.");
             }
             return null;
         }
@@ -101,7 +101,7 @@ public class CmsTemplateCache implements I_CmsTemplateCache,I_CmsLogChannels {
         }
         else {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_CACHE, "[CmsTemplateCache] " + key + " is not instanceof String.");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CACHE, "[CmsTemplateCache] " + key + " is not instanceof String.");
             }
             return false;
         }
@@ -118,7 +118,7 @@ public class CmsTemplateCache implements I_CmsTemplateCache,I_CmsLogChannels {
         }
         else {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_CACHE, "[CmsTemplateCache] " + key + " is not instanceof String.");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CACHE, "[CmsTemplateCache] " + key + " is not instanceof String.");
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
-* Date   : $Date: 2003/07/22 00:29:23 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.defaults.master;
 
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.defaults.A_CmsBackoffice;
 import com.opencms.file.CmsGroup;
@@ -202,7 +203,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         }else if(m_channel==null){            
             //create a new ouputchannels content definition.
             m_channel = new CmsChannelContent(cms);
-            m_channelId=C_UNKNOWN_ID+"";
+            m_channelId = I_CmsConstants.C_UNKNOWN_ID+"";
             m_folderId = CmsUUID.getNullUUID();
         }
         //put parentId in session for user method
@@ -232,7 +233,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
             template.setData("value",groupId.toString());
             if (!group.equals("") && (cms.readGroup(new CmsUUID(group)).getName()).equals(groupName)) {
                 template.setData("check","selected");
-            }else if(m_channelId.equals(C_UNKNOWN_ID+"") && groupName.equals(defaultGroup)){
+            }else if(m_channelId.equals(I_CmsConstants.C_UNKNOWN_ID+"") && groupName.equals(defaultGroup)){
                 template.setData("check","selected");
             }else{
                 template.setData("check","");
@@ -250,7 +251,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
             template.setData("value",userId.toString());
             if (!owner.equals("") && (cms.readUser(new CmsUUID(owner)).getName()).equals(userName)) {
                 template.setData("check","selected");
-            }else if(m_channelId.equals(C_UNKNOWN_ID+"") && userName.equals(defaultUser)){
+            }else if(m_channelId.equals(I_CmsConstants.C_UNKNOWN_ID+"") && userName.equals(defaultUser)){
                 template.setData("check","selected");
             }else{
                 template.setData("check","");

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMessagebox.java,v $
-* Date   : $Date: 2003/07/08 12:29:29 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,10 +45,10 @@ import org.w3c.dom.Node;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.14 $ $Date: 2003/07/08 12:29:29 $
+ * @version $Revision: 1.15 $ $Date: 2003/07/31 13:19:36 $
  */
 
-public class CmsMessagebox extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpConstants {
+public class CmsMessagebox extends A_CmsWpElement {
     
     /**
      * Handling of the <CODE>&lt;MESSAGEBOX&gt;</CODE> tags.

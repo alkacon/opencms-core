@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2003/07/14 15:04:15 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.defaults;
 
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.template.A_CmsXmlContent;
@@ -49,7 +50,7 @@ import java.util.Vector;
  * @author Alexander Kandzior
  * @author Waruschan Babachan
  * @author Thomas Weckert
- * @version $Revision: 1.51 $ $Date: 2003/07/14 15:04:15 $
+ * @version $Revision: 1.52 $ $Date: 2003/07/31 13:19:37 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 
@@ -448,13 +449,13 @@ public class CmsXmlNav extends A_CmsNavBase {
         for (int i=0; i<size; i++) {
             CmsResource currentResource = (CmsResource)resources.get(i);
             String path = cms.readAbsolutePath(currentResource);
-            String pos = cms.readProperty(path, C_PROPERTY_NAVPOS);
-            String text = cms.readProperty(path, C_PROPERTY_NAVTEXT);
+            String pos = cms.readProperty(path, I_CmsConstants.C_PROPERTY_NAVPOS);
+            String text = cms.readProperty(path, I_CmsConstants.C_PROPERTY_NAVTEXT);
             // Only list folders in the nav bar if they are not deleted!
-            if (currentResource.getState() != C_STATE_DELETED) {
+            if (currentResource.getState() != I_CmsConstants.C_STATE_DELETED) {
                 // don't list the temporary folders in the nav bar!
                 if (pos != null && text != null && (!"".equals(pos)) && (!"".equals(text))
-                     && ((!currentResource.getResourceName().startsWith(C_TEMP_PREFIX)) || path.equals(requestedUri))) {
+                     && ((!currentResource.getResourceName().startsWith(I_CmsConstants.C_TEMP_PREFIX)) || path.equals(requestedUri))) {
                     navLink[max] = path;
                     navText[max] = text;
                     navPos[max] = new Float(pos).floatValue();

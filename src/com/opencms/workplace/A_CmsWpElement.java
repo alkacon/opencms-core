@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsWpElement.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,11 +46,11 @@ import com.opencms.file.CmsObject;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.36 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.37 $ $Date: 2003/07/31 13:19:36 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
-public abstract class A_CmsWpElement implements I_CmsLogChannels,I_CmsWpElement,I_CmsWpConstants {
+public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement, I_CmsWpConstants {
 
 
     /**

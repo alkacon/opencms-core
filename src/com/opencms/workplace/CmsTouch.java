@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2003/07/30 16:25:42 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/31 13:19:37 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,9 +43,9 @@ import java.util.Hashtable;
  * This class is invoked for the workplace "touch" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
-public final class CmsTouch extends CmsWorkplaceDefault implements I_CmsWpConstants, I_CmsConstants {
+public final class CmsTouch extends CmsWorkplaceDefault {
 
 	/** The key of the timestamp request parameter */
 	private static final String C_PARA_NEWTIMESTAMP = "newtimestamp";

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSearchForm.java,v $
-* Date   : $Date: 2003/07/15 18:42:07 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,6 @@
 package com.opencms.workplace;
 
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsPropertydefinition;
@@ -49,11 +48,11 @@ import java.util.Vector;
  * editing news.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.4 $ $Date: 2003/07/15 18:42:07 $
+ * @version $Revision: 1.5 $ $Date: 2003/07/31 13:19:36 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
-public class CmsSearchForm extends CmsWorkplaceDefault implements I_CmsConstants{
+public class CmsSearchForm extends CmsWorkplaceDefault {
 
     /**
      * Gets the content of a defined section in a given template file and its subtemplates

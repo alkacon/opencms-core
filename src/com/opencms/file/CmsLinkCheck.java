@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsLinkCheck.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,20 +27,33 @@
 */
 package com.opencms.file;
 
-import com.opencms.core.*;
-import com.opencms.template.*;
-import com.opencms.util.*;
-import com.opencms.defaults.*;
-import java.util.*;
-import java.net.*;
-import java.io.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsCronJob;
+import com.opencms.defaults.CmsMail;
+import com.opencms.template.CmsXmlTemplate;
+import com.opencms.template.CmsXmlTemplateFile;
+import com.opencms.util.MailUtils;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Calendar;
+import java.util.Enumeration;
+import java.util.GregorianCalendar;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  * This class contains the functionaility for checking the url of external links.<p>
  * 
  * @author Edna Falkenhan
  */
-public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob,I_CmsConstants{
+public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob {
 
 
     public CmsLinkCheck() {
@@ -89,7 +102,7 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob,I_CmsCo
         GregorianCalendar actDate = new GregorianCalendar();
         String actDateString = getDateString(actDate);
         template.setData("actdate", actDateString);
-        newLinkchecktable.put(C_LINKCHECKTABLE_DATE, actDateString);
+        newLinkchecktable.put(I_CmsConstants.C_LINKCHECKTABLE_DATE, actDateString);
 
         StringBuffer mailContent = new StringBuffer(template.getProcessedDataValue("single_message"));
 

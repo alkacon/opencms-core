@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/07/29 15:58:47 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.flex.util.CmsUUID;
-import com.opencms.template.I_CmsContent;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -57,11 +56,10 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.47 $
- * $Date: 2003/07/29 15:58:47 $
+ * $Revision: 1.48 $
+ * $Date: 2003/07/31 13:19:37 $
  */
-public class CmsChannelContent extends A_CmsContentDefinition
-                               implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
+public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsExtendedContentDefinition{
 
     // definition of the error codes used by this content defintion
     private static String C_CHANNELNAME_ERRFIELD="channelname";
@@ -162,7 +160,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
             m_channelId = (String) m_properties.get(I_CmsConstants.C_PROPERTY_CHANNELID);
         } catch (CmsException exc) {
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Could not get channel " + channelId);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Could not get channel " + channelId);
             }
         } finally {
             m_cms.setContextToVfs();
@@ -175,7 +173,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * a unique id.
      */
     public CmsChannelContent(CmsObject cms, CmsResource resource) {
-        String channelId = C_UNKNOWN_ID+"";
+        String channelId = I_CmsConstants.C_UNKNOWN_ID+"";
         String fullName = cms.readAbsolutePath(resource);
         m_cms = cms;
         m_channel = resource;
@@ -189,10 +187,10 @@ public class CmsChannelContent extends A_CmsContentDefinition
             channelId = (String)m_properties.get(I_CmsConstants.C_PROPERTY_CHANNELID);
         } catch (CmsException exc){
             m_properties = new Hashtable();
-            m_properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, C_UNKNOWN_ID+"");
+            m_properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, I_CmsConstants.C_UNKNOWN_ID+"");
         } finally {
             if(channelId == null || "".equals(channelId)){
-                channelId = C_UNKNOWN_ID+"";
+                channelId = I_CmsConstants.C_UNKNOWN_ID+"";
             }
             m_channelId = channelId;
         }
@@ -257,7 +255,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
             cms.undeleteResource(cms.readAbsolutePath(m_channel));
         } catch (CmsException exc){
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Could not undelete channel "+cms.readAbsolutePath(m_channel));
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Could not undelete channel "+cms.readAbsolutePath(m_channel));
             }
         } finally {
             cms.setContextToVfs();
@@ -271,7 +269,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      */
     public void publishResource(CmsObject cms) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Channels can't be published directly!");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Channels can't be published directly!");
         }
     }
 
@@ -283,7 +281,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      */
     public void restore(CmsObject cms, int versionId) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Channels can't be restored from history!");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Channels can't be restored from history!");
         }
     }
 
@@ -295,7 +293,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      */
     public void chown(CmsObject cms, CmsUUID owner) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Permissions of Channels can be changed only in EditBackoffice!");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Permissions of Channels can be changed only in EditBackoffice!");
         }
     }
 
@@ -307,7 +305,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      */
     public void chgrp(CmsObject cms, CmsUUID group) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Permissions of Channels can be changed only in EditBackoffice!");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Permissions of Channels can be changed only in EditBackoffice!");
         }
     }
 
@@ -319,7 +317,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      */
     public void chmod(CmsObject cms, int accessflags) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Permissions of Channels can be changed only in EditBackoffice!");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Permissions of Channels can be changed only in EditBackoffice!");
         }
     }
     /**
@@ -330,7 +328,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      */
     public CmsUUID copy(CmsObject cms) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Channels can be copied!");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Channels can be copied!");
         }
         return CmsUUID.getNullUUID();
     }
@@ -650,7 +648,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * Gets the version id of version the channel
      */
     public int getVersionId(){
-        return C_UNKNOWN_ID;
+        return I_CmsConstants.C_UNKNOWN_ID;
     }
 
     /**
@@ -672,7 +670,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
         // get all groups
         Vector groups = cms.getGroups();
         int retValue = -1;
-        String defaultGroup = C_GROUP_USERS;
+        String defaultGroup = I_CmsConstants.C_GROUP_USERS;
         // make sure the user has a session
         cms.getRequestContext().getSession(true);
         String enteredGroup = this.getGroup();
@@ -706,7 +704,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      */
     public Vector getHistory(CmsObject cms) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Channels have no history!");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Channels have no history!");
         }
         return null;
     }
@@ -721,7 +719,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      */
     public Object getVersionFromHistory(CmsObject cms, int versionId){
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Channels have no history!");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Channels have no history!");
         }
         return null;
     }
@@ -823,7 +821,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * Sets the channelId of a new channel
      */
     private void setNewChannelId() throws CmsException{
-        int newChannelId = org.opencms.db.CmsIdGenerator.nextId(C_TABLE_CHANNELID);
+        int newChannelId = org.opencms.db.CmsIdGenerator.nextId(I_CmsConstants.C_TABLE_CHANNELID);
         m_properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, newChannelId+"");
         m_channelId = newChannelId+"";
     }
@@ -943,11 +941,11 @@ public class CmsChannelContent extends A_CmsContentDefinition
         Vector errorCodes = new Vector();
         //check the channelname
         if (m_channelname == null || "".equals(m_channelname)) {
-            errorCodes.addElement(C_CHANNELNAME_ERRFIELD+C_ERRSPERATOR+C_ERRCODE_EMPTY);
+            errorCodes.addElement(C_CHANNELNAME_ERRFIELD+I_CmsConstants.C_ERRSPERATOR+C_ERRCODE_EMPTY);
         }
         //check the parentchannel
         if (m_parentchannel == null || "".equals(m_parentchannel)) {
-            errorCodes.addElement(C_PARENT_ERRFIELD+C_ERRSPERATOR+C_ERRCODE_EMPTY);
+            errorCodes.addElement(C_PARENT_ERRFIELD+I_CmsConstants.C_ERRSPERATOR+C_ERRCODE_EMPTY);
         }
         // now test if there was an error message and throw an exception
         if (errorCodes.size()>0) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChmod.java,v $
- * Date   : $Date: 2003/07/30 16:25:42 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2003/07/31 13:19:36 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,10 +42,10 @@ import java.util.Hashtable;
  * Template class for displaying the chmod screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.41 $ $Date: 2003/07/30 16:25:42 $
+ * @version $Revision: 1.42 $ $Date: 2003/07/31 13:19:36 $
  */
 
-public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants {
+public class CmsChmod extends CmsWorkplaceDefault {
     
 	/**
 	 * Gets the content of the chmod template and processes the data input.<p>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDelete.java,v $
-* Date   : $Date: 2003/06/25 13:52:24 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * Creation date: (12.09.00 10:28:08)
  * @author Hanjo Riege
  */
-public class CmsAdminModuleDelete extends CmsWorkplaceDefault implements I_CmsConstants {
+public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
     private final String C_MODULE = "module";
     private final String C_STEP = "step";
     private final String C_DELETE = "delete";

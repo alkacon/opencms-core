@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2003/07/30 16:25:42 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@ package com.opencms.workplace;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
@@ -52,10 +51,10 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.45 $ $Date: 2003/07/30 16:25:42 $
+ * @version $Revision: 1.46 $ $Date: 2003/07/31 13:19:36 $
  */
 
-public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
+public class CmsNewResourceLink extends CmsWorkplaceDefault {
     
     private static final String C_PARA_KEEP_PROPERTIES = "keepproperties";
     private static final String C_PARA_ADD_TO_NAV = "addtonav";

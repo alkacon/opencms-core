@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2003/07/09 10:58:09 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package com.opencms.workplace;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
@@ -53,10 +52,10 @@ import java.util.Map;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.38 $ $Date: 2003/07/09 10:58:09 $
+ * @version $Name:  $ $Revision: 1.39 $ $Date: 2003/07/31 13:19:36 $
  */
 
-public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
+public class CmsAdministration extends CmsWorkplaceDefault {
 
     private static String C_ADMIN_PATH = "system/workplace/action/administration_content_top.html";
 

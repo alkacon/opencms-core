@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskDocu.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,6 @@
 package com.opencms.workplace;
 
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsTaskLog;
 import com.opencms.file.CmsUser;
@@ -47,11 +46,11 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;TASKDOCU&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.14 $ $Date: 2003/07/31 13:19:36 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
-public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpConstants,I_CmsConstants {
+public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement {
     
     /**
      * This private helper method adds a <code>&lt;BR&gt;</code> tag to each line.

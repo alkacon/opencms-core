@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlFormTemplateFile.java,v $
-* Date   : $Date: 2003/07/22 00:29:23 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,6 @@
 
 package com.opencms.defaults;
 
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
@@ -49,9 +48,9 @@ import org.w3c.dom.Element;
  * See the handleXxxTag Methods for more details.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.18 $ $Date: 2003/07/22 00:29:23 $
+ * @version $Revision: 1.19 $ $Date: 2003/07/31 13:19:37 $
  */
-public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels {
+public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsWpConstants {
 
     /**
      * Default constructor.

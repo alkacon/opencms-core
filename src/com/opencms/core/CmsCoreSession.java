@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCoreSession.java,v $
-* Date   : $Date: 2003/07/11 06:24:33 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,11 +48,11 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.11 $ $Date: 2003/07/11 06:24:33 $
+ * @version $Revision: 1.12 $ $Date: 2003/07/31 13:19:37 $
  * 
  * @see #sendBroadcastMessage(String message)
  */
-public class CmsCoreSession implements I_CmsConstants {
+public class CmsCoreSession {
 
     /**
      * Hashtable storage to store all active users.
@@ -84,14 +84,14 @@ public class CmsCoreSession implements I_CmsConstants {
      */
     public String getCurrentGroup(String sessionId) {
         Hashtable userinfo = null;
-        String currentGroup = C_GROUP_GUEST;
+        String currentGroup = I_CmsConstants.C_GROUP_GUEST;
         userinfo = getUser(sessionId);
 
         // this user does exist, so get his current Group.
         if(userinfo != null) {
-            currentGroup = (String)userinfo.get(C_SESSION_CURRENTGROUP);
+            currentGroup = (String)userinfo.get(I_CmsConstants.C_SESSION_CURRENTGROUP);
             if(currentGroup == null) {
-                currentGroup = C_GROUP_GUEST;
+                currentGroup = I_CmsConstants.C_GROUP_GUEST;
             }
         }
         return currentGroup;
@@ -105,14 +105,14 @@ public class CmsCoreSession implements I_CmsConstants {
      */
     public Integer getCurrentProject(String sessionId) {
         Hashtable userinfo = null;
-        Integer currentProject = new Integer(C_PROJECT_ONLINE_ID);
+        Integer currentProject = new Integer(I_CmsConstants.C_PROJECT_ONLINE_ID);
         userinfo = getUser(sessionId);
 
         // this user does exist, so get his current project
         if(userinfo != null) {
-            currentProject = (Integer)userinfo.get(C_SESSION_PROJECT);
+            currentProject = (Integer)userinfo.get(I_CmsConstants.C_SESSION_PROJECT);
             if(currentProject == null) {
-                currentProject = new Integer(C_PROJECT_ONLINE_ID);
+                currentProject = new Integer(I_CmsConstants.C_PROJECT_ONLINE_ID);
             }
         }
         return currentProject;
@@ -126,14 +126,14 @@ public class CmsCoreSession implements I_CmsConstants {
      */
     public String getCurrentSite(String sessionId) {
         Hashtable userinfo = null;
-        String currentSite = C_VFS_DEFAULT;
+        String currentSite = I_CmsConstants.C_VFS_DEFAULT;
         userinfo = getUser(sessionId);
 
         // this user does exist, so get his current site
         if(userinfo != null) {
-            currentSite = (String)userinfo.get(C_SESSION_CURRENTSITE);
+            currentSite = (String)userinfo.get(I_CmsConstants.C_SESSION_CURRENTSITE);
             if(currentSite == null) {
-                currentSite = C_VFS_DEFAULT;
+                currentSite = I_CmsConstants.C_VFS_DEFAULT;
             }
         }
         return currentSite;
@@ -164,7 +164,7 @@ public class CmsCoreSession implements I_CmsConstants {
 
         // this user does exist, so get his name.
         if(userinfo != null) {
-            username = (String)userinfo.get(C_SESSION_USERNAME);
+            username = (String)userinfo.get(I_CmsConstants.C_SESSION_USERNAME);
         }
         return username;
     }
@@ -180,7 +180,7 @@ public class CmsCoreSession implements I_CmsConstants {
      */
     public void putUser(String sessionId, String username) {
         Hashtable userinfo = new Hashtable();
-        userinfo.put(C_SESSION_USERNAME, username);
+        userinfo.put(I_CmsConstants.C_SESSION_USERNAME, username);
         putUser(sessionId, userinfo);
     }
 
@@ -197,9 +197,9 @@ public class CmsCoreSession implements I_CmsConstants {
      */
     public void putUser(String sessionId, String username, String group, Integer project) {
         Hashtable userinfo = new Hashtable();
-        userinfo.put(C_SESSION_USERNAME, username);
-        userinfo.put(C_SESSION_CURRENTGROUP, group);
-        userinfo.put(C_SESSION_PROJECT, project);
+        userinfo.put(I_CmsConstants.C_SESSION_USERNAME, username);
+        userinfo.put(I_CmsConstants.C_SESSION_CURRENTGROUP, group);
+        userinfo.put(I_CmsConstants.C_SESSION_PROJECT, project);
         putUser(sessionId, userinfo);
     }
 
@@ -244,7 +244,7 @@ public class CmsCoreSession implements I_CmsConstants {
             key = (String)enu.nextElement();
             output.append(key + " : ");
             value = (Hashtable)m_sessions.get(key);
-            name = (String)value.get(C_SESSION_USERNAME);
+            name = (String)value.get(I_CmsConstants.C_SESSION_USERNAME);
             output.append(name + "\n");
         }
         return output.toString();
@@ -272,10 +272,10 @@ public class CmsCoreSession implements I_CmsConstants {
             userentry = new Hashtable(4);
             key = (String)enu.nextElement();
             value = (Hashtable)m_sessions.get(key);
-            userentry.put(C_SESSION_USERNAME, value.get(C_SESSION_USERNAME));
-            userentry.put(C_SESSION_PROJECT, value.get(C_SESSION_PROJECT));
-            userentry.put(C_SESSION_CURRENTGROUP, value.get(C_SESSION_CURRENTGROUP));
-            userentry.put(C_SESSION_MESSAGEPENDING, new Boolean( ((Hashtable)value.get(C_SESSION_DATA)).containsKey(C_SESSION_BROADCASTMESSAGE) ));
+            userentry.put(I_CmsConstants.C_SESSION_USERNAME, value.get(I_CmsConstants.C_SESSION_USERNAME));
+            userentry.put(I_CmsConstants.C_SESSION_PROJECT, value.get(I_CmsConstants.C_SESSION_PROJECT));
+            userentry.put(I_CmsConstants.C_SESSION_CURRENTGROUP, value.get(I_CmsConstants.C_SESSION_CURRENTGROUP));
+            userentry.put(I_CmsConstants.C_SESSION_MESSAGEPENDING, new Boolean( ((Hashtable)value.get(I_CmsConstants.C_SESSION_DATA)).containsKey(I_CmsConstants.C_SESSION_BROADCASTMESSAGE) ));
 
             output.addElement(userentry);
         }
@@ -298,13 +298,13 @@ public class CmsCoreSession implements I_CmsConstants {
         while(enu.hasMoreElements()) {
             key = (String)enu.nextElement();
             value = (Hashtable)m_sessions.get(key);
-            session_data = (Hashtable)value.get(C_SESSION_DATA);
-            session_message = (String)session_data.get(C_SESSION_BROADCASTMESSAGE);
+            session_data = (Hashtable)value.get(I_CmsConstants.C_SESSION_DATA);
+            session_message = (String)session_data.get(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
             if(session_message == null) {
                 session_message = "";
             }
             session_message += message;
-            session_data.put(C_SESSION_BROADCASTMESSAGE, session_message);
+            session_data.put(I_CmsConstants.C_SESSION_BROADCASTMESSAGE, session_message);
         }
     }
 }

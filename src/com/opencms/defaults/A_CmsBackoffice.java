@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2003/07/22 00:29:23 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,9 +75,9 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  */
-public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_CmsConstants {
+public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
 
   public static int C_NOT_LOCKED = -1;
   public static int C_NO_ACCESS = -2;
@@ -2153,10 +2153,10 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
     byte[] processResult = null;
     
     // now check if the "do you really want to lock" dialog should be shown.
-    Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
+    Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);
     String showLockDialog = "off";
     if (startSettings!=null) {
-      showLockDialog = (String)startSettings.get(C_START_LOCKDIALOG);
+      showLockDialog = (String)startSettings.get(I_CmsConstants.C_START_LOCKDIALOG);
     }
     if (!showLockDialog.equalsIgnoreCase("on")) {
       parameters.put("action", "go");
@@ -2859,7 +2859,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             }
         }
 
-        if (actProjectId == C_PROJECT_ONLINE_ID) {
+        if (actProjectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             style = C_STYLE_UNCHANGED;
         } else if (projectId != actProjectId) {
             // not is in this project
@@ -2883,13 +2883,13 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             }
 
             switch (state) {
-                case C_STATE_NEW:
+                case I_CmsConstants.C_STATE_NEW:
                     style = C_STYLE_NEW;
                     break;
-                case C_STATE_CHANGED:
+                case I_CmsConstants.C_STATE_CHANGED:
                     style = C_STYLE_CHANGED;
                     break;
-                case C_STATE_DELETED:
+                case I_CmsConstants.C_STATE_DELETED:
                     style = C_STYLE_DELETED;
                     break;
                 default:
@@ -2926,7 +2926,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             }
         }
 
-        if (actProjectId == C_PROJECT_ONLINE_ID) {
+        if (actProjectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             template.setData("backofficecontextmenue", "backofficeonline");
         } else if (projectId != actProjectId) {
             // not is in this project
@@ -2949,9 +2949,9 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
                 }
             }
             if (lockedByUserId.isNullUUID()) {
-                if (state == C_STATE_UNCHANGED) {
+                if (state == I_CmsConstants.C_STATE_UNCHANGED) {
                     template.setData("backofficecontextmenue", "backofficenolock");
-                } else if (state == C_STATE_DELETED) {
+                } else if (state == I_CmsConstants.C_STATE_DELETED) {
                     template.setData("backofficecontextmenue", "backofficedeleted");
                 } else {
                     template.setData("backofficecontextmenue", "backofficenolockchanged");
@@ -3336,18 +3336,18 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         for (int i=0; i<errorCodes.size(); i++) {
           errorCode=(String)errorCodes.elementAt(i);
           // try to get an error message that fits thos this error code exactly
-          if (template.hasData(C_ERRPREFIX+errorCode)) {
-            error += template.getProcessedDataValue(C_ERRPREFIX+errorCode);
+          if (template.hasData(I_CmsConstants.C_ERRPREFIX+errorCode)) {
+            error += template.getProcessedDataValue(I_CmsConstants.C_ERRPREFIX+errorCode);
           } else {
             // now check if there is a general error message for this field
             errorField=errorCode.substring(0, errorCode.indexOf(I_CmsConstants.C_ERRSPERATOR));
-            if (template.hasData(C_ERRPREFIX+errorField)) {
-              error += template.getProcessedDataValue(C_ERRPREFIX+errorField);
+            if (template.hasData(I_CmsConstants.C_ERRPREFIX+errorField)) {
+              error += template.getProcessedDataValue(I_CmsConstants.C_ERRPREFIX+errorField);
             } else {
               // now check if there is at least a general error messace for the error type
-              errorType=errorCode.substring(errorCode.indexOf(C_ERRSPERATOR)+1, errorCode.length());
-              if (template.hasData(C_ERRPREFIX+errorType)) {
-                error += template.getProcessedDataValue(C_ERRPREFIX+errorType);
+              errorType=errorCode.substring(errorCode.indexOf(I_CmsConstants.C_ERRSPERATOR)+1, errorCode.length());
+              if (template.hasData(I_CmsConstants.C_ERRPREFIX+errorType)) {
+                error += template.getProcessedDataValue(I_CmsConstants.C_ERRPREFIX+errorType);
               } else {
                 // no error dmessage was found, so generate a default one
                 error += "["+errorCode+"]";
@@ -3410,18 +3410,18 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
           errorCode=(String)errorCodes.elementAt(i);
 
           // try to get an error message that fits thos this error code exactly
-          if (template.hasData(C_ERRPREFIX+errorCode)) {
-            error += template.getProcessedDataValue(C_ERRPREFIX+errorCode);
+          if (template.hasData(I_CmsConstants.C_ERRPREFIX+errorCode)) {
+            error += template.getProcessedDataValue(I_CmsConstants.C_ERRPREFIX+errorCode);
           } else {
             // now check if there is a general error message for this field
             errorField=errorCode.substring(0, errorCode.indexOf(I_CmsConstants.C_ERRSPERATOR));
-            if (template.hasData(C_ERRPREFIX+errorField)) {
-              error += template.getProcessedDataValue(C_ERRPREFIX+errorField);
+            if (template.hasData(I_CmsConstants.C_ERRPREFIX+errorField)) {
+              error += template.getProcessedDataValue(I_CmsConstants.C_ERRPREFIX+errorField);
             } else {
               // now check if there is at least a general error messace for the error type
-              errorType=errorCode.substring(errorCode.indexOf(C_ERRSPERATOR)+1, errorCode.length());
-              if (template.hasData(C_ERRPREFIX+errorType)) {
-                error += template.getProcessedDataValue(C_ERRPREFIX+errorType);
+              errorType=errorCode.substring(errorCode.indexOf(I_CmsConstants.C_ERRSPERATOR)+1, errorCode.length());
+              if (template.hasData(I_CmsConstants.C_ERRPREFIX+errorType)) {
+                error += template.getProcessedDataValue(I_CmsConstants.C_ERRPREFIX+errorType);
               } else {
                 // no error dmessage was found, so generate a default one
                 error += "["+errorCode+"]";

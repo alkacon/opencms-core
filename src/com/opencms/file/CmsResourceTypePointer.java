@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePointer.java,v $
- * Date   : $Date: 2003/07/22 17:13:33 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/31 13:19:37 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,8 +46,7 @@ import java.util.Vector;
  * Implementation of a resource type for links between resources in the virtual 
  * file system (VFS). A VFS link is nothing else but a text
  * file of a certain resource type. The content of this file is the name/path
- * of the target resource of the link, including the site root (which is at least
- * "/default/vfs/").
+ * of the target resource of the link, including the site root.
  * <p>
  * VFS links and their target resources are tracked by the RESOURCE_FLAGS table
  * attribute. Each VFS link saves there the ID of it's target resource. Each 
@@ -57,7 +56,7 @@ import java.util.Vector;
  * All resource types are created by the factory getResourceType() in CmsObject.
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsResourceTypePointer extends A_CmsResourceType {
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHelperMastertemplates.java,v $
-* Date   : $Date: 2003/07/12 12:49:02 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Vector;
 
 /**
  * Helper class to receive all mastertemplates that are currently in the system.
- * @version $Revision: 1.18 $ $Date: 2003/07/12 12:49:02 $
+ * @version $Revision: 1.19 $ $Date: 2003/07/31 13:19:36 $
  */
 
 public class CmsHelperMastertemplates {
@@ -100,13 +100,7 @@ public class CmsHelperMastertemplates {
      * @throws Throws CmsException if something goes wrong.
      */
     public static void getTemplateElements(CmsObject cms, String subFolder, Vector names, Vector values) throws CmsException {       
-        List files = (List) new ArrayList();
-
-        if (! I_CmsWpConstants.C_VFS_NEW_STRUCTURE) {
-            // get all template elements in the default folder
-            // only required in old structure
-            files = cms.getFilesInFolder(I_CmsWpConstants.C_VFS_PATH_DEFAULTMODULE + subFolder);            
-        }        
+        List files = (List) new ArrayList();  
 
         // get all selected template elements in the module folders
         List modules = (List) new ArrayList();

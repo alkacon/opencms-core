@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/07/22 08:35:20 $
-* Version: $Revision: 1.84 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.85 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,10 +61,10 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.84 $ $Date: 2003/07/22 08:35:20 $
+ * @version $Revision: 1.85 $ $Date: 2003/07/31 13:19:37 $
  *
  */
-public class CmsRequestContext implements I_CmsConstants {
+public class CmsRequestContext {
     
     public static final String C_USER_SITEROOT = "CmsRequestContext.siteRoot";
 
@@ -388,7 +388,7 @@ public class CmsRequestContext implements I_CmsConstants {
         if (m_req != null) {
             return m_req.getRequestedResource();
         } else {
-            return C_ROOT;
+            return I_CmsConstants.C_ROOT;
         }
     }
 
@@ -522,8 +522,8 @@ public class CmsRequestContext implements I_CmsConstants {
      * @return the adjusted site root for a resoure
      */      
     public String getAdjustedFullSiteRoot(String resourcename) {
-        if (resourcename.startsWith(C_VFS_DEFAULT + "/system/")) {
-            return C_VFS_DEFAULT;
+        if (resourcename.startsWith(I_CmsConstants.C_VFS_DEFAULT + "/system/")) {
+            return I_CmsConstants.C_VFS_DEFAULT;
         } else {
             return m_siteRoot;
         }
@@ -538,7 +538,7 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     public String getAdjustedSiteRoot(String resourcename) {
         if (resourcename.startsWith("/system/")) {
-            return C_VFS_DEFAULT;
+            return I_CmsConstants.C_VFS_DEFAULT;
         } else {
             return m_siteRoot;
         }  
@@ -586,7 +586,7 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     public void initEncoding() {
         try {
-            m_encoding = m_driverManager.readProperty(this, addSiteRoot(m_req.getRequestedResource()), getAdjustedSiteRoot(m_req.getRequestedResource()), C_PROPERTY_CONTENT_ENCODING, true);
+            m_encoding = m_driverManager.readProperty(this, addSiteRoot(m_req.getRequestedResource()), getAdjustedSiteRoot(m_req.getRequestedResource()), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true);
         } catch (CmsException e) {
             m_encoding = null;
         }

@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2003/07/22 17:13:34 $
- * Version: $Revision: 1.2 $
- * Date   : $Date: 2003/07/22 17:13:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/31 13:19:37 $
+ * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/31 13:19:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,9 +61,9 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/07/22 17:13:34 $
+ * @version $Revision: 1.3 $ $Date: 2003/07/31 13:19:37 $
  */
-public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
+public class CmsSynchronize {
 
     /**
      * flag to export a resource form the VFS to the FS
@@ -137,7 +137,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
             m_synchronizeModifications = cms.getRegistry().getSynchronizeModifications();
         }
 
-        m_synchronizePath = m_cms.getRegistry().getSystemValue(C_SYNCHRONISATION_PATH);
+        m_synchronizePath = m_cms.getRegistry().getSystemValue(I_CmsConstants.C_SYNCHRONISATION_PATH);
         //check if the synchronize path in the FS ends with a seperator. If so, remove it
         if (m_synchronizePath.endsWith(File.separator)) {
             m_synchronizePath = m_synchronizePath.substring(0, m_synchronizePath.length() - 1);
@@ -196,7 +196,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
             CmsResource res = (CmsResource)resources.elementAt(i);
             // test if the resource is marked as deleted. if so,
             // do nothing, the corrsponding file in the FS will be removed later
-            if (res.getState() != C_STATE_DELETED) {
+            if (res.getState() != I_CmsConstants.C_STATE_DELETED) {
                 // do a recursion if the current resource is a folder
                 if (res.isFolder()) {
                     // first check if this folder must be synchronised
@@ -501,7 +501,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 
         try {
             // if the resource is marked for deletion, do not export it!
-            if (res.getState() != C_STATE_DELETED) {
+            if (res.getState() != I_CmsConstants.C_STATE_DELETED) {
                 // if its a file, create export the file to the FS
                 if (res.isFile()) {
                     // create the resource if nescessary
@@ -518,8 +518,8 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
                         try {
                             ((I_CmsSynchonizeModification)i.next()).modifyFs(m_cms, vfsFile, fsFile);
                         } catch (CmsSynchronizeException e) {
-                            if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
-                                A_OpenCms.log(C_OPENCMS_INFO, ". CmsSyncModification class : exportTo FS " + res.getFullResourceName() + ":" + e.toString());
+                            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO))
+                                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, ". CmsSyncModification class : exportTo FS " + res.getFullResourceName() + ":" + e.toString());
                             break;
                         }
                     }
@@ -572,8 +572,8 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
                 try {
                     ((I_CmsSynchonizeModification)i.next()).modifyVfs(m_cms, vfsFile, fsFile);
                 } catch (CmsSynchronizeException e) {
-                    if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
-                        A_OpenCms.log(C_OPENCMS_INFO, ". CmsSyncModification class : updateFrom FS " + res.getFullResourceName() + ":" + e.toString());
+                    if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO))
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, ". CmsSyncModification class : updateFrom FS " + res.getFullResourceName() + ":" + e.toString());
                     break;
                 }
             }
@@ -800,8 +800,8 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
             try {
                 translation = ((I_CmsSynchonizeModification)i.next()).translate(m_cms, name);
             } catch (CmsSynchronizeException e) {
-                if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
-                    A_OpenCms.log(C_OPENCMS_INFO, ". CmsSyncModification class : external translation " + name + ":" + e.toString());
+                if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO))
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, ". CmsSyncModification class : external translation " + name + ":" + e.toString());
                 break;
             }
         }

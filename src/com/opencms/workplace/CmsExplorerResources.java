@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerResources.java,v $
-* Date   : $Date: 2003/07/15 12:30:13 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package com.opencms.workplace;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 
@@ -47,7 +46,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Hanjo Riege
  */
 
-public class CmsExplorerResources extends CmsWorkplaceDefault implements I_CmsConstants {
+public class CmsExplorerResources extends CmsWorkplaceDefault {
 
     private final static String C_RESTYPES_FOLDER = "/system/workplace/restypes/";
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2003/07/30 16:25:42 $
-* Version: $Revision: 1.129 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.130 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.129 $ $Date: 2003/07/30 16:25:42 $
+ * @version $Revision: 1.130 $ $Date: 2003/07/31 13:19:36 $
  */
 
 public interface I_CmsWpConstants {
@@ -44,59 +44,53 @@ public interface I_CmsWpConstants {
     /** Parameter for the default language */
     String C_DEFAULT_LANGUAGE = "en";
     
-    /** 
-     * Parameter to check if the new (since 5.0 beta 2) folder structure is to be used.
-     * @since 5.0 beta 2
-     */
-    boolean C_VFS_NEW_STRUCTURE = true;
-    
     /** Parameter for content body folder */
-    String C_VFS_PATH_BODIES = C_VFS_NEW_STRUCTURE?"/system/bodies/":"/content/bodys/";
+    String C_VFS_PATH_BODIES = "/system/bodies/";
      
     /** Path to system folder */ 
     String C_VFS_PATH_SYSTEM = "/system/"; 
      
     /** Path to modules folder */
-    String C_VFS_PATH_MODULES = C_VFS_PATH_SYSTEM+"modules/";
+    String C_VFS_PATH_MODULES = C_VFS_PATH_SYSTEM + "modules/";
     
     /** Parameter for default module */
-    String C_VFS_PATH_DEFAULTMODULE = C_VFS_NEW_STRUCTURE?C_VFS_PATH_MODULES+"default/":"/content/";
+    String C_VFS_PATH_DEFAULTMODULE = C_VFS_PATH_MODULES + "default/";
     
     /** Path to module demo folder (deprecated since version 5.0 beta 2) */
-    String C_VFS_PATH_MODULEDEMOS = C_VFS_NEW_STRUCTURE?C_VFS_PATH_MODULES+"moduledemos/":"/moduledemos/";
+    String C_VFS_PATH_MODULEDEMOS = C_VFS_PATH_MODULES + "moduledemos/";
 
     /** Path to the galleries */
-    String C_VFS_PATH_GALLERIES = C_VFS_NEW_STRUCTURE?C_VFS_PATH_SYSTEM+"galleries/":"/";
+    String C_VFS_PATH_GALLERIES = C_VFS_PATH_SYSTEM + "galleries/";
 
     /** Path to pics gallery folder */
-    String C_VFS_GALLERY_PICS = C_VFS_NEW_STRUCTURE?C_VFS_PATH_GALLERIES+"pics/":"/pics/";
+    String C_VFS_GALLERY_PICS = C_VFS_PATH_GALLERIES + "pics/";
 
     /** Path to download gallery folder */
-    String C_VFS_GALLERY_DOWNLOAD = C_VFS_PATH_GALLERIES+"download/";
+    String C_VFS_GALLERY_DOWNLOAD = C_VFS_PATH_GALLERIES + "download/";
  
     /** Path to html gallery folder */
-    String C_VFS_GALLERY_HTML = C_VFS_PATH_GALLERIES+"htmlgalleries/";
+    String C_VFS_GALLERY_HTML = C_VFS_PATH_GALLERIES + "htmlgalleries/";
 
     /** Path to externallink gallery folder */
-    String C_VFS_GALLERY_EXTERNALLINKS = C_VFS_PATH_GALLERIES+"externallinks/";
+    String C_VFS_GALLERY_EXTERNALLINKS = C_VFS_PATH_GALLERIES + "externallinks/";
 
     /** Path to the workplace */
     String C_VFS_PATH_WORKPLACE = C_VFS_PATH_SYSTEM + "workplace/";
 
     /** Path to system image folder */
-    String C_VFS_PATH_SYSTEMPICS = C_VFS_NEW_STRUCTURE?C_VFS_PATH_WORKPLACE+"resources/":"/pics/system/";
+    String C_VFS_PATH_SYSTEMPICS = C_VFS_PATH_WORKPLACE + "resources/";
 
     /** Path to exported system image folder */
-    String C_SYSTEM_PICS_EXPORT_PATH = C_VFS_NEW_STRUCTURE?"/resources/":"/pics/system/";
+    String C_SYSTEM_PICS_EXPORT_PATH = "/resources/";
 
     /** Path to locales */
-    String C_VFS_PATH_LOCALES = C_VFS_NEW_STRUCTURE?C_VFS_PATH_WORKPLACE+"locales/":C_VFS_PATH_WORKPLACE+"config/language/";
+    String C_VFS_PATH_LOCALES = C_VFS_PATH_WORKPLACE + "locales/";
 
     /** Path to scripts */
-    String C_VFS_PATH_SCRIPTS = C_VFS_NEW_STRUCTURE?C_VFS_PATH_WORKPLACE+"scripts/":C_VFS_PATH_WORKPLACE+"templates/js/";
+    String C_VFS_PATH_SCRIPTS = C_VFS_PATH_WORKPLACE + "scripts/";
 
     /** Path to online help pages */
-    String C_VFS_PATH_HELP = C_VFS_PATH_WORKPLACE+"help/";
+    String C_VFS_PATH_HELP = C_VFS_PATH_WORKPLACE + "help/";
 
     /** Directory name of content templates folder */
     String C_VFS_DIR_TEMPLATES = "templates/";
@@ -111,13 +105,13 @@ public interface I_CmsWpConstants {
     String C_VFS_PATH_DEFAULT_TEMPLATES = C_VFS_PATH_DEFAULTMODULE + C_VFS_DIR_TEMPLATES;
 
     /** Path to content internal folder */
-    String C_VFS_PATH_DEFAULT_INTERNAL = C_VFS_NEW_STRUCTURE?C_VFS_PATH_WORKPLACE+"templates/":C_VFS_PATH_DEFAULTMODULE + C_VFS_DIR_INTERNAL;
+    String C_VFS_PATH_DEFAULT_INTERNAL = C_VFS_PATH_WORKPLACE + "templates/";
 
     /** Path to content default_bodies folder */
     String C_VFS_PATH_DEFAULT_BODIES = C_VFS_PATH_DEFAULTMODULE + C_VFS_DIR_DEFAULTBODIES;
 
     /** Directory name of module locales path */
-    String C_VFS_DIR_LOCALES = C_VFS_NEW_STRUCTURE?"locales/":"language/";
+    String C_VFS_DIR_LOCALES = "locales/";
 
     /** Parameter for layout  */
     String C_PARA_LAYOUT = "default_body";

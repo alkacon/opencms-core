@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsSession.java,v $
-* Date   : $Date: 2003/01/20 17:57:49 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,9 +44,9 @@ import javax.servlet.http.HttpSession;
  *
  * @author Michael Emmerich
  *
- * @version $Revision: 1.23 $ $Date: 2003/01/20 17:57:49 $
+ * @version $Revision: 1.24 $ $Date: 2003/07/31 13:19:37 $
  */
-public class CmsSession implements I_CmsSession,I_CmsConstants {
+public class CmsSession implements I_CmsSession {
 
     /**
      * The original HttpSession
@@ -65,12 +65,12 @@ public class CmsSession implements I_CmsSession,I_CmsConstants {
      */
     public CmsSession(HttpSession originalSession) {
         m_session = originalSession;
-        m_sessionData = (Hashtable)m_session.getAttribute(C_SESSION_DATA);
+        m_sessionData = (Hashtable)m_session.getAttribute(I_CmsConstants.C_SESSION_DATA);
 
         // if there is no session-data, create a new one.
         if(m_sessionData == null) {
             m_sessionData = new Hashtable();
-            m_session.setAttribute(C_SESSION_DATA, m_sessionData);
+            m_session.setAttribute(I_CmsConstants.C_SESSION_DATA, m_sessionData);
         }
     }
 
@@ -109,7 +109,7 @@ public class CmsSession implements I_CmsSession,I_CmsConstants {
 
         try {
             // indicate, that the session should be stored after the request.
-            m_session.setAttribute(C_SESSION_IS_DIRTY, new Boolean(true));
+            m_session.setAttribute(I_CmsConstants.C_SESSION_IS_DIRTY, new Boolean(true));
         } catch (Exception exc) {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsSession] Error marking session as dirty " + exc.getClass().getName() + " " + exc.getMessage());
@@ -126,7 +126,7 @@ public class CmsSession implements I_CmsSession,I_CmsConstants {
         m_sessionData.remove(name);
 
         // indicate, that the session should be stored after the request.
-        m_session.setAttribute(C_SESSION_IS_DIRTY, new Boolean(true));
+        m_session.setAttribute(I_CmsConstants.C_SESSION_IS_DIRTY, new Boolean(true));
     }
     
     /**

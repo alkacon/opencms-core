@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpInputDefFile.java,v $
-* Date   : $Date: 2003/01/20 23:59:20 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,10 +40,10 @@ import com.opencms.template.A_CmsXmlContent;
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.17 $ $Date: 2003/01/20 23:59:20 $
+ * @version $Revision: 1.18 $ $Date: 2003/07/31 13:19:36 $
  */
 
-public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogChannels,I_CmsWpConstants {
+public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsWpConstants {
     
     /**
      * Default constructor.

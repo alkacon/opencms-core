@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/29 15:58:47 $
-* Version: $Revision: 1.126 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.127 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,9 @@
 
 package com.opencms.file;
 
+import org.opencms.loader.CmsPageLoader;
+import org.opencms.security.CmsAccessControlEntry;
+
 import com.opencms.boot.CmsBase;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
@@ -48,8 +51,6 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.opencms.loader.CmsPageLoader;
-import org.opencms.security.CmsAccessControlEntry;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -65,9 +66,9 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.126 $ $Date: 2003/07/29 15:58:47 $
+ * @version $Revision: 1.127 $ $Date: 2003/07/31 13:19:37 $
  */
-public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
+public class CmsImport implements Serializable {
 
     /** The algorithm for the message digest */
     public static final String C_IMPORT_DIGEST = "MD5";
@@ -239,7 +240,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 
         // try to read the export version nummber
         try {
-            m_importVersion = Integer.parseInt(getTextNodeValue((Element)m_docXml.getElementsByTagName(C_EXPORT_TAG_INFO).item(0), C_EXPORT_TAG_VERSION));
+            m_importVersion = Integer.parseInt(getTextNodeValue((Element)m_docXml.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_INFO).item(0), I_CmsConstants.C_EXPORT_TAG_VERSION));
         } catch (Exception e) {
             //ignore the exception, the export file has no version nummber (version 0).
         }
@@ -309,19 +310,19 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         Vector conflictNames = new Vector();
         try {
             // get all file-nodes
-            fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
+            fileNodes = m_docXml.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_FILE);
 
             // walk through all files in manifest
             for (int i = 0; i < fileNodes.getLength(); i++) {
                 currentElement = (Element)fileNodes.item(i);
-                source = getTextNodeValue(currentElement, C_EXPORT_TAG_SOURCE);
-                destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
+                source = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_SOURCE);
+                destination = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESTINATION);
                 if (source != null) {
                     // only consider files
                     boolean exists = true;
                     try {
                         CmsResource res = m_cms.readFileHeader(m_importPath + destination);
-                        if (res.getState() == C_STATE_DELETED) {
+                        if (res.getState() == I_CmsConstants.C_STATE_DELETED) {
                             exists = false;
                         }
                     } catch (CmsException e) {
@@ -428,11 +429,11 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 m_cms.setContextToCos();
 
             // get all file-nodes
-            fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
+            fileNodes = m_docXml.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_FILE);
             // walk through all files in manifest
             for (int i = 0; i < fileNodes.getLength(); i++) {
                 currentElement = (Element)fileNodes.item(i);
-                destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
+                destination = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESTINATION);
 
                 // get the resources for a project
                 try {
@@ -446,7 +447,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                             resources.addElement(resource);
                         } catch (CmsException exc) {
                             // this resource is missing - we need the root-folder
-                            resources.addElement(C_ROOT);
+                            resources.addElement(I_CmsConstants.C_ROOT);
                         }
                     }
                 } catch (StringIndexOutOfBoundsException exc) {
@@ -469,10 +470,10 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
             }
         }
-        if (resources.contains(C_ROOT)) {
+        if (resources.contains(I_CmsConstants.C_ROOT)) {
             // we have to import root - forget the rest!
             resources.removeAllElements();
-            resources.addElement(C_ROOT);
+            resources.addElement(I_CmsConstants.C_ROOT);
         }
         return resources;
     }
@@ -501,7 +502,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      */
     private void getXmlConfigFile() throws CmsException {
         try {
-            InputStream in = new ByteArrayInputStream(getFileBytes(C_EXPORT_XMLFILENAME));
+            InputStream in = new ByteArrayInputStream(getFileBytes(I_CmsConstants.C_EXPORT_XMLFILENAME));
             try {
                 m_docXml = A_CmsXmlContent.getXmlParser().parse(in);
             } finally {
@@ -546,17 +547,17 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 // try to read an existing channel to get the channel id
                 String channelId = null;
                 try {
-                    if ((type.equalsIgnoreCase(CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME)) && (!destination.endsWith(C_FOLDER_SEPARATOR))) {
-                        destination += C_FOLDER_SEPARATOR;
+                    if ((type.equalsIgnoreCase(CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME)) && (!destination.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))) {
+                        destination += I_CmsConstants.C_FOLDER_SEPARATOR;
                     }
-                    CmsResource channel = m_cms.readFileHeader(C_ROOT + destination);
+                    CmsResource channel = m_cms.readFileHeader(I_CmsConstants.C_ROOT + destination);
                     channelId = m_cms.readProperty(m_cms.readAbsolutePath(channel), I_CmsConstants.C_PROPERTY_CHANNELID);
                 } catch (Exception e) {
                     // ignore the exception, a new channel id will be generated
                 }
                 if (channelId == null) {
                     // the channel id does not exist, so generate a new one
-                    int newChannelId = org.opencms.db.CmsIdGenerator.nextId(C_TABLE_CHANNELID);
+                    int newChannelId = org.opencms.db.CmsIdGenerator.nextId(I_CmsConstants.C_TABLE_CHANNELID);
                     channelId = "" + newChannelId;
                 }
                 properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, channelId);
@@ -713,17 +714,17 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 // try to read an existing channel to get the channel id
                 String channelId = null;
                 try {
-                    if ((type.equalsIgnoreCase(CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME)) && (!destination.endsWith(C_FOLDER_SEPARATOR))) {
-                        destination += C_FOLDER_SEPARATOR;
+                    if ((type.equalsIgnoreCase(CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME)) && (!destination.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))) {
+                        destination += I_CmsConstants.C_FOLDER_SEPARATOR;
                     }
-                    CmsResource channel = m_cms.readFileHeader(C_ROOT + destination);
+                    CmsResource channel = m_cms.readFileHeader(I_CmsConstants.C_ROOT + destination);
                     channelId = m_cms.readProperty(m_cms.readAbsolutePath(channel), I_CmsConstants.C_PROPERTY_CHANNELID);
                 } catch (Exception e) {
                     // ignore the exception, a new channel id will be generated
                 }
                 if (channelId == null) {
                     // the channel id does not exist, so generate a new one
-                    int newChannelId = org.opencms.db.CmsIdGenerator.nextId(C_TABLE_CHANNELID);
+                    int newChannelId = org.opencms.db.CmsIdGenerator.nextId(I_CmsConstants.C_TABLE_CHANNELID);
                     channelId = "" + newChannelId;
                 }
                 properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, channelId);
@@ -882,7 +883,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             immutableResources = new ArrayList();
         try {
             // get all file-nodes
-            fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
+            fileNodes = m_docXml.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_FILE);
             int importSize = fileNodes.getLength();
             // walk through all files in manifest
             for (int i = 0; i < fileNodes.getLength(); i++) {
@@ -890,46 +891,46 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 currentElement = (Element)fileNodes.item(i);
                 // get all information for a file-import
                 // <source>
-                source = getTextNodeValue(currentElement, C_EXPORT_TAG_SOURCE);
+                source = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_SOURCE);
                 // <destintion>
-                destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
+                destination = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESTINATION);
                 // <type>
-                type = getTextNodeValue(currentElement, C_EXPORT_TAG_TYPE);
+                type = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
                 // <uuidstructure>
-                uuidstructure = getTextNodeValue(currentElement, C_EXPORT_TAG_UUIDSTRUCTURE);
+                uuidstructure = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDSTRUCTURE);
                 // <uuidresource>
-                uuidresource = getTextNodeValue(currentElement, C_EXPORT_TAG_UUIDRESOURCE);
+                uuidresource = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE);
                 // <uuidcontent>
-                uuidcontent = getTextNodeValue(currentElement, C_EXPORT_TAG_UUIDCONTENT);
+                uuidcontent = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDCONTENT);
                 // <datelastmodified>
-                if ((timestamp = getTextNodeValue(currentElement, C_EXPORT_TAG_DATELASTMODIFIED)) != null) {
+                if ((timestamp = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DATELASTMODIFIED)) != null) {
                     datelastmodified = Long.parseLong(timestamp);
                 } else {
                     datelastmodified = System.currentTimeMillis();
                 }
                 // <userlastmodified>
-                userlastmodified = getTextNodeValue(currentElement, C_EXPORT_TAG_USERLASTMODIFIED);
+                userlastmodified = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_USERLASTMODIFIED);
                 // <datecreated>
-                if ((timestamp = getTextNodeValue(currentElement, C_EXPORT_TAG_DATECREATED)) != null) {
+                if ((timestamp = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DATECREATED)) != null) {
                     datecreated = Long.parseLong(timestamp);
                 } else {
                     datecreated = System.currentTimeMillis();
                 }
                 // <usercreated>
-                usercreated = getTextNodeValue(currentElement, C_EXPORT_TAG_USERCREATED);
+                usercreated = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_USERCREATED);
                 // <flags>              
-                flags = getTextNodeValue(currentElement, C_EXPORT_TAG_FLAGS);
+                flags = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
 
                 //TODO: will this work with multiple sites?
-                String translatedName = C_VFS_DEFAULT + m_importPath + destination;
+                String translatedName = I_CmsConstants.C_VFS_DEFAULT + m_importPath + destination;
                 if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(type)) {
-                    translatedName += C_FOLDER_SEPARATOR;
+                    translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
                 }
                 // translate the name during import
                 translatedName = m_cms.getRequestContext().getDirectoryTranslator().translateResource(translatedName);
                 // check if this resource is immutable
                 boolean resourceNotImmutable = checkImmutable(translatedName, immutableResources);
-                translatedName = translatedName.substring(C_VFS_DEFAULT.length());
+                translatedName = translatedName.substring(I_CmsConstants.C_VFS_DEFAULT.length());
                 // if the resource is not immutable and not on the exclude list, import it
                 if (resourceNotImmutable && (!excludeList.contains(translatedName))) {
                     // print out the information to the report
@@ -944,15 +945,15 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     // if the resource was imported add the access control entrys if available
                     if (res != null) {
                         // write all imported access control entries for this file
-                        acentryNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
+                        acentryNodes = currentElement.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
                         // collect all access control entries
                         for (int j = 0; j < acentryNodes.getLength(); j++) {
                             currentEntry = (Element)acentryNodes.item(j);
                             // get the data of the access control entry
-                            String id = getTextNodeValue(currentEntry, C_EXPORT_TAG_ACCESSCONTROL_PRINCIPAL);
-                            String acflags = getTextNodeValue(currentEntry, C_EXPORT_TAG_FLAGS);
-                            String allowed = getTextNodeValue(currentEntry, C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS);
-                            String denied = getTextNodeValue(currentEntry, C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS);
+                            String id = getTextNodeValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PRINCIPAL);
+                            String acflags = getTextNodeValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_FLAGS);
+                            String allowed = getTextNodeValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS);
+                            String denied = getTextNodeValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS);
                             // add the entry to the list
                             addImportAccessControlEntry(res, id, allowed, denied, acflags);
                         }
@@ -1043,7 +1044,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 
         try {
             // get all file-nodes
-            fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
+            fileNodes = m_docXml.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_FILE);
             int importSize = fileNodes.getLength();
 
             // walk through all files in manifest
@@ -1053,15 +1054,15 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 currentElement = (Element)fileNodes.item(i);
 
                 // get all information for a file-import
-                source = getTextNodeValue(currentElement, C_EXPORT_TAG_SOURCE);
-                destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
-                type = getTextNodeValue(currentElement, C_EXPORT_TAG_TYPE);
-                access = getTextNodeValue(currentElement, C_EXPORT_TAG_ACCESS);
-                uuid = getTextNodeValue(currentElement, C_EXPORT_TAG_UUIDSTRUCTURE);
-                uuidfile = getTextNodeValue(currentElement, C_EXPORT_TAG_UUIDCONTENT);
-                uuidresource = getTextNodeValue(currentElement, C_EXPORT_TAG_UUIDRESOURCE);
+                source = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_SOURCE);
+                destination = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESTINATION);
+                type = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
+                access = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_ACCESS);
+                uuid = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDSTRUCTURE);
+                uuidfile = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDCONTENT);
+                uuidresource = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE);
 
-                if ((timestamp = getTextNodeValue(currentElement, C_EXPORT_TAG_LASTMODIFIED)) != null) {
+                if ((timestamp = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_LASTMODIFIED)) != null) {
                     lastmodified = Long.parseLong(timestamp);
                 } else {
                     lastmodified = System.currentTimeMillis();
@@ -1072,9 +1073,9 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     type = CmsResourceTypePlain.C_RESOURCE_TYPE_NAME;
                 }
 
-                String translatedName = C_VFS_DEFAULT + m_importPath + destination;
+                String translatedName = I_CmsConstants.C_VFS_DEFAULT + m_importPath + destination;
                 if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(type)) {
-                    translatedName += C_FOLDER_SEPARATOR;
+                    translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
                 }
                 translatedName = m_cms.getRequestContext().getDirectoryTranslator().translateResource(translatedName);
                 if (DEBUG > 3)
@@ -1082,7 +1083,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 
                 boolean resourceNotImmutable = checkImmutable(translatedName, immutableResources);
 
-                translatedName = translatedName.substring(C_VFS_DEFAULT.length());
+                translatedName = translatedName.substring(I_CmsConstants.C_VFS_DEFAULT.length());
                 if (resourceNotImmutable && (!excludeList.contains(translatedName))) {
 
                     // print out the information to the report
@@ -1098,16 +1099,16 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     if (res != null) {
 
                         // write all imported access control entries for this file
-                        acentryNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
+                        acentryNodes = currentElement.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
                         // collect all access control entries
                         //String resid = getTextNodeValue(currentElement, C_EXPORT_TAG_ID);
                         for (int j = 0; j < acentryNodes.getLength(); j++) {
                             currentEntry = (Element)acentryNodes.item(j);
                             // get the data of the access control entry
-                            String id = getTextNodeValue(currentEntry, C_EXPORT_TAG_ID);
-                            String flags = getTextNodeValue(currentEntry, C_EXPORT_TAG_FLAGS);
-                            String allowed = getTextNodeValue(currentEntry, C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS);
-                            String denied = getTextNodeValue(currentEntry, C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS);
+                            String id = getTextNodeValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_ID);
+                            String flags = getTextNodeValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_FLAGS);
+                            String allowed = getTextNodeValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS);
+                            String denied = getTextNodeValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS);
 
                             // add the entry to the list
                             addImportAccessControlEntry(res, id, allowed, denied, flags);
@@ -1176,7 +1177,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 
         Vector types = new Vector(); // stores the file types for which the property already exists
         // get all properties for this file
-        NodeList propertyNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_PROPERTY);
+        NodeList propertyNodes = currentElement.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_PROPERTY);
         // clear all stores for property information
         HashMap properties = new HashMap();
         // add the module property to properties
@@ -1192,11 +1193,11 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         for (int j = 0; j < propertyNodes.getLength(); j++) {
             Element currentProperty = (Element)propertyNodes.item(j);
             // get name information for this property
-            String name = getTextNodeValue(currentProperty, C_EXPORT_TAG_NAME);
+            String name = getTextNodeValue(currentProperty, I_CmsConstants.C_EXPORT_TAG_NAME);
             // check if this is an unwanted property
             if ((name != null) && (!deleteProperties.contains(name))) {
                 // get value information for this property
-                String value = getTextNodeValue(currentProperty, C_EXPORT_TAG_VALUE);
+                String value = getTextNodeValue(currentProperty, I_CmsConstants.C_EXPORT_TAG_VALUE);
                 if (value == null) {
                     // create an empty property
                     value = "";
@@ -1249,10 +1250,10 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 
         // check if the template property exists. If not, create it.
         try {
-            m_cms.readPropertydefinition(C_XML_CONTROL_TEMPLATE_PROPERTY, CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
+            m_cms.readPropertydefinition(I_CmsConstants.C_XML_CONTROL_TEMPLATE_PROPERTY, CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
         } catch (CmsException e) {
             // the template propertydefintion does not exist. So create it.
-            m_cms.createPropertydefinition(C_XML_CONTROL_TEMPLATE_PROPERTY, CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
+            m_cms.createPropertydefinition(I_CmsConstants.C_XML_CONTROL_TEMPLATE_PROPERTY, CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
         }
         // copy all propertydefinitions of the old page to the new page
         Vector definitions = m_cms.readAllPropertydefinitions(CmsResourceTypePage.C_RESOURCE_TYPE_ID);
@@ -1326,7 +1327,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     // write all changes                     
                     m_cms.writeFile(pagefile);
                     // add the template property to the controlfile
-                    m_cms.writeProperty(resname, C_XML_CONTROL_TEMPLATE_PROPERTY, mastertemplate);
+                    m_cms.writeProperty(resname, I_CmsConstants.C_XML_CONTROL_TEMPLATE_PROPERTY, mastertemplate);
                     m_cms.writeProperties(resname, properties);
                     m_cms.touch(resname,pagefile.getDateLastModified(),false,pagefile.getUserLastModified());
                     // don, ulock the resource                   
@@ -1402,15 +1403,15 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 
         try {
             // getAll group nodes
-            groupNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_GROUPDATA);
+            groupNodes = m_docXml.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_GROUPDATA);
             // walk through all groups in manifest
             for (int i = 0; i < groupNodes.getLength(); i++) {
                 currentElement = (Element)groupNodes.item(i);
-                id = getTextNodeValue(currentElement, C_EXPORT_TAG_ID);
-                name = getTextNodeValue(currentElement, C_EXPORT_TAG_NAME);
-                description = getTextNodeValue(currentElement, C_EXPORT_TAG_DESCRIPTION);
-                flags = getTextNodeValue(currentElement, C_EXPORT_TAG_FLAGS);
-                parentgroup = getTextNodeValue(currentElement, C_EXPORT_TAG_PARENTGROUP);
+                id = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_ID);
+                name = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_NAME);
+                description = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESCRIPTION);
+                flags = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
+                parentgroup = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_PARENTGROUP);
                 // import this group
                 importGroup(id, name, description, flags, parentgroup);
             }
@@ -1421,11 +1422,11 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 m_groupsToCreate = new Stack();
                 while (tempStack.size() > 0) {
                     Hashtable groupdata = (Hashtable)tempStack.pop();
-                    id = (String)groupdata.get(C_EXPORT_TAG_ID);
-                    name = (String)groupdata.get(C_EXPORT_TAG_NAME);
-                    description = (String)groupdata.get(C_EXPORT_TAG_DESCRIPTION);
-                    flags = (String)groupdata.get(C_EXPORT_TAG_FLAGS);
-                    parentgroup = (String)groupdata.get(C_EXPORT_TAG_PARENTGROUP);
+                    id = (String)groupdata.get(I_CmsConstants.C_EXPORT_TAG_ID);
+                    name = (String)groupdata.get(I_CmsConstants.C_EXPORT_TAG_NAME);
+                    description = (String)groupdata.get(I_CmsConstants.C_EXPORT_TAG_DESCRIPTION);
+                    flags = (String)groupdata.get(I_CmsConstants.C_EXPORT_TAG_FLAGS);
+                    parentgroup = (String)groupdata.get(I_CmsConstants.C_EXPORT_TAG_PARENTGROUP);
                     // try to import the group
                     importGroup(id, name, description, flags, parentgroup);
                 }
@@ -1453,31 +1454,31 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         getImportResource();
         try {
             // getAll user nodes
-            userNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_USERDATA);
+            userNodes = m_docXml.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_USERDATA);
             // walk threw all groups in manifest
             for (int i = 0; i < userNodes.getLength(); i++) {
                 currentElement = (Element)userNodes.item(i);
-                id = getTextNodeValue(currentElement, C_EXPORT_TAG_ID);
-                name = getTextNodeValue(currentElement, C_EXPORT_TAG_NAME);
+                id = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_ID);
+                name = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_NAME);
                 // decode passwords using base 64 decoder
                 dec = new sun.misc.BASE64Decoder();
-                pwd = getTextNodeValue(currentElement, C_EXPORT_TAG_PASSWORD);
+                pwd = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_PASSWORD);
                 password = new String(dec.decodeBuffer(pwd.trim()));
                 dec = new sun.misc.BASE64Decoder();
-                pwd = getTextNodeValue(currentElement, C_EXPORT_TAG_RECOVERYPASSWORD);
+                pwd = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_RECOVERYPASSWORD);
                 recoveryPassword = new String(dec.decodeBuffer(pwd.trim()));
 
-                description = getTextNodeValue(currentElement, C_EXPORT_TAG_DESCRIPTION);
-                flags = getTextNodeValue(currentElement, C_EXPORT_TAG_FLAGS);
-                firstname = getTextNodeValue(currentElement, C_EXPORT_TAG_FIRSTNAME);
-                lastname = getTextNodeValue(currentElement, C_EXPORT_TAG_LASTNAME);
-                email = getTextNodeValue(currentElement, C_EXPORT_TAG_EMAIL);
-                address = getTextNodeValue(currentElement, C_EXPORT_TAG_ADDRESS);
-                section = getTextNodeValue(currentElement, C_EXPORT_TAG_SECTION);
-                defaultGroup = getTextNodeValue(currentElement, C_EXPORT_TAG_DEFAULTGROUP);
-                type = getTextNodeValue(currentElement, C_EXPORT_TAG_TYPE);
+                description = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESCRIPTION);
+                flags = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
+                firstname = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FIRSTNAME);
+                lastname = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_LASTNAME);
+                email = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_EMAIL);
+                address = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_ADDRESS);
+                section = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_SECTION);
+                defaultGroup = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DEFAULTGROUP);
+                type = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
                 // get the userinfo and put it into the hashtable
-                infoNode = getTextNodeValue(currentElement, C_EXPORT_TAG_USERINFO);
+                infoNode = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_USERINFO);
                 try {
                     // read the userinfo from the dat-file
                     byte[] value = getFileBytes(infoNode);
@@ -1490,11 +1491,11 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 }
 
                 // get the groups of the user and put them into the vector
-                groupNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_GROUPNAME);
+                groupNodes = currentElement.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_GROUPNAME);
                 userGroups = new Vector();
                 for (int j = 0; j < groupNodes.getLength(); j++) {
                     currentGroup = (Element)groupNodes.item(j);
-                    userGroups.addElement(getTextNodeValue(currentGroup, C_EXPORT_TAG_NAME));
+                    userGroups.addElement(getTextNodeValue(currentGroup, I_CmsConstants.C_EXPORT_TAG_NAME));
                 }
                 // import this group
                 importUser(id, name, description, flags, password, recoveryPassword, firstname, lastname, email, address, section, defaultGroup, type, userInfo, userGroups);
@@ -1532,10 +1533,10 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             if (((parentgroupName != null) && (!"".equals(parentgroupName))) && (parentGroup == null)) {
                 // cannot create group, put on stack and try to create later
                 Hashtable groupData = new Hashtable();
-                groupData.put(C_EXPORT_TAG_NAME, name);
-                groupData.put(C_EXPORT_TAG_DESCRIPTION, description);
-                groupData.put(C_EXPORT_TAG_FLAGS, flags);
-                groupData.put(C_EXPORT_TAG_PARENTGROUP, parentgroupName);
+                groupData.put(I_CmsConstants.C_EXPORT_TAG_NAME, name);
+                groupData.put(I_CmsConstants.C_EXPORT_TAG_DESCRIPTION, description);
+                groupData.put(I_CmsConstants.C_EXPORT_TAG_FLAGS, flags);
+                groupData.put(I_CmsConstants.C_EXPORT_TAG_PARENTGROUP, parentgroupName);
                 m_groupsToCreate.push(groupData);
             } else {
                 try {
@@ -1895,7 +1896,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 for (int i = 0; i < editNodes.getLength(); i++) {
                     editString = editNodes.item(i).getFirstChild().getNodeValue();
                     for (int k = 0; k < m_webAppNames.size(); k++) {
-                        editString = CmsStringSubstitution.substitute(editString, (String)m_webAppNames.get(k), C_MACRO_OPENCMS_CONTEXT + "/");
+                        editString = CmsStringSubstitution.substitute(editString, (String)m_webAppNames.get(k), I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/");
                     }
                     editNodes.item(i).getFirstChild().setNodeValue(editString);
                 }

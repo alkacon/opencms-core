@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeList.java,v $
- * Date   : $Date: 2003/07/21 08:17:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/31 13:19:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,9 @@
 
 package org.opencms.synchronize;
 
-import java.io.Serializable;
-
-import com.opencms.core.I_CmsConstants;
 import com.opencms.util.Utils;
+
+import java.io.Serializable;
 
 /**
  * Defines the CmsSynchronizeList object, used to store synchronisation data 
@@ -42,9 +41,9 @@ import com.opencms.util.Utils;
  *
  * @author Edna Falkenhan
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/07/21 08:17:42 $
+ * @version $Revision: 1.2 $ $Date: 2003/07/31 13:19:37 $
  */
-public class CmsSynchronizeList implements I_CmsConstants, Serializable {
+public class CmsSynchronizeList implements Serializable {
 
     /**
      * Name of the resource stored in the sync list

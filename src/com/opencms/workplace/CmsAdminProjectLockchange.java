@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectLockchange.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@ package com.opencms.workplace;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.util.Utils;
@@ -43,11 +42,11 @@ import java.util.Hashtable;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.12 $ $Date: 2003/07/31 13:19:36 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
-public class CmsAdminProjectLockchange extends CmsWorkplaceDefault implements I_CmsConstants,I_CmsLogChannels {
+public class CmsAdminProjectLockchange extends CmsWorkplaceDefault {
     
     /**
      * Gets the content of a defined section in a given template file and its subtemplates

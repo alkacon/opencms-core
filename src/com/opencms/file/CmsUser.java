@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
-* Date   : $Date: 2003/07/07 15:08:52 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,9 +40,9 @@ import org.opencms.security.I_CmsPrincipal;
  * Describes the Cms user object and the methods to access it.<p>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.40 $ $Date: 2003/07/07 15:08:52 $
+ * @version $Revision: 1.41 $ $Date: 2003/07/31 13:19:37 $
  */
-public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
+public class CmsUser implements I_CmsPrincipal, Cloneable {
 
     /**
      * The login-name of the user.
@@ -93,7 +93,7 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
     /**
      * The flags of the user.
      */
-    private int m_flags = C_FLAG_ENABLED;
+    private int m_flags = I_CmsConstants.C_FLAG_ENABLED;
 
     /**
      * The email of the user.
@@ -103,7 +103,7 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
     /**
      * The lastused date.
      */
-    private long m_lastused = C_UNKNOWN_LONG;
+    private long m_lastused = I_CmsConstants.C_UNKNOWN_LONG;
 
     /**
      * The firstname of the user.
@@ -123,7 +123,7 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
     /**
      * The last login of the user.
      */
-    private long m_lastlogin = C_UNKNOWN_LONG;
+    private long m_lastlogin = I_CmsConstants.C_UNKNOWN_LONG;
 
 	/**
 	 * The ip address of the last login
@@ -135,7 +135,7 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
      * C_USER_TYPE_SYSTEMUSER for systemuser (incl. guest).
      * C_USER_TYPE_WEBUSER for webuser.
      */
-    private int m_type = C_UNKNOWN_INT;
+    private int m_type = I_CmsConstants.C_UNKNOWN_INT;
 
      /**
      * Creates a new Cms user object.<p>
@@ -249,14 +249,14 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
      */
     public Object getAdditionalInfo(String key) {
         Object value = m_additionalInfo.get(key);
-        if(value == null && C_ADDITIONAL_INFO_STARTSETTINGS.equals(key)){
+        if(value == null && I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS.equals(key)){
             Hashtable startSettings = new Hashtable();
-            startSettings.put(C_START_LANGUAGE, A_OpenCms.getUserDefaultLanguage());
-            startSettings.put(C_START_PROJECT, new Integer(C_PROJECT_ONLINE_ID));
-            startSettings.put(C_START_VIEW, "/system/workplace/action/explorer.html");
-            startSettings.put(C_START_DEFAULTGROUP, this.getDefaultGroup().getName());
-            startSettings.put(C_START_LOCKDIALOG, "");
-            startSettings.put(C_START_ACCESSFLAGS, new Integer(A_OpenCms.getUserDefaultAccessFlags()));
+            startSettings.put(I_CmsConstants.C_START_LANGUAGE, A_OpenCms.getUserDefaultLanguage());
+            startSettings.put(I_CmsConstants.C_START_PROJECT, new Integer(I_CmsConstants.C_PROJECT_ONLINE_ID));
+            startSettings.put(I_CmsConstants.C_START_VIEW, "/system/workplace/action/explorer.html");
+            startSettings.put(I_CmsConstants.C_START_DEFAULTGROUP, this.getDefaultGroup().getName());
+            startSettings.put(I_CmsConstants.C_START_LOCKDIALOG, "");
+            startSettings.put(I_CmsConstants.C_START_ACCESSFLAGS, new Integer(A_OpenCms.getUserDefaultAccessFlags()));
             m_additionalInfo.put(key, startSettings);
             value = startSettings;
        }        
@@ -306,7 +306,7 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
      */
     public boolean getDisabled() {
         boolean disabled=false;
-        if (getFlags() == C_FLAG_DISABLED) {
+        if (getFlags() == I_CmsConstants.C_FLAG_DISABLED) {
             disabled=true;
         }
         return disabled;
@@ -491,7 +491,7 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
      * Disables the user flags by setting them to C_FLAG_DISABLED.<p>
      */
     public void  setDisabled() {
-        setFlags(C_FLAG_DISABLED);
+        setFlags(I_CmsConstants.C_FLAG_DISABLED);
     }
     
     /**
@@ -507,7 +507,7 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
      * Enables the user flags by setting them to C_FLAG_ENABLED.<p>
      */
     public void  setEnabled() {
-        setFlags(C_FLAG_ENABLED);
+        setFlags(I_CmsConstants.C_FLAG_ENABLED);
     }
     
     /**

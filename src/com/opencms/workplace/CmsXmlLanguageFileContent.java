@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
@@ -143,8 +144,8 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent {
                 // try read from old module locales path
                 try {
                     moduleLangFiles = cms.getFilesInFolder(cms.readAbsolutePath((CmsFolder)modules.get(i)) + oldLang);
-                    if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO) ) {
-                        A_OpenCms.log(C_OPENCMS_INFO, "[" + this.getClass().getName() + ".mergeLanguageFiles/1] Old module 'locales' path used: " + cms.readAbsolutePath((CmsFolder)modules.get(i)) + oldLang);
+                    if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO) ) {
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + ".mergeLanguageFiles/1] Old module 'locales' path used: " + cms.readAbsolutePath((CmsFolder)modules.get(i)) + oldLang);
                     }                    
                 } catch (CmsException ex) {
                     // no language files found, we can live with that, probably the module just has none                      
@@ -161,8 +162,8 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent {
                 try {
                     init(cms, cms.readAbsolutePath(file));
                 } catch(Exception exc) {
-                    if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL) ) {
-                        A_OpenCms.log(C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".mergeLanguageFiles/3] Error merging language file: " + cms.readAbsolutePath(file));
+                    if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".mergeLanguageFiles/3] Error merging language file: " + cms.readAbsolutePath(file));
                     }
                 }
             }

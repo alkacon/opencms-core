@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/07/22 17:13:33 $
-* Version: $Revision: 1.81 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.82 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.file;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
@@ -47,15 +48,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -75,9 +67,9 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.81 $ $Date: 2003/07/22 17:13:33 $
+ * @version $Revision: 1.82 $ $Date: 2003/07/31 13:19:37 $
  */
-public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
+public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
 
     /**
      *  The xml-document representing the registry.
@@ -1614,15 +1606,15 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
                         String className = ((Element)resTypes.item(x)).getFirstChild().getNodeValue();
                         result.add(className);
                     } catch (Exception exc) {
-                        if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
-                            A_OpenCms.log(C_OPENCMS_INFO, ". Error getting registry node "+node);
+                        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO))
+                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, ". Error getting registry node "+node);
                     }
                 }
             }
         } catch (Exception e) {
             // no returnvalues
-            if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
-                A_OpenCms.log(C_OPENCMS_INFO, ". Error getting registry node "+node);
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO))
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, ". Error getting registry node "+node);
         }
         return result;
     }
@@ -1641,11 +1633,11 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             String classname = (String)i.next();
             try {
                 result.add(Class.forName(classname).newInstance());
-                if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
-                    A_OpenCms.log(C_OPENCMS_INFO, ". CmsSyncModification init : " + classname + " instanciated");
+                if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO))
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, ". CmsSyncModification init : " + classname + " instanciated");
             } catch (Exception e1) {
-                if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
-                    A_OpenCms.log(C_OPENCMS_INFO, ". CmsSyncModification init : non-critical error " + e1.toString());
+                if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO))
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, ". CmsSyncModification init : non-critical error " + e1.toString());
             }
         }
         return result;
@@ -1974,8 +1966,8 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         for (int i = 0; i < modules.getLength(); i++) {
             Element module = (Element)modules.item(i);
             String moduleName = module.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
-            if (C_LOGGING && booting && A_OpenCms.isLogging(C_OPENCMS_INIT))
-                A_OpenCms.log(C_OPENCMS_INIT, ". Loading module       : " + moduleName);
+            if (I_CmsLogChannels.C_LOGGING && booting && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Loading module       : " + moduleName);
             // store the shortcuts to the modules
             m_modules.put(moduleName, module);
         }
@@ -2002,8 +1994,8 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             A_CmsXmlContent.getXmlParser().getXmlText(m_xmlReg, os, A_OpenCms.getDefaultEncoding());
             // reinit the modules-hashtable
             init(false);
-            if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
-                A_OpenCms.log(C_OPENCMS_INFO, "[CmsRegistry] Saved the registry");
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO))
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsRegistry] Saved the registry");
 
         } catch (Exception exc) {
             throw new CmsException("couldn't save registry", CmsException.C_REGISTRY_ERROR, exc);

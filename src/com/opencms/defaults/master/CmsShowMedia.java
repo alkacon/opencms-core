@@ -172,22 +172,22 @@ public class CmsShowMedia extends CmsXmlTemplate {
         o = c.newInstance(new Object[] {cms, id});
       } catch (InvocationTargetException ite) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": content definitionConstructor: Invocation target exception!");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, getClassName() + ": content definitionConstructor: Invocation target exception!");
         }
       } catch (NoSuchMethodException nsm) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-          A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ":  content definitionConstructor: Requested method was not found!");
+          A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, getClassName() + ":  content definitionConstructor: Requested method was not found!");
         }
       } catch (InstantiationException e) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": content definition constructor: the reflected class is abstract!");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, getClassName() + ": content definition constructor: the reflected class is abstract!");
         }
       } catch (Exception e) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": content definitionConstructor: Other exception! " + e);
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, getClassName() + ": content definitionConstructor: Other exception! " + e);
         }
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-         A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
+         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, e.getMessage() );
         }
       }
     return o;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsMail.java,v $
-* Date   : $Date: 2003/07/23 09:59:22 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,13 +29,31 @@
 package com.opencms.defaults;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import javax.mail.*;
-import javax.activation.*;
-import javax.mail.internet.*;
-import java.util.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsUser;
+import com.opencms.file.I_CmsRegistry;
+import com.opencms.util.CmsByteArrayDataSource;
+import com.opencms.util.Utils;
+
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.Vector;
+
+import javax.activation.DataHandler;
+import javax.activation.MimetypesFileTypeMap;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 /**
  * This class is used to send a mail using the JavaMail package.
@@ -72,10 +90,10 @@ import java.util.*;
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  *
- * @version $Name:  $ $Revision: 1.17 $ $Date: 2003/07/23 09:59:22 $
+ * @version $Name:  $ $Revision: 1.18 $ $Date: 2003/07/31 13:19:37 $
  * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
  */
-public class CmsMail extends Thread implements I_CmsLogChannels {
+public class CmsMail extends Thread {
 
     // constants
     private String m_from = "";
@@ -619,7 +637,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
             msg = buildMessage(m_mailserver);
         } catch (Exception e) {
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while building Email object: " + Utils.getStackTrace(e));
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "Error while building Email object: " + Utils.getStackTrace(e));
             }
 
             // Do not continue here. We don't have a Message object we can send.
@@ -641,19 +659,19 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 
             // First print out an error message...
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while transmitting mail to SMTP server: " + e);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "Error while transmitting mail to SMTP server: " + e);
             }
 
             // ... and now try an alternative server (if given)
             if (m_alternativeMailserver != null && !"".equals(m_alternativeMailserver)) {
                 if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Trying alternative server...");
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "Trying alternative server...");
                 }
                 try {
                     msg = buildMessage(m_alternativeMailserver);
                     Transport.send(msg);
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                        A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "...OK. Mail sent.");
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "...OK. Mail sent.");
                     }
                 } catch (Exception e2) {
 
@@ -661,12 +679,12 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
                     for (; e2 instanceof MessagingException; e2 = ((MessagingException)e2).getNextException()) {
                     }
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                        A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "PANIC! Could not send Email. Even alternative server failed! " + e2);
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "PANIC! Could not send Email. Even alternative server failed! " + e2);
                     }
                 }
             } else {
                 if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "PANIC! No alternative SMTP server given! Could not send Email!");
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "PANIC! No alternative SMTP server given! Could not send Email!");
                 }
             }
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPrefsScroller.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,10 +44,10 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;PREFSSCROLLER&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.9 $ $Date: 2003/07/31 13:19:36 $
  */
 
-public class CmsPrefsScroller extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpConstants {
+public class CmsPrefsScroller extends A_CmsWpElement {
     
     
     /** XML tag attribute used for the filling method */

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateClassManager.java,v $
-* Date   : $Date: 2003/02/02 10:22:56 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,9 +45,9 @@ import java.lang.reflect.Constructor;
  * be cached and re-used.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.30 $ $Date: 2003/02/02 10:22:56 $
+ * @version $Revision: 1.31 $ $Date: 2003/07/31 13:19:37 $
  */
-public class CmsTemplateClassManager implements I_CmsLogChannels {
+public class CmsTemplateClassManager {
 
     /**
      * Gets the instance of the class with the given classname.
@@ -131,7 +131,7 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
                 }
             }
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsTemplateClassManager] " + errorMessage);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsTemplateClassManager] " + errorMessage);
             }
             throw new CmsException(errorMessage, CmsException.C_CLASSLOADER_ERROR, e);
         }

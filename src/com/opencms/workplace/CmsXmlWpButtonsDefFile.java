@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpButtonsDefFile.java,v $
-* Date   : $Date: 2003/01/20 23:59:20 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,6 @@
 
 package com.opencms.workplace;
 
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
@@ -40,10 +39,10 @@ import com.opencms.template.A_CmsXmlContent;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2003/01/20 23:59:20 $
+ * @version $Revision: 1.19 $ $Date: 2003/07/31 13:19:36 $
  */
 
-public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent implements I_CmsLogChannels,I_CmsWpConstants {
+public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent {
     
     /**
      * Default constructor.
@@ -112,11 +111,11 @@ public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent implements I_CmsLogC
     
     public String getButtonSubmit(String name, String action, String value, 
             String style, String width) throws CmsException {
-        setData(C_BUTTON_NAME, name);
-        setData(C_BUTTON_ACTION, action);
-        setData(C_BUTTON_VALUE, value);
-        setData(C_BUTTON_STYLE, style);
-        setData(C_BUTTON_WIDTH, width);
+        setData(I_CmsWpConstants.C_BUTTON_NAME, name);
+        setData(I_CmsWpConstants.C_BUTTON_ACTION, action);
+        setData(I_CmsWpConstants.C_BUTTON_VALUE, value);
+        setData(I_CmsWpConstants.C_BUTTON_STYLE, style);
+        setData(I_CmsWpConstants.C_BUTTON_WIDTH, width);
         return getProcessedDataValue("submitbutton");
     }
     
@@ -128,11 +127,11 @@ public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent implements I_CmsLogC
     
     public String getButtonText(String name, String action, String value, 
             String style, String width) throws CmsException {
-        setData(C_BUTTON_NAME, name);
-        setData(C_BUTTON_ACTION, action);
-        setData(C_BUTTON_VALUE, value);
-        setData(C_BUTTON_STYLE, style);
-        setData(C_BUTTON_WIDTH, width);
+        setData(I_CmsWpConstants.C_BUTTON_NAME, name);
+        setData(I_CmsWpConstants.C_BUTTON_ACTION, action);
+        setData(I_CmsWpConstants.C_BUTTON_VALUE, value);
+        setData(I_CmsWpConstants.C_BUTTON_STYLE, style);
+        setData(I_CmsWpConstants.C_BUTTON_WIDTH, width);
         return getProcessedDataValue("textbutton");
     }
     

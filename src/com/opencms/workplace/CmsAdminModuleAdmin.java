@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2003/07/22 17:13:33 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * @author Hanjo Riege
  * @author Thomas Weckert
  */
-public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsConstants {
+public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
     private final String C_FROM = "from";
     private final String C_VERSION = "version";
     private final String C_MODULENAME = "modulename";

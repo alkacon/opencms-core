@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsBase.java,v $
-* Date   : $Date: 2003/06/13 10:04:21 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,17 +29,18 @@
 
 package com.opencms.boot;
 
-import source.org.apache.java.util.Configurations;
 import java.io.File;
+
+import source.org.apache.java.util.Configurations;
 
 /**
  * OpenCms Base class for static access to system wide properties
  * and helper functions, e.g. OpenCms logging oder OpenCms base path.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2003/06/13 10:04:21 $
+ * @version $Revision: 1.11 $ $Date: 2003/07/31 13:19:37 $
  */
-public class CmsBase extends Object implements I_CmsLogChannels {
+public class CmsBase extends Object {
 
     /** Reference to the OpenCms base path ("home directory" of OpenCms) */
     private static String c_basePath = null;
@@ -119,7 +120,7 @@ public class CmsBase extends Object implements I_CmsLogChannels {
                 s = s + File.separator;
             }
 
-            if (c_servletLogging) log(C_OPENCMS_INIT, "[CmsBase] Setting OpenCms home folder to " + s + ". ");
+            if (c_servletLogging) log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsBase] Setting OpenCms home folder to " + s + ". ");
             c_basePath = s;
         }
         return s;

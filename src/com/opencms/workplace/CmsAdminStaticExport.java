@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2003/02/21 15:18:23 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,6 @@ package com.opencms.workplace;
 
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsStaticExport;
@@ -47,11 +46,11 @@ import org.apache.oro.text.perl.Perl5Util;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
-public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsConstants {
+public class CmsAdminStaticExport extends CmsWorkplaceDefault {
 
     private static String C_STATICEXPORT_THREAD = "static_export_thread";
 

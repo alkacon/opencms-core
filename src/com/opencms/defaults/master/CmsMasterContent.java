@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/07/22 00:29:23 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,8 +53,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.39 $
- * $Date: 2003/07/22 00:29:23 $
+ * $Revision: 1.40 $
+ * $Date: 2003/07/31 13:19:37 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -567,9 +567,9 @@ public abstract class CmsMasterContent
             if(m_cms.isAdmin()) {
                 return true;
             } else {
-                if ( !accessOther(C_ACCESS_PUBLIC_VISIBLE)
-                    && !accessOwner(m_cms, currentUser, C_PERMISSION_VIEW)
-                    && !accessGroup(m_cms, currentUser, C_ACCESS_GROUP_VISIBLE)) {
+                if ( !accessOther(I_CmsConstants.C_ACCESS_PUBLIC_VISIBLE)
+                    && !accessOwner(m_cms, currentUser, I_CmsConstants.C_PERMISSION_VIEW)
+                    && !accessGroup(m_cms, currentUser, I_CmsConstants.C_ACCESS_GROUP_VISIBLE)) {
                     return false;
                 } else {
                     return true;
@@ -891,7 +891,7 @@ public abstract class CmsMasterContent
         Vector allChannels = new Vector();
         Vector subChannels = new Vector();
         try {
-            subChannels = cms.getResourcesInFolder("//cos" + channel);
+            subChannels = cms.getResourcesInFolder(I_CmsConstants.C_COS_DEFAULT + channel);
         } catch (CmsException e) {
             // the channel is not present, so return empty Vector.
             return allChannels;
@@ -930,7 +930,7 @@ public abstract class CmsMasterContent
             throws CmsException {
         Vector allChannels = new Vector();
         String rootChannel = getDbAccessObject(this.getSubId()).getRootChannel();
-        Vector subChannels = cms.getResourcesInFolder("//cos" + rootChannel);
+        Vector subChannels = cms.getResourcesInFolder(I_CmsConstants.C_COS_DEFAULT + rootChannel);
         int offset = rootChannel.length()-1;
         for (int i=0; i < subChannels.size(); i++) {
             CmsResource resource = (CmsResource)subChannels.get(i);

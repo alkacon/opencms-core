@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsBackbutton.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,11 +45,11 @@ import org.w3c.dom.Element;
  *
  * Creation date: (09.08.00 15:21:44)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.8 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Name:  $ $Revision: 1.9 $ $Date: 2003/07/31 13:19:37 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
-public class CmsBackbutton extends A_CmsWpElement implements I_CmsConstants,I_CmsWpElement,I_CmsWpConstants {
+public class CmsBackbutton extends A_CmsWpElement implements I_CmsWpElement {
 
     /**
      * Handling of the special workplace <CODE>&lt;BACKBUTTON&gt;</CODE> tags.
@@ -74,7 +74,7 @@ public class CmsBackbutton extends A_CmsWpElement implements I_CmsConstants,I_Cm
         CmsXmlWpTemplateFile buttondef = this.getBackbuttonDefinitions(cms);
         CmsXmlWpConfigFile confFile = new CmsXmlWpConfigFile(cms);
         I_CmsSession session = cms.getRequestContext().getSession(true);
-        String navPos = (String)session.getValue(C_SESSION_ADMIN_POS);
+        String navPos = (String)session.getValue(I_CmsConstants.C_SESSION_ADMIN_POS);
         if((navPos == null) || (navPos.equals(confFile.getWorkplaceAdministrationPath()))) {
 
             // first call or on top-level => disable Button

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,9 +66,9 @@ import org.w3c.dom.NodeList;
  * @author Edna Falkenhan
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.16 $ $Date: 2003/07/31 13:19:37 $
  */
-public class CmsImportModuledata extends CmsImport implements I_CmsConstants, Serializable {
+public class CmsImportModuledata extends CmsImport implements Serializable {
 
     /**
      * Constructs a new import object which imports the module data from an OpenCms 
@@ -280,7 +280,7 @@ public class CmsImportModuledata extends CmsImport implements I_CmsConstants, Se
         try{
             newDataset.m_accessFlags = Integer.parseInt(accessFlags);
         } catch (Exception e){
-            newDataset.m_accessFlags = C_ACCESS_DEFAULT_FLAGS;
+            newDataset.m_accessFlags = I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;
         }
         // set the publication date
         publicationDate = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_PUBLICATIONDATE);

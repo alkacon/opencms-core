@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportPointDriver.java,v $
- * Date   : $Date: 2003/05/21 14:34:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/31 13:19:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package com.opencms.file;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,7 +43,7 @@ import java.util.Hashtable;
 /**
  * Provides methods to read/write files and folders in the physical file system.
  */
-public class CmsExportPointDriver implements I_CmsConstants {
+public class CmsExportPointDriver {
 
     /**
     * This is the Hashtable of exportpoints.

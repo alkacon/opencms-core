@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.82 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.83 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -87,9 +87,9 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.82 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.83 $ $Date: 2003/07/31 13:19:37 $
  */
-public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels {
+public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
     /** parameter types for XML node handling methods. */
     public static final Class[] C_PARAMTYPES_HANDLING_METHODS = new Class[] { Element.class, Object.class, Object.class };
@@ -255,7 +255,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      */
     public static void clearFileCache() {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_CACHE, "[A_CmsXmlContent] clearing XML file cache.");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CACHE, "[A_CmsXmlContent] clearing XML file cache.");
         }
         m_filecache.clear();
     }
@@ -295,8 +295,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         }
         catch (Exception e) {
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while trying to clone object.");
-                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + e);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "Error while trying to clone object.");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + e);
             }
             throw new CloneNotSupportedException(e.toString());
         }
@@ -807,7 +807,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             blockname = bestFit + "." + blockname;
         }
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, "Reading datablock " + blockname);
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "Reading datablock " + blockname);
         }
 
         // finally we cat put the new datablock into the hashtable
@@ -919,7 +919,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         String blockname = getTagValue(n).toLowerCase();
         Element datablock = null;
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "handleProcessTag() started. Request for datablock \"" + blockname + "\".");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, getClassName() + "handleProcessTag() started. Request for datablock \"" + blockname + "\".");
         }
         datablock = ((Element)m_blocks.get(blockname));
         if (datablock == null) {
@@ -929,7 +929,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
                     logUri = " RequestUri is " + m_cms.getRequestContext().getFolderUri() + m_cms.getRequestContext().getFileUri() + ".";
                 }
                 catch (Exception e) {}
-                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Requested datablock  \"" + blockname + "\" not found in " + m_filename + "!" + logUri);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "Requested datablock  \"" + blockname + "\" not found in " + m_filename + "!" + logUri);
             }
             return C_ERR_NODATABLOCK + blockname;
         }
@@ -1193,7 +1193,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         }
         catch (CmsException e) {
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_INFO, "Error while scanning for DATA and INCLUDE tags in file " + getAbsoluteFilename() + ".");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "Error while scanning for DATA and INCLUDE tags in file " + getAbsoluteFilename() + ".");
             }
             throw e;
         }
@@ -1331,7 +1331,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             }
         }
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG && cachedDoc != null) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Re-used previously parsed XML file " + getFilename() + ".");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, getClassName() + "Re-used previously parsed XML file " + getFilename() + ".");
         }
         return cachedDoc;
     }
@@ -1527,8 +1527,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
                         methodResult = null;
                         try {
                             if (C_DEBUG && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                                A_OpenCms.log(C_OPENCMS_DEBUG, "<" + childName + "> tag found. Value: " + child.getNodeValue());
-                                A_OpenCms.log(C_OPENCMS_DEBUG, "Tag will be handled by method [" + callMethod.getName() + "]. Invoking method NOW.");
+                                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "<" + childName + "> tag found. Value: " + child.getNodeValue());
+                                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "Tag will be handled by method [" + callMethod.getName() + "]. Invoking method NOW.");
                             }
 
                             // now invoke the tag processing method.
@@ -1583,7 +1583,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 
                                                 // Type not recognized.
                                                 if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                                                    A_OpenCms.log(C_OPENCMS_CRITICAL, "Return type of method " + callMethod.getName() + " not recognized. Cannot insert value.");
+                                                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "Return type of method " + callMethod.getName() + " not recognized. Cannot insert value.");
                                                 }
                                                 newnodes = null;
                                             }
@@ -1696,7 +1696,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
     public A_CmsXmlContent readIncludeFile(String filename) throws CmsException {
         A_CmsXmlContent include = null;
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Including File: " + filename);
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, getClassName() + "Including File: " + filename);
         }
         try {
             include = (A_CmsXmlContent) getClass().newInstance();
@@ -1704,7 +1704,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         }
         catch (Exception e) {
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "while include file: " + e);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "while include file: " + e);
             }
         }
         readIncludeFile(include);
@@ -1787,7 +1787,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         }
         catch (Exception e) {
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_CACHE, "[A_CmsXmlContent] Exception in register tag: " + e.getMessage());
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CACHE, "[A_CmsXmlContent] Exception in register tag: " + e.getMessage());
             }
         }
         registerTag(tagname);
@@ -1864,7 +1864,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             tag = tag.toLowerCase();
             Element newElement = (Element) data.cloneNode(true);
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {
-                A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Putting datablock " + tag + " into internal Hashtable.");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, getClassName() + "Putting datablock " + tag + " into internal Hashtable.");
             }
             if (!(m_blocks.containsKey(tag))) {
                 // This is a brand new datablock. It can be inserted directly.
@@ -1875,7 +1875,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
                 // datablock existed before, so the childs of the old
                 // one can be replaced.
                 if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {
-                    A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Datablock existed before. Replacing.");
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, getClassName() + "Datablock existed before. Replacing.");
                 }
                 // Look up the old datablock and remove all its childs.
                 Element originalBlock = (Element) (m_blocks.get(tag));
@@ -1957,7 +1957,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      */
     protected void throwException(String errorMessage, int type) throws CmsException {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + errorMessage);
         }
         throw new CmsException(errorMessage, type);
     }
@@ -1985,7 +1985,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      */
     protected void throwException(String errorMessage, Exception e, int type) throws CmsException {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + errorMessage);
         }
         if (e instanceof CmsException) {
             throw (CmsException) e;

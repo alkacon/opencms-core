@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
- * Date   : $Date: 2003/07/22 05:50:35 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2003/07/31 13:19:37 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,9 +81,9 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.59 $
+ * @version $Revision: 1.60 $
  */
-public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I_CmsLogChannels {
+public class OpenCmsHttpServlet extends HttpServlet {
     
     /** Prefix for error messages for initialization errors */
     private static final String C_ERRORMSG = "OpenCms initialization error!\n\n";
@@ -192,26 +192,26 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
      * Destroys all running threads before closing the VM.
      */
     public void destroy() {
-        if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) {
-            A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] Performing shutdown ...");
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] Performing shutdown ...");
         }
         try {
             m_opencms.destroy();
         } catch (Throwable e) {
-            if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet]" + e.toString());
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCmsServlet]" + e.toString());
             }
         }
         try {
             Utils.getModulShutdownMethods(A_OpenCms.getRegistry());
         } catch (CmsException e) {
             // log exception since we are about to shutdown anyway
-            if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet] Module shutdown exception: " + e);
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCmsServlet] Module shutdown exception: " + e);
             }
         }
-        if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) {
-            A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] ... shutdown completed.");
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] ... shutdown completed.");
         }
     }
 
@@ -290,8 +290,8 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
                 // access denied error - display login dialog
                 case CmsException.C_ACCESS_DENIED :
                 case CmsException.C_NO_ACCESS :
-                    if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO)) {
-                        A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Access denied: " + e.getMessage());
+                    if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[OpenCmsServlet] Access denied: " + e.getMessage());
                     }
                     if (canWrite) {
                         try {
@@ -321,16 +321,16 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
                 case CmsException.C_HTTPS_PAGE_ERROR :
                     // http page and https request - display 404 error.
                     status = HttpServletResponse.SC_NOT_FOUND;
-                    if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO)) {
-                        A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Trying to get a http page with a https request. " + e.getMessage());
+                    if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[OpenCmsServlet] Trying to get a http page with a https request. " + e.getMessage());
                     }
                     break;                                       
 
                 case CmsException.C_HTTPS_REQUEST_ERROR :
                     // https request and http page - display 404 error.
                     status = HttpServletResponse.SC_NOT_FOUND;
-                    if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO)) {
-                        A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Trying to get a https page with a http request. " + e.getMessage());
+                    if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[OpenCmsServlet] Trying to get a https page with a http request. " + e.getMessage());
                     }
                     break;
 
@@ -350,10 +350,10 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
 
         try {
             isNotGuest = isNotGuest || (((cms.getRequestContext().currentUser()) != null) 
-                && (! C_USER_GUEST.equals(cms.getRequestContext().currentUser().getName())) 
-                && ((cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_USERS)) 
-                    || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_PROJECTLEADER)) 
-                    || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN))));
+                && (! I_CmsConstants.C_USER_GUEST.equals(cms.getRequestContext().currentUser().getName())) 
+                && ((cms.userInGroup(cms.getRequestContext().currentUser().getName(), I_CmsConstants.C_GROUP_USERS)) 
+                    || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), I_CmsConstants.C_GROUP_PROJECTLEADER)) 
+                    || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), I_CmsConstants.C_GROUP_ADMIN))));
         } catch (CmsException e) {
             // result is false
         }
@@ -391,12 +391,12 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
         try {
             props.load(getClass().getClassLoader().getResourceAsStream("com/opencms/core/errormsg.properties"));
         } catch (NullPointerException exc) {
-            if (A_OpenCms.isLogging(C_OPENCMS_CRITICAL) && C_LOGGING) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsHttpServlet] cannot get com/opencms/core/errormsg.properties");
+            if (A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) && I_CmsLogChannels.C_LOGGING) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCmsHttpServlet] cannot get com/opencms/core/errormsg.properties");
             }
         } catch (java.io.IOException exc) {
-            if (A_OpenCms.isLogging(C_OPENCMS_CRITICAL) && C_LOGGING) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsHttpServlet] cannot get com/opencms/core/errormsg.properties");
+            if (A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) && I_CmsLogChannels.C_LOGGING) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCmsHttpServlet] cannot get com/opencms/core/errormsg.properties");
             }
         }
         String value = props.getProperty(part);
@@ -452,19 +452,19 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
 
         // Initialize the logging
         A_OpenCms.initializeServletLogging(m_configurations);
-        if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) {
-            A_OpenCms.log(C_OPENCMS_INIT, ".");        
-            A_OpenCms.log(C_OPENCMS_INIT, ".");        
-            A_OpenCms.log(C_OPENCMS_INIT, ".");        
-            A_OpenCms.log(C_OPENCMS_INIT, ".");
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ".");        
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ".");        
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ".");        
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ".");
             printCopyrightInformation();       
-            A_OpenCms.log(C_OPENCMS_INIT, ".                      ...............................................................");        
-            A_OpenCms.log(C_OPENCMS_INIT, ". Startup time         : " + (new Date(System.currentTimeMillis())));        
-            A_OpenCms.log(C_OPENCMS_INIT, ". Servlet container    : " + config.getServletContext().getServerInfo());        
-            A_OpenCms.log(C_OPENCMS_INIT, ". OpenCms version      : " + A_OpenCms.getVersionName()); 
-            A_OpenCms.log(C_OPENCMS_INIT, ". OpenCms base path    : " + CmsBase.getBasePath());        
-            A_OpenCms.log(C_OPENCMS_INIT, ". OpenCms property file: " + CmsBase.getPropertiesPath(true));        
-            A_OpenCms.log(C_OPENCMS_INIT, ". OpenCms logfile      : " + CmsBase.getAbsolutePath(logFile));        
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ".                      ...............................................................");        
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Startup time         : " + (new Date(System.currentTimeMillis())));        
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Servlet container    : " + config.getServletContext().getServerInfo());        
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". OpenCms version      : " + A_OpenCms.getVersionName()); 
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". OpenCms base path    : " + CmsBase.getBasePath());        
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". OpenCms property file: " + CmsBase.getPropertiesPath(true));        
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". OpenCms logfile      : " + CmsBase.getAbsolutePath(logFile));        
         }
         
         try {
@@ -480,7 +480,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
 
         // initalize the session storage
         m_sessionStorage = new CmsCoreSession();
-        if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) A_OpenCms.log(C_OPENCMS_INIT, ". Session storage      : initialized");
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Session storage      : initialized");
              
         // check if basic or form based authentication should be used      
         m_useBasicAuthentication = m_configurations.getBoolean("auth.basic", true);        
@@ -540,7 +540,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
             // initialize the requested site root
             CmsSite site = A_OpenCms.getSiteManager().matchRequest(req);
             // no user name found in session or no session, login the user as "Guest"
-            m_opencms.initUser(cms, cmsReq, cmsRes, C_USER_GUEST, C_GROUP_GUEST, site.getSiteRoot(), C_PROJECT_ONLINE_ID, m_sessionStorage);            
+            m_opencms.initUser(cms, cmsReq, cmsRes, I_CmsConstants.C_USER_GUEST, I_CmsConstants.C_GROUP_GUEST, site.getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_sessionStorage);            
             if (m_useBasicAuthentication) {
                 // check if basic authorization data was provided
                 checkBasicAuthorization(cms, req, res);
@@ -555,7 +555,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
      * Prints the OpenCms copyright information to all log-files.<p>
      */
     private void printCopyrightInformation() {
-        String copy[] = C_COPYRIGHT;
+        String copy[] = I_CmsConstants.C_COPYRIGHT;
 
         // log to error-stream
         System.err.println("\n\nStarting OpenCms, version " + A_OpenCms.getVersionName());
@@ -564,10 +564,10 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
         }
 
         // log with opencms-logger
-        if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) {
-            A_OpenCms.log(C_OPENCMS_INIT, ". OpenCms version " + A_OpenCms.getVersionName());
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". OpenCms version " + A_OpenCms.getVersionName());
             for (int i = 0; i<copy.length; i++) {
-                A_OpenCms.log(C_OPENCMS_INIT, ". " + copy[i]);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". " + copy[i]);
             }
         }
     }   
@@ -608,8 +608,8 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
         if (message == null) message = cause.toString();
         System.err.println("\n--------------------\nCritical error during OpenCms servlet init phase:\n" + message);
         System.err.println("Giving up, unable to start OpenCms.\n--------------------");        
-        if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL)) {
-            A_OpenCms.log(C_OPENCMS_CRITICAL, message);
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, message);
         }         
         throw cause;
     }
@@ -641,18 +641,18 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
         // if the user was authenticated via sessions, update the information in the
         // sesssion stroage
         if ((session != null)) {
-            if (!cms.getRequestContext().currentUser().getName().equals(C_USER_GUEST)) {
+            if (!cms.getRequestContext().currentUser().getName().equals(I_CmsConstants.C_USER_GUEST)) {
 
                 Hashtable sessionData = new Hashtable(4);
-                sessionData.put(C_SESSION_USERNAME, cms.getRequestContext().currentUser().getName());
-                sessionData.put(C_SESSION_CURRENTGROUP, cms.getRequestContext().currentGroup().getName());
-                sessionData.put(C_SESSION_PROJECT, new Integer(cms.getRequestContext().currentProject().getId()));
-                sessionData.put(C_SESSION_CURRENTSITE, cms.getRequestContext().getSiteRoot());
+                sessionData.put(I_CmsConstants.C_SESSION_USERNAME, cms.getRequestContext().currentUser().getName());
+                sessionData.put(I_CmsConstants.C_SESSION_CURRENTGROUP, cms.getRequestContext().currentGroup().getName());
+                sessionData.put(I_CmsConstants.C_SESSION_PROJECT, new Integer(cms.getRequestContext().currentProject().getId()));
+                sessionData.put(I_CmsConstants.C_SESSION_CURRENTSITE, cms.getRequestContext().getSiteRoot());
                 
                 // get current session data
-                Hashtable oldData = (Hashtable)session.getAttribute(C_SESSION_DATA);
+                Hashtable oldData = (Hashtable)session.getAttribute(I_CmsConstants.C_SESSION_DATA);
                 if (oldData == null) oldData = new Hashtable();
-                sessionData.put(C_SESSION_DATA, oldData);
+                sessionData.put(I_CmsConstants.C_SESSION_DATA, oldData);
 
                 // update the user-data
                 m_sessionStorage.putUser(session.getId(), sessionData);

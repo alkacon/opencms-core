@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2003/07/19 01:51:37 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Hashtable;
  *
  * @author Alexander Lucas
  */
-public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_CmsLogChannels {
+public class CmsElementXml extends A_CmsElement {
 
     /**
      * Constructor for an element with the given class and template name.
@@ -133,8 +133,8 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
                 templateClass = getTemplateClass(cms, m_className);
             } catch(Throwable e) {
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Could not load my template class \"" + m_className + "\". ");
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, e.toString());
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + " Could not load my template class \"" + m_className + "\". ");
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.toString());
                     return e.toString().getBytes();
                 }
             }
@@ -164,7 +164,7 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
                             theTemplate = mergedElDefs.get("body").getTemplateName();
                         }catch(Exception exc){
                             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                                A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " could not find the body element to get the default templatefile for " + this.toString() );
+                                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + " could not find the body element to get the default templatefile for " + this.toString() );
                             }
                         }
                     }
@@ -176,20 +176,20 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
                             // This was an access denied exception.
                             // This is not very critical at the moment.
                             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                                A_OpenCms.log(C_OPENCMS_DEBUG, toString() + " Access denied in getContent for template class " + m_className);
+                                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, toString() + " Access denied in getContent for template class " + m_className);
                             }
                         } else {
                             // Any other CmsException.
                             // This could be more critical.
                             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                                A_OpenCms.log(C_OPENCMS_INFO, toString() + " Error in getContent for template class " + m_className);
+                                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, toString() + " Error in getContent for template class " + m_className);
                             }
                         }
                         throw ce;
                     } else {
                         // No CmsException. This is really, really bad!
                         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                            A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Non OpenCms error occured in getContent for template class " + m_className);
+                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + " Non OpenCms error occured in getContent for template class " + m_className);
                         }
                         throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
                     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,14 +44,14 @@ import java.sql.Timestamp;
  * @author Michael Emmerich
  * @author Anders Fugmann
  * @author Jan Krag
- * @version $Revision: 1.40 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.41 $ $Date: 2003/07/31 13:19:37 $
  */
-public class CmsProject implements I_CmsConstants, Cloneable{
+public class CmsProject implements Cloneable{
 
     /**
      * The id of this project.
      */
-    private int m_id = C_UNKNOWN_ID;
+    private int m_id = I_CmsConstants.C_UNKNOWN_ID;
 
     /**
      * The user_id of the owner.
@@ -71,7 +71,7 @@ public class CmsProject implements I_CmsConstants, Cloneable{
     /**
      * The task_id for this project.
      */
-    private int m_taskId = C_UNKNOWN_ID;
+    private int m_taskId = I_CmsConstants.C_UNKNOWN_ID;
 
     /**
      * The name of this project.
@@ -91,17 +91,17 @@ public class CmsProject implements I_CmsConstants, Cloneable{
     /**
      * The creation date of this project.
      */
-    private long m_createdate = C_UNKNOWN_LONG;
+    private long m_createdate = I_CmsConstants.C_UNKNOWN_LONG;
 
     /**
      * The state of this project.
      */
-    private int m_flags = C_PROJECT_STATE_UNLOCKED;
+    private int m_flags = I_CmsConstants.C_PROJECT_STATE_UNLOCKED;
 
     /**
      * The project type
      */
-    private int m_type = C_UNKNOWN_ID;
+    private int m_type = I_CmsConstants.C_UNKNOWN_ID;
 
     /**
      * Construct a new CmsProject.
@@ -124,7 +124,7 @@ public class CmsProject implements I_CmsConstants, Cloneable{
         if( createdate != null) {
             m_createdate = createdate.getTime();
         } else {
-            m_createdate = C_UNKNOWN_LONG;
+            m_createdate = I_CmsConstants.C_UNKNOWN_LONG;
         }
     }
 

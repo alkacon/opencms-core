@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminVfsLinkManagementThread.java,v $
- * Date   : $Date: 2003/07/21 12:45:17 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/31 13:19:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
  
 package com.opencms.workplace;
 
-import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.report.CmsHtmlReport;
 import com.opencms.report.I_CmsReport;
@@ -40,9 +39,9 @@ import com.opencms.report.I_CmsReport;
  * A thread to join all VFS links with their target resources.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
-public class CmsAdminVfsLinkManagementThread extends Thread implements I_CmsConstants {
+public class CmsAdminVfsLinkManagementThread extends Thread {
 
     private CmsObject m_cms;
     private I_CmsReport m_report;

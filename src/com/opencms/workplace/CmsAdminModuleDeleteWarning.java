@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDeleteWarning.java,v $
-* Date   : $Date: 2003/02/15 11:14:53 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@ package com.opencms.workplace;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 
@@ -43,7 +42,7 @@ import java.util.Vector;
  * Creation date: (15.09.00 10:21:25)
  * @author Hanjo Riege
  */
-public class CmsAdminModuleDeleteWarning extends CmsWorkplaceDefault implements I_CmsConstants {
+public class CmsAdminModuleDeleteWarning extends CmsWorkplaceDefault {
     
     /**
      * the different template tags.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsInput.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,10 +44,10 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;INPUT&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.17 $ $Date: 2003/07/31 13:19:36 $
  */
 
-public class CmsInput extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpConstants {
+public class CmsInput extends A_CmsWpElement {
     
     /**
      * Handling of the <CODE>&lt;INPUT&gt;</CODE> tags.

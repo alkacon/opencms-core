@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,9 +59,9 @@ import org.w3c.dom.Element;
  * @author Edna Falkenhan
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.19 $ $Date: 2003/07/31 13:19:37 $
  */
-public class CmsExportModuledata extends CmsExport implements I_CmsConstants, Serializable{
+public class CmsExportModuledata extends CmsExport implements Serializable{
 
     // the tags for the manifest or dataset xml files
     public static String C_EXPORT_TAG_MASTER = "master";
@@ -371,7 +371,7 @@ public class CmsExportModuledata extends CmsExport implements I_CmsConstants, Se
         // creates the XML-document
         Document xmlDoc = null;
         try{
-            xmlDoc = A_CmsXmlContent.getXmlParser().createEmptyDocument(C_EXPORT_TAG_MODULEXPORT);
+            xmlDoc = A_CmsXmlContent.getXmlParser().createEmptyDocument(I_CmsConstants.C_EXPORT_TAG_MODULEXPORT);
         } catch(Exception exc) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
@@ -481,7 +481,7 @@ public class CmsExportModuledata extends CmsExport implements I_CmsConstants, Se
         // creates the XML-document
         Document xmlDoc = null;
         try{
-            xmlDoc = A_CmsXmlContent.getXmlParser().createEmptyDocument(C_EXPORT_TAG_MODULEXPORT);
+            xmlDoc = A_CmsXmlContent.getXmlParser().createEmptyDocument(I_CmsConstants.C_EXPORT_TAG_MODULEXPORT);
         } catch(Exception exc) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCompatibleCheck.java,v $
-* Date   : $Date: 2003/07/15 10:42:59 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.w3c.dom.NodeList;
  * @version 1.0
  */
 
-public class CmsCompatibleCheck implements I_CmsConstants{
+public class CmsCompatibleCheck {
 
 
     public CmsCompatibleCheck() {
@@ -222,7 +222,7 @@ public class CmsCompatibleCheck implements I_CmsConstants{
         }
         // now the templateclass only the standard class is allowed
         String elClass = el.getElementsByTagName("CLASS").item(0).getFirstChild().getNodeValue();
-        if(! C_XML_CONTROL_DEFAULT_CLASS.equals(elClass)){
+        if(! I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS.equals(elClass)){
             return false;
         }
         String elTemplate = el.getElementsByTagName("TEMPLATE").item(0).getFirstChild().getNodeValue();

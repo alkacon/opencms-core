@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
- * Date   : $Date: 2003/07/22 00:29:22 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2003/07/31 13:19:37 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.loader.CmsLoaderManager;
 import org.opencms.site.CmsSiteManager;
 
 import com.opencms.boot.CmsBase;
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.I_CmsRegistry;
@@ -59,9 +58,9 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  */
-public abstract class A_OpenCms implements I_CmsLogChannels {
+public abstract class A_OpenCms {
 
     /** Static version name to use if version.properties can not be read */
     private static final String C_DEFAULT_VERSION_NAME = "Salusa Secundus";

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
-* Date   : $Date: 2003/07/22 17:13:33 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,9 +47,9 @@ import java.util.zip.ZipInputStream;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.27 $ $Date: 2003/07/22 17:13:33 $
+ * @version $Revision: 1.28 $ $Date: 2003/07/31 13:19:37 $
  */
-public class CmsImportFolder implements I_CmsConstants {
+public class CmsImportFolder {
 
     /**
      * The import-file to load resources from

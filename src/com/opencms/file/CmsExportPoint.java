@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportPoint.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,6 @@
 
 package com.opencms.file;
 
-import com.opencms.core.*;
 
 /**
  * Describes a exportpoint. A exportpoint defines the type of a filesystem
@@ -36,10 +35,10 @@ import com.opencms.core.*;
  * filesystem of  the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2003/04/01 15:20:18 $
+ * @version $Revision: 1.5 $ $Date: 2003/07/31 13:19:37 $
  */
 
-public class CmsExportPoint implements I_CmsConstants {
+public class CmsExportPoint {
     /**
      * Definition of the location of this exportpoint in the logical Cms fielsystem.
      */

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsTask.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,14 +37,14 @@ import com.opencms.flex.util.CmsUUID;
  * This abstract class describes a task in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.16 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.17 $ $Date: 2003/07/31 13:19:37 $
  */
-public class CmsTask implements I_CmsConstants {
+public class CmsTask {
 
     /**
      * The Id of the task.
      */
-    private int         m_Id = C_UNKNOWN_ID;
+    private int         m_Id = I_CmsConstants.C_UNKNOWN_ID;
 
     /**
      * The name of the task.
@@ -81,17 +81,17 @@ public class CmsTask implements I_CmsConstants {
     /**
      * The id of the Milstone to wich the task belongs.
      */
-    private int         m_Milestone = C_UNKNOWN_ID;
+    private int         m_Milestone = I_CmsConstants.C_UNKNOWN_ID;
     
     /**
      * The id of the task which is the root task of this task.
      */
-    private int         m_Root = C_UNKNOWN_ID;
+    private int         m_Root = I_CmsConstants.C_UNKNOWN_ID;
     
     /**
      * The id of the task which is the parent of this task.
      */
-    private int         m_Parent = C_UNKNOWN_ID;
+    private int         m_Parent = I_CmsConstants.C_UNKNOWN_ID;
 
     /**
      * percentage value of the task.
@@ -111,7 +111,7 @@ public class CmsTask implements I_CmsConstants {
     /**
      * Type of the task.
      */
-    private int         m_TaskType = C_UNKNOWN_ID;
+    private int         m_TaskType = I_CmsConstants.C_UNKNOWN_ID;
     
     /**
      * Escalationtype of the task.
@@ -121,7 +121,7 @@ public class CmsTask implements I_CmsConstants {
     /**
      * Priority of the task.
      */
-    private int         m_Priority = C_UNKNOWN_ID;
+    private int         m_Priority = I_CmsConstants.C_UNKNOWN_ID;
     
     /**
      * Timestamp when the task has been started.
@@ -427,32 +427,32 @@ public class CmsTask implements I_CmsConstants {
         
         switch(state)
         {
-        case C_TASK_STATE_PREPARE:
+        case I_CmsConstants.C_TASK_STATE_PREPARE:
             {
                 result = "Prepared";
                 break;
             }
-        case C_TASK_STATE_START:
+        case I_CmsConstants.C_TASK_STATE_START:
             {
                 result = "Start";
                 break;
             }
-        case C_TASK_STATE_STARTED:
+        case I_CmsConstants.C_TASK_STATE_STARTED:
             {
                 result = "Started";
                 break;              
             }
-        case C_TASK_STATE_NOTENDED:
+        case I_CmsConstants.C_TASK_STATE_NOTENDED:
             {
                 result = "Not Ended";
                 break;              
             }
-        case C_TASK_STATE_ENDED:
+        case I_CmsConstants.C_TASK_STATE_ENDED:
             {
                 result = "Ended";
                 break;              
             }
-        case C_TASK_STATE_HALTED:
+        case I_CmsConstants.C_TASK_STATE_HALTED:
             {
                 result = "Halted";
                 break;              

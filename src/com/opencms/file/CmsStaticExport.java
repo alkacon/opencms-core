@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
- * Date   : $Date: 2003/07/29 13:00:59 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2003/07/31 13:19:37 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,9 +63,9 @@ import org.apache.oro.text.perl.Perl5Util;
  * to the filesystem.<p>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  */
-public class CmsStaticExport implements I_CmsConstants {
+public class CmsStaticExport {
 
     /**
      * Value for resources with property export = false
@@ -289,7 +289,7 @@ public class CmsStaticExport implements I_CmsConstants {
         // first get the ruleset
         Vector dynRules = null;
         Vector nameRules = null;
-        if (modus == C_MODUS_EXTERN) {
+        if (modus == I_CmsConstants.C_MODUS_EXTERN) {
             dynRules = m_dynamicExportRulesExtern;
             nameRules = m_dynamicExportNameRulesExtern;
         } else {
@@ -310,7 +310,7 @@ public class CmsStaticExport implements I_CmsConstants {
                         return retValue;
                     } else {
                         // default is dynamic
-                        if (modus == C_MODUS_EXTERN) {
+                        if (modus == I_CmsConstants.C_MODUS_EXTERN) {
                             if (!link.equals(retValue)) {
                                 return retValue;
                             }
@@ -325,7 +325,7 @@ public class CmsStaticExport implements I_CmsConstants {
             }
         }
         // here we can start the parameters if it will be exported
-        if (CmsObject.getStaticExportProperties().isExportDefault() || modus == C_MODUS_EXTERN) {
+        if (CmsObject.getStaticExportProperties().isExportDefault() || modus == I_CmsConstants.C_MODUS_EXTERN) {
             link = substituteLinkParameter(cms, link);
             retValue = link;
         } else if (link.startsWith(CmsObject.getStaticExportProperties().getUrlPrefixArray()[0])) {
@@ -585,7 +585,7 @@ public class CmsStaticExport implements I_CmsConstants {
             Vector resWithProp = null;
 
             if (!"false_ssl".equalsIgnoreCase(CmsObject.getStaticExportProperties().getStaticExportEnabledValue())) {
-                resWithProp = m_cms.getResourcesWithPropertyDefinition(C_PROPERTY_EXPORTNAME);
+                resWithProp = m_cms.getResourcesWithPropertyDefinition(I_CmsConstants.C_PROPERTY_EXPORTNAME);
 
                 // generate the dynamic rules for the nice exportnames
                 if (resWithProp != null && resWithProp.size() != 0) {
@@ -595,7 +595,7 @@ public class CmsStaticExport implements I_CmsConstants {
                     for (int i = 0; i < resWithProp.size(); i++) {
                         CmsResource resource = (CmsResource)resWithProp.elementAt(i);
                         String resName = m_cms.readAbsolutePath(resource);
-                        String newName = m_cms.readProperty(resName, C_PROPERTY_EXPORTNAME);
+                        String newName = m_cms.readProperty(resName, I_CmsConstants.C_PROPERTY_EXPORTNAME);
 
                         if (newName != null) {
                             resName = m_cms.getRequestContext().addSiteRoot(resName);
@@ -620,7 +620,7 @@ public class CmsStaticExport implements I_CmsConstants {
         // now the rules for linking between static and dynamic pages
         try {
             // get the resources with the property "export"
-            Vector resWithProp = m_cms.getResourcesWithPropertyDefinition(C_PROPERTY_EXPORT);
+            Vector resWithProp = m_cms.getResourcesWithPropertyDefinition(I_CmsConstants.C_PROPERTY_EXPORT);
             // generate the rules
             if ((resWithProp != null) && (resWithProp.size() != 0)) {
 
@@ -631,7 +631,7 @@ public class CmsStaticExport implements I_CmsConstants {
                 for (int i = 0; i < resWithProp.size(); i++) {
                     CmsResource resource = (CmsResource)resWithProp.elementAt(i);                    
                     String resName = m_cms.readAbsolutePath(resource);              
-                    String propertyValue = m_cms.readProperty(resName, C_PROPERTY_EXPORT);                      
+                    String propertyValue = m_cms.readProperty(resName, I_CmsConstants.C_PROPERTY_EXPORT);                      
                     resName = m_cms.getRequestContext().addSiteRoot(resName);
 
                     if (propertyValue != null) {
@@ -768,7 +768,7 @@ public class CmsStaticExport implements I_CmsConstants {
 
             // everthing is prepared now start the template mechanism
             CmsObject cmsForStaticExport = m_cms.getCmsObjectForStaticExport(dReq, dRes);
-            cmsForStaticExport.setMode(C_MODUS_EXPORT);
+            cmsForStaticExport.setMode(I_CmsConstants.C_MODUS_EXPORT);
 
             CmsFile file = m_cms.readFile(link);
 
@@ -896,7 +896,7 @@ public class CmsStaticExport implements I_CmsConstants {
 
         String link = m_cms.getRequestContext().addSiteRoot(linkparam);
 
-        String[] rules = CmsStaticExportProperties.getLinkRules(C_MODUS_EXTERN);
+        String[] rules = CmsStaticExportProperties.getLinkRules(I_CmsConstants.C_MODUS_EXTERN);
         String startRule = OpenCms.getStaticExportProperties().getStartRule();
         if (startRule != null && !"".equals(startRule)) {
             try {
@@ -916,7 +916,7 @@ public class CmsStaticExport implements I_CmsConstants {
                 if ("*dynamicRules*".equals(rules[i])) {
                     // here we go trough our dynamic rules
                     Vector booleanReplace = new Vector();
-                    retValue = handleDynamicRules(m_cms, link, C_MODUS_EXTERN, booleanReplace);
+                    retValue = handleDynamicRules(m_cms, link, I_CmsConstants.C_MODUS_EXTERN, booleanReplace);
                     Boolean goOn = (Boolean)booleanReplace.firstElement();
                     if (goOn.booleanValue()) {
                         link = retValue;
@@ -980,7 +980,7 @@ public class CmsStaticExport implements I_CmsConstants {
             m_allExportedLinks = new Vector();
         }
         int oldMode = m_cms.getMode();
-        m_cms.setMode(C_MODUS_ONLINE);
+        m_cms.setMode(I_CmsConstants.C_MODUS_ONLINE);
         for (int i = 0; i < exportLinks.size(); i++) {
             // for the changedLinks we need the linkSubstitution
             m_changedLinks.add(m_cms.getLinkSubstitution((String)exportLinks.elementAt(i)));

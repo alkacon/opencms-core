@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
-* Date   : $Date: 2003/07/30 16:25:43 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@ package com.opencms.workplace;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
@@ -47,10 +46,10 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.48 $ $Date: 2003/07/30 16:25:43 $
+ * @version $Revision: 1.49 $ $Date: 2003/07/31 13:19:36 $
  */
 
-public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
+public class CmsUnlock extends CmsWorkplaceDefault {
 
     /**
      * Overwrties the getContent method of the CmsWorkplaceDefault.<br>

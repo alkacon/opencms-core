@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsCacheDirectives.java,v $
-* Date   : $Date: 2002/10/30 10:30:45 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,16 @@
 
 package com.opencms.template;
 
-import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.*;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRequestContext;
 import com.opencms.template.cache.CmsTimeout;
-import com.opencms.file.*;
-import java.util.*;
-import javax.servlet.http.*;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Abstact class for all CacheDirectives classes.
@@ -42,7 +46,7 @@ import javax.servlet.http.*;
  * @version 1.0
  */
 
-public abstract class A_CmsCacheDirectives implements I_CmsLogChannels{
+public abstract class A_CmsCacheDirectives {
 
     /** Bitfield for storing external cache properties */
     protected int m_cd;

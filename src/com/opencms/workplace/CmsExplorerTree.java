@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerTree.java,v $
-* Date   : $Date: 2003/07/30 13:22:24 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,10 +51,10 @@ import java.util.Vector;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2003/07/30 13:22:24 $
+ * @version $Revision: 1.28 $ $Date: 2003/07/31 13:19:36 $
  */
 
-public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
+public class CmsExplorerTree extends CmsWorkplaceDefault {
     
     
     /** Definition of the Datablock TREELINK */

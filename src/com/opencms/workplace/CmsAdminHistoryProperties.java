@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHistoryProperties.java,v $
-* Date   : $Date: 2003/02/02 15:59:52 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@ package com.opencms.workplace;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsCronJob;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
@@ -47,7 +46,7 @@ import java.util.Hashtable;
  * Creation date: ()
  * @author Edna Falkenhan
  */
-public class CmsAdminHistoryProperties extends CmsWorkplaceDefault implements I_CmsCronJob,I_CmsConstants {
+public class CmsAdminHistoryProperties extends CmsWorkplaceDefault implements I_CmsCronJob {
 
     private final String C_STEP = "step";
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
-* Date   : $Date: 2003/07/14 18:43:54 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,11 +46,11 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.31 $ $Date: 2003/07/14 18:43:54 $
+ * @version $Revision: 1.32 $ $Date: 2003/07/31 13:19:36 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
-public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_CmsConstants,I_CmsLogChannels {
+public class CmsAdminProjectPublish extends CmsWorkplaceDefault {
 
     private static String C_PUBLISH_THREAD = "publish.resource.thread";
     private static String C_PUBLISH_LINKCHECK_THREAD = "publish.linkcheck.thread";

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/07/22 17:13:33 $
-* Version: $Revision: 1.98 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.99 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,11 +56,11 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.98 $ $Date: 2003/07/22 17:13:33 $
+ * @version $Revision: 1.99 $ $Date: 2003/07/31 13:19:37 $
  * 
  * @see com.opencms.file.CmsObject
  */
-class CmsShellCommands implements I_CmsConstants {
+class CmsShellCommands {
 
     /**
      * The CmsObject object which provides access to the VFS..
@@ -82,7 +82,7 @@ class CmsShellCommands implements I_CmsConstants {
     public CmsShellCommands(OpenCms openCms, CmsObject cms) throws Exception {
         m_openCms = openCms;
         m_cms = cms;
-        m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_VFS_DEFAULT, C_PROJECT_ONLINE_ID, null);
+        m_openCms.initUser(m_cms, null, null, I_CmsConstants.C_USER_GUEST, I_CmsConstants.C_GROUP_GUEST, I_CmsConstants.C_VFS_DEFAULT, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
 
         // print the version-string
         version();
@@ -153,7 +153,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void addGroup(String name, String description) {
         try {
-            m_cms.createGroup(name, description, C_FLAG_ENABLED, null);
+            m_cms.createGroup(name, description, I_CmsConstants.C_FLAG_ENABLED, null);
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }
@@ -185,7 +185,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void addUser(String name, String password, String group, String description) {
         try {
-            System.out.println(m_cms.addUser(name, password, group, description, new Hashtable(), C_FLAG_ENABLED));
+            System.out.println(m_cms.addUser(name, password, group, description, new Hashtable(), I_CmsConstants.C_FLAG_ENABLED));
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }
@@ -221,7 +221,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void addUser(String name, String password, String group, String description, String firstname, String lastname, String email) {
         try {
-            CmsUser user = m_cms.addUser(name, password, group, description, new Hashtable(), C_FLAG_ENABLED);
+            CmsUser user = m_cms.addUser(name, password, group, description, new Hashtable(), I_CmsConstants.C_FLAG_ENABLED);
             user.setEmail(email);
             user.setFirstname(firstname);
             user.setLastname(lastname);
@@ -390,7 +390,7 @@ class CmsShellCommands implements I_CmsConstants {
      * Returns a copyright-string for this OpenCms.
      */
     public void copyright() {
-        String[] copy = C_COPYRIGHT;
+        String[] copy = I_CmsConstants.C_COPYRIGHT;
         for(int i = 0;i < copy.length;i++) {
             System.out.println(copy[i]);
         }
@@ -496,14 +496,14 @@ class CmsShellCommands implements I_CmsConstants {
      */    
     public void createDefaultProject(String name, String description) {              
         try {
-            CmsProject project = m_cms.createProject(name, description, C_GROUP_USERS, C_GROUP_PROJECTLEADER, C_PROJECT_TYPE_NORMAL);
+            CmsProject project = m_cms.createProject(name, description, I_CmsConstants.C_GROUP_USERS, I_CmsConstants.C_GROUP_PROJECTLEADER, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
             int id = project.getId();
             m_cms.getRequestContext().setCurrentProject(id);
             // copy the VFS folders to the project
-            m_cms.copyResourceToProject(C_ROOT);
+            m_cms.copyResourceToProject(I_CmsConstants.C_ROOT);
             // copy the COS channels to the project
             m_cms.setContextToCos();
-            m_cms.copyResourceToProject(C_ROOT);
+            m_cms.copyResourceToProject(I_CmsConstants.C_ROOT);
             m_cms.setContextToVfs();            
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -812,7 +812,7 @@ class CmsShellCommands implements I_CmsConstants {
 
         // export the resources
         String[] exportPaths =  {
-            C_ROOT
+            I_CmsConstants.C_ROOT
         };
         try {
             m_cms.exportResources(exportFile, exportPaths, false, false);
@@ -833,7 +833,7 @@ class CmsShellCommands implements I_CmsConstants {
 
         // export the resources
         String[] exportPaths =  {
-            C_ROOT
+            I_CmsConstants.C_ROOT
         };
         try {
             m_cms.exportResources(exportFile, exportPaths, false, true);
@@ -1487,9 +1487,9 @@ class CmsShellCommands implements I_CmsConstants {
         int iNMax =0;
 
         if(userType.equalsIgnoreCase("webuser")) {
-            iUserType = C_USER_TYPE_WEBUSER;
+            iUserType = I_CmsConstants.C_USER_TYPE_WEBUSER;
         } else if(userType.equalsIgnoreCase("systemuser")) {
-            iUserType = C_USER_TYPE_SYSTEMUSER;
+            iUserType = I_CmsConstants.C_USER_TYPE_SYSTEMUSER;
         } else {
             System.out.println("second parameter has to be a \"webuser\" or"
             + " \"systemuser\"!");
@@ -1497,9 +1497,9 @@ class CmsShellCommands implements I_CmsConstants {
         }
 
         if(userStatus.equalsIgnoreCase("enabled")) {
-            iUserStatus = C_FLAG_ENABLED;
+            iUserStatus = I_CmsConstants.C_FLAG_ENABLED;
         } else if(userStatus.equalsIgnoreCase("disabled")) {
-            iUserStatus = C_FLAG_DISABLED;
+            iUserStatus = I_CmsConstants.C_FLAG_DISABLED;
         } else {
             System.out.println("third parameter has to be a \"enabled\" or"
             + " \"disabled\"!");
@@ -1507,11 +1507,11 @@ class CmsShellCommands implements I_CmsConstants {
         }
 
         if(wasLoggedIn.equalsIgnoreCase("never")) {
-            iWasLoggedIn = C_NEVER;
+            iWasLoggedIn = I_CmsConstants.C_NEVER;
         } else if(wasLoggedIn.equalsIgnoreCase("once")) {
-            iWasLoggedIn = C_AT_LEAST_ONCE;
+            iWasLoggedIn = I_CmsConstants.C_AT_LEAST_ONCE;
         } else if (wasLoggedIn.equalsIgnoreCase("whatever")) {
-            iWasLoggedIn = C_WHATEVER;
+            iWasLoggedIn = I_CmsConstants.C_WHATEVER;
         } else {
             System.out.println("fourth parameter has to be a \"never\","
             + " \"once\" or \"whatever\"!");
@@ -1708,10 +1708,10 @@ class CmsShellCommands implements I_CmsConstants {
         // import the module
         try {
             // create a temporary project for the import
-            CmsProject project = m_cms.createProject("ModuleImport", "A temporary project to import the module " + importFile, C_GROUP_ADMIN, C_GROUP_ADMIN, C_PROJECT_TYPE_TEMPORARY);
+            CmsProject project = m_cms.createProject("ModuleImport", "A temporary project to import the module " + importFile, I_CmsConstants.C_GROUP_ADMIN, I_CmsConstants.C_GROUP_ADMIN, I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
             int id = project.getId();
             m_cms.getRequestContext().setCurrentProject(id);
-            m_cms.copyResourceToProject(C_ROOT);
+            m_cms.copyResourceToProject(I_CmsConstants.C_ROOT);
             // import the module
             I_CmsRegistry reg = m_cms.getRegistry();
             reg.importModule(fileName, new Vector(), new CmsShellReport());
@@ -1732,7 +1732,7 @@ class CmsShellCommands implements I_CmsConstants {
 
         // import the resources
         try {
-            m_cms.importResources(importFile, C_ROOT);
+            m_cms.importResources(importFile, I_CmsConstants.C_ROOT);
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }
@@ -1747,11 +1747,11 @@ class CmsShellCommands implements I_CmsConstants {
     public void importResourcesWithTempProject(String importFile) {              
         // import the resources
         try {
-            CmsProject project = m_cms.createProject("SystemUpdate", "A temporary project for a system update", C_GROUP_ADMIN, C_GROUP_ADMIN, C_PROJECT_TYPE_TEMPORARY);
+            CmsProject project = m_cms.createProject("SystemUpdate", "A temporary project for a system update", I_CmsConstants.C_GROUP_ADMIN, I_CmsConstants.C_GROUP_ADMIN, I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
             int id = project.getId();
             m_cms.getRequestContext().setCurrentProject(id);
-            m_cms.copyResourceToProject(C_ROOT);
-            m_cms.importResources(importFile, C_ROOT);
+            m_cms.copyResourceToProject(I_CmsConstants.C_ROOT);
+            m_cms.importResources(importFile, I_CmsConstants.C_ROOT);
             m_cms.unlockProject(id);
             m_cms.publishProject();
         } catch(Exception exc) {
@@ -3061,7 +3061,7 @@ class CmsShellCommands implements I_CmsConstants {
 
             // get the group, which has to be written
             CmsGroup group = m_cms.readGroup(name);
-            if(Integer.parseInt(flags) == C_FLAG_DISABLED) {
+            if(Integer.parseInt(flags) == I_CmsConstants.C_FLAG_DISABLED) {
                 group.setDisabled();
             } else {
                 group.setEnabled();
@@ -3129,7 +3129,7 @@ class CmsShellCommands implements I_CmsConstants {
 
             // get the user, which has to be written
             CmsUser user = m_cms.readUser(name);
-            if(Integer.parseInt(flags) == C_FLAG_DISABLED) {
+            if(Integer.parseInt(flags) == I_CmsConstants.C_FLAG_DISABLED) {
                 user.setDisabled();
             } else {
                 user.setEnabled();
@@ -3152,8 +3152,8 @@ class CmsShellCommands implements I_CmsConstants {
         try {
 
             // get the user, which has to be written
-            CmsUser user = m_cms.readUser(name, C_USER_TYPE_WEBUSER);
-            if(Integer.parseInt(flags) == C_FLAG_DISABLED) {
+            CmsUser user = m_cms.readUser(name, I_CmsConstants.C_USER_TYPE_WEBUSER);
+            if(Integer.parseInt(flags) == I_CmsConstants.C_FLAG_DISABLED) {
                 user.setDisabled();
             } else {
                 user.setEnabled();

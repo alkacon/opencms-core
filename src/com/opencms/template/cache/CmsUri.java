@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2003/07/19 01:51:37 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  *
  * @author Andreas Schouten
  */
-public class CmsUri implements I_CmsConstants {
+public class CmsUri {
 
     /**
      * The name of the group that can read this ressource,
@@ -164,7 +164,7 @@ public class CmsUri implements I_CmsConstants {
             // only if the resource is cacheable and if the current project is online,
             // then the browser may cache the resource
             if(proxySettings.isProxyPrivateCacheable()
-                        && cms.getRequestContext().currentProject().getId() == C_PROJECT_ONLINE_ID){
+                        && cms.getRequestContext().currentProject().getId() == I_CmsConstants.C_PROJECT_ONLINE_ID){
                 // set max-age to 5 minutes. In this time a proxy may cache this content.
                 resp.setHeader("Cache-Control", "max-age=300");
                 if(!proxySettings.isProxyPublicCacheable()){
@@ -180,7 +180,7 @@ public class CmsUri implements I_CmsConstants {
         }
 
 
-        return elem.getContent(elementCache, cms, m_elementDefinitions, C_ROOT_TEMPLATE_NAME, parameters, null);
+        return elem.getContent(elementCache, cms, m_elementDefinitions, I_CmsConstants.C_ROOT_TEMPLATE_NAME, parameters, null);
     }
     /**
      * checks the read access.

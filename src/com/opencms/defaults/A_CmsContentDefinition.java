@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsContentDefinition.java,v $
-* Date   : $Date: 2003/07/14 15:21:07 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,9 +44,9 @@ import java.util.Vector;
  * Creation date: (27.10.00 10:04:42)
  * 
  * @author Michael Knoll
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
-public abstract class A_CmsContentDefinition implements I_CmsContent, I_CmsConstants {
+public abstract class A_CmsContentDefinition implements I_CmsContent {
 
 /**
  * The owner  of this resource.
@@ -288,9 +288,9 @@ public int getAccessFlags() {
 protected boolean hasReadAccess(CmsObject cms) throws CmsException {
     CmsUser currentUser = cms.getRequestContext().currentUser();
 
-    if (!accessOther(C_ACCESS_PUBLIC_READ)
-        && !accessOwner(cms, currentUser, C_PERMISSION_READ)
-        && !accessGroup(cms, currentUser, C_ACCESS_GROUP_READ)) {
+    if (!accessOther(I_CmsConstants.C_ACCESS_PUBLIC_READ)
+        && !accessOwner(cms, currentUser, I_CmsConstants.C_PERMISSION_READ)
+        && !accessGroup(cms, currentUser, I_CmsConstants.C_ACCESS_GROUP_READ)) {
         return false;
     }
     return true;
@@ -313,9 +313,9 @@ public boolean hasWriteAccess(CmsObject cms) throws CmsException {
     }
 
     // check the rights for the current resource
-    if (!(accessOther(C_ACCESS_PUBLIC_WRITE)
-            || accessOwner(cms, currentUser, C_PERMISSION_WRITE)
-            || accessGroup(cms, currentUser, C_ACCESS_GROUP_WRITE))) {
+    if (!(accessOther(I_CmsConstants.C_ACCESS_PUBLIC_WRITE)
+            || accessOwner(cms, currentUser, I_CmsConstants.C_PERMISSION_WRITE)
+            || accessGroup(cms, currentUser, I_CmsConstants.C_ACCESS_GROUP_WRITE))) {
         // no write access to this resource!
         return false;
     }

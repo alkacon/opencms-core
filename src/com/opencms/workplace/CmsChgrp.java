@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChgrp.java,v $
- * Date   : $Date: 2003/07/30 16:25:42 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2003/07/31 13:19:37 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,9 +45,9 @@ import java.util.Vector;
  * Template class for displaying the chgrp screen of the OpenCms workplace.<p>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.38 $ $Date: 2003/07/30 16:25:42 $
+ * @version $Revision: 1.39 $ $Date: 2003/07/31 13:19:37 $
  */
-public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants {
+public class CmsChgrp extends CmsWorkplaceDefault {
 
 	/**
 	 * Gets the content of the chgrp template and processes the data input.<p>

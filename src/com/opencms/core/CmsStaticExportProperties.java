@@ -1,8 +1,8 @@
 package com.opencms.core;
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsStaticExportProperties.java,v $
-* Date   : $Date: 2002/10/30 10:13:21 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,10 +35,10 @@ import java.util.*;
  *
  * @author Hanjo Riege
  * 
- * @version $Revision: 1.2 $ $Date: 2002/10/30 10:13:21 $
+ * @version $Revision: 1.3 $ $Date: 2003/07/31 13:19:37 $
  */
 
-public class CmsStaticExportProperties implements I_CmsConstants{
+public class CmsStaticExportProperties {
 
     /**
      * the link in the static export that link to pages that are exportet too
@@ -113,13 +113,13 @@ public class CmsStaticExportProperties implements I_CmsConstants{
      */
     public static String[] getLinkRules(int state){
 
-        if(state == C_MODUS_ONLINE){
+        if(state == I_CmsConstants.C_MODUS_ONLINE){
             return c_linkRulesOnline;
-        }else if(state == C_MODUS_OFFLINE){
+        }else if(state == I_CmsConstants.C_MODUS_OFFLINE){
             return c_linkRulesOffline;
-        }else if(state == C_MODUS_EXPORT){
+        }else if(state == I_CmsConstants.C_MODUS_EXPORT){
             return c_linkRulesExport;
-        }else if(state == C_MODUS_EXTERN){
+        }else if(state == I_CmsConstants.C_MODUS_EXTERN){
             return c_linkRulesExtern;
         }
         return null;

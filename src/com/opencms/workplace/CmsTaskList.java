@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskList.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,11 +56,11 @@ import org.w3c.dom.Element;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.20 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.21 $ $Date: 2003/07/31 13:19:36 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
-public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpConstants,I_CmsConstants {
+public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
     
     /**
      * Handling of the special workplace <CODE>&lt;TASKLIST&gt;</CODE> tags.
@@ -160,7 +160,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                 // no project - continue with next task
                 continue;
             }
-            if((project == null) || (project.getFlags() == C_PROJECT_STATE_ARCHIVE)) {
+            if((project == null) || (project.getFlags() == I_CmsConstants.C_PROJECT_STATE_ARCHIVE)) {
                 
                 // project was published - continue
                 continue;
@@ -218,7 +218,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
             }
             
             // now decide which contex menu is appropriate
-            if(task.getState() == C_TASK_STATE_ENDED) {
+            if(task.getState() == I_CmsConstants.C_TASK_STATE_ENDED) {
                 if(isOwner) {
                     contextmenu = "task1";
                 }

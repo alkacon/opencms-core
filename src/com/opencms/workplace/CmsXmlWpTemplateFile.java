@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
-* Date   : $Date: 2003/01/30 19:19:41 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,10 +46,10 @@ import org.w3c.dom.Element;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.63 $ $Date: 2003/01/30 19:19:41 $
+ * @version $Revision: 1.64 $ $Date: 2003/07/31 13:19:36 $
  */
 
-public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,I_CmsWpConstants {
+public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile {
 
     private Hashtable m_wpTags = new Hashtable();
 
@@ -95,7 +95,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      **/
     public static void clearcache() {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_INFO, "clear language file cache");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "clear language file cache");
         }
     }
 
@@ -103,7 +103,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      * Clears the startup tag that can be used in workplace documents.
      */
     public void clearStartup() {
-        setData(C_TAG_STARTUP, "");
+        setData(I_CmsWpConstants.C_TAG_STARTUP, "");
     }
 
     /**
@@ -237,7 +237,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
             String errorMessage = "Error while building workplace element \"" + tagname + "\": " + e;
             if(e instanceof CmsException) {
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + errorMessage);
                 }
                 throw (CmsException)e;
             }else {

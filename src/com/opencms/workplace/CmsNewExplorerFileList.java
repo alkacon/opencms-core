@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/07/23 09:58:55 $
-* Version: $Revision: 1.82 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.83 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,9 +64,9 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.82 $ $Date: 2003/07/23 09:58:55 $
+ * @version $Revision: 1.83 $ $Date: 2003/07/31 13:19:36 $
  */
-public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
+public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsConstants,I_CmsWpConstants {
 
     /**
      * This is the number of resources that are shown on one page.
@@ -135,7 +135,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters) throws CmsException {
         if(A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG) && I_CmsLogChannels.C_LOGGING && (DEBUG > 0)) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsDumpTemplate] Now dumping contents of file "
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "[CmsDumpTemplate] Now dumping contents of file "
                     + templateFile);
         }
         I_CmsSession session = cms.getRequestContext().getSession(true);

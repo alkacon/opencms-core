@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2003/07/23 10:07:46 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Hashtable;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.40 $ $Date: 2003/07/23 10:07:46 $
+ * @version $Revision: 1.41 $ $Date: 2003/07/31 13:19:37 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
@@ -90,7 +90,7 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsDumpTemplate] Now dumping contents of file " + templateFile);
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "[CmsDumpTemplate] Now dumping contents of file " + templateFile);
         }
         byte[] s = null;
         try {
@@ -110,7 +110,7 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
         catch(Exception e) {
             String errorMessage = "Error while reading file " + templateFile + ": " + e;
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsDumpTemplate] " + errorMessage);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDumpTemplate] " + errorMessage);
             }
             if(e instanceof CmsException) {
                 throw (CmsException)e;
@@ -203,8 +203,8 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
                                 cms.getRequestContext().currentProject().getId(), templateFile);
         }catch(CmsException e){
              if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, getClassName() + "Could not generate my template cache element.");
-                A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, getClassName() + e);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, getClassName() + "Could not generate my template cache element.");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, getClassName() + e);
             }
         }
         return new CmsElementDump(getClass().getName(), templateFile, readAccessGroup,

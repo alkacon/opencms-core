@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
-* Date   : $Date: 2003/07/22 00:29:23 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Hashtable;
  * @version 1.0
  */
 
-public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I_CmsLogChannels {
+public class CmsMethodElement extends A_CmsElement {
 
     /**
      * the name of the methode.
@@ -129,8 +129,8 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
                 templateClass = getTemplateClass(cms, m_className);
             } catch(Throwable e) {
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Could not load my template class \"" + m_className + "\". ");
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, e.toString());
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + " Could not load my template class \"" + m_className + "\". ");
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.toString());
                     return e.toString().getBytes();
                 }
             }
@@ -210,8 +210,8 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
      * @throws CmsException
      */
     protected void throwException(String errorMessage, int type) throws CmsException {
-        if(C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_CRITICAL, errorMessage);
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, errorMessage);
         }
         throw new CmsException(errorMessage, type);
     }

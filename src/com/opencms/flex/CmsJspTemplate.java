@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspTemplate.java,v $
- * Date   : $Date: 2003/07/18 19:03:49 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/31 13:19:37 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import com.opencms.core.CmsException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.template.CmsCacheDirectives;
+import com.opencms.template.CmsDumpTemplate;
 
 import java.util.Hashtable;
 
@@ -49,10 +50,10 @@ import java.util.Hashtable;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.0 beta 1
  */
-public class CmsJspTemplate extends com.opencms.template.CmsDumpTemplate {
+public class CmsJspTemplate extends CmsDumpTemplate {
     
     /**
      * The constructor of the class is empty and does nothing.<p>
@@ -75,8 +76,8 @@ public class CmsJspTemplate extends com.opencms.template.CmsDumpTemplate {
      * @throws CmsException in case something goes wrong
      */
     public byte[] getContent(CmsObject cms, String jspFile, String elementName, Hashtable parameters) throws CmsException {
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(C_FLEX_LOADER)) {
-            A_OpenCms.log(C_FLEX_LOADER, "[CmsJspTemplate] Now loading contents of file " + jspFile);
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_LOADER)) {
+            A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, "[CmsJspTemplate] Now loading contents of file " + jspFile);
         }
 
         byte[] s = null;
@@ -91,8 +92,8 @@ public class CmsJspTemplate extends com.opencms.template.CmsDumpTemplate {
             throw new CmsException("[CmsJspTemplate] Error while reading JSP " + jspFile + "\n" + e, e);
         } catch (Exception e) {
             String errorMessage = "[CmsJspTemplate] Error while loading jsp file " + jspFile + ": " + e;
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsJspTemplate] " + errorMessage);
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsJspTemplate] " + errorMessage);
             }
             if (e instanceof CmsException) {
                 throw (CmsException)e;

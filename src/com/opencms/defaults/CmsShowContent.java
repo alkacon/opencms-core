@@ -451,7 +451,7 @@ public class CmsShowContent extends CmsXmlTemplate {
                 template.setData(datablockName, (String)method.invoke(contentDefinition, args));
             } catch (Exception e) {
                 if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error during automatic call method '" + method.getName() + "':" + e.toString());
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "Error during automatic call method '" + method.getName() + "':" + e.toString());
                 }
                 // set datablock with error text to indicate that calling the get-method failed
                 template.setData(datablockName, C_ERROR_TEXT);

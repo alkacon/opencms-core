@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChnav.java,v $
-* Date   : $Date: 2003/07/30 16:25:42 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,10 +51,10 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.18 $ $Date: 2003/07/30 16:25:42 $
+ * @version $Revision: 1.19 $ $Date: 2003/07/31 13:19:37 $
  */
 
-public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
+public class CmsChnav extends CmsWorkplaceDefault {
 
     final static String C_SESSIONHEADER = "CmsChnav_";
 

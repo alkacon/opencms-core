@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLogFileViewer.java,v $
-* Date   : $Date: 2003/02/02 15:59:52 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,6 @@ package com.opencms.workplace;
 
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.util.Encoder;
@@ -47,7 +46,7 @@ import java.util.Hashtable;
  * Creation date: ()
  * @author Edna Falkenhan
  */
-public class CmsAdminLogFileViewer extends CmsWorkplaceDefault implements I_CmsConstants {
+public class CmsAdminLogFileViewer extends CmsWorkplaceDefault {
 
     /**
      * Gets the content of a defined section in a given template file and its subtemplates

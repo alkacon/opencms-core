@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,14 +52,14 @@ import java.util.StringTokenizer;
  * @author Hanjo Riege
  * @author Thomas Weckert
  */
-public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsConstants {
+public class CmsAdminModuleExport extends CmsWorkplaceDefault {
 
 	private final String C_MODULE = "module";
     private final String C_MODULENAME = "modulename";
 	private final String C_ACTION = "action";
     private final String C_MODULE_THREAD = "modulethread";    
 
-	private static final int C_MINIMUM_MODULE_RESOURCE_COUNT = C_VFS_NEW_STRUCTURE?1:3;
+	private static final int C_MINIMUM_MODULE_RESOURCE_COUNT = 1;
 
 	private static final int DEBUG = 0;
 
@@ -171,10 +171,6 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 			// finally, add the "standard" module resources to the string of all resources for the export
 			// if you add or remove paths here, ensure to adjust CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT to the proper length!
 			resourcen[i++] = C_VFS_PATH_MODULES + moduleName + "/";
-
-			if (!C_VFS_NEW_STRUCTURE) {
-				resourcen[i++] = C_VFS_PATH_MODULEDEMOS + moduleName + "/";
-			}
 
 			// check if all resources exists and can be read
             ArrayList resList = new ArrayList(Arrays.asList(resourcen));    

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,9 +54,9 @@ import org.w3c.dom.NodeList;
  * Content definition for "clickable" and user requestable XML body files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.33 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.34 $ $Date: 2003/07/31 13:19:37 $
  */
-public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChannels {
+public class CmsXmlControlFile extends A_CmsXmlContent {
 
     /**
      * Default constructor.
@@ -223,8 +223,8 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
         String result = getDataValue("mastertemplate");
         if(result == null || "".equals(result)) {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlControlFile] <MASTERTEMPLATE> tag not found in file " + getAbsoluteFilename() + ".");
-                A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlControlFile] Document has errors. Removing from cache.");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsXmlControlFile] <MASTERTEMPLATE> tag not found in file " + getAbsoluteFilename() + ".");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "[CmsXmlControlFile] Document has errors. Removing from cache.");
             }
             removeFromFileCache();
             throw new CmsException("\"MASTERTEMPLATE\" definition tag not found in file " + getAbsoluteFilename() + ".", CmsException.C_XML_TAG_MISSING);
@@ -257,7 +257,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
                     }
                     else {
                         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                            A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlControlFile] unnamed <" + n.getNodeName() + "> found in OpenCms control file " + getAbsoluteFilename() + ".");
+                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsXmlControlFile] unnamed <" + n.getNodeName() + "> found in OpenCms control file " + getAbsoluteFilename() + ".");
                         }
                         throw new CmsException("Unnamed \"" + n.getNodeName() + "\" found in OpenCms control file " + getAbsoluteFilename() + ".", CmsException.C_XML_TAG_MISSING);
                     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsMountPoint.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,10 +37,10 @@ import com.opencms.flex.util.CmsUUID;
  * filesystem of  the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.9 $ $Date: 2003/07/31 13:19:37 $
  */
 
-public class CmsMountPoint implements I_CmsConstants {
+public class CmsMountPoint {
     /**
      * Definition of the location of this mountpoint in the logical Cms fielsystem.
      */
@@ -50,7 +50,7 @@ public class CmsMountPoint implements I_CmsConstants {
      * The type of this mountpoint
      */
 
-    private int m_mountpointType=C_UNKNOWN_ID;
+    private int m_mountpointType = I_CmsConstants.C_UNKNOWN_ID;
     
     /**
      * The the mountpath of a mountpoint in a real filesystem.
@@ -79,7 +79,7 @@ public class CmsMountPoint implements I_CmsConstants {
      * The default resource type for all resources of this mountpoint.
      * Only used if for mountpoints of the type C_MOUTNTPOINT_FILESYSTEM.
      */
-    private int m_resourceType=C_UNKNOWN_ID;
+    private int m_resourceType = I_CmsConstants.C_UNKNOWN_ID;
     
      /**
      * The default user for all resources of this mountpoint.
@@ -97,25 +97,25 @@ public class CmsMountPoint implements I_CmsConstants {
      * The default project for all resources of this mountpoint.
      * Only used if for mountpoints of the type C_MOUTNTPOINT_FILESYSTEM.
      */
-    private int m_project=C_UNKNOWN_ID;
+    private int m_project = I_CmsConstants.C_UNKNOWN_ID;
 
      /**
      * The default resource flags for all resources of this mountpoint.
      * Only used if for mountpoints of the type C_MOUTNTPOINT_FILESYSTEM.
      */
-    private int m_flags=C_UNKNOWN_ID;
+    private int m_flags = I_CmsConstants.C_UNKNOWN_ID;
    
      /**
      * The default access flags for all resources of this mountpoint.
      * Only used if for mountpoints of the type C_MOUTNTPOINT_FILESYSTEM.
      */
-    private int m_accessFlags=C_UNKNOWN_ID;
+    private int m_accessFlags = I_CmsConstants.C_UNKNOWN_ID;
 
      /**
      * The default launcher id for all resources of this mountpoint.
      * Only used if for mountpoints of the type C_MOUTNTPOINT_FILESYSTEM.
      */
-    private int m_launcherId=C_UNKNOWN_ID;
+    private int m_launcherId = I_CmsConstants.C_UNKNOWN_ID;
 
      /**
      * The default launcher class name for all resources of this mountpoint.
@@ -148,7 +148,7 @@ public class CmsMountPoint implements I_CmsConstants {
         m_userId=user.getId();
         m_groupId=group.getId();
         m_project=project.getId();
-        m_mountpointType=C_MOUNTPOINT_FILESYSTEM;
+        m_mountpointType = I_CmsConstants.C_MOUNTPOINT_FILESYSTEM;
         m_flags=flags;
         m_accessFlags=accessFlags;
         m_launcherId=launcherId;
@@ -173,7 +173,7 @@ public class CmsMountPoint implements I_CmsConstants {
         m_driver = driver;
         m_connect = connect;
         m_system=name;
-        m_mountpointType=C_MOUNTPOINT_MYSQL;
+        m_mountpointType = I_CmsConstants.C_MOUNTPOINT_MYSQL;
     }
      /**
      * Returns the default access flags of a CmsMountPoint Object.

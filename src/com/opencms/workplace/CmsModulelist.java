@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsModulelist.java,v $
-* Date   : $Date: 2003/03/02 18:43:55 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/07/31 13:19:37 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,11 +48,11 @@ import org.w3c.dom.Element;
  * 
  * Creation date: (31.08.00 15:16:10)
  * @author Hanjo Riege
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
-public class CmsModulelist extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpConstants {
+public class CmsModulelist extends A_CmsWpElement {
     
     /**
      * Handling of the special workplace <CODE>&lt;MODULELIST&gt;</CODE> tags.

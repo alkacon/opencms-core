@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsButtonJavascript.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,11 +43,11 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;JAVASCRIPTBUTTON&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.9 $ $Date: 2003/07/31 13:19:36 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
-public class CmsButtonJavascript extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpConstants {
+public class CmsButtonJavascript extends A_CmsWpElement {
     
     /**
      * Handling of the special workplace <CODE>&lt;JAVASCRIPTBUTTON&gt;</CODE> tags.

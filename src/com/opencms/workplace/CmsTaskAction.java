@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package com.opencms.workplace;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
@@ -52,11 +51,11 @@ import javax.servlet.http.HttpServletRequest;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.36 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.37 $ $Date: 2003/07/31 13:19:36 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
-public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogChannels {
+public class CmsTaskAction implements I_CmsWpConstants {
 
 
     /**
@@ -200,9 +199,9 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
         }
         catch(CmsException e) {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_INFO, "[CmsTaskAction] Could not generate mail while creating task for "
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] Could not generate mail while creating task for "
                         + cms.readOwner(task).getName() + ". ");
-                A_OpenCms.log(C_OPENCMS_INFO, "[CmsTaskAction] " + e);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] " + e);
             }
         }
 
@@ -217,9 +216,9 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
                 }
                 catch(CmsException e) {
                     if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                        A_OpenCms.log(C_OPENCMS_INFO, "[CmsTaskAction] Could not generate mail while creating task for "
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] Could not generate mail while creating task for "
                                 + cms.readOwner(task).getName() + ". ");
-                        A_OpenCms.log(C_OPENCMS_INFO, "[CmsTaskAction] " + e);
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] " + e);
                     }
                 }
             }
@@ -773,14 +772,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
         if(serverPort != 80) {
             serverName += ":" + serverPort;
         }
-        CmsXmlWpConfigFile conf = new CmsXmlWpConfigFile(cms);
-        String actionPath = conf.getWorkplaceActionPath();
-        if (I_CmsWpConstants.C_VFS_NEW_STRUCTURE) {
-            return scheme + "://" + serverName + servletPath + "/system/login/index.html?startTaskId="
+        return scheme + "://" + serverName + servletPath + "/system/login/index.html?startTaskId="
                     + taskid + "&startProjectId=" + projectid;
-        } else {
-            return scheme + "://" + serverName + servletPath + actionPath + "login.html?startTaskId="
-                    + taskid + "&startProjectId=" + projectid;
-        }
     }
 }

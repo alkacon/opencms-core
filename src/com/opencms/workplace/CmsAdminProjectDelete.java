@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectDelete.java,v $
-* Date   : $Date: 2003/06/25 13:52:24 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/07/31 13:19:36 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,11 +44,11 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.18 $ $Date: 2003/06/25 13:52:24 $
+ * @version $Revision: 1.19 $ $Date: 2003/07/31 13:19:36 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
-public class CmsAdminProjectDelete extends CmsWorkplaceDefault implements I_CmsConstants,I_CmsLogChannels {
+public class CmsAdminProjectDelete extends CmsWorkplaceDefault {
 
     private final String C_DELETE_THREAD = "deleteprojectthread";
 

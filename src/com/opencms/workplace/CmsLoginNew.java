@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2003/07/15 08:43:10 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/07/31 13:19:36 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -158,7 +158,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
             // end of this request
             session = cms.getRequestContext().getSession(true);
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_INFO, "[CmsLogin] Login user " + username);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsLogin] Login user " + username);
             }
 
             // read the user data from the databsse
@@ -171,18 +171,18 @@ public class CmsLoginNew extends CmsXmlTemplate {
             setStartTaskId(cms, session, startTaskId);            
             
             // set the additional user preferences
-            Hashtable preferences = (Hashtable)user.getAdditionalInfo(C_ADDITIONAL_INFO_PREFERENCES);
+            Hashtable preferences = (Hashtable)user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_PREFERENCES);
             // check if preferences are existing, otherwise use defaults
             if(preferences == null) {
                 preferences = getDefaultPreferences();
             }
             // check of the users language setting (if he has one)
-            session.removeValue(C_START_LANGUAGE);
+            session.removeValue(I_CmsConstants.C_START_LANGUAGE);
             String language = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
             
             if (DEBUG > 1) System.err.println("CmsLoginNew: language: " + language);
-            preferences.put(C_START_LANGUAGE, language);
-            session.putValue(C_ADDITIONAL_INFO_PREFERENCES, preferences);    
+            preferences.put(I_CmsConstants.C_START_LANGUAGE, language);
+            session.putValue(I_CmsConstants.C_ADDITIONAL_INFO_PREFERENCES, preferences);    
 
             langFile = new CmsXmlLanguageFile(cms, language);
             if (DEBUG > 1) System.err.println("CmsLoginNew: encoding: " + langFile.getEncoding());           
@@ -191,10 +191,10 @@ public class CmsLoginNew extends CmsXmlTemplate {
             // trigger call of "login()" JavaScript in Template on page load
             xmlTemplateDocument.setData("onload", "onload='login();'");
         } else if ((! logout) && ((cms.getRequestContext().currentUser()) != null) 
-            && (! C_USER_GUEST.equals(cms.getRequestContext().currentUser().getName())) 
-            && ((cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_USERS)) 
-                || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_PROJECTLEADER)) 
-                || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN)))) {
+            && (! I_CmsConstants.C_USER_GUEST.equals(cms.getRequestContext().currentUser().getName())) 
+            && ((cms.userInGroup(cms.getRequestContext().currentUser().getName(), I_CmsConstants.C_GROUP_USERS)) 
+                || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), I_CmsConstants.C_GROUP_PROJECTLEADER)) 
+                || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), I_CmsConstants.C_GROUP_ADMIN)))) {
             // the user is already logged in and no logout parameter is present, open a new window
             if (DEBUG > 1) System.err.println("CmsLoginNew: re-using old login");            
             xmlTemplateDocument.setData("onload", "onload='login();'");        
@@ -239,9 +239,9 @@ public class CmsLoginNew extends CmsXmlTemplate {
             }            
         } else {    
             // check out the user information if a default project is stored there.
-            Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
+            Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);
             if(startSettings != null) {
-                Integer i = (Integer)startSettings.get(C_START_PROJECT);
+                Integer i = (Integer)startSettings.get(I_CmsConstants.C_START_PROJECT);
                 if (i != null) currentProject = i.intValue();
             }
         }
