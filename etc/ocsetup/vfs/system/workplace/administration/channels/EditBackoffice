@@ -25,6 +25,8 @@
 		</td>
 		<td width="85%" class="formular" >
 			]]><PROCESS>channelId</PROCESS><![CDATA[
+			<input type="hidden" name="channelId" id="channelId" value="]]><process>channelId</process><![CDATA[">
+			<input type="hidden" name="resourceid" id="resourceid" value="]]><process>resourceid</process><![CDATA[">
 		</td>
 	</tr>
 	<tr>
