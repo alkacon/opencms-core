@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/05 13:51:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,52 +32,64 @@ package org.opencms.i18n;
 
 import org.opencms.main.OpenCms;
 
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2004/02/05 08:28:08 $
+ * Default implementation of the locale handler.<p>
+ * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @author Alexander Kandzior (a.kandzior@alkacon.com) 
+ * @version $Revision: 1.2 $ 
  */
 public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
 
+    /** A cms obbject that has been initialized with Admin permissions */
+    private CmsObject m_adminCmsObject;
+    
     /**
-     * @see org.opencms.i18n.I_CmsLocaleHandler#getLocaleName(com.opencms.file.CmsRequestContext, java.lang.String)
+     * Constructor, no action is required.<p>
      */
-    public String getLocaleName(
-        CmsRequestContext context,
-        String requestedLocaleName) {
-        
+    public CmsDefaultLocaleHandler() {
+        // noop
+    }
+    
+    /**
+     * @see org.opencms.i18n.I_CmsLocaleHandler#initHandler(com.opencms.file.CmsObject)
+     */
+    public void initHandler(CmsObject cms) {
+        m_adminCmsObject = cms;
+    }
+    
+    /**
+     * @see org.opencms.i18n.I_CmsLocaleHandler#getLocaleName(com.opencms.file.CmsRequestContext)
+     */
+    public String getLocaleName(CmsRequestContext context) {
         CmsLocaleManager localeManager = OpenCms.getLocaleManager();
         
-        // initialize locale names if not initialized resource-specific
-        String availableLocaleNames[] = localeManager.getAvailableLocaleNames(context, context.getUri());
-        if (availableLocaleNames == null) {
-            availableLocaleNames = localeManager.getAvailableLocaleNames();
-        }
-        String defaultLocaleNames[] = localeManager.getDefaultLocaleNames(context, context.getUri());
-        if (defaultLocaleNames == null) {
-            defaultLocaleNames = localeManager.getDefaultLocaleNames();
-        }
-        
-        // get the available locales, i.e. filter the available locale names against the requested locale name if defined
-        HashSet filter = null;
-        if (requestedLocaleName != null) {
-            filter = new HashSet();
-            filter.add(requestedLocaleName);
-        }
-        Set available = localeManager.getMatchingLocales(availableLocaleNames, filter);
-        
-        // get the best matching locale, i.e. filter the requested locale name and the default locale names against the available locale names
-        String result = localeManager.getBestMatchingLocaleName(requestedLocaleName, defaultLocaleNames, available);
-        
-        // if there is no matching locale at all, assume the default locale of the system
-        if (result == null) {
-            result = localeManager.getDefaultLocaleName();
+        // get resource name (internal "Admin" cms object is in "/" site so adjust name to full path)
+        String resourceName = context.addSiteRoot(context.getUri());
+
+        List defaultLocaleNames = null;
+        synchronized (m_adminCmsObject) {
+            // must switch project id in stored Admin context to match current project
+            try {
+                m_adminCmsObject.getRequestContext().setCurrentProject(context.currentProject().getId());            
+                // now get default locale names
+                defaultLocaleNames = localeManager.getDefaultLocaleNames(m_adminCmsObject, resourceName);
+            } catch (CmsException e) {
+                OpenCms.getLog(this).error("Error switching admin context project", e);
+            }
         }
         
-        return result;
+        // return the first default name 
+        if ((defaultLocaleNames != null) && (defaultLocaleNames.size() > 0)) {
+            return (String)defaultLocaleNames.get(0);
+        } else {
+            return localeManager.getDefaultLocaleName();
+        }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2004/01/25 12:42:45 $
- * Version: $Revision: 1.109 $
+ * Date   : $Date: 2004/02/05 13:51:07 $
+ * Version: $Revision: 1.110 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package com.opencms.file;
 
 import org.opencms.db.CmsDriverManager;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsResourceTranslator;
 
@@ -44,7 +45,6 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -58,7 +58,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.109 $
+ * @version $Revision: 1.110 $
  */
 public class CmsRequestContext {
 
@@ -123,9 +123,6 @@ public class CmsRequestContext {
     /** The name of the locale for this request */
     private String m_localeName;
     
-    /** The locale for this request */
-    private Locale m_locale;
-    
     /**
      * The default constructor.
      */
@@ -170,10 +167,16 @@ public class CmsRequestContext {
         if (resourcename == null) {
             return null;
         }
-        // TODO: hack - added logic to have a / between site root and resourcename if missing
-        String siteRoot = getAdjustedSiteRoot(resourcename);
-        resourcename =  siteRoot + ((siteRoot.endsWith("/") || resourcename.startsWith("/")) ? "" : "/") + resourcename;
-        return m_directoryTranslator.translateResource(resourcename);
+        String siteRoot = getAdjustedSiteRoot(resourcename);        
+        StringBuffer result = new StringBuffer(128);
+        result.append(siteRoot);
+        if (((siteRoot.length() == 0) || (siteRoot.charAt(siteRoot.length()-1) != '/'))
+              && ((resourcename.length() == 0) || (resourcename.charAt(0) != '/'))) {
+            // add slash between site root and resource if required
+            result.append('/');
+        }
+        result.append(resourcename);
+        return m_directoryTranslator.translateResource(result.toString());
     }    
 
     /**
@@ -224,33 +227,20 @@ public class CmsRequestContext {
      */
     public Vector getAcceptedLanguages() {
         return m_language;
-    }
-    
-    /**
-     * Returns the adjusted site root for a resoure that has the full path 
-     * set, e.g. /default/vfs/system/.<p>
-     * 
-     * @param resourcename the resource name to get the full adjusted site root for
-     * @return the adjusted site root for a resoure
-     */      
-    public String getAdjustedFullSiteRoot(String resourcename) {
-        if (resourcename.startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM + "/")) {
-            // return I_CmsConstants.VFS_FOLDER_DEFAULT_SITE;
-            return "";
-        } else {
-            return m_siteRoot;
-        }
-    }
+    }    
 
     /**
      * Returns the adjusted site root for a resoure.<p>
+     * 
+     * Usually, this would be the site root for the current site.
+     * However, if a resource from the /system/ folder is requested,
+     * this will be the empty String.<p>
      * 
      * @param resourcename the resource name to get the adjusted site root for
      * @return the adjusted site root for a resoure
      */
     public String getAdjustedSiteRoot(String resourcename) {
         if (resourcename.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) {
-            // return I_CmsConstants.VFS_FOLDER_DEFAULT_SITE;
             return "";
         } else {
             return m_siteRoot;
@@ -329,15 +319,6 @@ public class CmsRequestContext {
      */
     public Vector getLinkVector() {
         return m_links;
-    }
-    
-    /**
-     * Returns the requested locale with this context.<p>
-     * 
-     * @return the locale
-     */
-    public Locale getLocale() {
-        return m_locale;
     }
     
     /**
@@ -573,21 +554,26 @@ public class CmsRequestContext {
     }
     
     /**
-     * Initializes the locale name and the locale for this request context.<p>
-     *
+     * Initializes the locale name for this request context.<p>
      */
-    public void initLocale() {
-        
-        m_localeName = OpenCms.getLocaleManager().getLocaleHandler().getLocaleName(this, null);
-                    
-        if (m_localeName == null || "".equals(m_localeName)) {
-            m_localeName = OpenCms.getLocaleManager().getDefaultLocaleName();
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("No locale name found - using default: " + m_localeName);
+    public void initLocale() {        
+        CmsLocaleManager localeManager = OpenCms.getLocaleManager();
+        if (localeManager != null) {
+            // locale manager is initialized
+            m_localeName = localeManager.getLocaleHandler().getLocaleName(this);
+                        
+            if (m_localeName == null || "".equals(m_localeName)) {
+                m_localeName = OpenCms.getLocaleManager().getDefaultLocaleName();
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug("No locale name found - using default: " + m_localeName);
+                }
             }
+        } else {
+            // locale manager not initialized, this will be true _only_ during system startup
+            // the value set does not matter, no locale information form VFS is used on system startup
+            // this is just to protect against null pointer exceptions
+            m_localeName = "en";
         }
-        
-        m_locale = OpenCms.getLocaleManager().getLocale(m_localeName);
     }
 
     /**
@@ -638,7 +624,7 @@ public class CmsRequestContext {
      * @return the resource name adjusted for the current site root
      */   
     public String removeSiteRoot(String resourcename) {
-        String siteRoot = getAdjustedFullSiteRoot(resourcename);
+        String siteRoot = getAdjustedSiteRoot(resourcename);
         if ((siteRoot.length() > 0) && resourcename.startsWith(siteRoot)) {
             resourcename = resourcename.substring(siteRoot.length());
         }

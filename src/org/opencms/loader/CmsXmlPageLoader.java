@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2004/01/22 10:39:36 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/02/05 13:51:07 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -151,7 +151,6 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
             CmsXmlPage page = CmsXmlPage.read(cms, file);
             
             // check the current locales
-            // String localeProp = OpenCms.getUserDefaultLanguage();
             String absolutePath = cms.readAbsolutePath(file);
             String localeName = OpenCms.getLocaleManager().getBestMatchingLocaleName(cms.getRequestContext().getLocaleName(), OpenCms.getLocaleManager().getDefaultLocaleNames(cms, absolutePath), page.getLanguages());
             
@@ -185,9 +184,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
             String elementName = req.getParameter(C_TEMPLATE_ELEMENT);
             
             // check the current locales
-            // String localeProp = OpenCms.getUserDefaultLanguage();
             String localeName = OpenCms.getLocaleManager().getBestMatchingLocaleName(cms.getRequestContext().getLocaleName(), OpenCms.getLocaleManager().getDefaultLocaleNames(cms, absolutePath), page.getLanguages());
-            // String localeName = OpenCms.getLocaleManager().getLocaleName(cms, absolutePath, cms.getRequestContext().getLocaleName(), page.getLanguages());
             
             // get the appropriate content and convert it to bytes
             byte[] result = page.getContent(cms, elementName, localeName).getBytes(); 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/02/03 14:20:24 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/02/05 13:51:07 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -368,7 +368,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                 localeName = localeName.substring(0, localeName.indexOf(","));
             }
         } else {
-            localeName = OpenCms.getLocaleManager().getDefaultLocaleNames(m_cms, CmsResource.getParentFolder(destination))[0];
+            localeName = (String)OpenCms.getLocaleManager().getDefaultLocaleNames(m_cms, CmsResource.getParentFolder(destination)).get(0);
         }
         return localeName;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2004/02/05 13:51:07 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,11 +38,10 @@ import org.opencms.cron.CmsCronTable;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.flex.CmsFlexCache;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsLoaderManager;
 import org.opencms.loader.I_CmsResourceLoader;
-import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.i18n.I_CmsLocaleHandler;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.security.CmsSecurityException;
@@ -100,7 +99,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.68 $
+ * @version $Revision: 1.69 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1322,51 +1321,7 @@ public final class OpenCmsCore {
             }
             // any exception here is fatal and will cause a stop in processing
             throw e;
-        }
-        
-        // initialize the locale manager
-        I_CmsLocaleHandler localeHandler = null;
-        try {
-            String localeHandlerClass = OpenCms.getRegistry().getLocaleHandler();
-            localeHandler = (I_CmsLocaleHandler)Class.forName(localeHandlerClass).newInstance();
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Locale handler class : " + localeHandlerClass + " instanciated");
-            }
-        } catch (Exception e) {
-            if (getLog(this).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Locale handler class : non-critical error initializing locale handler");
-            }
-        }
-        
-        try {    
-            m_localeManager = new CmsLocaleManager(m_driverManager, configuration, localeHandler);
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                String names[] = m_localeManager.getAvailableLocaleNames();
-                StringBuffer buf = new StringBuffer();
-                for (int i = 0; i < names.length; i++) {
-                    if (i > 0) {
-                        buf.append(", ");
-                    }
-                    buf.append(names[i]);
-                }
-                getLog(CmsLog.CHANNEL_INIT).info(". Available locales    : " + buf.toString());
-                
-                names = m_localeManager.getDefaultLocaleNames();
-                buf = new StringBuffer();
-                for (int i = 0; i < names.length; i++) {
-                    if (i > 0) {
-                        buf.append(", ");
-                    }
-                    buf.append(names[i]);
-                }                
-                getLog(CmsLog.CHANNEL_INIT).info(". Default locales      : " + buf.toString());
-            } 
-        } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).warn(". LocaleManager init   : non-critical error " + e.toString());
-            }
-            System.err.println(e.toString());
-        }
+        }      
         
         // initialize the Thread store
         m_threadStore = new CmsThreadStore();
@@ -1616,13 +1571,15 @@ public final class OpenCmsCore {
         }
         setRuntimeProperty("compatibility.support.webAppNames", webAppNames);
 
-        // get a Admin cms context object
+        // get an Admin cms context object with site root set to "/"
         CmsObject adminCms = initCmsObject(null, null, getDefaultUsers().getUserAdmin(), null);
+        // initialize the locale manager
+        m_localeManager = CmsLocaleManager.initialize(configuration, adminCms);  
         // initialize the site manager
         m_siteManager = CmsSiteManager.initialize(configuration, adminCms);
         // initialize the workplace manager
         m_workplaceManager = CmsWorkplaceManager.initialize(configuration, adminCms);
-        
+                
         // initializes the cron manager
         // TODO enable the cron manager
         //m_cronManager = new CmsCronManager();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/05 13:51:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,41 +30,50 @@
  */
 package org.opencms.i18n;
 
-import org.opencms.db.CmsDriverManager;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringSubstitution;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRequestContext;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.ExtendedProperties;
 
 /**
+ * Manages the locales configured for this OpenCms installation.<p>
+ * 
+ * Locale configuration is done in <code>opencms.properties</code>.<p> 
+ * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @version $Revision: 1.2 $
  */
 public class CmsLocaleManager {
     
-    private CmsDriverManager m_driverManager;
+    /** The default locale names (must be a subset of the available locale names) */
+    private List m_defaultLocaleNames;    
     
-    private String[] m_defaultLocaleNames;
-    
-    private String[] m_availableLocaleNames;
+    /** The set of available locale names */
+    private List m_availableLocaleNames;
 
-    private HashMap m_availableLocales;
+    /** The available locales mapped to their locale names */
+    private Map m_availableLocales;
     
+    /** The configured locale handler */
     private I_CmsLocaleHandler m_localeHandler;
     
-    /**
-     * Runtime property name for locale handler
-     */
+    /** Runtime property name for locale handler */
     public static final String C_LOCALE_HANDLER = "class_locale_handler";
     
     /**
@@ -73,43 +82,103 @@ public class CmsLocaleManager {
      * <code>locale.default</code>
      * in <code>opencms.properties</code>.<p>
      *
-     * @param driverManager the driver manager
-     * @param configuration the configuration from <code>opencms.properties</code>
-     * @param localeHandler the locale handler
+     * @param localeHandler the configured locale handler
+     * @param availableLocaleNames the available (i.e. allowed) locale names
+     * @param defaultLocaleNames the default locale names
      */
-    public CmsLocaleManager (CmsDriverManager driverManager, ExtendedProperties configuration, I_CmsLocaleHandler localeHandler) {
+    public CmsLocaleManager (I_CmsLocaleHandler localeHandler, String[] availableLocaleNames, String[] defaultLocaleNames) {
 
-        m_driverManager = driverManager;
+        // set the locale handler
+        m_localeHandler = localeHandler;    
         
-        // init available locales
-        m_availableLocaleNames = configuration.getStringArray("locale.available");
+        // set available locale names
+        m_availableLocaleNames = Arrays.asList(availableLocaleNames);
+        
+        // set default locale names
+        m_defaultLocaleNames = checkLocaleNames(Arrays.asList(defaultLocaleNames));
+        
+        // init locale objects from locale names
         m_availableLocales = new HashMap();
-        for (int i = 0; i < m_availableLocaleNames.length; i++) {
-            String localeName[] = CmsStringSubstitution.split(m_availableLocaleNames[i], "_");
-            Locale locale = new Locale(localeName[0],
-                    (localeName.length > 1) ? localeName[1] : "",
-                    (localeName.length > 2) ? localeName[2] : ""
+        Iterator i = m_availableLocaleNames.iterator();
+        while (i.hasNext()) {
+            String localeName = (String)i.next();
+            String localeNames[] = CmsStringSubstitution.split(localeName, "_");
+            Locale locale = new Locale(localeNames[0],
+                    (localeNames.length > 1) ? localeNames[1] : "",
+                    (localeNames.length > 2) ? localeNames[2] : ""
             );
             
-            m_availableLocales.put(m_availableLocaleNames[i], locale);
-            if (localeName.length > 2 && !m_availableLocales.containsKey(localeName[0] + "_" + localeName[1])) {
-                m_availableLocales.put(localeName[0] + "_" + localeName[1], locale);
+            m_availableLocales.put(localeName, locale);
+            if (localeNames.length > 2 && !m_availableLocales.containsKey(localeNames[0] + "_" + localeNames[1])) {
+                m_availableLocales.put(localeNames[0] + "_" + localeNames[1], locale);
             }
-            if (localeName.length > 1 && !m_availableLocales.containsKey(localeName[0])) {
-                m_availableLocales.put(localeName[0], locale);
+            if (localeNames.length > 1 && !m_availableLocales.containsKey(localeNames[0])) {
+                m_availableLocales.put(localeNames[0], locale);
             }
-        }
-    
-        // init default locale names
-        m_defaultLocaleNames = configuration.getStringArray("locale.default");
-        
-        // init locale handler
-        m_localeHandler = localeHandler;
-        if (m_localeHandler == null) {
-            m_localeHandler = new CmsDefaultLocaleHandler();
         }
     }
 
+    /**
+     * Initializes the CmsLocaleManager by reading the properties
+     * <code>locale.available</code> and
+     * <code>locale.default</code>
+     * in <code>opencms.properties</code>.<p>
+     * 
+     * @param configuration the OpenCms configuration
+     * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
+     * @return the initialized locale manager
+     */
+    public static CmsLocaleManager initialize(
+        ExtendedProperties configuration, 
+        CmsObject cms
+    ) {
+        // initialize the locale handler 
+        I_CmsLocaleHandler localeHandler = null;
+        String localeHandlerClass = OpenCms.getRegistry().getLocaleHandler();
+        try {
+            localeHandler = (I_CmsLocaleHandler)Class.forName(localeHandlerClass).newInstance();
+            localeHandler.initHandler(cms);
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Locale handler class : " + localeHandlerClass + " instanciated");
+            }
+        } catch (Exception e) {
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Locale handler class : error initializing locale handler class '" + localeHandlerClass + "' (using default locale handler instead)");
+            }
+            // use default locale handler            
+            localeHandler = new CmsDefaultLocaleHandler();
+            localeHandler.initHandler(cms);
+        }
+        
+        // init available locales
+        String[] availableLocaleNames = configuration.getStringArray("locale.available");
+
+        // init default locale names
+        String[] defaultLocaleNames = configuration.getStringArray("locale.default");        
+
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            
+            StringBuffer buf = new StringBuffer();
+            for (int i = 0; i < availableLocaleNames.length; i++) {
+                if (i > 0) {
+                    buf.append(", ");
+                }
+                buf.append(availableLocaleNames[i]);
+            }
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Available locales    : " + buf.toString());
+            
+            buf = new StringBuffer();
+            for (int i = 0; i < defaultLocaleNames.length; i++) {
+                if (i > 0) {
+                    buf.append(", ");
+                }
+                buf.append(defaultLocaleNames[i]);
+            }                
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Default locales      : " + buf.toString());
+        }
+        return new CmsLocaleManager(localeHandler, availableLocaleNames, defaultLocaleNames);
+    }
+    
     /**
      * Returns the name of the default locale configured in <code>opencms.properties</code>.<p>
      *
@@ -118,7 +187,7 @@ public class CmsLocaleManager {
      * @return the name of the default locale
      */
     public String getDefaultLocaleName() {
-        return m_defaultLocaleNames[0];
+        return (String)m_defaultLocaleNames.get(0);
     }
 
     /**
@@ -126,7 +195,7 @@ public class CmsLocaleManager {
      * 
      * @return the list of default locale names, e.g. <code>en, de</code>
      */
-    public String[] getDefaultLocaleNames() {
+    public List getDefaultLocaleNames() {
         return m_defaultLocaleNames;
     }
     
@@ -135,7 +204,7 @@ public class CmsLocaleManager {
      *
      * @return the list of available locale names, e.g. <code>en, de</code>
      */
-    public String[] getAvailableLocaleNames() {
+    public List getAvailableLocaleNames() {
         return m_availableLocaleNames;
     }
     
@@ -149,39 +218,6 @@ public class CmsLocaleManager {
         return m_localeHandler;
     }
     
-    /*
-     * Returns the name of the appropriate locale for a given resource.<p>
-     * 
-     * 1. The available locale names for the resource are matched against the set of locale names (i.e. the available languages of a page)
-     * 2. The requestedLocaleName and the default locale names are filtered against the set calculated in step 1 
-     *    and the best matching name is returned
-     * 
-     * Example:
-     * getLocaleName(..., ..., "en_GB", {en_US, de}) ->
-     *      with available locales = [de, en_GB, en_US], default locales = [de]
-     * 
-     * 1. getMatching([de, en_GB, en_US], {en_US, de}) -> {de, en, en_US}
-     * 2. getBestMatch(en_GB, [de], {de, en, en_US}) -> en
-     * 
-     * @param cms the cms object
-     * @param resourceName the name of the resource
-     * @param requestedLocaleName the name of the requested locale
-     * @param localeNames a set of available locale names
-     * @return the name of the best-matching locale for this resource
-     */
-    /*
-    public String getLocaleName(CmsObject cms, String resourceName, String requestedLocaleName, Set localeNames) {
-    
-        // 1: calculate the available locale names by filtering the available locales 
-        //    against the given set of locale names
-        Set available = getMatchingLocales(getAvailableLocaleNames(cms, resourceName), localeNames);      
-        
-        // 2: get the best match by filtering the requested locale name and the default locale names
-        //    against the set calculated in step 1
-        return getBestMatchingLocaleName(requestedLocaleName, getDefaultLocaleNames(cms, resourceName), available);
-    }
-    */
-    
     /**
      * Returns a set of matching locale names from the given locale names.<p>
      * The set contains all names (eventually shortened) in the given array having
@@ -194,7 +230,7 @@ public class CmsLocaleManager {
      * @param filter a set of locale names
      * @return a set of filtered locale names
      */
-    public Set getMatchingLocales (String localeNames[], Set filter) {
+    public Set getMatchingLocaleNames(String localeNames[], Set filter) {
     
         Set result = new HashSet();
         
@@ -217,33 +253,34 @@ public class CmsLocaleManager {
     
     /**
      * Returns the best matching locale name from the given locale names.<p>
-     * The best matching name is the first name (eventually shortened) in the given array with the
-     * maximum number of parts similar to a (part of a) name in the filter set.
+     * 
+     * The best matching name is the first name (eventually shortened) in the given list with the
+     * maximum number of parts similar to a (part of a) name in the filter list.
      * 
      * Example:
      * getBestMatch([en_GB, de], {de, en, en_US} -> en
      *      since en_GB <> de = 0, en_GB <> en = 1, en_GB <> en_US = 1, de <> de = 1, de <> en = 0, de <> en_US = 0 
      * 
      * @param requestedLocaleName the originally requested locale name
-     * @param localeNames an array of locale names
-     * @param filter a set of locale names
-     * @return the best matching locale name or null
+     * @param localeNames a list of locale names
+     * @param filter a list of locale names to use as filter
+     * @return the best matching locale name or null if no name matches
      */
-    public String getBestMatchingLocaleName (String requestedLocaleName, String localeNames[], Set filter) {
-        
-        String result = null;
-        
+    public String getBestMatchingLocaleName(String requestedLocaleName, List localeNames, List filter) {
+
         if (filter == null) {
             return null;
         }
         
+        String result = null;
+               
         StringBuffer matching = new StringBuffer();
         int max = -1;
-        for (int i = -1; i < localeNames.length; i++) {
-            String localeName = (i < 0) ? requestedLocaleName : localeNames[i];
+        for (int i = -1; i < localeNames.size(); i++) {
+            String localeName = (i < 0) ? requestedLocaleName : (String)localeNames.get(i);
             if (localeName != null) {
                 for (Iterator j = filter.iterator(); j.hasNext();) {
-                    int m = match (localeName, (String)j.next(), matching);
+                    int m = match(localeName, (String)j.next(), matching);
                     if (m > max) {
                         max = m;
                         result = matching.toString();
@@ -263,7 +300,7 @@ public class CmsLocaleManager {
      * @param matching the matching parts separated with "_" or ""
      * @return the number of matching parts (0-3)
      */
-    private int match (String localeName1, String localeName2, StringBuffer matching) {
+    private int match(String localeName1, String localeName2, StringBuffer matching) {
         
         String name1[] = CmsStringSubstitution.split(localeName1, "_");
         String name2[] = CmsStringSubstitution.split(localeName2, "_");
@@ -292,13 +329,14 @@ public class CmsLocaleManager {
      * @return the locale or <code>null</code> if not available
      */
     public Locale getLocale(String fullName) {
-        String name[] = CmsStringSubstitution.split(fullName, "_");
         Locale l;
         
         l = (Locale)m_availableLocales.get(fullName);
         if (l != null) {
             return l;
         }
+
+        String name[] = CmsStringSubstitution.split(fullName, "_");
         
         if (name.length >= 2) {
             l = (Locale)m_availableLocales.get(name[0] + "_" + name[1]);
@@ -315,66 +353,60 @@ public class CmsLocaleManager {
         }
         
         return null;
-    }
-    
-    /**
-     * Returns an array of available locale names for the given resource.<p>
-     * 
-     * @param cms the cms object
-     * @param resourceName the name of the resource
-     * @return an array of available locale names
-     */
-    public String[] getAvailableLocaleNames(CmsObject cms, String resourceName) {
-        return getAvailableLocaleNames(cms.getRequestContext(), resourceName);
-    }
+    }    
 
     /**
      * Returns an array of available locale names for the given resource.<p>
      * 
-     * @param context the requst context
+     * @param cms the current cms permission object
      * @param resourceName the name of the resource
      * @return an array of available locale names
      */
-    public String[] getAvailableLocaleNames(CmsRequestContext context, String resourceName) {
+    public List getAvailableLocaleNames(CmsObject cms, String resourceName) {
     
         String availableNames = null;
         try {
-            availableNames = m_driverManager.readProperty(context, context.addSiteRoot(resourceName), context.getAdjustedFullSiteRoot(resourceName), I_CmsConstants.C_PROPERTY_AVAILABLE_LOCALES, true);
+            availableNames = cms.readProperty(resourceName, I_CmsConstants.C_PROPERTY_AVAILABLE_LOCALES, true);
         } catch (CmsException exc) {
             //noop
         }
         
-        return checkLocaleNames((availableNames != null) ? splitNames(availableNames) : m_availableLocaleNames);
+        List result = null;
+        if (availableNames != null) {
+            result = checkLocaleNames(splitNames(availableNames));            
+        } 
+        if ((result == null) || (result.size() == 0)) {
+            return m_availableLocaleNames;
+        } else {
+            return result;
+        }        
     }
     
     /**
      * Returns an array of default locale names for the given resource.<p>
      * 
-     * @param cms the cms object
-     * @param resourceName the name of the resource
-     * @return an array of default locale names
-     */
-    public String[] getDefaultLocaleNames(CmsObject cms, String resourceName) {
-        return getDefaultLocaleNames(cms.getRequestContext(), resourceName);
-    }
-    
-    /**
-     * Returns an array of default locale names for the given resource.<p>
-     * 
-     * @param context the requst context
+     * @param cms the current cms permission object
      * @param resourceName the name of the resource
      * @return an array of default locale names
      */    
-    public String[] getDefaultLocaleNames(CmsRequestContext context, String resourceName) {
+    public List getDefaultLocaleNames(CmsObject cms, String resourceName) {
         
         String defaultNames = null;
         try {
-            defaultNames = m_driverManager.readProperty(context, context.addSiteRoot(resourceName), context.getAdjustedFullSiteRoot(resourceName), I_CmsConstants.C_PROPERTY_LOCALE, true);
+            defaultNames = cms.readProperty(resourceName, I_CmsConstants.C_PROPERTY_LOCALE, true);
         } catch (CmsException exc) {
             //noop
         }        
         
-        return checkLocaleNames((defaultNames != null) ? splitNames(defaultNames) : m_defaultLocaleNames);
+        List result = null;
+        if (defaultNames != null) {
+            result = checkLocaleNames(splitNames(defaultNames));            
+        } 
+        if ((result == null) || (result.size() == 0)) {
+            return m_defaultLocaleNames;
+        } else {
+            return result;
+        }
     }
         
     /**
@@ -384,34 +416,31 @@ public class CmsLocaleManager {
      * @param names a comma-separated string of locale names
      * @return an array derived from the given locale names
      */
-    public String[] getLocaleNames (String names) {
+    public List getLocaleNames(String names) {
         return checkLocaleNames(splitNames(names));
     }
 
     /**
-     * Returns an array of available locale names derived from the given locale names.<p>
-     * Each name is checked against the internal hash map of locales, 
-     * and is appended to the resulting array only if the locale exists.
+     * Returns a list of available locale names derived from the given locale names.<p>
      * 
-     * @param localeNames array of locale names
-     * @return array of checked locale names
+     * Each name in the given list is checked against the internal hash map of allowed locales, 
+     * and is appended to the resulting list only if the locale exists.<p>
+     * 
+     * @param localeNames array of locale names to check
+     * @return list of available locale names derived from the given locale names
      */
-    private String[] checkLocaleNames(String[] localeNames) {
-        
+    private List checkLocaleNames(List localeNames) {
         if (localeNames == null) {
             return null;
-        }
-        
-        String available[] = new String[localeNames.length];
-        int length = 0;
-        for (int i = 0; i < localeNames.length; i++) {
-            if (m_availableLocales.get(localeNames[i]) != null) {
-                available[length++] = localeNames[i];
+        }        
+        List result = new ArrayList();        
+        Iterator i = m_availableLocaleNames.iterator();
+        while (i.hasNext()) {
+            String localeName = (String)i.next();
+            if (localeNames.contains(localeName)) {
+                result.add(localeName);
             }
-        }
-        
-        String result[] = new String[length];
-        System.arraycopy (available, 0, result, 0, length);
+        }        
         return result;        
     }
     
@@ -421,16 +450,14 @@ public class CmsLocaleManager {
      * @param names a comma-separated string of locale names
      * @return an array derived from the given locale names
      */
-    private static String[] splitNames(String names) {
-        
-        if (names == null) {
+    private List splitNames(String localeNames) {        
+        if (localeNames == null) {
             return null;
-        }
-        
-        String result[] = CmsStringSubstitution.split(names, ",");
+        }        
+        String result[] = CmsStringSubstitution.split(localeNames, ",");
         for (int i = 0; i < result.length; i++) {
             result[i] = result[i].trim();
         }
-        return result;
+        return Arrays.asList(result);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/01/29 16:17:54 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/02/05 13:51:07 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,6 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +74,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public class CmsXmlPage {
 
@@ -317,14 +316,16 @@ public class CmsXmlPage {
      * 
      * @return list of languages with available elements
      */
-    public Set getLanguages() {
+    public List getLanguages() {
     
-        Set languages = new HashSet();
+        List languages = new ArrayList();
         for (Iterator i = getBookmarks().iterator(); i.hasNext();) {
             String name = (String)i.next();
             if (name.indexOf("_") >= 0) {
                 String language = name.substring(0, name.indexOf("_"));
-                languages.add(language);
+                if (! languages.contains(language)) {
+                    languages.add(language);
+                }
             }
         }
         return languages;

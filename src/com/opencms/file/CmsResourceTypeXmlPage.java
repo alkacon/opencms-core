@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/01/25 12:42:45 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/05 13:51:07 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,14 +49,13 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Describes the resource type "xmlpage".<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -130,7 +129,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
         List links = (List) new ArrayList();
         CmsFile file = null;
         CmsXmlPage xmlPage = null;
-        Set languages = null;
+        List languages = null;
         String languageName = null;
         List elementNames = null;
         String elementName = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/02/05 13:51:07 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,16 +30,16 @@
  */
 package org.opencms.workplace.editor;
 
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.OpenCms;
+import org.opencms.page.CmsXmlPage;
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.workplace.I_CmsWpConstants;
-
-import org.opencms.i18n.CmsEncoder;
-import org.opencms.main.OpenCms;
-import org.opencms.page.CmsXmlPage;
-import org.opencms.workplace.CmsWorkplaceAction;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,7 +47,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import javax.servlet.jsp.JspException;
 
@@ -57,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 5.1.12
  */
@@ -175,8 +174,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * Initializes the body element language for the first call of the editor.<p>
      */
     protected void initBodyElementLanguage() {
-        Set languages = m_page.getLanguages();
-        String defaultLocaleName = OpenCms.getLocaleManager().getDefaultLocaleNames(getCms(), getCms().readAbsolutePath(m_file))[0];
+        List languages = m_page.getLanguages();
+        String defaultLocaleName = (String)OpenCms.getLocaleManager().getDefaultLocaleNames(getCms(), getCms().readAbsolutePath(m_file)).get(0);
         
         if (languages.size() == 0) {
             // no body present, create default body
@@ -287,14 +286,14 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     public String buildSelectBodyLanguage(String attributes) {
         // get locale names based on properties and global settings
-        String localeNames[] = OpenCms.getLocaleManager().getAvailableLocaleNames(getCms(), getParamTempfile());
+        List localeNames = OpenCms.getLocaleManager().getAvailableLocaleNames(getCms(), getParamTempfile());
 
-        List options = new ArrayList(localeNames.length);
-        List selectList = new ArrayList(localeNames.length);
+        List options = new ArrayList(localeNames.size());
+        List selectList = new ArrayList(localeNames.size());        
         int currentIndex = -1;
-        for (int counter = 0; counter < localeNames.length; counter++) {
+        for (int counter = 0; counter < localeNames.size(); counter++) {
             // create the list of options and values
-            Locale curLocale = OpenCms.getLocaleManager().getLocale(localeNames[counter]);
+            Locale curLocale = OpenCms.getLocaleManager().getLocale((String)localeNames.get(counter));
             selectList.add(curLocale.toString());
             options.add(curLocale.getDisplayName(new Locale(getSettings().getLanguage())));
             if (curLocale.toString().equals(getParamBodylanguage())) {

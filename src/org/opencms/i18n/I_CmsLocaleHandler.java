@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/I_CmsLocaleHandler.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/05 13:51:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,21 +30,37 @@
  */
 package org.opencms.i18n;
 
+import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2004/02/05 08:28:08 $
+ * A locale handler returns the locale name to use for the given request context.<p>
+ * 
+ * By implementing this interface, and configuring <code>registry.xml</code>
+ * accordingly, the behaviour for the locale selection can be fine-tuned
+ * to the exact need of the OpenCms installation.<p>
+ * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @version $Revision: 1.2 $ 
  */
 public interface I_CmsLocaleHandler {
 
     /**
-     * Returns the appropriate locale name within the given request context.<p>
-     * Note: the request context is not initialized completely.
+     * Returns the locale name to use for the given request context.<p>
+     * 
+     * Note: the request context is not initialized completely, but it already 
+     * has the requested resource URI set.<p> 
      * 
      * @param context the request context
-     * @param requestedLocaleName name of the requested locale or <code>null</code>
-     * @return the name of the appropriate locale
+     * @return the locale name to use for the given request context
      */
-    String getLocaleName(CmsRequestContext context, String requestedLocaleName);
+    String getLocaleName(CmsRequestContext context);
+    
+    /**
+     * Will be called during system startup.<p>
+     * 
+     * @param cms an initialized cms permission context for VFS access
+     */
+    void initHandler(CmsObject cms);
 }
