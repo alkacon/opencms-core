@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/02/17 18:40:25 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/02/20 17:57:13 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2000/02/17 18:40:25 $
+ * @version $Revision: 1.14 $ $Date: 2000/02/20 17:57:13 $
  */
 public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -317,18 +317,24 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
         if(result == null) {
             try {
                 result = subTemplate.getContent(cms, templateFilename, tagcontent, parameterHashtable, templateSelector);
-            } catch (CmsException e) {
+            } catch (Exception e) {
                 // Oh, oh..
                 // There were errors while getting the content of the subtemplate
                 if(A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlTemplate] Could not generate output for element " 
-                        + tagcontent + " in template file " + templateFilename + ". ");
+                    A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Could not generate output for template file \"" + templateFilename + 
+                                "\" included as element \"" + tagcontent + "\".");
+                    A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + e);
                 }
                 // The anonymous user gets an error String instead of an exception
                 if(isAnonymousUser) {
                     return C_ERRORTEXT;
                 } else {
-                    throw e;
+                    if(e instanceof CmsException) {
+                        throw (CmsException)e;
+                    } else {
+                        e.printStackTrace();
+                        throw new CmsException("Error while executing getContent for subtemplate \"" + tagcontent + "\". " + e);
+                    }
                 }
             }  
         }     
