@@ -13,7 +13,7 @@ import java.util.*;
  * Content definition for "/workplace/workplace.ini".
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/02/01 08:30:11 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/02 10:08:49 $
  */
 public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels, I_CmsConstants {
 
@@ -90,9 +90,6 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
      * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
      */
     public String getWorkplaceMainPath() throws CmsException {      
-        if(! hasData("path.main")) {
-            throwException("Tag \"MAIN\" missing in workplace configuration file.", CmsException.C_XML_TAG_MISSING);
-        }
         return getDataValue("path.main");                    
     }
     
@@ -112,6 +109,15 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
      */
     public String getWorkplaceTemplatePath() throws CmsException {
         return getDataValue("path.wptemplates");
+    }
+
+    /**
+     * Gets the path for OpenCms workplace action files.
+     * @return Path for OpenCms workplace action files.
+     * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
+     */
+    public String getWorkplaceActionPath() throws CmsException {
+        return getDataValue("path.wpaction");
     }
 
     /**
