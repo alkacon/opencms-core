@@ -6,16 +6,17 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/02/02 11:28:25 $
+ * @version $Revision: 1.19 $ $Date: 2000/02/02 15:28:57 $
  */
 public interface I_CmsWpConstants {
 
     // Parameters that are used in html requests
     
-    /**
-     * Parameter for foldername
-     */
+    /** Parameter for foldername  */
     public static final String C_PARA_FOLDER="folder";
+   
+    /** Parameter for filelist  */
+    public static final String C_PARA_FILELIST="filelist";
     
     /** Parameter for view name */
     public static final String C_PARA_VIEW = "view";
@@ -40,7 +41,9 @@ public interface I_CmsWpConstants {
 	
 	/** The explorer tree. */
     public static final String C_WP_EXPLORER_TREE="explorer_tree.html";
-    
+
+    /** The explorer file list. */
+    public static final String C_WP_EXPLORER_FILELIST="explorer_files.html";    
     
     // Filenames of special templates
     

@@ -15,111 +15,77 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/02/01 08:19:58 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/02 15:28:57 $
  */
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants  {
 
     
-    /**
-     * Definition of the Datablock TREELINK
-     */    
+    /** Definition of the Datablock TREELINK */    
     private static final String C_TREELINK="TREELINK";
 
-     /**
-     * Definition of the Datablock TREESTYLE
-     */    
+     /** Definition of the Datablock TREESTYLE */    
     private static final String C_TREESTYLE="TREESTYLE";
 
-     /**
-     * Definition of the Datablock TREETAB
-     */    
+     /** Definition of the Datablock TREETAB */    
     private static final String C_TREETAB="TREETAB";
     
-     /**
-     * Definition of the Datablock TREEENTRY
-     */    
+     /** Definition of the Datablock TREEENTRY */    
     private static final String C_TREEENTRY="TREEENTRY";
     
-    /**
-     * Definition of the Datablock TREEFOLDER
-     */    
+    /** Definition of the Datablock TREEFOLDER */    
     private static final String C_TREEFOLDER="TREEFOLDER";
 
-     /**
-     * Definition of the Datablock TREESWITCH
-     */    
+     /** Definition of the Datablock TREESWITCH */    
     private static final String C_TREESWITCH="TREESWITCH";
 
-     /**
-     * Definition of the Datablock TREELINE
-     */    
+     /** Definition of the Datablock TREELINE */    
     private static final String C_TREELINE="TREELINE";
     
-     /**
-     * Definition of the Datablock TREEIMG_EMPTY0
-     */    
+     /** Definition of the Datablock TREEIMG_EMPTY0 */    
     private static final String C_TREEIMG_EMPTY0="TREEIMG_EMPTY0";
   
-    /**
-     * Definition of the Datablock TREEIMG_EMPTY
-     */    
+    /** Definition of the Datablock TREEIMG_EMPTY */    
     private static final String C_TREEIMG_EMPTY="TREEIMG_EMPTY";
     
-     /**
-     * Definition of the Datablock TREEIMG_FOLDEROPEN
-     */    
+     /** Definition of the Datablock TREEIMG_FOLDEROPEN */    
     private static final String C_TREEIMG_FOLDEROPEN="TREEIMG_FOLDEROPEN";
   
-     /**
-     * Definition of the Datablock TREEIMG_FOLDERCLOSE
-     */    
+     /** Definition of the Datablock TREEIMG_FOLDERCLOSE */    
     private static final String C_TREEIMG_FOLDERCLOSE="TREEIMG_FOLDERCLOSE";
     
-     /**
-     * Definition of the Datablock TREEIMG_MEND
-     */    
+     /** Definition of the Datablock TREEIMG_MEND */    
     private static final String C_TREEIMG_MEND="TREEIMG_MEND";
   
-     /**
-     * Definition of the Datablock TREEIMG_PEND
-     */    
+     /** Definition of the Datablock TREEIMG_PEND */    
     private static final String C_TREEIMG_PEND="TREEIMG_PEND";
     
-     /**
-     * Definition of the Datablock TREEIMG_END
-     */    
+     /** Definition of the Datablock TREEIMG_END */    
     private static final String C_TREEIMG_END="TREEIMG_END";
         
-     /**
-     * Definition of the Datablock TREEIMG_MCROSS
-     */    
+     /** Definition of the Datablock TREEIMG_MCROSS */    
     private static final String C_TREEIMG_MCROSS="TREEIMG_MCROSS";
         
-     /**
-     * Definition of the Datablock TREEIMG_PCROSS
-     */    
+     /** Definition of the Datablock TREEIMG_PCROSS */    
     private static final String C_TREEIMG_PCROSS="TREEIMG_PCROSS";
         
-     /**
-     * Definition of the Datablock TREEIMG_CROSS
-     */    
+     /** Definition of the Datablock TREEIMG_CROSS */    
     private static final String C_TREEIMG_CROSS="TREEIMG_CROSS";
         
-     /**
-     * Definition of the Datablock TREEIMG_VERT
-     */    
+     /** Definition of the Datablock TREEIMG_VERT */    
     private static final String C_TREEIMG_VERT="TREEIMG_VERT";
         
-    /**
-     * Style for files in a project.
-     */
+    /** Style for files in a project. */
     private static final String C_FILE_INPROJECT="treefolder";
         
-    /**
-     * Style for files not in a project.
-     */
+    /** Style for files not in a project. */
     private static final String C_FILE_NOTINPROJECT="treefoldernip";     
-            
+
+    /** Definition of Treelist */    
+    private static final String C_TREELIST="TREELIST";
+
+    /** Definition of Treelist */    
+    private static final String C_FILELIST="FILELIST";
+    
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
      * Gets the content of the foldertree template and processe the data input.
@@ -151,7 +117,9 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
             HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
             
             String foldername=null;
+            String filelist=null;
             String currentFolder;
+            String currentFilelist;
             String rootFolder;
             
             //check if a folder parameter was included in the request.
@@ -166,6 +134,21 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
             if (currentFolder == null) {
                  currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
             }
+            
+            
+            //check if a filelist  parameter was included in the request.
+            // if a filelist was included, overwrite the value in the session for later use.
+            filelist=cms.getRequestContext().getRequest().getParameter(C_PARA_FILELIST);
+            if (filelist != null) {
+                session.putValue(C_PARA_FILELIST,filelist);
+            }
+
+            // get the current folder to be displayed as maximum folder in the tree.
+            currentFilelist=(String)session.getValue(C_PARA_FILELIST);
+            if (currentFilelist==null) {
+                currentFilelist=cms.getRequestContext().currentFolder().getAbsolutePath();
+            }
+            
     
             // get current and root folder
             rootFolder=cms.rootFolder().getAbsolutePath();
@@ -174,7 +157,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
             CmsXmlWpTemplateFile template=(CmsXmlWpTemplateFile)doc;
             
             String tab=template.getProcessedXmlDataValue(C_TREEIMG_EMPTY0,this);
-            showTree(cms,rootFolder,currentFolder,template,output,tab);
+            showTree(cms,rootFolder,currentFolder,currentFilelist,template,output,tab);
             return output.toString();
      }
 
@@ -184,11 +167,12 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
      * @param cms The CmsObject.
      * @param curFolder The rootfolder of ther subtree to display
      * @param endfolder The last folder to be displayed.
+     * @param filelist The folder that is displayed in the file list
      * @param template The foldertree template file.
      * @param output The output buffer where all data is written to.
      * @param tab The prefix-HTML code fo this subtree.
      */
-    private void showTree(A_CmsObject cms, String curfolder, String endfolder,
+    private void showTree(A_CmsObject cms, String curfolder, String endfolder, String filelist,
                           CmsXmlWpTemplateFile template, StringBuffer output,
                           String tab) 
     throws CmsException {
@@ -212,7 +196,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                 subfolders=cms.getSubFolders(folder.getAbsolutePath());                         
                 
                 // check if this folder must diplayes open
-                if (folder.getAbsolutePath().equals(endfolder)) {
+                if (folder.getAbsolutePath().equals(filelist)) {
                     folderimg=template.getProcessedXmlDataValue(C_TREEIMG_FOLDEROPEN,this);   
                 } else {
                     folderimg=template.getProcessedXmlDataValue(C_TREEIMG_FOLDERCLOSE,this);   
@@ -267,6 +251,8 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                 }
 
                 // set all data for the treeline tag
+                template.setXmlData(C_FILELIST,C_WP_EXPLORER_FILELIST+"?"+C_PARA_FILELIST+"="+folder.getAbsolutePath());
+                template.setXmlData(C_TREELIST,C_WP_EXPLORER_TREE+"?"+C_PARA_FILELIST+"="+folder.getAbsolutePath());
                 template.setXmlData(C_TREEENTRY,folder.getName());
                 template.setXmlData(C_TREETAB,tab);
                 template.setXmlData(C_TREEFOLDER,folderimg);
@@ -275,7 +261,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                 
                 //finally process all subfolders if nescessary
                 if (endfolder.startsWith(folder.getAbsolutePath())) {
-                    showTree(cms,folder.getAbsolutePath(),endfolder,template,output,newtab);
+                    showTree(cms,folder.getAbsolutePath(),endfolder,filelist,template,output,newtab);
                 }
             }
       }

@@ -6,13 +6,14 @@
 <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>opencms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 </head>
 
 <body bgcolor="#ffffff">
 
 <!-- begin of folder tree -->
 <table cellspacing=0 cellpadding=0 border=0>
-<tr><td valign=top align=left><A href="#"><IMG border=0  src="]]><METHOD name="picsUrl">ic_tree_start.gif</METHOD><![CDATA[" vspace=0 width=16 height=16 align=bottom></a> <a href="#" class="treefolder">]]><LABEL value="title.rootfolder" /><![CDATA[</a></td></tr>
+<tr><td valign=top align=left><A href="javascript:updateFrame('body.explorer_content.explorer_files','explorer_files.html?filelist=/');updateFrame('body.explorer_tree','explorer_tree.html?filelist=/')"><IMG border=0  src="]]><METHOD name="picsUrl">ic_tree_start.gif</METHOD><![CDATA[" vspace=0 width=16 height=16 align=bottom></a> <a href="javascript:updateFrame('body.explorer_content.explorer_files','explorer_files.html?filelist=/');updateFrame('body.explorer_tree','explorer_tree.html?filelist=/')" class="treefolder">]]><LABEL value="title.rootfolder" /><![CDATA[</a></td></tr>
 ]]><METHOD name="getTree"></METHOD><![CDATA[
 </table>
 <!-- end of folder tree -->
@@ -22,7 +23,7 @@
 </TEMPLATE>
 
 <TREELINE>
-<![CDATA[<tr><td valign=bottom align=left>]]><PROCESS>TREETAB</PROCESS><![CDATA[  ]]><PROCESS>TREESWITCH</PROCESS><![CDATA[  ]]><PROCESS>TREEFOLDER</PROCESS><![CDATA[&nbsp;<a href="#" class="]]><PROCESS>TREESTYLE</PROCESS><![CDATA[">]]><PROCESS>TREEENTRY</PROCESS><![CDATA[</a></td></tr>]]>
+<![CDATA[<tr><td valign=bottom align=left>]]><PROCESS>TREETAB</PROCESS><![CDATA[  ]]><PROCESS>TREESWITCH</PROCESS><![CDATA[ <a href="javascript:updateFrame('body.explorer_content.explorer_files',']]><PROCESS>FILELIST</PROCESS><![CDATA[');updateFrame('body.explorer_tree',']]><PROCESS>TREELIST</PROCESS><![CDATA[')"> ]]><PROCESS>TREEFOLDER</PROCESS><![CDATA[</a>&nbsp;<a href="javascript:updateFrame('body.explorer_content.explorer_files',']]><PROCESS>FILELIST</PROCESS><![CDATA[');updateFrame('body.explorer_tree',']]><PROCESS>TREELIST</PROCESS><![CDATA[')" class="]]><PROCESS>TREESTYLE</PROCESS><![CDATA[">]]><PROCESS>TREEENTRY</PROCESS><![CDATA[</a></td></tr>]]>
 </TREELINE>
 
 <TREEIMG_EMPTY0><![CDATA[<img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 vspace=0 hspace=0 width=1 height=16 align=left>]]></TREEIMG_EMPTY0>

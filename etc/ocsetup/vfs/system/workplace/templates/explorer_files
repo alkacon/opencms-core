@@ -108,10 +108,8 @@ function show_help()
 	</tr>
 </table>
 <br>
-<h2>Dynamic file list starts here</h2></br>
 <table cellspacing=1 cellpadding=1 border=0 >
 ]]><FILELIST method="getFiles" template="explorerFilelistTemplate"/><![CDATA[
-
 </table>
 
 <div id="online_p" class="kontextmenu">

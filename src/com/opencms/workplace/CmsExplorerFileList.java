@@ -15,7 +15,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/02/02 11:28:25 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/02 15:28:57 $
  */
 public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                 I_CmsConstants{    
@@ -51,7 +51,7 @@ public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpC
        Vector filesfolders=new Vector();
   
         String foldername;
-        String currentFolder;
+        String currentFilerlist;
         // vectors to store all files and folders in the current folder.
         Vector files;
         Vector folders;
@@ -65,20 +65,20 @@ public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpC
               
         //check if a folder parameter was included in the request.
         // if a foldername was included, overwrite the value in the session for later use.
-        foldername=cms.getRequestContext().getRequest().getParameter(C_PARA_FOLDER);
+        foldername=cms.getRequestContext().getRequest().getParameter(C_PARA_FILELIST);
         if (foldername != null) {
-        session.putValue(C_PARA_FOLDER,foldername);
+        session.putValue(C_PARA_FILELIST,foldername);
         }
 
         // get the current folder 
-        currentFolder=(String)session.getValue(C_PARA_FOLDER);
-        if (currentFolder == null) {
-            currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
+        currentFilerlist=(String)session.getValue(C_PARA_FILELIST);
+        if (currentFilerlist == null) {
+            currentFilerlist=cms.getRequestContext().currentFolder().getAbsolutePath();
         }          
         
         // get all files and folders of the current folder
-        folders=cms.getSubFolders(currentFolder);
-        files=cms.getFilesInFolder(currentFolder);
+        folders=cms.getSubFolders(currentFilerlist);
+        files=cms.getFilesInFolder(currentFilerlist);
        
         // combine both vectors
         enum=folders.elements();
