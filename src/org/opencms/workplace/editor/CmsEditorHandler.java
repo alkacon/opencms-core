@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorHandler.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/16 12:05:58 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * @see org.opencms.workplace.editor.CmsWorkplaceEditorManager
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.1
  */
@@ -75,9 +75,9 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
      * @see org.opencms.workplace.editor.I_CmsEditorHandler#getEditorUri(java.lang.String, CmsJspActionElement)
      */
     public String getEditorUri(String resource, CmsJspActionElement jsp) {
-        // first try to get the "edit as text" and "noactivex" parameters from the request
-        boolean editAsText = "true".equals(jsp.getRequest().getParameter("editastext"));
-        boolean noActiveX = "true".equals(jsp.getRequest().getParameter("noactivex"));
+        // first try to get the "edit as text" and "load default" parameters from the request
+        boolean editAsText = "true".equals(jsp.getRequest().getParameter(CmsEditor.PARAM_EDITASTEXT));
+        boolean loadDefault = "true".equals(jsp.getRequest().getParameter(CmsEditor.PARAM_LOADDEFAULT));
         // initialize resource type with -1 (unknown resource type)
         int resTypeId = -1;
         String resourceType = "";
@@ -106,11 +106,11 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
         // get the editor URI from the editor manager
         String editorUri = null;
         
-        if (noActiveX) {
-            // ActiveX is disabled, get default editor
+        if (loadDefault) {
+            // get default editor because loaddefault parameter was found
             editorUri = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getDefaultEditorUri(jsp.getRequestContext(), resourceType);        
         } else {
-            // ActiveX is enabled, no problem
+            // get preferred editor
             editorUri = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getEditorUri(jsp.getRequestContext(), resourceType);
         }
         

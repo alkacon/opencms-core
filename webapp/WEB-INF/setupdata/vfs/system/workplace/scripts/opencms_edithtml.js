@@ -75,7 +75,7 @@ var LINK=41;
 var PIC=42;
 var PICLIST=43;
 
-// Command IDs for the activeX contros
+// Command IDs for the MS DHTML controls
 //
 DECMD_BOLD =                      5000
 DECMD_COPY =                      5002

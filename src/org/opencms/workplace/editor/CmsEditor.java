@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/02/16 12:05:58 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 5.1.12
  */
@@ -104,14 +104,34 @@ public abstract class CmsEditor extends CmsDialog {
     /** Value for the action parameter: an error occured */
     public static final String EDITOR_SHOW_ERRORMESSAGE = "error";
     
+    /** Parameter name for the request parameter "backlink" */
+    public static final String PARAM_BACKLINK = "backlink";
+    
+    /** Parameter name for the request parameter "content" */
+    public static final String PARAM_CONTENT = "content";
+    
+    /** Parameter name for the request parameter "directedit" */
+    public static final String PARAM_DIRECTEDIT = "directedit";
+    
+    /** Parameter name for the request parameter "editastext" */
+    public static final String PARAM_EDITASTEXT = "editastext";
+    
+    /** Parameter name for the request parameter "editormode" */
+    public static final String PARAM_EDITORMODE = "editormode";
+    
+    /** Parameter name for the request parameter "loaddefault" */
+    public static final String PARAM_LOADDEFAULT = "loaddefault";
+    
+    /** Parameter name for the request parameter "tempfile" */
+    public static final String PARAM_TEMPFILE = "tempfile";
+    
     // some private members for parameter storage
     private String m_paramBackLink;
     private String m_paramContent;
     private String m_paramDirectedit;
     private String m_paramEditAsText;
     private String m_paramEditormode;
-    private String m_paramEditTimeStamp;
-    private String m_paramNoActiveX;
+    private String m_paramLoadDefault;
     private String m_paramTempFile;
     
     /** Helper variable to store the uri to the editors pictures */
@@ -357,24 +377,12 @@ public abstract class CmsEditor extends CmsDialog {
     }
     
     /**
-     * Returns the time stamp parameter.<p>
+     * Returns the "loaddefault" parameter to determine if the default editor should be loaded.<p>
      * 
-     * @return the time stamp parameter
+     * @return the "loaddefault" parameter
      */
-    public String getParamEdittimestamp() {
-        if (m_paramEditTimeStamp == null) {
-            m_paramEditTimeStamp = "";
-        }
-        return m_paramEditTimeStamp;
-    }
-    
-    /**
-     * Returns the "no ActiveX" parameter to determine the presence of ActiveX functionality.<p>
-     * 
-     * @return the "no ActiveX" parameter
-     */
-    public String getParamNoactivex() {
-        return m_paramNoActiveX;
+    public String getParamLoaddefault() {
+        return m_paramLoadDefault;
     }
     
     /**
@@ -467,21 +475,12 @@ public abstract class CmsEditor extends CmsDialog {
     }
     
     /**
-     * Sets the edit time stamp parameter.<p>
+     * Sets the "loaddefault" parameter to determine if the default editor should be loaded.<p>
      * 
-     * @param editTimeStamp the current time in milliseconds
+     * @param loadDefault the "loaddefault" parameter
      */
-    public void setParamEdittimestamp(String editTimeStamp) {
-        m_paramEditTimeStamp = editTimeStamp;
-    }
-    
-    /**
-     * Sets the "no ActiveX" parameter to determine the presence of ActiveX functionality.<p>
-     * 
-     * @param noActiveX the "no ActiveX" parameter
-     */
-    public void setParamNoactivex(String noActiveX) {
-        m_paramNoActiveX = noActiveX;
+    public void setParamLoaddefault(String loadDefault) {
+        m_paramLoadDefault = loadDefault;
     }
     
     /**

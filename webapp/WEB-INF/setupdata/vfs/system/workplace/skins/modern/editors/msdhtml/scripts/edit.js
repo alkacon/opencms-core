@@ -34,11 +34,6 @@ var contentSetted = false;
 
 // loads the file content into the editor
 function initContent() {
-	// setting text can not be done now here for the text editor.
-	// MS IE 5 has problems with setting text when the editor control is
-	// not loaded. 
-	// Workaround: focus() the text editor here and set the text
-	// using the onFocus event of the editor.
 	document.getElementById("edit1").innerText = decodeURIComponent(text);
 }
 
@@ -95,51 +90,39 @@ function doEdit(para) {
 	}   
 }
 
-function sendCtrlZ() {
-  var evtObj = document.createEventObject();
-  //var str = 'Z';
-  evtObj.ctrlKey = true;
-  evtObj.keyCode = 26;
-  //evtObj.keyCode = str.charCodeAt(0);
-  document.fireEvent("onkeypress",evtObj);
-  event.cancelBubble = true;
-}
-
-
 function undo() {
-	// sendCtrlZ();
-    document.execCommand("Undo");   
+	document.execCommand("Undo");   
 }
 
 function redo() {
-    document.execCommand("Redo");   
+	document.execCommand("Redo");   
 }
 
 function cut() {
-    document.execCommand("Cut");   
+	document.execCommand("Cut");   
 }
 
 function copy() {
-    document.execCommand("Copy");   
+	document.execCommand("Copy");   
 }
 
 function paste() {
 	document.getElementById("edit1").setActive();
 	document.getElementById("edit1").selection = document.selection.createRange();
-    document.getElementById("edit1").selection.execCommand("Paste");   
+	document.getElementById("edit1").selection.execCommand("Paste");   
 }
 
 function checkTab() {
-    // cache the selection
-    document.getElementById("edit1").selection =	document.selection.createRange(); 
-    setTimeout("processTab()", 0);
+	// cache the selection
+	document.getElementById("edit1").selection =document.selection.createRange(); 
+	setTimeout("processTab()", 0);
 }
 
 function processTab() {
-  // insert tab character in place of cached selection
-  document.getElementById("edit1").selection.text = String.fromCharCode(9);
-  // set the focus
-  document.getElementById("edit1").focus();
+	// insert tab character in place of cached selection
+	document.getElementById("edit1").selection.text = String.fromCharCode(9);
+	// set the focus
+	document.getElementById("edit1").focus();
 }
 
 // This is not used on the code editor, but must be there since it is called on onLoad() event

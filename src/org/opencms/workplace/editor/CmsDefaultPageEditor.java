@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/02/16 12:05:58 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 5.1.12
  */
@@ -78,10 +78,22 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     /** Page object used from the action and init methods, be sure to initialize this e.g. in the initWorkplaceRequestValues method */
     protected CmsXmlPage m_page;
     
-    private String m_paramBodylanguage;
-    private String m_paramBodyname;
-    private String m_paramOldbodylanguage;
-    private String m_paramOldbodyname; 
+    /** Parameter name for the request parameter "element language" */
+    public static final String PARAM_ELEMENTLANGUAGE = "elementlanguage";
+    
+    /** Parameter name for the request parameter "element name" */
+    public static final String PARAM_ELEMENTNAME = "elementname";
+    
+    /** Parameter name for the request parameter "old element language" */
+    public static final String PARAM_OLDELEMENTLANGUAGE = "oldelementlanguage";
+    
+    /** Parameter name for the request parameter "old element name" */
+    public static final String PARAM_OLDELEMENTNAME = "oldelementname";
+    
+    private String m_paramElementlanguage;
+    private String m_paramElementname;
+    private String m_paramOldelementlanguage;
+    private String m_paramOldelementname; 
       
     /**
      * Public constructor.<p>
@@ -98,8 +110,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     public void actionChangeBodyElement() {
         try {
             // save eventually changed content of the editor to the temporary file
-            Locale oldLocale = CmsLocaleManager.getLocale(getParamOldbodylanguage());
-            performSaveContent(getParamOldbodyname(), oldLocale);
+            Locale oldLocale = CmsLocaleManager.getLocale(getParamOldelementlanguage());
+            performSaveContent(getParamOldelementname(), oldLocale);
         } catch (CmsException e) {
             // show error page
             try {
@@ -109,8 +121,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             }
         }
         // re-initialize the element name if the language has changed
-        if (!getParamBodylanguage().equals(getParamOldbodylanguage())) {
-            initBodyElementName(getParamOldbodyname());
+        if (!getParamElementlanguage().equals(getParamOldelementlanguage())) {
+            initBodyElementName(getParamOldelementname());
         }
         // get the new editor content 
         initContent();
@@ -202,7 +214,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     public void actionPreview() throws IOException, JspException {
         // save content of the editor to the temporary file
         try {
-            performSaveContent(getParamBodyname(), getElementLocale());
+            performSaveContent(getParamElementname(), getElementLocale());
         } catch (CmsException e) {
             // show error page
             showErrorPage(this, e, "save");
@@ -219,7 +231,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     public void actionSave() throws JspException { 
         try {
             // save content to temporary file
-            performSaveContent(getParamBodyname(), getElementLocale());
+            performSaveContent(getParamElementname(), getElementLocale());
             // copy the temporary file content back to the original file
             commitTempFile();
         } catch (CmsException e) {
@@ -229,12 +241,12 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     }
     
     /**
-     * Builds the html String for the body language selector.<p>
+     * Builds the html String for the element language selector.<p>
      *  
      * @param attributes optional attributes for the &lt;select&gt; tag
-     * @return the html for the body language selectbox
+     * @return the html for the element language selectbox
      */
-    public String buildSelectBodyLanguage(String attributes) {
+    public String buildSelectElementLanguage(String attributes) {
         // get locale names based on properties and global settings
         List locales = OpenCms.getLocaleManager().getAvailableLocales(getCms(), getParamTempfile());
         List options = new ArrayList(locales.size());
@@ -252,10 +264,10 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         }
        
         if (currentIndex == -1) {
-            // no matching body language found, use first body language in list
+            // no matching element language found, use first element language in list
             if (selectList != null && selectList.size() > 0) {
                 currentIndex = 0;
-                setParamBodylanguage((String)selectList.get(0));
+                setParamElementlanguage((String)selectList.get(0));
             }
         }
     
@@ -263,12 +275,12 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     }
     
     /**
-     * Builds the html String for the body name selector.<p>
+     * Builds the html String for the element name selector.<p>
      *  
      * @param attributes optional attributes for the &lt;select&gt; tag
-     * @return the html for the body name selectbox
+     * @return the html for the element name selectbox
      */
-    public String buildSelectBodyName(String attributes) {
+    public String buildSelectElementName(String attributes) {
         List elementList = null;
         try { 
             elementList = CmsDialogElements.computeElements(getCms(), getParamTempfile());
@@ -276,11 +288,11 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             // no property found, display all present elements instead
             List bodies = m_page.getNames(getElementLocale());
             Collections.sort(bodies);
-            int currentIndex = bodies.indexOf(getParamBodyname());   
+            int currentIndex = bodies.indexOf(getParamElementname());   
             if (currentIndex == -1) {
-                // mark the default body as selected
+                // mark the default element as selected
                 currentIndex = bodies.indexOf(I_CmsConstants.C_XML_BODY_ELEMENT);
-                setParamBodyname(I_CmsConstants.C_XML_BODY_ELEMENT);
+                setParamElementname(I_CmsConstants.C_XML_BODY_ELEMENT);
             }
             return buildSelect(attributes, bodies, bodies, currentIndex, false);
         }
@@ -295,8 +307,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             String[] currentElement = (String[])i.next();               
             String elementName = currentElement[0];
             String elementNice = currentElement[1];
-            if (getParamBodyname().equals(elementName)) {
-                // current body is the displayed one, mark it as selected
+            if (getParamElementname().equals(elementName)) {
+                // current element is the displayed one, mark it as selected
                 currentIndex = counter;
             }
             if (!m_page.hasElement(elementName, getElementLocale()) || m_page.isEnabled(elementName, getElementLocale())) {
@@ -405,45 +417,45 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     public Locale getElementLocale() {
         if (m_elementLocale == null) {
-            m_elementLocale = CmsLocaleManager.getLocale(getParamBodylanguage());
+            m_elementLocale = CmsLocaleManager.getLocale(getParamElementlanguage());
         } 
         return m_elementLocale;
     }    
     
     /**
-     * Returns the current body element language.<p>
+     * Returns the current element language.<p>
      * 
-     * @return the current body element language
+     * @return the current element language
      */
-    public String getParamBodylanguage() {
-        return m_paramBodylanguage;
+    public String getParamElementlanguage() {
+        return m_paramElementlanguage;
     }
 
     /**
-     * Returns the current body element name.<p>
+     * Returns the current element name.<p>
      * 
-     * @return the current body element name
+     * @return the current element name
      */
-    public String getParamBodyname() {
-        return m_paramBodyname;
+    public String getParamElementname() {
+        return m_paramElementname;
     }
 
     /**
-    * Returns the old body element language.<p>
+    * Returns the old element language.<p>
     * 
-    * @return the old body element language
+    * @return the old element language
     */
-   public String getParamOldbodylanguage() {
-       return m_paramOldbodylanguage;
+   public String getParamOldelementlanguage() {
+       return m_paramOldelementlanguage;
    }
 
    /**
-    * Returns the old body element name.<p>
+    * Returns the old element name.<p>
     * 
-    * @return the old body element name
+    * @return the old element name
     */
-   public String getParamOldbodyname() {
-       return m_paramOldbodyname;
+   public String getParamOldelementname() {
+       return m_paramOldelementname;
    }
     
     /**
@@ -468,15 +480,15 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                     // ignore this exception
                 }
             }
-            setParamBodylanguage(defaultLocale.toString());
+            setParamElementlanguage(defaultLocale.toString());
         } else {
             // body present, get the language
             if (locales.contains(defaultLocale)) {
                 // get the body for the default language
-                setParamBodylanguage(defaultLocale.toString());
+                setParamElementlanguage(defaultLocale.toString());
             } else {
                 // get the first body that can be found
-                setParamBodylanguage(locales.get(0).toString());
+                setParamElementlanguage(locales.get(0).toString());
             }
 
         }
@@ -495,14 +507,14 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             List elements = m_page.getNames(getElementLocale());
             if (elements.contains(I_CmsConstants.C_XML_BODY_ELEMENT)) {
                 // default element present
-                setParamBodyname(I_CmsConstants.C_XML_BODY_ELEMENT);
+                setParamElementname(I_CmsConstants.C_XML_BODY_ELEMENT);
             } else {
                 // get first element from element list
-                setParamBodyname((String)elements.get(0));
+                setParamElementname((String)elements.get(0));
             }
         } else {
             // elementName specified and element is enabled or not present, set to elementName
-            setParamBodyname(elementName);
+            setParamElementname(elementName);
         }    
     }
     
@@ -515,7 +527,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         // get the content from the temporary file     
         try {
             CmsXmlPage page = CmsXmlPage.read(getCms(), getCms().readFile(this.getParamTempfile()));
-            String elementData = page.getContent(getCms(), getParamBodyname(), getElementLocale(), true);
+            String elementData = page.getContent(getCms(), getParamElementname(), getElementLocale(), true);
             if (elementData != null) {
                 setParamContent(elementData);
             } else {
@@ -569,39 +581,39 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     protected abstract String prepareContent(boolean save);
 
     /**
-     * Sets the current body element language.<p>
+     * Sets the current element language.<p>
      * 
-     * @param bodyLanguage the current body element language
+     * @param elementLanguage the current element language
      */
-    public void setParamBodylanguage(String bodyLanguage) {
-        m_paramBodylanguage = bodyLanguage;
+    public void setParamElementlanguage(String elementLanguage) {
+        m_paramElementlanguage = elementLanguage;
     }
 
     /**
-     * Sets the current body element name.<p>
+     * Sets the current element name.<p>
      * 
-     * @param bodyName the current body element name
+     * @param elementName the current element name
      */
-    public void setParamBodyname(String bodyName) {
-        m_paramBodyname = bodyName;
+    public void setParamElementname(String elementName) {
+        m_paramElementname = elementName;
     }
 
    /**
-    * Sets the old body element language.<p>
+    * Sets the old element language.<p>
     * 
-    * @param oldBodyLanguage the old body element language
+    * @param oldElementLanguage the old element language
     */
-   public void setParamOldbodylanguage(String oldBodyLanguage) {
-       m_paramOldbodylanguage = oldBodyLanguage;
+   public void setParamOldelementlanguage(String oldElementLanguage) {
+       m_paramOldelementlanguage = oldElementLanguage;
    }
 
    /**
-    * Sets the old body element name.<p>
+    * Sets the old element name.<p>
     * 
-    * @param oldBodyName the old body element name
+    * @param oldElementName the old element name
     */
-   public void setParamOldbodyname(String oldBodyName) {
-       m_paramOldbodyname = oldBodyName;
+   public void setParamOldelementname(String oldElementName) {
+       m_paramOldelementname = oldElementName;
    } 
    
    

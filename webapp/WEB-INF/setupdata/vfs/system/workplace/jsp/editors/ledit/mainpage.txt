@@ -6,127 +6,62 @@
 <link rel=stylesheet type="text/css" href="<%= wp.getSkinUri() %>files/css_workplace.css">
 <script type="text/javascript">
 <!--
+	// Sets the Document Source-Code for later including into the editor
+	var content="<%= wp.getParamContent() %>";
 	
-	<!-- Sets the Document Source-Code for later including into the editor -->
-	var text="<%= wp.getParamContent() %>";
-	
-	<!-- Workplacepath needed in included javascript files -->
+	// Workplacepath needed in included javascript files
 	var workplacePath="<%= cms.link("/system/workplace/") %>";
-
-	var NS = null;
-	var IE = null;
-
-	NS = (document.layers)? true:false;
-	IE = (document.all)? true:false;
-
-	var LANG_CUT = "<%= wp.key("editor.context.cut") %>";
-	var LANG_COPY = "<%= wp.key("editor.context.copy") %>";
-	var LANG_PASTE = "<%= wp.key("editor.context.paste") %>";
-	var LANG_INSERTROW = "<%= wp.key("editor.context.insertrow") %>";
-	var LANG_DELETEROW = "<%= wp.key("editor.context.deleterow") %>";
-	var LANG_INSERTCOL = "<%= wp.key("editor.context.insertcol") %>";
-	var LANG_DELETECOL = "<%= wp.key("editor.context.deletecol") %>";
-	var LANG_INSERTCELL = "<%= wp.key("editor.context.insertcell") %>";
-	var LANG_DELETECELL = "<%= wp.key("editor.context.deletecell") %>";
-	var LANG_MERGECELL = "<%= wp.key("editor.context.mergecell") %>";
-	var LANG_SPLITCELL = "<%= wp.key("editor.context.splitcell") %>";
-</script>
-
-<script type="text/javascript" src="<%= wp.getEditorResourceUri() %>scripts/edit.js"></script>
-
-<!-- Update the Font display on change -->
-<script type="text/javascript" for="EDIT_HTML" event="DisplayChanged">
-<!--
-	function displayChangedHandle()
-	{
-	if (IE==true) return DisplayChanged();
-	}
-	displayChangedHandle();
-	//-->
-</script>
-
-<!-- Show a context menu if the right mousebutton is clicked -->
-<script type="text/javascript" for="EDIT_HTML" event="ShowContextMenu">
-<!--
-	function showContextMenuHandle()
-	{
-	if (IE==true) return ShowContextMenu();
-	}
-	showContextMenuHandle();
-//-->
-</script>
-
-<!-- Invoke a context menu action -->
-<script type="text/javascript" for="EDIT_HTML" event="ContextMenuAction(itemIndex)">
-<!--
-	function contextMenuActionHandle()
-	{
-	if (IE==true) return ContextMenuAction(itemIndex);
-	}
-	contextMenuActionHandle();
-//-->
-</script>
-
-<!-- Ask user whether he really wants to leave Texteditor without saving -->
-<script type="text/javascript">
-<!--
+	
+	// Ask user whether he really wants to leave Texteditor without saving
 	function confirmExit()
 	{
 		if (EDITOR.edit1.IsModified(2)) {
 			if (confirm("<%= wp.key("editor.message.exit") %>")) {
-				doEdit(1);
+				buttonAction(1);
 			}
 		} else {
-				doEdit(1);
+				buttonAction(1);
 		}
 	}
-	
-	function opensmallwin(url, name, w, h) {
-    	encodedurl = encodeURI(url);
-    	smallwindow = window.open(encodedurl, name, 'toolbar=no,location=no,directories=no,status=no,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width='+w+',height='+h);
-    	if(smallwindow != null) {
-       		if (smallwindow.opener == null) {
-         		smallwindow.opener = self;
-        	}
-		}
-	    return smallwindow;
-	}
+
 //-->
 </script>
 
+<script type="text/javascript" src="<%= wp.getEditorResourceUri() %>scripts/edit.js"></script>
+
 </head>
 
-<body class="buttons-head" unselectable="on" onload="setText();">
+<body class="buttons-head" unselectable="on" onload="setContent();">
 <table cellspacing="0" cellpadding="0" border="0" width="100%" height="100%">
 <form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogUri() %>">
-<input type="hidden" name="content">
-<input type="hidden" name="action" value="<%= wp.getParamAction() %>">
-<input type="hidden" name="resource" value="<%= wp.getParamResource() %>">
-<input type="hidden" name="noactivex" value="<%= wp.getParamNoactivex() %>">
-<input type="hidden" name="editastext" value="<%= wp.getParamEditastext() %>">
-<input type="hidden" name="directedit" value="<%= wp.getParamDirectedit() %>">
+<input type="hidden" name="<%= wp.PARAM_CONTENT %>">
+<input type="hidden" name="<%= wp.PARAM_ACTION %>" value="<%= wp.getParamAction() %>">
+<input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
+<input type="hidden" name="<%= wp.PARAM_LOADDEFAULT %>" value="<%= wp.getParamLoaddefault() %>">
+<input type="hidden" name="<%= wp.PARAM_EDITASTEXT %>" value="<%= wp.getParamEditastext() %>">
+<input type="hidden" name="<%= wp.PARAM_DIRECTEDIT %>" value="<%= wp.getParamDirectedit() %>">
 	<tr>
 		<td>
 
 <%= wp.buttonBar(wp.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 5) %>
-<%= wp.button("javascript:doEdit(2);", null, "save_exit", "button.saveclose", buttonStyle) %>
-<%= wp.button("javascript:doEdit(3);", null, "save", "button.save", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(2);", null, "save_exit", "button.saveclose", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(3);", null, "save", "button.save", buttonStyle) %>
 <%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:doEdit(4);", null, "undo", "button.undo", buttonStyle) %>
-<%= wp.button("javascript:doEdit(5);", null, "redo", "button.redo", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(4);", null, "undo", "button.undo", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(5);", null, "redo", "button.redo", buttonStyle) %>
 <%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:doEdit(6);", null, "editorsearch", "button.search", buttonStyle) %>
-<%= wp.button("javascript:doEdit(7);", null, "replace", "button.replace", buttonStyle) %>
-<%= wp.button("javascript:doEdit(8);", null, "goto", "button.goto", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(6);", null, "editorsearch", "button.search", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(7);", null, "replace", "button.replace", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(8);", null, "goto", "button.goto", buttonStyle) %>
 <%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:doEdit(9);", null, "cut", "button.cut", buttonStyle) %>
-<%= wp.button("javascript:doEdit(10);", null, "copy", "button.copy", buttonStyle) %>
-<%= wp.button("javascript:doEdit(11);", null, "paste", "button.paste", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(9);", null, "cut", "button.cut", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(10);", null, "copy", "button.copy", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(11);", null, "paste", "button.paste", buttonStyle) %>
 <%			
 if (options.showElement("button.print")) {%>
 	<%= wp.buttonBarSeparator(5, 5) %>
-	<%= wp.button("javascript:doEdit(15);", null, "print", "button.print", buttonStyle) %><%
+	<%= wp.button("javascript:buttonAction(12);", null, "print", "button.print", buttonStyle) %><%
 }
 if (wp.isHelpEnabled()) {%>
 	<%= wp.buttonBarSeparator(5, 5) %>
@@ -139,9 +74,8 @@ if (wp.isHelpEnabled()) {%>
 </td>
 <tr>
 <tr>
-
-		<td class="texteditor" height="100%" width="100%">
-		<OBJECT classid="clsid:EB3A74C0-5343-101D-BB4D-040224009C02" width="100%" height="100%" id="edit1" name="edit1" onFocus="setTextDelayed();">
+	<td class="texteditor" height="100%" width="100%">
+		<OBJECT classid="clsid:EB3A74C0-5343-101D-BB4D-040224009C02" width="100%" height="100%" id="edit1" name="edit1" onFocus="setContentDelayed();">
 			<PARAM NAME="_StockProps" VALUE="125">
 			<PARAM NAME="Text" VALUE="Loading .....">
 			<PARAM NAME="ForeColor" VALUE="0">
@@ -195,11 +129,13 @@ if (wp.isHelpEnabled()) {%>
 		</OBJECT>
 		<script type="text/javascript">
 		<!--
-			if(document.edit1 != true) document.location=document.location+"&noactivex=true";
+			if (document.edit1 != true) {
+				document.location=document.location+"&<%= wp.PARAM_LOADDEFAULT %>=true";
+			}
 		// -->
 		</script>
-		</td>
-	</tr>
+	</td>
+</tr>
 </form>
 </table>
 </body>

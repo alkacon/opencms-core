@@ -115,4 +115,6 @@ if (options.showElement("bg.color")) {%>
 	<!-- DEGetBlockFmtNamesParam Object -->
 	<object ID="ObjBlockFormatInfo" CLASSID="clsid:8D91090E-B955-11D1-ADC5-006008A5848C" VIEWASTEXT>
 	</object>
+	</td>
+</tr>
 	

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/02/16 12:05:58 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.3.0
  */
@@ -93,8 +93,8 @@ public class CmsDialogElements extends CmsDialog {
     private Locale m_elementLocale;
     
     // Special parameters used by this dialog
-    private String m_paramBodylanguage;
-    private String m_paramBodyname;
+    private String m_paramElementlanguage;
+    private String m_paramElementname;
     private String m_paramDeleteElementContent;
     private String m_paramTempFile;
     
@@ -200,7 +200,7 @@ public class CmsDialogElements extends CmsDialog {
             CmsFile file = getCms().readFile(this.getParamTempfile());
             CmsXmlPage page = CmsXmlPage.read(getCms(), file);
             boolean foundMandatory = false;
-            String changeBody = "";
+            String changeElement = "";
             Iterator i = elementList.iterator();
             while (i.hasNext()) {
                 // get the current list element
@@ -215,7 +215,7 @@ public class CmsDialogElements extends CmsDialog {
                     }
                     page.setEnabled(elementName, getElementLocale(), true);
                     if (isMandatory && !foundMandatory) {
-                        changeBody = elementName;
+                        changeElement = elementName;
                         foundMandatory = true;
                     }
                 } else {
@@ -228,12 +228,12 @@ public class CmsDialogElements extends CmsDialog {
             // write the temporary file
             getCms().writeFile(page.write(file));
             // set the javascript functions which should be executed
-            if (page.isEnabled(getParamBodyname(), getElementLocale())) {
-                changeBody = getParamBodyname();
+            if (page.isEnabled(getParamElementname(), getElementLocale())) {
+                changeElement = getParamElementname();
             } else if (!foundMandatory) {
-                changeBody = ((String[])elementList.get(0))[0];
+                changeElement = ((String[])elementList.get(0))[0];
             }
-            setParamOkFunctions("window.opener.changeBody(\"" + changeBody + "\", \"" + getElementLocale() + "\");window.close();");
+            setParamOkFunctions("window.opener.changeElement(\"" + changeElement + "\", \"" + getElementLocale() + "\");window.close();");
                        
             // save initialized instance of this class in request attribute for included sub-elements
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
@@ -348,27 +348,27 @@ public class CmsDialogElements extends CmsDialog {
      */
     public Locale getElementLocale() {
         if (m_elementLocale == null) {
-            m_elementLocale = CmsLocaleManager.getLocale(getParamBodylanguage());
+            m_elementLocale = CmsLocaleManager.getLocale(getParamElementlanguage());
         } 
         return m_elementLocale;
     }    
     
     /**
-     * Returns the current body element language.<p>
+     * Returns the current element language.<p>
      * 
-     * @return the current body element language
+     * @return the current element language
      */
-    public String getParamBodylanguage() {
-        return m_paramBodylanguage;
+    public String getParamElementlanguage() {
+        return m_paramElementlanguage;
     }
     
     /**
-     * Returns the current body element name.<p>
+     * Returns the current element name.<p>
      * 
-     * @return the current body element name
+     * @return the current element name
      */
-    public String getParamBodyname() {
-        return m_paramBodyname;
+    public String getParamElementname() {
+        return m_paramElementname;
     }
     
     /**
@@ -410,21 +410,21 @@ public class CmsDialogElements extends CmsDialog {
     } 
     
     /**
-     * Sets the current body element language.<p>
+     * Sets the current element language.<p>
      * 
-     * @param bodyLanguage the current body element language
+     * @param elementLanguage the current element language
      */
-    public void setParamBodylanguage(String bodyLanguage) {
-        m_paramBodylanguage = bodyLanguage;
+    public void setParamElementlanguage(String elementLanguage) {
+        m_paramElementlanguage = elementLanguage;
     }
 
     /**
-     * Sets the current body element name.<p>
+     * Sets the current element name.<p>
      * 
-     * @param bodyname the current body element name
+     * @param elementName the current element name
      */
-    public void setParamBodyname(String bodyname) {
-        m_paramBodyname = bodyname;
+    public void setParamElementname(String elementName) {
+        m_paramElementname = elementName;
     }
     
     /**

@@ -29,7 +29,7 @@ function closeDialog() {
 	if (dialogPropertyWindow) {
 		window.dialogPropertyWindow.close();
 	}
-	if (document.EDITOR.action.value == "null" || document.EDITOR.action.value == "") {
+	if (document.EDITOR.<%= wp.PARAM_ACTION %>.value == "null" || document.EDITOR.<%= wp.PARAM_ACTION %>.value == "") {
 		top.closeframe.closePage("<%= wp.getParamTempfile() %>", "<%= wp.getParamResource() %>");
 	}
 }
@@ -41,16 +41,15 @@ function closeDialog() {
 
 <table cellspacing="0" cellpadding="0" border="0" width="100%" height="100%">
 <form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogUri() %>">
-<input type="hidden" name="content">
-<input type="hidden" name="action" value="<%= wp.getParamAction() %>">
-<input type="hidden" name="resource" value="<%= wp.getParamResource() %>">
-<input type="hidden" name="tempfile" value="<%= wp.getParamTempfile() %>">
-<input type="hidden" name="noactivex" value="<%= wp.getParamNoactivex() %>">
-<input type="hidden" name="editastext" value="<%= wp.getParamEditastext() %>">
-<input type="hidden" name="directedit" value="<%= wp.getParamDirectedit() %>">
-<input type="hidden" name="oldbodyname" value="<%= wp.getParamBodyname() %>">
-<input type="hidden" name="oldbodylanguage" value="<%= wp.getParamBodylanguage() %>">
-<input type="hidden" name="backlink" value="<%= wp.getParamBacklink() %>">
+<input type="hidden" name="<%= wp.PARAM_CONTENT %>">
+<input type="hidden" name="<%= wp.PARAM_ACTION %>" value="<%= wp.getParamAction() %>">
+<input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
+<input type="hidden" name="<%= wp.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
+<input type="hidden" name="<%= wp.PARAM_LOADDEFAULT %>" value="<%= wp.getParamLoaddefault() %>">
+<input type="hidden" name="<%= wp.PARAM_DIRECTEDIT %>" value="<%= wp.getParamDirectedit() %>">
+<input type="hidden" name="<%= wp.PARAM_OLDELEMENTNAME %>" value="<%= wp.getParamElementname() %>">
+<input type="hidden" name="<%= wp.PARAM_OLDELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
+<input type="hidden" name="<%= wp.PARAM_BACKLINK %>" value="<%= wp.getParamBacklink() %>">
 	<tr>
 		<td>
 
@@ -59,12 +58,12 @@ function closeDialog() {
 <%
 if (options.showElement("selector.elements")) {
 	out.println(wp.buttonBarLabel("input.element"));
-	out.println("<td>" + wp.buildSelectBodyLanguage("class=\"textfeld\" name=\"bodylanguage\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
+	out.println("<td>" + wp.buildSelectElementLanguage("class=\"textfeld\" name=\"" + wp.PARAM_ELEMENTLANGUAGE + "\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
 	out.println(wp.buttonBarSpacer(2));
-	out.println("<td>" + wp.buildSelectBodyName("class=\"textfeld\" name=\"bodyname\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
+	out.println("<td>" + wp.buildSelectElementName("class=\"textfeld\" name=\"" + wp.PARAM_ELEMENTNAME + "\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
 	out.println(wp.buttonBarSeparator(5, 5));
 } else { %>
-	<input type="hidden" name="bodylanguage" value="<%= wp.getParamBodylanguage() %>"><input type="hidden" name="bodyname" value="<%= wp.getParamBodyname() %>">
+	<input type="hidden" name="<%= wp.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>"><input type="hidden" name="<%= wp.PARAM_ELEMENTNAME %>" value="<%= wp.getParamElementname() %>">
 <%
 }
 %>
@@ -114,18 +113,18 @@ if (wp.isHelpEnabled()) {%>
 </form>
 
 <form name="ELEMENTS" action="dialogs/elements.html" target="DIALOGELEMENT" method="post">
-<input type="hidden" name="tempfile" value="<%= wp.getParamTempfile() %>">
-<input type="hidden" name="bodylanguage" value="<%= wp.getParamBodylanguage() %>">
-<input type="hidden" name="bodyname" value="<%= wp.getParamBodyname() %>">
-<input type="hidden" name="resource" value="<%= wp.getParamResource() %>">
-<input type="hidden" name="ispopup" value="true">
+<input type="hidden" name="<%= wp.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
+<input type="hidden" name="<%= wp.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
+<input type="hidden" name="<%= wp.PARAM_ELEMENTNAME %>" value="<%= wp.getParamElementname() %>">
+<input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
+<input type="hidden" name="<%= wp.PARAM_ISPOPUP %>" value="true">
 </form>
 
 <form name="PROPERTIES" action="../dialogs/property.html" target="DIALOGPROPERTY" method="post">
-<input type="hidden" name="resource" value="<%= wp.getParamTempfile() %>">
-<input type="hidden" name="okfunctions" value="window.close();">
+<input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamTempfile() %>">
+<input type="hidden" name="<%= wp.PARAM_OKFUNCTIONS %>" value="window.close();">
 <input type="hidden" name="usetempfileproject" value="true">
-<input type="hidden" name="ispopup" value="true">
+<input type="hidden" name="<%= wp.PARAM_ISPOPUP %>" value="true">
 </form>
 
 </table>

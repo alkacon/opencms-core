@@ -69,7 +69,7 @@
 					The wizard is now locked. To use the wizard again reset the flag in the "opencms.properties".</p>
 					<p>To start OpenCms click <a target="_blank" href="<%= request.getContextPath() %>/opencms/index.jsp">here</a>.</p>
 					<% } else { %>
-						<b>Please confirm ActiveX configuration</b>
+						<b>Please confirm that you have read the configuration notes</b>
 					<% } %>
 				</td>
 			</tr>			

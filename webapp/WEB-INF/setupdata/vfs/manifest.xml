@@ -6866,7 +6866,7 @@
 			</property>
 			<property>
 				<name>Title</name>
-				<value><![CDATA[IE ActiveX editor]]></value>
+				<value><![CDATA[LEdit OCX text editor]]></value>
 			</property>
 		</properties>
 		<accesscontrol/>
@@ -6922,7 +6922,7 @@
 		<properties>
 			<property>
 				<name>Title</name>
-				<value><![CDATA[ActiveX editor]]></value>
+				<value><![CDATA[MSDHTML editor]]></value>
 			</property>
 		</properties>
 		<accesscontrol/>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/02/16 12:05:58 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Creates the output for editing a CmsDefaultPage with the MS DHTML ActiveX control editor.<p> 
+ * Creates the output for editing a CmsDefaultPage with the MS DHTML control editor.<p> 
  * 
  * The following editor uses this class:
  * <ul>
@@ -52,7 +52,7 @@ import java.util.regex.Pattern;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 5.1.12
  */
@@ -146,7 +146,7 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
         int browserId = 0;
         int loop = 1;
         int allowedEditors = I_CmsWpConstants.C_SELECTBOX_EDITORVIEWS_ALLOWED[browserId];
-        if ("script".equals(getParamBodyname())) {
+        if ("script".equals(getParamElementname())) {
             allowedEditors = allowedEditors & 510;
         }
         List namesFinal = new ArrayList(names.size());

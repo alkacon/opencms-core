@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/02/16 12:05:59 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace;
 
 import org.opencms.file.CmsResource;
-
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -47,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 5.1
  */
@@ -119,6 +118,8 @@ public class CmsDialog extends CmsWorkplace {
     public static final String PARAM_OKFUNCTIONS = "okfunctions";
     /** Request parameter name for the "is popup" flag */
     public static final String PARAM_ISPOPUP = "ispopup";
+    /** Request parameter name for the resource */
+    public static final String PARAM_RESOURCE = I_CmsWpConstants.C_PARA_RESOURCE;
 
     private String m_paramAction;
     private String m_paramResource;
