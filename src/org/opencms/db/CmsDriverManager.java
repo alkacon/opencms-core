@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/11/10 10:47:14 $
- * Version: $Revision: 1.294 $
+ * Date   : $Date: 2003/11/12 17:36:04 $
+ * Version: $Revision: 1.295 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.294 $ $Date: 2003/11/10 10:47:14 $
+ * @version $Revision: 1.295 $ $Date: 2003/11/12 17:36:04 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5130,7 +5130,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         int publishProjectId = context.currentProject().getId();
         boolean backupEnabled = isHistoryEnabled(cms);
         int tagId = 0;
-        boolean directPublishFile = context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH && directPublishResource != null && directPublishResource.isFile();
+        //boolean directPublishFile = context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH && directPublishResource != null && directPublishResource.isFile();
 
         // check the security
         if ((isAdmin(context) || isManagerOfProject(context)) && (context.currentProject().getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED) && (publishProjectId != I_CmsConstants.C_PROJECT_ONLINE_ID)) {
@@ -5156,8 +5156,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
                 m_projectDriver.publishProject(context, report, readProject(I_CmsConstants.C_PROJECT_ONLINE_ID), publishHistoryId, directPublishResource, directPublishSiblings, isHistoryEnabled(cms), tagId, maxVersions);
 
-                // don't publish COS module data if a file gets published directly
-                if (!directPublishFile) {
+                // don't publish COS module data if a file/folder gets published directly
+                if (context.currentProject().getType() != I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH) {
                     // now publish the module masters
                     Vector publishModules = new Vector();
                     cms.getRegistry().getModulePublishables(publishModules, null);
