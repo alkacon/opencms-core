@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
- * Date   : $Date: 2000/08/25 14:56:07 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/10/11 08:07:56 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import javax.servlet.http.*;
  * CmsResponseHttpServlet.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/08/25 14:56:07 $  
+ * @version $Revision: 1.14 $ $Date: 2000/10/11 08:07:56 $  
  */
 public class CmsResponseHttpServlet implements I_CmsConstants,  
 											   I_CmsResponse{ 
@@ -69,6 +69,10 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
 
 	/** We should remember all setted headers to ensure not setting twice */
 	private Vector m_headers = new Vector();
+
+	/** Remember, if a redirect was sent */
+	private boolean m_redir = false;
+
 	 /** 
 	 * Constructor, creates a new CmsResponseHttpServlet object.
 	 * It is nescessary to give the HttpServletRequest as well, because it is needed
@@ -112,6 +116,9 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
    
 		return m_res.getOutputStream();
 	}
+	public boolean isRedirected() {
+	 return m_redir;
+}
 	 /**
 	 * Sets a redirect to send the responst to. 
 	 * The original HttpServletResponse redirect is used here. Additional information
@@ -129,6 +136,7 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
 		} else {
 			hostName = m_req.getScheme() + "://"+ m_clusterurl;  
 		}
+		m_redir = true;
 		String servlet = m_req.getServletPath();
 		m_res.sendRedirect(hostName + servlet + location);
 	}

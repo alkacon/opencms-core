@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsResponse.java,v $
- * Date   : $Date: 2000/08/08 14:08:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/10/11 08:07:10 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,11 +41,10 @@ import java.io.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Kandzior
- * @version $Revision: 1.6 $ $Date: 2000/08/08 14:08:21 $  
+ * @version $Revision: 1.7 $ $Date: 2000/10/11 08:07:10 $  
  */
 public interface I_CmsResponse { 
 	
-
 	/**
 	 * Returns the original response that was used to create the CmsResponse.
 	 * 
@@ -67,6 +66,7 @@ public interface I_CmsResponse {
 	 */
 	public OutputStream getOutputStream()
 		throws IOException;
+public boolean isRedirected() ;
 	/**
 	 * Sets a redirect to send the responst to. 
 	 * 
