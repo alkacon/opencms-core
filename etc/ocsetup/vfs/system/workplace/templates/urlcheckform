@@ -2,18 +2,15 @@
 <XMLTEMPLATE>
 
 <!-- enable this for debugging -->
-<debug><![CDATA[true]]></debug>
+<debug><![CDATA[false]]></debug>
 <debug_receiver><![CDATA[edna.falkenhan@framfab.de]]></debug_receiver>
 
 
-<!-- Alles was man für die email braucht -->
-
+<!-- the data for the email -->
 <emailcc><![CDATA[]]></emailcc>
 <emailbcc><![CDATA[]]></emailbcc>
 <emailtype><![CDATA[text/html]]></emailtype>
 
-<emailfrom><![CDATA[edna.falkenhan@framfab.de]]></emailfrom>
-<emailto><![CDATA[edna.falkenhan@framfab.de]]></emailto>
 <emailsubject><![CDATA[Check External Links, ]]><process>actdate</process></emailsubject>
 
 
