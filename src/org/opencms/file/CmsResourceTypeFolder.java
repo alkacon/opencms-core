@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/05/21 15:14:28 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/05/24 17:23:38 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
     
@@ -683,8 +683,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
      * @throws CmsException if something goes wrong
      */
     private void getAllResources(CmsObject cms, String rootFolder, List allFiles, List allFolders) throws CmsException {
-        List folders = (List)new ArrayList();
-        List files = (List)new ArrayList();
+        List folders = new ArrayList();
+        List files = new ArrayList();
 
         // get files and folders of this rootFolder
         folders = cms.getSubFolders(rootFolder, CmsResourceFilter.ALL);

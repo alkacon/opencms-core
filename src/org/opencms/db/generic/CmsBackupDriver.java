@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/05/24 15:48:24 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2004/05/24 17:14:55 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.89 $ $Date: 2004/05/24 15:48:24 $
+ * @version $Revision: 1.90 $ $Date: 2004/05/24 17:14:55 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -523,7 +523,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     public List readBackupFileHeaders() throws CmsException {
         CmsBackupResource currentBackupResource = null;
         ResultSet res = null;
-        List allHeaders = (List)new ArrayList();
+        List allHeaders = new ArrayList();
         PreparedStatement stmt = null;
         Connection conn = null;
         Set storage = new HashSet();
@@ -560,7 +560,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     public List readBackupFileHeaders(CmsUUID resourceId) throws CmsException {
         CmsBackupResource currentBackupResource = null;
         ResultSet res = null;
-        List allHeaders = (List)new ArrayList();
+        List allHeaders = new ArrayList();
         PreparedStatement stmt = null;
         Connection conn = null;
 
@@ -782,7 +782,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         String propertyKey = null;
         String propertyValue = null;
         int mappingType = -1;
-        Map propertyMap = (Map)new HashMap();
+        Map propertyMap = new HashMap();
         CmsProperty property = null;
 
         try {
@@ -841,7 +841,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             m_sqlManager.closeAll(conn, stmt, res);
         }
 
-        return (List)new ArrayList(propertyMap.values());
+        return new ArrayList(propertyMap.values());
     }
     
     /**

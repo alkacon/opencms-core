@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/05/24 17:16:05 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import java.util.Properties;
  * </table>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.32 $ $Date: 2004/02/13 13:41:45 $
+ * @version $Revision: 1.33 $ $Date: 2004/05/24 17:16:05 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -168,17 +168,17 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
             precalculateQueries(c_queries);
         }
 
-        m_poolUrls = (List) new ArrayList(3);
+        m_poolUrls = new ArrayList(3);
         for (int i = 0; i < 3; i++) {
             m_poolUrls.add(i, null);
         }
         
-        m_reservedPoolUrls = (List) new ArrayList(64);
+        m_reservedPoolUrls = new ArrayList(64);
         for (int i = 0; i < 64; i++) {
             m_reservedPoolUrls.add(i, null);
         }
                 
-        m_cachedQueries = (Map) new HashMap();
+        m_cachedQueries = new HashMap();
     }
 
     /**
@@ -194,15 +194,15 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * @param loadQueries flag indicating whether the query.properties should be loaded during initialization
      */
     protected CmsSqlManager(String poolUrl, boolean loadQueries) {
-        m_poolUrls = (List) new ArrayList(3);
-        m_reservedPoolUrls = (List) new ArrayList(64);
+        m_poolUrls = new ArrayList(3);
+        m_reservedPoolUrls = new ArrayList(64);
     
-        m_poolUrls = (List) new ArrayList(3);
+        m_poolUrls = new ArrayList(3);
         for (int i = 0; i < 3; i++) {
             m_poolUrls.add(i, null);
         }
         
-        m_reservedPoolUrls = (List) new ArrayList(64);
+        m_reservedPoolUrls = new ArrayList(64);
         for (int i = 0; i < 64; i++) {
             m_reservedPoolUrls.add(i, null);
         }

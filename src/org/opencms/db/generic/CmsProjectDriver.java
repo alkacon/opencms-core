@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/05/21 15:12:44 $
- * Version: $Revision: 1.164 $
+ * Date   : $Date: 2004/05/24 17:15:28 $
+ * Version: $Revision: 1.165 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.164 $ $Date: 2004/05/21 15:12:44 $
+ * @version $Revision: 1.165 $ $Date: 2004/05/24 17:15:28 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1220,7 +1220,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         int publishedFolderCount = 0;
         int deletedFolderCount = 0;
         int publishedFileCount = 0;
-        Set publishedContentIds = (Set) new HashSet();
+        Set publishedContentIds = new HashSet();
 
         try {
             ////////////////////////////////////////////////////////////////////////////////////////
@@ -1581,7 +1581,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
-        List result = (List) new ArrayList();
+        List result = new ArrayList();
 
         try {
             conn = m_sqlManager.getConnection();
@@ -1751,7 +1751,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public List readProjectView(int project, String filter) throws CmsException {
-        List resources = (List) new ArrayList();
+        List resources = new ArrayList();
         CmsResource currentResource = null;
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -1809,7 +1809,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         String rootPath = null;
         int resourceType = I_CmsConstants.C_UNKNOWN_ID;
         int resourceState = I_CmsConstants.C_UNKNOWN_ID;
-        List publishedResources = (List) new ArrayList();
+        List publishedResources = new ArrayList();
         int siblingCount = I_CmsConstants.C_UNKNOWN_ID;  
         CmsUUID masterId = CmsUUID.getNullUUID();
         String contentDefinitionName = null;   

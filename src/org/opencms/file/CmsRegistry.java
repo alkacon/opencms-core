@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/05/06 12:24:51 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/05/24 17:23:12 $
+ * Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -2328,7 +2328,7 @@ public class CmsRegistry extends A_CmsXmlContent {
             for (int i = 0; i < list.getLength(); i++) {
                 Element e = (Element)list.item(i);
                 if ("type".equals(e.getNodeName())) {
-                    typeNode = (Node)e;
+                    typeNode = e;
                     i = list.getLength();
                 }
             }

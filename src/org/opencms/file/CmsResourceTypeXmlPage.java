@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/05/13 11:07:53 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/05/24 17:24:21 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -98,7 +98,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
      * @see org.opencms.validation.I_CmsHtmlLinkValidatable#findLinks(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
     public List findLinks(CmsObject cms, CmsResource resource) {
-        List links = (List) new ArrayList();
+        List links = new ArrayList();
         CmsFile file = null;
         CmsXmlPage xmlPage = null;
         List locales = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2004/04/30 09:58:55 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/05/24 17:22:35 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import java.util.RandomAccess;
  * control about which resource types support which property definitions.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2004/04/30 09:58:55 $
+ * @version $Revision: 1.12 $ $Date: 2004/05/24 17:22:35 $
  * @since build_5_1_14
  */
 public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
@@ -202,7 +202,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
             return Collections.EMPTY_LIST;
         }
 
-        properties = (List)new ArrayList(map.size());
+        properties = new ArrayList(map.size());
         keys = map.keySet().toArray();
         for (int i = 0; i < keys.length; i++) {
             key = (String)keys[i];
@@ -239,7 +239,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
             return Collections.EMPTY_MAP;
         }
 
-        result = (Map)new HashMap();
+        result = new HashMap();
 
         // choose the fastest method to traverse the list
         if (list instanceof RandomAccess) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/05/24 14:39:38 $
- * Version: $Revision: 1.360 $
+ * Date   : $Date: 2004/05/24 17:19:43 $
+ * Version: $Revision: 1.361 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.360 $ $Date: 2004/05/24 14:39:38 $
+ * @version $Revision: 1.361 $ $Date: 2004/05/24 17:19:43 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1340,7 +1340,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         clearAccessControlListCache();
         clearResourceCache();
 
-        List modifiedResources = (List)new ArrayList();
+        List modifiedResources = new ArrayList();
         modifiedResources.add(sourceFile);
         modifiedResources.add(newResource);
         modifiedResources.add(destinationFolder);
@@ -1451,7 +1451,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         clearAccessControlListCache();
         m_resourceListCache.clear();
 
-        List modifiedResources = (List)new ArrayList();
+        List modifiedResources = new ArrayList();
         modifiedResources.add(sourceFolder);
         modifiedResources.add(newResource);
         modifiedResources.add(destinationFolder);
@@ -2305,7 +2305,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if operation was not succesful.
      */
     public void deleteFile(CmsRequestContext context, String filename, int deleteOption) throws CmsException {
-        List resources = (List)new ArrayList();
+        List resources = new ArrayList();
         CmsResource currentResource = null;
         CmsLock currentLock = null;
         CmsResource resource = null;
@@ -2483,7 +2483,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         clearAccessControlListCache();
         clearResourceCache();
 
-        List resources = (List) new ArrayList();
+        List resources = new ArrayList();
         resources.add(cmsFolder);
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_DELETED, Collections.singletonMap("resources", resources)));
     }
@@ -2828,7 +2828,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if operation was not succesful
      */
     private List extractResourcesInTree(CmsRequestContext context, Set storage, List resources) throws CmsException {
-        List result = (List)new ArrayList();
+        List result = new ArrayList();
         Iterator i = resources.iterator();
 
         // now select only those resources which are in the folder tree below the given folder
@@ -3317,7 +3317,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     private Set getFolderIds(CmsRequestContext context, String folder) throws CmsException {
         CmsFolder parentFolder = readFolder(context, folder);
-        return (Set)new HashSet(m_vfsDriver.readFolderTree(context.currentProject(), parentFolder));
+        return new HashSet(m_vfsDriver.readFolderTree(context.currentProject(), parentFolder));
     }
 
     /**
@@ -4796,7 +4796,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         try {
             CmsGroup group = m_userDriver.readGroup(principalId);
             if (group != null) {
-                return (I_CmsPrincipal)group;
+                return group;
             }
         } catch (Exception e) {
             // ignore this exception 
@@ -4805,7 +4805,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         try {
             CmsUser user = readUser(principalId);
             if (user != null) {
-                return (I_CmsPrincipal)user;
+                return user;
             }
         } catch (Exception e) {
             // ignore this exception
@@ -4825,7 +4825,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         try {
             CmsGroup group = m_userDriver.readGroup(principalName);
             if (group != null) {
-                return (I_CmsPrincipal)group;
+                return group;
             }
         } catch (Exception e) {
             // ignore this exception
@@ -4834,7 +4834,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         try {
             CmsUser user = readUser(principalName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
             if (user != null) {
-                return (I_CmsPrincipal)user;
+                return user;
             }
         } catch (Exception e) {
             // ignore this exception
@@ -5325,7 +5325,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public List readAllSubResourcesInDfs(CmsRequestContext context, String resourcename, int resourceType) throws CmsException {
-        List result = (List)new ArrayList();
+        List result = new ArrayList();
         Vector unvisited = new Vector();
         CmsFolder currentFolder = null;
         Enumeration unvisitedFolders = null;
@@ -5444,9 +5444,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     public List readChangedResourcesInsideProject(CmsRequestContext context, int projectId, int resourceType) throws CmsException {
         List projectResources = readProjectResources(readProject(projectId));
-        List result = (List)new ArrayList();
+        List result = new ArrayList();
         String currentProjectResource = null;
-        List resources = (List)new ArrayList();
+        List resources = new ArrayList();
         CmsResource currentResource = null;
         CmsLock currentLock = null;
 
@@ -6205,7 +6205,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         // the root folder is no token in the path but a resource which has to be added to the path
         count = tokens.countTokens() + 1;
-        pathList = (List)new ArrayList(count);
+        pathList = new ArrayList(count);
 
         folderCount = count;
         if (!path.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
@@ -8096,7 +8096,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     public void updateExportPoints(CmsRequestContext context, I_CmsReport report) {
         Set exportPoints = null;
         String currentExportPoint = null;
-        List resources = (List) new ArrayList();
+        List resources = new ArrayList();
         Iterator i = null;
         CmsResource currentResource = null;
         CmsExportPointDriver exportPointDriver = null;
@@ -8118,7 +8118,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
             // the report may be null if the export points indicated by an event on a remote server
             if (report == null) {
-                report = (I_CmsReport) new CmsLogReport();
+                report = new CmsLogReport();
             }
 
             // create the driver to write the export points
@@ -8201,7 +8201,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             
             // the report may be null if the export points indicated by an event on a remote server
             if (report == null) {
-                report = (I_CmsReport) new CmsLogReport();
+                report = new CmsLogReport();
             }
             
             // read the "published resources" for the specified publish history ID
@@ -8426,8 +8426,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             if (!directPublishFile) {
                 report.println(report.key("report.publish_prepare_folders"), I_CmsReport.C_FORMAT_HEADLINE);
 
-                sortedFolderMap = (Map) new HashMap();
-                deletedFolders = (List) new ArrayList();
+                sortedFolderMap = new HashMap();
+                deletedFolders = new ArrayList();
 
                 // read all changed/new/deleted folders
                 report.print(report.key("report.publish_read_projectfolders") + report.key("report.dots"));
@@ -8468,7 +8468,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 }
 
                 // ensure that the folders appear in the correct (DFS) top-down tree order
-                sortedFolderList = (List) new ArrayList(sortedFolderMap.keySet());
+                sortedFolderList = new ArrayList(sortedFolderMap.keySet());
                 Collections.sort(sortedFolderList);
 
                 // split the folders up into new/changed folders and deleted folders
@@ -8533,7 +8533,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             
             if (directPublishFile) {
                 // add this resource as a candidate to the unpublished offline file headers
-                offlineFiles = (List) new ArrayList();
+                offlineFiles = new ArrayList();
                 offlineFiles.add(directPublishResource);
 
                 if (directPublishSiblings) {
@@ -8766,7 +8766,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             m_propertyCache.clear();
 
             // fire an event that a property of a resource has been modified
-            Map data = (Map) new HashMap();
+            Map data = new HashMap();
             data.put("resource", resource);
             data.put("property", property);
             OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTY_MODIFIED, data));
@@ -8847,7 +8847,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             if (search) {
                 boolean cont;
                 siteRoot += I_CmsConstants.C_FOLDER_SEPARATOR;
-                properties = (List)new ArrayList();
+                properties = new ArrayList();
                 List parentProperties = null;
                 
                 do {
@@ -8875,7 +8875,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             m_propertyCache.put(cacheKey, properties);
         }
         
-        return (List) new ArrayList(properties);        
+        return new ArrayList(properties);        
     }
     
     /**

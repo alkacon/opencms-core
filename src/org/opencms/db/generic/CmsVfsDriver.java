@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/05/24 12:38:48 $
- * Version: $Revision: 1.174 $
+ * Date   : $Date: 2004/05/24 17:16:47 $
+ * Version: $Revision: 1.175 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.174 $ $Date: 2004/05/24 12:38:48 $
+ * @version $Revision: 1.175 $ $Date: 2004/05/24 17:16:47 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1022,7 +1022,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * @return all resources that are markes as deleted
      */
     protected List internalFilterUndeletedResources(List resources) {
-        List undeletedResources = (List)new ArrayList();
+        List undeletedResources = new ArrayList();
 
         for (int i = 0; i < resources.size(); i++) {
             CmsResource resource = (CmsResource)resources.get(i);
@@ -1074,7 +1074,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         PreparedStatement stmt = null;
         ResultSet res = null;
         CmsResource currentResource = null;
-        List subResources = (List)new ArrayList();
+        List subResources = new ArrayList();
         String query = null;
         String resourceTypeClause = null;
         String orderClause = " ORDER BY CMS_T_STRUCTURE.RESOURCE_NAME";
@@ -1236,7 +1236,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * @see org.opencms.db.I_CmsVfsDriver#readFiles(int)
      */
     public List readFiles(int projectId) throws CmsException {
-        List resources = (List)new ArrayList();
+        List resources = new ArrayList();
         CmsResource currentResource;
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -1374,7 +1374,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * @see org.opencms.db.I_CmsVfsDriver#readFolders(int)
      */
     public List readFolders(int projectId) throws CmsException {
-        List folders = (List)new ArrayList();
+        List folders = new ArrayList();
         CmsFolder currentFolder;
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -1689,7 +1689,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         Connection conn = null;
         ResultSet res = null;
         CmsResource currentResource = null;
-        List vfsLinks = (List)new ArrayList();
+        List vfsLinks = new ArrayList();
 
         try {
             conn = m_sqlManager.getConnection(currentProject);
@@ -2398,7 +2398,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         String propertyKey = null;
         String propertyValue = null;
         int mappingType = -1;
-        Map propertyMap = (Map) new HashMap();
+        Map propertyMap = new HashMap();
         CmsProperty property = null;
 
         String resourceName = resource.getRootPath();
@@ -2446,7 +2446,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             m_sqlManager.closeAll(conn, stmt, res);
         }
 
-        return (List) new ArrayList(propertyMap.values());
+        return new ArrayList(propertyMap.values());
     }
     
     /**

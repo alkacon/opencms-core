@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2004/02/14 21:25:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/05/24 17:20:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.List;
  * creates Cms publish lists.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2004/02/14 21:25:41 $
+ * @version $Revision: 1.6 $ $Date: 2004/05/24 17:20:18 $
  * @since 5.3.0
  * @see org.opencms.db.CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean, org.opencms.report.I_CmsReport)
  */
@@ -98,9 +98,9 @@ public class CmsPublishList extends Object {
      * @param isDirectPublishFile true if a Cms file gets published directly
      */
     public CmsPublishList(CmsResource directPublishResource, boolean isDirectPublishFile) {
-        m_fileList = (List) new ArrayList();
-        m_folderList = (List) new ArrayList();
-        m_deletedFolderList = (List) new ArrayList();
+        m_fileList = new ArrayList();
+        m_folderList = new ArrayList();
+        m_deletedFolderList = new ArrayList();
 
         m_publishHistoryId = new CmsUUID();
         m_isDirectPublish = directPublishResource != null;

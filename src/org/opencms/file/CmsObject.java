@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/05/24 12:38:48 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/05/24 17:22:12 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  */
 public class CmsObject {
 
@@ -2467,7 +2467,7 @@ public class CmsObject {
                 }
 
                 // fire an event that a project has been published
-                Map eventData = (Map) new HashMap();
+                Map eventData = new HashMap();
                 eventData.put("report", report);
                 eventData.put("publishHistoryId", publishList.getPublishHistoryId().toString());
                 eventData.put("context", m_context);
@@ -2593,7 +2593,7 @@ public class CmsObject {
      * @deprecated use readProperties(String) instead
      */
     public Map readAllProperties(String filename) throws CmsException {
-        Map result = (Map)new HashMap();
+        Map result = new HashMap();
         Map properties = readProperties(filename, false);
         
         if (properties != null) {
@@ -3376,7 +3376,7 @@ public class CmsObject {
         try {
             resProps = readAllProperties(resourcename);
         } catch (CmsException e) {
-            resProps = (Map)new HashMap();
+            resProps = new HashMap();
         }
 
         // add the properties that might have been collected during a file-upload
@@ -3952,7 +3952,7 @@ public class CmsObject {
                 OpenCms.getLog(this).error("Error writing publish history entry for COS resource " + publishedBoResource.toString(), e);
             }
         } finally {
-            Map eventData = (Map) new HashMap();
+            Map eventData = new HashMap();
             eventData.put("publishHistoryId", publishId.toString());
             
             // a "directly" published COS resource can be handled totally equal to a published project            
