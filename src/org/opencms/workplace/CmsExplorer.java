@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2003/08/19 15:57:12 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 5.1
  */
@@ -206,18 +206,18 @@ public class CmsExplorer extends CmsWorkplace {
      * 
      * @return the int value of the default preferences
      */
-    private int getDefaultPreferences() {
-        int filelist;
+    private int getUserPreferences() {
+        int result;
         String explorerSettings = (String)getSettings().getUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_EXPLORERSETTINGS);
         if (explorerSettings != null) {
-            filelist = new Integer(explorerSettings).intValue();
+            result = new Integer(explorerSettings).intValue();
         } else {
-            filelist = I_CmsWpConstants.C_FILELIST_NAME 
+            result = I_CmsWpConstants.C_FILELIST_NAME 
                 + I_CmsWpConstants.C_FILELIST_TITLE
                 + I_CmsWpConstants.C_FILELIST_TYPE
                 + I_CmsWpConstants.C_FILELIST_DATE_LASTMODIFIED;
         }
-        return filelist;
+        return result;
     }
         
     /**
@@ -226,7 +226,6 @@ public class CmsExplorer extends CmsWorkplace {
      * @return the html for the explorer file list
      */
     public String getFileListFunction() { 
-        boolean isInsideCurrentProject = false;       
         // if mode is "listonly", only the list will be shown
         boolean galleryView = "galleryview".equals(getSettings().getExplorerMode()); 
         // if mode is "projectview", all changed files in that project will be shown
@@ -275,13 +274,6 @@ public class CmsExplorer extends CmsWorkplace {
         StringBuffer content = new StringBuffer(2048);
         content.append("function initialize() {\n");
 
-//        if (galleryView) {
-//            content.append("top.openfolderMethod='openthisfolderflat';\n");
-//        } else {
-//            content.append("top.openfolderMethod='openthisfolder';\n");
-//        }
-        
-
         content.append("top.mode=\"");        
         content.append(getSettings().getExplorerMode());
         content.append("\";\n");
@@ -289,15 +281,6 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("top.showlinks=");        
         content.append(showVfsLinks);
         content.append(";\n");        
-
-//      // the flaturl
-//      if (getSettings().getExplorerFlaturl() != null) {
-//          content.append("top.flaturl='");
-//          content.append(getSettings().getExplorerFlaturl());
-//          content.append("';\n");
-//      } else if (!galleryView) {
-//          content.append("top.flaturl='';\n");
-//      }
 
         // the help_url
         content.append("top.head.helpUrl='explorer/index.html';\n");
@@ -318,7 +301,6 @@ public class CmsExplorer extends CmsWorkplace {
         if (writeAccess && (! showVfsLinks)) {        
             try {
                 CmsFolder test = getCms().readFolder(currentFolder);
-                //writeAccess = test.getProjectId() == getSettings().getProject();
                 writeAccess = getCms().isInsideCurrentProject(test);
             } catch (CmsException e) {
                 writeAccess = false;
@@ -341,7 +323,7 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("top.rD();\n\n");
 
         // now check which filelist colums we want to show
-        int preferences = getDefaultPreferences();
+        int preferences = getUserPreferences();
         
         boolean showTitle = (preferences & I_CmsWpConstants.C_FILELIST_TITLE) > 0;
         boolean showPermissions = (preferences & I_CmsWpConstants.C_FILELIST_PERMISSIONS) > 0;
@@ -392,13 +374,13 @@ public class CmsExplorer extends CmsWorkplace {
                 }             
             }      
             
-            isInsideCurrentProject = getCms().isInsideCurrentProject(res);      
-            
             content.append("top.aF(");
+            
             // position 1: name
             content.append("\"");
             content.append(res.getResourceName());
             content.append("\",");
+            
             // position 2: path
             if (projectView || showVfsLinks) {
                 content.append("\"");
@@ -409,6 +391,7 @@ public class CmsExplorer extends CmsWorkplace {
                 //is taken from top.setDirectory
                 content.append("\"\",");
             }
+            
             // position 3: title
             if (showTitle) {
                 String title = "";
@@ -425,12 +408,15 @@ public class CmsExplorer extends CmsWorkplace {
             } else {
                 content.append("\"\",");
             }
+            
             // position 4: type
             content.append(res.getType());
             content.append(",");
+            
             // position 5: link count
             content.append(res.getLinkCount() > 1 ? 1 : 0);
-            content.append(",");            
+            content.append(",");    
+                    
             // position 6: size
             if (res.isFolder() || (!showSize)) {
                 content.append("\"\",");
@@ -438,14 +424,16 @@ public class CmsExplorer extends CmsWorkplace {
                 content.append(res.getLength());
                 content.append(",");                
             }
+            
             // position 7: state
             content.append(res.getState());
-            content.append(",");            
+            content.append(",");     
+                   
             // position 8: project
             int projectId = lock.isNullLock() ? res.getProjectId() : lock.getProjectId();
-            //int projectId = lock.isNullLock() ? getCms().getRequestContext().currentProject().getId() : lock.getProjectId();
             content.append(projectId);
-            content.append(",");                             
+            content.append(",");      
+                                   
             // position 9: date of last modification
             if (showDateLastModified) {
                 content.append("\"");
@@ -455,6 +443,7 @@ public class CmsExplorer extends CmsWorkplace {
             } else {
                 content.append("\"\",");
             }
+            
             // position 10: user who last modified the resource
             if (showUserWhoLastModified) {
                 content.append("\"");  
@@ -467,6 +456,7 @@ public class CmsExplorer extends CmsWorkplace {
             } else {
                 content.append("\"\",");
             }
+            
             // position 11: date of creation
             if (showDateCreated) {
                 content.append("\"");
@@ -475,7 +465,8 @@ public class CmsExplorer extends CmsWorkplace {
                 
             } else {
                 content.append("\"\",");
-            }         
+            }     
+                
             // position 12 : user who created the resource 
             if (showUserWhoCreated) {
                 content.append("\"");
@@ -488,6 +479,7 @@ public class CmsExplorer extends CmsWorkplace {
             } else {
                 content.append("\"\",");
             }
+            
             // position 13: permissions
             if (showPermissions) {
                 content.append("\"");  
@@ -500,35 +492,25 @@ public class CmsExplorer extends CmsWorkplace {
             } else {
                 content.append("\"\",");
             }     
+            
             // position 14: locked by
             if (lock.isNullLock()) {
                 content.append("\"\",");
             } else {
                 content.append("\"");                
                 try {
-                    //content.append(getCms().lockedBy(res).getName());
                     content.append(getCms().readUser(lock.getUserId()).getName());
                 } catch (CmsException e) {
                     content.append(e.getMessage());
                 }
                 content.append("\",");                
             }
+            
             // position 15: type of lock
             content.append(lock.getType());
-            content.append(",");                
+            content.append(",");     
+                       
             // position 16: name of project where the resource is locked in
-            /*         
-            int lockedInProject = lock.isNullLock() ? getCms().getRequestContext().currentProject().getId() : lock.getProjectId();
-            String lockedInProjectName = "";
-            if (res.getProjectId()>0) {
-                try {
-                    lockedInProjectName = getCms().readProject(res.getProjectId()).getName();
-                } catch (CmsException exc) {
-                    // ignore the exception - this is an old project so ignore it
-                }
-            }
-            */
-            
             int lockedInProject = I_CmsConstants.C_UNKNOWN_ID;
             if (lock.isNullLock() && res.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
                 // resource is unlocked and modified
@@ -536,15 +518,13 @@ public class CmsExplorer extends CmsWorkplace {
             } else {                
                 if (res.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
                     // resource is locked and modified
-                    //lockedInProject = res.getProjectId();
                     lockedInProject = lock.getProjectId();
                 } else {
                     // resource is locked and unchanged
                     lockedInProject = lock.getProjectId();
                 }
             }
-
-            String lockedInProjectName = null;
+            String lockedInProjectName;
             try {
                 if (lockedInProject == I_CmsConstants.C_UNKNOWN_ID) {
                     // the resource is unlocked and unchanged
@@ -555,16 +535,17 @@ public class CmsExplorer extends CmsWorkplace {
             } catch (CmsException exc) {
                 // where did my project go?
                 lockedInProjectName = "";
-            }            
-            
+            }                        
             content.append("\"");
             content.append(lockedInProjectName);
             content.append("\",");
+            
             // position 17: id of project where resource belongs to
             content.append(lockedInProject);
             content.append(",\"");
-            // position 18: project state, I=resource is inside current project, O=resource is outside current project
-            if (isInsideCurrentProject) {
+            
+            // position 18: project state, I=resource is inside current project, O=resource is outside current project        
+            if (getCms().isInsideCurrentProject(res)) {
                 content.append("I");
             } else {
                 content.append("O");
@@ -728,7 +709,7 @@ public class CmsExplorer extends CmsWorkplace {
                 return getCms().getResourcesInFolder(resource);
             } catch (CmsException e) {
                 return new Vector();
-            }                
+            }
         }
                 
         /*
