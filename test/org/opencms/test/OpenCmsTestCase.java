@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/08/03 16:15:23 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/08/05 11:23:20 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 5.3.5
  */
@@ -509,7 +509,7 @@ public class OpenCmsTestCase extends TestCase {
     private static void copyConfiguration(String newConfig) {
         
         File configDir = new File(getTestDataPath() + "WEB-INF/config/");
-        File configOriDir = new File(getTestDataPath() + "WEB-INF/config-ori/");
+        File configOriDir = new File(newConfig);
         
         if (configOriDir.exists()) {
             File[] oriFiles = configOriDir.listFiles();
@@ -1828,6 +1828,22 @@ public class OpenCmsTestCase extends TestCase {
         
         // return the initialized cms context Object
         return cms;        
+    }
+    
+    /**
+     * Restarts the cms.<p>
+     */
+    protected void restart() {
+
+        // output a message 
+        System.out.println("\n\n\n----- Restarting shell -----");
+        
+        m_shell.exit();
+        
+        m_shell = new CmsShell(
+            getTestDataPath() + "WEB-INF" + File.separator,
+            "${user}@${project}>", 
+            null);
     }
     
     /**
