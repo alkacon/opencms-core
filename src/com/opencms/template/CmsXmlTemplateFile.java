@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2003/02/11 18:48:05 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2003/02/25 13:10:06 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.65 $ $Date: 2003/02/11 18:48:05 $
+ * @version $Revision: 1.66 $ $Date: 2003/02/25 13:10:06 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConstants {
 
@@ -142,6 +142,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConsta
                 for(int j=0; j<subList.getLength(); j++){
                     Node subNode = (Node)subList.item(j);
                     if(subNode.getNodeType()==Node.ELEMENT_NODE && subNode.getNodeName().equalsIgnoreCase("link")){
+                        // TODO: check firstChild null?
                         String value = subNode.getFirstChild().getNodeValue();
                         if(!retValue.contains(value)){
                             retValue.add(value);
