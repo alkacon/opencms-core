@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetup.java,v $
- * Date   : $Date: 2004/02/19 08:28:22 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/19 10:22:28 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,11 +35,15 @@ import org.opencms.main.OpenCmsCore;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -47,12 +51,17 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.apache.commons.collections.ExtendedProperties;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 
 /**
  * A java bean as a controller for the OpenCms setup wizard.<p>
- *
+ * 
  * It is not allowed to customize this bean with methods for a specific database server setup!<p>
  * 
  * Database server specific settings should be set/read using get/setDbProperty, as for example like:
@@ -63,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  */
 public class CmsSetup extends Object implements Serializable, Cloneable {
 
@@ -106,6 +115,12 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
     
     /** A map with tokens ${...} to be replaced in SQL scripts.<p> */
     private Map m_replacer;    
+    
+    /** A map with all available modules.<p> */
+    private Map m_availableModules;
+    
+    /** A map with lists of dependent module package names keyed by module package names.<p> */
+    private Map m_moduleDependencies;
     
     /** 
      * Default constructor.<p>
@@ -157,7 +172,6 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
      * @return boolean true if all properties are set correctly
      */
     public boolean checkProperties() {
-
         // check if properties available
         if (getProperties() == null) {
             return false;
@@ -315,7 +329,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
     /** 
      * Returns a list with they keys (e.g. "mysql", "generic" or "oracle") of all available
      * database server setups found in "/setup/database/".<p>
-     *
+     * 
      * @return a list with they keys (e.g. "mysql", "generic" or "oracle") of all available database server setups
      */
     public List getDatabases() {
@@ -332,26 +346,29 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
         try {
             m_databaseKeys = (List) new ArrayList();
             databaseSetupFolder = new File(m_basePath + File.separator + "setup" + File.separator + "database");
-            childResources = databaseSetupFolder.listFiles();
 
-            if (childResources != null) {
-                for (int i = 0; i < childResources.length; i++) {
-                    childResource = childResources[i];
-                    hasMissingSetupFiles = false;
+            if (databaseSetupFolder.exists()) {
+                childResources = databaseSetupFolder.listFiles();
 
-                    if (childResource.exists() && childResource.isDirectory() && childResource.canRead()) {
-                        for (int j = 0; j < requiredDbSetupFiles.length; j++) {
-                            setupFile = new File(childResource.getPath() + File.separator + requiredDbSetupFiles[j]);
+                if (childResources != null) {
+                    for (int i = 0; i < childResources.length; i++) {
+                        childResource = childResources[i];
+                        hasMissingSetupFiles = false;
 
-                            if (!setupFile.exists() || !setupFile.isFile() || !setupFile.canRead()) {
-                                hasMissingSetupFiles = true;
-                                System.err.println("[" + getClass().getName() + "] missing or unreadable database setup file: " + setupFile.getPath());
-                                break;
-    }
-                        }
+                        if (childResource.exists() && childResource.isDirectory() && childResource.canRead()) {
+                            for (int j = 0; j < requiredDbSetupFiles.length; j++) {
+                                setupFile = new File(childResource.getPath() + File.separator + requiredDbSetupFiles[j]);
 
-                        if (!hasMissingSetupFiles) {
-                            m_databaseKeys.add(childResource.getName().trim());
+                                if (!setupFile.exists() || !setupFile.isFile() || !setupFile.canRead()) {
+                                    hasMissingSetupFiles = true;
+                                    System.err.println("[" + getClass().getName() + "] missing or unreadable database setup file: " + setupFile.getPath());
+                                    break;
+                                }
+                            }
+
+                            if (!hasMissingSetupFiles) {
+                                m_databaseKeys.add(childResource.getName().trim());
+                            }
                         }
                     }
                 }
@@ -359,7 +376,6 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
         } catch (Exception e) {
             System.err.println(e.toString());
             e.printStackTrace(System.err);
-            m_databaseKeys = Collections.EMPTY_LIST;
         }
 
         return m_databaseKeys;
@@ -386,11 +402,11 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
         if (m_databaseNames != null) {
             return m_databaseNames;
         }
-        
+
         m_databaseNames = (List) new ArrayList();
         m_databaseProperties = (Map) new HashMap();
         databaseKeys = getDatabases();
-        
+
         for (int i = 0; i < databaseKeys.size(); i++) {
             databaseKey = (String) databaseKeys.get(i);
             configPath = m_basePath + "setup" + File.separator + "database" + File.separator + databaseKey + File.separator + "database.properties";
@@ -399,8 +415,8 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
                 input = new FileInputStream(new File(configPath));
                 databaseProperties = new Properties();
                 databaseProperties.load(input);
-                
-                databaseName = databaseProperties.getProperty(databaseKey + ".name");                
+
+                databaseName = databaseProperties.getProperty(databaseKey + ".name");
                 m_databaseNames.add(databaseName);
                 m_databaseProperties.put(databaseKey, databaseProperties);
             } catch (Exception e) {
@@ -411,12 +427,12 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
                 try {
                     if (input != null) {
                         input.close();
-    }
+                    }
                 } catch (Exception e) {
                     // noop
                 }
             }
-        }                      
+        }
 
         return m_databaseNames;
     }
@@ -479,7 +495,6 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
      * @param dbWorkUser the database user used by the opencms core 
      */
     public void setDbWorkUser(String dbWorkUser) {
-
         setExtProperty("db.pool." + getPool() + ".user", dbWorkUser);
     }
 
@@ -498,7 +513,6 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
      * @param dbWorkPwd the password for the OpenCms database user  
      */
     public void setDbWorkPwd(String dbWorkPwd) {
-
         setExtProperty("db.pool." + getPool() + ".password", dbWorkPwd);
     }
 
@@ -779,7 +793,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
         m_dbCreatePwd = dbCreatePwd;
     }
 
-    /** 
+    /**
      * Checks if the setup wizard is enabled.<p>
      * 
      * @return true if the setup wizard is enables, false otherwise
@@ -955,7 +969,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
     public String getAppName() {
         return getExtProperty("app.name");
     }
-
+    
     /**
      * Returns the replacer.<p>
      * 
@@ -982,5 +996,169 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
      */
     public String getDatabaseName(String databaseKey) {
         return (String) ((Map) getDatabaseProperties().get(getDatabase())).get(databaseKey + ".name");
-}    
+    }
+    
+    /**
+     * Returns a map with lists of dependent module package names keyed by module package names.<p>
+     * 
+     * @return a map with lists of dependent module package names keyed by module package names
+     */
+    public Map getModuleDependencies() {
+        getAvailableModules();
+        return m_moduleDependencies;
+    }
+
+    /**
+     * Returns a map with all available modules.<p>
+     * 
+     * The map conatains maps keyed by module package names. Each of these maps contains various
+     * information about the module such as the module name, version, description, and a list of 
+     * it's dependencies. You should refer to the source code of this method to understand the data 
+     * structure of the map returned by this method!<p>
+     * 
+     * @return a map with all available modules
+     */
+    public Map getAvailableModules() {
+        File packagesFolder = null;
+        File[] childResources = null;
+        File childResource = null;
+        Document manifest = null;
+        String moduleName = null;
+        String moduleNiceName = null;
+        String moduleVersion = null;
+        String moduleDescription = null;
+        List dependencyNodes = null;
+        List moduleDependencies = null;
+        Element rootElement = null;
+        Element moduleDependency = null;
+        String moduleDependencyName = null;
+        Map module = null;
+
+        if (m_availableModules != null) {
+            return m_availableModules;
+        }
+
+        try {
+            m_availableModules = (Map) new HashMap();
+            m_moduleDependencies = (Map) new HashMap();
+            
+            // open the folder "/WEB-INF/packages/modules/"
+            packagesFolder = new File(m_basePath + "WEB-INF" + File.separator + "packages" + File.separator + "modules");
+
+            if (packagesFolder.exists()) {
+                // list all child resources in the packages folder
+                childResources = packagesFolder.listFiles();
+
+                if (childResources != null) {
+                    for (int i = 0; i < childResources.length; i++) {
+                        childResource = childResources[i];
+
+                        // try to get manifest.xml either from a ZIP file or a subfolder
+                        if (childResource.exists() && childResource.canRead() && (manifest = getManifest(childResource)) != null) {                           
+                            // get the "export" node
+                            rootElement = manifest.getRootElement();                            
+                            // module package name
+                            moduleName = ((Element) rootElement.selectNodes("//export/module/name").get(0)).getTextTrim();
+                            // module nice name
+                            moduleNiceName = ((Element) rootElement.selectNodes("//export/module/nicename").get(0)).getTextTrim();
+                            // module version
+                            moduleVersion = ((Element) rootElement.selectNodes("//export/module/version").get(0)).getTextTrim();
+                            // module description
+                            moduleDescription = ((Element) rootElement.selectNodes("//export/module/description").get(0)).getTextTrim();
+                            // all module "dependency" sub nodes
+                            dependencyNodes = rootElement.selectNodes("//export/module/dependencies/dependency");
+                            
+                             // if module a depends on module b, and module c depends also on module b:
+                             // build a map with a list containing "a" and "c" keyed by "b" to get a 
+                             // list of modules depending on module "b"...
+                            for (int j = 0; j < dependencyNodes.size(); j++) {
+                                moduleDependency = (Element) dependencyNodes.get(j);
+                                
+                                // module dependency package name
+                                moduleDependencyName = ((Element) moduleDependency.selectNodes("./name").get(0)).getTextTrim();
+                                // get the list of dependend modules ("b" in the example)
+                                moduleDependencies = (List) m_moduleDependencies.get(moduleDependencyName);
+                                
+                                if (moduleDependencies == null) {
+                                    // build a new list if "b" has no dependend modules yet
+                                    moduleDependencies = (List) new ArrayList();
+                                    m_moduleDependencies.put(moduleDependencyName, moduleDependencies);
+                                }
+                                
+                                // add "a" as a module depending on "b"
+                                moduleDependencies.add(moduleName);
+                            }
+                            
+                            // create a map holding the collected module information
+                            module = (Map) new HashMap();
+                            module.put("name", moduleName);
+                            module.put("niceName", moduleNiceName);
+                            module.put("version", moduleVersion);
+                            module.put("description", moduleDescription);
+                            
+                            // put the module information into a map keyed by the module packages names
+                            m_availableModules.put(moduleName, module);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println(e.toString());
+            e.printStackTrace(System.err);
+        }
+
+        return m_availableModules;
+    }
+    
+    /**
+     * Returns the "manifest.xml" of an available module as a dom4j document.<p>
+     * 
+     * The manifest is either read as a ZIP entry, or from a subfolder of the specified
+     * file resource.<p>
+     * 
+     * @param resource a File resource
+     * @return the "manifest.xml" as a dom4j document
+     */
+    protected Document getManifest(File resource) {
+        Document manifest = null;
+        ZipFile zipFile = null;
+        ZipEntry zipFileEntry = null;
+        InputStream input = null;
+        Reader reader = null;
+        SAXReader saxReader = null;
+        File manifestFile = null;
+
+        try {
+            if (resource.isFile()) {
+                // create a Reader either from a ZIP file's manifest.xml entry...
+                zipFile = new ZipFile(resource);
+                zipFileEntry = zipFile.getEntry("manifest.xml");
+                input = zipFile.getInputStream(zipFileEntry);
+                reader = new BufferedReader(new InputStreamReader(input));
+            } else if (resource.isDirectory()) {
+                // ...or from subresource inside a folder
+                manifestFile = new File(resource, "manifest.xml");
+                reader = new BufferedReader(new FileReader(manifestFile));                
+            }
+            
+            // transform the manifest.xml file into a dom4j Document
+            saxReader = new SAXReader();
+            manifest = saxReader.read(reader);            
+        } catch (Exception e) {
+            System.err.println(e.toString());
+            e.printStackTrace(System.err);
+            manifest = null;
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (Exception e) {
+                // noop
+            }
+        }
+
+        return manifest;
+    }
+    
 }

@@ -9,7 +9,7 @@
 
 <%
 	/* next page to be accessed */
-	String nextPage = "step_6_save_properties.jsp";
+	String nextPage = "step_6_module_selection.jsp";
 
 	/* true if properties are initialized */
 	boolean setupOk = (Bean.getProperties()!=null);

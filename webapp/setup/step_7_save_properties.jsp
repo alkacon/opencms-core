@@ -10,7 +10,7 @@
 <%
 
 	/* next page to be accessed */
-	String nextPage = "step_7_import_workplace.jsp";
+	String nextPage = "step_8_import_workplace.jsp";
 
 	/* true if properties are initialized */
 	boolean setupOk = Bean.checkProperties();
@@ -86,7 +86,7 @@ OpenCms Setup Wizard - Properties
 		</td>
 	</tr>
 	<tr>
-		<td>Enter your servers ethernet address<sup>1</sup></td>
+		<td>Enter your server's ethernet address<sup>1</sup></td>
 		<td>
 			<input type="text" name="ethernetAddress" value="<%= Bean.getEthernetAddress() %>" style="width: 150px;">
 			

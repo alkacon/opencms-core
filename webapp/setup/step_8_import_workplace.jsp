@@ -27,7 +27,7 @@
 	Utils.backupRegistry("registry.xml", "registry.ori");
 
 	/* next page */
-	String nextPage = "step_8_browser_configuration_notes.jsp";
+	String nextPage = "step_9_browser_configuration_notes.jsp";
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
 OpenCms Setup Wizard
@@ -36,7 +36,7 @@ OpenCms Setup Wizard
 <% if (importWp) { %>
 </head>
 <frameset rows="100%,*">
-	<frame src="step_7a_display_import.jsp" name="display">
+	<frame src="step_8a_display_import.jsp" name="display">
 	<frame src="about:blank" name="data">
 </frameset>
 </html>

@@ -7,7 +7,7 @@
 	boolean setupOk = (Bean.getProperties()!=null);
 	
 	/* next page to be accessed */
-	String nextPage = "step_9_finished.jsp";
+	String nextPage = "step_10_finished.jsp";
 	
 	/* stop possible running threads */
 	Thread.stopLoggingThread();		

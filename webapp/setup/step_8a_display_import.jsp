@@ -7,7 +7,7 @@
     boolean setupOk = (Bean.getProperties() != null);
 
     /* next page to be accessed */
-    String nextPage = "step_8_browser_configuration_notes.jsp";
+    String nextPage = "step_9_browser_configuration_notes.jsp";
 
 
 %>
@@ -26,7 +26,7 @@ OpenCms Setup Wizard
 		/* indicates if the document has been loaded */
 		function enable() {
 			enabled = true;
-			parent.data.location.href="step_7b_data_import.jsp";
+			parent.data.location.href="step_8b_data_import.jsp";
 			replaceInfo(message, "wait");
 		}
 
