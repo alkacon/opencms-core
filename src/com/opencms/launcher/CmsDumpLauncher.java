@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
-* Date   : $Date: 2003/01/20 23:59:23 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/02/02 11:02:03 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.37 $ $Date: 2003/01/20 23:59:23 $
+ * @version $Revision: 1.38 $ $Date: 2003/02/02 11:02:03 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
 
@@ -146,14 +146,15 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
             }
         }
 
-        // Important because PDFs will not be displayed if caching is disabled
-        // Setting this header here will cause root template and element cache 
-        // not to set caching header again
-        String mimetype = cms.getRequestContext().getResponse().getContentType();   
-        if ((null != mimetype) && (mimetype.endsWith("pdf"))) {
-            cms.getRequestContext().getResponse().setHeader("Cache-Control","max-age=300");
-        }         
-
+        // Make sure binary documents (*.pdf, *.doc etc.) are displayed in offline project
+        String mimetype = cms.getRequestContext().getResponse().getContentType();
+        // Text based non-binary mime types need no special treatment
+        if ((null == mimetype) || (! mimetype.startsWith("text"))) {
+            // Setting this header here will cause root template and element cache 
+            // not to set caching header, othwerwise a "no-cache" header will be set
+            cms.getRequestContext().getResponse().setHeader("Cache-Control", "max-age=60");
+            cms.getRequestContext().getResponse().setHeader("Pragma", "no-pragma");
+        } 
         if(elementCacheEnabled) {
             // lets check if ssl is active
             if(cms.getMode() == C_MODUS_ONLINE){
