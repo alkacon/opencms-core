@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2005/03/02 13:20:13 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/04 15:11:32 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,36 +32,62 @@
 package org.opencms.main;
 
 import org.opencms.file.CmsRequestContext;
-import org.opencms.util.CmsUUID;
+import org.opencms.file.CmsUser;
 
 import javax.servlet.http.HttpSession;
 
 /**
- * Stores needed information about a logged in user.<p>
+ * Stores information about a user that has authenticated himself the OpenCms security system.<p>
  * 
- * This information is needed for the list of logged in users in the OpenCms backoffice and to
- * broadcast messages to the users.
+ * This object is used to provide information about all authenticated users in the system 
+ * with the {@link org.opencms.main.CmsSessionInfoManager}.<p> 
  * 
+ * This object is available for all authenticated users after login.
+ * If a user has not logged in, he may have a session on the servlet engine,
+ * but he will have no session info object attached. For example the "Guest" user
+ * may have multiple sessions, but no session info is created for him.<p> 
+ * 
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.0
  */
 public class CmsSessionInfo {
 
+    /** The current site of the user. */
     private String m_currentSite;
-    private boolean m_messagePending;
+
+    /** The broadcast message queue for the user of this session info. */
+    private CmsBroadcastMessageQueue m_messageQueue;
+
+    /** The current project id of the user. */
     private Integer m_project;
+
+    /** The session of the user. */
     private HttpSession m_session;
-    private CmsUUID m_userId;
-    private String m_userName;
+
+    /** The time this session info was created. */
+    private long m_timeCreated;
+
+    /** The time this session info was last updated. */
+    private long m_timeUpdated;
+
+    /** The user to which this session info belongs. */
+    private CmsUser m_user;
 
     /**
-     * Constructor, creates a new CmsSessionInfo object.<p>
+     * Creates a new CmsSessionInfo object.<p>
+     * 
+     * @param context the user context to create this session info for
+     * @param session the http session used by the user
      */
-    public CmsSessionInfo() {
+    public CmsSessionInfo(CmsRequestContext context, HttpSession session) {
 
-        // empty constructor
+        m_timeCreated = System.currentTimeMillis();
+        update(context);
+        m_session = session;
+        m_messageQueue = new CmsBroadcastMessageQueue(context.currentUser());
     }
 
     /**
@@ -75,13 +101,13 @@ public class CmsSessionInfo {
     }
 
     /**
-     * Returns if a message for the user is pending.<p>
+     * Returns the message queue of the user to which this session info belongs.<p>
      * 
-     * @return true if a message is pending, otherwise false
+     * @return the message queue of the user to which this session info belongs
      */
-    public boolean getMessagePending() {
+    public CmsBroadcastMessageQueue getBroadcastMessageQueue() {
 
-        return m_messagePending;
+        return m_messageQueue;
     }
 
     /**
@@ -105,23 +131,44 @@ public class CmsSessionInfo {
     }
 
     /**
-     * Returns the user id.<p>
+     * Returns the time this session has been active,
+     * that is the time of the last update minus the creation time.<p> 
      * 
-     * @return the user id
+     * @return the time this session has been active
      */
-    public CmsUUID getUserId() {
+    public long getTimeActive() {
 
-        return m_userId;
+        return m_timeUpdated - m_timeCreated;
     }
 
     /**
-     * Returns the user name.<p>
-     * 
-     * @return the user name
+     * Returns the time this session info was created.<p>
+     *
+     * @return the time this session info was created
      */
-    public String getUserName() {
+    public long getTimeCreated() {
 
-        return m_userName;
+        return m_timeCreated;
+    }
+
+    /**
+     * Returns the time this session info was last updated.<p>
+     *
+     * @return the time this session info was last updated
+     */
+    public long getTimeUpdated() {
+
+        return m_timeUpdated;
+    }
+
+    /**
+     * Returns the user to which this session info belongs.<p>
+     * 
+     * @return the user to which this session info belongs
+     */
+    public CmsUser getUser() {
+
+        return m_user;
     }
 
     /**
@@ -132,16 +179,6 @@ public class CmsSessionInfo {
     public void setCurrentSite(String site) {
 
         m_currentSite = site;
-    }
-
-    /**
-     * Sets if a message for the user is pending.<p>
-     * 
-     * @param pending true if a message is pending, otherwise false
-     */
-    public void setMessagePending(boolean pending) {
-
-        m_messagePending = pending;
     }
 
     /**
@@ -165,23 +202,13 @@ public class CmsSessionInfo {
     }
 
     /**
-     * Sets the user id.<p>
+     * Sets the user.<p>
      * 
-     * @param id the user id to set
+     * @param user the user to set
      */
-    public void setUserId(CmsUUID id) {
+    public void setUser(CmsUser user) {
 
-        m_userId = id;
-    }
-
-    /**
-     * Sets the user name.<p>
-     * 
-     * @param name the user name to set
-     */
-    public void setUserName(String name) {
-
-        m_userName = name;
+        m_user = user;
     }
 
     /**
@@ -192,9 +219,9 @@ public class CmsSessionInfo {
      */
     public void update(CmsRequestContext context) {
 
-        setUserName(context.currentUser().getName());
-        setUserId(context.currentUser().getId());
+        setUser(context.currentUser());
         setProject(new Integer(context.currentProject().getId()));
         setCurrentSite(context.getSiteRoot());
+        m_timeUpdated = System.currentTimeMillis();
     }
 }

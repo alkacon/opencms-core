@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/02/26 13:53:32 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2005/03/04 15:11:32 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,15 @@ package org.opencms.workplace;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsBroadcastMessage;
+import org.opencms.main.CmsBroadcastMessageQueue;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
@@ -63,7 +65,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.60 $
+ * @version $Revision: 1.61 $
  * 
  * @since 5.1
  */
@@ -134,19 +136,30 @@ public class CmsFrameset extends CmsWorkplace {
      */
     public String getBroadcastMessage() {
         StringBuffer result = new StringBuffer(512);
-        // get the broadcast message from the session
-        String message = (String)getJsp().getRequest().getSession().getAttribute(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
-        if (message != null) {
-            // remove the message from session
-            getJsp().getRequest().getSession().removeAttribute(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
-            if (!"".equals(message.trim())) {
-                // create a javascript alert for the message if message is not empty
-                result.append("\n<script type=\"text/javascript\">\n<!--\n");
-                // the timeout gives the frameset enough time to load before the alert is shown
-                result.append("setTimeout(\"alert(unescape('" + key("label.messagetoall") + ": ");
-                result.append(CmsEncoder.escape(message, getCms().getRequestContext().getEncoding()) + "'));\", 2000);");
-                result.append("\n//-->\n</script>");
+        String sessionId = getSession().getId();
+        CmsObject cms = getCms();
+
+        CmsBroadcastMessageQueue messageQueue = OpenCms.getSessionInfoManager().getBroadcastMessageQueue(sessionId);
+        if (messageQueue.hasBroadcastMessagesPending()) {
+            // create a javascript alert for the message 
+            result.append("\n<script type=\"text/javascript\">\n<!--\n");
+            // the timeout gives the frameset enough time to load before the alert is shown
+            result.append("setTimeout(\"alert(unescape('");            
+            // the user has pending messages, display them all
+            while (messageQueue.hasBroadcastMessagesPending()) {
+                CmsBroadcastMessage message = messageQueue.getNextBroadcastMessage();
+                StringBuffer msg = new StringBuffer(256);
+                msg.append('[');
+                msg.append(getSettings().getMessages().getDateTime(message.getSendTime()));
+                msg.append("] Message from ");
+                msg.append(message.getUser().getName());
+                msg.append(":\n");
+                msg.append(message.getMessage());
+                msg.append("\n\n");
+                result.append(CmsEncoder.escape(msg.toString(), cms.getRequestContext().getEncoding()));
             }
+            result.append("'));\", 2000);");   
+            result.append("\n//-->\n</script>");            
         }
         return result.toString();
     }

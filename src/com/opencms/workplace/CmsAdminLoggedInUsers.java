@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLoggedInUsers.java,v $
-* Date   : $Date: 2005/03/02 13:20:21 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2005/03/04 15:11:32 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,10 +33,13 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsDateUtil;
 
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +48,7 @@ import java.util.Map;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.10 $ $Date: 2005/03/02 13:20:21 $
+ * @version $Revision: 1.11 $ $Date: 2005/03/04 15:11:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -70,28 +73,30 @@ public class CmsAdminLoggedInUsers extends CmsWorkplaceDefault  {
 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 
-        if(parameters.get("message") != null) {
+        if (parameters.get("message") != null) {
             // there is a message to all - send it
-            OpenCms.getSessionInfoManager().sendBroadcastMessage(cms,(String)parameters.get("message"));
+            OpenCms.getSessionInfoManager().sendBroadcastMessage(cms, (String)parameters.get("message"));
         }
 
-        List users = OpenCms.getSessionInfoManager().getLoggedInUsers(cms);
-        Map userData;
+        List sessionInfos = OpenCms.getSessionInfoManager().getSessionInfos();
         StringBuffer ret = new StringBuffer();
-        for(int i = 0; i < users.size(); i++) {
+        Iterator i = sessionInfos.iterator();
+        while (i.hasNext()) {
             try {
-                userData = (Map)users.get(i);
-                CmsUser cmsUser = cms.readUser((String)userData.get(I_CmsConstants.C_SESSION_USERNAME));
-                CmsProject cmsProject = cms.readProject(((Integer)userData.get(I_CmsConstants.C_SESSION_PROJECT)).intValue());
+                CmsSessionInfo info = (CmsSessionInfo)i.next();
+                CmsUser cmsUser = info.getUser();
+                CmsProject cmsProject = cms.readProject(info.getProject().intValue());
                 xmlTemplateDocument.setData("username", cmsUser.getName());
-                xmlTemplateDocument.setData("firstname", cmsUser.getFirstname()+"");
-                xmlTemplateDocument.setData("lastname", cmsUser.getLastname()+"");
-                xmlTemplateDocument.setData("email", cmsUser.getEmail()+"");
-                xmlTemplateDocument.setData("currentgroup", (String)userData.get(I_CmsConstants.C_SESSION_CURRENTGROUP));
-                xmlTemplateDocument.setData("messagepending", ((Boolean)userData.get(I_CmsConstants.C_SESSION_MESSAGEPENDING)).toString());
+                xmlTemplateDocument.setData("firstname", cmsUser.getFirstname());
+                xmlTemplateDocument.setData("lastname", cmsUser.getLastname());
+                xmlTemplateDocument.setData("email", cmsUser.getEmail());
+                // misuse of deprecated current group for session time, until we get a new interface
+                xmlTemplateDocument.setData("currentgroup", CmsDateUtil.getDateTimeShort(info.getTimeCreated()));
+                xmlTemplateDocument.setData("messagepending", String.valueOf(info.getBroadcastMessageQueue()
+                    .hasBroadcastMessagesPending()));
                 xmlTemplateDocument.setData("currentproject", cmsProject.getName());
-                ret.append( xmlTemplateDocument.getProcessedDataValue("line") );
-            } catch(Exception exc) {
+                ret.append(xmlTemplateDocument.getProcessedDataValue("line"));
+            } catch (Exception exc) {
                 // ignore all exceptions - don't show this user
             }
         }

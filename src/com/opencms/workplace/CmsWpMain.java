@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.72 $
+* Date   : $Date: 2005/03/04 15:11:32 $
+* Version: $Revision: 1.73 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.72 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Revision: 1.73 $ $Date: 2005/03/04 15:11:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -149,14 +149,14 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 //			}
 //		}
 
-		// send message, if this is the foot
-		if (templateFile.equalsIgnoreCase(C_VFS_PATH_DEFAULT_INTERNAL + "foot")) {
-			String message = (String) CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true).getValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
-			if (message != null) {
-				CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true).removeValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
-				xmlTemplateDocument.setData("message", "alert(unescape('BROADCASTMESSAGE: " + CmsEncoder.escape(message, cms.getRequestContext().getEncoding()) + "'));");
-			}
-		}
+//		// send message, if this is the foot
+//		if (templateFile.equalsIgnoreCase(C_VFS_PATH_DEFAULT_INTERNAL + "foot")) {
+//			String message = (String) CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true).getValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
+//			if (message != null) {
+//				CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true).removeValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
+//				xmlTemplateDocument.setData("message", "alert(unescape('BROADCASTMESSAGE: " + CmsEncoder.escape(message, cms.getRequestContext().getEncoding()) + "'));");
+//			}
+//		}
 
 		// test if the "help"- button has to be displayed for the user's 
 		// current language in case we process the head template

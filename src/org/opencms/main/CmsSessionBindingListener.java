@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/CmsSessionBindingListener.java,v $
- * Date   : $Date: 2005/03/02 13:20:13 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/03/04 15:11:32 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.HttpSessionBindingListener;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsSessionBindingListener implements HttpSessionBindingListener {
 
@@ -82,6 +82,6 @@ public class CmsSessionBindingListener implements HttpSessionBindingListener {
      */
     public void valueUnbound(HttpSessionBindingEvent event) {
 
-        OpenCms.getSessionInfoManager().removeUserSession(m_id);
+        OpenCms.getSessionInfoManager().removeSessionInfo(m_id);
     }
 }

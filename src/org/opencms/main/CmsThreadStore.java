@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsThreadStore.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/03/04 15:11:32 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * @since 5.1.10
  */
 public class CmsThreadStore extends Thread {
@@ -121,6 +121,7 @@ public class CmsThreadStore extends Thread {
      * @see java.lang.Runnable#run()
      */
     public void run() {
+        int m_minutesForSessionUpdate = 0;
         while (m_alive) {
             // the Grim Reaper is eternal, of course
             try {
@@ -158,6 +159,23 @@ public class CmsThreadStore extends Thread {
                     System.err.println("[CmsThreadStore] Grim Reaper exception " + t);
                 }
             }
+
+            // check the session manager for invalid sessions not removed for whatever reason
+            m_minutesForSessionUpdate++;
+            if (m_minutesForSessionUpdate >= 5) {
+                // do this every 5 minutes
+                try {
+                    CmsSessionInfoManager sessionInfoManager = OpenCms.getSessionInfoManager();
+                    if (sessionInfoManager != null) {
+                        // will be null if only the shell is running
+                        sessionInfoManager.validateSessionInfos();
+                    }
+                } catch (Throwable t) {
+                    System.err.println("[CmsThreadStore] Grim Reaper session update exception " + t);
+                }                
+                m_minutesForSessionUpdate = 0;
+            }
+
         }
     }
 }

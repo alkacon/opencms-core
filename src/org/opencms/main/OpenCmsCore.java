@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/03/02 13:20:13 $
- * Version: $Revision: 1.162 $
+ * Date   : $Date: 2005/03/04 15:11:32 $
+ * Version: $Revision: 1.163 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
-import org.opencms.db.CmsDbPool;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.db.CmsSqlManager;
@@ -112,7 +111,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.162 $
+ * @version $Revision: 1.163 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -520,26 +519,6 @@ public final class OpenCmsCore {
     protected void fireCmsEvent(int type, Map data) {
 
         fireCmsEvent(new CmsEvent(type, data));
-    }
-
-    /**
-     * Returns a list of available database pool names.<p>
-     * 
-     * @return a list of database pool names
-     */
-    protected List getDbPoolNames() {
-        
-        return CmsDbPool.getDbPoolNames(m_securityManager.getConfigurations());
-    }
-    
-    /**
-     * Returns the name of the default pool.<p>
-     * 
-     * @return the name of the default pool
-     */
-    protected String getDefaultDbPoolName() {
-
-        return CmsDbPool.getDefaultDbPoolName();
     }
     
     /**
@@ -1834,7 +1813,7 @@ public final class OpenCmsCore {
         String sessionId;
         
         // check if there is user data already stored in the session manager
-        String user = null;
+        String userName = null;
         if (session != null) {
             // session exists, try to reuse the user from the session
             sessionId = session.getId();
@@ -1843,13 +1822,13 @@ public final class OpenCmsCore {
             sessionId = req.getParameter("JSESSIONID");
         }
         if (sessionId != null) {
-            user = m_sessionInfoManager.getUserName(sessionId);
+            userName = m_sessionInfoManager.getUser(sessionId).getName();
         }        
 
         // initialize the requested site root
         CmsSite site = getSiteManager().matchRequest(req);
 
-        if (user != null) {
+        if (userName != null) {
             // a user name is found in the session manager, reuse this user information
             Integer project = m_sessionInfoManager.getCurrentProject(sessionId);
 
@@ -1864,7 +1843,7 @@ public final class OpenCmsCore {
             if (siteroot == null) {
                 siteroot = site.getSiteRoot();
             }
-            cms = initCmsObject(req, user, siteroot, project.intValue());
+            cms = initCmsObject(req, userName, siteroot, project.intValue());
         } else {
             // no user name found in session or no session, login the user as guest user
             cms = initCmsObject(req, OpenCms.getDefaultUsers().getUserGuest(), site.getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID);
@@ -2115,18 +2094,15 @@ public final class OpenCmsCore {
                 // get the session id
                 String sessionId = session.getId();
                 // get the session info object for the user
-                CmsSessionInfo sessionInfo= m_sessionInfoManager.getUserInfo(sessionId);                
+                CmsSessionInfo sessionInfo= m_sessionInfoManager.getSessionInfo(sessionId);                
                 if (sessionInfo != null) {
                     // update the users session information
                     sessionInfo.update(cms.getRequestContext());                    
                 } else {                
-                    sessionInfo = new CmsSessionInfo();
-                    // update the users session information                    
-                    sessionInfo.update(cms.getRequestContext());
-                    // store the session in the session info
-                    sessionInfo.setSession(session);
+                    // create a new session info for the user
+                    sessionInfo = new CmsSessionInfo(cms.getRequestContext(), session);
                     // update the session info user data
-                    m_sessionInfoManager.putUser(sessionId, sessionInfo);
+                    m_sessionInfoManager.addSessionInfo(sessionId, sessionInfo);
                     // set the session binding listener
                     // this is required to remove the session info from the session info manager on its destruction
                     CmsSessionBindingListener sessionInfoRemover = new CmsSessionBindingListener(sessionId);

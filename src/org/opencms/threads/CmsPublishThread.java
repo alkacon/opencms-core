@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsPublishThread.java,v $
- * Date   : $Date: 2005/03/03 13:33:12 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/03/04 15:11:32 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.1.10
  */
 public class CmsPublishThread extends A_CmsReportThread {
@@ -65,7 +65,7 @@ public class CmsPublishThread extends A_CmsReportThread {
     private CmsWorkplaceSettings m_settings;
 
     /** Flag for updating the user info. */
-    private boolean m_updateUserInfo;
+    private boolean m_updateSessionInfo;
     
     /**
      * Creates a Thread that publishes the Cms resources contained in the specified Cms publish 
@@ -86,9 +86,9 @@ public class CmsPublishThread extends A_CmsReportThread {
         // if the project to publish is a temporary project, we have to update the
         // user info after publishing
         if (m_cms.getRequestContext().currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY) {
-            m_updateUserInfo = true;
+            m_updateSessionInfo = true;
         } else {
-            m_updateUserInfo = false;
+            m_updateSessionInfo = false;
         }
         
         initHtmlReport(cms.getRequestContext().getLocale());
@@ -108,8 +108,8 @@ public class CmsPublishThread extends A_CmsReportThread {
         try {
             getReport().println(getReport().key("report.publish_resource_begin"), I_CmsReport.C_FORMAT_HEADLINE);
             getCms().publishProject(getReport(), m_publishList);
-            if (m_updateUserInfo) {
-                updateUserSession();
+            if (m_updateSessionInfo) {
+                updateSessionInfo();
             }
             getReport().println(getReport().key("report.publish_resource_end"), I_CmsReport.C_FORMAT_HEADLINE);
         } catch (Exception e) {
@@ -119,20 +119,19 @@ public class CmsPublishThread extends A_CmsReportThread {
             }
         }
     }
-    
-    
+        
     /**
      * Updates the project information in the user session and the workplace settings 
      * after a temporary project is published and deleted.<p>
      * 
-     * This is nescessary to prevent the access to a nonexisting project.
+     * This is nescessary to prevent the access to a nonexisting project.<p>
      */
-    private void updateUserSession() {
+    private void updateSessionInfo() {
         // get the session menager
         CmsSessionInfoManager manager = OpenCms.getSessionInfoManager();      
          
-        // get all user sessions for the current user
-        List userSessions = manager.getUserSessions(m_cms.getRequestContext().currentUser().getId());
+        // get all sessions
+        List userSessions = manager.getSessionInfos();
         Iterator i = userSessions.iterator();
         while (i.hasNext()) {
             CmsSessionInfo sessionInfo = (CmsSessionInfo)i.next();
@@ -142,11 +141,10 @@ public class CmsPublishThread extends A_CmsReportThread {
             try {
                 m_cms.readProject(projectId.intValue());
             } catch (CmsException e) {
-                // the project does not exist, update the project information
-                //sessionInfo.setProject(new Integer(m_cms.getRequestContext().currentProject().getId()));
-                sessionInfo.update(m_cms.getRequestContext());
+                // the project does not longer exist, update the project information with the online project
+                sessionInfo.setProject(new Integer(I_CmsConstants.C_PROJECT_ONLINE_ID));
                 // update the workplace settings as well
-                m_settings.setProject(m_cms.getRequestContext().currentProject().getId());
+                m_settings.setProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
                 getReport().println(getReport().key("report.publish_resource_switch_project")+  m_cms.getRequestContext().currentProject().getName(), I_CmsReport.C_FORMAT_DEFAULT);
             }
         }        

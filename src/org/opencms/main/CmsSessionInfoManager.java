@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/CmsSessionInfoManager.java,v $
- * Date   : $Date: 2005/03/02 13:20:13 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/03/04 15:11:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,36 +32,40 @@
 package org.opencms.main;
 
 import org.opencms.file.CmsObject;
-import org.opencms.security.CmsSecurityException;
+import org.opencms.file.CmsUser;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpSession;
+import java.util.Set;
 
 /**
- * This class implements a session info storage which is mainly used to get an overview
+ * This class implements a session info storage which is used to get an overview
  * about currently logged in OpenCms users.<p> 
- * 
+ *
+ * There can be multiple sessions available for a user, since a user can login more then once.<p>
+ *  
  * For each active user session, the current project of the user 
  * and other additional information are stored in a hashtable, using the session 
- * Id as key to them.<p>
+ * id as key to them.<p>
  *
- * When a user session is destroyed, the user will also be removed from the storage.<p>
+ * When a user session is invalidated, the user will also be removed from the storage.<p>
  *
- * One of the main purposes of this stored user session list is the 
- * <code>sendBroadcastMessage()</code> method.
- *
+ * <b>Please Note:</b> The current implementation does not provide any permission checking,
+ * so all users can all these methodss. Permission checking
+ * based on the current users OpenCms context may be added in a future OpenCms release.<p>
+ * 
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $ 
  * 
- * @see #sendBroadcastMessage(String message)
+ * @version $Revision: 1.9 $ 
  */
 public class CmsSessionInfoManager {
 
@@ -79,15 +83,39 @@ public class CmsSessionInfoManager {
     }
 
     /**
+     * Adds a new session info into the session storage.<p>
+     *
+     * @param sessionId the session id to store the session info for
+     * @param sessionInfo the session info to store for the id
+     */
+    public void addSessionInfo(String sessionId, CmsSessionInfo sessionInfo) {
+
+        m_sessions.put(sessionId, sessionInfo);
+    }
+
+    /**
+     * Returns the broadcast message queue for the given session id.<p>
+     * 
+     * @param sessionId the session id to store the session info for
+     * 
+     * @return the broadcast message queue for the given session id
+     */
+    public CmsBroadcastMessageQueue getBroadcastMessageQueue(String sessionId) {
+
+        return getSessionInfo(sessionId).getBroadcastMessageQueue();
+    }
+
+    /**
      * Returns the current project of a user from the session storage.<p>
      *
      * @param sessionId the users session id
+     * 
      * @return the current project of a user from the session storage
      */
     public Integer getCurrentProject(String sessionId) {
 
         Integer currentProject = null;
-        CmsSessionInfo userinfo = getUserInfo(sessionId);
+        CmsSessionInfo userinfo = getSessionInfo(sessionId);
         // this user does exist, so get his current project
         if (userinfo != null) {
             currentProject = userinfo.getProject();
@@ -103,12 +131,13 @@ public class CmsSessionInfoManager {
      * Returns the current site of a user from the session storage.<p>
      *
      * @param sessionId the users session id
+     * 
      * @return the current site of a user from the session storage
      */
     public String getCurrentSite(String sessionId) {
 
         String currentSite = null;
-        CmsSessionInfo userinfo = getUserInfo(sessionId);
+        CmsSessionInfo userinfo = getSessionInfo(sessionId);
         // this user does exist, so get his current site
         if (userinfo != null) {
             currentSite = userinfo.getCurrentSite();
@@ -121,111 +150,41 @@ public class CmsSessionInfoManager {
     }
 
     /**
-     * Returns a list with information about all currently logged in users.<p>
-     * 
-     * The List elements are <code>Maps</code> with the users name, 
-     * the current project, the current group a Boolean if current messages
-     * are pending.<p>
+     * Returns the complete user session info of a user from the session storage,
+     * or <code>null</code> if this session id has no session info attached.<p>
      *
-     * @return a list with information about all currently logged in users
+     * @param sessionId the session id to return the session info for
+     * 
+     * @return the complete user session info of a user from the session storage
      */
-    public List getLoggedInUsers() {
-
-        List output = new ArrayList();
-        String key;
-        CmsSessionInfo sessionInfo;
-
-        // Map to return in the vector for one user-entry
-        Map userentry;
-
-        synchronized (m_sessions) {
-            Iterator i = m_sessions.keySet().iterator();
-            while (i.hasNext()) {
-                userentry = new HashMap(4);
-                key = (String)i.next();
-                sessionInfo = (CmsSessionInfo)m_sessions.get(key);
-                // check if the session is still valid
-                HttpSession session = sessionInfo.getSession();
-                long creationTime = 0;
-                try {
-                    creationTime = session.getCreationTime();
-                } catch (IllegalStateException e) {
-                    // invalid session, remove it
-                    m_sessions.remove(key);
-                }
-                if (creationTime != 0) {
-                    // session is still valid
-                    userentry.put(I_CmsConstants.C_SESSION_USERNAME, sessionInfo.getUserName());
-                    userentry.put(I_CmsConstants.C_SESSION_PROJECT, sessionInfo.getProject());
-                    userentry.put(I_CmsConstants.C_SESSION_MESSAGEPENDING, new Boolean(session
-                        .getAttribute(I_CmsConstants.C_SESSION_BROADCASTMESSAGE) != null));
-                    output.add(userentry);
-                }
-            }
-        }
-        return output;
-    }
-
-    /**
-     * Returns a list of all currently logged in users.<p>
-     * 
-     * The returned list is a list of <code>Map</code>s, 
-     * with some basic information about each user, like:<br>
-     * <ul>
-     * <li>The user name, at key <code>{@link I_CmsConstants#C_SESSION_USERNAME}</code></li>
-     * <li>The current project for that user, at key 
-     *      <code>{@link I_CmsConstants#C_SESSION_PROJECT}</code></li>
-     * </ul><p>
-     * 
-     * @param cms the context info for security checks. 
-     * 
-     * @return a list of <code>{@link Map}</code>s representing 
-     *          users that are currently logged in.
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public List getLoggedInUsers(CmsObject cms) throws CmsException {
-
-        if (cms.isAdmin()) {
-            return getLoggedInUsers();
-        } else {
-            throw new CmsSecurityException(
-                "[" + this.getClass().getName() + "] getLoggedInUsers()",
-                CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
-    }
-
-    /**
-     * Gets the complete user information of a user from the session storage.
-     *
-     * @param sessionId A currently valid session id
-     * @return table with user information or null
-     */
-    public CmsSessionInfo getUserInfo(String sessionId) {
+    public CmsSessionInfo getSessionInfo(String sessionId) {
 
         return (CmsSessionInfo)m_sessions.get(sessionId);
     }
 
     /**
-     * Returns the name of a user from the session storage,
-     * or <code>null</code> if that user is not in the session storage.<p>
-     *
-     * @param sessionId the users session id
-     * @return the name of a user from the session storage
+     * Returns all current session info objects.<p>
+     *  
+     * @return the message queue for the given session id
      */
-    public String getUserName(String sessionId) {
+    public List getSessionInfos() {
 
-        String username = null;
-        CmsSessionInfo userinfo = getUserInfo(sessionId);
-        // this user does exist, so get his name.
-        if (userinfo != null) {
-            username = userinfo.getUserName();
+        List result = new ArrayList();
+        synchronized (m_sessions) {
+            Iterator i = getConcurrentSessionIterator();
+            while (i.hasNext()) {
+                CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(i.next());
+                if (sessionInfo != null) {
+                    // may be the case in case of concurrent modification
+                    result.add(sessionInfo);
+                }
+            }
         }
-        return username;
+        return result;
     }
 
     /**
-     * Returns a list of all active CmsSessionInfo objects for the specified user id.<p>
+     * Returns a list of all active session info objects for the specified user.<p>
      * 
      * An OpenCms user can have many active sessions. 
      * This is e.g. possible when two people have logged in to the system using the
@@ -233,17 +192,18 @@ public class CmsSessionInfoManager {
      * is logged in to OpenCms with several browser windows at the same time.<p>
      * 
      * @param userId the id of the user
-     * @return the list of all active CmsSessionInfo objects
+     *  
+     * @return a list of all active session info objects for the specified user
      */
-    public List getUserSessions(CmsUUID userId) {
+    public List getSessionInfosForUser(CmsUUID userId) {
 
         List userSessions = new ArrayList();
         synchronized (m_sessions) {
-            Iterator i = m_sessions.keySet().iterator();
+            Iterator i = getConcurrentSessionIterator();
             while (i.hasNext()) {
                 String key = (String)i.next();
                 CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(key);
-                if (userId.equals(sessionInfo.getUserId())) {
+                if (userId.equals(sessionInfo.getUser().getId())) {
                     userSessions.add(sessionInfo);
                 }
             }
@@ -252,93 +212,86 @@ public class CmsSessionInfoManager {
     }
 
     /**
-     * Puts a new user into the session storage.<p>
-     * 
-     * This method also stores additional user information in a CmsSessionInfo object.<p>
-     * 
-     * A user is stored with its current session id after a positive authentification.<p>
+     * Returns the user to whom the given session id belongs,
+     * or <code>null</code> if that user is not in the session storage.<p>
      *
-     * @param sessionId a currently valid session id
-     * @param sessionInfo a CmsSessionInfo object containing information (e.g. the name) about the user
+     * @param sessionId the users session id
+     * @return the user to whom the given session id belongs
      */
-    public void putUser(String sessionId, CmsSessionInfo sessionInfo) {
+    public CmsUser getUser(String sessionId) {
 
-        m_sessions.put(sessionId, sessionInfo);
+        CmsUser user = null;
+        CmsSessionInfo sessionInfo = getSessionInfo(sessionId);
+        if (sessionInfo != null) {
+            // this session exists and is still valid
+            user = sessionInfo.getUser();
+        }
+        return user;
     }
 
     /**
-     * Removes a user session from the session storage,
-     * this is done when the session of the user is destroyed.<p>
-     *
-     * @param sessionId the users session id
+     * Returns <code>true</code> if there are pending broadcast messages for the given session id.<p>
+     * 
+     * @param sessionId the session id to get the messages for
+     *  
+     * @return <code>true</code> if there are pending broadcast messages for the given session id
      */
-    public void removeUserSession(String sessionId) {
+    public boolean hasBroadcastMessagesPending(String sessionId) {
+
+        CmsBroadcastMessageQueue queue = getSessionInfo(sessionId).getBroadcastMessageQueue();
+        return queue.hasBroadcastMessagesPending();
+    }
+
+    /**
+     * Removes a session info from the session storage.<p>
+     *
+     * This should only be called when the session is invalidated.<p>
+     *
+     * @param sessionId the session id to remove the session info for
+     */
+    public void removeSessionInfo(String sessionId) {
 
         CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(sessionId);
         CmsUUID userId = CmsUUID.getNullUUID();
         if (sessionInfo != null) {
-            userId = sessionInfo.getUserId();
+            userId = sessionInfo.getUser().getId();
         }
-        m_sessions.remove(sessionId);
-        if (!userId.isNullUUID() && getUserSessions(userId).size() == 0) {
+        synchronized (m_sessions) {
+            m_sessions.remove(sessionId);
+        }
+        if (!userId.isNullUUID() && getSessionInfosForUser(userId).size() == 0) {
             // remove the temporary locks of this user from memory
             OpenCms.getLockManager().removeTempLocks(userId);
-
         }
     }
 
     /**
-     * Send a broadcast message to all currently logged in users.<p>
+     * Broadcast a message to all logged in users.<p>
      * 
-     * @param cms the context info for security checks. 
-     * @param message the message to send
+     * @param cms the OpenCms user context of the user sending the message
      * 
-     * @throws CmsException if something goes wrong
+     * @param message the message to be send
      */
-    public void sendBroadcastMessage(CmsObject cms, String message) throws CmsException {
-
-        if (cms.isAdmin()) {
-            sendBroadcastMessage(message);
-        } else {
-            throw new CmsSecurityException(
-                "[" + this.getClass().getName() + "] sendBroadcastMessage()",
-                CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
-    }
-
-    /**
-     * Broadcasts a message to all logged in users.<p>
-     * 
-     * @param message the message to broadcast
-     */
-    public void sendBroadcastMessage(String message) {
-
-        String key;
-        CmsSessionInfo sessionInfo;
-
-        HttpSession user_session;
-        String session_message;
+    public void sendBroadcastMessage(CmsObject cms, String message) {
 
         synchronized (m_sessions) {
-            Iterator i = m_sessions.keySet().iterator();
+            Iterator i = getConcurrentSessionIterator();
+            long sendTime = System.currentTimeMillis();
             while (i.hasNext()) {
-                key = (String)i.next();
-                sessionInfo = (CmsSessionInfo)m_sessions.get(key);
-                user_session = sessionInfo.getSession();
-                session_message = (String)user_session.getAttribute(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
-                if (session_message == null) {
-                    session_message = "";
-                }
-                session_message += message;
-                user_session.setAttribute(I_CmsConstants.C_SESSION_BROADCASTMESSAGE, session_message);
+                CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(i.next());
+                sessionInfo.getBroadcastMessageQueue().addBroadcastMessage(
+                    new CmsBroadcastMessage(cms.getRequestContext().currentUser(), message, sendTime));
             }
         }
     }
 
     /**
-     * Returns the number of current core sessions in the system.<p>
+     * Returns the number of currently active sessions that have a session info attached.<p>
      *
-     * @return the number of current core sessions in the system
+     * This should be identical with the number of user that have currently beem 
+     * logged into the OpenCms system.<p>
+     *
+     * @return the number of currently active sessions that have a session info attached
      */
     public int size() {
 
@@ -351,21 +304,74 @@ public class CmsSessionInfoManager {
     public String toString() {
 
         StringBuffer output = new StringBuffer();
-        String key;
-        CmsSessionInfo sessionInfo;
-        String name;
         synchronized (m_sessions) {
-            Iterator i = m_sessions.keySet().iterator();
+            Iterator i = getConcurrentSessionIterator();
             output.append("[CmsSessions]:\n");
             while (i.hasNext()) {
-                key = (String)i.next();
-                output.append(key + " : ");
-                sessionInfo = (CmsSessionInfo)m_sessions.get(key);
-                name = sessionInfo.getUserName();
-                output.append(name + "\n");
+                String key = (String)i.next();
+                CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(key);
+                output.append(key);
+                output.append(" : ");
+                output.append(sessionInfo.getUser().toString());
+                output.append('\n');
             }
         }
         return output.toString();
     }
 
+    /**
+     * Validates the sessions stored in this manager and removes 
+     * any sessions that have become invalidated.<p>
+     */
+    public void validateSessionInfos() {
+
+        synchronized (m_sessions) {
+            Iterator i = getConcurrentSessionIterator();
+            while (i.hasNext()) {
+                String sessionId = (String)i.next();
+                CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(sessionId);
+                if (sessionInfo != null) {
+                    // may be the case in case of concurrent modification
+                    try {
+                        // access the session, this will lead to an exception for invalid sessions
+                        sessionInfo.getSession().getLastAccessedTime();
+                    } catch (java.lang.IllegalStateException e) {
+                        // session is invalid, try to remove it
+                        try {
+                            m_sessions.remove(sessionId);
+                        } catch (ConcurrentModificationException ex) {
+                            // ignore, better luck next time...
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns an iterator of a copy of the keyset of the current session map,
+     * which should be used for iterators to avoid concurrent modification exceptions.<p>
+     * 
+     * @return an iterator of the keyset of the current session map 
+     */
+    private Iterator getConcurrentSessionIterator() {
+
+        Set keySet;
+        int count = 0;
+        do {
+            keySet = new HashSet(m_sessions.size());
+            try {
+                keySet.addAll(m_sessions.keySet());
+            } catch (ConcurrentModificationException e) {
+                // problem creating a copy of the keyset, try up to 5 times 
+                count++;
+                keySet = null;
+            }
+        } while ((keySet == null) && (count < 5));
+        if (keySet == null) {
+            // no success, so we return an empty set to avoid problems
+            keySet = new HashSet();
+        }
+        return keySet.iterator();
+    }
 }

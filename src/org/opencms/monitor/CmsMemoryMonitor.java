@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2005/03/02 13:21:06 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/03/04 15:11:32 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.map.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.39 $ $Date: 2005/03/02 13:21:06 $
+ * @version $Revision: 1.40 $ $Date: 2005/03/04 15:11:32 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -733,7 +733,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         if ((sm != null) && (cs != null)) {
             content += "Current status of the sessions:\n\n";
-            content += "Logged in users          : " + cs.getLoggedInUsers().size() + "\n";
+            content += "Logged in users          : " + cs.size() + "\n";
             content += "Currently active sessions: " + sm.getCurrentSessions() + "\n";
             content += "Total created sessions   : " + sm.getTotalSessions() + "\n\n\n";
         }
@@ -910,7 +910,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             if ((sm != null) && (cs != null)) {
                 OpenCms.getLog(this).info(
                     "Sessions users: "
-                        + cs.getLoggedInUsers().size()
+                        + cs.size()
                         + " current: "
                         + sm.getCurrentSessions()
                         + " total: "
