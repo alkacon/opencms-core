@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/11/03 10:38:47 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/11/03 15:24:48 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.20 $ $Date: 2000/11/03 10:38:47 $
+ * @version $Revision: 1.21 $ $Date: 2000/11/03 15:24:48 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -235,9 +235,23 @@ public I_CmsRegistry clone(CmsObject cms) {
  * @throws CmsException if the user has no right to create a new module.
  */
 public void createModule(String modulename, String niceModulename, String description, String author, long createDate, int version) throws CmsException {
+	createModule(modulename, niceModulename, description, author, m_dateFormat.format(new Date(createDate)), version);
+}
+/**
+ * This method creates a new module in the repository.
+ *
+ * @param String modulename the name of the module.
+ * @param String niceModulename another name of the module.
+ * @param String description the description of the module.
+ * @param String author the name of the author.
+ * @param String createDate the creation date of the module in the format: mm.dd.yyyy
+ * @param int version the version number of the module.
+ * @throws CmsException if the user has no right to create a new module.
+ */
+public void createModule(String modulename, String niceModulename, String description, String author, String createDate, int version) throws CmsException {
 
 	// find out if the module exists already
-	if( moduleExists(modulename) ) {
+	if (moduleExists(modulename)) {
 		throw new CmsException("Module exists already " + modulename, CmsException.C_REGISTRY_ERROR);
 	}
 
@@ -248,9 +262,8 @@ public void createModule(String modulename, String niceModulename, String descri
 	moduleString += C_EMPTY_MODULE[2] + version;
 	moduleString += C_EMPTY_MODULE[3] + description;
 	moduleString += C_EMPTY_MODULE[4] + author;
-	moduleString += C_EMPTY_MODULE[5] + m_dateFormat.format(new Date(createDate));
+	moduleString += C_EMPTY_MODULE[5] + createDate;
 	moduleString += C_EMPTY_MODULE[6];
-	
 	Document doc = parse(moduleString);
 	m_xmlReg.getElementsByTagName("modules").item(0).appendChild(getXmlParser().importNode(m_xmlReg, doc.getFirstChild()));
 	saveRegistry();

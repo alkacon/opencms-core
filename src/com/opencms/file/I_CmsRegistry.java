@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2000/11/03 10:38:47 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/11/03 15:24:48 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.17 $ $Date: 2000/11/03 10:38:47 $
+ * @version $Revision: 1.18 $ $Date: 2000/11/03 15:24:48 $
  * 
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -65,6 +65,18 @@ public I_CmsRegistry clone(CmsObject cms);
 	 * @throws CmsException if the user has no right to create a new module.
 	 */
 	public void createModule(String modulename, String niceModulename, String description, String author, long createDate, int version) throws CmsException;
+	/**
+	 * This method creates a new module in the repository.
+	 *
+	 * @param String modulename the name of the module.
+	 * @param String niceModulename another name of the module.
+	 * @param String description the description of the module.
+	 * @param String author the name of the author.
+	 * @param String createDate the creation date of the module in the format: mm.dd.yyyy
+	 * @param int version the version number of the module.
+	 * @throws CmsException if the user has no right to create a new module.
+	 */
+	public void createModule(String modulename, String niceModulename, String description, String author, String createDate, int version) throws CmsException;
 /**
  * This method checks which modules need this module. If a module depends on this the name 
  * will be returned in the vector.
