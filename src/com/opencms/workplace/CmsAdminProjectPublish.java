@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
-* Date   : $Date: 2001/09/05 14:07:53 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2001/12/07 10:56:02 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.19 $ $Date: 2001/09/05 14:07:53 $
+ * @version $Revision: 1.20 $ $Date: 2001/12/07 10:56:02 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -118,7 +118,8 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
             if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
                 session.removeValue(C_SESSION_THREAD_ERROR);
             }
-            if(projectType == C_PROJECT_TYPE_TEMPORARY){
+            if(projectType == C_PROJECT_TYPE_TEMPORARY ||
+               projectType == (C_PROJECT_TYPE_TEMPORARY + C_PROJECT_TYPE_STATICEXPORT)){
                 cms.getRequestContext().setCurrentProject(cms.onlineProject().getId());
             }
             Thread doPublish = new CmsAdminPublishProjectThread(cms, projectId, session);
