@@ -107,6 +107,9 @@ function mouseClicked(e)
 function showkontext(welche, parameter, id)
 {
 
+    kontextparam = parameter.replace(/\//g, "%2F");
+    kontextid = id; 
+
     if(gecko){
 
         document.getElementById(welche).style.visibility = "visible";
@@ -117,8 +120,6 @@ function showkontext(welche, parameter, id)
 
         if(disableKontext == false) {
             // set the kontextparameter
-            kontextparam = parameter.replace(/\//g, "%2F");
-            kontextid = id; 
             if(welche!='')
             {
     
@@ -219,11 +220,14 @@ function checklyrheight(welche)
 
 // which action on layer is clicked
 function doAction(action) {
+
+
     hidemenu(letztelyr);
     var encLasturl = simpleEscape(location.href);
-    
+
     switch(action)  {
         case 1: {
+
             location.href='lock.html?lasturl=' + encLasturl + '&file='+ kontextparam + '&initial=true';
             break;
         } case 2:   {
@@ -338,6 +342,7 @@ function doAction(action) {
 
 function doPAction(action) // which action on layer Project is clicked
 {
+
     hidemenu(letztelyr); 
     var encLasturl = simpleEscape(location.href);
     
