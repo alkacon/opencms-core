@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2001/08/20 14:37:28 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2001/09/05 13:40:47 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.42 $ $Date: 2001/08/20 14:37:28 $
+ * @version $Revision: 1.43 $ $Date: 2001/09/05 13:40:47 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -399,59 +399,9 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
 
     public Integer getTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
-
-        Vector files = cms.getFilesInFolder(C_CONTENTTEMPLATEPATH);
-
-        // get all module Templates
-        Vector modules = new Vector();
-        modules = cms.getSubFolders(C_MODULES_PATH);
-        for(int i = 0;i < modules.size();i++) {
-            Vector moduleTemplateFiles = new Vector();
-            moduleTemplateFiles = cms.getFilesInFolder(((CmsFolder)modules.elementAt(i)).getAbsolutePath() + "templates/");
-            for(int j = 0;j < moduleTemplateFiles.size();j++) {
-                files.addElement(moduleTemplateFiles.elementAt(j));
-            }
-        }
-        Enumeration enum = files.elements();
-        while(enum.hasMoreElements()) {
-            CmsFile file = (CmsFile)enum.nextElement();
-            if(file.getState() != C_STATE_DELETED && checkVisible(cms, file)) {
-                String nicename = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
-                if(nicename == null) {
-                    nicename = file.getName();
-                }
-                names.addElement(nicename);
-                values.addElement(file.getAbsolutePath());
-            }
-        }
-        bubblesort(names, values);
-        return new Integer(0);
+        return CmsHelperMastertemplates.getTemplates(cms, names, values);
     }
 
-    /**
-     * Check if this template should be displayed in the selectbox (tis is only if
-     *  the visible flag is set for the current user or if he is admin).
-     * @param cms The CmsObject
-     * @param res The resource to be checked.
-     * @return True or false.
-     * @exception CmsException if something goes wrong.
-     */
-
-    private boolean checkVisible(CmsObject cms, CmsResource res) throws CmsException {
-        boolean access = false;
-        int accessflags = res.getAccessFlags();
-
-        // First check if the user may have access by one of his groups.
-        boolean groupAccess = false;
-        Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
-        while((!groupAccess) && allGroups.hasMoreElements()) {
-            groupAccess = cms.readGroup(res).equals((CmsGroup)allGroups.nextElement());
-        }
-        if(((accessflags & C_ACCESS_PUBLIC_VISIBLE) > 0) || (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_VISIBLE) > 0) || (groupAccess && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0) || (cms.getRequestContext().currentUser().getName().equals(C_USER_ADMIN))) {
-            access = true;
-        }
-        return access;
-    }
 
     /**
      * Indicates if the results of this class are cacheable.

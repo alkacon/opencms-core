@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2001/07/31 15:50:20 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2001/09/05 13:40:47 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.47 $ $Date: 2001/07/31 15:50:20 $
+ * @version $Revision: 1.48 $ $Date: 2001/09/05 13:40:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -140,45 +140,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
     public Integer getAvailableTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
-
-        //Vector files=cms.getFilesInFolder(C_CONTENTTEMPLATEPATH);
-        Vector files = cms.getFilesInFolder(C_CONTENTTEMPLATEPATH);
-
-        // get all module Templates
-        Vector modules = new Vector();
-        modules = cms.getSubFolders(C_MODULES_PATH);
-        for(int i = 0;i < modules.size();i++) {
-            Vector moduleTemplateFiles = new Vector();
-            moduleTemplateFiles = cms.getFilesInFolder(((CmsFolder)modules.elementAt(i)).getAbsolutePath() + "templates/");
-            for(int j = 0;j < moduleTemplateFiles.size();j++) {
-                files.addElement(moduleTemplateFiles.elementAt(j));
-            }
-        }
-        Enumeration enum = files.elements();
-        while(enum.hasMoreElements()) {
-            CmsFile file = (CmsFile)enum.nextElement();
-            if(file.getState() != C_STATE_DELETED) {
-                String nicename = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
-                if(nicename == null) {
-                    nicename = file.getName();
-                }
-                names.addElement(nicename);
-                values.addElement(file.getAbsolutePath());
-            }
-        }
-        bubblesort(names, values);
-
-        // find the correct index for the current template
-
-        String currentTemplate = (String)parameters.get("template");
-        for(int i = 0; i < values.size(); i++) {
-            String template = (String) values.get(i);
-            if(currentTemplate.equals(template)) {
-                // found the correct index - return it
-                return new Integer(i);
-            }
-        }
-        return new Integer(0);
+        return CmsHelperMastertemplates.getTemplates(cms, names, values);
     }
 
     /**

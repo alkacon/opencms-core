@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2001/07/31 15:50:20 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2001/09/05 13:40:47 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.41 $ $Date: 2001/07/31 15:50:20 $
+ * @version $Revision: 1.42 $ $Date: 2001/09/05 13:40:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -77,20 +77,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      */
 
     public void bubblesort(Vector names, Vector data) {
-        for(int i = 0;i < names.size() - 1;i++) {
-            int len = names.size() - i - 1;
-            for(int j = 0;j < len;j++) {
-                String a = (String)names.elementAt(j);
-                String b = (String)names.elementAt(j + 1);
-                if(a.toLowerCase().compareTo(b.toLowerCase()) > 0) {
-                    names.setElementAt(a, j + 1);
-                    names.setElementAt(b, j);
-                    a = (String)data.elementAt(j);
-                    data.setElementAt(data.elementAt(j + 1), j);
-                    data.setElementAt(a, j + 1);
-                }
-            }
-        }
+        Utils.bubblesort(names, data);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2001/09/05 13:40:47 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -334,4 +334,30 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
         }
         return result;
     }
+
+    /**
+     * Sorts two vectors using bubblesort. This is a quick hack to display templates sorted by title instead of
+     * by name in the template dropdown, because it is the title that is shown in the dropdown.
+     * Creation date: (10/24/00 13:55:12)
+     * @param names The vector to sort
+     * @param data Vector with data that accompanies names.
+     */
+
+    public static void bubblesort(Vector names, Vector data) {
+        for(int i = 0;i < names.size() - 1;i++) {
+            int len = names.size() - i - 1;
+            for(int j = 0;j < len;j++) {
+                String a = (String)names.elementAt(j);
+                String b = (String)names.elementAt(j + 1);
+                if(a.toLowerCase().compareTo(b.toLowerCase()) > 0) {
+                    names.setElementAt(a, j + 1);
+                    names.setElementAt(b, j);
+                    a = (String)data.elementAt(j);
+                    data.setElementAt(data.elementAt(j + 1), j);
+                    data.setElementAt(a, j + 1);
+                }
+            }
+        }
+    }
+
 }
