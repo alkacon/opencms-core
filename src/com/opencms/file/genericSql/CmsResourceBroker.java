@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/09/07 15:09:12 $
-* Version: $Revision: 1.272 $
+* Date   : $Date: 2001/09/13 09:11:07 $
+* Version: $Revision: 1.273 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.272 $ $Date: 2001/09/07 15:09:12 $
+ * @version $Revision: 1.273 $ $Date: 2001/09/13 09:11:07 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -170,6 +170,13 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
         if(resource.getProjectId() != currentProject.getId()) {
             return false;
         }
+        // is the resource locked?
+        if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ||
+            (resource.getLockedInProject() != currentProject.getId() &&
+            currentProject.getFlags() != C_PROJECT_STATE_INVISIBLE)) ) {
+            // resource locked by anopther user, no creation allowed
+            return(false);
+        }
 
          // check the rights for the current resource
         if( ! ( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) ||
@@ -195,7 +202,9 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
                 accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ) ) {
 
                 // is the resource locked?
-                if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ) ) {
+                if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ||
+                    (resource.getLockedInProject() != currentProject.getId() &&
+                    currentProject.getFlags() != C_PROJECT_STATE_INVISIBLE)) ) {
                     // resource locked by anopther user, no creation allowed
                     return(false);
                 }
