@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.7.6 Ecaz - xx 2002
+OpenCms 4.7.6 Ecaz - 10 June 2002
 ! Added gallery for external links and checking tool for external links
 ! Added gallery for html snippets
 ! Added first version of linkmanagement (workplace templates changed).
