@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/02/13 13:12:43 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2004/02/13 13:17:30 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  * 
  * @since 5.1
  */
@@ -147,7 +147,7 @@ public abstract class CmsWorkplace {
             if (m_settings == null) {
                 // create the settings object
                 m_settings = new CmsWorkplaceSettings();
-                initWorkplaceSettings(m_cms, m_settings);
+                initWorkplaceSettings(m_cms, m_settings, false);
                 storeSettings(m_session, m_settings);
             }
             
@@ -224,15 +224,20 @@ public abstract class CmsWorkplace {
      * 
      * @param cms the cms object for the current user
      * @param settings the current workplace settings
+     * @param update flag indicating if settings are only updated (user preferences)
      * @return initialized object with the current users workplace settings 
      */    
-    static synchronized CmsWorkplaceSettings initWorkplaceSettings(CmsObject cms, CmsWorkplaceSettings settings) {                
+    static synchronized CmsWorkplaceSettings initWorkplaceSettings(CmsObject cms, CmsWorkplaceSettings settings, boolean update) {                
         // save current workplace user & user settings object
         CmsUser user;
-        try {
-            // read the user from db to avoid side effects in preferences dialog after publishing
-            user = cms.readUser(cms.getRequestContext().currentUser().getId());
-        } catch (CmsException e) {
+        if (update) {
+            try {
+                // read the user from db to avoid side effects in preferences dialog after publishing
+                user = cms.readUser(cms.getRequestContext().currentUser().getId());
+            } catch (CmsException e) {
+                user = cms.getRequestContext().currentUser();
+            }
+        } else {
             user = cms.getRequestContext().currentUser();
         }
         settings.setUser(user);
