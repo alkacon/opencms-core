@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/09/15 10:51:15 $
-* Version: $Revision: 1.271 $
+* Date   : $Date: 2003/09/15 15:30:42 $
+* Version: $Revision: 1.272 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.271 $ $Date: 2003/09/15 10:51:15 $
+ * @version $Revision: 1.272 $ $Date: 2003/09/15 15:30:42 $
  */
 public interface I_CmsConstants {
 
@@ -1196,32 +1196,31 @@ public interface I_CmsConstants {
      * Signals that VFS links pointing to this resource should not be deleted. 
      * An existing soft link of this resource will be converted into a new hard link. 
      */
-    int C_DELETE_OPTION_PRESERVE_VFS_LINKS = 1;    
-        
+    int C_DELETE_OPTION_PRESERVE_VFS_LINKS = 1;
+
     /** 
      * Signals that VFS links pointing to this resource should be deleted.
      */
-    int C_DELETE_OPTION_DELETE_VFS_LINKS = 2;   
-    
+    int C_DELETE_OPTION_DELETE_VFS_LINKS = 2;
+
     /** copy mode for copy resources as new resource */
     int C_COPY_AS_NEW = 1;
-    
+
     /** copy mode for copy resources as link */
     int C_COPY_AS_LINK = 2;
-    
+
     /** copy mode to preserve links during copy */
     int C_COPY_PRESERVE_LINK = 3;
-     
-    /**
-     * The vfs path of the default site
-     */
-     String C_VFS_LOST_AND_FOUND = "/system/lost-found";
-     
-     /** the resource is marked as internal */
-     int C_RESOURCEFLAG_INTERNAL = 1;
 
-     /** the resource is linked inside a site folder specified in the OpenCms properties  */
-     int C_RESOURCEFLAG_LABELLINK = 2;
-     
+    /** the vfs path of the loast and found folder */
+    String C_VFS_LOST_AND_FOUND = "/system/lost-found";
 
+    /** the resource is marked as internal */
+    int C_RESOURCEFLAG_INTERNAL = 1;
+
+    /** the resource is linked inside a site folder specified in the OpenCms properties  */
+    int C_RESOURCEFLAG_LABELLINK = 2;
+
+    /** identifier for x-forwarded-for (i.e. proxied) request headers */
+    String C_REQUEST_FORWARDED_FOR = "x-forwarded-for";
 }

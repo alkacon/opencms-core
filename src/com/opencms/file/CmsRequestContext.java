@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2003/09/15 15:30:29 $
+ * Version: $Revision: 1.95 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.94 $
+ * @version $Revision: 1.95 $
  */
 public class CmsRequestContext {
 
@@ -316,15 +316,19 @@ public class CmsRequestContext {
     }
     
     /**
-     * Gets the remote ip address.<p>
+     * Returns the remote ip address.<p>
      * 
      * @return the ip addresss as string
      */
     public String getRemoteAddress() {
-        if ((m_req != null) && (m_req.getOriginalRequestType() == I_CmsConstants.C_REQUEST_HTTP))
-            return ((HttpServletRequest)m_req.getOriginalRequest()).getRemoteAddr();
-        else
-            return null;
+
+        String remoteAddr = null;
+        if ((m_req != null) && (m_req.getOriginalRequestType() == I_CmsConstants.C_REQUEST_HTTP)) {
+            remoteAddr = ((HttpServletRequest)m_req.getOriginalRequest()).getHeader(I_CmsConstants.C_REQUEST_FORWARDED_FOR);
+            if (remoteAddr == null)
+                remoteAddr = ((HttpServletRequest)m_req.getOriginalRequest()).getRemoteAddr();
+        }
+        return remoteAddr;
     }
     
     /**
