@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimpleEditor.java,v $
- * Date   : $Date: 2003/11/26 15:13:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/28 12:49:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
 /**
- * Creates the output for editing a resource.<p> 
+ * Creates the output for editing a resource (text or JSP files).<p> 
  * 
  * This class is extended by the LEdit class, so be careful when changing anything.<p>
  * 
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.12
  */
@@ -103,7 +103,7 @@ public class CmsSimpleEditor extends CmsEditor {
     /**
      * Initializes the editor content when openening the editor for the first time.<p>
      */
-    public void initContent() {
+    protected void initContent() {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         // get the default encoding

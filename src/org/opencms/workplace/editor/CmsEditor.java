@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2003/11/27 16:41:08 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/11/28 12:49:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
-import com.opencms.workplace.CmsHelperMastertemplates;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.main.OpenCms;
@@ -43,20 +42,19 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
 /**
- * Provides methods for building the file editors of OpenCms.<p> 
+ * Provides basic methods for building the file editors of OpenCms.<p> 
+ * 
+ * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1.12
  */
@@ -75,7 +73,7 @@ public abstract class CmsEditor extends CmsDialog {
     public static final String EDITOR_SHOW = "show";
     public static final String EDITOR_PREVIEW = "preview";
     public static final String EDITOR_NEW_BODY = "newbody";
-    public static final String EDITOR_SHOW_ERRORMESSAGE = "newbody";
+    public static final String EDITOR_SHOW_ERRORMESSAGE = "error";
     
     public static final int ACTION_SAVE = 121;
     public static final int ACTION_EXIT = 122;
@@ -88,19 +86,12 @@ public abstract class CmsEditor extends CmsDialog {
     public static final int ACTION_SHOW_ERRORMESSAGE = 129;
     
     private String m_paramEditormode;
-    private String m_paramBodyelement;
-    private String m_paramOldbodyelement;
-    private String m_paramBodyTitle;
     private String m_paramDirectedit;
     private String m_paramPageTitle;
-    private String m_paramPageTemplate;
     private String m_paramTempFile;
     private String m_paramContent;
     private String m_paramNoActiveX;
-    
-    /** Helper variable to store the html content for the template selector.<p> */
-    private String m_selectTemplates = null;
-    
+       
     /** Helper variable to store the clients browser type.<p> */
     private String m_browserType = null;
     
@@ -132,65 +123,6 @@ public abstract class CmsEditor extends CmsDialog {
      */
     public void setParamEditormode(String mode) {
         m_paramEditormode = mode;
-    }
-
-    /**
-     * Returns the current body element name.<p>
-     * 
-     * @return the current body element name
-     */
-    public String getParamBodyelement() {
-        return m_paramBodyelement;
-    }
-
-    /**
-     * Sets the current body element name.<p>
-     * 
-     * @param element the current body element name
-     */
-    public void setParamBodyelement(String element) {
-        m_paramBodyelement = element;
-    }
-    
-    /**
-     * Returns the name of the old body element.<p>
-     * 
-     * This is needed to save the content to the temporary file after changing the body.<p>
-     * 
-     * @return the name of the old body element
-     */
-    public String getParamOldbodyelement() {
-        return m_paramOldbodyelement;
-    }
-    
-    /**
-     * Sets the name of the old body element.<p>
-     * 
-     * @param oldBody the name of the old body element
-     */
-    public void setParamOldbodyelement(String oldBody) {
-        m_paramOldbodyelement = oldBody;
-    }
-    
-    /** 
-     * Returns the title of the body element.<p>
-     * 
-     * @return the title of the body element
-     */
-    public String getParamBodytitle() {
-        if (m_paramBodyTitle == null) {
-            m_paramBodyTitle = "";
-        }
-        return m_paramBodyTitle;
-    }
-    
-    /**
-     * Sets the title of the body element.<p>
-     * 
-     * @param bodyTitle the title of the body element
-     */
-    public void setParamBodytitle(String bodyTitle) {
-        m_paramBodyTitle = bodyTitle;
     }
 
     /**
@@ -230,24 +162,6 @@ public abstract class CmsEditor extends CmsDialog {
      */
     public void setParamPagetitle(String pageTitle) {
         m_paramPageTitle = pageTitle;
-    }
-    
-    /**
-     * Returns the page template.<p>
-     * 
-     * @return the page template
-     */
-    public String getParamPagetemplate() {
-        return m_paramPageTemplate;
-    }
-    
-    /**
-     * Sets the page template.<p>
-     * 
-     * @param pageTemplate the page template
-     */
-    public void setParamPagetemplate(String pageTemplate) {
-        m_paramPageTemplate = pageTemplate;
     }
     
     /**
@@ -400,7 +314,7 @@ public abstract class CmsEditor extends CmsDialog {
         }
 
         switchToCurrentProject();
-        // Oh how lucky we are! We have found a temporary file!
+        // We have found a temporary file!
         temporaryFilename = extendedTempFile;
 
         return temporaryFilename;
@@ -489,66 +403,11 @@ public abstract class CmsEditor extends CmsDialog {
         getCms().getRequestContext().setCurrentProject(tempProject);
         return tempProject;
     }
-    
-    
-    
-    /**
-     * Builds the html for the font face select box of the WYSIWYG editor.<p>
-     * 
-     * @param attributes optional attributes for the &lt;select&gt; tag
-     * @return the html for the font face select box
-     */
-    public String buildSelectFonts(String attributes) {
-        List names = new ArrayList();
-        for (int i=0; i<I_CmsWpConstants.C_SELECTBOX_FONTS.length; i++) {
-            String value = I_CmsWpConstants.C_SELECTBOX_FONTS[i];
-            names.add(value);
-        }        
-        return buildSelect(attributes, names, names, -1, false);
-    }
 
-    /**
-     * Builds the html for the page template select box.<p>
-     * 
-     * @param attributes optional attributes for the &lt;select&gt; tag
-     * @return the html for the page template select box
-     */
-    public String buildSelectTemplates(String attributes) {
-        if (m_selectTemplates == null) {
-            // member variable is null, so generate the html
-            Vector names = new Vector();
-            Vector values = new Vector();
-            Integer selectedValue = new Integer(-1);
-            try {
-                selectedValue = CmsHelperMastertemplates.getTemplates(getCms(), names, values, getParamPagetemplate(), -1);
-            } catch (CmsException e) {
-                // ignore this exception
-            }
-            if (selectedValue.intValue() == -1) {
-                // no template found -> use the given one
-                // first clean the vectors
-                names.removeAllElements();
-                values.removeAllElements();
-                // now add the current template
-                String name = getParamPagetemplate();
-                try { 
-                    // read the title of this template
-                    name = getCms().readProperty(name, I_CmsConstants.C_PROPERTY_TITLE);
-                } catch (CmsException exc) {
-                    // ignore this exception - the title for this template was not readable
-                }
-                names.add(name);
-                values.add(getParamPagetemplate());
-            }
-            m_selectTemplates = buildSelect(attributes, names, values, selectedValue.intValue(), false);
-        }
-        return m_selectTemplates;
-    }
-    
     /**
      * Returns the editor action for a "cancel" button.<p>
      * 
-     * This overwrites the cancel method in the CmsDialog class.<p>
+     * This overwrites the cancel method of the CmsDialog class.<p>
      * 
      * Always use this value, do not write anything directly in the html page.<p>
      * 
@@ -558,33 +417,7 @@ public abstract class CmsEditor extends CmsDialog {
         String target = OpenCms.getLinkManager().substituteLink(getCms(), CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
         return "onClick=\"top.location.href='" + target + "';\"";
     }
-   
-    /**
-     * Performs a change template action.<p>
-     * 
-     * @throws CmsException if changing the template fails
-     */
-    public void actionChangeTemplate() throws CmsException {
-        // switch to the temporary file project
-        switchToTempProject();       
-        // write the changed template property to the temporary file
-        getCms().writeProperty(getParamTempfile(), I_CmsConstants.C_PROPERTY_TEMPLATE, getParamPagetemplate());        
-        // switch back to the current users project
-        switchToCurrentProject();     
-    }
-    
-    /**
-     * Performs the preview page action in a new browser window.<p>
-     */
-    public void actionPreview() {
-        // TODO: save content to temporary file...
-        try {
-            getCms().getRequestContext().getResponse().sendCmsRedirect(getParamTempfile());
-        } catch (IOException e) {
-            // do nothing...
-        }
-    }
-    
+        
     /**
      * Performs the exit editor action.<p>
      * 
@@ -606,6 +439,6 @@ public abstract class CmsEditor extends CmsDialog {
     /**
      * Initializes the editor content when openening the editor for the first time.<p>
      */
-    public abstract void initContent();
+    protected abstract void initContent();
 
 }
