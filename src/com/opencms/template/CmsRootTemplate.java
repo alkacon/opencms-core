@@ -14,7 +14,7 @@ import java.util.*;
  * generation of the master template class to be used.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/01/27 15:03:34 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/11 18:46:20 $
  */
 public class CmsRootTemplate implements I_CmsLogChannels {
     
@@ -33,7 +33,8 @@ public class CmsRootTemplate implements I_CmsLogChannels {
      * 
      * @return Byte array containing the results of the master template.
      */
-    public byte[] getMasterTemplate(A_CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate, I_CmsTemplateCache cache, Hashtable parameters) throws CmsException {
+    public byte[] getMasterTemplate(A_CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate,
+            com.opencms.launcher.I_CmsTemplateCache cache, Hashtable parameters) throws CmsException {
         
         byte[] result;
         //String cacheKey = cms.getUrl();

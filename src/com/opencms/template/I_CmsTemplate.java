@@ -12,7 +12,7 @@ import java.util.*;
  * have to be implemtented.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/01/27 15:03:34 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/11 18:45:34 $
  */
 public interface I_CmsTemplate {
     /**
@@ -58,7 +58,7 @@ public interface I_CmsTemplate {
      * If the template cache is not set, caching will be disabled.
      * @param c Template cache to be used.
      */
-    public void setTemplateCache(I_CmsTemplateCache c);
+    public void setTemplateCache(com.opencms.launcher.I_CmsTemplateCache c);
     
     /**
      * Tests, if the template cache is setted.
