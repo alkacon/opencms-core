@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/01/21 09:42:44 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/02/03 08:29:28 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * request parameters.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsTemplateNavigation extends CmsJspActionElement {
     
@@ -253,7 +253,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
         String showItemProperty;
         for (int i=0; i<navElements.size(); i++) {
             CmsJspNavElement nav = (CmsJspNavElement)navElements.get(i);
-            showItemProperty = property(C_PROPERTY_HEADNAV_USE, nav.getResourceName(), "true");
+            showItemProperty = property(C_PROPERTY_HEADNAV_USE, nav.getResourceName(), getHeadNavItemDefaultStringValue());
             boolean showItem = Boolean.valueOf(showItemProperty).booleanValue();
             if (nav.isFolderLink() && showItem) {
                 // create an entry for every folder
