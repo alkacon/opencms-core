@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/06/13 23:32:50 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/06/21 09:55:10 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.23 $ $Date: 2004/06/13 23:32:50 $
+ * @version $Revision: 1.24 $ $Date: 2004/06/21 09:55:10 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -221,7 +221,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                     offlineFileHeader.getParentStructureId(),
                     offlineFileHeader.getFileId(),
                     offlineFileHeader.getName(),
-                    offlineFileHeader.getType(),
+                    offlineFileHeader.getTypeId(),
                     offlineFileHeader.getFlags(),
                     offlineFileHeader.getProjectLastModified(),
                     I_CmsConstants.C_STATE_UNCHANGED,
@@ -232,7 +232,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                     offlineFileHeader.getUserLastModified(),
                     offlineFileHeader.getDateReleased(),            
                     offlineFileHeader.getDateExpired(),
-                    offlineFileHeader.getLinkCount(), 
+                    offlineFileHeader.getSiblingCount(), 
                     offlineFileHeader.getLength(), 
                     new byte[0]
                 );

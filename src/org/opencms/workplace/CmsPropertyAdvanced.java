@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/06/18 10:50:42 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/06/21 09:59:03 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsResourceTypeXmlPage;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1
  */
@@ -493,11 +493,11 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     public String getDialogUri(String resource, CmsJspActionElement jsp) {
         try {
             CmsResource res = jsp.getCmsObject().readFileHeader(resource, CmsResourceFilter.ALL);
-            if (res.getType() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
+            if (res.getTypeId() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
                 // display special property dialog for xmlpage types
                 return C_PATH_WORKPLACE + "editors/dialogs/property.html";
             }
-            String resTypeName = jsp.getCmsObject().getResourceType(res.getType()).getResourceTypeName();
+            String resTypeName = OpenCms.getLoaderManager().getResourceType(res.getTypeId()).getTypeName();
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
             if (settings.isPropertiesEnabled()) {
                 // special properties for this type enabled, display customized dialog

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeXMLTemplate.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsResourceTypeXMLTemplate.java,v $
+ * Date   : $Date: 2004/06/21 09:53:08 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,26 +29,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.file;
+package com.opencms.legacy;
 
-
-import org.opencms.lock.CmsLock;
-import org.opencms.main.CmsException;
-
-import com.opencms.legacy.CmsXmlTemplateLoader;
-
-import java.util.List;
+import org.opencms.file.types.A_CmsResourceType;
 
 /**
  * Describes the resource type "XMLTemplate".
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.1 $
  */
 public class CmsResourceTypeXMLTemplate extends A_CmsResourceType {
 
-    private int warning = 0;
-    
     /** The type id of this resource type. */
     public static final int C_RESOURCE_TYPE_ID = 4;
     
@@ -56,34 +48,23 @@ public class CmsResourceTypeXMLTemplate extends A_CmsResourceType {
     public static final String C_RESOURCE_TYPE_NAME = "XMLTemplate";
     
     /**
-     * @see org.opencms.file.I_CmsResourceType#getResourceType()
+     * @see org.opencms.file.types.I_CmsResourceType#getTypeId()
      */
-    public int getResourceType() {
+    public int getTypeId() {
         return C_RESOURCE_TYPE_ID;
     }
 
     /**
-     * @see org.opencms.file.A_CmsResourceType#getResourceTypeName()
+     * @see org.opencms.file.types.A_CmsResourceType#getTypeName()
      */
-    public String getResourceTypeName() {
+    public String getTypeName() {
         return C_RESOURCE_TYPE_NAME;
     }
 
     /**
-     * @see org.opencms.file.I_CmsResourceType#getLoaderId()
+     * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
     public int getLoaderId() {
         return CmsXmlTemplateLoader.C_RESOURCE_LOADER_ID;
-    }     
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, List, byte[], java.lang.Object)
-     */
-    public CmsResource createResource(CmsObject cms, String resourcename, List properties, byte[] contents, Object parameter) throws CmsException {
-        CmsResource res = cms.doCreateFile(resourcename, contents, getResourceTypeName(), properties);
-        contents = null;
-        // TODO: Move locking of resource to CmsObject or CmsDriverManager
-        cms.doLockResource(cms.readAbsolutePath(res), CmsLock.C_MODE_COMMON);
-        return res;
-    }  
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsVfsIndexResource.java,v $
- * Date   : $Date: 2004/03/19 17:45:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/21 09:57:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.main.OpenCms;
  * The type is either <code>CmsResource</code> while indexing vfs data,
  * or <code>CmsMasterDataSet</code> while indexing cos data.
  * 
- * @version $Revision: 1.2 $ $Date: 2004/03/19 17:45:01 $
+ * @version $Revision: 1.3 $ $Date: 2004/06/21 09:57:37 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -53,7 +53,7 @@ public class CmsVfsIndexResource extends CmsIndexResource {
         m_data = res;
         m_id = res.getResourceId();
         m_name = res.getName();
-        m_type = res.getType();
+        m_type = res.getTypeId();
         // TODO: Add check for encoding property or otherwise care about the encoding here
         m_mimeType = OpenCms.getLoaderManager().getMimeType(res.getName(), null);
         m_path = res.getRootPath();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorHandler.java,v $
- * Date   : $Date: 2004/06/13 23:42:47 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/06/21 10:01:23 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@ package org.opencms.workplace.editor;
 
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * @see org.opencms.workplace.editor.CmsWorkplaceEditorManager
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.3.1
  */
@@ -87,7 +87,7 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
             try {
                 // get the resource type id of the edited resource
                 CmsResource res = jsp.getCmsObject().readFileHeader(resource, CmsResourceFilter.ALL);
-                resTypeId = res.getType();
+                resTypeId = res.getTypeId();
             } catch (CmsException e) {
                 // resource could not be read, show error dialog
                 return showErrorDialog(jsp, e);
@@ -96,7 +96,7 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
         
         try {
             // get the resource type name
-            resourceType = jsp.getCmsObject().getResourceType(resTypeId).getResourceTypeName();
+            resourceType = OpenCms.getLoaderManager().getResourceType(resTypeId).getTypeName();
         } catch (CmsException e) {
             // resource type name can not be determined, show error dialog
             return showErrorDialog(jsp, e);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/06/18 14:17:54 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2004/06/21 09:54:49 $
+ * Version: $Revision: 1.81 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
-import org.opencms.file.I_CmsResourceType;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.80 $ $Date: 2004/06/18 14:17:54 $
+ * @version $Revision: 1.81 $ $Date: 2004/06/21 09:54:49 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {

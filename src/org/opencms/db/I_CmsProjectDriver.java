@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2004/06/18 14:17:54 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2004/06/21 09:54:49 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.49 $ $Date: 2004/06/18 14:17:54 $
+ * @version $Revision: 1.50 $ $Date: 2004/06/21 09:54:49 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -411,7 +411,7 @@ public interface I_CmsProjectDriver {
      * @return the paramter string of the requested resource
      * @throws CmsException if something goes wrong
      */
-     String readStaticExportPublishedResourceParamters(CmsProject currentProject, String rfsName) throws CmsException;
+     String readStaticExportPublishedResourceParameters(CmsProject currentProject, String rfsName) throws CmsException;
 
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorage.java,v $
- * Date   : $Date: 2004/06/01 15:46:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/06/21 10:01:50 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,29 +43,29 @@ import java.util.Map;
  * Storage object for storing all attributes of vfs resources.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class OpenCmsTestResourceStorage {
 
-    /** the name of the default storage */
+    /** the name of the default storage. */
     public static String DEFAULT_STORAGE = "default";
 
-    /** the name of the default storage */
+    /** the name of the default storage. */
     public static String GLOBAL_STORAGE = "global";
     
-    /** the name of the storage */
+    /** the name of the storage. */
     private String m_name;
     
-    /** storeage for precalculation of states **/
+    /** storeage for precalculation of states. **/
     private Map m_precalcState;
 
-    /** Strings for mapping the filename */
+    /** Strings for mapping the filename. */
     private String m_sourceNameMapping;
 
-    /** internal storage */
+    /** internal storage. */
     private Map m_storage;
 
-    /** Prefix mapping for target name */
+    /** Prefix mapping for target name. */
     private String m_targetNameMapping;
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2004/06/21 10:01:23 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 5.1.12
  */
@@ -428,21 +428,17 @@ public abstract class CmsEditor extends CmsDialog {
         boolean ok = true;
         
         // switch to the temporary file project
-        int tempProject = switchToTempProject();
+        switchToTempProject();
         
         try {
-            getCms().copyResource(getCms().readAbsolutePath(file), temporaryFilename, false, true, I_CmsConstants.C_COPY_AS_NEW);
-            CmsResource tempFile = getCms().readFileHeader(temporaryFilename, CmsResourceFilter.ALL);
-            tempFile.setDateReleased(CmsResource.DATE_RELEASED_DEFAULT);
-            tempFile.setDateExpired(CmsResource.DATE_EXPIRED_DEFAULT);
-            getCms().writeFileHeader((CmsFile)tempFile);
-            
+            getCms().copyResource(getCms().readAbsolutePath(file), temporaryFilename, I_CmsConstants.C_COPY_AS_NEW);
+            getCms().touch(temporaryFilename, System.currentTimeMillis(), CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT, false);            
         } catch (CmsException e) {
             if ((e.getType() == CmsException.C_FILE_EXISTS) || (e.getType() != CmsException.C_SQL_ERROR)) {
                 try {
                     // try to re-use the old temporary file
-                    getCms().changeLockedInProject(tempProject, temporaryFilename);
-                    getCms().lockResource(temporaryFilename, true);
+                    getCms().changeLastModifiedProjectId(temporaryFilename);
+                    getCms().lockResource(temporaryFilename);
                 } catch (Exception ex) {
                     ok = false;
                 }

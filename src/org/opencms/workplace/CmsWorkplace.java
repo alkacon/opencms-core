@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/06/18 10:44:33 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2004/06/21 09:59:03 $
+ * Version: $Revision: 1.82 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
-import org.opencms.file.I_CmsResourceType;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
@@ -78,7 +78,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.81 $
+ * @version $Revision: 1.82 $
  * 
  * @since 5.1
  */
@@ -299,6 +299,7 @@ public abstract class CmsWorkplace {
         }            
         // set the current site
         settings.setSite(siteRoot);
+        
         // set the preferred folder to display
         settings.setExplorerResource(settings.getUserSettings().getStartFolder());
         
@@ -329,21 +330,22 @@ public abstract class CmsWorkplace {
      * @return all visible resource types in a map with the resource type id as key value
      */
     private static Map initWorkplaceResourceTypes(CmsObject cms) {
-        List allResTypes = cms.getAllResourceTypes();
         Map resourceTypes = new HashMap();
-        Iterator i = allResTypes.iterator();
-        while (i.hasNext()) {
+        I_CmsResourceType[] allResTypes = OpenCms.getLoaderManager().getAllResourceTypes();
+        for (int i=0; i<allResTypes.length; i++) {
             // loop through all types and check which types can be displayed for the user
-            I_CmsResourceType curType = (I_CmsResourceType)i.next();
+            if (allResTypes[i] == null) {
+                continue;
+            }
             try {                
-                cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "restypes/" + curType.getResourceTypeName());
-                resourceTypes.put(new Integer(curType.getResourceType()), curType);               
+                cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "restypes/" + allResTypes[i].getTypeName());
+                resourceTypes.put(new Integer(allResTypes[i].getTypeId()), allResTypes[i]);               
             } catch (CmsException e) {
                 // ignore
             }                    
         }
         return resourceTypes;      
-        }        
+    }        
      
     /**
      * Builds the end html of the body.<p>
@@ -862,7 +864,7 @@ public abstract class CmsWorkplace {
             CmsResource res = getCms().readFileHeader(resource, CmsResourceFilter.ALL);
             if (getCms().getLock(res).isNullLock()) {
                 // resource is not locked, lock it automatically
-                getCms().lockResource(resource, false, mode);
+                getCms().lockResource(resource, mode);
             }           
         }
     }

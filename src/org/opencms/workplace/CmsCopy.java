@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/06/21 09:59:03 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 5.1
  */
@@ -282,7 +282,7 @@ public class CmsCopy extends CmsDialog {
                         restoreSiteRoot = true;
                     }
                     CmsResource targetRes = getCms().readFileHeader(getParamTarget());
-                    targetType = targetRes.getType();
+                    targetType = targetRes.getTypeId();
                 } catch (CmsException exc) { 
                     // ignore
                 } finally {
@@ -290,7 +290,7 @@ public class CmsCopy extends CmsDialog {
                         getCms().getRequestContext().restoreSiteRoot();
                     }
                 }
-                if (resource.getType() == targetType) {               
+                if (resource.getTypeId() == targetType) {               
                     // file type of target is the same as source, show confirmation dialog
                     setParamMessage(message + key("confirm.message." + getParamDialogtype()));
                     getJsp().include(C_FILE_DIALOG_SCREEN_CONFIRM); 
@@ -384,7 +384,7 @@ public class CmsCopy extends CmsDialog {
             }            
             
             // copy the resource       
-            getCms().copyResource(sitePrefix + getParamResource(), target, "true".equals(getParamKeeprights()), true, copyMode);
+            getCms().copyResource(sitePrefix + getParamResource(), target, copyMode);
         } finally {
             if (restoreSiteRoot) {
                 getCms().getRequestContext().restoreSiteRoot();

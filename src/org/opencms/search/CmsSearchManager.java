@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/06/21 09:57:37 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -135,7 +135,7 @@ import org.apache.lucene.index.IndexWriter;
  * <p>The <code>GermanAnalyzer</code> will be used for analyzing the contents of resources
  * when building an index with "de" as specified language.</p>
  * 
- * @version $Revision: 1.15 $ $Date: 2004/06/14 15:50:09 $
+ * @version $Revision: 1.16 $ $Date: 2004/06/21 09:57:37 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -551,7 +551,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
                     try {
                         resourceTypeId = documentFactory.getDocumentKey(resourceType);
                     } catch (Exception exc) {
-                        throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Instanciation of resource type" + resourceType + " failed", exc);    
+                        throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Instanciation of resource type '" + resourceType + "' failed", exc);    
                     }
                     
                     if (mimeTypes != null) {

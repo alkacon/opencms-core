@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeBinary.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeBinary.java,v $
+ * Date   : $Date: 2004/06/21 09:55:50 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,58 +29,46 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.file;
-
+package org.opencms.file.types;
 
 import org.opencms.loader.CmsDumpLoader;
-import org.opencms.lock.CmsLock;
-import org.opencms.main.CmsException;
-
-import java.util.List;
 
 /**
- * Describes the resource type "binary".<p>
+ * Resource type descriptor for the type "binary".<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * 
+ * @version $Revision: 1.1 $
  */
 public class CmsResourceTypeBinary extends A_CmsResourceType {
 
     /** The type id of this resource type. */
     public static final int C_RESOURCE_TYPE_ID = 5;
-    
+
     /** The name of this resource type. */
     public static final String C_RESOURCE_TYPE_NAME = "binary";
-    
+
     /**
-     * @see org.opencms.file.I_CmsResourceType#getResourceType()
+     * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
-    public int getResourceType() {
+    public int getLoaderId() {
+
+        return CmsDumpLoader.C_RESOURCE_LOADER_ID;
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#getTypeId()
+     */
+    public int getTypeId() {
+
         return C_RESOURCE_TYPE_ID;
     }
 
     /**
-     * @see org.opencms.file.A_CmsResourceType#getResourceTypeName()
+     * @see org.opencms.file.types.A_CmsResourceType#getTypeName()
      */
-    public String getResourceTypeName() {
+    public String getTypeName() {
+
         return C_RESOURCE_TYPE_NAME;
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#getLoaderId()
-     */
-    public int getLoaderId() {
-        return CmsDumpLoader.C_RESOURCE_LOADER_ID;
-    }        
-
-    /**
-     * @see org.opencms.file.A_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, List, byte[], java.lang.Object)
-     */
-    public CmsResource createResource(CmsObject cms, String resourcename, List properties, byte[] contents, Object parameter) throws CmsException {
-        CmsResource res = cms.doCreateFile(resourcename, contents, getResourceTypeName(), properties);
-        contents = null;
-        // TODO: Move locking of resource to CmsObject or CmsDriverManager
-        cms.doLockResource(cms.readAbsolutePath(res), CmsLock.C_MODE_COMMON);
-        return res;
     }
 }

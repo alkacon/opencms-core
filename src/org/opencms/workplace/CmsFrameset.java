@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2004/06/18 14:17:54 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2004/06/21 09:59:03 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.workplace;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
-import org.opencms.file.I_CmsResourceType;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  * 
  * @since 5.1
  */
@@ -109,14 +109,16 @@ public class CmsFrameset extends CmsWorkplace {
      */
     public String buildContextMenues() {
         StringBuffer result = new StringBuffer();  
-        // get all resource types
-        List resTypes = getCms().getAllResourceTypes();
-        Iterator i = resTypes.iterator();
-        while (i.hasNext()) {
-            I_CmsResourceType resType = (I_CmsResourceType)i.next();
-            int resTypeId = resType.getResourceType();
+        // get all available resource types
+        I_CmsResourceType[] allResTypes = OpenCms.getLoaderManager().getAllResourceTypes();
+        for (int i=0; i<allResTypes.length; i++) {
+            // loop through all types
+            if (allResTypes[i] == null) {
+                continue;
+            }
+            int resTypeId = allResTypes[i].getTypeId();
             // get explorer type settings for current resource type
-            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resType.getResourceTypeName());
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(allResTypes[i].getTypeName());
             if (settings != null) {
                 // append the context menu of the current resource type 
                 result.append(settings.getContextMenu().getJSEntries(getCms(), settings, resTypeId, getSettings().getUserSettings().getLocale()));

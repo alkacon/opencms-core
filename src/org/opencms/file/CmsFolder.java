@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2004/05/21 15:14:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/21 09:55:24 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             resource.getParentStructureId(),
             resource.getFileId(),
             resource.getName(),
-            resource.getType(),
+            resource.getTypeId(),
             resource.getFlags(),
             resource.getProjectLastModified(),
             resource.getState(),
@@ -68,7 +68,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             resource.getUserCreated(),
             resource.getDateLastModified(),
             resource.getUserLastModified(),
-            resource.getLinkCount(),
+            resource.getSiblingCount(),
             resource.getDateReleased(),
             resource.getDateExpired());
         if (resource.hasFullResourceName()) {
@@ -148,7 +148,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             getParentStructureId(),
             getFileId(),
             getName(),
-            getType(),
+            getTypeId(),
             getFlags(),
             getProjectLastModified(),
             getState(),
@@ -156,7 +156,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             getUserCreated(),
             getDateLastModified(),
             getUserLastModified(),
-            getLinkCount(),
+            getSiblingCount(),
             getDateReleased(),
             getDateExpired());
     }

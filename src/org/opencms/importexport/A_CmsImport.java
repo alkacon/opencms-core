@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/06/21 09:56:23 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceTypePointer;
+import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -253,11 +253,11 @@ public abstract class A_CmsImport implements I_CmsImport {
                         CmsUUID.getNullUUID(),
                         target.getFileId(), 
                         CmsResource.getName(key), 
-                        target.getType(), 
+                        target.getTypeId(), 
                         0, // TODO: pass flags from import 
                         m_cms.getRequestContext().currentProject().getId(), 
                         I_CmsConstants.C_STATE_NEW, 
-                        m_cms.getResourceType(target.getType()).getLoaderId(), 
+                        OpenCms.getLoaderManager().getResourceType(target.getTypeId()).getLoaderId(), 
                         target.getDateCreated(), 
                         target.getUserCreated(), 
                         target.getDateLastModified(), 
@@ -268,7 +268,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                         0
                     );
                     
-                    m_cms.importResource(resource, null, properties, key);
+                    m_cms.importResource(key, resource, null, properties);
                     m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                 } catch (CmsException ex) {
                     m_report.println();
@@ -290,7 +290,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                         checkedProperties.add(property);                        
                     }
                 }
-                m_cms.createResource(key, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, properties, link.getBytes(), null);
+                m_cms.createResource(key, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, link.getBytes(), properties);
                 m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
             }
         }

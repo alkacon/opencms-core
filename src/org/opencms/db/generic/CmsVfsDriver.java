@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/06/18 14:17:53 $
- * Version: $Revision: 1.186 $
+ * Date   : $Date: 2004/06/21 09:55:03 $
+ * Version: $Revision: 1.187 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,8 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsVfsDriver;
 import org.opencms.file.*;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -62,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.186 $ $Date: 2004/06/18 14:17:53 $
+ * @version $Revision: 1.187 $ $Date: 2004/06/21 09:55:03 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -162,7 +164,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 // write the resource
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_WRITE");
                 stmt.setString(1, file.getResourceId().toString());
-                stmt.setInt(2, file.getType());
+                stmt.setInt(2, file.getTypeId());
                 stmt.setInt(3, file.getFlags());
                 stmt.setString(4, file.getFileId().toString());
                 stmt.setInt(5, file.getLoaderId());
@@ -208,7 +210,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#createFile(org.opencms.file.CmsUser, org.opencms.file.CmsProject, java.lang.String, int, org.opencms.file.CmsFolder, byte[], org.opencms.file.I_CmsResourceType, long, long)
+     * @see org.opencms.db.I_CmsVfsDriver#createFile(org.opencms.file.CmsUser, org.opencms.file.CmsProject, java.lang.String, int, org.opencms.file.CmsFolder, byte[], org.opencms.file.types.I_CmsResourceType, long, long)
      */
     public CmsFile createFile(CmsUser user, CmsProject project, String filename, int flags, CmsFolder parentFolder, byte[] contents, I_CmsResourceType resourceType, long dateReleased, long dateExpired) throws CmsException {
 
@@ -218,7 +220,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             parentFolder.getStructureId(), 
             new CmsUUID(), 
             filename, 
-            resourceType.getResourceType(), 
+            resourceType.getTypeId(), 
             flags, 
             project.getId(), 
             org.opencms.main.I_CmsConstants.C_STATE_NEW, 
@@ -430,7 +432,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 // write the resource
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_WRITE");
                 stmt.setString(1, folder.getResourceId().toString());
-                stmt.setInt(2, folder.getType());
+                stmt.setInt(2, folder.getTypeId());
                 stmt.setInt(3, folder.getFlags());
                 stmt.setString(4, CmsUUID.getNullUUID().toString());
                 stmt.setInt(5, folder.getLoaderId());
@@ -867,7 +869,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 // write the resource
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_WRITE");
                 stmt.setString(1, resourceId.toString());
-                stmt.setInt(2, newResource.getType());
+                stmt.setInt(2, newResource.getTypeId());
                 stmt.setInt(3, newResource.getFlags());
                 stmt.setString(4, newFileId.toString());
                 stmt.setInt(5, newResource.getLoaderId());
@@ -1960,7 +1962,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
             // update the resource
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RESOURCES");
-            stmt.setInt(1, file.getType());
+            stmt.setInt(1, file.getTypeId());
             stmt.setInt(2, file.getFlags());
             stmt.setInt(3, file.getLoaderId());
             stmt.setLong(4, resourceDateModified);
@@ -2018,7 +2020,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
             // update the resource
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RESOURCES");
-            stmt.setInt(1, folder.getType());
+            stmt.setInt(1, folder.getTypeId());
             stmt.setInt(2, folder.getFlags());
             stmt.setInt(3, folder.getLoaderId());
             stmt.setLong(4, resourceDateModified);
@@ -2084,7 +2086,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         boolean isFolder = false;
 
-        if (resource.getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+        if (resource.getTypeId() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
             isFolder = true;
         }
 
@@ -2110,7 +2112,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
             // update the resource
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RESOURCES");
-            stmt.setInt(1, resource.getType());
+            stmt.setInt(1, resource.getTypeId());
             stmt.setInt(2, resource.getFlags());
             stmt.setInt(3, resource.getLoaderId());
             stmt.setLong(4, resourceDateModified);
@@ -2168,7 +2170,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
                 // update the online resource record
                 stmt = m_sqlManager.getPreparedStatement(conn, onlineProject, "C_RESOURCES_UPDATE_RESOURCES");
-                stmt.setInt(1, offlineResource.getType());
+                stmt.setInt(1, offlineResource.getTypeId());
                 stmt.setInt(2, offlineResource.getFlags());
                 stmt.setInt(3, offlineResource.getLoaderId());
                 stmt.setLong(4, offlineResource.getDateLastModified());
@@ -2207,7 +2209,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 // create the resource record online
                 stmt = m_sqlManager.getPreparedStatement(conn, onlineProject, "C_RESOURCES_WRITE");
                 stmt.setString(1, offlineResource.getResourceId().toString());
-                stmt.setInt(2, offlineResource.getType());
+                stmt.setInt(2, offlineResource.getTypeId());
                 stmt.setInt(3, offlineResource.getFlags());
                 stmt.setString(4, offlineResource.getFileId().toString());
                 stmt.setInt(5, offlineResource.getLoaderId());

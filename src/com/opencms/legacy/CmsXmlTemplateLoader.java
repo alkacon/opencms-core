@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/06/14 15:54:43 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/06/21 09:53:08 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderIncludeExtension {
     
@@ -606,10 +606,11 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         }
     }
     
-    /** 
-     * Initialize this resource loader.<p> 
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
      */
-    public void initialize() {
+    public void initConfiguration() {
+        
         // check if the element cache is enabled
         boolean elementCacheEnabled = m_configuration.getBoolean("elementcache.enabled", false);
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
@@ -887,7 +888,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         try {            
             // check if the target does exist in the OpenCms VFS
             CmsResource targetResource = controller.getCmsObject().readFileHeader(target);
-            isPageTarget = ((CmsResourceTypePage.C_RESOURCE_TYPE_ID == targetResource.getType()));
+            isPageTarget = ((CmsResourceTypePage.C_RESOURCE_TYPE_ID == targetResource.getTypeId()));
         } catch (CmsException e) {
             controller.setThrowable(e, target);
             throw new CmsException("File not found: " + target, e);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/06/18 14:17:53 $
- * Version: $Revision: 1.170 $
+ * Date   : $Date: 2004/06/21 09:55:02 $
+ * Version: $Revision: 1.171 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.file.*;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -76,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.170 $ $Date: 2004/06/18 14:17:53 $
+ * @version $Revision: 1.171 $ $Date: 2004/06/21 09:55:02 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1884,9 +1885,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     
     
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#readStaticExportPublishedResourceParamters(org.opencms.file.CmsProject, java.lang.String)
+     * @see org.opencms.db.I_CmsProjectDriver#readStaticExportPublishedResourceParameters(org.opencms.file.CmsProject, java.lang.String)
      */
-    public String readStaticExportPublishedResourceParamters(CmsProject currentProject, String rfsName) throws CmsException {
+    public String readStaticExportPublishedResourceParameters(CmsProject currentProject, String rfsName) throws CmsException {
         String returnValue = null;
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -1991,9 +1992,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setString(4, resource.getFileId().toString());
             stmt.setString(5, resource.getRootPath());
             stmt.setInt(6, resource.getState());
-            stmt.setInt(7, resource.getType());
+            stmt.setInt(7, resource.getTypeId());
             stmt.setString(8, publishId.toString());
-            stmt.setInt(9, resource.getLinkCount());
+            stmt.setInt(9, resource.getSiblingCount());
             stmt.setString(10, CmsUUID.getNullUUID().toString());
             stmt.setString(11, "");
             stmt.executeUpdate();

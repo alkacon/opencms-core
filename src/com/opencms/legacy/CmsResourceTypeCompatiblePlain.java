@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsResourceTypeCompatiblePlain.java,v $
- * Date   : $Date: 2004/06/14 15:54:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/21 09:53:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,19 +32,23 @@
 package com.opencms.legacy;
 
 
-import org.opencms.file.A_CmsResourceType;
+import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.A_CmsResourceType;
 import org.opencms.loader.CmsDumpLoader;
 
 import java.util.List;
+
+
+
 
 /**
  * Describes the resource type "compatiblePlain" (that only exists for backward compatibility for 
  * some very old OpenCms version).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsResourceTypeCompatiblePlain extends A_CmsResourceType {
 
@@ -55,30 +59,30 @@ public class CmsResourceTypeCompatiblePlain extends A_CmsResourceType {
     public static final String C_RESOURCE_TYPE_NAME = "compatiblePlain";
     
     /**
-     * @see org.opencms.file.I_CmsResourceType#getResourceType()
+     * @see org.opencms.file.types.I_CmsResourceType#getTypeId()
      */
-    public int getResourceType() {
+    public int getTypeId() {
         return C_RESOURCE_TYPE_ID;
     }
 
     /**
-     * @see org.opencms.file.A_CmsResourceType#getResourceTypeName()
+     * @see org.opencms.file.types.A_CmsResourceType#getTypeName()
      */
-    public String getResourceTypeName() {
+    public String getTypeName() {
         return C_RESOURCE_TYPE_NAME;
     }
 
     /**
-     * @see org.opencms.file.I_CmsResourceType#getLoaderId()
+     * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
     public int getLoaderId() {
         return CmsDumpLoader.C_RESOURCE_LOADER_ID;
     }      
     
     /**
-     * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, List, byte[], java.lang.Object)
+     * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, byte[], List)
      */
-    public CmsResource createResource(CmsObject cms, String resourcename, List properties, byte[] contents, Object parameter) {
+    public CmsResource createResource(CmsObject cms, CmsDriverManager driverManager, String resourcename, byte[] content, List properties) {
         throw new RuntimeException("createResource(): The resource type 'compatiblePlain' is deprecated and not longer supported");
     }      
 }

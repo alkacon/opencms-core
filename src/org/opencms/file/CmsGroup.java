@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/21 09:55:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsGroup implements I_CmsPrincipal {
 
@@ -222,15 +222,6 @@ public class CmsGroup implements I_CmsPrincipal {
     public void setEnabled() {
         setFlags(I_CmsConstants.C_FLAG_ENABLED);
     }    
-    
-    /**
-     * Sets this groups flags.<p>
-     * 
-     * @param flags the flags to set
-     */
-    void setFlags(int flags) {
-        m_flags = flags;
-    }
 
     /**
      * Sets the parent group id of this group.<p>
@@ -287,5 +278,14 @@ public class CmsGroup implements I_CmsPrincipal {
         result.append(" description:");
         result.append(m_description);
         return result.toString();
+    }
+    
+    /**
+     * Sets this groups flags.<p>
+     * 
+     * @param flags the flags to set
+     */
+    void setFlags(int flags) {
+        m_flags = flags;
     }
 }

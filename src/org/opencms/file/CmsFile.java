@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/21 09:55:24 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -67,7 +67,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             resource.getParentStructureId(),
             resource.getFileId(),
             resource.getName(),
-            resource.getType(),
+            resource.getTypeId(),
             resource.getFlags(),
             resource.getProjectLastModified(),
             resource.getState(),
@@ -78,7 +78,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             resource.getUserLastModified(),
             resource.getDateReleased(),
             resource.getDateExpired(),
-            resource.getLinkCount(),
+            resource.getSiblingCount(),
             0,
             new byte[0]);
         if (resource.hasFullResourceName()) {
@@ -178,7 +178,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             getParentStructureId(),
             getFileId(),
             getName(),
-            getType(),
+            getTypeId(),
             getFlags(),
             getProjectLastModified(),
             getState(),
@@ -189,7 +189,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             getUserLastModified(),
             getDateReleased(),
             getDateExpired(),
-            getLinkCount(),
+            getSiblingCount(),
             getLength(),
             newContent);
 

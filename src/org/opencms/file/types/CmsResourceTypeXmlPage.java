@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.18 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
+ * Date   : $Date: 2004/06/21 09:55:50 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,12 +29,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.file;
+package org.opencms.file.types;
 
+import org.opencms.db.CmsDriverManager;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.loader.CmsXmlPageLoader;
-import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkTable;
@@ -50,53 +52,26 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Describes the resource type "xmlpage".<p>
+ * Resource type descriptor for the type "xmlpage".<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.1 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
 
     /** The type id of this resource type. */
     public static final int C_RESOURCE_TYPE_ID = 10;
-    
+
     /** The name of this resource type. */
     public static final String C_RESOURCE_TYPE_NAME = "xmlpage";
-             
-    /**
-     * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, List, byte[], java.lang.Object)
-     */
-    public CmsResource createResource(CmsObject cms, String resourcename, List properties, byte[] contents, Object parameter) throws CmsException {
-        CmsFile file = cms.doCreateFile(resourcename, contents, C_RESOURCE_TYPE_NAME, properties);
-        cms.doLockResource(resourcename, CmsLock.C_MODE_COMMON);
 
-        contents = null;
-        return file;
-    }  
-    
-    /**
-     * Creates a resource for the specified template.<p>
-     * 
-     * @param cms the cms context
-     * @param resourcename the name of the resource to create
-     * @param properties properties for the new resource
-     * @param contents content for the new resource
-     * @param masterTemplate template for the new resource
-     * @return the created resource 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsResource createResourceForTemplate(CmsObject cms, String resourcename, List properties, byte[] contents, String masterTemplate) throws CmsException {        
-        properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_TEMPLATE, masterTemplate, null));
-        CmsFile resource = (CmsFile)createResource(cms, resourcename, properties, contents, null);                
-        return resource;
-    }
-    
     /**
      * @see org.opencms.validation.I_CmsHtmlLinkValidatable#findLinks(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
     public List findLinks(CmsObject cms, CmsResource resource) {
+
         List links = new ArrayList();
         CmsFile file = null;
         CmsXmlPage xmlPage = null;
@@ -130,13 +105,13 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
                 // iterate over all body elements per language
                 Iterator j = elementNames.iterator();
                 while (j.hasNext()) {
-                    elementName = (String) j.next();
+                    elementName = (String)j.next();
                     linkTable = xmlPage.getLinkTable(elementName, locale);
 
                     // iterate over all links inside a body element
                     Iterator k = linkTable.iterator();
                     while (k.hasNext()) {
-                        linkName = (String) k.next();
+                        linkName = (String)k.next();
                         link = linkTable.getLink(linkName);
 
                         // external links are ommitted
@@ -156,55 +131,60 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
 
         return links;
     }
-    
-    /**
-     * @see org.opencms.file.I_CmsResourceType#getCachePropertyDefault()
-     */
-    public String getCachePropertyDefault() {
-        return "element;locale;";
-    }        
 
     /**
-     * @see org.opencms.file.I_CmsResourceType#getLoaderId()
+     * @see org.opencms.file.types.I_CmsResourceType#getCachePropertyDefault()
+     */
+    public String getCachePropertyDefault() {
+
+        return "element;locale;";
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
     public int getLoaderId() {
+
         return CmsXmlPageLoader.C_RESOURCE_LOADER_ID;
-    }    
-    
+    }
+
     /**
-     * @see org.opencms.file.I_CmsResourceType#getResourceType()
+     * @see org.opencms.file.types.I_CmsResourceType#getTypeId()
      */
-    public int getResourceType() {
+    public int getTypeId() {
+
         return C_RESOURCE_TYPE_ID;
     }
 
     /**
-     * @see org.opencms.file.A_CmsResourceType#getResourceTypeName()
+     * @see org.opencms.file.types.A_CmsResourceType#getTypeName()
      */
-    public String getResourceTypeName() {
+    public String getTypeName() {
+
         return C_RESOURCE_TYPE_NAME;
     }
-    
+
     /**
-     * @see org.opencms.file.I_CmsResourceType#isDirectEditable()
+     * @see org.opencms.file.types.I_CmsResourceType#isDirectEditable()
      */
     public boolean isDirectEditable() {
+
         return true;
     }
-    
+
     /**
-     * @see org.opencms.file.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
+     * @see org.opencms.file.types.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, CmsDriverManager, CmsFile)
      */
-    public CmsFile writeFile(CmsObject cms, CmsFile file) throws CmsException {     
+    public CmsFile writeFile(CmsObject cms, CmsDriverManager driverManger, CmsFile resource) throws CmsException {
+
         // read the xml page, use the encoding set in the property       
-        CmsXmlPage xmlPage = CmsXmlPage.unmarshal(cms, file, false);    
+        CmsXmlPage xmlPage = CmsXmlPage.unmarshal(cms, resource, false);
         // validate the xml structure before writing the file         
         // an exception will be thrown if the structure is invalid
-        xmlPage.validateXmlStructure(new CmsXmlEntityResolver(cms));     
+        xmlPage.validateXmlStructure(new CmsXmlEntityResolver(cms));
         // correct the HTML structure 
-        CmsFile correctedFile = xmlPage.correctHtmlStructure(cms);        
+        CmsFile correctedFile = xmlPage.correctHtmlStructure(cms);
         // xml is valid if no exception occured
-        cms.doWriteFile(correctedFile);      
-        return correctedFile;
-    }        
+        return super.writeFile(cms, driverManger, correctedFile);
+    }
 }

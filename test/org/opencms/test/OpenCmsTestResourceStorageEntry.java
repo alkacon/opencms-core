@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorageEntry.java,v $
- * Date   : $Date: 2004/06/09 15:53:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/21 10:01:50 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,81 +49,80 @@ import org.opencms.util.CmsUUID;
  * A single entry of the OpenCmsTestResourceStorage.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class OpenCmsTestResourceStorageEntry {
+
+    /** The size of the content. */
+    protected int m_length;
     
     private Vector m_accessControlEntries;
     
-    /** The access control list */
+    /** The access control list. */
     private CmsAccessControlList m_accessControlList;
     
-       /** The ID of the content database record */
+       /** The ID of the content database record. */
     private CmsUUID m_contentId;
     
-    /** The content of the resource. If the resource is a folder, the content is null */
+    /** The content of the resource. If the resource is a folder, the content is null. */
     private byte[] m_contents;
 
-    /** The creation date of this resource */
+    /** The creation date of this resource. */
     private long m_dateCreated;
 
-    /** The expiration date of this resource */
+    /** The expiration date of this resource. */
     private long m_dateExpired;    
 
-    /** The date of the last modification of this resource */
+    /** The date of the last modification of this resource. */
     private long m_dateLastModified;
 
-    /** The release date of this resource */
+    /** The release date of this resource. */
     private long m_dateReleased;
     
-    /** The flags of this resource ( not used yet; the Accessflags are stored in m_accessFlags) */
+    /** The flags of this resource ( not used yet; the Accessflags are stored in m_accessFlags). */
     private int m_flags;
 
-    /** Boolean flag whether the timestamp of this resource was modified by a touch command */
+    /** Boolean flag whether the timestamp of this resource was modified by a touch command. */
     private boolean m_isTouched;
 
-    /** The size of the content */
-    protected int m_length;
-
-    /** The id of the loader which is used to process this resource */
+    /** The id of the loader which is used to process this resource. */
     private int m_loaderId;
     
-    /** The lockstate of the resource */
+    /** The lockstate of the resource. */
     private CmsLock m_lockstate;
     
-    /** The name of this resource */
+    /** The name of this resource. */
     private String m_name;
     
-    /** The ID of the parent's strcuture database record */
+    /** The ID of the parent's strcuture database record. */
     private CmsUUID m_parentId;
 
-    /** The project id where this resource has been last modified in */
+    /** The project id where this resource has been last modified in. */
     private int m_projectLastModified;
     
-    /** The properties of the resource */
+    /** The properties of the resource. */
     private List m_properties;
 
-    /** The ID of the resource database record */
+    /** The ID of the resource database record. */
     private CmsUUID m_resourceId;
 
-    /** The number of links that point to this resource */
+    /** The number of links that point to this resource. */
     private int m_siblingCount;
 
-    /** The state of this resource */
+    /** The state of this resource. */
     private int m_state;
 
-    /** The ID of the structure database record */
+    /** The ID of the structure database record. */
     private CmsUUID m_structureId;
 
-    /** The type of this resource */
+    /** The type of this resource. */
     private int m_type;
     
-    /** The id of the user who created this resource */
+    /** The id of the user who created this resource. */
     private CmsUUID m_userCreated;
     
-    /** The id of the user who modified this resource last */
+    /** The id of the user who modified this resource last. */
     private CmsUUID m_userLastModified;
-
     
     /**
      * Creates a new empty OpenCmsTestResourceStorageEntry.<p>
@@ -149,7 +148,7 @@ public class OpenCmsTestResourceStorageEntry {
         m_flags = res.getFlags();
         m_isTouched = res.isTouched();
         m_length = res.getLength();
-        m_siblingCount = res.getLinkCount();
+        m_siblingCount = res.getSiblingCount();
         m_loaderId = res.getLoaderId();
         m_name = res.getName();
         m_parentId = res.getParentStructureId();
@@ -157,7 +156,7 @@ public class OpenCmsTestResourceStorageEntry {
         m_resourceId = res.getResourceId();
         m_state = res.getState();
         m_structureId = res.getStructureId();
-        m_type = res.getType();
+        m_type = res.getTypeId();
         m_userCreated = res.getUserCreated();
         m_userLastModified = res.getUserLastModified();     
         m_lockstate = cms.getLock(res);

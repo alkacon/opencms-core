@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/06/21 09:59:03 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 5.1.12
  */
@@ -473,7 +473,7 @@ public class CmsPublishProject extends CmsReport {
         } catch (CmsException e) {
             // res will be null
         }
-        if ((res != null && res.isFile() && res.getLinkCount() > 1) || (res != null && res.isFolder())) {
+        if ((res != null && res.isFile() && res.getSiblingCount() > 1) || (res != null && res.isFolder())) {
             // resource is file and has siblings, so create checkbox
             StringBuffer retValue = new StringBuffer(128);
             retValue.append("<tr>\n\t<td>");

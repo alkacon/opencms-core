@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/21 09:59:03 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@
 package org.opencms.workplace;
 
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceTypeFolder;
-import org.opencms.file.CmsResourceTypeXmlPage;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.3
  */
@@ -158,12 +158,10 @@ public class CmsNewResourceFolder extends CmsNewResource {
      */
     public void actionCreateResource() throws JspException {
         try {
-            // store the folder name
-            String resourceName = getParamResource();
-            // create the full resource name
+            // get the full resource name
             String fullResourceName = computeFullResourceName();
             // create the folder            
-            getCms().createResource(CmsResource.getParentFolder(fullResourceName), resourceName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);           
+            getCms().createResource(fullResourceName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);           
             setParamResource(fullResourceName);            
         } catch (CmsException e) {
             // error creating folder, show error dialog

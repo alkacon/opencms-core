@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/06/10 19:36:45 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/06/21 10:01:23 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.workplace.editor;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsResourceTypeXmlPage;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
@@ -58,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 5.3.0
  */
@@ -162,7 +162,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
             if (currentProject == I_CmsConstants.C_PROJECT_ONLINE_ID) {
                 // don't render direct edit button in online project
                 return null;
-            } else if (!cmsObject.getResourceType(resource.getType()).isDirectEditable()) {
+            } else if (!OpenCms.getLoaderManager().getResourceType(resource.getTypeId()).isDirectEditable()) {
                 // don't render direct edit button for non-editable resources 
                 return null;
             } else if (CmsResource.getName(filename).startsWith(org.opencms.main.I_CmsConstants.C_TEMP_PREFIX)) {
@@ -182,7 +182,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
                 return C_DIRECT_EDIT_MODE_DISABLED;
             }
               
-            if ((element != null) && (resource.getType() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID)) {
+            if ((element != null) && (resource.getTypeId() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID)) {
                 // check if the desired element is available (in case of xml page)
                 CmsXmlPage page = (CmsXmlPage)req.getAttribute(filename);                    
                 if (page == null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2004/06/17 13:33:49 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/06/21 09:59:03 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.I_CmsResourceType;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -62,7 +62,7 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 5.1
  */
@@ -128,13 +128,14 @@ public class CmsTree extends CmsWorkplace {
         retValue.append("\tinitResources(\"" + encoding + "\", \"" + C_PATH_WORKPLACE + "\", \"" + skinUri + "\", \"" + servletUrl + "\");\n");
         
         // get all available resource types
-        List allResTypes = cms.getAllResourceTypes();
-        Iterator i = allResTypes.iterator();
-        while (i.hasNext()) {
-            // loop through all types and check which types can be displayed
-            I_CmsResourceType curType = (I_CmsResourceType)i.next();
-            int curTypeId = curType.getResourceType();
-            String curTypeName = curType.getResourceTypeName();
+        I_CmsResourceType[] allResTypes = OpenCms.getLoaderManager().getAllResourceTypes();
+        for (int i=0; i<allResTypes.length; i++) {
+            // loop through all types
+            if (allResTypes[i] == null) {
+                continue;
+            }
+            int curTypeId = allResTypes[i].getTypeId();
+            String curTypeName = allResTypes[i].getTypeName();
             String curTypeLocalName = messages.key("fileicon."+curTypeName);
             try {
                 cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "restypes/" + curTypeName);
@@ -142,6 +143,7 @@ public class CmsTree extends CmsWorkplace {
                 retValue.append(curTypeId + ", \"" + curTypeName + "\",\t\"" + curTypeLocalName + "\",\t\"filetypes/" + curTypeName + ".gif\");\n");
             } catch (CmsException e) {
                 // empty
+                // WHY IS THIS EMPTY!!!!!
             }
         }       
 
@@ -202,7 +204,7 @@ public class CmsTree extends CmsWorkplace {
         } catch (CmsException e) {
             // should not happen
         }
-        return getNode(title, resource.getType(), resource.getStructureId(), resource.getParentStructureId(), false);
+        return getNode(title, resource.getTypeId(), resource.getStructureId(), resource.getParentStructureId(), false);
     }
     
     /**
@@ -429,10 +431,10 @@ public class CmsTree extends CmsWorkplace {
             while (i.hasNext()) {          
                 CmsResource resource = (CmsResource)i.next();
                 grey = !CmsProject.isInsideProject(projectResources, resource);
-                if ((!grey) && (!getSettings().getResourceTypes().containsKey(new Integer(resource.getType())))) {
+                if ((!grey) && (!getSettings().getResourceTypes().containsKey(new Integer(resource.getTypeId())))) {
                     grey = true;
                 }
-                result.append(getNode(resource.getName(), resource.getType(), resource.getStructureId(), resource.getParentStructureId(), grey));
+                result.append(getNode(resource.getName(), resource.getTypeId(), resource.getStructureId(), resource.getParentStructureId(), grey));
             }
         
             if (includeFiles()) {

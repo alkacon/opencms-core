@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/06/21 09:55:24 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.file;
 
 import java.io.Serializable;
 
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
@@ -44,7 +45,7 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
     
@@ -54,7 +55,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /** The default expiration date of a resource (which is: never expires). */
     public static long DATE_EXPIRED_DEFAULT = Long.MAX_VALUE;
     
-    /** The ID of the content database record. */
+    /** The id of the content database record. */
     private CmsUUID m_contentId;
 
     /** The creation date of this resource. */
@@ -79,7 +80,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     protected int m_length;
 
     /** The number of links that point to this resource. */
-    private int m_linkCount;
+    private int m_siblingCount;
 
     /** The id of the loader which is used to process this resource. */
     private int m_loaderId;
@@ -87,13 +88,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /** The name of this resource. */
     private String m_name;
     
-    /** The ID of the parent's strcuture database record. */
+    /** The id of the parent's strcuture database record. */
     private CmsUUID m_parentId;
 
     /** The project id where this resource has been last modified in. */
     private int m_projectLastModified;
 
-    /** The ID of the resource database record. */
+    /** The id of the resource database record. */
     private CmsUUID m_resourceId;
 
     /** The name of a resource with it's full path from the root folder including the current site root. */
@@ -102,11 +103,11 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /** The state of this resource. */
     private int m_state;
 
-    /** The ID of the structure database record. */
+    /** The id of the structure database record. */
     private CmsUUID m_structureId;
 
-    /** The type of this resource. */
-    private int m_type;
+    /** The resource type id of this resource. */
+    private int m_typeId;
     
     /** The id of the user who created this resource. */
     private CmsUUID m_userCreated;
@@ -161,7 +162,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_parentId = parentId;
         m_contentId = fileId;
         m_name = name;
-        m_type = type;
+        m_typeId = type;
         m_flags = flags;
         m_projectLastModified = projectId;
         m_loaderId = loaderId;
@@ -171,7 +172,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_dateLastModified = dateLastModified;
         m_userLastModified = userLastModified;
         m_length = size;
-        m_linkCount = linkCount;
+        m_siblingCount = linkCount;
         m_dateReleased = dateReleased;
         m_dateExpired = dateExpired;
         m_isTouched = false;
@@ -322,7 +323,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             m_parentId, 
             m_contentId, 
             m_name, 
-            m_type,
+            m_typeId,
             m_flags, 
             m_projectLastModified, 
             m_state, 
@@ -333,7 +334,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             m_userLastModified, 
             m_dateReleased, 
             m_dateExpired,
-            m_linkCount,
+            m_siblingCount,
             m_length
         );
     }
@@ -424,7 +425,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * Gets the id of the file content database entry.<p>
      *
-     * @return the ID of the file content database entry
+     * @return the id of the file content database entry
      */
     public CmsUUID getFileId() {
         return m_contentId;
@@ -449,12 +450,12 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Gets the number of references to the resource.<p>
+     * Returns the number of siblings of the resource.<p>
      * 
-     * @return the number of links
+     * @return the number of siblings
      */
-    public int getLinkCount() {
-        return m_linkCount;
+    public int getSiblingCount() {
+        return m_siblingCount;
     }
     
     /**
@@ -467,7 +468,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Used to returns the ID of the project if the resource is locked in the database,
+     * Used to returns the id of the project if the resource is locked in the database,
      * deprecated, will now always throw a <code>RuntimeException</code><p>
      * 
      * Don't use this method to detect the lock state of a resource. 
@@ -563,12 +564,12 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
     
     /**
-     * Returns the type id for this resource.<p>
+     * Returns the resource type id for this resource.<p>
      *
-     * @return the type id of this resource.
+     * @return the resource type id of this resource.
      */
-    public int getType() {
-        return m_type;
+    public int getTypeId() {
+        return m_typeId;
     }
 
     /**
@@ -630,7 +631,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return true if this resource is a file, false otherwise
      */
     public boolean isFile() {
-        return getType() != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID;
+        return getTypeId() != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID;
     }
 
     /**
@@ -639,7 +640,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return true if this is is a folder
      */
     public boolean isFolder() {
-        return getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID;
+        return getTypeId() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID;
     }
     
     /**
@@ -681,7 +682,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Used to return the ID of the user if the resource is directly locked in the database,
+     * Used to return the id of the user if the resource is directly locked in the database,
      * deprecated, will now always throw a <code>RuntimeException</code><p>
      * 
      * Don't use this method to detect the lock state of a resource. 
@@ -763,7 +764,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param fullResourceName the resource name including the path
      */
     public void setFullResourceName(String fullResourceName) {
-        m_rootPath = fullResourceName;
+        
+        if (isFolder() && !CmsResource.isFolder(fullResourceName)) {
+            // ensure a folder always ends with a /
+            m_rootPath = fullResourceName.concat("/");
+        } else {
+            m_rootPath = fullResourceName;
+        }
     }
 
     /**
@@ -819,14 +826,14 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Used to sets the ID of the project where the resource has been last modified,
+     * Used to sets the id of the project where the resource has been last modified,
      * deprecated, will now always throw a <code>RuntimeException</code><p>
      * 
      * It is unsafe to set the project state explicit, the project state is saved 
      * implicit when the resource get modified. Thus, this value is never written 
      * to the database.
      *
-     * @param projectId the ID of the project where the resource has been last modified
+     * @param projectId the id of the project where the resource has been last modified
      * @deprecated the project state is not part of the resource in the revised resource model
      */
     public void setProjectId(int projectId) {
@@ -849,7 +856,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param type the type to set
      */
     public void setType(int type) {
-        m_type = type;
+        m_typeId = type;
     }
     
     /**
@@ -879,8 +886,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         result.append(m_parentId);
         result.append(", content-ID: ");
         result.append(m_contentId);               
-        result.append(", type: ");
-        result.append(m_type);
+        result.append(", type-ID: ");
+        result.append(m_typeId);
         result.append(", flags: ");
         result.append(m_flags);  
         result.append(", project: ");
@@ -900,7 +907,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         result.append(", size: ");
         result.append(m_length);        
         result.append(" link count: ");
-        result.append(m_linkCount);
+        result.append(m_siblingCount);
         result.append("]");
         
         return result.toString();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2004/06/15 10:59:44 $
-* Version: $Revision: 1.103 $
+* Date   : $Date: 2004/06/21 09:53:21 $
+* Version: $Revision: 1.104 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -87,7 +88,7 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.103 $ $Date: 2004/06/15 10:59:44 $
+ * @version $Revision: 1.104 $ $Date: 2004/06/21 09:53:21 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
@@ -311,8 +312,10 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
     /**
      * Create a new CmsFile object containing an empty XML file of the
      * current content type.
+     * 
      * The String returned by <code>getXmlDocumentTagName()</code>
      * will be used to build the XML document element.
+     * 
      * @param cms Current cms object used for accessing system resources.
      * @param filename Name of the file to be created.
      * @param documentType Document type of the new file.
@@ -324,9 +327,10 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             // this is no absolute filename.
             this.throwException("Cannot create new file. Bad name.", CmsException.C_BAD_NAME);
         }
-        int slashIndex = filename.lastIndexOf("/") + 1;
-        String folder = filename.substring(0, slashIndex);
-        cms.createResource(folder, filename, cms.getResourceTypeId(documentType), null, "".getBytes());
+        int pos = filename.lastIndexOf("/") + 1;
+        String folder = filename.substring(0, pos);
+        int type = OpenCms.getLoaderManager().getResourceType(documentType).getTypeId();
+        cms.createResource(folder + filename, type);
         cms.lockResource(filename);
         m_cms = cms;
         m_filename = filename;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2004/06/18 13:56:08 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/21 09:59:03 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,11 +34,11 @@ package org.opencms.workplace;
 import org.opencms.db.CmsImportFolder;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsResourceTypeBinary;
-import org.opencms.file.CmsResourceTypeImage;
-import org.opencms.file.CmsResourceTypeJsp;
-import org.opencms.file.CmsResourceTypePlain;
-import org.opencms.file.I_CmsResourceType;
+import org.opencms.file.types.CmsResourceTypeBinary;
+import org.opencms.file.types.CmsResourceTypeImage;
+import org.opencms.file.types.CmsResourceTypeJsp;
+import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -66,7 +66,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.3.3
  */
@@ -83,6 +83,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
     
     /** All allowed resource types for upload, used in form "suggested file type". */
     private static String[] ALLOWED_RESOURCETYPES = new String[] {
+            // TODO: This must be made configurable in opencms-workplace.xml
             CmsResourceTypeBinary.C_RESOURCE_TYPE_NAME, 
             CmsResourceTypePlain.C_RESOURCE_TYPE_NAME, 
             CmsResourceTypeImage.C_RESOURCE_TYPE_NAME, 
@@ -163,10 +164,10 @@ public class CmsNewResourceUpload extends CmsNewResource {
     public void actionUpdateFile() throws JspException {
         try {
             CmsResource res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
-            I_CmsResourceType oldType = getCms().getResourceType(res.getType());
-            if (!oldType.getResourceTypeName().equals(getParamNewResourceType())) {
+            I_CmsResourceType oldType = OpenCms.getLoaderManager().getResourceType(res.getTypeId()); 
+            if (!oldType.getTypeName().equals(getParamNewResourceType())) {
                 // change the type of the uploaded resource
-                int newType = getCms().getResourceTypeId(getParamNewResourceType());
+                int newType = OpenCms.getLoaderManager().getResourceType(getParamNewResourceType()).getTypeId();
                 getCms().chtype(getParamResource(), newType);
             }
             if (getParamNewResourceName() != null && !getParamResource().endsWith(getParamNewResourceName())) {
@@ -246,11 +247,11 @@ public class CmsNewResourceUpload extends CmsNewResource {
                     int resTypeId = computeFileType(newResname, contentType);
                     try {
                         // create the resource
-                        getCms().createResource(getParamResource(), resTypeId, Collections.EMPTY_LIST, content, null);
+                        getCms().createResource(getParamResource(), resTypeId, content, Collections.EMPTY_LIST);
                     } catch (CmsException e) {
                         // resource was present, overwrite it
-                        getCms().lockResource(getParamResource(), true);
-                        getCms().replaceResource(getParamResource(), resTypeId, null, content);
+                        getCms().lockResource(getParamResource());
+                        getCms().replaceResource(getParamResource(), resTypeId, content, null);
                     }
                 }
             } else {
@@ -295,14 +296,12 @@ public class CmsNewResourceUpload extends CmsNewResource {
         int currentResTypeId = -1;
         try {
             CmsResource res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
-            currentResTypeId = res.getType();
+            currentResTypeId = res.getTypeId();
          
             for (int i=0; i<ALLOWED_RESOURCETYPES.length; i++) {
-                String resTypeName = ALLOWED_RESOURCETYPES[i];
-                int resTypeId = getCms().getResourceTypeId(resTypeName);
-                
+                int resTypeId = OpenCms.getLoaderManager().getResourceType(ALLOWED_RESOURCETYPES[i]).getTypeId();                
                 // get explorer type settings for current resource type
-                CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
+                CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(ALLOWED_RESOURCETYPES[i]);
                 if (settings != null) {
                     result.append("<tr><td>");
                     result.append("<input type=\"radio\" name=\"" + PARAM_NEWRESOURCETYPE + "\" value=\"" + settings.getName() + "\"");

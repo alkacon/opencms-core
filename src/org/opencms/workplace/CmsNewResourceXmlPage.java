@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/21 09:59:03 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,9 +34,10 @@ package org.opencms.workplace;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsResourceTypeXmlPage;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -62,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.3.3
  */
@@ -169,8 +170,10 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             }
             
             // create the xml page   
-            ((CmsResourceTypeXmlPage)getCms().getResourceType(CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID)).createResourceForTemplate(getCms(), fullResourceName, new ArrayList(), bodyFileBytes, getParamTemplate());
-            
+            List properties = new ArrayList();
+            properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_TEMPLATE, getParamTemplate(), null));
+            getCms().createResource(fullResourceName, CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID, bodyFileBytes, properties);
+
             // set the resource parameter to full path for property dialog 
             setParamResource(fullResourceName);            
         } catch (CmsException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/06/18 14:17:54 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2004/06/21 09:55:24 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,9 @@ package org.opencms.file;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -48,6 +51,7 @@ import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
@@ -75,7 +79,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  */
 public class CmsObject {
 
@@ -100,23 +104,605 @@ public class CmsObject {
     public CmsObject() {
         // noop
     }
+    
+    /**
+     * Changes the project id of the resource to the current project, indicating that 
+     * the resource was last modified in this project.<p>
+     * 
+     * This information is used while publishing. Only resources inside the 
+     * project folders that are new/modified/changed <i>and</i> that "belong" 
+     * to the project (i.e. have the id of the project set) are published
+     * with the project.<p>
+     * 
+     * @param resourcename the name of the resource to change the project id for (full path)
+     * @throws CmsException if something goes wrong
+     */
+    public void changeLastModifiedProjectId(String resourcename) throws CmsException {
+
+        getResourceType(
+            readFileHeader(resourcename, CmsResourceFilter.ALL).getTypeId()
+        ).changeLastModifiedProjectId(
+            this, 
+            m_driverManager, 
+            resourcename);
+    }
 
     /**
-     * Initializes this CmsObject with the provided user context and database connection.<p>
+     * Changes the resource type of a resource.<p>
+     * 
+     * OpenCms handles resource according to the resource type,
+     * not the file suffix. This is e.g. why a JSP in OpenCms can have the 
+     * suffix ".html" instead of ".jsp" only. Changing the resource type
+     * makes sense e.g. if you want to make a plain text file a JSP resource,
+     * or a binary file an image etc.<p> 
      *
-     * @param driverManager the driver manager to access the database
-     * @param context the request context that contains the user authentification
-     * @param sessionStorage the core session
+     * @param resourcename the name of the resource to apply this operation to (full path)
+     * @param newType the new resource type for this resource
+     *
+     * @throws CmsException if something goes wrong
      */
-    public void init(
-            CmsDriverManager driverManager,
-            CmsRequestContext context,
-            CmsSessionInfoManager sessionStorage
-    ) {
-        m_sessionStorage = sessionStorage;
-        m_driverManager = driverManager;
-        m_context = context;
+    public void chtype(String resourcename, int newType) throws CmsException {
+        
+        getResourceType(
+            readFileHeader(resourcename, CmsResourceFilter.ALL).getTypeId()
+        ).chtype(
+            this, 
+            m_driverManager, 
+            resourcename, 
+            newType);
     }
+    
+    /**
+     * Copies a resource.<p>
+     * 
+     * The copied resource will always be locked to the current user
+     * after the copy operation.<p>
+     * 
+     * Siblings will be treated according to the
+     * <code>{@link org.opencms.main.I_CmsConstants#C_COPY_PRESERVE_SIBLING}</code> mode.<p>
+     * 
+     * @param source the name of the resource to copy with complete path
+     * @param destination the name of the copy destination with complete path
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #copyResource(String, String, int)
+     */
+    public void copyResource(String source, String destination) throws CmsException {
+     
+        copyResource(source, destination, I_CmsConstants.C_COPY_PRESERVE_SIBLING);        
+    }
+
+    /**
+     * Copies a resource.<p>
+     * 
+     * The copied resource will always be locked to the current user
+     * after the copy operation.<p>
+     * 
+     * The <code>siblingMode</code> parameter controls how to handle siblings 
+     * during the copy operation.
+     * Possible values for this parameter are: 
+     * <ul>
+     * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_AS_NEW}</code></li>
+     * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_AS_SIBLING}</code></li>
+     * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_PRESERVE_SIBLING}</code></li>
+     * </ul><p>
+     * 
+     * @param source the name of the resource to copy with complete path
+     * @param destination the name of the copy destination with complete path
+     * @param siblingMode indicates how to handle siblings during copy
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void copyResource(String source, String destination, int siblingMode) throws CmsException {
+        
+        getResourceType(
+            readFileHeader(source, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
+        ).copyResource(
+            this, 
+            m_driverManager, 
+            source, 
+            destination, 
+            siblingMode);
+    }
+
+    /**
+     * Copies a resource to the current project of the user.<p>
+     * 
+     * This is used to extend the current users project with the
+     * specified resource, in case that resource is not yet part of the project.
+     * The resource is not really copied like in a regular copy operation, 
+     * it is in fact only "enabled" in the current users project.<p>   
+     * 
+     * @param resourcename the name of the resource to apply this operation to
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void copyResourceToProject(String resourcename) throws CmsException {
+        
+        getResourceType(
+            readFileHeader(resourcename, CmsResourceFilter.ALL).getTypeId()
+         ).copyResourceToProject(
+             this, 
+             m_driverManager, 
+             resourcename);
+    }
+    
+    /**
+     * Creates a new resource of the given resource type with 
+     * empty content and no properties.<p>
+     * 
+     * @param resourcename the name of the resource to create (full path)
+     * @param type the type of the resource to create
+     * 
+     * @return the created resource
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #createResource(String, int, byte[], List)
+     */
+    public CmsResource createResource(String resourcename, int type) throws CmsException {
+       
+        return createResource(resourcename, type, new byte[0], Collections.EMPTY_LIST);
+    }
+
+    /**
+     * Creates a new resource of the given resource type
+     * with the provided content and properties.<p>
+     * 
+     * @param resourcename the name of the resource to create (full path)
+     * @param type the type of the resource to create
+     * @param properties the properties for the new resource
+     * @param content the contents for the new resource
+     * 
+     * @return the created resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsResource createResource(String resourcename, int type, byte[] content, List properties) throws CmsException {
+        
+        return getResourceType(type)
+            .createResource(
+                this, 
+                m_driverManager, 
+                resourcename,
+                content, 
+                properties);
+    }    
+    
+    /**
+     * Deletes a resource.<p>
+     * 
+     * The <code>siblingMode</code> parameter controls how to handle siblings 
+     * during the delete operation.
+     * Possible values for this parameter are: 
+     * <ul>
+     * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_DELETE_SIBLINGS}</code></li>
+     * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_IGNORE_SIBLINGS}</code></li>
+     * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_PRESERVE_SIBLINGS}</code></li>
+     * </ul><p>
+     * 
+     * @param resourcename the name of the resource to delete (full path)
+     * @param siblingMode indicates how to handle siblings of the deleted resource
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#deleteResource(String, int)
+     */
+    public void deleteResource(String resourcename, int siblingMode) throws CmsException {
+        
+        getResourceType(
+            readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
+        ).deleteResource(
+            this, 
+            m_driverManager, 
+            resourcename, 
+            siblingMode);
+    }    
+    
+    /**
+     * Returns the name a resource would have it is was moved to the
+     * "lost and found" folder.<p>
+     * 
+     * @param resourcename the name of the resource to apply this operation to
+     *
+     * @return the name of the resource inside the "lost and found" folder
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #moveToLostAndFound(String)
+     */
+    public String getLostAndFoundName(String resourcename) throws CmsException {
+        
+        return getResourceType(
+            readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
+        ).moveToLostAndFound(
+            this, 
+            m_driverManager, 
+            resourcename, 
+            true);
+    }     
+    
+
+    /**
+     * Imports a resource to the OpenCms VFS.<p>
+     * 
+     * If a resource already exists in the VFS (i.e. has the same name and 
+     * same id) it is replaced by the imported resource.<p>
+     * 
+     * If a resource with the same name but a different id exists, 
+     * the imported resource is (usually) moved to the "lost and found" folder.<p> 
+     *
+     * @param resourcename the target name (with full path) for the resource after import
+     * @param resource the resource to be imported
+     * @param content the content of the resource
+     * @param properties the properties of the resource
+     * 
+     * @return the imported resource
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#moveToLostAndFound(String)
+     */
+    public CmsResource importResource(String resourcename, CmsResource resource, byte[] content, List properties) throws CmsException {
+        
+        return getResourceType(
+            resource.getTypeId()
+        ).importResource(
+            this, 
+            m_driverManager, 
+            resourcename, 
+            resource, 
+            content, 
+            properties);
+    }
+    
+    /**
+     * Locks a resource.<p>
+     *
+     * The mode for the lock is <code>{@link org.opencms.lock.CmsLock#C_MODE_COMMON}</code>.<p>
+     *
+     * @param resourcename the name (with full path) of the resource to lock
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#lockResource(String, int)
+     * @see CmsDriverManager#lockResource(CmsRequestContext, String, int)
+     */    
+    public void lockResource(String resourcename) throws CmsException {
+
+        lockResource(resourcename, CmsLock.C_MODE_COMMON);
+    }
+    
+    /**
+     * Locks a resource.<p>
+     *
+     * The <code>mode</code> parameter controls what kind of lock is used.
+     * Possible values for this parameter are: 
+     * <ul>
+     * <li><code>{@link org.opencms.lock.CmsLock#C_MODE_COMMON}</code></li>
+     * <li><code>{@link org.opencms.lock.CmsLock#C_MODE_TEMP}</code></li>
+     * </ul><p>
+     * @param resourcename the name (with full path) of the resource to lock
+     * @param mode flag indicating the mode for the lock
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#lockResource(String, int)
+     * @see CmsDriverManager#lockResource(CmsRequestContext, String, int)
+     */    
+    public void lockResource(String resourcename, int mode) throws CmsException {
+        
+        getResourceType(
+            readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
+        ).lockResource(
+            this, 
+            m_driverManager, 
+            resourcename, 
+            mode);
+    }    
+    
+    /**
+     * Moves a resource to the given destination.<p>
+     * 
+     * A move operation in OpenCms is always a copy (as sibling) followed by a delete,
+     * this is a result of the online/offline structure of the 
+     * OpenCms VFS. This way you can see the deleted files/folder in the offline
+     * project, and are unable to undelete them.<p>
+     * 
+     * @param source the name of the resource to apply this operation to
+     * @param destination the destination resource name
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #renameResource(String, String)
+     */
+    public void moveResource(String source, String destination) throws CmsException {
+        
+        getResourceType(
+            readFileHeader(source, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
+        ).moveResource(
+            this, 
+            m_driverManager, 
+            source, 
+            destination);
+    }
+
+    /**
+     * Moves a resource to the "lost and found" folder.<p>
+     * 
+     * The "lost and found" folder is a special system folder. 
+     * This operation is used e.g. during import of resources
+     * when a resource with the same name but a different resource ID
+     * already exists in the VFS. In this case the imported resource is 
+     * moved to the "lost and found" folder.<p>
+     * 
+     * @param resourcename the name of the resource to apply this operation to
+     *
+     * @return the name of the resource inside the "lost and found" folder
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #getLostAndFoundName(String)
+     */
+    public String moveToLostAndFound(String resourcename) throws CmsException {
+        
+        return getResourceType(
+            readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
+        ).moveToLostAndFound(
+            this, 
+            m_driverManager, 
+            resourcename, 
+            false);
+    }    
+    
+    /**
+     * Renames a resource to the given destination name,
+     * this is identical to a <code>move</code> operation.<p>
+     *
+     * @param source the name of the resource to apply this operation to
+     * @param destination the destination resource name
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #moveResource(String, String)
+     */
+    public void renameResource(String source, String destination) throws CmsException {
+        
+        moveResource(source, destination);
+    }
+
+    /**
+     * Replaces the content, type and properties of a resource.<p>
+     * 
+     * @param resourcename the name of the resource to apply this operation to
+     * @param type the new type of the resource
+     * @param content the new content of the resource
+     * @param properties the new properties of the resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void replaceResource(String resourcename, int type, byte[] content, List properties) throws CmsException {
+
+        getResourceType(
+            readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
+        ).replaceResource(
+            this, 
+            m_driverManager, 
+            resourcename,
+            type, 
+            content, 
+            properties);
+    }
+
+    /**
+     * Restores a file in the current project with a version from the backup.<p>
+     * 
+     * @param resourcename the name of the resource to apply this operation to
+     * @param tag the tag id to resource form the backup
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void restoreResource(String resourcename, int tag) throws CmsException {
+        
+        getResourceType(
+            readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
+        ).restoreResource(
+            this, 
+            m_driverManager, 
+            resourcename, 
+            tag);
+    }    
+    
+    /**
+     * Change the timestamp information of a resource.<p>
+     * 
+     * This method is used to set the "last modified" date
+     * of a resource, the "release" date of a resource, 
+     * and also the "expires" date of a resource.<p>
+     * 
+     * @param resourcename the name of the resource to change
+     * @param dateLastModified timestamp the new timestamp of the changed resource
+     * @param dateReleased the new releasedate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
+     * @param dateExpired the new expiredate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
+     * @param recursive if true, touch recursively all sub-resources (only for folders)
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #touch(String, long, long, long, CmsUUID, boolean)
+     */
+    public void touch(String resourcename, long dateLastModified, long dateReleased, long dateExpired, boolean recursive) throws CmsException {
+        
+        touch(
+            resourcename, 
+            dateLastModified, 
+            dateReleased, 
+            dateExpired, 
+            getRequestContext().currentUser().getId(), 
+            recursive);
+    }
+
+    /**
+     * Change the timestamp information of a resource.<p>
+     * 
+     * This method is used to set the "last modified" date
+     * of a resource, the "release" date of a resource, 
+     * and also the "expires" date of a resource.<p>
+     * 
+     * @param resourcename the name of the resource to apply this operation to
+     * @param dateLastModified the new last modified date of the resource
+     * @param dateReleased the new release date of the resource, 
+     *      use <code>{@link org.opencms.main.I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged
+     * @param dateExpired the new expire date of the resource, 
+     *      use <code>{@link org.opencms.main.I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged
+     * @param user the user who is inserted as userLastModified 
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void touch(String resourcename, long dateLastModified, long dateReleased, long dateExpired, CmsUUID user, boolean recursive) throws CmsException {
+
+        getResourceType(
+            readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
+        ).touch(
+            this, 
+            m_driverManager, 
+            resourcename, 
+            dateLastModified, 
+            dateReleased, 
+            dateExpired, 
+            user, 
+            recursive);
+    }
+
+    /**
+     * Undeletes a resource.<p>
+     * 
+     * @param resourcename the name of the resource to apply this operation to
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void undeleteResource(String resourcename) throws CmsException {
+
+        getResourceType(
+            readFileHeader(resourcename, CmsResourceFilter.ALL).getTypeId()
+        ).undeleteResource(
+            this, 
+            m_driverManager, 
+            resourcename);
+    }
+
+    /**
+     * Undos all changes in the resource by restoring the version from the 
+     * online project to the current offline project.<p>
+     * 
+     * @param resourcename the name of the resource to apply this operation to
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void undoChanges(String resourcename, boolean recursive) throws CmsException {
+
+        getResourceType(
+            readFileHeader(resourcename, CmsResourceFilter.ALL).getTypeId()
+        ).undoChanges(
+            this, 
+            m_driverManager, 
+            resourcename, 
+            recursive);
+    }    
+
+    /**
+     * Unlocks a resource.<p>
+     * 
+     * @param resourcename the name of the resource to apply this operation to
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     *
+     * @throws CmsException if something goes wrong
+     */    
+    public void unlockResource(String resourcename, boolean recursive) throws CmsException {
+
+        getResourceType(
+            readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
+        ).unlockResource(
+            this, 
+            m_driverManager, 
+            resourcename, 
+            recursive);
+    }
+    
+    /**
+     * Writes a resource, including it's content.<p>
+     * 
+     * Applies only to resources of type <code>{@link CmsFile}</code>
+     * i.e. resources that have a binary content attached.<p>
+     * 
+     * @param resource the resource to apply this operation to
+     *
+     * @return the written resource
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public CmsFile writeFile(CmsFile resource) throws CmsException {
+       
+        return getResourceType(
+            resource.getTypeId()
+        ).writeFile(
+            this, 
+            m_driverManager, 
+            resource);
+    }    
+    
+    /**
+     * Convenience method to add the site root from the current users 
+     * request context to a resource name.<p>
+     *
+     * @param resourcename the resource name
+     * @return the resource name with the site root added
+     * 
+     * @see CmsRequestContext#addSiteRoot(String)
+     */
+    private String addSiteRoot(String resourcename) {
+        
+        return m_context.addSiteRoot(resourcename);
+    }    
+
+    /**
+     * Convenience method to return the initialized resource type 
+     * instance for the given id.<p>
+     * 
+     * @param resourceType the id of the resource type to get
+     * @return the initialized resource type instance for the given id
+     * @throws CmsException if something goes wrong
+     * 
+     * @see org.opencms.loader.CmsLoaderManager#getResourceType(int)
+     */
+    private I_CmsResourceType getResourceType(int resourceType) throws CmsException {
+        
+        return OpenCms.getLoaderManager().getResourceType(resourceType);
+    }
+
+    /**
+     * Convenience method to remove the site root from the current users 
+     * request context from a resource name.<p>
+     *
+     * @param resourcename the resource name
+     * @return the resource name with the site root removed
+     * 
+     * @see CmsRequestContext#removeSiteRoot(String)
+     */
+    private String removeSiteRoot(String resourcename) {
+        
+        return m_context.removeSiteRoot(resourcename);
+    }
+    
+
+    
+    
+    //-----------------------------------------------------------------------------------
+    
+    
+    
     
     /**
      * Accept a task from the Cms.
@@ -185,17 +771,6 @@ public class CmsObject {
      */
     public CmsUser addImportUser(String id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, int flags, Hashtable additionalInfos, String defaultGroup, String address, String section, int type) throws CmsException {
         return m_driverManager.addImportUser(m_context, id, name, password, recoveryPassword, description, firstname, lastname, email, flags, additionalInfos, defaultGroup, address, section, type);
-    }
-
-    /**
-     * Returns the name of a resource with the complete site root name,
-     * (e.g. /default/vfs/index.html) by adding the currently set site root prefix.<p>
-     *
-     * @param resourcename the resource name
-     * @return the resource name including site root
-     */
-    private String addSiteRoot(String resourcename) {
-        return getRequestContext().addSiteRoot(resourcename);
     }
 
     /**
@@ -321,16 +896,13 @@ public class CmsObject {
     }
 
     /**
-     * Changes the project-id of a resource to the new project
-     * for publishing the resource directly.<p>
-     *
-     * @param projectId The new project-id
-     * @param resourcename The name of the resource to change
+     * Changes the lock of a resource.<p>
+     * 
+     * @param resourcename name of the resource
      * @throws CmsException if something goes wrong
      */
-    public void changeLockedInProject(int projectId, String resourcename) throws CmsException {
-        // must include files marked as deleted when publishing
-        getResourceType(readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getType()).changeLockedInProject(this, projectId, resourcename);
+    public void changeLock(String resourcename) throws CmsException {
+        m_driverManager.changeLock(m_context, addSiteRoot(resourcename));
     }
 
     /**
@@ -353,110 +925,6 @@ public class CmsObject {
      */
     public void changeUserType(String username, int userType) throws CmsException {
         m_driverManager.changeUserType(m_context, username, userType);
-    }
-
-    /**
-     * Changes the resourcetype of a resource.
-     * <br>
-     * Only the resourcetype of a resource in an offline project can be changed. The state
-     * of the resource is set to CHANGED (1).
-     * If the content of this resource is not exisiting in the offline project already,
-     * it is read from the online project and written into the offline project.
-     * The user may change this, if he is admin of the resource.
-     * <p>
-     * <B>Security:</B>
-     * Access is granted, if:
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user is owner of the resource or is admin</li>
-     * <li>the resource is locked by the callingUser</li>
-     * </ul>
-     *
-     * @param filename the complete path to the resource.
-     * @param newType the name of the new resourcetype for this resource.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public void chtype(String filename, int newType) throws CmsException {
-        getResourceType(readFileHeader(filename, CmsResourceFilter.IGNORE_EXPIRATION).getType()).chtype(this, filename, newType);
-    }
-
-    /**
-     * Copies a file.
-     *
-     * @param source the complete path of the sourcefile.
-     * @param destination the complete path of the destinationfolder.
-     *
-     * @throws CmsException if the file couldn't be copied, or the user
-     * has not the appropriate rights to copy the file.
-     *
-     * @deprecated Use copyResource instead.
-     */
-    public void copyFile(String source, String destination) throws CmsException {
-        copyResource(source, destination, false, true, I_CmsConstants.C_COPY_PRESERVE_SIBLING);
-    }
-
-    /**
-     * Copies a folder.
-     *
-     * @param source the complete path of the sourcefolder.
-     * @param destination the complete path of the destinationfolder.
-     *
-     * @throws CmsException if the folder couldn't be copied, or if the
-     * user has not the appropriate rights to copy the folder.
-     *
-     * @deprecated Use copyResource instead.
-     */
-    public void copyFolder(String source, String destination) throws CmsException {
-        copyResource(source, destination, false, false, I_CmsConstants.C_COPY_PRESERVE_SIBLING);
-    }
-
-    /**
-     * Copies a file.
-     *
-     * @param source the complete path of the sourcefile.
-     * @param destination the complete path of the destinationfolder.
-     *
-     * @throws CmsException if the file couldn't be copied, or the user
-     * has not the appropriate rights to copy the file.
-     */
-    public void copyResource(String source, String destination) throws CmsException {
-        getResourceType(readFileHeader(source, CmsResourceFilter.IGNORE_EXPIRATION).getType()).copyResource(this, source, destination, false, true, I_CmsConstants.C_COPY_PRESERVE_SIBLING);
-    }
-
-    /**
-     * Copies a file.
-     *
-     * @param source the complete path of the sourcefile.
-     * @param destination the complete path of the destinationfolder.
-     * @param keepFlags <code>true</code> if the copy should keep the source file's flags,
-     *        <code>false</code> if the copy should get the user's default flags.
-     * @param lockCopy indicates if the copy should left locked after operation
-     * @param copyMode mode of the copy operation, described how to handle linked resourced during copy.
-     * Possible values are: 
-     * <ul>
-     * <li>C_COPY_AS_NEW</li>
-     * <li>C_COPY_AS_SIBLING</li>
-     * <li>C_COPY_PRESERVE_SIBLING</li>
-     * </ul>
-     * @throws CmsException if the file couldn't be copied, or the user
-     * has not the appropriate rights to copy the file.
-     */
-    public void copyResource(String source, String destination, boolean keepFlags, boolean lockCopy, int copyMode) throws CmsException {
-        getResourceType(readFileHeader(source, CmsResourceFilter.IGNORE_EXPIRATION).getType()).copyResource(this, source, destination, keepFlags, lockCopy, copyMode);
-    }
-
-    /**
-     * Copies a resource from the online project to a new, specified project.
-     * <br>
-     * Copying a resource will copy the file header or folder into the specified
-     * offline project and set its state to UNCHANGED.
-     *
-     * @param resource the name of the resource.
-         * @throws CmsException if operation was not successful.
-     */
-    public void copyResourceToProject(String resource) throws CmsException {
-        getResourceType(readFileHeader(resource, CmsResourceFilter.IGNORE_EXPIRATION).getType()).copyResourceToProject(this, resource);
     }
 
     /**
@@ -496,90 +964,6 @@ public class CmsObject {
         m_driverManager.copyAccessControlEntries(m_context, source, dest);
     }
 
-    /**
-     * Creates a new channel.
-     *
-     * @param parentChannel the complete path to the channel in which the new channel
-     * will be created.
-     * @param newChannelName the name of the new channel.
-     *
-     * @return folder a <code>CmsFolder</code> object representing the newly created channel.
-     *
-     * @throws CmsException if the channelname is not valid, or if the user has not the appropriate rights to create
-     * a new channel.
-     *
-     */
-    public CmsFolder createChannel(String parentChannel, String newChannelName) throws CmsException {
-        getRequestContext().saveSiteRoot();
-        try {
-            setContextToCos();
-            Hashtable properties = new Hashtable();
-            int newChannelId = org.opencms.db.CmsDbUtil.nextId(I_CmsConstants.C_TABLE_CHANNELID);
-            properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, newChannelId + "");
-            return (CmsFolder)createResource(parentChannel, newChannelName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, CmsProperty.toList(properties));
-        } finally {
-            getRequestContext().restoreSiteRoot();
-        }
-    }
-
-    /**
-     * Creates a new file with the given content and resourcetype.<br>
-     *
-     * @param folder the complete path to the folder in which the file will be created.
-     * @param filename the name of the new file.
-     * @param contents the contents of the new file.
-     * @param type the resourcetype of the new file.
-     *
-     * @return file a <code>CmsFile</code> object representing the newly created file.
-     *
-     * @throws CmsException if the resourcetype is set to folder. The CmsException is also thrown, if the
-     * filename is not valid or if the user has not the appropriate rights to create a new file.
-     *
-     * @deprecated Use createResource instead.
-     */
-    public CmsFile createFile(String folder, String filename, byte[] contents, int type) throws CmsException {
-        return (CmsFile)createResource(folder, filename, type, null, contents);
-    }
-    /**
-     * Creates a new file with the given content and resourcetype.
-     *
-     * @param folder the complete path to the folder in which the file will be created.
-     * @param filename the name of the new file.
-     * @param contents the contents of the new file.
-     * @param type the resourcetype of the new file.
-     * @param properties A list of properties, that should be set for this file.
-     * The keys for this Hashtable are the names for properties, the values are
-     * the values for the properties.
-     *
-     * @return file a <code>CmsFile</code> object representing the newly created file.
-     *
-     * @throws CmsException or if the resourcetype is set to folder.
-     * The CmsException is also thrown, if the filename is not valid or if the user
-     * has not the appropriate rights to create a new file.
-     *
-     * @deprecated Use createResource instead.
-     */
-    public CmsFile createFile(String folder, String filename, byte[] contents, int type, List properties) throws CmsException {
-        return (CmsFile)createResource(folder, filename, type, properties, contents);
-    }
-
-    /**
-     * Creates a new folder.
-     *
-     * @param folder the complete path to the folder in which the new folder
-     * will be created.
-     * @param newFolderName the name of the new folder.
-     *
-     * @return folder a <code>CmsFolder</code> object representing the newly created folder.
-     *
-     * @throws CmsException if the foldername is not valid, or if the user has not the appropriate rights to create
-     * a new folder.
-     *
-     * @deprecated Use createResource instead.
-     */
-    public CmsFolder createFolder(String folder, String newFolderName) throws CmsException {
-        return (CmsFolder)createResource(folder, newFolderName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
-    }
     /**
      * Adds a new group to the Cms.<p>
      * 
@@ -661,60 +1045,16 @@ public class CmsObject {
     }
 
     /**
-     * Creates a new resource.<p>
+     * Creates a new sibling of the target resource.<p>
      * 
-     * @param newResourceName name of the resource
-     * @param type type of the resource
-     * @param properties properties of the resource
-     * @param contents content of the resource
-     * @param parameter additional parameter
-     * @return the new resource
+     * @param siblingName name of the new link
+     * @param targetName name of the target
+     * @param siblingProperties additional properties of the link resource
+     * @return the new link resource
      * @throws CmsException if something goes wrong
      */
-    public CmsResource createResource(String newResourceName, int type, List properties, byte[] contents, Object parameter) throws CmsException {
-        return getResourceType(type).createResource(this, newResourceName, properties, contents, parameter);
-    }
-
-    /**
-     * Creates a new resource.<p>
-     * 
-     * @param folder name of the parent folder
-     * @param name name of the resource
-     * @param type type of the resource
-     * @return the new resource
-     * @throws CmsException if something goes wrong
-     */
-    public CmsResource createResource(String folder, String name, int type) throws CmsException {
-        return createResource(folder + name, type, Collections.EMPTY_LIST, new byte[0], null);
-    }
-
-    /**
-     * Creates a new resource.<p>
-     * 
-     * @param folder name of the parent folder
-     * @param name name of the resource
-     * @param type type of the resource
-     * @param properties properties of the resource
-     * @return the new resource
-     * @throws CmsException if something goes wrong
-     */
-    public CmsResource createResource(String folder, String name, int type, List properties) throws CmsException {
-        return createResource(folder + name, type, properties, new byte[0], null);
-    }
-
-    /**
-     * Creates a new resource.<p>
-     * 
-     * @param folder name of the parent folder
-     * @param name name of the resource
-     * @param type type of the resource
-     * @param properties properties of the resource
-     * @param contents content of the resource
-     * @return the new resource
-     * @throws CmsException if something goes wrong
-     */
-    public CmsResource createResource(String folder, String name, int type, List properties, byte[] contents) throws CmsException {
-        return createResource(folder + name, type, properties, contents, null);
+    public CmsResource createSibling(String siblingName, String targetName, List siblingProperties) throws CmsException {
+        return m_driverManager.createSibling(m_context, addSiteRoot(siblingName), addSiteRoot(targetName), siblingProperties, true);
     }
 
     /**
@@ -765,19 +1105,6 @@ public class CmsObject {
     public CmsProject createTempfileProject() throws CmsException {
         return m_driverManager.createTempfileProject(m_context);
     }
-
-    /**
-     * Creates a new sibling of the target resource.<p>
-     * 
-     * @param siblingName name of the new link
-     * @param targetName name of the target
-     * @param siblingProperties additional properties of the link resource
-     * @return the new link resource
-     * @throws CmsException if something goes wrong
-     */
-    public CmsResource createSibling(String siblingName, String targetName, List siblingProperties) throws CmsException {
-        return m_driverManager.createSibling(m_context, addSiteRoot(siblingName), addSiteRoot(targetName), siblingProperties, true);
-    }
     
     /**
      * Deletes all property values of a file or folder.<p>
@@ -797,6 +1124,16 @@ public class CmsObject {
     }
 
     /**
+     * Deletes all entries in the published resource table.<p>
+     * 
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
+     * @throws CmsException if something goes wrong
+     */
+    public void deleteAllStaticExportPublishedResources(int linkType) throws CmsException {
+        m_driverManager.deleteAllStaticExportPublishedResources(m_context, linkType);
+    }
+
+    /**
      * Deletes the versions from the backup tables that are older then the given timestamp  and/or number of remaining versions.<p>
      * 
      * The number of verions always wins, i.e. if the given timestamp would delete more versions than given in the
@@ -811,53 +1148,6 @@ public class CmsObject {
      */
     public void deleteBackups(long timestamp, int versions, I_CmsReport report) throws CmsException {
        m_driverManager.deleteBackups(m_context, timestamp, versions, report);
-    }
-
-    /**
-     * Deletes a folder.
-     * <br>
-     * This is a very complex operation, because all sub-resources may be
-     * deleted too.
-     *
-     * @param foldername the complete path of the folder.
-     *
-     * @throws CmsException if the folder couldn't be deleted, or if the user
-     * has not the rights to delete this folder.
-     *
-     */
-    public void deleteEmptyFolder(String foldername) throws CmsException {
-        m_driverManager.deleteFolder(m_context, addSiteRoot(foldername));
-    }
-
-    /**
-     * Deletes a file.
-     *
-     * @param filename the complete path of the file.
-     *
-     * @throws CmsException if the file couldn't be deleted, or if the user
-     * has not the appropriate rights to delete the file.
-     *
-     * @deprecated Use deleteResource instead.
-     */
-    public void deleteFile(String filename) throws CmsException {
-        deleteResource(filename, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
-    }
-
-    /**
-     * Deletes a folder.
-     * <br>
-     * This is a very complex operation, because all sub-resources may be
-     * deleted too.
-     *
-     * @param foldername the complete path of the folder.
-     *
-     * @throws CmsException if the folder couldn't be deleted, or if the user
-     * has not the rights to delete this folder.
-     *
-     * @deprecated Use deleteResource instead.
-     */
-    public void deleteFolder(String foldername) throws CmsException {
-        deleteResource(foldername, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
     }
 
     /**
@@ -912,20 +1202,6 @@ public class CmsObject {
     }
 
     /**
-     * Deletes a resource.<p>
-     *
-     * @param filename the filename of the resource exlucing the site root
-     * @param deleteOption signals how VFS links pointing to this resource should be handled 
-     * @throws CmsException if the user has insufficient acces right to delete the resource
-     * @see org.opencms.main.I_CmsConstants#C_DELETE_OPTION_DELETE_SIBLINGS
-     * @see org.opencms.main.I_CmsConstants#C_DELETE_OPTION_IGNORE_SIBLINGS
-     * @see org.opencms.main.I_CmsConstants#C_DELETE_OPTION_PRESERVE_SIBLINGS
-     */
-    public void deleteResource(String filename, int deleteOption) throws CmsException {
-        getResourceType(readFileHeader(filename, CmsResourceFilter.IGNORE_EXPIRATION).getType()).deleteResource(this, filename, deleteOption);
-    }
-
-    /**
      * Deletes an entry in the published resource table.<p>
      * 
      * @param resourceName The name of the resource to be deleted in the static export
@@ -936,18 +1212,7 @@ public class CmsObject {
     public void deleteStaticExportPublishedResource(String resourceName, int linkType, String linkParameter) throws CmsException {
         m_driverManager.deleteStaticExportPublishedResource(m_context, resourceName, linkType, linkParameter);
     }
-
-    /**
-     * Deletes all entries in the published resource table.<p>
-     * 
-     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
-     * @throws CmsException if something goes wrong
-     */
-    public void deleteAllStaticExportPublishedResources(int linkType) throws CmsException {
-        m_driverManager.deleteAllStaticExportPublishedResources(m_context, linkType);
-    }
-    
-    
+        
     /**
      * Deletes a user from the Cms.<p>
      * 
@@ -998,384 +1263,6 @@ public class CmsObject {
     }
 
     /**
-     * Changes the project id of a resource to the current project of the user.<p>
-     *
-     * @param resourcename the resource to change
-     * @throws CmsException if something goes wrong
-     */
-    protected void doChangeLockedInProject(String resourcename) throws CmsException {
-        m_driverManager.changeLockedInProject(m_context, addSiteRoot(resourcename));
-    }
-
-    /**
-     * Changes the resourcetype of a resource.
-     * <br>
-     * Only the resourcetype of a resource in an offline project can be changed. The state
-     * of the resource is set to CHANGED (1).
-     * If the content of this resource is not exisiting in the offline project already,
-     * it is read from the online project and written into the offline project.
-     * The user may change this, if he is admin of the resource.
-     * <p>
-     * <B>Security:</B>
-     * Access is granted, if:
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user is owner of the resource or is admin</li>
-     * <li>the resource is locked by the callingUser</li>
-     * </ul>
-     *
-     * @param filename the complete path to the resource.
-     * @param newType the name of the new resourcetype for this resource.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    protected void doChtype(String filename, int newType) throws CmsException {
-        m_driverManager.chtype(m_context, addSiteRoot(filename), newType);
-    }
-
-    /**
-     * Copies a file.
-     *
-     * @param source the complete path of the sourcefile.
-     * @param destination the complete path of the destinationfolder.
-     * @param lockCopy flag to lock the copied resource
-     * @param copyMode mode of the copy operation, described how to handle linked resourced during copy.
-     * Possible values are: 
-     * <ul>
-     * <li>C_COPY_AS_NEW</li>
-     * <li>C_COPY_AS_SIBLING</li>
-     * <li>C_COPY_PRESERVE_SIBLING</li>
-     * </ul>
-     * @throws CmsException if the file couldn't be copied, or the user
-     * has not the appropriate rights to copy the file.
-     */
-    protected void doCopyFile(String source, String destination, boolean lockCopy, int copyMode) throws CmsException {
-        m_driverManager.copyFile(m_context, addSiteRoot(source), addSiteRoot(destination), lockCopy, false, copyMode);
-    }
-
-    /**
-     * Copies a folder.
-     *
-     * @param source the complete path of the sourcefolder.
-     * @param destination the complete path of the destinationfolder.
-     * @param lockCopy indicates if the copy of the folder should remain locked after operation
-     * @param preserveTimestamps true if the timestamps and users of the folder should be kept
-     * @throws CmsException if the folder couldn't be copied, or if the
-     * user has not the appropriate rights to copy the folder.
-     */
-    protected void doCopyFolder(String source, String destination, boolean lockCopy, boolean preserveTimestamps) throws CmsException {
-        m_driverManager.copyFolder(m_context, addSiteRoot(source), addSiteRoot(destination), lockCopy, preserveTimestamps);
-    }
-
-    /**
-     * Copies a resource from the online project to a new, specified project.
-     * <br>
-     * Copying a resource will copy the file header or folder into the specified
-     * offline project and set its state to UNCHANGED.
-     *
-     * @param resource the name of the resource.
-         * @throws CmsException if operation was not successful.
-     */
-    protected void doCopyResourceToProject(String resource) throws CmsException {
-        m_driverManager.copyResourceToProject(m_context, addSiteRoot(resource));
-    }
-
-    /**
-     * Creates a new file with the given content and resourcetype.<br>
-     *
-     * @param newFileName the name of the new file
-     * @param contents the contents of the new file
-     * @param type the resourcetype of the new file
-     * @param properties a list of Cms property objects
-     * @return file a <code>CmsFile</code> object representing the newly created file.
-     *
-     * @throws CmsException if the resourcetype is set to folder. The CmsException is also thrown, if the
-     * filename is not valid or if the user has not the appropriate rights to create a new file.
-     */
-    protected CmsFile doCreateFile(String newFileName, byte[] contents, String type, List properties) throws CmsException {
-        CmsFile file = m_driverManager.createFile(m_context, addSiteRoot(newFileName), contents, type, properties);
-        return file;
-    }
-
-    /**
-     * Creates a new file with the given content and resourcetype.
-     *
-     * @param newFileName the name of the new file.
-     * @param contents the contents of the new file.
-     * @param type the resourcetype of the new file.
-     * @param properties A Hashtable of properties, that should be set for this file.
-     * The keys for this Hashtable are the names for properties, the values are
-     * the values for the properties.
-     *
-     * @return file a <code>CmsFile</code> object representing the newly created file.
-     *
-     * @throws CmsException if the wrong properties are given, or if the resourcetype is set to folder.
-     * The CmsException is also thrown, if the filename is not valid or if the user
-     * has not the appropriate rights to create a new file.
-     */
-    protected CmsFile doCreateFile(String newFileName, byte[] contents, String type, Map properties) throws CmsException {
-        // avoid null-pointer exceptions
-        if (properties == null) {
-            properties = Collections.EMPTY_MAP;
-        }
-        
-        // TODO new property model: creating files does not support the new property model yet
-        CmsFile file = m_driverManager.createFile(m_context, addSiteRoot(newFileName), contents, type, CmsProperty.toList(properties));
-        return file;
-    }
-
-    /**
-     * Creates a new folder.
-     *
-     * @param newFolderName the name of the new folder.
-     * @param properties A list of properties, that should be set for this folder.
-     * The keys for this Hashtable are the names for property-definitions, the values are
-     * the values for the properties.
-     *
-     * @return a <code>CmsFolder</code> object representing the newly created folder.
-     * @throws CmsException if the foldername is not valid, or if the user has not the appropriate rights to create
-     * a new folder.
-     *
-     */
-    protected CmsFolder doCreateFolder(String newFolderName, List properties) throws CmsException {
-        // TODO new property model: creating folders does not support the new property model yet
-        CmsFolder cmsFolder = m_driverManager.createFolder(m_context, addSiteRoot(newFolderName), properties);
-        return cmsFolder;
-    }
-
-    /**
-     * Creates a new folder.
-     *
-     * @param folder the complete path to the folder in which the new folder
-     * will be created.
-     * @param newFolderName the name of the new folder.
-     *
-     * @return folder a <code>CmsFolder</code> object representing the newly created folder.
-     *
-     * @throws CmsException if the foldername is not valid, or if the user has not the appropriate rights to create
-     * a new folder.
-     */
-    protected CmsFolder doCreateFolder(String folder, String newFolderName) throws CmsException {
-        CmsFolder cmsFolder = m_driverManager.createFolder(m_context, addSiteRoot(folder + newFolderName + I_CmsConstants.C_FOLDER_SEPARATOR), Collections.EMPTY_LIST);
-        return cmsFolder;
-    }
-
-    /**
-     * Deletes a file.
-     *
-     * @param filename the complete path of the file
-     * @param deleteOption flag to delete siblings as well
-     *
-     * @throws CmsException if the file couldn't be deleted, or if the user
-     * has not the appropriate rights to delete the file.
-     */
-    protected void doDeleteFile(String filename, int deleteOption) throws CmsException {
-        m_driverManager.deleteFile(m_context, addSiteRoot(filename), deleteOption);
-    }
-
-    /**
-     * Deletes a folder.
-     * <br>
-     * This is a very complex operation, because all sub-resources may be
-     * deleted too.
-     *
-     * @param foldername the complete path of the folder.
-     *
-     * @throws CmsException if the folder couldn't be deleted, or if the user
-     * has not the rights to delete this folder.
-     */
-    protected void doDeleteFolder(String foldername) throws CmsException {
-        m_driverManager.deleteFolder(m_context, addSiteRoot(foldername));
-    }
-
-    /**
-     * Imports a resource as a new resource into the VFS.<p>
-     *
-     * @param resource the resource to be imported
-     * @param content the content of the resource
-     * @param properties a list of Cms property objects
-     * @param destination the name of the new resource
-     * @return the imported/new Cms resource
-     * @throws CmsException if something goes wrong (e.g. the resource already exists)
-     *
-     */
-    protected CmsResource doImportResource(CmsResource resource, byte content[], List properties, String destination) throws CmsException {
-        return m_driverManager.importResource(m_context, addSiteRoot(destination), resource, content, properties);
-    }
-
-    /**
-     * Locks the given resource.<p>
-     *
-     * @param resource the complete path to the resource
-     * @param mode flag indicating the mode (temporary or common) of a lock
-     * @throws CmsException if something goes wrong
-     */
-    protected void doLockResource(String resource, int mode) throws CmsException {
-        m_driverManager.lockResource(m_context, addSiteRoot(resource), mode);
-    }
-
-    /**
-     * Moves a file to the given destination.<p>
-     *
-     * @param source the complete path of the sourcefile
-     * @param destination the complete path of the destinationfile
-     * @throws CmsException if something goes wrong
-     */
-    protected void doMoveResource(String source, String destination) throws CmsException {
-        m_driverManager.moveResource(m_context, addSiteRoot(source), addSiteRoot(destination));
-    }
-
-    /**
-    * Moves a resource to the lost and found folder.<p>
-    *
-    * @param resourcename the complete path of the sourcefile
-    * @param copyResource true, if the resource should be copied to its destination inside the lost+found folder
-    * @return location of the moved resource
-    * @throws CmsException if the user does not have the rights to move this resource,
-    * or if the file couldn't be moved
-    */
-    protected String doCopyToLostAndFound(String resourcename, boolean copyResource) throws CmsException {
-        return m_driverManager.copyToLostAndFound(m_context, addSiteRoot(resourcename), copyResource);
-    }
-       
-    /**
-     * Renames a resource.<p>
-     *
-     * @param oldname the complete path to the resource which will be renamed
-     * @param newname the new name of the resource
-     * @throws CmsException if the user has not the rights
-     * to rename the resource, or if the file couldn't be renamed
-     */
-    protected void doRenameResource(String oldname, String newname) throws CmsException {
-        m_driverManager.renameResource(m_context, addSiteRoot(oldname), newname);
-    }
-
-    /**
-     * Replaces an already existing resource with new resource data.<p>
-     * 
-     * @param resName name of the resource
-     * @param newResContent new content of the resource
-     * @param newResType new type of the resource
-     * @param newResProps new properties
-     * @return the replaced resource
-     * @throws CmsException if something goes wrong
-     */
-    protected CmsResource doReplaceResource(String resName, byte[] newResContent, int newResType, List newResProps) throws CmsException {
-        CmsResource res = null;
-
-        // TODO new property model: replacing resource does not yet support the new property model
-        res = m_driverManager.replaceResource(m_context, addSiteRoot(resName), newResType, newResProps, newResContent);
-        return res;
-    }
-
-    /**
-     * Restores a file in the current project with a version in the backup.<p>
-     *
-     * @param tagId The tag id of the resource
-     * @param filename The name of the file to restore
-     * @throws CmsException if operation was not succesful.
-     */
-    protected void doRestoreResource(int tagId, String filename) throws CmsException {
-        m_driverManager.restoreResource(m_context, tagId, addSiteRoot(filename));
-    }
-
-    /**
-     * Access the driver manager underneath to change the timestamp of a resource.
-     * 
-     * @param resourceName the name of the resource to change
-     * @param timestamp timestamp the new timestamp of the changed resource
-     * @param releasedate the new releasedate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
-     * @param expiredate the new expiredate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
-     * @param user the user who is inserted as userladtmodified
-     * @throws CmsException if something goes wrong
-     */
-    protected void doTouch(String resourceName, long timestamp, long releasedate, long expiredate, CmsUUID user) throws CmsException {
-        m_driverManager.touch(m_context, addSiteRoot(resourceName), timestamp, releasedate, expiredate, user);
-    }
-
-    /**
-     * Undeletes a file.
-     *
-     * @param filename the complete path of the file.
-     *
-     * @throws CmsException if the file couldn't be undeleted, or if the user
-     * has not the appropriate rights to undelete the file.
-     */
-    protected void doUndeleteFile(String filename) throws CmsException {
-        m_driverManager.undeleteResource(m_context, addSiteRoot(filename));
-    }
-
-    /**
-     * Undeletes a folder.
-     * <br>
-     * This is a very complex operation, because all sub-resources may be
-     * undeleted too.
-     *
-     * @param foldername the complete path of the folder.
-     *
-     * @throws CmsException if the folder couldn't be undeleted, or if the user
-     * has not the rights to undelete this folder.
-     */
-    protected void doUndeleteFolder(String foldername) throws CmsException {
-        m_driverManager.undeleteResource(m_context, addSiteRoot(foldername));
-    }
-
-    /**
-     * Undo changes in a file.
-     * <br>
-     *
-     * @param resource the complete path to the resource to be unlocked.
-     *
-     * @throws CmsException if the user has not the rights
-     * to write this resource.
-     */
-    protected void doUndoChanges(String resource) throws CmsException {
-        m_driverManager.undoChanges(m_context, addSiteRoot(resource));
-    }
-
-    /**
-     * Unlocks a resource.<p>
-     * 
-     * A user can unlock a resource, so other users may lock this file.<p>
-     *
-     * @param resource the complete path to the resource to be unlocked.
-     *
-     * @throws CmsException if the user has not the rights
-     * to unlock this resource.
-     */
-    protected void doUnlockResource(String resource) throws CmsException {
-        m_driverManager.unlockResource(m_context, addSiteRoot(resource));
-    }
-
-    /**
-     * Writes a file to the VFS.<p>
-     *
-     * @param file the file to write.
-     *
-     * @throws CmsException if resourcetype is set to folder. The CmsException will also be thrown,
-     * if the user has not the rights write the file.
-     */
-    protected void doWriteFile(CmsFile file) throws CmsException {    
-        m_driverManager.writeFile(m_context, file);
-    }
-    
-    /**
-     * Updates an existing resource in the VFS from a resource to be imported.<p>
-     * 
-     * The structure + resource records, file content and properties of the resource
-     * are written.<p>
-     *
-     * @param resourcename the name of the resource to be updated/imported
-     * @param properties a list of Cms property objects of the resource
-     * @param filecontent the new filecontent of the resource to be updated/imported
-     * @throws CmsException if something goes wrong
-     */
-    protected void doImportUpdateResource(String resourcename, List properties, byte[] filecontent) throws CmsException {
-
-        m_driverManager.importUpdateResource(m_context, addSiteRoot(resourcename), properties, filecontent);
-    }
-
-    /**
      * Ends a task.<p>
      *
      * @param taskid the ID of the task to end.
@@ -1384,52 +1271,6 @@ public class CmsObject {
      */
     public void endTask(int taskid) throws CmsException {
         m_driverManager.endTask(m_context, taskid);
-    }
-
-
-    /**
-     * Tests if a resource with the given resourceId does already exist in the Database.<p>
-     * 
-     * @param resourceId the resource id to test for
-     * @return true if a resource with the given id was found, false otherweise
-     * @throws CmsException if something goes wrong
-     */
-      public boolean existsResourceId (CmsUUID resourceId) throws CmsException {
-          return m_driverManager.existsResourceId(m_context, resourceId);          
-      }
-
-    /**
-     * Exports a resource.<p>
-     * 
-     * @param file the resource to export
-     * @return the resource that was exported
-     * @throws CmsException if something goes wrong
-     */
-    public CmsFile exportResource(CmsFile file) throws CmsException {
-        return getResourceType(file.getType()).exportResource(this, file);
-    }
-
-    /**
-     * Returns a List of all siblings of the specified resource,
-     * the specified resource being always part of the result set.<p>
-     * 
-     * @param resourcename the name of the specified resource
-     * @param filter a resource filter
-     * @return a List of CmsResources that are siblings to the specified resource, including the specified resource itself 
-     * @throws CmsException if something goes wrong
-     */
-    public List readSiblings(String resourcename, CmsResourceFilter filter) throws CmsException {
-        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), filter);
-    }
-    
-    /**
-     * Fires a CmsEvent.<p>
-     *
-     * @param type The type of the event
-     * @param data A data object that contains data used by the event listeners
-     */
-    private void fireEvent(int type, Object data) {
-        OpenCms.fireCmsEvent(this, type, Collections.singletonMap("data", data));
     }
 
     /**
@@ -1525,24 +1366,6 @@ public class CmsObject {
      */
     public List getAllManageableProjects() throws CmsException {
         return m_driverManager.getAllManageableProjects(m_context);
-    }
-
-    /**
-     * Returns a List with all initialized resource types.<p>
-     *
-     * @return a List with all initialized resource types
-     */
-    public List getAllResourceTypes() {
-        I_CmsResourceType resourceTypes[] = m_driverManager.getAllResourceTypes();
-        List result = new ArrayList(resourceTypes.length);
-        
-        for (int i = 0; i < resourceTypes.length; i++) {
-            if (resourceTypes[i] != null) {
-                result.add(resourceTypes[i]);
-            }
-        }
-        
-        return result;
     }
 
     /**
@@ -1677,6 +1500,28 @@ public class CmsObject {
     public Vector getGroupsOfUser(String username, String remoteAddress) throws CmsException {
         return m_driverManager.getGroupsOfUser(m_context, username, remoteAddress);
     }     
+    
+    /**
+     * Gets the lock state for a specified resource.<p>
+     * 
+     * @param resource the specified resource
+     * @return the CmsLock object for the specified resource
+     * @throws CmsException if somethong goes wrong
+     */
+    public CmsLock getLock(CmsResource resource) throws CmsException {
+        return m_driverManager.getLock(m_context, resource);
+    }    
+    
+    /**
+     * Gets the lock state for a specified resource name.<p>
+     * 
+     * @param resourcename the specified resource name
+     * @return the CmsLock object for the specified resource name
+     * @throws CmsException if somethong goes wrong
+     */
+    public CmsLock getLock(String resourcename) throws CmsException {
+        return m_driverManager.getLock(m_context, m_context.addSiteRoot(resourcename));
+    }
 
     /**
      * Returns a list of all currently logged in users.<p>
@@ -1737,6 +1582,32 @@ public class CmsObject {
         CmsUser user = readUser(userName);
         return acList.getPermissions(user, getGroupsOfUser(userName));
     }
+    
+    /**
+     * Returns a publish list for the specified Cms resource to be published directly, plus 
+     * optionally it's siblings.<p>
+     * 
+     * @param directPublishResource the resource which will be directly published
+     * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published
+     * @param report an instance of I_CmsReport to print messages
+     * @return a publish list
+     * @throws CmsException if something goes wrong
+     */
+    public CmsPublishList getPublishList(CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws CmsException {
+        return m_driverManager.getPublishList(m_context, directPublishResource, directPublishSiblings, report);
+    }
+    
+    /**
+     * Returns a publish list with all new/changed/deleted Cms resources of the current (offline)
+     * project that actually get published.<p>
+     * 
+     * @param report an instance of I_CmsReport to print messages
+     * @return a publish list
+     * @throws Exception if something goes wrong
+     */
+    public CmsPublishList getPublishList(I_CmsReport report) throws Exception {
+        return getPublishList(null, false, report);
+    }    
 
     /**
      * Returns the current OpenCms registry.<p>
@@ -1789,16 +1660,17 @@ public class CmsObject {
     }
 
     /**
-     * Reads all resources that have set the specified property.<p>
-     * 
-     * A property definition is the "key name" of a property.<p>
+     * Returns a List with resources that have set the given property.<p>
      *
-     * @param propertyDefinition the name of the property definition
-     * @return list of Cms resources having set the specified property definition
-     * @throws CmsException if operation was not successful
+     * <B>Security:</B>
+     * All users are granted.<p>
+     *
+     * @param propertyDefinition the name of the propertydefinition to check
+     * @return List with all resources
+     * @throws CmsException if operation was not succesful
      */
-    public List getResourcesWithPropertyDefinition(String propertyDefinition) throws CmsException {
-        return m_driverManager.getResourcesWithPropertyDefinition(m_context, propertyDefinition);
+    public List getResourcesWithProperty(String propertyDefinition) throws CmsException {
+        return m_driverManager.getResourcesWithProperty(m_context, "/", propertyDefinition);
     }
 
     /**
@@ -1818,46 +1690,17 @@ public class CmsObject {
     }
 
     /**
-     * Returns a List with resources that have set the given property.<p>
-     *
-     * <B>Security:</B>
-     * All users are granted.<p>
-     *
-     * @param propertyDefinition the name of the propertydefinition to check
-     * @return List with all resources
-     * @throws CmsException if operation was not succesful
-     */
-    public List getResourcesWithProperty(String propertyDefinition) throws CmsException {
-        return m_driverManager.getResourcesWithProperty(m_context, "/", propertyDefinition);
-    }
-
-    /**
-     * Returns the initialized resource type instance for the given id.<p>
+     * Reads all resources that have set the specified property.<p>
      * 
-     * @param resourceType the id of the resourceType to get
-     * @return the initialized resource type instance for the given id
-     * @throws CmsException if something goes wrong
+     * A property definition is the "key name" of a property.<p>
+     *
+     * @param propertyDefinition the name of the property definition
+     * @return list of Cms resources having set the specified property definition
+     * @throws CmsException if operation was not successful
      */
-    public I_CmsResourceType getResourceType(int resourceType) throws CmsException {
-        return m_driverManager.getResourceType(resourceType);
+    public List getResourcesWithPropertyDefinition(String propertyDefinition) throws CmsException {
+        return m_driverManager.getResourcesWithPropertyDefinition(m_context, propertyDefinition);
     }
-
-    /**
-     * Returns the resource type id for the given resource type name.<p>
-     * 
-     * @param resourceType the name of the resourceType to get the id for
-     * @return the resource type id for the given resource type name
-     * @throws CmsException if something goes wrong
-     */
-    public int getResourceTypeId(String resourceType) throws CmsException {
-        I_CmsResourceType type = m_driverManager.getResourceType(resourceType);
-        if (type != null) {
-            return type.getResourceType();
-        } else {
-            return I_CmsConstants.C_UNKNOWN_ID;
-        }
-    }
-
     
     /**
      * Returns a Vector with all subfolders of a given folder.<p>
@@ -1995,6 +1838,17 @@ public class CmsObject {
     public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions, CmsResourceFilter filter) throws CmsException {
         return 0 == m_driverManager.hasPermissions(m_context, resource, requiredPermissions, filter).intValue();
     }
+
+    /**
+     * Writes access control entries for a given resource.<p>
+     * 
+     * @param resource the resource to attach the control entries to
+     * @param acEntries a vector of access control entries
+     * @throws CmsException if something goes wrong
+     */
+    public void importAccessControlEntries(CmsResource resource, Vector acEntries) throws CmsException {
+        m_driverManager.importAccessControlEntries(m_context, resource, acEntries);
+    }
     
     /**
      * Imports an import-resource (folder or zipfile).<p>
@@ -2005,30 +1859,29 @@ public class CmsObject {
      */
     public void importFolder(String importFile, String importPath) throws CmsException {
         
-        // OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
         m_driverManager.clearcache();
         
         // import the resources
         m_driverManager.importFolder(this, m_context, importFile, importPath);
         
-        // OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
         m_driverManager.clearcache();
     }
 
     /**
-     * Imports a resource into the Cms by forwarding this call to
-     * the Cms resource type class matching the type of the resource
-     * to be imported.<p>
+     * Initializes this CmsObject with the provided user context and database connection.<p>
      *
-     * @param resource the resource to be imported
-     * @param content the content of the resource
-     * @param properties the properties of the resource
-     * @param importpath the name of the resource destinaition
-     * @return the imported CmsResource
-     * @throws CmsException if operation was not successful
+     * @param driverManager the driver manager to access the database
+     * @param context the request context that contains the user authentification
+     * @param sessionStorage the core session
      */
-    public CmsResource importResource(CmsResource resource, byte[] content, List properties, String importpath) throws CmsException {
-        return getResourceType(resource.getType()).importResource(this, resource, content, properties, importpath);
+    public void init(
+            CmsDriverManager driverManager,
+            CmsRequestContext context,
+            CmsSessionInfoManager sessionStorage
+    ) {
+        m_sessionStorage = sessionStorage;
+        m_driverManager = driverManager;
+        m_context = context;
     }
 
     /**
@@ -2041,6 +1894,16 @@ public class CmsObject {
     public boolean isAdmin() throws CmsException {
         return m_driverManager.isAdmin(m_context);
     }
+    
+    /**
+     * Proves if a specified resource is inside the current project.<p>
+     * 
+     * @param resource the specified resource
+     * @return true, if the resource name of the specified resource matches any of the current project's resources
+     */
+    public boolean isInsideCurrentProject(CmsResource resource) {
+        return m_driverManager.isInsideCurrentProject(m_context, resource);
+    }      
 
     /**
      * Checks if the user has management access to the project.
@@ -2070,98 +1933,6 @@ public class CmsObject {
      */    
     public boolean isProjectManager() throws CmsException {
         return m_driverManager.isProjectManager(m_context);
-    }
-    
-    /**
-     * Returns the user, who has locked a given resource.
-     * <br>
-     * A user can lock a resource, so he is the only one who can write this
-     * resource. This methods checks, who has locked a resource.
-     *
-     * @param resource the resource to check.
-     *
-     * @return the user who has locked the resource.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public CmsUser lockedBy(CmsResource resource) throws CmsException {
-        return (m_driverManager.lockedBy(m_context, resource));
-    }
-
-    /**
-        * Returns the user, who has locked a given resource.
-        * <br>
-        * A user can lock a resource, so he is the only one who can write this
-        * resource. This methods checks, who has locked a resource.
-        *
-        * @param resource The complete path to the resource.
-        *
-        * @return the user who has locked a resource.
-        *
-        * @throws CmsException if operation was not successful.
-        */
-    public CmsUser lockedBy(String resource) throws CmsException {
-        return (m_driverManager.lockedBy(m_context, addSiteRoot(resource)));
-    }
-
-    /**
-     * Locks the given resource.
-     * <br>
-     * A user can lock a resource, so he is the only one who can write this
-     * resource.
-     *
-     * @param resource The complete path to the resource to lock.
-     *
-     * @throws CmsException if the user has not the rights to lock this resource.
-     * It will also be thrown, if there is an existing lock.
-     *
-     */
-    public void lockResource(String resource) throws CmsException {
-        // try to lock the resource, prevent from overwriting an existing lock
-        lockResource(resource, false, CmsLock.C_MODE_COMMON);
-    }
-
-    /**
-     * Locks a given resource.
-     * <br>
-     * A user can lock a resource, so he is the only one who can write this
-     * resource.
-     *
-     * @param resource the complete path to the resource to lock.
-     * @param force if force is <code>true</code>, a existing locking will be overwritten.
-     *
-     * @throws CmsException if the user has not the rights to lock this resource.
-     * It will also be thrown, if there is a existing lock and force was set to false.
-     */
-    public void lockResource(String resource, boolean force) throws CmsException {
-        lockResource(resource, force, CmsLock.C_MODE_COMMON);
-    }
-    
-    /**
-     * Locks a given resource.
-     * <br>
-     * A user can lock a resource, so he is the only one who can write this
-     * resource.
-     *
-     * @param resource the complete path to the resource to lock.
-     * @param force if force is <code>true</code>, a existing locking will be overwritten.
-     * @param mode flag indicating the mode (temporary or common) of a lock
-     *
-     * @throws CmsException if the user has not the rights to lock this resource.
-     * It will also be thrown, if there is a existing lock and force was set to false.
-     */
-    public void lockResource(String resource, boolean force, int mode) throws CmsException {
-        getResourceType(readFileHeader(resource, CmsResourceFilter.IGNORE_EXPIRATION).getType()).lockResource(this, resource, force, mode);
-    }
-    
-    /**
-     * Changes the lock of a resource.<p>
-     * 
-     * @param resourcename name of the resource
-     * @throws CmsException if something goes wrong
-     */
-    public void changeLock(String resourcename) throws CmsException {
-        m_driverManager.changeLock(m_context, addSiteRoot(resourcename));
     }
 
     /**
@@ -2255,31 +2026,28 @@ public class CmsObject {
     public I_CmsPrincipal lookupPrincipal(String principalName) {
         return m_driverManager.lookupPrincipal(principalName);
     }
-
+    
     /**
-     * Moves a resource to the given destination.
-     *
-     * @param source the complete path of the sourcefile.
-     * @param destination the complete path of the destinationfile.
-     *
-     * @throws CmsException if the user has not the rights to move this resource,
-     * or if the file couldn't be moved.
+     * Completes all post-publishing tasks for a "directly" published COS resource.<p>
+     * 
+     * @param publishedBoResource the CmsPublishedResource onject representing the published COS resource
+     * @param publishId unique int ID to identify each publish task in the publish history
+     * @param tagId the backup tag revision
      */
-    public void moveResource(String source, String destination) throws CmsException {
-        getResourceType(readFileHeader(source, CmsResourceFilter.IGNORE_EXPIRATION).getType()).moveResource(this, source, destination);
-    }
-
-
-    /**
-     * Moves a resource to the lost and found folder.<p>
-     *
-     * @param source the complete path of the sourcefile.
-     * @return location of the moved resource
-     * @throws CmsException if the user has not the rights to move this resource,
-     * or if the file couldn't be moved.
-     */
-    public String copyToLostAndFound(String source) throws CmsException {
-        return getResourceType(readFileHeader(source, CmsResourceFilter.IGNORE_EXPIRATION).getType()).copyToLostAndFound(this, source, true);
+    public void postPublishBoResource(CmsPublishedResource publishedBoResource, CmsUUID publishId, int tagId) {
+        try {
+            m_driverManager.postPublishBoResource(m_context, publishedBoResource, publishId, tagId);
+        } catch (CmsException e) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error writing publish history entry for COS resource " + publishedBoResource.toString(), e);
+            }
+        } finally {
+            Map eventData = new HashMap();
+            eventData.put("publishHistoryId", publishId.toString());
+            
+            // a "directly" published COS resource can be handled totally equal to a published project            
+            OpenCms.fireCmsEvent(new CmsEvent(this, I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData));
+        }
     }
 
     /**
@@ -2299,21 +2067,6 @@ public class CmsObject {
      */
     public void publishProject(I_CmsReport report) throws CmsException {
         publishProject(report, null, false);
-    }
-
-    /**
-     * Direct publishes a specified resource.<p>
-     * 
-     * @param report an instance of I_CmsReport to print messages
-     * @param directPublishResource a CmsResource that gets directly published; or null if an entire project gets published
-     * @param directPublishSiblings if a CmsResource that should get published directly is provided as an argument, all eventual siblings of this resource get publish too, if this flag is true
-     * @throws CmsException if something goes wrong
-     * @see #publishResource(String)
-     * @see #publishResource(String, boolean, I_CmsReport)
-     */
-    public void publishProject(I_CmsReport report, CmsResource directPublishResource, boolean directPublishSiblings) throws CmsException {
-        CmsPublishList publishList = getPublishList(directPublishResource, directPublishSiblings, report);
-        publishProject(report, publishList);
     }
     
     /**
@@ -2364,6 +2117,21 @@ public class CmsObject {
             }
         }
     }    
+
+    /**
+     * Direct publishes a specified resource.<p>
+     * 
+     * @param report an instance of I_CmsReport to print messages
+     * @param directPublishResource a CmsResource that gets directly published; or null if an entire project gets published
+     * @param directPublishSiblings if a CmsResource that should get published directly is provided as an argument, all eventual siblings of this resource get publish too, if this flag is true
+     * @throws CmsException if something goes wrong
+     * @see #publishResource(String)
+     * @see #publishResource(String, boolean, I_CmsReport)
+     */
+    public void publishProject(I_CmsReport report, CmsResource directPublishResource, boolean directPublishSiblings) throws CmsException {
+        CmsPublishList publishList = getPublishList(directPublishResource, directPublishSiblings, report);
+        publishProject(report, publishList);
+    }
 
     /**
      * Publishes a single resource.<p>
@@ -2542,17 +2310,6 @@ public class CmsObject {
     }
 
     /**
-     * Reads the package path of the system.
-     * This path is used for db-export and db-import and all module packages.
-     *
-     * @return the package path
-     * @throws CmsException if operation was not successful
-     */
-    public String readPackagePath() throws CmsException {
-        return m_driverManager.readPackagePath();
-    }
-
-    /**
      * Reads a file from the Cms.
      *
      * @param filename the complete path to the file.
@@ -2582,32 +2339,65 @@ public class CmsObject {
     }
 
     /**
-     * Reads a file from the Cms.
-     *
-     * @param folder the complete path to the folder from which the file will be read.
-     * @param filename the name of the file to be read.
-     *
-     * @return file the read file.
-     *
-     * @throws CmsException , if the user has not the rights
-     * to read this resource, or if the file couldn't be read.
-     */
-    public CmsFile readFile(String folder, String filename) throws CmsException {
-        return (m_driverManager.readFile(m_context, addSiteRoot(folder + filename)));
-    }
-
-    /**
-     * Gets the known file extensions (=suffixes).
-     *
+     * Returns the configured file extensions (suffixes).<p>
      *
      * @return a Hashtable with all known file extensions as Strings.
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if something goes wrong
      */
     public Hashtable readFileExtensions() throws CmsException {
         return m_driverManager.readFileExtensions();
     }
 
+    /**
+     * Returns the default resource type for the given resource name, using the 
+     * configured resource type file extensions.<p>
+     * 
+     * In case the given name does not map to a configured resource type,
+     * {@link CmsResourceTypePlain} is returned.<p>
+     * 
+     * This is only required (and should <i>not</i> be used otherwise) when 
+     * creating a new resource automatically during file upload or synchronization.
+     * Only in this case, the file type for the new resource is determined using this method.
+     * Otherwise the resource type is <i>always</i> stored as part of the resource, 
+     * and is <i>not</i> related to the file name.<p>
+     * 
+     * @param resourcename the resource name to look up the resource type for
+     * 
+     * @return the default resource type for the given resource name
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #readFileExtensions()
+     */
+    public I_CmsResourceType getDefaultTypeForName(String resourcename) throws CmsException {
+
+        String typeName = null;
+        if (! CmsStringSubstitution.isEmpty(resourcename)) {
+            int pos = resourcename.lastIndexOf('.');
+            if (pos >= 0) {
+                String suffix = resourcename.substring(pos + 1);
+                if (! CmsStringSubstitution.isEmpty(suffix)) {
+                    suffix = suffix.toLowerCase();
+    
+                    // read the known file extensions from the database
+                    Hashtable extensions = readFileExtensions();
+                    if (extensions != null) {
+                        typeName = (String)extensions.get(suffix);
+                    }                
+                }
+            }      
+        }
+        
+        if (typeName == null) {
+            // use default type "plain"
+            typeName = CmsResourceTypePlain.C_RESOURCE_TYPE_NAME;
+        }
+        
+        // look up and return the resource type
+        return OpenCms.getLoaderManager().getResourceType(typeName);
+    }
+    
     /**
      * Reads a file header from the Cms.
      * <br>
@@ -2859,6 +2649,17 @@ public class CmsObject {
     public CmsUser readOwner(CmsTaskLog log) throws CmsException {
         return m_driverManager.readOwner(log);
     }
+
+    /**
+     * Reads the package path of the system.
+     * This path is used for db-export and db-import and all module packages.
+     *
+     * @return the package path
+     * @throws CmsException if operation was not successful
+     */
+    public String readPackagePath() throws CmsException {
+        return m_driverManager.readPackagePath();
+    }
     
     /**
      * Builds a list of resources for a given path.<p>
@@ -2876,19 +2677,7 @@ public class CmsObject {
     public List readPath(String path, CmsResourceFilter filter) throws CmsException {
         return (m_driverManager.readPath(m_context, m_context.addSiteRoot(path), filter));
     }
-
-    /**
-     * Reads the project in which a resource was last modified.
-     *
-     * @param res the resource
-     * @return the project in which the resource was last modified
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public CmsProject readProject(CmsResource res) throws CmsException {
-        return m_driverManager.readProject(res.getProjectLastModified());
-    }
-
+    
     /**
      * Reads a project of a given task from the Cms.
      *
@@ -2934,6 +2723,17 @@ public class CmsObject {
     public List readProjectLogs(int projectId) throws CmsException {
         return m_driverManager.readProjectLogs(projectId);
     }
+    
+    /**
+     * Returns the list of all resources that define the "view" of the given project.<p>
+     * 
+     * @param project the project to get the project resources for
+     * @return the list of all resources that define the "view" of the given project
+     * @throws CmsException if something goes wrong
+     */
+    public List readProjectResources(CmsProject project) throws CmsException {
+        return m_driverManager.readProjectResources(project);
+    }
 
     /**
      * Reads all file headers of a project from the Cms.
@@ -2949,6 +2749,85 @@ public class CmsObject {
     public Vector readProjectView(int projectId, String filter) throws CmsException {
         return m_driverManager.readProjectView(m_context, projectId, filter);
     }
+    
+    /**
+     * Reads the (compound) values of all properties mapped to a specified resource.<p>
+     * 
+     * @param resource the resource to look up the property for
+     * @return Map of Strings representing all properties of the resource
+     * @throws CmsException in case there where problems reading the properties
+     * @deprecated use {@link #readPropertyObjects(String, boolean)} instead
+     */
+    public Map readProperties(String resource) throws CmsException {
+        List properties = m_driverManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), false);
+        return CmsProperty.toMap(properties);
+    }
+
+    /**
+     * Reads the (compound) values of all properties mapped to a specified resource
+     * with optional direcory upward cascading.<p>
+     * 
+     * @param resource the resource to look up the property for
+     * @param search if <code>true</code>, the properties will also be looked up on all parent folders and the results will be merged, if <code>false</code> not (ie. normal property lookup)
+     * @return Map of Strings representing all properties of the resource
+     * @throws CmsException in case there where problems reading the properties
+     * @deprecated use {@link #readPropertyObjects(String, boolean)} instead
+     */
+    public Map readProperties(String resource, boolean search) throws CmsException {
+        List properties = m_driverManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), search);
+        return CmsProperty.toMap(properties);
+    }
+
+    /**
+     * Reads the (compound) value of a property mapped to a specified resource.<p>
+     *
+     * @param resource the resource to look up the property for
+     * @param property the name of the property to look up
+     * @return the value of the property found, <code>null</code> if nothing was found
+     * @throws CmsException in case there where problems reading the property
+     * @see CmsProperty#getValue()
+     * @deprecated use new Object based methods
+     */
+    public String readProperty(String resource, String property) throws CmsException {
+        CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, false);
+        return value.isNullProperty() ? null : value.getValue();
+    }
+
+    /**
+     * Reads the (compound) value of a property mapped to a specified resource 
+     * with optional direcory upward cascading.<p>
+     * 
+     * @param resource the resource to look up the property for
+     * @param property the name of the property to look up
+     * @param search if <code>true</code>, the property will be looked up on all parent folders if it is not attached to the the resource, if false not (ie. normal property lookup)
+     * @return the value of the property found, <code>null</code> if nothing was found
+     * @throws CmsException in case there where problems reading the property
+     * @see CmsProperty#getValue()
+     * @deprecated use new Object based methods
+     */
+    public String readProperty(String resource, String property, boolean search) throws CmsException {
+        CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
+        return value.isNullProperty() ? null : value.getValue();
+    }
+
+    /**
+     * Reads the (compound) value of a property mapped to a specified resource 
+     * with optional direcory upward cascading, a default value will be returned if the property 
+     * is not found on the resource (or it's parent folders in case search is set to <code>true</code>).<p>
+     * 
+     * @param resource the resource to look up the property for
+     * @param property the name of the property to look up
+     * @param search if <code>true</code>, the property will be looked up on all parent folders if it is not attached to the the resource, if <code>false</code> not (ie. normal property lookup)
+     * @param propertyDefault a default value that will be returned if the property was not found on the selected resource
+     * @return the value of the property found, if nothing was found the value of the <code>propertyDefault</code> parameter is returned
+     * @throws CmsException in case there where problems reading the property
+     * @see CmsProperty#getValue()
+     * @deprecated use new Object based methods
+     */
+    public String readProperty(String resource, String property, boolean search, String propertyDefault) throws CmsException {
+        CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
+        return value.isNullProperty() ? propertyDefault : value.getValue();
+    }    
 
     /**
      * Reads the property-definition for a resource.<p>
@@ -2961,6 +2840,70 @@ public class CmsObject {
     public CmsPropertydefinition readPropertydefinition(String name) throws CmsException {
         return (m_driverManager.readPropertydefinition(m_context, name, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE));
     }
+    
+    /**
+     * Reads a property object from the database specified by it's key name mapped to a resource.<p>
+     * 
+     * Returns {@link CmsProperty#getNullProperty()} if the property is not found.<p>
+     * 
+     * @param resourceName the name of resource where the property is mapped to
+     * @param propertyName the property key name
+     * @param search true, if the property should be searched on all parent folders  if not found on the resource
+     * @return a CmsProperty object containing the structure and/or resource value
+     * @throws CmsException if something goes wrong
+     */    
+    public CmsProperty readPropertyObject(String resourceName, String propertyName, boolean search) throws CmsException {
+        return m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resourceName), m_context.getAdjustedSiteRoot(resourceName), propertyName, search);
+    }
+    
+    /**
+     * Reads all property objects mapped to a specified resource from the database.<p>
+     * 
+     * Returns an empty list if no properties are found at all.<p>
+     * 
+     * @param resourceName the name of resource where the property is mapped to
+     * @param search true, if the properties should be searched on all parent folders  if not found on the resource
+     * @return a list of CmsProperty objects containing the structure and/or resource value
+     * @throws CmsException if something goes wrong
+     */    
+    public List readPropertyObjects(String resourceName, boolean search) throws CmsException {
+        return m_driverManager.readPropertyObjects(m_context, addSiteRoot(resourceName), m_context.getAdjustedSiteRoot(resourceName), search);
+    }
+
+    /**
+     * Reads the resources that were published in a publish task for a given publish history ID.<p>
+     * 
+     * @param publishHistoryId unique int ID to identify each publish task in the publish history
+     * @return a List of CmsPublishedResource objects
+     * @throws CmsException if something goes wrong
+     */
+    public List readPublishedResources(CmsUUID publishHistoryId) throws CmsException {
+        return m_driverManager.readPublishedResources(m_context, publishHistoryId);
+    }
+
+    /**
+     * Returns a List of all siblings of the specified resource,
+     * the specified resource being always part of the result set.<p>
+     * 
+     * @param resourcename the name of the specified resource
+     * @param filter a resource filter
+     * @return a List of CmsResources that are siblings to the specified resource, including the specified resource itself 
+     * @throws CmsException if something goes wrong
+     */
+    public List readSiblings(String resourcename, CmsResourceFilter filter) throws CmsException {
+        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), filter);
+    }
+
+
+    /**
+     * Returns the parameters of a resource in the table of all published template resources.<p>
+     * @param rfsName the rfs name of the resource
+     * @return the paramter string of the requested resource
+     * @throws CmsException if something goes wrong
+     */
+    public String readStaticExportPublishedResourceParameters(String rfsName) throws CmsException {
+        return  m_driverManager.readStaticExportPublishedResourceParameters(m_context, rfsName);
+    }
 
     /**
      * Returns a list of all template resources which must be processed during a static export.<p>
@@ -2972,19 +2915,7 @@ public class CmsObject {
      */
     public List readStaticExportResources(int parameterResources, long timestamp) throws CmsException {
         return m_driverManager.readStaticExportResources(m_context, parameterResources, timestamp);
-    }
-
-
-    /**
-     * Returns the parameters of a resource in the table of all published template resources.<p>
-     * @param rfsName the rfs name of the resource
-     * @return the paramter string of the requested resource
-     * @throws CmsException if something goes wrong
-     */
-    public String readStaticExportPublishedResourceParamters(String rfsName) throws CmsException {
-        return  m_driverManager.readStaticExportPublishedResourceParamters(m_context, rfsName);
-    }
-    
+    }    
     
     /**
      * Reads the task with the given id.
@@ -3158,16 +3089,17 @@ public class CmsObject {
     public void recoverPassword(String username, String recoveryPassword, String newPassword) throws CmsException {
         m_driverManager.recoverPassword(username, recoveryPassword, newPassword);
     }
-
+        
     /**
-     * Removes the current site root prefix from the absolute path in the resource name,
-     * i.e. adjusts the resource name for the current site root.<p> 
+     * Recovers a resource from the online project back to the 
+     * offline project as an unchanged resource.<p>
      * 
-     * @param resourcename the resource name
-     * @return the resource name adjusted for the current site root
+     * @param resourcename the name of the resource which is recovered
+     * @return the recovered resource in the offline project
+     * @throws CmsException if somethong goes wrong
      */
-    private String removeSiteRoot(String resourcename) {
-        return getRequestContext().removeSiteRoot(resourcename);
+    public CmsResource recoverResource(String resourcename) throws CmsException {
+        return m_driverManager.recoverResource(m_context, m_context.addSiteRoot(resourcename));        
     }
 
     /**
@@ -3183,73 +3115,6 @@ public class CmsObject {
      */
     public void removeUserFromGroup(String username, String groupname) throws CmsException {
         m_driverManager.removeUserFromGroup(m_context, username, groupname);
-    }
-
-    /**
-     * Renames the file to the new name.
-     *
-     * @param oldname the complete path to the file which will be renamed.
-     * @param newname the new name of the file.
-     *
-     * @throws CmsException if the user has not the rights
-     * to rename the file, or if the file couldn't be renamed.
-     *
-     * @deprecated Use renameResource instead.
-     */
-    public void renameFile(String oldname, String newname) throws CmsException {
-        renameResource(oldname, newname);
-    }
-
-    /**
-     * Renames the resource to the new name.
-     *
-     * @param oldname the complete path to the file which will be renamed.
-     * @param newname the new name of the file.
-     *
-     * @throws CmsException if the user has not the rights
-     * to rename the file, or if the file couldn't be renamed.
-     */
-    public void renameResource(String oldname, String newname) throws CmsException {
-        getResourceType(readFileHeader(oldname, CmsResourceFilter.IGNORE_EXPIRATION).getType()).renameResource(this, oldname, newname);
-    }
-
-    /**
-     * Replaces and existing resource by another file with different content
-     * and different file type.<p>
-     * 
-     * @param resourcename the resource to replace
-     * @param type the type of the new resource
-     * @param properties the properties of the new resource
-     * @param content the content of the new resource
-     * @throws CmsException if something goes wrong
-     */
-    public void replaceResource(String resourcename, int type, List properties, byte[] content) throws CmsException {
-        // read the properties of the existing file
-        List existingProperties = null;
-        try {
-            existingProperties = readPropertyObjects(resourcename, false);
-        } catch (CmsException e) {
-            existingProperties = Collections.EMPTY_LIST;
-        }
-
-        // add the properties that might have been collected during a file-upload
-        if (properties != null) {
-            existingProperties.removeAll(properties);
-            existingProperties.addAll(properties);
-        }
-
-        getResourceType(readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getType()).replaceResource(this, resourcename, existingProperties, content, type);
-    }
-
-    /**
-     * Restores a file in the current project with a version in the backup.<p>
-     *
-     * @param tagId The tag id of the resource
-     * @param filename The name of the file to restore
-     * @throws CmsException if operation was not succesful
-     */
-    public void restoreResource(int tagId, String filename) throws CmsException {
-        getResourceType(readFileHeader(filename, CmsResourceFilter.IGNORE_EXPIRATION).getType()).restoreResource(this, tagId, filename);
     }
 
     /**
@@ -3403,61 +3268,6 @@ public class CmsObject {
     }
 
     /**
-     * Change the timestamp of a resource.<p>
-     * 
-     * @param resourceName the name of the resource to change
-     * @param timestamp timestamp the new timestamp of the changed resource
-     * @param releasedate the new releasedate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
-     * @param expiredate the new expiredate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
-     * @param touchRecursive if true, touch recursively all sub-resources (only for folders)
-     * @param user the user who is inserted as userladtmodified 
-     * @throws CmsException if something goes wrong
-     */
-    public void touch(String resourceName, long timestamp, long releasedate, long expiredate, boolean touchRecursive, CmsUUID user) throws CmsException {
-        getResourceType(readFileHeader(resourceName, CmsResourceFilter.IGNORE_EXPIRATION).getType()).touch(this, resourceName, timestamp, releasedate, expiredate, touchRecursive, user);
-    }
-
-    /**
-     * Change the timestamp of a resource.<p>
-     * 
-     * @param resourceName the name of the resource to change
-     * @param timestamp timestamp the new timestamp of the changed resource
-     * @param releasedate the new releasedate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
-     * @param expiredate the new expiredate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
-     * @param touchRecursive if true, touch recursively all sub-resources (only for folders)
-     * @throws CmsException if something goes wrong
-     */
-    public void touch(String resourceName, long timestamp, long releasedate, long expiredate, boolean touchRecursive) throws CmsException {
-        touch(resourceName, timestamp, releasedate, expiredate, touchRecursive, getRequestContext().currentUser().getId());
-    }
-
-    /**
-     * Undeletes a resource.
-     *
-     * @param filename the complete path of the file.
-     *
-     * @throws CmsException if the file couldn't be undeleted, or if the user
-     * has not the appropriate rights to undelete the file.
-     */
-    public void undeleteResource(String filename) throws CmsException {
-        //read the file header including deleted
-        getResourceType(readFileHeader(filename, CmsResourceFilter.ALL).getType()).undeleteResource(this, filename);
-    }
-
-    /**
-     * Undo changes in a file by copying the online file.
-     *
-     * @param filename the complete path of the file.
-     * @param recursive if true, undo changed recursively all sub-resources (only for folders)
-     * @throws CmsException if the file couldn't be deleted, or if the user
-     * has not the appropriate rights to write the file.
-     */
-    public void undoChanges(String filename, boolean recursive) throws CmsException {
-        //read the file header including deleted
-        getResourceType(readFileHeader(filename, CmsResourceFilter.IGNORE_EXPIRATION).getType()).undoChanges(this, filename, recursive);
-    }
-
-    /**
      * Unlocks all resources of a project.
      *
      * @param id the id of the project to be unlocked.
@@ -3466,17 +3276,6 @@ public class CmsObject {
      */
     public void unlockProject(int id) throws CmsException {
         m_driverManager.unlockProject(m_context, id);
-    }
-
-    /**
-     * Unlocks a resource.<p>
-     *
-     * @param resource the complete path to the resource to be unlocked
-     * @param forceRecursive if true, also unlock all sub-resources (of a folder) 
-     * @throws CmsException if the user has no write permission for the resource
-     */
-    public void unlockResource(String resource, boolean forceRecursive) throws CmsException {
-        getResourceType(readFileHeader(resource, CmsResourceFilter.IGNORE_EXPIRATION).getType()).unlockResource(this, resource, forceRecursive);
     }
 
     /**
@@ -3491,17 +3290,84 @@ public class CmsObject {
     public boolean userInGroup(String username, String groupname) throws CmsException {
         return (m_driverManager.userInGroup(m_context, username, groupname));
     }
-
+    
     /**
-     * Writes access control entries for a given resource.<p>
+     * Validates the HTML links (hrefs and images) in the unpublished Cms files of the specified
+     * Cms publish list, if the files resource types implement the interface 
+     * {@link org.opencms.validation.I_CmsHtmlLinkValidatable}.<p>
      * 
-     * @param resource the resource to attach the control entries to
-     * @param acEntries a vector of access control entries
-     * @throws CmsException if something goes wrong
-     */
-    public void importAccessControlEntries(CmsResource resource, Vector acEntries) throws CmsException {
-        m_driverManager.importAccessControlEntries(m_context, resource, acEntries);
+     * Please refer to the Javadoc of the I_CmsHtmlLinkValidatable interface to see which classes
+     * implement this interface (and so, which file types get validated by the HTML link 
+     * validator).<p>
+     * 
+     * @param publishList a Cms publish list
+     * @param report an instance of I_CmsReport to print messages
+     * @return a map with lists of invalid links keyed by resource names
+     * @throws Exception if something goes wrong
+     * @see org.opencms.validation.I_CmsHtmlLinkValidatable
+     */    
+    public Map validateHtmlLinks(CmsPublishList publishList, I_CmsReport report) throws Exception {       
+        return m_driverManager.validateHtmlLinks(this, publishList, report);  
     }
+    
+    /**
+     * Validates the HTML links (hrefs and images) in the unpublished Cms file of the current 
+     * (offline) project, if the file's resource type implements the interface 
+     * {@link org.opencms.validation.I_CmsHtmlLinkValidatable}.<p>
+     * 
+     * Please refer to the Javadoc of the I_CmsHtmlLinkValidatable interface to see which classes
+     * implement this interface (and so, which file types get validated by the HTML link 
+     * validator).<p>
+     * 
+     * @param directPublishResource the resource which will be directly published
+     * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published
+     * @param report an instance of I_CmsReport to print messages
+     * @return a map with lists of invalid links keyed by resource names
+     * @throws Exception if something goes wrong
+     * @see org.opencms.validation.I_CmsHtmlLinkValidatable
+     */
+    public Map validateHtmlLinks(CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws Exception {
+        CmsPublishList publishList = null;
+        Map result = null;
+                   
+        publishList = m_driverManager.getPublishList(m_context, directPublishResource, directPublishSiblings, report);
+        result = m_driverManager.validateHtmlLinks(this, publishList, report);
+        
+        return result;
+    }
+    
+    /**
+     * Validates the HTML links (hrefs and images) in all unpublished Cms files of the current 
+     * (offline) project, if the files resource types implement the interface 
+     * {@link org.opencms.validation.I_CmsHtmlLinkValidatable}.<p>
+     * 
+     * Please refer to the Javadoc of the I_CmsHtmlLinkValidatable interface to see which classes
+     * implement this interface (and so, which file types get validated by the HTML link 
+     * validator).<p>
+     * 
+     * @param report an instance of I_CmsReport to print messages
+     * @return a map with lists of invalid links keyed by resource names
+     * @throws Exception if something goes wrong
+     * @see org.opencms.validation.I_CmsHtmlLinkValidatable
+     */
+    public Map validateHtmlLinks(I_CmsReport report) throws Exception {
+        CmsPublishList publishList = m_driverManager.getPublishList(m_context, null, false, report);
+        return m_driverManager.validateHtmlLinks(this, publishList, report);    
+    }
+    
+    /**
+     * This method checks if a new password follows the rules for
+     * new passwords, which are defined by a Class configured in opencms.properties.<p>
+     * 
+     * If this method throws no exception the password is valid.<p>
+     *
+     * @param password the new password that has to be checked
+     *
+     * @throws CmsSecurityException if the password is not valid
+     */    
+    public void validatePassword(String password) throws CmsSecurityException {
+        m_driverManager.validatePassword(password);
+    }           
 
     /**
      * Writes the Crontable.<p>
@@ -3514,30 +3380,6 @@ public class CmsObject {
      */
     public void writeCronTable(String crontable) throws CmsException {
         m_driverManager.writeCronTable(m_context, crontable);
-    }
-
-    /**
-     * Writes the package for the system.<p>
-     * 
-     * This path is used for db-export and db-import as well as module packages.<p>
-     *
-     * @param path the package path
-     * @throws CmsException if operation ws not successful
-     */
-    public void writePackagePath(String path) throws CmsException {
-        m_driverManager.writePackagePath(m_context, path);
-    }
-
-    /**
-     * Writes a file to the OpenCms VFS.<p>
-     *
-     * @param file the file to write
-     * @return the written file
-     * @throws CmsException if something goes wrong
-     */
-    public CmsFile writeFile(CmsFile file) throws CmsException {
-       
-        return getResourceType(file.getType()).writeFile(this, file);
     }
 
     /**
@@ -3589,6 +3431,18 @@ public class CmsObject {
     }
 
     /**
+     * Writes the package for the system.<p>
+     * 
+     * This path is used for db-export and db-import as well as module packages.<p>
+     *
+     * @param path the package path
+     * @throws CmsException if operation ws not successful
+     */
+    public void writePackagePath(String path) throws CmsException {
+        m_driverManager.writePackagePath(m_context, path);
+    }
+
+    /**
      * Writes a couple of properties as structure values for a file or folder.
      *
      * @param resourceName the resource-name of which the Property has to be set.
@@ -3597,7 +3451,7 @@ public class CmsObject {
      * @deprecated use {@link #writePropertyObjects(String, List)} instead
      */
     public void writeProperties(String resourceName, Map properties) throws CmsException {
-        m_driverManager.writePropertyObjects(m_context, addSiteRoot(resourceName), CmsProperty.toList(properties));
+        writePropertyObjects(resourceName, CmsProperty.toList(properties));
     }
 
     /**
@@ -3610,7 +3464,7 @@ public class CmsObject {
      * @deprecated use {@link #writePropertyObjects(String, List)} instead
      */
     public void writeProperties(String name, Map properties, boolean addDefinition) throws CmsException {
-        m_driverManager.writePropertyObjects(m_context, addSiteRoot(name), CmsProperty.setAutoCreatePropertyDefinitions(CmsProperty.toList(properties), addDefinition));
+        writePropertyObjects(name, CmsProperty.setAutoCreatePropertyDefinitions(CmsProperty.toList(properties), addDefinition));
     }
     
     /**
@@ -3627,7 +3481,7 @@ public class CmsObject {
         property.setKey(key);
         property.setStructureValue(value);
         
-        m_driverManager.writePropertyObject(m_context, addSiteRoot(resourceName), property);        
+        writePropertyObject(resourceName, property);        
     }
 
     /**
@@ -3646,7 +3500,32 @@ public class CmsObject {
         property.setStructureValue(value);
         property.setAutoCreatePropertyDefinition(addDefinition);
         
-        m_driverManager.writePropertyObject(m_context, addSiteRoot(name), property); 
+        writePropertyObject(name, property); 
+    }
+    
+    /**
+     * Writes a property object to the database mapped to a specified resource.<p>
+     * 
+     * @param resourceName the name of resource where the property is mapped to
+     * @param property a CmsProperty object containing a structure and/or resource value
+     * @throws CmsException if something goes wrong
+     */    
+    public void writePropertyObject(String resourceName, CmsProperty property) throws CmsException {
+        m_driverManager.writePropertyObject(m_context, addSiteRoot(resourceName), property);
+    }
+    
+    /**
+     * Writes a list of property objects to the database mapped to a specified resource.<p>
+     * 
+     * Code calling this method has to ensure that the properties in the specified list are
+     * disjunctive.<p>
+     * 
+     * @param resourceName the name of resource where the property is mapped to
+     * @param properties a list of CmsPropertys object containing a structure and/or resource value
+     * @throws CmsException if something goes wrong
+     */    
+    public void writePropertyObjects(String resourceName, List properties) throws CmsException {
+        m_driverManager.writePropertyObjects(m_context, addSiteRoot(resourceName), properties);
     }
 
     /**
@@ -3715,328 +3594,13 @@ public class CmsObject {
     }
     
     /**
-     * Gets the lock state for a specified resource.<p>
-     * 
-     * @param resource the specified resource
-     * @return the CmsLock object for the specified resource
-     * @throws CmsException if somethong goes wrong
+     * Fires a CmsEvent.<p>
+     *
+     * @param type The type of the event
+     * @param data A data object that contains data used by the event listeners
      */
-    public CmsLock getLock(CmsResource resource) throws CmsException {
-        return m_driverManager.getLock(m_context, resource);
-    }    
-    
-    /**
-     * Gets the lock state for a specified resource name.<p>
-     * 
-     * @param resourcename the specified resource name
-     * @return the CmsLock object for the specified resource name
-     * @throws CmsException if somethong goes wrong
-     */
-    public CmsLock getLock(String resourcename) throws CmsException {
-        return m_driverManager.getLock(m_context, m_context.addSiteRoot(resourcename));
-    }
-    
-    /**
-     * Proves if a specified resource is inside the current project.<p>
-     * 
-     * @param resource the specified resource
-     * @return true, if the resource name of the specified resource matches any of the current project's resources
-     */
-    public boolean isInsideCurrentProject(CmsResource resource) {
-        return m_driverManager.isInsideCurrentProject(m_context, resource);
-    }      
-    
-    /**
-     * Returns the list of all resources that define the "view" of the given project.<p>
-     * 
-     * @param project the project to get the project resources for
-     * @return the list of all resources that define the "view" of the given project
-     * @throws CmsException if something goes wrong
-     */
-    public List readProjectResources(CmsProject project) throws CmsException {
-        return m_driverManager.readProjectResources(project);
-    }
+    private void fireEvent(int type, Object data) {
         
-    /**
-     * Recovers a resource from the online project back to the 
-     * offline project as an unchanged resource.<p>
-     * 
-     * @param resourcename the name of the resource which is recovered
-     * @return the recovered resource in the offline project
-     * @throws CmsException if somethong goes wrong
-     */
-    public CmsResource recoverResource(String resourcename) throws CmsException {
-        return m_driverManager.recoverResource(m_context, m_context.addSiteRoot(resourcename));        
-    }
-    
-    /**
-     * This method checks if a new password follows the rules for
-     * new passwords, which are defined by a Class configured in opencms.properties.<p>
-     * 
-     * If this method throws no exception the password is valid.<p>
-     *
-     * @param password the new password that has to be checked
-     *
-     * @throws CmsSecurityException if the password is not valid
-     */    
-    public void validatePassword(String password) throws CmsSecurityException {
-        m_driverManager.validatePassword(password);
-    }           
-
-    /**
-     * Reads the resources that were published in a publish task for a given publish history ID.<p>
-     * 
-     * @param publishHistoryId unique int ID to identify each publish task in the publish history
-     * @return a List of CmsPublishedResource objects
-     * @throws CmsException if something goes wrong
-     */
-    public List readPublishedResources(CmsUUID publishHistoryId) throws CmsException {
-        return m_driverManager.readPublishedResources(m_context, publishHistoryId);
-    }
-    
-    /**
-     * Completes all post-publishing tasks for a "directly" published COS resource.<p>
-     * 
-     * @param publishedBoResource the CmsPublishedResource onject representing the published COS resource
-     * @param publishId unique int ID to identify each publish task in the publish history
-     * @param tagId the backup tag revision
-     */
-    public void postPublishBoResource(CmsPublishedResource publishedBoResource, CmsUUID publishId, int tagId) {
-        try {
-            m_driverManager.postPublishBoResource(m_context, publishedBoResource, publishId, tagId);
-        } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error writing publish history entry for COS resource " + publishedBoResource.toString(), e);
-            }
-        } finally {
-            Map eventData = new HashMap();
-            eventData.put("publishHistoryId", publishId.toString());
-            
-            // a "directly" published COS resource can be handled totally equal to a published project            
-            OpenCms.fireCmsEvent(new CmsEvent(this, I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData));
-        }
-    }
-    
-    /**
-     * Validates the HTML links (hrefs and images) in all unpublished Cms files of the current 
-     * (offline) project, if the files resource types implement the interface 
-     * {@link org.opencms.validation.I_CmsHtmlLinkValidatable}.<p>
-     * 
-     * Please refer to the Javadoc of the I_CmsHtmlLinkValidatable interface to see which classes
-     * implement this interface (and so, which file types get validated by the HTML link 
-     * validator).<p>
-     * 
-     * @param report an instance of I_CmsReport to print messages
-     * @return a map with lists of invalid links keyed by resource names
-     * @throws Exception if something goes wrong
-     * @see org.opencms.validation.I_CmsHtmlLinkValidatable
-     */
-    public Map validateHtmlLinks(I_CmsReport report) throws Exception {
-        CmsPublishList publishList = m_driverManager.getPublishList(m_context, null, false, report);
-        return m_driverManager.validateHtmlLinks(this, publishList, report);    
-    }
-    
-    /**
-     * Validates the HTML links (hrefs and images) in the unpublished Cms file of the current 
-     * (offline) project, if the file's resource type implements the interface 
-     * {@link org.opencms.validation.I_CmsHtmlLinkValidatable}.<p>
-     * 
-     * Please refer to the Javadoc of the I_CmsHtmlLinkValidatable interface to see which classes
-     * implement this interface (and so, which file types get validated by the HTML link 
-     * validator).<p>
-     * 
-     * @param directPublishResource the resource which will be directly published
-     * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published
-     * @param report an instance of I_CmsReport to print messages
-     * @return a map with lists of invalid links keyed by resource names
-     * @throws Exception if something goes wrong
-     * @see org.opencms.validation.I_CmsHtmlLinkValidatable
-     */
-    public Map validateHtmlLinks(CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws Exception {
-        CmsPublishList publishList = null;
-        Map result = null;
-                   
-        publishList = m_driverManager.getPublishList(m_context, directPublishResource, directPublishSiblings, report);
-        result = m_driverManager.validateHtmlLinks(this, publishList, report);
-        
-        return result;
-    }
-    
-    /**
-     * Validates the HTML links (hrefs and images) in the unpublished Cms files of the specified
-     * Cms publish list, if the files resource types implement the interface 
-     * {@link org.opencms.validation.I_CmsHtmlLinkValidatable}.<p>
-     * 
-     * Please refer to the Javadoc of the I_CmsHtmlLinkValidatable interface to see which classes
-     * implement this interface (and so, which file types get validated by the HTML link 
-     * validator).<p>
-     * 
-     * @param publishList a Cms publish list
-     * @param report an instance of I_CmsReport to print messages
-     * @return a map with lists of invalid links keyed by resource names
-     * @throws Exception if something goes wrong
-     * @see org.opencms.validation.I_CmsHtmlLinkValidatable
-     */    
-    public Map validateHtmlLinks(CmsPublishList publishList, I_CmsReport report) throws Exception {       
-        return m_driverManager.validateHtmlLinks(this, publishList, report);  
-    }
-    
-    /**
-     * Returns a publish list for the specified Cms resource to be published directly, plus 
-     * optionally it's siblings.<p>
-     * 
-     * @param directPublishResource the resource which will be directly published
-     * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published
-     * @param report an instance of I_CmsReport to print messages
-     * @return a publish list
-     * @throws CmsException if something goes wrong
-     */
-    public CmsPublishList getPublishList(CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws CmsException {
-        return m_driverManager.getPublishList(m_context, directPublishResource, directPublishSiblings, report);
-    }
-    
-    /**
-     * Returns a publish list with all new/changed/deleted Cms resources of the current (offline)
-     * project that actually get published.<p>
-     * 
-     * @param report an instance of I_CmsReport to print messages
-     * @return a publish list
-     * @throws Exception if something goes wrong
-     */
-    public CmsPublishList getPublishList(I_CmsReport report) throws Exception {
-        return getPublishList(null, false, report);
-    }    
-    
-    /**
-     * Reads a property object from the database specified by it's key name mapped to a resource.<p>
-     * 
-     * Returns {@link CmsProperty#getNullProperty()} if the property is not found.<p>
-     * 
-     * @param resourceName the name of resource where the property is mapped to
-     * @param propertyName the property key name
-     * @param search true, if the property should be searched on all parent folders  if not found on the resource
-     * @return a CmsProperty object containing the structure and/or resource value
-     * @throws CmsException if something goes wrong
-     */    
-    public CmsProperty readPropertyObject(String resourceName, String propertyName, boolean search) throws CmsException {
-        return m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resourceName), m_context.getAdjustedSiteRoot(resourceName), propertyName, search);
-    }
-    
-    /**
-     * Reads all property objects mapped to a specified resource from the database.<p>
-     * 
-     * Returns an empty list if no properties are found at all.<p>
-     * 
-     * @param resourceName the name of resource where the property is mapped to
-     * @param search true, if the properties should be searched on all parent folders  if not found on the resource
-     * @return a list of CmsProperty objects containing the structure and/or resource value
-     * @throws CmsException if something goes wrong
-     */    
-    public List readPropertyObjects(String resourceName, boolean search) throws CmsException {
-        return m_driverManager.readPropertyObjects(m_context, addSiteRoot(resourceName), m_context.getAdjustedSiteRoot(resourceName), search);
-    }
-    
-    /**
-     * Writes a property object to the database mapped to a specified resource.<p>
-     * 
-     * @param resourceName the name of resource where the property is mapped to
-     * @param property a CmsProperty object containing a structure and/or resource value
-     * @throws CmsException if something goes wrong
-     */    
-    public void writePropertyObject(String resourceName, CmsProperty property) throws CmsException {
-        m_driverManager.writePropertyObject(m_context, addSiteRoot(resourceName), property);
-    }
-    
-    /**
-     * Writes a list of property objects to the database mapped to a specified resource.<p>
-     * 
-     * Code calling this method has to ensure that the properties in the specified list are
-     * disjunctive.<p>
-     * 
-     * @param resourceName the name of resource where the property is mapped to
-     * @param properties a list of CmsPropertys object containing a structure and/or resource value
-     * @throws CmsException if something goes wrong
-     */    
-    public void writePropertyObjects(String resourceName, List properties) throws CmsException {
-        m_driverManager.writePropertyObjects(m_context, addSiteRoot(resourceName), properties);
-    }      
-    
-    /**
-     * Reads the (compound) values of all properties mapped to a specified resource.<p>
-     * 
-     * @param resource the resource to look up the property for
-     * @return Map of Strings representing all properties of the resource
-     * @throws CmsException in case there where problems reading the properties
-     * @deprecated use {@link #readPropertyObjects(String, boolean)} instead
-     */
-    public Map readProperties(String resource) throws CmsException {
-        List properties = m_driverManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), false);
-        return CmsProperty.toMap(properties);
-    }
-
-    /**
-     * Reads the (compound) values of all properties mapped to a specified resource
-     * with optional direcory upward cascading.<p>
-     * 
-     * @param resource the resource to look up the property for
-     * @param search if <code>true</code>, the properties will also be looked up on all parent folders and the results will be merged, if <code>false</code> not (ie. normal property lookup)
-     * @return Map of Strings representing all properties of the resource
-     * @throws CmsException in case there where problems reading the properties
-     * @deprecated use {@link #readPropertyObjects(String, boolean)} instead
-     */
-    public Map readProperties(String resource, boolean search) throws CmsException {
-        List properties = m_driverManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), search);
-        return CmsProperty.toMap(properties);
-    }
-
-    /**
-     * Reads the (compound) value of a property mapped to a specified resource.<p>
-     *
-     * @param resource the resource to look up the property for
-     * @param property the name of the property to look up
-     * @return the value of the property found, <code>null</code> if nothing was found
-     * @throws CmsException in case there where problems reading the property
-     * @see CmsProperty#getValue()
-     * @deprecated use new Object based methods
-     */
-    public String readProperty(String resource, String property) throws CmsException {
-        CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, false);
-        return value.isNullProperty() ? null : value.getValue();
-    }
-
-    /**
-     * Reads the (compound) value of a property mapped to a specified resource 
-     * with optional direcory upward cascading.<p>
-     * 
-     * @param resource the resource to look up the property for
-     * @param property the name of the property to look up
-     * @param search if <code>true</code>, the property will be looked up on all parent folders if it is not attached to the the resource, if false not (ie. normal property lookup)
-     * @return the value of the property found, <code>null</code> if nothing was found
-     * @throws CmsException in case there where problems reading the property
-     * @see CmsProperty#getValue()
-     * @deprecated use new Object based methods
-     */
-    public String readProperty(String resource, String property, boolean search) throws CmsException {
-        CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
-        return value.isNullProperty() ? null : value.getValue();
-    }
-
-    /**
-     * Reads the (compound) value of a property mapped to a specified resource 
-     * with optional direcory upward cascading, a default value will be returned if the property 
-     * is not found on the resource (or it's parent folders in case search is set to <code>true</code>).<p>
-     * 
-     * @param resource the resource to look up the property for
-     * @param property the name of the property to look up
-     * @param search if <code>true</code>, the property will be looked up on all parent folders if it is not attached to the the resource, if <code>false</code> not (ie. normal property lookup)
-     * @param propertyDefault a default value that will be returned if the property was not found on the selected resource
-     * @return the value of the property found, if nothing was found the value of the <code>propertyDefault</code> parameter is returned
-     * @throws CmsException in case there where problems reading the property
-     * @see CmsProperty#getValue()
-     * @deprecated use new Object based methods
-     */
-    public String readProperty(String resource, String property, boolean search, String propertyDefault) throws CmsException {
-        CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
-        return value.isNullProperty() ? propertyDefault : value.getValue();
+        OpenCms.fireCmsEvent(this, type, Collections.singletonMap("data", data));
     }    
 }

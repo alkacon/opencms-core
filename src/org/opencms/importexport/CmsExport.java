@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/06/14 14:25:58 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/06/21 09:56:23 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.37 $ $Date: 2004/06/14 14:25:58 $
+ * @version $Revision: 1.38 $ $Date: 2004/06/21 09:56:23 $
  */
 public class CmsExport implements Serializable {
 
@@ -582,7 +582,7 @@ public class CmsExport implements Serializable {
                 appendResourceToManifest(file, false);
             }
             // check if the resource is a page of the old style. if so, export the body as well       
-            if (getCms().getResourceType(file.getType()).getResourceTypeName().equals("page")) {
+            if (OpenCms.getLoaderManager().getResourceType(file.getTypeId()).getTypeName().equals("page")) {
                 m_exportedPageFiles.add("/" + source);
             }
         } catch (Exception exc) {
@@ -672,7 +672,7 @@ public class CmsExport implements Serializable {
         // <destination>
         fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DESTINATION).addText(fileName);
         // <type>
-        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_TYPE).addText(getCms().getResourceType(resource.getType()).getResourceTypeName());
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_TYPE).addText(OpenCms.getLoaderManager().getResourceType(resource.getTypeId()).getTypeName());
         
         if (resource.isFile()) {
             //  <uuidresource>

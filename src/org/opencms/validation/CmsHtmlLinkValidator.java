@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsHtmlLinkValidator.java,v $
- * Date   : $Date: 2004/06/07 15:49:56 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/06/21 09:58:42 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.I_CmsResourceType;
+import org.opencms.file.types.I_CmsResourceType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +60,7 @@ import java.util.Map;
  * Objects using the CmsHtmlLinkValidator are responsible to handle detected broken links.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.16 $ $Date: 2004/06/07 15:49:56 $
+ * @version $Revision: 1.17 $ $Date: 2004/06/21 09:58:42 $
  * @since 5.3.0
  */
 public class CmsHtmlLinkValidator extends Object {
@@ -141,7 +141,7 @@ public class CmsHtmlLinkValidator extends Object {
             offlineFilesLookup.put(resource.getRootPath(), resource);
 
             try {
-                if ((resourceType = cms.getResourceType(resource.getType())) instanceof I_CmsHtmlLinkValidatable) {
+                if ((resourceType = OpenCms.getLoaderManager().getResourceType(resource.getTypeId())) instanceof I_CmsHtmlLinkValidatable) {
                     if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {
                         // don't validate links on deleted resources
                         validatableResources.add(resource);
@@ -160,7 +160,7 @@ public class CmsHtmlLinkValidator extends Object {
                 brokenLinks = null;
                 resource = (CmsResource) validatableResources.get(i);
                 resourceName = resource.getRootPath();
-                resourceType = cms.getResourceType(resource.getType());
+                resourceType = OpenCms.getLoaderManager().getResourceType(resource.getTypeId());
 
                 report.print("( " + (i + 1) + " / " + j + " ) " + report.key("report.htmllink_validator.validating"), I_CmsReport.C_FORMAT_NOTE);
                 report.print(cms.getRequestContext().removeSiteRoot(resourceName));

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/06/21 09:55:24 $
+ * Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -538,7 +538,7 @@ public class CmsRegistry extends A_CmsXmlContent {
                         System.err.println("[" + this.getClass().getName() + ".deleteModule()] Deleting resource " + currentResource);
                     }
                     // lock the resource
-                    m_cms.lockResource(currentResource, true);
+                    m_cms.lockResource(currentResource);
                     // delete the resource
                     m_cms.deleteResource(currentResource, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
                     // update the report
@@ -575,14 +575,8 @@ public class CmsRegistry extends A_CmsXmlContent {
                 try {
                     String currentResource = (String)resourceNames.elementAt(i);
                     if ((!exclusion.contains(currentResource)) && (!filesInUse.contains(currentResource))) {
-                        m_cms.lockResource(currentResource, true);
-                        if (currentResource.endsWith("/")) {
-                            // this is a folder
-                            m_cms.deleteEmptyFolder(currentResource);
-                        } else {
-                            // this is a file
-                            m_cms.deleteResource(currentResource, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
-                        }
+                        m_cms.lockResource(currentResource);
+                        m_cms.deleteResource(currentResource, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
                         // update the report
                         report.print(report.key("report.deleting"), I_CmsReport.C_FORMAT_NOTE);
                         report.println(currentResource);

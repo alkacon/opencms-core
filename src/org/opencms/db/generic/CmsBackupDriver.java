@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/06/09 15:53:29 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2004/06/21 09:55:03 $
+ * Version: $Revision: 1.94 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.93 $ $Date: 2004/06/09 15:53:29 $
+ * @version $Revision: 1.94 $ $Date: 2004/06/21 09:55:03 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -1098,7 +1098,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                     // write the resource
                     stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_WRITE_BACKUP");
                     stmt.setString(1, resource.getResourceId().toString());
-                    stmt.setInt(2, resource.getType());
+                    stmt.setInt(2, resource.getTypeId());
                     stmt.setInt(3, resource.getFlags());
                     stmt.setString(4, resource.getFileId().toString());
                     stmt.setInt(5, resource.getLoaderId());

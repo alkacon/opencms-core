@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/06/18 14:17:54 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2004/06/21 09:58:21 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -78,7 +78,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -824,7 +824,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             // resource is a plain resouce
             if (vfsName.toLowerCase().endsWith(".jsp")) {
                 CmsResource res = cms.readFileHeader(originalVfsName);
-                if (res.getType() != CmsResourceTypePlain.C_RESOURCE_TYPE_ID) {
+                if (res.getTypeId() != CmsResourceTypePlain.C_RESOURCE_TYPE_ID) {
                     vfsName += ".html";
                 }
             }
@@ -1345,7 +1345,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
                     String parameters = null;
                     try {
-                        parameters = cms.readStaticExportPublishedResourceParamters(rfsName);
+                        parameters = cms.readStaticExportPublishedResourceParameters(rfsName);
                         // there was a match in the db table, so get the StaticExportData 
                         if (parameters != null && parameters.length() > 0) {
                             return getStaticExportDataWithParameter(cms, rfsName, parameters);

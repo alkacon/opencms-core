@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/06/10 19:37:27 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2004/06/21 09:56:23 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,9 @@ package org.opencms.importexport;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceTypeFolder;
-import org.opencms.file.CmsResourceTypeXmlPage;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -340,8 +341,9 @@ public class CmsImportVersion4 extends A_CmsImport {
                 } else if (C_RESOURCE_TYPE_LINK_NAME.equals(type)) {
                     resType = C_RESOURCE_TYPE_LINK_ID;
                 } else {
-                    resType = m_cms.getResourceTypeId(type);
-                    loaderId = m_cms.getResourceType(resType).getLoaderId();
+                    I_CmsResourceType rt = OpenCms.getLoaderManager().getResourceType(type);
+                    resType = rt.getTypeId();
+                    loaderId = rt.getLoaderId();
                 }
 
                 if (resType != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
@@ -642,7 +644,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                     content = xmlPage.marshal();
                 }
                 resType = CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID;
-                loaderId = m_cms.getResourceType(resType).getLoaderId();
+                loaderId = OpenCms.getLoaderManager().getResourceType(resType).getLoaderId();
             }
             
             // create a new CmsResource                         
@@ -675,7 +677,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 res = resource;
             } else {             
                 // import this resource in the VFS   
-                res = m_cms.importResource(resource, content, properties, m_importPath + destination);
+                res = m_cms.importResource(m_importPath + destination, resource, content, properties);
             }
 
             if (res != null) {

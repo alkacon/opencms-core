@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2004/06/21 09:56:23 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,9 +38,10 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsResourceTypeFolder;
-import org.opencms.file.CmsResourceTypePlain;
-import org.opencms.file.CmsResourceTypeXmlPage;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -375,18 +376,19 @@ public class CmsImportVersion2 extends A_CmsImport {
                 resourceTypeName = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
                 if (C_RESOURCE_TYPE_NEWPAGE_NAME.equals(resourceTypeName)) {
                     resourceTypeId = C_RESOURCE_TYPE_NEWPAGE_ID;
-                    resourceTypeLoaderId = (m_cms.getResourceType(resourceTypeId)).getLoaderId();
+                    resourceTypeLoaderId = (OpenCms.getLoaderManager().getResourceType(resourceTypeId)).getLoaderId();
                 } else if (C_RESOURCE_TYPE_PAGE_NAME.equals(resourceTypeName)) {
                     // resource with a "legacy" resource type are imported using the "plain" resource
                     // type because you cannot import a resource without having the resource type object
                     resourceTypeId = CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
-                    resourceTypeLoaderId = (m_cms.getResourceType(resourceTypeId)).getLoaderId();
+                    resourceTypeLoaderId = (OpenCms.getLoaderManager().getResourceType(resourceTypeId)).getLoaderId();
                 } else if (C_RESOURCE_TYPE_LINK_NAME.equals(resourceTypeName)) {
                     // set resource type of legacy "link" which is converted later
                     resourceTypeId = C_RESOURCE_TYPE_LINK_ID;
                 } else {
-                    resourceTypeId = m_cms.getResourceTypeId(resourceTypeName);
-                    resourceTypeLoaderId = (m_cms.getResourceType(resourceTypeId)).getLoaderId();
+                    I_CmsResourceType type = OpenCms.getLoaderManager().getResourceType(resourceTypeName);
+                    resourceTypeId = type.getTypeId();
+                    resourceTypeLoaderId = type.getLoaderId();
                 }
                 
                 uuid = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDSTRUCTURE);
@@ -595,7 +597,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 res = resource;
             } else {                                                                                                       
                 //  import this resource in the VFS                         
-                res = m_cms.importResource(resource, content, properties, m_importPath+destination);
+                res = m_cms.importResource(m_importPath+destination, resource, content, properties);
             }   
             
             if (res != null) {
@@ -849,7 +851,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             }
             CmsProperty.setAutoCreatePropertyDefinitions(properties, true);
             m_cms.writePropertyObjects(resname, properties);
-            m_cms.touch(resname, pagefile.getDateLastModified(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false, pagefile.getUserLastModified());
+            m_cms.touch(resname, pagefile.getDateLastModified(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, pagefile.getUserLastModified(), false);
             // done, ulock the resource                   
             m_cms.unlockResource(resname, false);
             // finally delete the old body file, it is not needed anymore

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/I_CmsEditorActionHandler.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/06/21 10:01:23 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.JspException;
  * The class you enter must implement this interface to perform the editor action.<p>  
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.3.0
  */
@@ -88,6 +88,21 @@ public interface I_CmsEditorActionHandler {
     /** Key to identify the edit target, used on JPS pages that supply the direct edit html. */
     String C_DIRECT_EDIT_PARAM_TARGET = "__directEditTarget";
     
+    /** Key to identify additional direct edit options, used e.g. to control which direct edit buttons are displayed */
+    String C_DIRECT_EDIT_PARAM_OPTIONS = "__directEditOptions";
+    
+    /** Key to identify the link to use for the "new" button (if enabled). */
+    String C_DIRECT_EDIT_PARAM_NEWLINK = "__directEditNewLink";
+    
+    /** Option value that indicates the "edit" button should be displayed. */
+    String C_DIRECT_EDIT_OPTION_EDIT = "edit";
+
+    /** Option value that indicates the "delete" button should be displayed. */
+    String C_DIRECT_EDIT_OPTION_DELETE = "delete";
+
+    /** Option value that indicates the "new" button should be displayed. */
+    String C_DIRECT_EDIT_OPTION_NEW = "new";
+            
     /**
      * Performs an action which is configurable in the implementation of the interface, e.g. save, exit, publish.<p>
      * 

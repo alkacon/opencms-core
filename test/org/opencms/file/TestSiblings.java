@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2004/06/01 15:46:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/21 10:01:42 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for operations on siblings.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -102,7 +102,7 @@ public class TestSiblings extends OpenCmsTestCase {
         tc.storeResources(cms, source);
         
         // copy source to target as a sibling, the new sibling should not be locked
-        cms.copyResource(source, target, true, true, I_CmsConstants.C_COPY_AS_SIBLING);
+        cms.copyResource(source, target, I_CmsConstants.C_COPY_AS_SIBLING);
 
         // validate the source sibling
         

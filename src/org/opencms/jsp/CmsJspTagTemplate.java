@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2004/06/18 10:45:44 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/06/21 09:56:34 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.jsp;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceTypeXmlPage;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -52,7 +52,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
@@ -216,7 +216,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
             CmsXmlPage page = (CmsXmlPage)req.getAttribute(filename);                    
             if (page == null) {
                 CmsResource resource = controller.getCmsResource();
-                if (resource.getType() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
+                if (resource.getTypeId() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
                     try {
                         // make sure a page is only read once (not every time for each element)
                         page = CmsXmlPage.unmarshal(controller.getCmsObject(), CmsFile.upgrade(resource, controller.getCmsObject()));

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2004/06/06 08:58:42 $
-* Version: $Revision: 1.71 $
+* Date   : $Date: 2004/06/21 09:52:41 $
+* Version: $Revision: 1.72 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -57,8 +57,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.71 $
- * $Date: 2004/06/06 08:58:42 $
+ * $Revision: 1.72 $
+ * $Date: 2004/06/21 09:52:41 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsExtendedContentDefinition{
 
@@ -346,8 +346,8 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
                 // this is a new row - call the create statement
                 // first set the new channelId
                 setNewChannelId();
-                newChannel = cms.createResource(m_parentchannel, m_channelname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, CmsProperty.toList(m_properties));
-                cms.lockResource(cms.readAbsolutePath(newChannel), true);
+                newChannel = cms.createResource(m_parentchannel + m_channelname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, null, CmsProperty.toList(m_properties));
+                cms.lockResource(cms.readAbsolutePath(newChannel));
             } else {
                 if (!"".equals(m_channel.getName())) {
                     newChannel = cms.readFolder(cms.readAbsolutePath(m_channel));
@@ -384,7 +384,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
                         cms.unlockResource(cms.readAbsolutePath(newChannel), false);
                     } else {
                         // lock the channel
-                        cms.lockResource(cms.readAbsolutePath(newChannel), true);
+                        cms.lockResource(cms.readAbsolutePath(newChannel));
                     }
                 }
             }

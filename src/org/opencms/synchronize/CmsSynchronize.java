@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.33 $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/06/21 09:58:42 $
+ * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/06/21 09:58:42 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -51,9 +51,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -63,7 +61,7 @@ import java.util.StringTokenizer;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.33 $ $Date: 2004/06/14 15:50:09 $
+ * @version $Revision: 1.34 $ $Date: 2004/06/21 09:58:42 $
  */
 public class CmsSynchronize {
 
@@ -305,7 +303,7 @@ public class CmsSynchronize {
             m_report.print(foldername);
             m_report.print(m_report.key("report.dots")); 
                         
-            CmsResource newFolder = m_cms.createResource(foldername, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, Collections.EMPTY_LIST, new byte[0], null);
+            CmsResource newFolder = m_cms.createResource(foldername, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
             // now check if there is some external method to be called which 
             // should modify the imported resource in the VFS
             Iterator i = m_synchronizeModifications.iterator();
@@ -441,8 +439,6 @@ public class CmsSynchronize {
         try {
             // get the content of the FS file
             byte[] content = getFileBytes(fsFile);
-            // get the file type of the FS file
-            String type = getFileType(resName);
             // create the file
             String filename = translate(fsFile.getName());
             
@@ -456,7 +452,9 @@ public class CmsSynchronize {
             m_report.print(fsFile.getAbsolutePath().replace('\\', '/'));               
             m_report.print(m_report.key("report.sync_from_file_system_as"), I_CmsReport.C_FORMAT_NOTE);                     
             
-            CmsFile newFile = (CmsFile)m_cms.createResource(translate(folder), filename, m_cms.getResourceTypeId(type), null, content);
+            // get the file type of the FS file
+            int resType = m_cms.getDefaultTypeForName(resName).getTypeId();
+            CmsFile newFile = (CmsFile)m_cms.createResource(translate(folder) + filename, resType, content, null);
             
             m_report.print(m_cms.readAbsolutePath(newFile));
             m_report.print(m_report.key("report.dots")); 
@@ -932,29 +930,6 @@ public class CmsSynchronize {
                 // ignore
             }
         }
-    }
-
-    /**
-     * Gets the file type for the filename.<p>
-     *
-     * @param filename the resource to get the type
-     * @return String the type for the resource
-     * @throws CmsException if something goes wrong
-     */
-    private String getFileType(String filename) throws CmsException {
-        String suffix = filename.substring(filename.lastIndexOf('.') + 1);
-        suffix = suffix.toLowerCase(); // file extension of filename
-
-        // read the known file extensions from the database
-        Hashtable extensions = m_cms.readFileExtensions();
-        String resType = new String();
-        if (extensions != null) {
-            resType = (String)extensions.get(suffix);
-        }
-        if (resType == null) {
-            resType = "plain";
-        }
-        return resType;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2004/06/14 12:19:33 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/06/21 09:54:49 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ package org.opencms.db;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsEventListener;
@@ -45,7 +45,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
@@ -56,7 +55,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsImportFolder {
 
@@ -157,33 +156,6 @@ public class CmsImportFolder {
     }
 
     /**
-     * Returns the OpenCms file type, based on the extension of the given filename.<p>  
-     * 
-     * @param filename the file name to check
-     * @return the OpenCms file type, based on the extension of the given filename
-     * @throws CmsException if something goes wrong 
-     */
-    private String getFileType(String filename) throws CmsException {
-        String result = null;
-        int pos = filename.lastIndexOf('.');
-        if (pos >= 0) {
-            String suffix = filename.substring(pos + 1);
-            if ((suffix != null) && !("".equals(suffix))) {
-                suffix = suffix.toLowerCase();
-            }
-            // read the known file extensions from the database
-            Hashtable extensions = m_cms.readFileExtensions();
-            if (extensions != null) {
-                result = (String)extensions.get(suffix);
-            }                
-        }      
-        if (result == null) {
-            result = "plain";
-        }
-        return result;
-    }
-
-    /**
      * Stores the import resource in an Object member variable.<p>
      * @throws CmsException if something goes wrong 
      */
@@ -221,14 +193,14 @@ public class CmsImportFolder {
 
             if (currentFile.isDirectory()) {
                 // create directory in cms
-                m_cms.createResource(importPath, currentFile.getName(), CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                m_cms.createResource(importPath + currentFile.getName(), CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                 importResources(currentFile, importPath + currentFile.getName() + "/");
             } else {
                 // import file into cms
-                int type = m_cms.getResourceTypeId(getFileType(currentFile.getName()));
+                int type = m_cms.getDefaultTypeForName(currentFile.getName()).getTypeId();
                 byte[] content = getFileBytes(currentFile);
                 // create the file
-                m_cms.createResource(importPath, currentFile.getName(), type, null, content);
+                m_cms.createResource(importPath + currentFile.getName(), type, content, null);
                 content = null;
             }
         }
@@ -289,7 +261,7 @@ public class CmsImportFolder {
             // now write the folders ...
             for (r = 0; r < stop; r++) {
                 try {
-                    m_cms.createResource(actImportPath, path[r], CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                    m_cms.createResource(actImportPath + path[r], CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                 } catch (CmsException e) {
                     // of course some folders did already exist!
                 }
@@ -298,8 +270,7 @@ public class CmsImportFolder {
             }
             if (! isFolder) {
                 // import file into cms
-                int type = m_cms.getResourceTypeId(getFileType(path[path.length - 1]));
-
+                int type = m_cms.getDefaultTypeForName(path[path.length - 1]).getTypeId();
                 size = new Long(entry.getSize()).intValue();
                 if (size == -1) {
                     Vector v = new Vector();
@@ -357,7 +328,7 @@ public class CmsImportFolder {
                 filename = actImportPath + path[path.length - 1];
                 
                 try {
-                    m_cms.lockResource(filename, true);
+                    m_cms.lockResource(filename);
                     
                     m_cms.readFileHeader(filename);
                     resourceExists = true;
@@ -370,11 +341,11 @@ public class CmsImportFolder {
                     
                     //m_cms.deleteAllProperties(filename);
                     //m_cms.replaceResource(filename, type, Collections.EMPTY_MAP, buffer);
-                    m_cms.replaceResource(filename, res.getType(), Collections.EMPTY_LIST, buffer);
+                    m_cms.replaceResource(filename, res.getTypeId(), buffer, Collections.EMPTY_LIST);
                     
                     OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", res)));
                 } else {
-                    m_cms.createResource(actImportPath, path[path.length - 1], type, Collections.EMPTY_LIST, buffer);
+                    m_cms.createResource(actImportPath + path[path.length - 1], type, buffer, Collections.EMPTY_LIST);
                 }
             }
 

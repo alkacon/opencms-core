@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceSibling.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/21 09:59:03 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.3
  */
@@ -147,7 +147,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
                         targetName = targetName.substring(0, targetName.length()-1);
                     }                    
                     // copy the folder
-                    getCms().copyResource(targetName, fullResourceName, false, true, I_CmsConstants.C_COPY_AS_SIBLING);                                
+                    getCms().copyResource(targetName, fullResourceName, I_CmsConstants.C_COPY_AS_SIBLING);                                
                 } else {                  
                     // link URL is a file, so create sibling of the link target
                     List targetProperties = null; 
