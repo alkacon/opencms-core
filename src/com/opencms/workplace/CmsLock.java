@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLock.java,v $
- * Date   : $Date: 2000/03/21 15:07:11 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/03/27 10:01:52 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,6 +32,7 @@ import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
 import com.opencms.template.*;
+import com.opencms.examples.news.*;
 
 import javax.servlet.http.*;
 
@@ -40,13 +41,16 @@ import java.util.*;
 /**
  * Template class for displaying the lock screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
+ * <P>
+ * HACK: class uses news example package for handling special news locking features.
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.12 $ $Date: 2000/03/21 15:07:11 $
+ * @author Alexander Lucas
+ * @version $Revision: 1.13 $ $Date: 2000/03/27 10:01:52 $
  */
 public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
-                                                             I_CmsConstants {
+                                                             I_CmsConstants, I_CmsNewsConstants {
            
 
       /**
@@ -82,6 +86,9 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // the template to be displayed
         String template=null;
         
+        // get the lasturl parameter
+        String lasturl = getLastUrl(cms, parameters);
+        
         String lock=(String)parameters.get(C_PARA_LOCK);
         String filename=(String)parameters.get(C_PARA_FILE);
         if (filename != null) {
@@ -115,6 +122,18 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
 					}catch (CmsException e){
 						//TODO: ErrorHandling
 					}
+				} else if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_NEWSPAGE_NAME) ){
+					String newsContentPath = getNewsContentPath(cms, file);
+					try {
+						CmsFile newsContentFile=(CmsFile)cms.readFileHeader(newsContentPath);
+						if(newsContentFile.isLocked()&& (newsContentFile.isLockedBy()!=cms.getRequestContext().currentUser().getId()) ){
+							hlock =false;
+						}else {
+							cms.lockResource(newsContentPath);
+						}
+					}catch (CmsException e){
+						//TODO: ErrorHandling
+					}
 				}
 				
 				session.removeValue(C_PARA_FILE);
@@ -123,7 +142,11 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
 				    // TODO: ErrorHandling
 				    // return to filelist
 					try {
-						cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                        if(lasturl == null || "".equals(lasturl)) {
+                            cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                        } else {
+                            cms.getRequestContext().getResponse().sendCmsRedirect(lasturl);
+                        }                            
 					} catch (Exception e) {
 						throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
 					}
@@ -154,4 +177,30 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
 		return hXml.getElementTemplate("body");
 	}
 
+	/**
+	 * Get the real path of the news content file.
+	 * 
+	 * @param cms The CmsObject, to access the XML read file.
+	 * @param file File in which the body path is stored.
+	 */
+    private String getNewsContentPath(A_CmsObject cms, CmsFile file) throws CmsException {
+
+        String newsContentFilename = null;
+
+        // The given file object contains the news page file.
+        // we have to read out the article
+        CmsXmlControlFile newsPageFile = new CmsXmlControlFile(cms, file.getAbsolutePath());
+        String readParam = newsPageFile.getElementParameter("body", "read");
+        String newsfolderParam = newsPageFile.getElementParameter("body", "newsfolder");
+        
+        if(readParam != null && !"".equals(readParam)) {
+            // there is a read parameter given.
+            // so we know which news file should be read.
+            if(newsfolderParam == null || "".equals(newsfolderParam)) {
+                newsfolderParam = C_NEWS_FOLDER_CONTENT;
+            }
+            newsContentFilename = newsfolderParam + readParam;
+        }
+        return newsContentFilename;
+    }
 }
