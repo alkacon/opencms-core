@@ -44,6 +44,7 @@ cms.addFileExtension("htm","plain");
 cms.addFileExtension("jpeg","image");
 cms.addFileExtension("jpg","image");
 cms.addFileExtension("gif","image");
+cms.createTempfileProject();
 cms.getRequestContext().setCurrentProject(2);
 cms.importResources("ocsetup/vfs","/");
 cms.unlockProject(2);
