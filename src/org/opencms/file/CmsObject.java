@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/02/25 14:12:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/25 16:45:15 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,6 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -77,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsObject {
 
@@ -2250,9 +2249,9 @@ public class CmsObject {
      * @param password the password of the user
      * @return the name of the logged in user
      *
-     * @throws CmsException if operation was not successful
+     * @throws CmsSecurityException if operation was not successful
      */
-    public String loginUser(String username, String password) throws CmsException {
+    public String loginUser(String username, String password) throws CmsSecurityException {
         return loginUser(username, password, m_context.getRemoteAddress());
     }
     
@@ -2264,21 +2263,44 @@ public class CmsObject {
      * @param remoteAddress the ip address
      * @return the name of the logged in user
      *
-     * @throws CmsException if operation was not successful
+     * @throws CmsSecurityException if operation was not successful
      */    
-    public String loginUser(String username, String password, String remoteAddress) throws CmsException {
+    public String loginUser(String username, String password, String remoteAddress) throws CmsSecurityException {
+        return loginUser(username, password, remoteAddress, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+    }
+    
+    /**
+     * Logs a user with a given type and a given ip address into the Cms, if the password is correct.<p>
+     *
+     * @param username the name of the user
+     * @param password the password of the user
+     * @param remoteAddress the ip address
+     * @param type the user type (System or Web user)
+     * @return the name of the logged in user
+     *
+     * @throws CmsSecurityException if operation was not successful
+     */    
+    public String loginUser(String username, String password, String remoteAddress, int type) throws CmsSecurityException {    
         // login the user
-        CmsUser newUser = m_driverManager.loginUser(username, password, remoteAddress);
-        CmsProject onlineProject = m_driverManager.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
-        m_context.switchUser(newUser, onlineProject);        
-//        m_context.init(newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), 0, 0, 0, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        CmsUser newUser = m_driverManager.loginUser(username, password, remoteAddress, type);
+        // set the project back to the "Online" project
+        CmsProject newProject;
+        try {
+            newProject = m_driverManager.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+        } catch (CmsException e) {
+            // should not happen since the online project is always available
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_LOGIN_FAILED, e);
+        }
+        // switch the cms context to the new user and project
+        m_context.switchUser(newUser, newProject);
+        // init this CmsObject with the new user
         init(m_driverManager, m_context, m_sessionStorage);
         // fire a login event
         this.fireEvent(org.opencms.main.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
-        // return the user-name
-        return (newUser.getName());
+        // return the users login name
+        return newUser.getName();
     }
-
+    
     /**
      * Logs a web user into the Cms, if the password is correct.
      *
@@ -2286,18 +2308,10 @@ public class CmsObject {
      * @param password the password of the user.
      * @return the name of the logged in user.
      *
-     * @throws CmsException if operation was not successful
+     * @throws CmsSecurityException if operation was not successful
      */
-    public String loginWebUser(String username, String password) throws CmsException {
-        // login the user
-        CmsUser newUser = m_driverManager.loginWebUser(username, password, m_context.getRemoteAddress());
-        CmsProject onlineProject = m_driverManager.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
-        m_context.switchUser(newUser, onlineProject);
-        // init the new user
-//        m_context.init(newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), 0, 0, 0, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
-        init(m_driverManager, m_context, m_sessionStorage);
-        // return the user-name
-        return (newUser.getName());
+    public String loginWebUser(String username, String password) throws CmsSecurityException {
+        return loginUser(username, password, m_context.getRemoteAddress(), I_CmsConstants.C_USER_TYPE_WEBUSER);
     }
 
     /**

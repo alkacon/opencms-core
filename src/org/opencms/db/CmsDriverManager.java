@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/02/25 14:12:43 $
- * Version: $Revision: 1.330 $
+ * Date   : $Date: 2004/02/25 16:45:15 $
+ * Version: $Revision: 1.331 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.330 $ $Date: 2004/02/25 14:12:43 $
+ * @version $Revision: 1.331 $ $Date: 2004/02/25 16:45:15 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -4765,72 +4765,60 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Logs a user into the Cms, if the password is correct.<p>
-     *
-     * @param username the name of the user to be returned
-     * @param password the password of the user to be returned
+     * Attempts to authenticate a user into OpenCms with the given password.<p>
+     * 
+     * For security reasons, all error / exceptions that occur here are "blocked" and 
+     * a simple security exception is thrown.<p>
+     * 
+     * @param username the name of the user to be logged in
+     * @param password the password of the user
      * @param remoteAddress the ip address of the request
-     * @return the logged in user
+     * @param userType the user type to log in (System user or Web user)
+     * @return the logged in users name
      *
-     * @throws CmsException if operation was not succesful
+     * @throws CmsSecurityException if login was not succesful
      */
-    public CmsUser loginUser(String username, String password, String remoteAddress) throws CmsException {
+    public CmsUser loginUser(String username, String password, String remoteAddress, int userType) throws CmsSecurityException {
 
-        // we must read the user from the dbAccess to avoid the cache
-        CmsUser newUser = m_userDriver.readUser(username, password, remoteAddress, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
-
-        // is the user enabled?
-        if (newUser.getFlags() == I_CmsConstants.C_FLAG_ENABLED) {
-            // Yes - log him in!
-            // set the lastlogin-time
-            newUser.setLastlogin(new Date().getTime());
-            // write the user back to the cms.
-            m_userDriver.writeUser(newUser);
-            // update cache
-            putUserInCache(newUser);
-            // clear invalidated caches
-            m_accessControlListCache.clear();
-            m_groupCache.clear();
-            m_userGroupsCache.clear();
-            m_resourceListCache.clear();
-            m_permissionCache.clear();
-
-            return (newUser);
-        } else {
-            // No Access!
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] loginUser() " + username, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+        CmsUser newUser;
+        
+        try {
+            // read the user from the driver to avoid the cache
+            newUser = m_userDriver.readUser(username, password, remoteAddress, userType);
+        } catch (Throwable t) {
+            // any error here: throw a security exception
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_LOGIN_FAILED, t);
         }
-    }
 
-    /**
-     * Logs a web user into the Cms, if the password is correct.<p>
-     *
-     * @param username The name of the user to be returned
-     * @param password The password of the user to be returned
-     * @param remoteAddress the ip address of the request
-     * @return the logged in user
-     *
-     * @throws CmsException if operation was not succesful
-     */
-    public CmsUser loginWebUser(String username, String password, String remoteAddress) throws CmsException {
-
-        // we must read the user from the dbAccess to avoid the cache
-        CmsUser newUser = m_userDriver.readUser(username, password, remoteAddress, I_CmsConstants.C_USER_TYPE_WEBUSER);
-
-        // is the user enabled?
-        if (newUser.getFlags() == I_CmsConstants.C_FLAG_ENABLED) {
-            // Yes - log him in!
-            // first write the lastlogin-time.
-            newUser.setLastlogin(new Date().getTime());
-            // write the user back to the cms.
-            m_userDriver.writeUser(newUser);
-            // update cache
-            putUserInCache(newUser);
-            return (newUser);
-        } else {
-            // No Access!
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] loginWebUser() " + username, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+        // check if the "enabled" flag is set for the user
+        if (newUser.getFlags() != I_CmsConstants.C_FLAG_ENABLED) {
+            // user is disabled, throw a securiy exception
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_LOGIN_FAILED);            
         }
+            
+        // set the last login time to the current time
+        newUser.setLastlogin(System.currentTimeMillis());
+        
+        try {
+            // write the changed user object back to the user driver
+            m_userDriver.writeUser(newUser);
+        } catch (Throwable t) {
+            // any error here: throw a security exception
+            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_LOGIN_FAILED, t);
+        } 
+        
+        // update cache
+        putUserInCache(newUser);
+        
+        // invalidate all user depdent caches
+        m_accessControlListCache.clear();
+        m_groupCache.clear();
+        m_userGroupsCache.clear();
+        m_resourceListCache.clear();
+        m_permissionCache.clear();
+        
+        // return the user object read from the driver
+        return newUser;
     }
 
     /**
