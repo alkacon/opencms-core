@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
- * Date   : $Date: 2000/08/22 13:38:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/09/25 15:43:40 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * 
  * Creation date: (09.08.00 14:01:21)
  * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.1 $ $Date: 2000/08/22 13:38:07 $
+ * @version $Name:  $ $Revision: 1.2 $ $Date: 2000/09/25 15:43:40 $
  */
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
 
@@ -178,8 +178,9 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
 			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
 		}
 		I_CmsSession session = cms.getRequestContext().getSession(true);
-		CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);   
-		CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+		CmsXmlWpTemplateFile templateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
+		CmsXmlLanguageFile lang = templateDocument.getLanguageFile();   
+//		CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		String navPos = (String)session.getValue(C_SESSION_ADMIN_POS);
 		templateDocument.setData("emptyPic", (String)picsUrl(cms,"empty.gif",null,null));
 		CmsXmlWpConfigFile confFile = new CmsXmlWpConfigFile(cms); 

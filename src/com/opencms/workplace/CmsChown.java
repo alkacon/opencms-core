@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChown.java,v $
- * Date   : $Date: 2000/08/08 14:08:30 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/09/25 15:43:41 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2000/08/08 14:08:30 $
+ * @version $Revision: 1.23 $ $Date: 2000/09/25 15:43:41 $
  */
 public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
 															 I_CmsConstants {
@@ -259,9 +259,10 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
 		if (title==null) {
 			title="";
 		}
+		CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();   
 		CmsUser owner=cms.readOwner(file);
 		xmlTemplateDocument.setData("TITLE",title);
-		xmlTemplateDocument.setData("STATE",getState(cms,file,new CmsXmlLanguageFile(cms)));
+		xmlTemplateDocument.setData("STATE",getState(cms,file, lang));
 		xmlTemplateDocument.setData("OWNER",Utils.getFullName(owner));
 		xmlTemplateDocument.setData("GROUP",cms.readGroup(file).getName());
 		xmlTemplateDocument.setData("FILENAME",file.getName());
@@ -288,7 +289,7 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			output.append(lang.getLanguageValue("explorer.statenip"));
 		 }
 		 return output.toString();
-	 } 
+	 }
 	 /**
 	 * Gets all users that can new owner of the file.
 	 * <P>

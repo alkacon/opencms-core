@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/09/19 07:45:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/09/25 15:43:40 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -82,8 +82,8 @@ public class CmsAdminModuleNew  extends CmsWorkplaceDefault implements I_CmsCons
 			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
 		}
 		
-		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
- 
+		//CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+ 		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
 		//Get the registry
 		I_CmsRegistry reg = cms.getRegistry();
 		I_CmsSession session = cms.getRequestContext().getSession(true);
@@ -94,6 +94,7 @@ public class CmsAdminModuleNew  extends CmsWorkplaceDefault implements I_CmsCons
 		}
 		String step = (String)parameters.get("step");
 		
+		// first look if there is already a thread running.
 		if ((step != null)&&("working".equals(step))){
 			// Thread is already running
 			Thread doImport = (Thread)session.getValue(C_MODULE_THREAD);
@@ -104,6 +105,7 @@ public class CmsAdminModuleNew  extends CmsWorkplaceDefault implements I_CmsCons
 				xmlTemplateDocument.setData("time", ""+wert);
 				return startProcessing(cms, xmlTemplateDocument, elementName, parameters, C_WAIT);
 			}else{
+				xmlTemplateDocument.clearcache();
 				return startProcessing(cms, xmlTemplateDocument, elementName, parameters, C_DONE);
 			}
 		}
@@ -179,7 +181,7 @@ public class CmsAdminModuleNew  extends CmsWorkplaceDefault implements I_CmsCons
  * @param zipName the complete path and name of the zip-file to import.
  * @return the new templateSelector.
  */
-private String importModule(CmsObject cms, I_CmsRegistry reg,CmsXmlTemplateFile xmlDocument,I_CmsSession session, String zipName) throws CmsException{
+private String importModule(CmsObject cms, I_CmsRegistry reg, CmsXmlTemplateFile xmlDocument,I_CmsSession session, String zipName) throws CmsException{
 
 	String nav = (String)session.getValue(C_MODULE_NAV);
 	Vector conflictFiles = null;

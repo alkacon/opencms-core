@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2000/08/08 14:08:30 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/09/25 15:43:41 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
-  * @version $Revision: 1.31 $ $Date: 2000/08/08 14:08:30 $
+  * @version $Revision: 1.32 $ $Date: 2000/09/25 15:43:41 $
  */
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
 															 I_CmsConstants, I_CmsNewsConstants {
@@ -302,9 +302,10 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			if (title==null) {
 			   title="";
 			}
+			CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile(); 
 			CmsUser owner=cms.readOwner(file);
 			xmlTemplateDocument.setData("TITLE",title);
-			xmlTemplateDocument.setData("STATE",getState(cms,file,new CmsXmlLanguageFile(cms)));
+			xmlTemplateDocument.setData("STATE",getState(cms,file, lang));
 			xmlTemplateDocument.setData("OWNER",Utils.getFullName(owner));
 			xmlTemplateDocument.setData("GROUP",cms.readGroup(file).getName());
 		    xmlTemplateDocument.setData("FILENAME",file.getName());
@@ -357,7 +358,7 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			output.append(lang.getLanguageValue("explorer.statenip"));
 		 }
 		 return output.toString();
-	 } 
+	 }
 	  /**
 	 * Indicates if the results of this class are cacheable.
 	 * 

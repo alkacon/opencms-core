@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProperties.java,v $
- * Date   : $Date: 2000/08/08 14:08:30 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/09/25 15:43:40 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.5 $ $Date: 2000/08/08 14:08:30 $
+ * @version $Revision: 1.6 $ $Date: 2000/09/25 15:43:40 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -85,9 +85,10 @@ public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsCons
 			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
 		}
 		
-		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-   
-		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);  
+		//CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+		//CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);  
+		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
+		CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();   
 		
 		String action = (String) parameters.get("action");
 		String resTypeName = (String) parameters.get("restype");
@@ -209,7 +210,7 @@ public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsCons
 				output.append(templateFile.getProcessedDataValue(C_TYPELISTENTRY, callingObject)); 
 			} 
 			return output.toString();
-	 } 
+	 }
 	/**
 	 * Indicates if the results of this class are cacheable.
 	 * 

@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
- * Date   : $Date: 2000/08/22 13:22:51 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/09/25 15:43:40 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/08/22 13:22:51 $
+ * @version $Revision: 1.10 $ $Date: 2000/09/25 15:43:40 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -67,8 +67,9 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
 			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
 		}
 
-		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-		
+		//CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
+				
 		// get the parameters
 		// String folder = (String)parameters.get("selectallfolders");
 		String fileName = (String)parameters.get("filename");
@@ -81,7 +82,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
 				// export the database
 				Vector resourceNames = parseResources(allResources);
 				String [] exportPaths = new String[resourceNames.size()]; 
-				CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);
+				CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
 				for (int i=0; i<resourceNames.size(); i++) {
 					// modify the foldername if nescessary (the root folder is always given
 					// as a nice name)

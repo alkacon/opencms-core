@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectDelete.java,v $
- * Date   : $Date: 2000/08/08 14:08:30 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/09/25 15:43:40 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/08/08 14:08:30 $
+ * @version $Revision: 1.6 $ $Date: 2000/09/25 15:43:40 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectDelete extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsLogChannels {
@@ -89,7 +89,8 @@ public class CmsAdminProjectDelete extends CmsWorkplaceDefault implements I_CmsC
 			}
 		} else {
 			// show details about the project
-			CmsProjectlist.setListEntryData(cms, new CmsXmlLanguageFile(cms), xmlTemplateDocument, project);
+			CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
+			CmsProjectlist.setListEntryData(cms, lang, xmlTemplateDocument, project);
 			// Now load the template file and start the processing
 		}
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);

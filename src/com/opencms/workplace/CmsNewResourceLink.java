@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
- * Date   : $Date: 2000/08/28 13:17:44 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/09/25 15:43:41 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/08/28 13:17:44 $
+ * @version $Revision: 1.17 $ $Date: 2000/09/25 15:43:41 $
  */
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,
 																   I_CmsConstants {
@@ -70,11 +70,12 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
 		String foldername=null;
 		String type=null;
 		I_CmsSession session= cms.getRequestContext().getSession(true);
-		CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);
 		
 		// get the document to display
 		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
-	
+
+		CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
+		
 		// clear session values on first load
 		String initial=(String)parameters.get(C_PARA_INITIAL);
 		if (initial!= null) {

@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2000/08/08 14:08:31 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2000/09/25 15:43:41 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.33 $ $Date: 2000/08/08 14:08:31 $
+ * @version $Revision: 1.34 $ $Date: 2000/09/25 15:43:41 $
  */
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
 															 I_CmsConstants {
@@ -98,7 +98,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			  }
 			  completePath+=foldername+"/";        
 		  }          
-	 } 
+	 }
 	 /**
 	 * Gets all resources - files and subfolders - of a given folder.
 	 * @param cms The CmsObject.
@@ -159,7 +159,8 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
 		throws CmsException {
 		I_CmsSession session= cms.getRequestContext().getSession(true);
 		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
-
+		CmsXmlLanguageFile lang=xmlTemplateDocument.getLanguageFile();
+		
 		// the template to be displayed
 		String template=null;
 		
@@ -204,7 +205,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
 		// modify the folderaname if nescessary (the root folder is always given
 		// as a nice name)
 		if (newFolder!= null) {
-			CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);
+			
 			if (newFolder.equals(lang.getLanguageValue("title.rootfolder"))) {
 				newFolder="/";
 			}
@@ -348,7 +349,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			
 			CmsUser owner=cms.readOwner(file);
 			xmlTemplateDocument.setData("TITLE",title);
-			xmlTemplateDocument.setData("STATE",getState(cms,file,new CmsXmlLanguageFile(cms)));
+			xmlTemplateDocument.setData("STATE",getState(cms,file, lang));
 			xmlTemplateDocument.setData("OWNER",Utils.getFullName(owner));
 			xmlTemplateDocument.setData("GROUP",cms.readGroup(file).getName());
 		    xmlTemplateDocument.setData("FILENAME",file.getName());
@@ -413,7 +414,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			output.append(lang.getLanguageValue("explorer.statenip"));
 		 }
 		 return output.toString();
-	 } 
+	 }
 	/** 
 	 * Gets all folders of the filesystem. <br>
 	 * This method is used to create the selecebox for selecting the target directory.
@@ -519,5 +520,5 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
 		 cms.writeFile(newfile);
 	    }
 				 
-	 } 
+	 }
 }

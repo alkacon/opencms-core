@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2000/08/08 14:08:32 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/09/25 15:43:41 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.31 $ $Date: 2000/08/08 14:08:32 $
+ * @version $Revision: 1.32 $ $Date: 2000/09/25 15:43:41 $
  */
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
 															 I_CmsConstants {
@@ -99,7 +99,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			  }
 			  completePath+=foldername+"/";        
 		  }          
-	 } 
+	 }
 	 /**
 	 * Gets all resources - files and subfolders - of a given folder.
 	 * @param cms The CmsObject.
@@ -316,10 +316,10 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			if (title==null) {
 				title="";
 			}            
-			
+			CmsXmlLanguageFile lang=xmlTemplateDocument.getLanguageFile();
 			CmsUser owner=cms.readOwner(file);
 			xmlTemplateDocument.setData("TITLE",title);
-			xmlTemplateDocument.setData("STATE",getState(cms,file,new CmsXmlLanguageFile(cms)));
+			xmlTemplateDocument.setData("STATE",getState(cms,file, lang));
 			xmlTemplateDocument.setData("OWNER",Utils.getFullName(owner));
 			xmlTemplateDocument.setData("GROUP",cms.readGroup(file).getName());
 		    xmlTemplateDocument.setData("FILENAME",file.getName());
@@ -347,7 +347,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			output.append(lang.getLanguageValue("explorer.statenip"));
 		 }
 		 return output.toString();
-	 } 
+	 }
 	  /**
 	 * Indicates if the results of this class are cacheable.
 	 * 
@@ -425,7 +425,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
 		 cms.writeFile(newfile);
 	    }
 				 
-	 } 
+	 }
 	 /**
 	  * Renames a file.
 	  * If the file is a page file, its content will be deleted, too.
@@ -449,7 +449,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
 	    }
 		    	
 	 	cms.renameFile(file.getAbsolutePath(),newFile);
-	 } 
+	 }
 	 /**
 	 * Pre-Sets the value of the new name input field.
 	 * This method is directly called by the content definiton.

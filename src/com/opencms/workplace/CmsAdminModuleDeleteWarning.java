@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/09/19 07:45:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/09/25 15:43:40 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -81,10 +81,12 @@ public class CmsAdminModuleDeleteWarning extends CmsWorkplaceDefault implements 
 			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
 			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
 		}
-		
-		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
+		CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();   
+//		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+//		CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);   
+
 		I_CmsSession session = cms.getRequestContext().getSession(true);
-		CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);   
 		
 		String step = (String)session.getValue(C_SESSION_MODULE_DELETE_STEP);
 		if (step != null){
