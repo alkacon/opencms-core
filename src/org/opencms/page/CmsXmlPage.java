@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/04/30 13:27:36 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2004/05/03 07:23:53 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.xml.sax.SAXException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  */
 public class CmsXmlPage {
     
@@ -317,8 +317,7 @@ public class CmsXmlPage {
                     
                     CmsLinkProcessor macroReplacer = new CmsLinkProcessor(linkTable);
                 
-                    try {
-                    
+                    try {                    
                         content = macroReplacer.processLinks(cms, content, getEncoding(), forEditor);
                     } catch (Exception exc) {
                         throw new CmsXmlPageException ("HTML data processing failed", exc);
@@ -568,17 +567,54 @@ public class CmsXmlPage {
             enabled.setValue(Boolean.toString(isEnabled));
         }
     }
+    
+    /**
+     * Validates the HTML code of each content element of the page.<p>
+     * 
+     * @param cms the current cms object
+     * @return the corrected CmsFile
+     * @throws CmsXmlPageException if validation fails
+     */
+    public CmsFile correctHtmlStructure(CmsObject cms) throws CmsXmlPageException {
+
+        // we must loop through all locales and elements to check all the content elements
+        // if they contain correct HTML
+        List elementNames;
+        String elementName;
+        String content;       
         
+        // iterate over all locales
+        Iterator i = m_locales.iterator();
+        while (i.hasNext()) {
+            Locale locale = (Locale)i.next();
+            elementNames = getNames(locale);
+
+            // iterate over all body elements per language
+            Iterator j = elementNames.iterator();
+            while (j.hasNext()) {
+                elementName = (String) j.next();
+                // get the content of this element
+                // by accessing it that way, it will get a processed content string
+                // which contains links and valid html
+                content = getContent(cms, elementName, locale, false);
+                // put the new content into the element
+                // saving the content will process and validate the content string again
+                setContent(cms, elementName, locale, content);                                  
+            }
+        }
+        // write the modifed xml back to the xmlpage 
+        return write();
+    }       
+    
     /**
      * Validates the xml structure of the page with the xmlpage dtd.<p>
      * 
      * This is required in case someone modifies the xml structure of a  
      * xmlpage file using the "edit control code" option.<p>
      * 
-     * @return the current xml page
      * @throws CmsXmlPageException if the validation fails
      */
-    public CmsXmlPage validateXmlStructure() throws CmsXmlPageException  {
+    public void validateXmlStructure() throws CmsXmlPageException  {
 
         // create a new validator and validate the xml structure
         SAXValidator validator = new SAXValidator();
@@ -596,55 +632,8 @@ public class CmsXmlPage {
            // clean up some memory
            validator = null;
         }           
-      return this;
     }
-    
-    /**
-     * Validates the HTML code of each content element of the page.<p>
-     * @param cms the current cms object
-     * @throws CmsException if something has gone wrong
-     */
-    public void validateHTMLStructure(CmsObject cms) throws CmsException {
-        try {
-           
-            List elementNames = null;
-            String elementName = null;
-            String content = null;
-           
-            // we must loop through all locales and elements to check all the content elements
-            // if they contain correct HTML
-
-            // iterate over all languages
-            Iterator i = m_locales.iterator();
-            while (i.hasNext()) {
-                Locale locale = (Locale)i.next();
-                elementNames = getNames(locale);
-
-                // iterate over all body elements per language
-                Iterator j = elementNames.iterator();
-                while (j.hasNext()) {
-                    elementName = (String) j.next();
-                    // get the content of this element
-                    // by accessing it that way, it will get a processed content string
-                    // which contains links and valid html
-                    content = getContent(cms, elementName, locale);
-                    // put the new content into the element
-                    // saving the content will process and validate the content string again
-                    setContent(cms, elementName, locale, content);                                  
-                }
-            }
-            // write the modifed xmlpage back to the according cms file
-            write();
-            
-        } catch (CmsXmlPageException e) {   
-            // there was an error during validation, so throw an CmsException that it can
-            // be displayed in an error dialog box
-            throw new CmsException(e.getMessage() , CmsException.C_XML_CORRUPT_INTERNAL_STRUCTURE);
-        }
-    }
-    
-    
-    
+        
     /**
      * Writes the xml contents into the assigned CmsFile,
      * using currently selected encoding.<p>

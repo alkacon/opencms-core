@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2004/04/30 13:27:36 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/05/03 07:24:27 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.htmlparser.util.ParserException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.3
  */
 public class CmsLinkProcessor {
@@ -177,6 +177,16 @@ public class CmsLinkProcessor {
      */
     protected void processLinkTag(LinkTag linkTag) {
         switch (m_mode) {
+            
+            case C_PROCESS_LINKS:
+                if (linkTag.getAttribute("href") != null) {
+                    CmsLink link = m_linkTable.getLink(getLinkName(linkTag.getLink()));
+                    if (link != null) {
+                        linkTag.setLink(processLink(link));
+                    }
+                }
+                break;
+            
             case C_REPLACE_LINKS:
                 if (linkTag.getAttribute("href") != null) {
                     String targetUri = linkTag.extractLink(); 
@@ -191,13 +201,7 @@ public class CmsLinkProcessor {
                     }
                 }
                 break;
-                
-            case C_PROCESS_LINKS:
-                if (linkTag.getAttribute("href") != null) {
-                    linkTag.setLink(processLink(m_linkTable.getLink(getLinkName(linkTag.getLink()))));
-                }
-                break;           
-                
+                                
             default:
                 // noop
                 break;
