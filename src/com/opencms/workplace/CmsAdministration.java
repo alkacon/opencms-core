@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2003/09/19 14:42:51 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/09/25 14:38:59 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,6 @@
 
 package com.opencms.workplace;
 
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 
@@ -54,7 +53,7 @@ import java.util.Map;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.47 $ $Date: 2003/09/19 14:42:51 $
+ * @version $Name:  $ $Revision: 1.48 $ $Date: 2003/09/25 14:38:59 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault {

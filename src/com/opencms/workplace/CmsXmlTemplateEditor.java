@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/09/19 14:42:51 $
-* Version: $Revision: 1.126 $
+* Date   : $Date: 2003/09/25 14:38:59 $
+* Version: $Revision: 1.127 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,6 @@
 package com.opencms.workplace;
 
 import org.opencms.lock.CmsLock;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.staticexport.CmsLinkManager;
@@ -67,7 +66,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.126 $ $Date: 2003/09/19 14:42:51 $
+ * @version $Revision: 1.127 $ $Date: 2003/09/25 14:38:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

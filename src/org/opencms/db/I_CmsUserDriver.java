@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/18 16:24:55 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2003/09/25 14:38:59 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.26 $ $Date: 2003/09/18 16:24:55 $
+ * @version $Revision: 1.27 $ $Date: 2003/09/25 14:38:59 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -74,10 +74,11 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param description The description for the new group
      * @param flags The flags for the new group
      * @param parentGroupName The name of the parent group (or null)
+     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * @return Group the new group
      * @throws CmsException if operation was not succesfull
      */
-    CmsGroup createGroup(CmsUUID groupId, String groupName, String description, int flags, String parentGroupName) throws CmsException;
+    CmsGroup createGroup(CmsUUID groupId, String groupName, String description, int flags, String parentGroupName, Object reservedParam) throws CmsException;
 
     /**
      * Adds a user to the database.<p>
@@ -194,10 +195,11 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param address user-defauladdress
      * @param section user-section
      * @param type user-type
+     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * @return the created user.
      * @throws CmsException if something goes wrong
      */
-    CmsUser importUser(CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException;
+    CmsUser importUser(CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type, Object reservedParam) throws CmsException;
 
     /**
      * Initializes the SQL manager for this driver.<p>

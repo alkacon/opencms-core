@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/23 07:50:24 $
- * Version: $Revision: 1.249 $
+ * Date   : $Date: 2003/09/25 14:38:59 $
+ * Version: $Revision: 1.250 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.249 $ $Date: 2003/09/23 07:50:24 $
+ * @version $Revision: 1.250 $ $Date: 2003/09/25 14:38:59 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -554,7 +554,7 @@ public class CmsDriverManager extends Object {
             // check the username
             validFilename(name);
             CmsGroup group = readGroup(context, defaultGroup);
-            CmsUser newUser = m_userDriver.importUser(new CmsUUID(id), name, password, recoveryPassword, description, firstname, lastname, email, 0, 0, flags, additionalInfos, group, address, section, type);
+            CmsUser newUser = m_userDriver.importUser(new CmsUUID(id), name, password, recoveryPassword, description, firstname, lastname, email, 0, 0, flags, additionalInfos, group, address, section, type, null);
             addUserToGroup(context, newUser.getName(), group.getName());
             return newUser;
         } else {
@@ -1571,6 +1571,7 @@ public class CmsDriverManager extends Object {
      * @return the direct publish project
      * @throws CmsException if something goes wrong
      */
+    /*
     public CmsProject createDirectPublishProject(CmsRequestContext context, String name, String description, String groupname, String managergroupname, int projecttype) throws CmsException {
         if (isAdmin(context) || isManagerOfProject(context)) {
             if (I_CmsConstants.C_PROJECT_ONLINE.equals(name)) {
@@ -1580,11 +1581,12 @@ public class CmsDriverManager extends Object {
             CmsGroup group = readGroup(context, groupname);
             CmsGroup managergroup = readGroup(context, managergroupname);
 
-            return m_projectDriver.createProject(context.currentUser(), group, managergroup, noTask, name, description, I_CmsConstants.C_PROJECT_STATE_UNLOCKED, projecttype);
+            return m_projectDriver.createProject(context.currentUser(), group, managergroup, noTask, name, description, I_CmsConstants.C_PROJECT_STATE_UNLOCKED, projecttype, null);
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] createDirectPublishProject()", CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
         }
     }
+    */
 
     /**
      * Creates a new file with the given content and resourcetype.<p>
@@ -1721,7 +1723,7 @@ public class CmsDriverManager extends Object {
             validFilename(name);
             // check the lenght of the groupname
             if (name.length() > 1) {
-                return m_userDriver.createGroup(id, name, description, flags, parent);
+                return m_userDriver.createGroup(id, name, description, flags, parent, null);
             } else {
                 throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
             }
@@ -1845,7 +1847,7 @@ public class CmsDriverManager extends Object {
 
             // create a new task for the project
             CmsTask task = createProject(context, name, 1, group.getName(), System.currentTimeMillis(), I_CmsConstants.C_TASK_PRIORITY_NORMAL);
-            return m_projectDriver.createProject(context.currentUser(), group, managergroup, task, name, description, I_CmsConstants.C_PROJECT_STATE_UNLOCKED, projecttype);
+            return m_projectDriver.createProject(context.currentUser(), group, managergroup, task, name, description, I_CmsConstants.C_PROJECT_STATE_UNLOCKED, projecttype, null);
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] createProject()", CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
         }
@@ -1863,17 +1865,38 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if something goes wrong.
      */
     public CmsPropertydefinition createPropertydefinition(CmsRequestContext context, String name, int resourcetype) throws CmsException {
-        // check the security
+        CmsPropertydefinition propertyDefinition = null;
+        
         if (isAdmin(context)) {
-            // no space before or after the name
             name = name.trim();
-            // check the name
             validFilename(name);
+            
             m_propertyDefVectorCache.clear();
-            return (m_vfsDriver.createPropertyDefinition(name, context.currentProject().getId(), resourcetype));
+            
+            try {
+                propertyDefinition = m_vfsDriver.readPropertyDefinition(name, context.currentProject().getId(), resourcetype);
+            } catch (CmsException e) {
+                propertyDefinition = m_vfsDriver.createPropertyDefinition(name, context.currentProject().getId(), resourcetype);
+            }    
+            
+            try {
+                m_vfsDriver.readPropertyDefinition(name, I_CmsConstants.C_PROJECT_ONLINE_ID, resourcetype);
+            } catch (CmsException e) {
+                m_vfsDriver.createPropertyDefinition(name, I_CmsConstants.C_PROJECT_ONLINE_ID, resourcetype);
+            } 
+            
+            try {
+                m_backupDriver.readBackupPropertyDefinition(name, resourcetype);
+            } catch (CmsException e) {
+                m_backupDriver.createBackupPropertyDefinition(name, resourcetype);
+            }            
+            
+            //propertyDefinition = m_vfsDriver.createPropertyDefinition(name, context.currentProject().getId(), resourcetype));
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] createPropertydefinition() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
+        
+        return propertyDefinition;
     }
 
     /**
@@ -1958,7 +1981,7 @@ public class CmsDriverManager extends Object {
 
             // create a new task for the project
             CmsTask task = createProject(context, name, 1, group.getName(), System.currentTimeMillis(), I_CmsConstants.C_TASK_PRIORITY_NORMAL);
-            CmsProject tempProject = m_projectDriver.createProject(context.currentUser(), group, managergroup, task, name, description, I_CmsConstants.C_PROJECT_STATE_INVISIBLE, I_CmsConstants.C_PROJECT_STATE_INVISIBLE);
+            CmsProject tempProject = m_projectDriver.createProject(context.currentUser(), group, managergroup, task, name, description, I_CmsConstants.C_PROJECT_STATE_INVISIBLE, I_CmsConstants.C_PROJECT_STATE_INVISIBLE, null);
             m_projectDriver.createProjectResource(tempProject.getId(), "/");
             cms.getRegistry().setSystemValue("tempfileproject", "" + tempProject.getId());
             OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", tempProject)));
@@ -2263,7 +2286,7 @@ public class CmsDriverManager extends Object {
                     currentResource.setState(I_CmsConstants.C_STATE_DELETED);
                     m_vfsDriver.writeResourceState(context.currentProject(), currentResource, C_UPDATE_STRUCTURE_STATE);
                     // add the project id as a property, this is later used for publishing
-                    m_vfsDriver.writeProperty(I_CmsConstants.C_PROPERTY_INTERNAL, context.currentProject().getId(), "" + context.currentProject().getId(), currentResource, currentResource.getType(), false);
+                    m_vfsDriver.writeProperty(I_CmsConstants.C_PROPERTY_INTERNAL, context.currentProject().getId(), "" + context.currentProject().getId(), currentResource, currentResource.getType(), true);
                     // TODO: still necessary after we have the property?
                     // update the project ID
                     m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), currentResource);
@@ -4505,7 +4528,7 @@ public class CmsDriverManager extends Object {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Initializing registry: finished");
         }
 
-        m_projectDriver.fillDefaults();
+        getProjectDriver().fillDefaults();
     }
 
     /**
@@ -8188,6 +8211,7 @@ public class CmsDriverManager extends Object {
      * @return the propertydefinition that was written
      * @throws CmsException if something goes wrong
      */
+    /*
     public CmsPropertydefinition writePropertydefinition(CmsRequestContext context, CmsPropertydefinition propertydef) throws CmsException {
         // check the security
         if (isAdmin(context)) {
@@ -8197,6 +8221,7 @@ public class CmsDriverManager extends Object {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] writePropertydefinition() " + propertydef.getName(), CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
+    */
 
     /**
      * Writes a resource and its properties to the Cms.<p>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
-* Date   : $Date: 2003/09/19 14:42:53 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/09/25 14:39:00 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,6 @@
 
 package com.opencms.template;
 
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 
@@ -55,7 +54,7 @@ import org.w3c.dom.NodeList;
  * Content definition for "clickable" and user requestable XML body files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.44 $ $Date: 2003/09/19 14:42:53 $
+ * @version $Revision: 1.45 $ $Date: 2003/09/25 14:39:00 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent {
 

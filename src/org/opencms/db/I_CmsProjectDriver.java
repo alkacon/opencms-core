@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/22 09:27:12 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2003/09/25 14:38:59 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 
 import com.opencms.core.CmsException;
+import org.opencms.db.generic.CmsSqlManager;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsGroup;
@@ -55,7 +56,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.27 $ $Date: 2003/09/22 09:27:12 $
+ * @version $Revision: 1.28 $ $Date: 2003/09/25 14:38:59 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -89,10 +90,11 @@ public interface I_CmsProjectDriver {
     * @param description The description for the new project
     * @param flags The flags for the project (e.g. archive)
     * @param type the type for the project (e.g. normal)
+    * @param reservedParam reservedParam reserved optional parameter, should be null on standard OpenCms installations
     * @return the new CmsProject instance
     * @throws CmsException Throws CmsException if something goes wrong
     */
-    CmsProject createProject(CmsUser owner, CmsGroup group, CmsGroup managergroup, CmsTask task, String name, String description, int flags, int type) throws CmsException;
+    CmsProject createProject(CmsUser owner, CmsGroup group, CmsGroup managergroup, CmsTask task, String name, String description, int flags, int type, Object reservedParam) throws CmsException;
 
     /**
      * Creates a new projectResource from a given CmsResource object.<p>
@@ -171,7 +173,7 @@ public interface I_CmsProjectDriver {
     void destroy() throws Throwable;
 
     /**
-     * Method to init all default-resources.<p>
+     * Fills the OpenCms database tables with default values.<p>
      * 
      * @throws CmsException if something goes wrong
      */
@@ -470,5 +472,12 @@ public interface I_CmsProjectDriver {
      * @throws CmsException if something goes wrong
      */
     Serializable writeSystemProperty(String name, Serializable object) throws CmsException;
+    
+    /**
+     * Returns the SqlManager of this driver.<p>
+     * 
+     * @return the SqlManager of this driver
+     */
+    CmsSqlManager getSqlManager();    
 
 }

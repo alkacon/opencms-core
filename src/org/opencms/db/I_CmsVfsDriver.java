@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/22 08:28:43 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2003/09/25 14:39:00 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.61 $ $Date: 2003/09/22 08:28:43 $
+ * @version $Revision: 1.62 $ $Date: 2003/09/25 14:39:00 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -549,12 +549,13 @@ public interface I_CmsVfsDriver {
     /**
      * Writes the structure and resource records of an existing offline resource into it's online counterpart while it is published.<p>
      * 
+     * @param onlineProject the online project
      * @param onlineResource the online resource
      * @param offlineResource the offline resource
      * @param writeFileContent true, if also the content record of the specified offline resource should be written to the online table; false otherwise
      * @throws CmsException if somethong goes wrong
      */
-    void writeResource(CmsResource onlineResource, CmsResource offlineResource, boolean writeFileContent) throws CmsException;
+    void writeResource(CmsProject onlineProject, CmsResource onlineResource, CmsResource offlineResource, boolean writeFileContent) throws CmsException;
     
     /**
      * Writes either the structure or resource state.<p>
@@ -624,16 +625,6 @@ public interface I_CmsVfsDriver {
      */
     void writeProperty(String meta, int projectId, String value, CmsResource resource, int resourceType, boolean addDefinition) throws CmsException;
 
-    /**
-     * Writes an existing property defintion.<p>
-     * 
-     * @param metadef propertydefinition to write
-     * @return the new proeprtydefintion 
-     * @throws CmsException if operation was not succesful
-     */
-    CmsPropertydefinition writePropertyDefinition(CmsPropertydefinition metadef) throws CmsException;
-    
-    
     /**
      * Writes the complete structure and resource records of a file.<p>
      *

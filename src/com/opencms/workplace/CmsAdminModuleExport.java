@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2003/09/19 14:42:52 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/09/25 14:38:59 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,6 @@
 
 package com.opencms.workplace;
 
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.threads.CmsModuleExportThread;
@@ -39,7 +38,6 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRegistry;
-import com.opencms.util.Utils;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/23 07:50:24 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2003/09/25 14:38:59 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,13 @@
 
 package org.opencms.db;
 
-import org.opencms.util.*;
+import org.opencms.util.CmsUUID;
 
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsBackupProject;
 import com.opencms.file.CmsBackupResource;
 import com.opencms.file.CmsProject;
+import com.opencms.file.CmsPropertydefinition;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 
@@ -55,9 +56,9 @@ import java.util.Vector;
  * projects are published. A unique backup version ID is used to identify a set
  * of resource that were saved during one backup process.
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.28 $ $Date: 2003/09/23 07:50:24 $
+ * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Thomas Weckert (t.weckert@alkacon.com) 
+ * @version $Revision: 1.29 $ $Date: 2003/09/25 14:38:59 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -73,7 +74,17 @@ public interface I_CmsBackupDriver {
      */
     CmsBackupResource createBackupResource(ResultSet res, boolean hasContent) throws SQLException, CmsException;
 
-
+    /**
+     * Creates a new property defintion in the databse.<p>
+     *
+     * Only the admin can do this.
+     *
+     * @param name the name of the propertydefinitions to overwrite
+     * @param resourcetype the resource-type for the propertydefinitions
+     * @return the new propertydefinition
+     * @throws CmsException if something goes wrong
+     */
+    CmsPropertydefinition createBackupPropertyDefinition(String name, int resourcetype) throws CmsException;
     
     /**
      * Deletes all backup versions of a backup resource that are older than a given project tag and
@@ -209,6 +220,16 @@ public interface I_CmsBackupDriver {
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     HashMap readBackupProperties(CmsBackupResource resource) throws CmsException;
+    
+    /**
+     * Reads a property definition for the specified resource type.<p>
+     *
+     * @param name the name of the propertydefinition to read
+     * @param type the resource type for which the propertydefinition is valid
+     * @return the propertydefinition that corresponds to the overgiven arguments - or null if there is no valid propertydefinition.
+     * @throws CmsException if something goes wrong
+     */
+    CmsPropertydefinition readBackupPropertyDefinition(String name, int type) throws CmsException;
 
     /**
      * Gets the next available backup version ID for a resource.<p>

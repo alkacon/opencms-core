@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2003/09/19 14:42:52 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2003/09/25 14:39:00 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,6 @@
 package com.opencms.template.cache;
 
 import org.opencms.loader.CmsXmlTemplateLoader;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.CmsException;

@@ -29,7 +29,6 @@
 
 package com.opencms.workplace;
 
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.CmsException;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReportThread.java,v $
- * Date   : $Date: 2003/09/15 10:51:15 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/09/25 14:38:59 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import com.opencms.workplace.CmsXmlLanguageFile;
  * Provides a common Thread class for the reports.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public abstract class A_CmsReportThread extends Thread {
 
@@ -130,6 +130,16 @@ public abstract class A_CmsReportThread extends Thread {
         String locale = CmsXmlLanguageFile.getCurrentUserLanguage(m_cms);
         m_report = new CmsHtmlReport(locale);
     }
+    
+    /**
+     * Initialize a HTML report for this Thread with a specified resource bundle.<p>
+     * 
+     * @param bundleName the name of the resource bundle with localized strings
+     */
+    protected void initHtmlReport(String bundleName) {
+        String locale = CmsXmlLanguageFile.getCurrentUserLanguage(m_cms);
+        m_report = new CmsHtmlReport(bundleName, locale);
+    }    
     
     /**
      * Returns true if this thread is already "doomed" to be deleted.<p>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminElementCache.java,v $
-* Date   : $Date: 2003/09/19 14:42:52 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/09/25 14:38:59 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,6 @@
 package com.opencms.workplace;
 
 import org.opencms.loader.CmsXmlTemplateLoader;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.CmsException;
@@ -43,7 +42,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.12 $ $Date: 2003/09/19 14:42:52 $
+ * @version $Revision: 1.13 $ $Date: 2003/09/25 14:38:59 $
  */
 public class CmsAdminElementCache extends CmsWorkplaceDefault {
 

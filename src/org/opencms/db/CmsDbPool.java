@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2003/09/18 16:43:31 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/09/25 14:39:00 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,15 +51,16 @@ import source.org.apache.java.util.Configurations;
  * based pools might be added probably later.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2003/09/18 16:43:31 $
+ * @version $Revision: 1.14 $ $Date: 2003/09/25 14:39:00 $
  * @since 5.1
  */
 public final class CmsDbPool extends Object {
 
-    /**
-     * This prefix is required to make the JDBC DriverManager return pooled DBCP connections.
-     */
+    /** This prefix is required to make the JDBC DriverManager return pooled DBCP connections.<p> */
     public static final String C_DBCP_JDBC_URL_PREFIX = "jdbc:apache:commons:dbcp:";
+    
+    /** The default OpenCms JDBC pool URL.<p> */
+    public static final String C_OPENCMS_DEFAULT_POOL_URL = "opencms:default";
 
     public static final String C_KEY_DATABASE = "db.";
     public static final String C_KEY_DATABASE_NAME = C_KEY_DATABASE + "name";

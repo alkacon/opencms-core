@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/22 08:28:42 $
- * Version: $Revision: 1.138 $
+ * Date   : $Date: 2003/09/25 14:38:59 $
+ * Version: $Revision: 1.139 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.138 $ $Date: 2003/09/22 08:28:42 $
+ * @version $Revision: 1.139 $ $Date: 2003/09/25 14:38:59 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -516,9 +516,17 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         PreparedStatement stmt = null;
 
         try {
+            conn = m_sqlManager.getConnection(projectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTYDEF_CREATE");
+            stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.readQuery("C_TABLE_PROPERTYDEF")));
+            stmt.setString(2, name);
+            stmt.setInt(3, resourcetype);
+            stmt.executeUpdate();         
+                        
+            /*
             for (int i = 0; i < 3; i++) {
-                // create the offline property definition
                 if (i == 0) {
+                    // create the offline property definition
                     conn = m_sqlManager.getConnection();
                     stmt = m_sqlManager.getPreparedStatement(conn, Integer.MAX_VALUE, "C_PROPERTYDEF_CREATE");
                     stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.readQuery("C_TABLE_PROPERTYDEF")));
@@ -538,6 +546,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 stmt.executeUpdate();
                 m_sqlManager.closeAll(conn, stmt, null);
             }
+            */
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
@@ -704,7 +713,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * @see org.opencms.db.I_CmsVfsDriver#deleteProperty(java.lang.String, int, com.opencms.file.CmsResource, int)
      */
     public void deleteProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException {
-        CmsPropertydefinition propdef = readPropertyDefinition(meta, 0, resourceType);
+        CmsPropertydefinition propdef = readPropertyDefinition(meta, projectId, resourceType);
         String resourceName = resource.getRootPath();
 
         // add folder separator to folder name if it is not present
@@ -748,16 +757,16 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 throw new CmsException("[" + this.getClass().getName() + "] " + metadef.getName(), CmsException.C_UNKNOWN_EXCEPTION);
             }
             for (int i = 0; i < 3; i++) {
-                // delete the propertydef from offline db
                 if (i == 0) {
+                    // delete the offline propertydef
                     conn = m_sqlManager.getConnection();
                     stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_DELETE");
                 } else if (i == 1) {
-                    // delete the propertydef from online db
+                    // delete the online propertydef
                     conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
                     stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_PROPERTYDEF_DELETE");
                 } else {
-                    //                  delete the propertydef from backup db
+                    // delete the backup propertydef
                     conn = m_sqlManager.getConnectionForBackup();
                     stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_DELETE_BACKUP");
                 }
@@ -2333,46 +2342,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#writePropertyDefinition(com.opencms.file.CmsPropertydefinition)
-     */
-    public CmsPropertydefinition writePropertyDefinition(CmsPropertydefinition metadef) throws CmsException {
-        PreparedStatement stmt = null;
-        CmsPropertydefinition returnValue = null;
-        Connection conn = null;
-
-        try {
-            for (int i = 0; i < 3; i++) {
-                // write the propertydef in the offline db
-                if (i == 0) {
-                    conn = m_sqlManager.getConnection();
-                    stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_UPDATE");
-                } else if (i == 1) {
-                    // write the propertydef in the online db
-                    conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
-                    stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_UPDATE_ONLINE");
-                } else {
-                    // write the propertydef in the backup db
-                    conn = m_sqlManager.getConnectionForBackup();
-                    stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_UPDATE_BACKUP");
-                }
-                stmt.setString(1, metadef.getName());
-                stmt.setInt(2, metadef.getId());
-                stmt.executeUpdate();
-                stmt.close();
-                conn.close();
-            }
-            // read the propertydefinition
-            returnValue = readPropertyDefinition(metadef.getName(), 0, metadef.getType());
-        } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-
-        return returnValue;
-    }
-
-    /**
      * @see org.opencms.db.I_CmsVfsDriver#writeResource(com.opencms.file.CmsProject, com.opencms.file.CmsResource, byte[], int, org.opencms.util.CmsUUID)
      */
     public void writeResource(CmsProject project, CmsResource resource, byte[] filecontent, int changed, CmsUUID userId) throws CmsException {
@@ -2451,27 +2420,27 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#writeResource(com.opencms.file.CmsResource, com.opencms.file.CmsResource)
+     * @see org.opencms.db.I_CmsVfsDriver#writeResource(com.opencms.file.CmsProject, com.opencms.file.CmsResource, com.opencms.file.CmsResource, boolean)
      */
-    public void writeResource(CmsResource onlineResource, CmsResource offlineResource, boolean writeFileContent) throws CmsException {
+    public void writeResource(CmsProject onlineProject, CmsResource onlineResource, CmsResource offlineResource, boolean writeFileContent) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
         int resourceSize = offlineResource.getLength();
 
         try {
-            conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            conn = m_sqlManager.getConnection(onlineProject);
 
-            if (validateResourceIdExists(I_CmsConstants.C_PROJECT_ONLINE_ID, offlineResource.getResourceId())) {
+            if (validateResourceIdExists(onlineProject.getId(), offlineResource.getResourceId())) {
 
                 // the resource record exists online already
 
                 if (writeFileContent && offlineResource.isFile()) {
                     // update the online file content
-                    writeFileContent(offlineResource.getFileId(), ((CmsFile)offlineResource).getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
+                    writeFileContent(offlineResource.getFileId(), ((CmsFile)offlineResource).getContents(), onlineProject.getId(), false);
                 }
 
                 // update the online resource record
-                stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_RESOURCES_UPDATE_RESOURCES");
+                stmt = m_sqlManager.getPreparedStatement(conn, onlineProject, "C_RESOURCES_UPDATE_RESOURCES");
                 stmt.setInt(1, offlineResource.getType());
                 stmt.setInt(2, offlineResource.getFlags());
                 stmt.setInt(3, offlineResource.getLoaderId());
@@ -2482,14 +2451,14 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 stmt.setString(8, offlineResource.getFileId().toString());
                 stmt.setString(9, CmsUUID.getNullUUID().toString());
                 stmt.setInt(10, offlineResource.getProjectLastModified());
-                stmt.setInt(11, this.internalCountSiblings(I_CmsConstants.C_PROJECT_ONLINE_ID, onlineResource.getResourceId()));
+                stmt.setInt(11, this.internalCountSiblings(onlineProject.getId(), onlineResource.getResourceId()));
                 stmt.setString(12, offlineResource.getResourceId().toString());
                 stmt.executeUpdate();
 
                 m_sqlManager.closeAll(null, stmt, null);
 
                 // update the online structure record
-                stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_RESOURCES_UPDATE_STRUCTURE");
+                stmt = m_sqlManager.getPreparedStatement(conn, onlineProject, "C_RESOURCES_UPDATE_STRUCTURE");
                 stmt.setString(1, offlineResource.getParentStructureId().toString());
                 stmt.setString(2, offlineResource.getResourceId().toString());
                 stmt.setString(3, offlineResource.getName());
@@ -2501,14 +2470,14 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
                 // the resource record does NOT exist online yet
 
-                if (writeFileContent && offlineResource.isFile() && !validateContentIdExists(I_CmsConstants.C_PROJECT_ONLINE_ID, offlineResource.getFileId())) {
+                if (writeFileContent && offlineResource.isFile() && !validateContentIdExists(onlineProject.getId(), offlineResource.getFileId())) {
                     // create the file content online
                     resourceSize = offlineResource.getLength();
-                    createFileContent(offlineResource.getFileId(), ((CmsFile)offlineResource).getContents(), 0, I_CmsConstants.C_PROJECT_ONLINE_ID, false);
+                    createFileContent(offlineResource.getFileId(), ((CmsFile)offlineResource).getContents(), 0, onlineProject.getId(), false);
                 }
 
                 // create the resource record online
-                stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_RESOURCES_WRITE");
+                stmt = m_sqlManager.getPreparedStatement(conn, onlineProject, "C_RESOURCES_WRITE");
                 stmt.setString(1, offlineResource.getResourceId().toString());
                 stmt.setInt(2, offlineResource.getType());
                 stmt.setInt(3, offlineResource.getFlags());
@@ -2528,7 +2497,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 m_sqlManager.closeAll(null, stmt, null);
 
                 // create the structure record online
-                stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_STRUCTURE_WRITE");
+                stmt = m_sqlManager.getPreparedStatement(conn, onlineProject, "C_STRUCTURE_WRITE");
                 stmt.setString(1, offlineResource.getStructureId().toString());
                 stmt.setString(2, offlineResource.getParentStructureId().toString());
                 stmt.setString(3, offlineResource.getResourceId().toString());

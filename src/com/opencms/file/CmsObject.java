@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/23 07:50:24 $
-* Version: $Revision: 1.417 $
+* Date   : $Date: 2003/09/25 14:38:59 $
+* Version: $Revision: 1.418 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.417 $
+ * @version $Revision: 1.418 $
  */
 public class CmsObject {
 
@@ -1607,7 +1607,7 @@ public class CmsObject {
      */
     public List getAllVfsSoftLinks(String resourcename) throws CmsException {       
         return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), false);
-    }    
+    } 
 
     /**
      * Fires a CmsEvent

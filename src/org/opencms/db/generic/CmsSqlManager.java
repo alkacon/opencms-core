@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/09/22 08:28:43 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/09/25 14:38:59 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,19 +72,19 @@ import java.util.Properties;
  * <tr>
  * <td>offline</td>
  * <td>> 1</td>
- * <td>2 (C_TABLE_ID_OFFLINE)</td>
+ * <td>2</td>
  * <td>yes</td>
  * </tr>
  * <tr>
  * <td>online</td>
  * <td>< 1</td>
- * <td>1 (C_TABLE_ID_ONLINE)</td>
+ * <td>1</td>
  * <td>yes</td>
  * </tr>
  * <tr>
  * <td>backup</td>
  * <td>= 0</td>
- * <td>0 (C_TABLE_ID_BACKUP)</td>
+ * <td>0</td>
  * <td>no</td>
  * </tr>
  * <tr>
@@ -96,15 +96,19 @@ import java.util.Properties;
  * </table>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.24 $ $Date: 2003/09/22 08:28:43 $
+ * @version $Revision: 1.25 $ $Date: 2003/09/25 14:38:59 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
 
-    /** The filename/path of the SQL query properties file.<p> */
+    /** 
+     * The filename/path of the SQL query properties file.<p> 
+     */
     private static final String C_PROPERTY_FILENAME = "org/opencms/db/generic/query.properties";
 
-    /** The properties hash holding the SQL queries.<p> */
+    /** 
+     * The properties hash holding the SQL queries.<p> 
+     */
     private static Properties c_queries = null;
     
     /** 
@@ -131,27 +135,35 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      */    
     protected static final int C_TABLE_ID_ONLINE = 1;
 
-    /** Table key being replaced in SQL queries to generate SQL queries to access online/offline tables.<p> */
+    /** 
+     * Table key being replaced in SQL queries to generate SQL queries to access online/offline tables.<p> 
+     */
     protected static final String C_TABLE_KEY_SEARCH_PATTERN = "_T_";
 
-    /** Caches all queries with replaced expressions to minimize costs of regex/matching operations.<p> */
+    /** 
+     * Caches all queries with replaced expressions to minimize costs of regex/matching operations.<p> 
+     */
     protected Map m_cachedQueries;
     
-    /** Saves the "regular" OpenCms JDBC pool URLs<p> */
+    /** 
+     * Stores the "regular" OpenCms JDBC pool URLs {online|offline|backup}.<p> 
+     */
     protected List m_poolUrls;
     
-    /** Saves the "reserved" OpenCms JDBC pool URLs for special purposes.<p> */
+    /** 
+     * Stores the "reserved" OpenCms JDBC pool URLs for special purposes.<p> 
+     */
     protected List m_reservedPoolUrls;   
 
     /**
      * Initializes the SQL manager.<p>
      * 
      * To obtain JDBC connections from different pools, further 
-     * {online|offline|backup} pool Urls have to be specified.
+     * {online|offline|backup} pool Urls have to be set.
      * 
-     * @see #setOfflinePoolUrl(String)
-     * @see #setOnlinePoolUrl(String)
-     * @see #setBackupPoolUrl(String)
+     * @see setOfflinePoolUrl(String)
+     * @see setOnlinePoolUrl(String)
+     * @see setBackupPoolUrl(String)
      */
     public CmsSqlManager() {
         if (c_queries == null) {
@@ -202,7 +214,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Replaces the search pattern _T_ in SQL queries by the pattern _ONLINE_ or _OFFLINE_ 
+     * Replaces the search pattern "_T_" in SQL queries by the pattern _ONLINE_ or _OFFLINE_ 
      * depending on the ID of the current project.<p> 
      * 
      * @param projectId the ID of the current project
@@ -211,7 +223,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      */
     public static String replaceTableKey(int projectId, String query) {
         // make the statement project dependent
-        String replacePattern = (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) ? "_ONLINE_" : "_OFFLINE_";
+        String replacePattern = (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID || projectId < 0) ? "_ONLINE_" : "_OFFLINE_";
         query = CmsStringSubstitution.substitute(query, C_TABLE_KEY_SEARCH_PATTERN, replacePattern);
 
         return query;
@@ -370,8 +382,8 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     /**
      * Receives a JDBC connection from the (offline) pool.<p>
      * 
-     * Use this method with caution! Using this method makes only sense to read/write project 
-     * independent data such as user data!
+     * Using this method makes only sense to read/write project 
+     * independent data such as user data.
      * 
      * @return a JDBC connection from the (offline) pool 
      * @throws SQLException if a database access error occurs
@@ -412,19 +424,12 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     public Connection getConnection(int id) throws SQLException {
         Connection conn = null;
         
-        if (id >= 0) {
-            if (id > 2) {
-                // it is sufficient to use the offline table ID for project-IDs >2,
-                // anything else will result in an ArrayOutOfBoundsException
-                id = C_TABLE_ID_OFFLINE;
-            }
-            
+        if (id >= 0) {            
             // match the ID to a JDBC pool URL of the OpenCms JDBC pools {online|offline|backup}
-            conn = DriverManager.getConnection((String) m_poolUrls.get(id));
+            conn = DriverManager.getConnection(getPoolUrl(id));
         } else {
-            // match the ID to a JDBC pool URL of the "reserved" pools
-            id *= -1;
-            conn = DriverManager.getConnection((String) m_reservedPoolUrls.get(id));
+            // match the ID to a JDBC pool URL of the OpenCms "reserved" JDBC pools
+            conn = DriverManager.getConnection(getReservedPoolUrl(id));
         }
         
         return conn;
@@ -433,7 +438,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     /**
      * Receives a JDBC connection from the backup pool.<p>
      * 
-     * Use this method with caution! Using this method makes only sense to read/write 
+     * Using this method makes only sense to read/write 
      * data to backup data. 
      * 
      * @return a JDBC connection from the backup pool 
@@ -445,37 +450,47 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
     
     /**
-     * Returns the pool URL for a specified table ID.<p>
+     * Returns the pool JDBC URL for a specified table ID.<p>
      * 
      * @param id the table ID
-     * @return the pool URL for the specified table ID
+     * @return the pool JDBC URL for the specified table ID including DBCP's pool URL prefix
+     * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
      */
-    public String getPoolUrl(int id) {
+    protected String getPoolUrl(int id) {
+        if (id > 2) {
+            // it is sufficient to use the offline table ID for project-IDs >2,
+            // anything else will result in an ArrayOutOfBoundsException
+            id = C_TABLE_ID_OFFLINE;
+        }
+                
         return (String) m_poolUrls.get(id);
     }   
 
     /**
-     * Returns the backup pool url.<p>
+     * Returns the backup JDBC pool URL of the OpenCms standard JDBC pools.<p>
      * 
-     * @return backup pool url
+     * @return backup JDBC pool URL including DBCP's pool URL prefix
+     * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
      */
-    public String getPoolUrlBackup() {
+    public String getPoolUrlBackup() {        
         return getPoolUrl(C_TABLE_ID_BACKUP);
     }
 
     /**
-     * Returns the offline pool url.<p>
+     * Returns the offline JDBC pool URL of the OpenCms standard JDBC pools.<p>
      * 
-     * @return offline pool url
+     * @return offline JDBC pool URL including DBCP's pool URL prefix
+     * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
      */
-    public String getPoolUrlOffline() {
+    public String getPoolUrlOffline() {        
         return getPoolUrl(C_TABLE_ID_OFFLINE);
     }
 
     /**
-     * Returns the online pool url.<p>
+     * Returns the online JDBC pool URL of the OpenCms standard JDBC pools.<p>
      * 
-     * @return online pool url
+     * @return online JDBC pool URL including DBCP's pool URL prefix
+     * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
      */
     public String getPoolUrlOnline() {
         return getPoolUrl(C_TABLE_ID_ONLINE);
@@ -538,10 +553,15 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
     
     /**
-     * Returns the pool URL for a specified reserved table ID.<p>
+     * Returns the JDBC pool URL for a specified reserved table ID.<p>
      * 
-     * @param id the reserved table ID (<0)
-     * @return the pool URL for the specified reserved table ID
+     * Reserved JDBC pool URLs should be used to have more than
+     * the default OpenCms JDBC connection pools to read/write data 
+     * in online tables for special purposes.<p>
+     * 
+     * @param id the reserved table ID, which has to be <=-1
+     * @return poolUrl the JDBC pool URL for this table ID
+     * @see #getConnection(int)
      */
     public String getReservedPoolUrl(int id) {
         if (id < 0) {
@@ -552,7 +572,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }     
 
     /**
-     * Loads a Java properties hash with SQL queries.<p>
+     * Loads a Java properties hash containing SQL queries.<p>
      * 
      * @param propertyFilename the package/filename of the properties hash
      * @return Properties the new properties instance.
@@ -659,13 +679,15 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
             // query was requested- further regex operations are not required then!
             return query;
         }
+        
+        // calculate the key for the map of all cached pre-calculated queries
+        queryKey += (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID || projectId < 0) ? "_ONLINE" : "_OFFLINE";
 
         if (!m_cachedQueries.containsKey(queryKey)) {
             // make the statement project dependent
             query = CmsSqlManager.replaceTableKey(projectId, query);
 
             // to minimize costs, all statements with replaced expressions are cached in a map
-            queryKey += (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) ? "_ONLINE" : "_OFFLINE";
             m_cachedQueries.put(queryKey, query);
         } else {
             // use the statement where the pattern is already replaced
@@ -717,53 +739,67 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
     
     /**
-     * Sets the pool URL for a table ID.<p>
+     * Sets the JDBC pool URL for a specified table ID.<p>
      * 
      * @param id the table ID
-     * @param poolUrl the pool URL
+     * @param poolUrl the JDBC pool URL excluding DBCP's pool URL prefix
+     * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
      */
-    public void setPoolUrl(int id, String poolUrl) {
-        m_poolUrls.set(id, poolUrl);
+    protected void setPoolUrl(int id, String poolUrl) {
+        m_poolUrls.set(id, CmsDbPool.C_DBCP_JDBC_URL_PREFIX + poolUrl);
     }
 
     /**
-     * Sets the backup pool url.<p>
+     * Sets the backup JDBC pool url.<p>
      * 
-     * @param poolUrl backup pool url
+     * @param poolUrl backup JDBC pool url excluding DBCP's pool URL prefix
+     * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
      */
     public void setPoolUrlBackup(String poolUrl) {
         if (poolUrl != null) {
-            setPoolUrl(C_TABLE_ID_BACKUP, CmsDbPool.C_DBCP_JDBC_URL_PREFIX + poolUrl);
+            setPoolUrl(C_TABLE_ID_BACKUP, poolUrl);
         }
     }
 
     /**
-     * Sets the offline pool url.<p>
+     * Sets the offline JDBC pool url.<p>
      * 
-     * @param poolUrl offline pool url
+     * @param poolUrl offline JDBC pool url excluding DBCP's pool URL prefix
+     * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
      */
     public void setPoolUrlOffline(String poolUrl) {
         if (poolUrl != null) {
-            setPoolUrl(C_TABLE_ID_OFFLINE, CmsDbPool.C_DBCP_JDBC_URL_PREFIX + poolUrl);
+            setPoolUrl(C_TABLE_ID_OFFLINE, poolUrl);
         }
     }
 
     /**
-     * Sets the online pool url.<p>
+     * Sets the online JDBC pool url.<p>
      * 
-     * @param poolUrl online pool url
+     * @param poolUrl online JDBC pool url excluding DBCP's pool URL prefix
+     * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
      */
     public void setPoolUrlOnline(String poolUrl) {
         if (poolUrl != null) {
-            setPoolUrl(C_TABLE_ID_ONLINE, CmsDbPool.C_DBCP_JDBC_URL_PREFIX + poolUrl);
+            setPoolUrl(C_TABLE_ID_ONLINE, poolUrl);
         }
     }
     
     /**
-     * Sets a reserved pool URL for a table ID.<p>
+     * Sets a reserved JDBC pool URL for a specified table ID.<p>
      * 
-     * @param id the table ID
-     * @param poolUrl the pool URL
+     * Reserved JDBC pool URLs should be used to have more than
+     * the default OpenCms JDBC connection pools to read/write data 
+     * in online tables for special purposes.<p>
+     * 
+     * To obtain a JDBC connection from a DriverManager pool
+     * identified by the specified poolUrl, the specified ID 
+     * has to be passed to getConnection.
+     * 
+     * @param id the reserved table ID, which has to be <=-1
+     * @param poolUrl the JDBC pool URL for this table ID excluding DBCP's pool URL prefix
+     * @see #getConnection(int)
+     * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
      */
     public void setReservedPoolUrl(int id, String poolUrl) {
         if (id < 0) {
@@ -771,7 +807,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
         }
 
         ((ArrayList) m_reservedPoolUrls).ensureCapacity(id);
-        m_reservedPoolUrls.set(id, poolUrl);
+        m_reservedPoolUrls.set(id, CmsDbPool.C_DBCP_JDBC_URL_PREFIX + poolUrl);
     }
 
     /**
@@ -786,6 +822,6 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
         }
 
         return " ";
-    }
+    }   
 
 }

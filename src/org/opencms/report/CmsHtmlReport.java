@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2003/09/15 10:51:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/09/25 14:38:59 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.StringTokenizer;
  * in the entire OpenCms system.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsHtmlReport implements I_CmsReport {
     
@@ -70,15 +70,28 @@ public class CmsHtmlReport implements I_CmsReport {
     private boolean m_showExceptionStackTracke; 
         
     /**
-     * Constructs a new report using the provided locale for the output language.<p>
+     * Constructs a new report using the provided locale and the default OpenCms 
+     * workplace resource bundle for the output language.<p>
      * 
-     * @param locale a 2-letter language code according to ISO 639 
+     * @param locale a 2-letter language code according to ISO 639
+     * @see I_CmsReport#C_BUNDLE_NAME 
      */    
     public CmsHtmlReport(String locale) {
-        m_messages = new CmsMessages(C_BUNDLE_NAME, locale);
+        this(C_BUNDLE_NAME, locale);
+    }
+    
+    /**
+     * Constructs a new report using the provided locale and resource bundle
+     * for the output language.<p>
+     * 
+     * @param locale a 2-letter language code according to ISO 639 
+     * @param bundleName the name of the resource bundle with localized strings
+     */    
+    public CmsHtmlReport(String bundleName, String locale) {
+        m_messages = new CmsMessages(bundleName, locale);
         m_content = new ArrayList(256);
         m_showExceptionStackTracke = true;
-    }
+    }    
     
     /**
      * Converts chars and removes linebreaks from a String.<p>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsTemplate.java,v $
-* Date   : $Date: 2003/09/19 14:42:53 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/09/25 14:39:00 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,6 @@
 
 package com.opencms.template;
 
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.CmsException;
@@ -45,7 +44,7 @@ import javax.servlet.http.HttpServletRequest;
  * Abstract template class. Contains all commonly used methods for handling cache properties.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.20 $ $Date: 2003/09/19 14:42:53 $
+ * @version $Revision: 1.21 $ $Date: 2003/09/25 14:39:00 $
  */
 public abstract class A_CmsTemplate implements I_CmsTemplate {
 

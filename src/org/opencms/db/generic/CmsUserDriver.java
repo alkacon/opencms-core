@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/19 14:42:52 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2003/09/25 14:38:59 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.36 $ $Date: 2003/09/19 14:42:52 $
+ * @version $Revision: 1.37 $ $Date: 2003/09/25 14:38:59 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -120,7 +120,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     /**
      * @see org.opencms.db.I_CmsUserDriver#createGroup(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, int, java.lang.String)
      */
-    public CmsGroup createGroup(CmsUUID groupId, String groupName, String description, int flags, String parentGroupName) throws CmsException {
+    public CmsGroup createGroup(CmsUUID groupId, String groupName, String description, int flags, String parentGroupName, Object reservedParam) throws CmsException {
         CmsUUID parentId = CmsUUID.getNullUUID();
         CmsGroup group = null;
 
@@ -134,8 +134,14 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
                 parentId = readGroup(parentGroupName).getId();
             }
 
-            // create statement
-            conn = m_sqlManager.getConnection();
+            if (reservedParam == null) {
+                // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
+                conn = m_sqlManager.getConnection();
+            } else {
+                // get a JDBC connection from the reserved JDBC pools
+                conn = m_sqlManager.getConnection(((Integer) reservedParam).intValue());
+            }
+            
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_CREATEGROUP");
 
             // write new group to the database
@@ -384,7 +390,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     /** (non-Javadoc)
      * @see org.opencms.db.I_CmsUserDriver#importUser(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, long, int, java.util.Hashtable, com.opencms.file.CmsGroup, java.lang.String, java.lang.String, int)
      */
-    public CmsUser importUser(CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
+    public CmsUser importUser(CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type, Object reservedParam) throws CmsException {
         byte[] value = null;
 
         Connection conn = null;
@@ -393,8 +399,14 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         try {
             value = internalSerializeAdditionalUserInfo(additionalInfos);
 
-            // write data to database
-            conn = m_sqlManager.getConnection();
+            if (reservedParam == null) {
+                // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
+                conn = m_sqlManager.getConnection();
+            } else {
+                // get a JDBC connection from the reserved JDBC pools
+                conn = m_sqlManager.getConnection(((Integer) reservedParam).intValue());
+            }
+            
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_ADD");
 
             stmt.setString(1, id.toString());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/23 10:35:55 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2003/09/25 14:38:59 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.63 $ $Date: 2003/09/23 10:35:55 $
+ * @version $Revision: 1.64 $ $Date: 2003/09/25 14:38:59 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -114,6 +114,30 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             content = new byte[0];
         }
         return new CmsBackupResource(backupId, tagId, versionId, structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, projectID, state, loaderId, dateCreated, userCreated, userCreatedName, dateLastModified, userLastModified, userLastModifiedName, resourceSize, content);
+    }
+    
+    /**
+     * @see org.opencms.db.I_CmsBackupDriver#createBackupPropertyDefinition(java.lang.String, int)
+     */
+    public CmsPropertydefinition createBackupPropertyDefinition(String name, int resourcetype) throws CmsException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            // create the backup property definition
+            conn = m_sqlManager.getConnectionForBackup();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_CREATE_BACKUP");
+            stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.readQuery("C_TABLE_PROPERTYDEF_BACKUP")));
+            stmt.setString(2, name);
+            stmt.setInt(3, resourcetype);
+            stmt.executeUpdate();
+        } catch (SQLException exc) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+
+        return readBackupPropertyDefinition(name, resourcetype);
     }
 
     /**
@@ -746,6 +770,36 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         }
         return (returnValue);
     }
+    
+    /**
+     * @see org.opencms.db.I_CmsBackupDriver#readPropertyDefinition(java.lang.String, int)
+     */
+    public CmsPropertydefinition readBackupPropertyDefinition(String name, int type) throws CmsException {
+        CmsPropertydefinition propDef = null;
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnectionForBackup();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_READ_BACKUP");
+            stmt.setString(1, name);
+            stmt.setInt(2, type);
+            res = stmt.executeQuery();
+
+            if (res.next()) {
+                propDef = new CmsPropertydefinition(res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_ID")), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_RESOURCE_TYPE")));
+            } else {
+                throw new CmsException("[" + this.getClass().getName() + ".readBackupPropertyDefinition] " + name, CmsException.C_NOT_FOUND);
+            }
+        } catch (SQLException exc) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+
+        return propDef;
+    }    
 
     /**
      * @see org.opencms.db.I_CmsBackupDriver#nextBackupVersionId()
@@ -874,7 +928,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             while (keys.hasNext()) {
                 hasBatch = true;
                 key = (String)keys.next();
-                CmsPropertydefinition propdef = m_driverManager.getVfsDriver().readPropertyDefinition(key, publishProject.getId(), resource.getType());
+                //CmsPropertydefinition propdef = m_driverManager.getVfsDriver().readPropertyDefinition(key, publishProject.getId(), resource.getType());
+                CmsPropertydefinition propdef = readBackupPropertyDefinition(key, resource.getType());
                 String value = (String)properties.get(key);
 
                 if (propdef == null) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectDelete.java,v $
-* Date   : $Date: 2003/09/19 14:42:51 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/09/25 14:38:59 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,6 @@
 
 package com.opencms.workplace;
 
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.threads.CmsProjectDeleteThread;
@@ -47,7 +46,7 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.27 $ $Date: 2003/09/19 14:42:51 $
+ * @version $Revision: 1.28 $ $Date: 2003/09/25 14:38:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2003/09/16 12:06:06 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2003/09/25 14:38:59 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,10 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.OpenCms;
+import org.opencms.workplace.CmsTree;
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -46,11 +50,6 @@ import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
-import org.opencms.workplace.CmsTree;
-import org.opencms.workplace.CmsWorkplaceAction;
-
 /**
  * Common template class for displaying OpenCms workplace screens.
  * <P>
@@ -59,7 +58,7 @@ import org.opencms.workplace.CmsWorkplaceAction;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.63 $ $Date: 2003/09/16 12:06:06 $
+ * @version $Revision: 1.64 $ $Date: 2003/09/25 14:38:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
