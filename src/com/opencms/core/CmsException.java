@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
-* Date   : $Date: 2002/07/04 09:58:36 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2002/08/29 17:28:29 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,177 +32,123 @@ import java.io.*;
 import java.util.*;
 
 /**
- * This exception is thrown for security reasons in the Cms.
- *
+ * <p>This class provides OpenCms interal Exception handling.
+ * A CmsExeption thrown will result in a default OpenCms error dialog box.</p> 
+ * <p>Note: Most Exceptions thrown in templates and other classes will be converted
+ * to a CmsException by the template launcher.</p>
+ * 
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich
- * @version $Revision: 1.46 $ $Date: 2002/07/04 09:58:36 $
+ * 
+ * @version $Revision: 1.47 $ $Date: 2002/08/29 17:28:29 $
  */
 public class CmsException extends Exception {
 
-    /**
-     * Stores the error code of the CmsException.
-     */
-    protected int m_Type = 0;
+    /** Stores the error code of the CmsException */
+    protected int m_type = 0;
+    
+    /** A string message describing the CmsEception */
     protected String m_message = "NO MESSAGE";
 
-    /**
-     * Stores a forwared exception.
-     */
-    protected Exception m_Exception = null;
-
-    /**
-     * Definition of error code for unknown exception.
-     */
+    /** Stores a forwared exception */
+    protected Throwable m_rootCause = null;
+    
+    /** Flag to set processing of a saved forwared root exception */
+    protected boolean m_useRootCause = false;
+    
+    /** Definition of error code for unknown exception */
     public final static int C_UNKNOWN_EXCEPTION = 0;
 
-    /**
-     * Definition of error code for access denied exception for non file resources.
-     */
+    /** Definition of error code for access denied exception for non file resources */
     public final static int C_NO_ACCESS = 1;
 
-    /**
-     * Definition of error code for not found exception.
-     */
+    /** Definition of error code for not found exception */
     public final static int C_NOT_FOUND = 2;
 
-    /**
-     * Definition of error code for bad name exception.
-     */
+    /** Definition of error code for bad name exception */
     public final static int C_BAD_NAME = 3;
 
-    /**
-     * Definition of error code for sql exception.
-     */
+    /** Definition of error code for sql exception */
     public final static int C_SQL_ERROR = 4;
 
-    /**
-     * Definition of error code for not empty exception.
-     */
+    /** Definition of error code for not empty exception */
     public final static int C_NOT_EMPTY = 5;
 
-    /**
-     * Definition of error code for no admin exception.
-     */
+    /** Definition of error code for no admin exception */
     public final static int C_NOT_ADMIN = 6;
 
-    /**
-     * Definition of error code for serialization exception.
-     */
+    /** Definition of error code for serialization exception */
     public final static int C_SERIALIZATION = 7;
 
-    /**
-     * Definition of error code for no group exception.
-     */
+    /** Definition of error code for no group exception */
     public final static int C_NO_GROUP = 8;
 
-    /**
-     * Definition of error code for group not empty exception.
-     */
+    /** Definition of error code for group not empty exception */
     public final static int C_GROUP_NOT_EMPTY = 9;
 
-    /**
-     * Definition of error code for no user exception.
-     */
+    /** Definition of error code for no user exception */
     public final static int C_NO_USER = 10;
 
-    /**
-     * Definition of error code for no default group exception.
-     */
+    /** Definition of error code for no default group exception */
     public final static int C_NO_DEFAULT_GROUP = 11;
 
-    /**
-     * Definition of error code for file exists exception.
-     */
+    /** Definition of error code for file exists exception */
     public final static int C_FILE_EXISTS = 12;
 
-    /**
-     * Definition of error code for locked resource.
-     */
+    /** Definition of error code for locked resource */
     public final static int C_LOCKED = 13;
 
-    /**
-     * Definition of error code filesystem error.
-     */
+    /** Definition of error code filesystem error */
     public final static int C_FILESYSTEM_ERROR = 14;
 
-    /**
-     * Definition of error code internal file.
-     */
+    /** Definition of error code internal file */
     public final static int C_INTERNAL_FILE = 15;
 
-    /**
-     * Definition of error code service unavailable.
-     */
+    /** Definition of error code service unavailable */
     public final static int C_SERVICE_UNAVAILABLE = 17;
 
-    /**
-     * Definition of error code for unknown XML datablocks
-     */
+    /** Definition of error code for unknown XML datablocks */
     public final static int C_XML_UNKNOWN_DATA = 18;
 
-    /**
-     * Definition of error code for corrupt internal structure.
-     */
+    /** Definition of error code for corrupt internal structure */
     public final static int C_XML_CORRUPT_INTERNAL_STRUCTURE = 19;
 
-    /**
-     * Definition of error code for wrong XML content type.
-     */
+    /** Definition of error code for wrong XML content type */
     public final static int C_XML_WRONG_CONTENT_TYPE = 20;
 
-    /**
-     * Definition of error code for XML parsing error.
-     */
+    /** Definition of error code for XML parsing error */
     public final static int C_XML_PARSING_ERROR = 21;
 
-    /**
-     * Definition of error code for XML processing error.
-     */
+    /** Definition of error code for XML processing error */
     public final static int C_XML_PROCESS_ERROR = 22;
 
-    /**
-     * Definition of error code for XML user method not found.
-     */
+    /** Definition of error code for XML user method not found */
     public final static int C_XML_NO_USER_METHOD = 23;
 
-    /**
-     * Definition of error code for XML process method not found.
-     */
+    /** Definition of error code for XML process method not found */
     public final static int C_XML_NO_PROCESS_METHOD = 24;
 
-    /**
-     * Definition of error code for missing XML tag.
-     */
+    /** Definition of error code for missing XML tag */
     public final static int C_XML_TAG_MISSING = 25;
 
-    /**
-     * Definition of error code for wrong XML template class.
-     */
+    /** Definition of error code for wrong XML template class */
     public final static int C_XML_WRONG_TEMPLATE_CLASS = 26;
 
-    /**
-     * Definition of error code for no XML template class.
-     */
+    /** Definition of error code for no XML template class */
     public final static int C_XML_NO_TEMPLATE_CLASS = 27;
 
-    /**
-     * Definition of error code for launcher errors.
-     */
+    /** Definition of error code for launcher errors */
     public final static int C_LAUNCH_ERROR = 28;
 
-    /**
-     * Definition of error code for launcher errors.
-     */
+    /** Definition of error code for launcher errors */
     public final static int C_CLASSLOADER_ERROR = 29;
 
-    /**
-     * Definition of error code for error"Password too short".
-     */
+    /** Definition of error code for error"Password too short" */
     public final static int C_SHORT_PASSWORD = 30;
 
-    /**
+    /** 
      * Definition of error code for error"Password not valid".
-     * for comptibility reasons the same like for short password.
+     * For comptibility reasons the same like for short password.
      */
     public final static int C_INVALID_PASSWORD = C_SHORT_PASSWORD;
 
@@ -212,160 +158,220 @@ public class CmsException extends Exception {
      */
     public final static int C_ACCESS_DENIED = 31;
 
-    /**
-     * Definition of error code for accessing a deleted resource
-     */
+    /** Definition of error code for accessing a deleted resource */
     public final static int C_RESOURCE_DELETED = 32;
 
-    /**
-     * Definition of error code for RB-INIT-ERRORS
-     */
+    /** Definition of error code for RB-INIT-ERRORS */
     public final static int C_RB_INIT_ERROR = 33;
 
-    /**
-     * Definition of error code for Registry exception
-     */
+    /** Definition of error code for Registry exception */
     public final static int C_REGISTRY_ERROR = 34;
 
-    /**
-     * Definition of error code for user exists
-     */
+    /** Definition of error code for user exists */
     public final static int C_USER_EXISTS = 35;
-    /**
-     * Definition of error code for HTTP sreaming error
-     */
+    
+    /** Definition of error code for HTTP sreaming error */
     public final static int C_STREAMING_ERROR = 36;
-    /**
-     * Definition of error code for HTTP sreaming error
-     */
+
+    /** Definition of error code for HTTP sreaming error */
     public final static int C_HTTPS_PAGE_ERROR = 37;
-    /**
-     * Definition of error code for HTTP sreaming error
-     */
+
+    /** Definition of error code for HTTP sreaming error */
     public final static int C_HTTPS_REQUEST_ERROR = 38;
 
-    /**
-     * Error code for Flex cache
-     */
+    /** Error code for Flex cache */
     public final static int C_FLEX_CACHE = 39;
-    /**
-     * Error code for Flex loader
-     */
+    
+    /** Error code for Flex loader */
     public final static int C_FLEX_LOADER = 40;
-    /**
-     * Unspecified Flex error code
-     */
+
+    /** Unspecified Flex error code */
     public final static int C_FLEX_OTHER = 41;
 
+    /** Default prefix for a CmsException message */
+    public static final String C_CMS_EXCEPTION_PREFIX = "[CmsException]";
 
+    /**
+     * This array provides descriptions for the error codes stored as
+     * constants in the CmsExeption class.
+     */
     public final static String C_EXTXT[] =  {
-        "Unknown exception", "Access denied", "Not found",
-        "Bad name", "Sql exception", "Folder not empty", "Admin access required",
-        "Serialization/Deserialization failed", "Unknown User Group",
-        "Group not empty", "Unknown User", "No removal from Default Group",
-        "Resource already exists", "Locked Resource", "Filesystem exception",
-        "Internal use only", "Deprecated exception: File-property is mandatory",
-        "Service unavailable", "Unknown XML datablock", "Corrupt internal structure",
-        "Wrong XML content type", "XML parsing error", "Could not process OpenCms special XML tag",
-        "Could not call user method", "Could not call process method",
-        "XML tag missing", "Wrong XML template class", "No XML template class",
-        "Error while launching template class", "OpenCms class loader error",
-        "New password is too short", "Access denied to resource",
-        "Resource deleted", "Resourcebroker-init error", "Registry error",
-        "User already exists", "HTTP streaming error",
-        "Wrong scheme for http resource", "Wrong scheme for https resource",
-        "Error in Flex cache", "Error in Flex loader", "Error in Flex engine"
+        "Unknown exception", 
+        "Access denied", 
+        "Not found",
+        "Bad name", 
+        "Sql exception", 
+        "Folder not empty", 
+        "Admin access required",
+        "Serialization/Deserialization failed", 
+        "Unknown User Group",
+        "Group not empty", 
+        "Unknown User", 
+        "No removal from Default Group",
+        "Resource already exists", 
+        "Locked Resource", 
+        "Filesystem exception",
+        "Internal use only", 
+        "Deprecated exception: File-property is mandatory",
+        "Service unavailable", 
+        "Unknown XML datablock", 
+        "Corrupt internal structure",
+        "Wrong XML content type", 
+        "XML parsing error", 
+        "Could not process OpenCms special XML tag",
+        "Could not call user method", 
+        "Could not call process method",
+        "XML tag missing", 
+        "Wrong XML template class", 
+        "No XML template class",
+        "Error while launching template class", 
+        "OpenCms class loader error",
+        "New password is too short", 
+        "Access denied to resource",
+        "Resource deleted", 
+        "Resourcebroker-init error", 
+        "Registry error",
+        "User already exists", 
+        "HTTP streaming error",
+        "Wrong scheme for http resource", 
+        "Wrong scheme for https resource",
+        "Error in Flex cache", 
+        "Error in Flex loader", 
+        "Error in Flex engine"
     };
 
     /**
      * Constructs a simple CmsException
      */
     public CmsException() {
-        super();
+        this("", 0, null, false);
     }
 
     /**
-     * Contructs a CmsException with reserved error code
-     * <p>
+     * Contructs a CmsException with the provided error code, 
+     * The error codes used should be the constants from the CmsEception class.
+     *
+     * @param i Exception error code
+     */
+    public CmsException(int type) {
+        this("CmsException ID: " + type, type, null, false);
+    }
+
+    /**
+     * Contructs a CmsException with the provided error code and
+     * a given root cause.
+     * The error codes used should be the constants from the CmsEception class.
      *
      * @param i Exception code
+     * @param e Forwarded root cause exception
      */
-    public CmsException(int i) {
-        super("CmsException ID: " + i);
-        m_Type = i;
+    public CmsException(int type, Throwable rootCause) {
+        this("CmsException ID: " + type, type, rootCause, false);
     }
 
     /**
-     * Creates a CmsException with reserved error code and a forwarded other exception
-     * <p>
+     * Constructs a CmsException with the provided description.
      *
-     * @param i Exception code
-     * @param e Forawarded general exception
+     * @param s Exception message
      */
-    public CmsException(int i, Exception e) {
-        super("CmsException ID: " + i);
-        m_Type = i;
-        m_Exception = e;
+    public CmsException(String message) {
+        this(message, 0, null, false);
     }
 
     /**
-     * Constructs a CmsException with a specified description.
-     *
-     * @param s Exception description
-     */
-    public CmsException(String s) {
-        super(s);
-        m_message = s;
-    }
-
-    /**
-     * Constructs a  CmsException with reserved error code and additional information
-     * <p>
-     *
-     * @param s Exception description
+     * Contructs a CmsException with the provided description and error code.
+     * 
+     * @param s Exception message
      * @param i Exception code
      */
-    public CmsException(String s, int i) {
-        super(s);
-        m_Type = i;
-        m_message = s;
+    public CmsException(String message, int type) {
+        this(message, type, null, false);
     }
 
     /**
-     * Creates a CmsException with reserved error code, a forwarded other exception and a detail message
-     * <p>
+     * Construtcs a CmsException with a detail message and a forwarded 
+     * root cause exception
      *
-     * @param s Exception description
+     * @param s Exception message
+     * @param e Forwarded root cause exception
+     */
+    public CmsException(String message, Throwable rootCause) {
+        this(message, 0, rootCause, false);
+    }
+
+    /**
+     * Creates a CmsException with the provided error code, 
+     * a forwarded root cause exception and a detail message.
+     *
+     * @param s Exception message
      * @param i Exception code
-     * @param e Forawarded general exception
+     * @param e Forwarded root cause exception
      */
-    public CmsException(String s, int i, Exception e) {
-        super(s);
-        m_Type = i;
-        m_Exception = e;
-        m_message = s;
+    public CmsException(String message, int type, Throwable rootCause) {
+        this(message, type, rootCause, false);
     }
-
+    
     /**
-     * Construtcs a CmsException  with a detail message and a forwarded other exception
+     * Creates a CmsException with a provided error code, 
+     * a forwarded root cause exception and a detail message.
+     * The further processing of the exception can be controlled 
+     * with the <code>useRoot</code> parameter.
      *
-     * @param s Exception description
-     * @param e Forwaarded general exception
+     * @param s Exception message
+     * @param i Exception code
+     * @param e Forwarded root cause exception
+     * @param useRoot If true, use 
+     */    
+    public CmsException(String message, int type, Throwable rootCause, boolean useRoot) {
+        super(C_CMS_EXCEPTION_PREFIX + ": " + message);
+        this.m_message = message;
+        this.m_type = type;
+        this.m_rootCause = rootCause;
+        this.m_useRootCause = useRoot;
+    }
+        
+    /**
+     * Get the root cause Exception which was provided
+     * when this exception was thrown.
+     *
+     * @return The root cause Exception.
      */
-    public CmsException(String s, Exception e) {
-        super(s);
-        m_Exception = e;
-        m_message = s;
+    public Exception getException() {        
+        if (m_useRootCause) return null;
+        try {
+            return (Exception)getRootCause();
+        } catch (ClassCastException e) {
+            return null;
+        }
     }
 
     /**
-     * Get the exeption.
+     * Get the root cause Throwable which was provided
+     * when this exception was thrown.
+     *
+     * @return The root cause Throwable.
+     */
+    public Throwable getRootCause() {
+        return m_rootCause;
+    }
+
+    /**
+     * Set the root cause Exception value.
+     *
+     * @param value The root cause Exception
+     */
+    public void setException(Throwable value) {
+        m_rootCause = value;
+    }
+        
+    /**
+     * Get the throwable.
      *
      * @return Exception.
      */
-    public Exception getException() {
-        return m_Exception;
-    }
+    public Throwable getThrowable() {
+        return m_rootCause;
+    }    
 
     /**
      * Get the exeption message
@@ -373,7 +379,7 @@ public class CmsException extends Exception {
      * @return Exception messge.
      */
     public String getMessage() {
-        return m_message;
+        return C_CMS_EXCEPTION_PREFIX + ": " + m_message;
     }
 
     /**
@@ -382,53 +388,54 @@ public class CmsException extends Exception {
      * @return Exception messge.
      */
     public String getShortException() {
-        return "[CmsException]: " + getType() + " " + C_EXTXT[getType()]
+        return C_CMS_EXCEPTION_PREFIX + ": " + getType() + " " + C_EXTXT[getType()]
                 + ". Detailed Error: " + m_message + ".";
     }
 
     /**
-     * Return a string with the stacktrace. for this exception
-     * and for all encapsulated exceptions.
-     * Creation date: (10/23/00 %r)
-     * @return java.lang.String
-     */
-    public String getStackTraceAsString() {
-        java.io.StringWriter sw = new java.io.StringWriter();
-        java.io.PrintWriter pw = new java.io.PrintWriter(sw);
-
-        //now put all the StackTraces into the returning string
-        super.printStackTrace(pw);
-
-        //if there are any encapsulated exceptions, write them also.
-        if(m_Exception != null) {
-            StringWriter _sw = new StringWriter();
-            PrintWriter _pw = new PrintWriter(_sw);
-            m_Exception.printStackTrace(_pw);
-            _pw.close();
-            try {
-                _sw.close();
-            }
-            catch(Exception exc) {
-
-
-            // ignore the exception
-            }
-            StringTokenizer st = new StringTokenizer(_sw.toString(), "\n");
-            while(st.hasMoreElements()) {
-                pw.println(">" + st.nextElement());
-            }
-        }
-        pw.close();
-        try {
-            sw.close();
-        }
-        catch(Exception exc) {
-
-
-        // ignore the exception
-        }
-        return sw.toString();
-    }
+	 * Return a string with the stacktrace. for this exception
+	 * and for all encapsulated exceptions.
+	 * Creation date: (10/23/00 %r)
+	 * @return java.lang.String
+	 */
+	public String getStackTraceAsString() {
+	    java.io.StringWriter sw = new java.io.StringWriter();
+	    java.io.PrintWriter pw = new java.io.PrintWriter(sw);
+		
+	    if (m_useRootCause && (m_rootCause != null)) {
+	        // use stack trace of root cause
+	        m_rootCause.printStackTrace(pw);
+	    } else {            
+	        // use stack trace of this eception and add the root case 
+	        super.printStackTrace(pw);
+	
+	        // if there are any encapsulated exceptions, write them also.
+	        if(m_rootCause != null) {
+	            StringWriter _sw = new StringWriter();
+	            PrintWriter _pw = new PrintWriter(_sw);
+	            m_rootCause.printStackTrace(_pw);
+	            _pw.close();
+	            try {
+	                _sw.close();
+	            }
+	            catch(Exception exc) {
+	    
+	            // ignore the exception
+	            }
+	            StringTokenizer st = new StringTokenizer(_sw.toString(), "\n");
+	            while(st.hasMoreElements()) {
+	                pw.println(">" + st.nextElement());
+	            }
+	        }
+	    }
+	    pw.close();
+	    try {
+	        sw.close();
+	    } catch(Exception exc) {
+	        // ignore the exception
+	    }
+	    return sw.toString();
+	}
 
     /**
      * Get the type of the CmsException.
@@ -436,7 +443,7 @@ public class CmsException extends Exception {
      * @return Type of CmsException
      */
     public int getType() {
-        return m_Type;
+        return m_type;
     }
 
     /**
@@ -445,12 +452,11 @@ public class CmsException extends Exception {
      * @return Exception type in a text-version.
      */
     public String getTypeText() {
-        return "[CmsException]: " + getType() + " " + C_EXTXT[getType()];
+        return C_CMS_EXCEPTION_PREFIX + ": " + getType() + " " + C_EXTXT[getType()];
     }
 
     /**
-     * Insert the method's description here.
-     * Creation date: (10/23/00 %r)
+     * Print the exception stack trace to System.out.
      */
     public void printStackTrace() {
         printStackTrace(System.out);
@@ -459,8 +465,6 @@ public class CmsException extends Exception {
     /**
      * Prints this <code>Throwable</code> and its backtrace to the
      * specified print stream.
-     *
-     * @since   JDK1.0
      */
     public void printStackTrace(java.io.PrintStream s) {
         s.println(getStackTraceAsString());
@@ -469,35 +473,24 @@ public class CmsException extends Exception {
     /**
      * Prints this <code>Throwable</code> and its backtrace to the specified
      * print writer.
-     *
-     * @since   JDK1.1
      */
     public void printStackTrace(java.io.PrintWriter s) {
         s.println(getStackTraceAsString());
     }
-
-    /**
-     * Set an exception value.
-     *
-     * @param value Exception
-     */
-    public void setException(Exception value) {
-        m_Exception = value;
-    }
-
+    
     /**
      * Overwrites the standart toString method.
      */
     public String toString() {
         StringBuffer output = new StringBuffer();
-        output.append("[CmsException]: ");
-        output.append(m_Type + " ");
-        output.append(CmsException.C_EXTXT[m_Type] + ". ");
+        output.append(C_CMS_EXCEPTION_PREFIX + ": ");
+        output.append(m_type + " ");
+        output.append(CmsException.C_EXTXT[m_type] + ". ");
         output.append("Detailed Error: ");
         output.append(m_message + ". ");
-        if(m_Exception != null) {
+        if(m_rootCause != null) {
             output.append("Caught Exception: >");
-            output.append(m_Exception + "<");
+            output.append(m_rootCause + "<");
         }
         return output.toString();
     }
