@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/12 14:46:21 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2003/09/12 15:37:41 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.89 $ $Date: 2003/09/12 14:46:21 $
+ * @version $Revision: 1.90 $ $Date: 2003/09/12 15:37:41 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -2470,7 +2470,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         // TODO the file(-content) should be read only once while it is published
         
         /*
-         * Never ever use offlineFile.getState() here!
+         * Never use offlineFile.getState() here!
          * Only use offlineFileHeader.getState() to determine the state of a resource!
          * 
          * In case a resource has siblings, after a sibling was published the structure
@@ -2569,6 +2569,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                         OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishFile] error writing backup/publishing history, type: " + e.getTypeText() + ",  " + offlineFile.toString());
                     }
+                    
+                    throw e;
                 }
             } else if (offlineFileHeader.getState() == I_CmsConstants.C_STATE_CHANGED) {
                 report.print("( " + m + " / " + n + " ) " + report.key("report.publishing.file"), I_CmsReport.C_FORMAT_NOTE);
