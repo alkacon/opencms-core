@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/12/11 14:13:59 $
-* Version: $Revision: 1.295 $
+* Date   : $Date: 2001/12/11 14:34:33 $
+* Version: $Revision: 1.296 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.295 $ $Date: 2001/12/11 14:13:59 $
+ * @version $Revision: 1.296 $ $Date: 2001/12/11 14:34:33 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4012,6 +4012,24 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         throws CmsException {
         return userInGroup(currentUser, currentProject,currentUser.getName(), C_GROUP_PROJECTLEADER);
     }
+
+    /**
+     * Determines, if the users current group is the projectleader-group.<BR/>
+     * All projectleaders can create new projects, or close their own projects.
+     *
+     * <B>Security:</B>
+     * All users are granted.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @return true, if the users current group is the projectleader-group,
+     * else it returns false.
+     * @exception CmsException Throws CmsException if operation was not succesful.
+     */
+    public boolean isUser(CmsUser currentUser, CmsProject currentProject)
+        throws CmsException {
+        return userInGroup(currentUser, currentProject,currentUser.getName(), C_GROUP_USERS);
+    }
     /**
      * Returns the user, who had locked the resource.<BR/>
      *
@@ -4355,7 +4373,8 @@ public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) 
  */
 public void exportStaticResources(CmsUser currentUser, CmsProject currentProject, CmsObject cms, Vector startpoints) throws CmsException {
 
-    if(isAdmin(currentUser, currentProject) || isProjectManager(currentUser, currentProject)) {
+    if(isAdmin(currentUser, currentProject) || isProjectManager(currentUser, currentProject) ||
+        isUser(currentUser, currentProject)) {
         new CmsStaticExport(cms, startpoints);
     } else {
          throw new CmsException("[" + this.getClass().getName() + "] exportResources",
