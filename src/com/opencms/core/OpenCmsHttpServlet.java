@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/02/20 08:52:16 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/02/20 15:58:14 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -62,10 +62,15 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2001/02/20 08:52:16 $
+ * @version $Revision: 1.3 $ $Date: 2001/02/20 15:58:14 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
+
+    /**
+     * Indicates, if the servlet should be reloaded for new classes.
+     */
+    private static boolean c_shouldReloadClasses = false;
 
     /**
      * The name of the redirect entry in the configuration file.
@@ -965,5 +970,21 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                 }
             }
         }
+    }
+
+    /**
+     * Returns true, if the classes are outdated and should be reload. Otherwise it returns false.
+     */
+    public static boolean shouldReloadClasses() {
+        return c_shouldReloadClasses;
+    }
+
+    /**
+     * Sets the value of should reload classes. If this value is set to true the servlet
+     * will be reloaded at the next request, so all new classes will be get from the
+     * vfs.
+     */
+    public static void setShouldReloadClasses(boolean value) {
+        c_shouldReloadClasses = value;
     }
 }

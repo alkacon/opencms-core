@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/02/19 13:00:47 $
- * Version: $Revision: 1.229 $
+ * Date   : $Date: 2001/02/20 15:58:14 $
+ * Version: $Revision: 1.230 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.229 $ $Date: 2001/02/19 13:00:47 $
+ * @version $Revision: 1.230 $ $Date: 2001/02/20 15:58:14 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4055,6 +4055,10 @@ public void publishProject(CmsUser currentUser, CmsProject currentProject, int i
 
 	// check the security
 	if ((isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, publishProject)) && (publishProject.getFlags() == C_PROJECT_STATE_UNLOCKED)) {
+        // check, if we update class-files with this publishing
+        Vector classFiles = ((CmsClassLoader)getClass().getClassLoader()).getFilenames();
+        boolean shouldReload = shouldReloadClasses(id, classFiles);
+
 		m_dbAccess.publishProject(currentUser, id, onlineProject(currentUser, currentProject));
 		m_subresCache.clear();
 		// inform about the file-system-change
@@ -4087,10 +4091,33 @@ public void publishProject(CmsUser currentUser, CmsProject currentProject, int i
 		if (m_deletePublishedProject) {
 			deleteProject(currentUser, currentProject, id);
 		}
+        // inform about the reload classes
+        OpenCmsHttpServlet.setShouldReloadClasses(shouldReload);
 	} else {
 		throw new CmsException("[" + this.getClass().getName() + "] could not publish project " + id, CmsException.C_NO_ACCESS);
 	}
 }
+
+    /**
+     * This method checks, if there is a classFile marked as changed or deleted.
+     * If that is so, we have to reload all classes and instances to get rid of old versions.
+     */
+    public boolean shouldReloadClasses(int projectId, Vector classFiles) {
+        for(int i = 0; i < classFiles.size(); i++) {
+            try {
+                CmsFile file = m_dbAccess.readFileHeader(projectId, (String)classFiles.elementAt(i));
+                if( (file.getState() == C_STATE_CHANGED) || (file.getState() == C_STATE_DELETED) ) {
+                    // this class-file was changed or deleted - we have to reload
+                    return true;
+                }
+            } catch(CmsException exc) {
+                // the file couldn't be read - it is not in our project - ignore this file
+            }
+        }
+        // no modified class-files are found - we can use the old classes
+        return false;
+    }
+
 	/**
 	 * Reads the agent of a task from the OpenCms.
 	 *
