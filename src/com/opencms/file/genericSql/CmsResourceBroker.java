@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/06 14:27:55 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/06/06 16:55:17 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,10 +46,10 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/06/06 14:27:55 $
+ * @version $Revision: 1.9 $ $Date: 2000/06/06 16:55:17 $
  * 
  */
-public class CmsResourceBroker implements I_CmsResourceBroker {
+public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
 	/**
 	 * The configuration of the property-file.
@@ -962,7 +962,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker {
 	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
 							   CmsResource resource) 
         throws CmsException {
-     return null;
+        return resource.getGroup();
     }
 							
 	/**
@@ -981,6 +981,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker {
 	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
 							   CmsTask task) 
         throws CmsException {
+        // TODO: To be implemented
      return null;
     }
 								
@@ -1011,13 +1012,13 @@ public class CmsResourceBroker implements I_CmsResourceBroker {
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @return The group of a resource.
-	 * 
+	 * @deprecated
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
 								CmsProject project) 
         throws CmsException {
-     return null;
+        return project.getGroup();
     }
 	
 	/**
@@ -1029,13 +1030,13 @@ public class CmsResourceBroker implements I_CmsResourceBroker {
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @return The group of a resource.
-	 * 
+	 * @deprecated
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	public CmsGroup readManagerGroup(CmsUser currentUser, CmsProject currentProject, 
 									   CmsProject project) 
         throws CmsException {
-     return null;
+        return project.getManagerGroup();
     }
 	
 	/**
@@ -1160,7 +1161,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker {
 	public Vector getGroupsOfUser(CmsUser currentUser, CmsProject currentProject, 
 								  String username)
         throws CmsException {
-     return null;
+        return null;
     }
 	
 	/**
@@ -1197,8 +1198,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker {
 	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
 								String groupname)
         throws CmsException {
-        //return m_dbAccess.readGroup(groupname);
-        return null;
+        return m_dbAccess.readGroup(groupname);
+        
      
     }
 
@@ -1268,7 +1269,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker {
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
         throws CmsException {
-     return null;
+        return null;     
     }
     
     
@@ -1360,7 +1361,19 @@ public class CmsResourceBroker implements I_CmsResourceBroker {
 	public CmsGroup addGroup(CmsUser currentUser, CmsProject currentProject, 
 							   String name, String description, int flags, String parent)
         throws CmsException {
-     return null;
+        // Check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			// check the lenght of the groupname
+			if(name.length() > 1) {
+				return( m_dbAccess.createGroup(name, description, flags, parent) );
+			} else {
+				throw new CmsException("[" + this.getClass().getName() + "] " + name, 
+					CmsException.C_BAD_NAME);
+			}
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + name, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 
     

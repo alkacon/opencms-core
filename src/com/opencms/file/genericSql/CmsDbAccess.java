@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/06 16:19:06 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/06/06 16:55:17 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.11 $ $Date: 2000/06/06 16:19:06 $ * 
+ * @version $Revision: 1.12 $ $Date: 2000/06/06 16:55:17 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -228,6 +228,58 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
      // methods working with users and groups
     
     /**
+	 * Add a new group to the Cms.<BR/>
+	 * 
+	 * Only the admin can do this.<P/>
+	 * 
+	 * @param name The name of the new group.
+	 * @param description The description for the new group.
+	 * @int flags The flags for the new group.
+	 * @param name The name of the parent group (or null).
+	 *
+	 * @return Group
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */	
+	 public CmsGroup createGroup(String name, String description, int flags,String parent)
+         throws CmsException {
+ 
+         int parentId=C_UNKNOWN_ID;
+         CmsGroup group=null;
+        
+         PreparedStatement statement=null;
+   
+         try{ 
+            
+            // get the id of the parent group if nescessary
+            if ((parent != null) && (!"".equals(parent))) {
+                parentId=readGroup(parent).getId();
+            }
+            
+            // create statement
+            statement=m_pool.getPreparedStatement(C_GROUPS_CREATEGROUP_KEY);
+
+            // write new group to the database
+            statement.setInt(1,nextId(C_TABLE_GROUPS));
+            statement.setInt(2,parentId);
+            statement.setString(3,name);
+            statement.setString(4,description);
+            statement.setInt(5,flags);
+            statement.executeUpdate();
+            m_pool.putPreparedStatement(C_GROUPS_CREATEGROUP_KEY,statement);
+            // create the user group by reading it from the database.
+            // this is nescessary to get the group id which is generated in the
+            // database.
+            group=readGroup(name);
+         } catch (SQLException e){
+             m_pool.putPreparedStatement(C_GROUPS_CREATEGROUP_KEY,statement);
+             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+  		}
+         return group;
+     }
+    
+    
+    /**
 	 * Returns a group object.<P/>
 	 * @param groupname The name of the group that is to be read.
 	 * @return Group.
@@ -253,6 +305,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
                                   res.getString(C_GROUPS_GROUP_NAME),
                                   res.getString(C_GROUPS_GROUP_DESCRIPTION),
                                   res.getInt(C_GROUPS_GROUP_FLAGS));
+               res.close();
              } else {
                  throw new CmsException("[" + this.getClass().getName() + "] "+groupname,CmsException.C_NO_GROUP);
              }
@@ -265,7 +318,45 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
          return group;
      } 
     
+     /**
+	 * Returns a group object.<P/>
+	 * @param groupname The id of the group that is to be read.
+	 * @return Group.
+	 * @exception CmsException  Throws CmsException if operation was not succesful
+	 */
+     public CmsGroup readGroup(int id)
+         throws CmsException {
+            
+         CmsGroup group=null;
+         ResultSet res = null;
+         PreparedStatement statement=null;
+   
+         try{ 
+             // read the group from the database
+             statement=m_pool.getPreparedStatement(C_GROUPS_READGROUP2_KEY);
+             statement.setInt(1,id);
+             res = statement.executeQuery();
+             m_pool.putPreparedStatement(C_GROUPS_READGROUP2_KEY,statement);
+             // create new Cms group object
+			 if(res.next()) {     
+               group=new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
+                                  res.getInt(C_GROUPS_PARENT_GROUP_ID),
+                                  res.getString(C_GROUPS_GROUP_NAME),
+                                  res.getString(C_GROUPS_GROUP_DESCRIPTION),
+                                  res.getInt(C_GROUPS_GROUP_FLAGS));
+               res.close();
+             } else {
+                 throw new CmsException("[" + this.getClass().getName() + "] "+id,CmsException.C_NO_GROUP);
+             }            
+       
+         } catch (SQLException e){
+            m_pool.putPreparedStatement(C_GROUPS_READGROUP2_KEY,statement);
+         throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+         return group;
+     } 
     
+         
     // methods working with systemproperties
     
     /**
@@ -426,7 +517,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		throws CmsException {
         // init statement for groups
         m_pool.initPreparedStatement(C_GROUPS_READGROUP_KEY,C_GROUPS_READGROUP);
-		
+	    m_pool.initPreparedStatement(C_GROUPS_READGROUP2_KEY,C_GROUPS_READGROUP2);
+        m_pool.initPreparedStatement(C_GROUPS_CREATEGROUP_KEY,C_GROUPS_CREATEGROUP);
+        
 		m_pool.initPreparedStatement(C_PROJECTS_MAXID_KEY, C_PROJECTS_MAXID);
 		
 		m_pool.initPreparedStatement(C_SYSTEMPROPERTIES_MAXID_KEY, C_SYSTEMPROPERTIES_MAXID);
@@ -454,6 +547,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		throws CmsException	{
 		m_maxIds = new int[C_MAX_TABLES];
 		
+        m_maxIds[C_TABLE_GROUPS] = initMaxId(C_GROUPS_MAXID_KEY);
 		m_maxIds[C_TABLE_PROJECTS] = initMaxId(C_PROJECTS_MAXID_KEY);
 		
 		m_maxIds[C_TABLE_SYSTEMPROPERTIES] = initMaxId(C_SYSTEMPROPERTIES_MAXID_KEY);

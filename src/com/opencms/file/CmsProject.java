@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
- * Date   : $Date: 2000/06/06 11:31:30 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/06/06 16:55:17 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import java.sql.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/06/06 11:31:30 $
+ * @version $Revision: 1.15 $ $Date: 2000/06/06 16:55:17 $
  */
 public class CmsProject implements I_CmsConstants,
                                                         Cloneable{
@@ -77,6 +77,16 @@ public class CmsProject implements I_CmsConstants,
 	 */
 	private String m_description = null;
 	
+    /**
+     * The group  of this resource.
+     */
+    private CmsGroup m_group;
+  
+     /**
+     * The manager group  of this resource.
+     */
+    private CmsGroup m_managerGroup;
+    
 	/**
 	 * The creation date of this project.
 	 */
@@ -109,15 +119,17 @@ public class CmsProject implements I_CmsConstants,
 	
 
 	CmsProject(int projectId, String name, String description, int taskId, 
-			   int ownerId, int groupId, int managergroupId, int flags, Timestamp createdate, 
+			   int ownerId, CmsGroup group, CmsGroup managerGroup, int flags, Timestamp createdate, 
 			   Timestamp publishingdate, int publishedBy, int countLockedResources, int type) {
 		m_id = projectId;
 		m_name = name;
 		m_description = description;
 		m_taskId = taskId;
 		m_ownerId = ownerId;
-		m_groupId = groupId;
-		m_managergroupId = managergroupId;
+		m_groupId = group.getId();
+        m_group=group;
+		m_managergroupId = managerGroup.getId();
+        m_managerGroup=managerGroup;
 		m_flags = flags;
 		m_publishedBy = publishedBy;
 		m_countLockedResources = countLockedResources;
@@ -273,7 +285,26 @@ public class CmsProject implements I_CmsConstants,
 	void setPublishedBy(int id) {
 		m_publishedBy = id;
 	}
-	
+       
+    /**
+	 * Returns the group of this project.
+	 * 
+	 * @return the group of this resource.
+	 */
+     public CmsGroup getGroup() {
+         return  (CmsGroup)m_group.clone();
+     }
+
+         
+    /**
+	 * Returns the manager group of this project.
+	 * 
+	 * @return the manager group of this resource.
+	 */
+     public CmsGroup getManagerGroup() {
+         return  (CmsGroup)m_managerGroup.clone();
+      }
+     
 	/**
 	 * Gets the type.
 	 * 
@@ -367,7 +398,7 @@ public class CmsProject implements I_CmsConstants,
     public Object clone() {
         CmsProject project=new CmsProject(this.m_id,new String (this.m_name),
                                        new String(m_description),this.m_taskId,
-                                       this.m_ownerId,this.m_groupId,this.m_managergroupId,
+                                       this.m_ownerId,this.getGroup(),this.getManagerGroup(),
                                        this.m_flags,new Timestamp(this.m_createdate),
                                        new Timestamp(this.m_publishingdate),this.m_publishedBy,
 									   this.m_countLockedResources, this.m_type);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/06 16:19:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/06/06 16:55:17 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.4 $ $Date: 2000/06/06 16:19:06 $
+ * @version $Revision: 1.5 $ $Date: 2000/06/06 16:55:17 $
  */
 public interface I_CmsQuerys {
     
@@ -47,9 +47,20 @@ public interface I_CmsQuerys {
     public static final String C_GROUPS_GROUP_FLAGS="GROUP_FLAGS";  
                          
     // Constants for Groups
-    public static final Integer C_GROUPS_READGROUP_KEY = new Integer(200);
+    public static final Integer C_GROUPS_MAXID_KEY = new Integer(200);
+	public static final String C_GROUPS_MAXID = "SELECT MAX(GROUP_ID) FROM " + C_DATABASE_PREFIX + "GROUPS";	
+	
+    public static final Integer C_GROUPS_READGROUP_KEY = new Integer(201);
     public static final String C_GROUPS_READGROUP = "SELECT * FROM " + C_DATABASE_PREFIX 
                                                   + "GROUPS WHERE GROUP_NAME = ?";
+
+    public static final Integer C_GROUPS_READGROUP2_KEY = new Integer(202);
+    public static final String C_GROUPS_READGROUP2 = "SELECT * FROM " + C_DATABASE_PREFIX 
+                                                  + "GROUPS WHERE GROUP_ID = ?";
+  
+    public static final Integer C_GROUPS_CREATEGROUP_KEY = new Integer(203);
+    public static final String C_GROUPS_CREATEGROUP = "INSERT INTO " + C_DATABASE_PREFIX + "GROUPS VALUES(?,?,?,?,?)";
+    
 												
     // Constants for Systemproperties
     public static final String C_SYSTEMPROPERTY_VALUE="SYSTEMPROPERTY_VALUE";
@@ -70,7 +81,7 @@ public interface I_CmsQuerys {
 	public static final String C_SYSTEMPROPERTIES_DELETE="DELETE FROM " + C_DATABASE_PREFIX + "SYSTEMPROPERTIES WHERE SYSTEMPROPERTY_NAME = ?";
     
 	
-	
+
 	// Constants for Projects
 	
     public static final Integer C_PROJECTS_MAXID_KEY = new Integer(400);
