@@ -289,7 +289,7 @@
 			<destination>system/workplace/action/administration.html</destination>
 			<type>XMLTemplate</type>
 			<user>Admin</user>
-			<group>Projectmanager</group>
+			<group>Users</group>
 			<access>15</access>
 			<properties/>
 		</file>
