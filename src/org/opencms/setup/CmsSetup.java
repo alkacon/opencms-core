@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetup.java,v $
- * Date   : $Date: 2004/02/18 16:58:49 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/19 08:28:22 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,13 +63,13 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  */
 public class CmsSetup extends Object implements Serializable, Cloneable {
 
     /** Required files per database server setup.<p> */
     public static final String[] requiredDbSetupFiles = {
-            "step_3_database_setup.jsp",
+            "step_4_database_setup.jsp",
             "database.properties",
             "create_db.sql",
             "create_tables.sql",
