@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/08/28 13:17:44 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/08/29 15:44:31 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.23 $ $Date: 2000/08/28 13:17:44 $ * 
+ * @version $Revision: 1.24 $ $Date: 2000/08/29 15:44:31 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2845,6 +2845,7 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, CmsProject onlin
 		m_pool.initPreparedStatement(C_RESOURCES_DELETEBYID_KEY,C_RESOURCES_DELETEBYID);
 		m_pool.initPreparedStatement(C_RESOURCES_RENAMERESOURCE_KEY,C_RESOURCES_RENAMERESOURCE);
 		m_pool.initPreparedStatement(C_RESOURCES_READ_ALL_KEY,C_RESOURCES_READ_ALL);
+		m_pool.initPreparedStatement(C_RESOURCES_UPDATE_LOCK_KEY,C_RESOURCES_UPDATE_LOCK);
 
 		// init statements for groups
 		m_pool.initPreparedStatement(C_GROUPS_MAXID_KEY,C_GROUPS_MAXID);
@@ -5430,6 +5431,30 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, CmsProject onlin
 			}
 		 }	
 	}
+/**
+ * Updates the LOCKED_BY state of a Resource.
+ * Creation date: (29.08.00 15:01:55)
+ * @param res com.opencms.file.CmsResource
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public void updateLockstate(CmsResource res) throws CmsException {
+	
+		PreparedStatement statement = null;
+		try {
+			
+			statement = m_pool.getPreparedStatement(C_RESOURCES_UPDATE_LOCK_KEY);
+			statement.setInt(1, res.isLockedBy());
+			statement.setInt(2, res.getResourceId());
+			statement.executeUpdate();
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		} finally {
+			if(statement != null) {
+				m_pool.putPreparedStatement(C_RESOURCES_UPDATE_LOCK_KEY, statement);
+			}
+		}
+
+}
 	/**
 	 * This method updates a session in the database. It is used 
 	 * for sessionfailover.

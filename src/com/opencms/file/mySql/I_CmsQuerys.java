@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/08/29 09:28:13 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/08/29 15:44:31 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 200C_RESOURCES_GET_FILESINFOLDER_KEY0  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.9 $ $Date: 2000/08/29 09:28:13 $
+ * @version $Revision: 1.10 $ $Date: 2000/08/29 15:44:31 $
  */
 public interface I_CmsQuerys {
 	
@@ -206,6 +206,11 @@ public interface I_CmsQuerys {
 														   +"RESOURCE_LASTMODIFIED_BY = ? "
 														   +"WHERE RESOURCE_ID = ?";
 
+	public static final Integer C_RESOURCES_UPDATE_LOCK_KEY = new Integer(141);
+	public static final String C_RESOURCES_UPDATE_LOCK = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET "
+														   +"LOCKED_BY = ? "
+														   +"WHERE RESOURCE_ID = ?";
+														   
 
 	// Constants for files table
 	public static final String C_FILE_ID="FILE_ID";

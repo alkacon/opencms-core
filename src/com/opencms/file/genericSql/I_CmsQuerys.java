@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/08/29 09:25:41 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2000/08/29 15:42:51 $
+ * Version: $Revision: 1.62 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.61 $ $Date: 2000/08/29 09:25:41 $
+ * @version $Revision: 1.62 $ $Date: 2000/08/29 15:42:51 $
  */
 public interface I_CmsQuerys {
 	
@@ -207,6 +207,11 @@ public interface I_CmsQuerys {
 														   +"RESOURCE_LASTMODIFIED_BY = ? "
 														   +"WHERE RESOURCE_ID = ?";
 
+	public static final Integer C_RESOURCES_UPDATE_LOCK_KEY = new Integer(141);
+	public static final String C_RESOURCES_UPDATE_LOCK = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET "
+														   +"LOCKED_BY = ? "
+														   +"WHERE RESOURCE_ID = ?";
+														   
 
 	// Constants for files table
 	public static final String C_FILE_ID="FILE_ID";

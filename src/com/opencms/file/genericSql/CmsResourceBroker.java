@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/25 15:58:33 $
- * Version: $Revision: 1.111 $
+ * Date   : $Date: 2000/08/29 15:42:50 $
+ * Version: $Revision: 1.112 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.template.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.111 $ $Date: 2000/08/25 15:58:33 $
+ * @version $Revision: 1.112 $ $Date: 2000/08/29 15:42:50 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3524,14 +3524,14 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// lock the resouece
 			cmsResource.setLocked(currentUser.getId());
 			//update resource
+			m_dbAccess.updateLockstate(cmsResource);
 			
+			// update the cache
 			if (resourcename.endsWith("/")) { 
-				m_dbAccess.writeFolder(currentProject,(CmsFolder)cmsResource,false);
-				 // update the cache           
+				//m_dbAccess.writeFolder(currentProject,(CmsFolder)cmsResource,false);           
 				m_resourceCache.put(C_FOLDER+currentProject.getId()+resourcename,(CmsFolder)cmsResource);        
 			} else {           
-				m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)cmsResource,false);
-				// update the cache           
+				//m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)cmsResource,false);
 				m_resourceCache.put(C_FILE+currentProject.getId()+resourcename,(CmsFile)cmsResource);
 			}
 			m_subresCache.clear();
@@ -5637,20 +5637,19 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 				if (cmsResource.isLockedBy()==currentUser.getId()) {
 			
   
-				// unlock the resouece
+				// unlock the resource
 				cmsResource.setLocked(C_UNKNOWN_ID);
 	 
 				//update resource
+				m_dbAccess.updateLockstate(cmsResource);
+				
 				if (resourcename.endsWith("/")) { 
-		
-					m_dbAccess.writeFolder(currentProject,(CmsFolder)cmsResource,false);
+					//m_dbAccess.writeFolder(currentProject,(CmsFolder)cmsResource,false);
 					// update the cache           
-	
 					m_resourceCache.put(C_FOLDER+currentProject.getId()+resourcename,(CmsFolder)cmsResource);              
 				} else {           
-					m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)cmsResource,false);
+					//m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)cmsResource,false);
 					// update the cache   
-	 
 					m_resourceCache.put(C_FILE+currentProject.getId()+resourcename,(CmsFile)cmsResource);                                  
 				}
 	 
