@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.24 $ $Date: 2000/01/21 16:27:10 $
+ * @version $Revision: 1.25 $ $Date: 2000/01/21 16:56:46 $
  */
 interface I_CmsResourceBroker {
 
@@ -351,6 +351,38 @@ interface I_CmsResourceBroker {
 
 	// user and group stuff
 	
+	/**
+	 * Reads the owner of a resource from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return The owner of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsUser readOwner(A_CmsUser currentUser, A_CmsProject currentProject, 
+							   A_CmsResource resource) 
+		throws CmsException ;
+	
+	/**
+	 * Reads the group of a resource from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return The group of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsGroup readGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+							   A_CmsResource resource) 
+		throws CmsException ;
+							
 	/**
 	 * Determines, if the users current group is the admin-group.
 	 * 

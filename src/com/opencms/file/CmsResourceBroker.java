@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.28 $ $Date: 2000/01/21 16:27:10 $
+ * @version $Revision: 1.29 $ $Date: 2000/01/21 16:56:46 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -650,6 +650,42 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	}
 
 	// user and group stuff
+
+	/**
+	 * Reads the owner of a resource from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return The owner of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsUser readOwner(A_CmsUser currentUser, A_CmsProject currentProject, 
+							   A_CmsResource resource) 
+		throws CmsException {
+		return( m_userRb.readUser(resource.getOwnerId()) );
+	}
+	
+	/**
+	 * Reads the group of a resource from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return The group of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsGroup readGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+							   A_CmsResource resource) 
+		throws CmsException {
+		return( m_userRb.readGroup(resource.getGroupId()) );
+	}
 	
 	/**
 	 * Determines, if the users current group is the admin-group.

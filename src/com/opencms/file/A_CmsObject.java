@@ -16,7 +16,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.30 $ $Date: 2000/01/21 16:30:34 $ 
+ * @version $Revision: 1.31 $ $Date: 2000/01/21 16:56:46 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -724,6 +724,26 @@ public abstract class A_CmsObject {
 	abstract public void deleteMetainformation(String resourcename, String meta)
 		throws CmsException;
 
+	/**
+	 * Reads the owner of a resource from the OpenCms.
+	 * 
+	 * @return The owner of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public abstract A_CmsUser readOwner(A_CmsResource resource) 
+		throws CmsException ;
+	
+	/**
+	 * Reads the group of a resource from the OpenCms.
+	 * 
+	 * @return The group of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public abstract A_CmsGroup readGroup(A_CmsResource resource) 
+		throws CmsException ;
+	
 	/**
 	 * Returns all users in the Cms.
 	 *  

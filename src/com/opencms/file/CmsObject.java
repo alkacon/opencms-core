@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.28 $ $Date: 2000/01/21 16:30:34 $ 
+ * @version $Revision: 1.29 $ $Date: 2000/01/21 16:56:46 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -834,6 +834,32 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 								   resourcename, meta);
 	}
 
+	/**
+	 * Reads the owner of a resource from the OpenCms.
+	 * 
+	 * @return The owner of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsUser readOwner(A_CmsResource resource) 
+		throws CmsException {
+		return( c_rb.readOwner(m_context.currentUser(), m_context.currentProject(), 
+							   resource ) );
+	}
+	
+	/**
+	 * Reads the group of a resource from the OpenCms.
+	 * 
+	 * @return The group of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsGroup readGroup(A_CmsResource resource) 
+		throws CmsException {
+		return( c_rb.readGroup(m_context.currentUser(), m_context.currentProject(), 
+							   resource ) );
+	}
+	
 	/**
 	 * Returns all users in the Cms.
 	 *  
