@@ -1,12 +1,12 @@
 /*
  * File : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsGalleryBrowser.java,v $ 
- * Date : $Date: 2005/02/17 12:43:50 $ 
- * Version: $Revision: 1.6 $
+ * Date : $Date: 2005/02/18 15:18:51 $ 
+ * Version: $Revision: 1.7 $
  * 
  * This library is part of OpenCms - the Open Source Content Mananagement
  * System
  * 
- * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002  Alkacon Software (http://www.alkacon.com)
  * 
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
@@ -53,7 +53,7 @@ import java.util.Vector;
  * browser class.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2005/02/17 12:43:50 $
+ * @version $Revision: 1.7 $ $Date: 2005/02/18 15:18:51 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */

@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosIndexResource.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/02/18 15:18:52 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002  Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,7 +40,7 @@ import com.opencms.defaults.master.*;
  * The type is either <code>CmsResource</code> while indexing vfs data,
  * or <code>CmsMasterDataSet</code> while indexing cos data.
  * 
- * @version $Revision: 1.7 $ $Date: 2005/02/17 12:43:47 $
+ * @version $Revision: 1.8 $ $Date: 2005/02/18 15:18:52 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1

@@ -1,12 +1,12 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2005/02/18 14:23:15 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2005/02/18 15:18:51 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
-* Copyright (C) 2001-2005  The OpenCms Group
+* Copyright (C) 2001  The OpenCms Group
 *
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU Lesser General Public
@@ -57,7 +57,7 @@ import java.util.Map;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.56 $ $Date: 2005/02/18 14:23:15 $
+ * @version $Name:  $ $Revision: 1.57 $ $Date: 2005/02/18 15:18:51 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */

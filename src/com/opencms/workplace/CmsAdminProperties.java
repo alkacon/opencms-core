@@ -1,12 +1,12 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProperties.java,v $
-* Date   : $Date: 2005/02/18 14:23:15 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2005/02/18 15:18:50 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
-* Copyright (C) 2001-2005  The OpenCms Group
+* Copyright (C) 2001  The OpenCms Group
 *
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU Lesser General Public
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.39 $ $Date: 2005/02/18 14:23:15 $
+ * @version $Revision: 1.40 $ $Date: 2005/02/18 15:18:50 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.

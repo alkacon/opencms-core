@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/02/18 15:18:57 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002  Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -63,7 +63,7 @@ import java.util.Properties;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.24 $ $Date: 2005/02/17 12:43:50 $
+ * @version $Revision: 1.25 $ $Date: 2005/02/18 15:18:57 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */

@@ -1,12 +1,12 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceExternallink.java,v $
-* Date   : $Date: 2005/02/18 14:23:15 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2005/02/18 15:18:51 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
-* Copyright (C) 2001-2005  The OpenCms Group
+* Copyright (C) 2001  The OpenCms Group
 *
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU Lesser General Public
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2005/02/18 14:23:15 $
+ * @version $Revision: 1.15 $ $Date: 2005/02/18 15:18:51 $
  */
 
 public class CmsNewResourceExternallink extends CmsWorkplaceDefault {

@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlPageTemplate.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/02/18 15:18:52 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002  Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -51,7 +51,7 @@ import java.util.Locale;
  *
  * @author  Carsten Weinholz
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.1
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.

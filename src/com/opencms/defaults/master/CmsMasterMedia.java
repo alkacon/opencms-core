@@ -1,12 +1,12 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterMedia.java,v $
-* Date   : $Date: 2005/02/18 14:23:16 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2005/02/18 15:18:57 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
-* Copyright (C) 2001-2005  The OpenCms Group
+* Copyright (C) 2001  The OpenCms Group
 *
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU Lesser General Public
@@ -40,8 +40,8 @@ import org.opencms.main.OpenCms;
  * It carries a set of data to read and write.
  *
  * @author A. Schouten $
- * $Revision: 1.11 $
- * $Date: 2005/02/18 14:23:16 $
+ * $Revision: 1.12 $
+ * $Date: 2005/02/18 15:18:57 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
