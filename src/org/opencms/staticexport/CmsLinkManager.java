@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2003/12/18 11:55:51 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/12/18 13:43:19 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsLinkManager {
     
@@ -170,8 +170,12 @@ public class CmsLinkManager {
      * 
      * If the path of the uri is relative, i.e. does not start with "/", 
      * the path will be prefixed with the current site and the given relative path,
+     * then normalized
      * if no relative path is given, null is returned
+     * if the normalized path is outsite the current site, null is returned
      *  page.html -> /sites/mysite/<relativePath>/page.html
+     *  ../page.html -> /sites/mysite/page.html
+     *  ../../page.html -> null
      * 
      * If the uri contains a scheme/server name that denotes an opencms site, it is replaced by the appropriate site path
      *  http://www.mysite.de/folder/page.html -> /sites/mysite/folder/page.html
@@ -219,13 +223,16 @@ public class CmsLinkManager {
             return cms.getRequestContext().addSiteRoot(uri.getPath().substring(OpenCms.getOpenCmsContext().length()));
         }
         
-        // uri with relative path is relative to the given relativePath if available, otherwise invalid
+        // uri with relative path is relative to the given relativePath if available and in the current site, otherwise invalid
         if (!uri.getPath().startsWith("/")) {
             if (relativePath != null) {
-                return cms.getRequestContext().addSiteRoot(relativePath + uri.getPath());
-            } else {
-                return null;
+                String absolutePath = getAbsoluteUri(uri.getPath(), cms.getRequestContext().addSiteRoot(relativePath));
+                if (absolutePath.startsWith(cms.getRequestContext().getSiteRoot())) {
+                    return absolutePath;
+                } 
             }
+            
+            return null;
         }
         
         // relative uri (= vfs path relative to currently selected site root)
