@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/08/27 14:44:59 $
- * Version: $Revision: 1.104 $
+ * Date   : $Date: 2004/09/01 16:06:21 $
+ * Version: $Revision: 1.105 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.104 $ $Date: 2004/08/27 14:44:59 $
+ * @version $Revision: 1.105 $ $Date: 2004/09/01 16:06:21 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -962,7 +962,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt.setString(11, currentProject.getManagerGroupId().toString());
             stmt.setString(12, managerGroup);
             stmt.setString(13, currentProject.getDescription());
-            stmt.setTimestamp(14, new Timestamp(currentProject.getCreateDate()));
+            stmt.setLong(14, currentProject.getCreateDate());
             stmt.setInt(15, currentProject.getType());
             stmt.setInt(16, currentProject.getTaskId());
             stmt.executeUpdate();
