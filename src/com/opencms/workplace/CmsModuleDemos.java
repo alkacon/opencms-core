@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/10 13:10:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2001/01/12 15:09:24 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -64,17 +64,27 @@ public class CmsModuleDemos extends CmsWorkplaceDefault implements I_CmsConstant
 		
 		CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		I_CmsRegistry reg = cms.getRegistry();
+		Vector tester = new Vector();
+		String currentname;
 		
 		Enumeration modules = reg.getModuleNames();
 		String completeList = "";
 		String servPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
 		while (modules.hasMoreElements()) {
 			String name = (String) modules.nextElement();
-			templateDocument.setData("name", name);
+			String nicename = reg.getModuleNiceName(name);
+			if (nicename == null || nicename.equals(""))
+				currentname = name;
+			else
+				currentname = nicename;		
+			templateDocument.setData("name", currentname);
 			templateDocument.setData("namelink", servPath + "/moduledemos/" + name + "/index.html");
 			completeList += templateDocument.getProcessedDataValue("list_entry");
-		}
-		templateDocument.setData("list", completeList);
+			templateDocument.setData("doc_name", currentname);
+			templateDocument.setData("doc_link", servPath + "/system/modules/" + name + "/doc/doc.html");	
+			completeList += templateDocument.getProcessedDataValue("doc_entry");
+			}
+			templateDocument.setData("list", completeList);
 		
 
 		// Now load the template file and start the processing

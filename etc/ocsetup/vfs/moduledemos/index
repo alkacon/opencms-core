@@ -39,9 +39,18 @@
 </TEMPLATE>
 <list_entry><![CDATA[
 	<tr>		
-		<td nowrap align="left" valign=top><p class=einzug><a href="]]><PROCESS>namelink</PROCESS><![CDATA[" class=task>]]><PROCESS>name</PROCESS><![CDATA[</a></td>
+		<td nowrap align="left" valign=top><p class=einzug><a href="]]><PROCESS>namelink</PROCESS><![CDATA[" class=task target="one">]]><PROCESS>name</PROCESS><![CDATA[&nbsp;-&nbsp;Demosite</a></td>
 	</tr>
 	]]>
 </list_entry>
+<doc_entry><![CDATA[
+	<tr>		
+		<td nowrap align="left" valign=top><p class=einzug><a href="]]><PROCESS>doc_link</PROCESS><![CDATA[" class=task target="two">]]><PROCESS>doc_name</PROCESS><![CDATA[&nbsp;-&nbsp;Documentation</a></td>
+	</tr>
+	<tr>
+		<td><hr noshade size="2" bgcolor="#FFFFFF"></td>
+	</tr>
+	]]>
+</doc_entry>
 
 </WORKPLACE>
