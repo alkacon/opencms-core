@@ -3,7 +3,7 @@
 <meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
 <title>(<%= wp.getSettings().getUser().getName() %>) - <%= wp.getParamResource() %></title>
 
-<link rel=stylesheet type="text/css" href="<%= wp.getEditorResourceUri() %>format.css">
+<link rel=stylesheet type="text/css" href="<%= wp.getSkinUri() %>files/css_workplace.css">
 <script type="text/javascript">
 <!--
 	
@@ -110,30 +110,30 @@
 
 <%= wp.buttonBar(wp.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 5) %>
-<%= wp.button("javascript:doEdit(2);", null, "bu_save_exit", "button.saveclose", buttonStyle) %>
-<%= wp.button("javascript:doEdit(3);", null, "bu_save", "button.save", buttonStyle) %>
+<%= wp.button("javascript:doEdit(2);", null, "save_exit", "button.saveclose", buttonStyle) %>
+<%= wp.button("javascript:doEdit(3);", null, "save", "button.save", buttonStyle) %>
 <%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:doEdit(4);", null, "bu_undo", "button.undo", buttonStyle) %>
-<%= wp.button("javascript:doEdit(5);", null, "bu_redo", "button.redo", buttonStyle) %>
+<%= wp.button("javascript:doEdit(4);", null, "undo", "button.undo", buttonStyle) %>
+<%= wp.button("javascript:doEdit(5);", null, "redo", "button.redo", buttonStyle) %>
 <%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:doEdit(6);", null, "bu_search", "button.search", buttonStyle) %>
-<%= wp.button("javascript:doEdit(7);", null, "bu_replace", "button.replace", buttonStyle) %>
-<%= wp.button("javascript:doEdit(8);", null, "bu_goto", "button.goto", buttonStyle) %>
+<%= wp.button("javascript:doEdit(6);", null, "editorsearch", "button.search", buttonStyle) %>
+<%= wp.button("javascript:doEdit(7);", null, "replace", "button.replace", buttonStyle) %>
+<%= wp.button("javascript:doEdit(8);", null, "goto", "button.goto", buttonStyle) %>
 <%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:doEdit(9);", null, "bu_cut", "button.cut", buttonStyle) %>
-<%= wp.button("javascript:doEdit(10);", null, "bu_copy", "button.copy", buttonStyle) %>
-<%= wp.button("javascript:doEdit(11);", null, "bu_paste", "button.paste", buttonStyle) %>
+<%= wp.button("javascript:doEdit(9);", null, "cut", "button.cut", buttonStyle) %>
+<%= wp.button("javascript:doEdit(10);", null, "copy", "button.copy", buttonStyle) %>
+<%= wp.button("javascript:doEdit(11);", null, "paste", "button.paste", buttonStyle) %>
 <%			
 if (options.showElement("button.print")) {%>
 	<%= wp.buttonBarSeparator(5, 5) %>
-	<%= wp.button("javascript:doEdit(15);", null, "bu_print", "button.print", buttonStyle) %><%
+	<%= wp.button("javascript:doEdit(15);", null, "print", "button.print", buttonStyle) %><%
 }
 if (wp.isHelpEnabled()) {%>
 	<%= wp.buttonBarSeparator(5, 5) %>
-	<%= wp.button("javascript:treewin=opensmallwin(workplacePath + 'help/" + wp.getSettings().getLanguage() + "/" + wp.key("help.pageeditor") + "', '" + wp.key("button.help") + "', 600, 450);treewin.focus();", null, "bu_help", "button.help", buttonStyle) %><%
+	<%= wp.button("javascript:treewin=opensmallwin(workplacePath + 'help/" + wp.getSettings().getLanguage() + "/" + wp.key("help.pageeditor") + "', '" + wp.key("button.help") + "', 600, 450);treewin.focus();", null, "help", "button.help", buttonStyle) %><%
 } %>
 <td class="maxwidth">&nbsp;</td>
-<%= wp.button("javascript:confirmExit();", null, "bu_exit", "button.close", buttonStyle) %>
+<%= wp.button("javascript:confirmExit();", null, "exit", "button.close", buttonStyle) %>
 <%= wp.buttonBarSpacer(5) %>
 <%= wp.buttonBar(wp.HTML_END) %>
 </td>

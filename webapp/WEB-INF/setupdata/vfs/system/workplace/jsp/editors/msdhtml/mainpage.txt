@@ -3,7 +3,7 @@
 <meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
 <title>(<%= wp.getSettings().getUser().getName() %>) - <%= wp.getParamResource() %></title>
 
-<link rel=stylesheet type="text/css" href="<%= wp.getEditorResourceUri() %>format.css">
+<link rel=stylesheet type="text/css" href="<%= wp.getSkinUri() %>files/css_workplace.css">
 
 <script type="text/javascript">
 
@@ -300,7 +300,7 @@ if (options.showElement("selector.elements")) {
 <%= wp.buttonBarSeparator(5, 5) %>						
 <%= wp.button("javascript:doTemplSubmit(5);", null, "properties", "editor.dialog.properties.button", buttonStyle) %>				
 <td class="maxwidth">&nbsp;</td>
-<%= wp.button("javascript:doTemplSubmit(2);", null, "bu_preview", "button.preview", buttonStyle) %>
+<%= wp.button("javascript:doTemplSubmit(2);", null, "preview", "button.preview", buttonStyle) %>
 <%= wp.buttonBarSpacer(5) %>
 <%= wp.buttonBar(wp.HTML_END) %>
 <%= wp.buttonBarHorizontalLine() %>

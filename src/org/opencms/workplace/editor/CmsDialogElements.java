@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/01/20 12:37:08 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/01/23 09:38:48 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.0
  */
@@ -306,7 +306,6 @@ public class CmsDialogElements extends CmsDialog {
         
         try {
             
-            String buttonFolder = getSkinUri() + "editors/buttons/";
             // get the list of all possible elements
             List elementList = computeElements();
             if (elementList == null) {
@@ -342,10 +341,10 @@ public class CmsDialogElements extends CmsDialog {
                 retValue.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
                 if (!"".equals(page.getContent(getCms(), elementName, getParamBodylanguage()))) {
                     // current element has content that can be deleted
-                    retValue.append(button("javascript:confirmDelete('" + elementName + "');", null, "deletecontent", "button.delete", 0, buttonFolder));
+                    retValue.append(button("javascript:confirmDelete('" + elementName + "');", null, "deletecontent", "button.delete", 0));
                 } else {
                     // current element is empty
-                    retValue.append(button(null, null, "deletecontent_in", "button.delete", 0, buttonFolder));
+                    retValue.append(button(null, null, "deletecontent_in", "button.delete", 0));
                 }
                 retValue.append("</tr></table>");
                 retValue.append("</td>\n");                

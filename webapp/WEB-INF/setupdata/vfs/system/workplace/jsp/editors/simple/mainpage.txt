@@ -3,7 +3,7 @@
 <meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
 <title>(<%= wp.getSettings().getUser().getName() %>) - <%= wp.getParamResource() %></title>
 
-<link rel=stylesheet type="text/css" href="<%= wp.getEditorResourceUri() %>format.css">
+<link rel=stylesheet type="text/css" href="<%= wp.getSkinUri() %>files/css_workplace.css">
 <script type="text/javascript" src="<%= cms.link("../../../scripts/opencms.js") %>"></script>
 <script type="text/javascript">
 <!--
@@ -57,15 +57,15 @@
 
 <%= wp.buttonBar(wp.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 5) %>
-<%= wp.button("javascript:doNsEdit(2);", null, "bu_save_exit", "button.saveclose", buttonStyle) %>
-<%= wp.button("javascript:doNsEdit(3);", null, "bu_save", "button.save", buttonStyle) %>
+<%= wp.button("javascript:doNsEdit(2);", null, "save_exit", "button.saveclose", buttonStyle) %>
+<%= wp.button("javascript:doNsEdit(3);", null, "save", "button.save", buttonStyle) %>
 <%
 if (wp.isHelpEnabled()) {%>
 	<%= wp.buttonBarSeparator(5, 5) %>
-	<%= wp.button("javascript:treewin=opensmallwin(workplacePath + 'help/" + wp.getSettings().getLanguage() + "/" + wp.key("help.pageeditor") + "', '" + wp.key("button.help") + "', 600, 450);treewin.focus();", null, "bu_help", "button.help", buttonStyle) %><%
+	<%= wp.button("javascript:treewin=opensmallwin(workplacePath + 'help/" + wp.getSettings().getLanguage() + "/" + wp.key("help.pageeditor") + "', '" + wp.key("button.help") + "', 600, 450);treewin.focus();", null, "help", "button.help", buttonStyle) %><%
 } %>
 <td class="maxwidth">&nbsp;</td>
-<%= wp.button("javascript:confirmExit();", null, "bu_exit", "button.close", buttonStyle) %>
+<%= wp.button("javascript:confirmExit();", null, "exit", "button.close", buttonStyle) %>
 <%= wp.buttonBarSpacer(5) %>
 <%= wp.buttonBar(wp.HTML_END) %>
 

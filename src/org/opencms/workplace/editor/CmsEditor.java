@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/01/20 17:15:26 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/01/23 09:38:48 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.1.12
  */
@@ -286,11 +286,18 @@ public abstract class CmsEditor extends CmsDialog {
      * @param image the image name for the button, skin path will be automattically added as prefix
      * @param label the label for the text of the button 
      * @param type 0: image only (default), 1: image and text, 2: text only
+     * @param useCustomImage if true, the button has to be placed in the editors "custom pics" folder
      * 
      * @return a button for the OpenCms editor
      */
-    public final String button(String href, String target, String image, String label, int type) {
-        return button(href, target, image, label, type, getPicsUri());    
+    public final String button(String href, String target, String image, String label, int type, boolean useCustomImage) {
+        if (useCustomImage) {
+            // search the picture in the "custom pics" folder
+            return button(href, target, image, label, type, getPicsUri());
+        } else {
+            // search the picture in the common "buttons" folder
+            return button(href, target, image, label, type);
+        }
     }
     
     /**
