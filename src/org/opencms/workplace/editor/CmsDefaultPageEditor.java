@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/04/07 14:41:58 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2004/04/08 08:51:19 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 5.1.12
  */
@@ -309,7 +309,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                 // current element is the displayed one, mark it as selected
                 currentIndex = counter;
             }
-            if (!m_page.hasElement(elementName, getElementLocale()) || m_page.isEnabled(elementName, getElementLocale())) {
+            if ((!m_page.hasElement(elementName, getElementLocale()) && "1".equals(currentElement[2]))
+            || m_page.isEnabled(elementName, getElementLocale())) {
                 // add element if it is not available or if it is enabled
                 options.add(elementNice);
                 values.add(elementName);
