@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/03/25 16:35:50 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2004/03/25 19:34:22 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.SocketException;
 import java.util.HashSet;
 import java.util.Locale;
@@ -96,7 +95,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -229,9 +228,9 @@ public class CmsJspLoader implements I_CmsResourceLoader {
     }   
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.io.OutputStream, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void export(CmsObject cms, CmsResource resource, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
+    public byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
     throws ServletException, IOException {
         
         // get the Flex controller
@@ -244,9 +243,12 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         CmsFlexController.removeController(req);
         
         // write to the export stream (if required)
-        if (exportStream != null) {
-            exportStream.write(result);
+        if (result != null) {
+            res.setStatus(HttpServletResponse.SC_OK);
         }
+        
+        // return the contents
+        return result;
     }    
 
     /**

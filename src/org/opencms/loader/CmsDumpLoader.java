@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2004/03/25 15:08:52 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/03/25 19:34:22 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringSubstitution;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -60,7 +59,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -96,17 +95,13 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         
         return CmsFile.upgrade(resource, cms).getContents();
     }
-
+   
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.io.OutputStream, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void export(CmsObject cms, CmsResource resource, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
+    public byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
     throws IOException, CmsException {
         CmsFile file = CmsFile.upgrade(resource, cms);
-        
-        if (exportStream != null) {
-            exportStream.write(file.getContents());
-        }
         
         // if no request and response are given, the resource only must be exported and no
         // output must be generated
@@ -123,6 +118,8 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
             }
             load(cms, file, req, res);  
         }
+        
+        return file.getContents();
     }
     
     /**

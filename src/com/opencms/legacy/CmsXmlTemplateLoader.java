@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/03/25 15:08:52 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/03/25 19:34:22 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -106,7 +106,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderIncludeExtension {
     
@@ -228,18 +228,15 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.io.OutputStream, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void export(CmsObject cms, CmsResource resource, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
+    public byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
     throws IOException, CmsException {
         
         CmsFile file = CmsFile.upgrade(resource, cms);
         initLegacyRequest(cms, req, res);
         CmsRequestHttpServlet cmsReq = new CmsRequestHttpServlet(req, cms.getRequestContext().getFileTranslator());
-        byte[] result = generateOutput(cms, file, cmsReq);
-        if ((result != null) && (exportStream != null)) {
-            exportStream.write(file.getContents());
-        }
+        return generateOutput(cms, file, cmsReq);
     }        
     
     /**

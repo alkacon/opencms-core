@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/03/25 17:16:58 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2004/03/25 19:34:22 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,8 @@ import org.opencms.util.CmsUUID;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.*;
 
 import javax.servlet.ServletException;
@@ -59,17 +61,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
 
 /**
  * Provides the functionaility to export resources from the OpenCms VFS
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -339,7 +337,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     scrubExportFolders(publishHistoryId, false);
                 }
 
-                
                 clearCaches(event);
                 break;
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
@@ -408,13 +405,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             createExportFolder(rfsName);
             
             // generate export file instance and output stream
-            exportFile = new File(exportFileName);           
-
-            try {
-                exportStream = new FileOutputStream(exportFile);
-            } catch (Throwable t) {
-                throw new CmsException("Creation of static export output stream failed for RFS file " + exportFileName);
-            }            
+            exportFile = new File(exportFileName);                 
         }
 
         // ensure we have exactly the same setup as if called "the usual way"
@@ -427,23 +418,28 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
                                         
         // do the export
-        loader.export(cms, file, exportStream, req, res);
-
-        // update the file with the modification date from the server
-        if (req != null) {
-            Long timestamp = (Long)req.getAttribute(I_CmsConstants.C_HEADER_OPENCMS_EXPORT);
-            if (timestamp != null) {
-                exportFile.setLastModified(timestamp.longValue());
-            }                                      
-        }
+        byte[] result = loader.export(cms, file, req, res);
                 
-        // set unused resources
+        // release unused resources
         file = null;
         
-        // close the export stream 
-        if (exportStream != null) {
-            exportStream.close();
-        }
+        if (result != null) {
+            // write new exported file content
+            try {
+                exportStream = new FileOutputStream(exportFile);
+                exportStream.write(result);
+                exportStream.close();
+            } catch (Throwable t) {
+                throw new CmsException("Creation of static export output stream failed for RFS file " + exportFileName);
+            }
+            // update the file with the modification date from the server
+            if (req != null) {
+                Long dateLastModified = (Long)req.getAttribute(I_CmsConstants.C_HEADER_OPENCMS_EXPORT);
+                if (dateLastModified != null) {
+                    exportFile.setLastModified((dateLastModified.longValue() / 1000) * 1000);
+                }                                      
+            }            
+        }       
        
         // restore context
         // we only have to do this in case of the static export on demand
@@ -565,80 +561,78 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * @param cms the current cms object
      * @param report an I_CmsReport instance to print output message, or null to write messages to the log file    
      * @throws CmsException in case of errors accessing the VFS
-     * @throws IOException in case of erros sending a request
      */
-    private void exportTemplateResources(CmsObject cms, I_CmsReport report) 
-        throws CmsException, IOException {
-                
+    private void exportTemplateResources(CmsObject cms, I_CmsReport report) throws CmsException {
+
         String rfsName;
         String url;
-                                 
+
         // get all template resources which are potential candidates for an static export
         List publishedTemplateResources = cms.readStaticExportResources(false);
-        int size = publishedTemplateResources.size(); 
+        int size = publishedTemplateResources.size();
         int count = 1;
-        
-        report.println(report.key("report.staticexport.templateresources_begin"), I_CmsReport.C_FORMAT_HEADLINE);                   
-         
+
+        report.println(report.key("report.staticexport.templateresources_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+
         // now loop through all of them and request them from the server
         Iterator i = publishedTemplateResources.iterator();
-
-        // define everything we need to send the requests
-        HttpClient client = new HttpClient();       
-        Header exportHeader = new Header(I_CmsConstants.C_HEADER_OPENCMS_EXPORT, "true");   
-        Header lastModified;
         
         try {
             cms.getRequestContext().saveSiteRoot();
             cms.getRequestContext().setSiteRoot("/");
-                        
+
             while (i.hasNext()) {
-                rfsName = (String) i.next();
-                
-                report.print("("+ count++ +" / "+size+") ", I_CmsReport.C_FORMAT_NOTE);
+                rfsName = (String)i.next();
+
+                report.print("(" + count++ + " / " + size + ") ", I_CmsReport.C_FORMAT_NOTE);
                 report.print(report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
                 report.print(rfsName);
                 report.print(report.key("report.dots"));
 
-                url = getExportUrl() + getRfsPrefix() + rfsName;              
-                
-                
-                // now check the export property for this resource.
-                // depending on its value, the export header will be set, which will later
-                // trigger the export to the rfs. The content of the resource must
-                // be scanned for links even if it is marked as not exportable.
-                
+                url = getExportUrl() + getRfsPrefix() + rfsName;
+
                 // we have created an url, so request the resource
                 if (url != null) {
-                    HttpMethod method = new GetMethod(url);
-                    method.addRequestHeader(exportHeader);
-
-                    // get the lastmodification date and add it to the request
-                    String exportFileName = CmsLinkManager.normalizeRfsPath(getExportPath() + rfsName.substring(1));
-                    File exportFile = new File(exportFileName);
-                    if (exportFile != null) {
-                        long timestamp = exportFile.lastModified();
-                        lastModified = new Header(I_CmsConstants.C_HEADER_IF_MODIFIED_SINCE , new Long(timestamp).toString());
-                        method.addRequestHeader(lastModified);
+                    try {
+                        // setup connections
+                        URL export = new URL(url);
+                        HttpURLConnection.setFollowRedirects(false);
+                        HttpURLConnection urlcon = (HttpURLConnection)export.openConnection();
+                        // set request type to GET
+                        urlcon.setRequestMethod("GET");
+                        // add special export header
+                        urlcon.setRequestProperty(I_CmsConstants.C_HEADER_OPENCMS_EXPORT, "true");
+                        // get the last modified date and add it to the request
+                        String exportFileName = CmsLinkManager.normalizeRfsPath(getExportPath() + rfsName.substring(1));
+                        File exportFile = new File(exportFileName);
+                        if (exportFile != null) {
+                            long dateLastModified = exportFile.lastModified();
+                            urlcon.setIfModifiedSince(dateLastModified);                   
+                        }
+                        
+                        // now perform the request
+                        urlcon.connect();
+                        int result = urlcon.getResponseCode();
+                        urlcon.disconnect();
+                        
+                        // write the report
+                        if (result == HttpServletResponse.SC_OK) { 
+                            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                        } else if (result == HttpServletResponse.SC_NOT_MODIFIED) {
+                            report.println(report.key("search.indexing_file_skipped"), I_CmsReport.C_FORMAT_NOTE);
+                        } else {
+                            report.println(String.valueOf(result), I_CmsReport.C_FORMAT_OK);
+                        }
+                    } catch (IOException e) {
+                        report.println(e);
                     }
-                    
-                    // execute the method.                                      
-                    client.executeMethod(method);
-                    
-                    //TODO: handle the response status
-                    //statusCode = client.executeMethod(method);
-                                        
-                    report.println(report.key("report.ok")+" ", I_CmsReport.C_FORMAT_OK);
-                                  
-                    // release the connection.
-                    method.releaseConnection();
-                }     
+                }
             }
         } finally {
-            cms.getRequestContext().restoreSiteRoot();           
+            cms.getRequestContext().restoreSiteRoot();
         }
-        report.println(report.key("report.staticexport.templateresources_end"), I_CmsReport.C_FORMAT_HEADLINE);       
-       
+        report.println(report.key("report.staticexport.templateresources_end"), I_CmsReport.C_FORMAT_HEADLINE);
+
     }
            
     /**

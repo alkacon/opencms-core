@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2004/03/25 15:08:52 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/03/25 19:34:22 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Locale;
 
 import javax.servlet.ServletException;
@@ -57,7 +56,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -102,13 +101,13 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.io.OutputStream, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void export(CmsObject cms, CmsResource resource, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
+    public byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
     throws ServletException, IOException, CmsException {        
 
         CmsTemplateLoaderFacade loaderFacade = OpenCms.getLoaderManager().getTemplateLoaderFacade(cms, resource);        
-        loaderFacade.getLoader().export(cms, loaderFacade.getLoaderStartResource(), exportStream, req, res);
+        return loaderFacade.getLoader().export(cms, loaderFacade.getLoaderStartResource(), req, res);
     }    
 
     /**

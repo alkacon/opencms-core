@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2004/03/25 16:35:50 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/03/25 19:34:22 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Locale;
 
 import javax.servlet.ServletException;
@@ -63,7 +62,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since FLEX alpha 1
  * 
  * @see org.opencms.flex.CmsFlexRequest
@@ -119,15 +118,15 @@ public interface I_CmsResourceLoader extends I_CmsConfigurationParameterHandler 
      *
      * @param cms the initialized CmsObject which provides user permissions
      * @param resource the requested OpenCms VFS resource
-     * @param exportStream the stream to write the exported content to
      * @param req the servlet request
      * @param res the servlet response
      * 
      * @throws ServletException might be thrown in the process of including the sub element
      * @throws IOException might be thrown in the process of including the sub element
      * @throws CmsException in case something goes wrong
+     * @return the contents to export, or <code>null</code> if no export is required
      */    
-    void export(CmsObject cms, CmsResource resource, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
+    byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
     throws ServletException, IOException, CmsException;
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2004/03/25 15:08:52 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/03/25 19:34:22 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Locale;
 
 import javax.servlet.ServletRequest;
@@ -54,7 +53,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * Loader for "pointers" to resources in the VFS or to external resources.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 public class CmsPointerLoader implements I_CmsResourceLoader {
     
@@ -97,14 +96,16 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.io.OutputStream, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void export(CmsObject cms, CmsResource resource, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
-    throws IOException, CmsException {
-        String pointer = new String(CmsFile.upgrade(resource, cms).getContents());          
-        exportStream.write(C_EXPORT_PREFIX.getBytes());
-        exportStream.write(pointer.getBytes());
-        exportStream.write(C_EXPORT_SUFFIX.getBytes());        
+    public byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
+    throws IOException, CmsException {              
+        String pointer = new String(CmsFile.upgrade(resource, cms).getContents());
+        StringBuffer result = new StringBuffer(128);
+        result.append(C_EXPORT_PREFIX);
+        result.append(pointer);
+        result.append(C_EXPORT_SUFFIX);
+        return result.toString().getBytes(OpenCms.getSystemInfo().getDefaultEncoding());
     }
     
     /**
