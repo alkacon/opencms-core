@@ -156,7 +156,6 @@ div.directedit_over {
 }
 span.directedit_button {
 	position: absolute;
-	z-index: 250;
 	background-color: ButtonFace;
 }
 td.directedit {
