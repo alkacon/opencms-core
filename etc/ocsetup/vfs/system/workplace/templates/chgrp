@@ -12,6 +12,19 @@ function show_help()
 	return '2_2_2_2_8_2.html';
 }
 
+
+var selectedowner=null;
+
+function checkSelected()
+{
+ for(i=0;i<document.GROUP.name.length;++i)if(document.GROUP.name.options[i].selected == true)selectedowner=document.GROUP.name.options[i].value;
+ 
+ location.href='chown.html?newowner='+selectedowner;
+ //alert(document.GROUP.name.options[i].value);
+}
+
+
+
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
 //-->
@@ -109,6 +122,19 @@ function show_help()
 }
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
+
+var selectedowner=null;
+
+function checkSelected()
+{
+ for(i=0;i<document.GROUP.name.length;++i)if(document.GROUP.name.options[i].selected == true)selectedowner=document.GROUP.name.options[i].value;
+ 
+ location.href='chown.html?newowner='+selectedowner;
+ //alert(document.GROUP.name.options[i].value);
+}
+
+
+
 
 //-->
 </script>
