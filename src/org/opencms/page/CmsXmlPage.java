@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2003/12/19 15:34:04 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/01/12 10:06:25 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -73,7 +74,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsXmlPage {
     
@@ -84,7 +85,7 @@ public class CmsXmlPage {
     private static final String C_DOCUMENT_NODE = "page";
     
     /** Link to the external document type of this xml page */
-    private static final String C_DOCUMENT_TYPE = "/system/dtds/page.dtd";
+    private static final String C_DOCUMENT_TYPE = "/system/shared/page.dtd";
     
     /** Reference for named elements */
     private Map m_bookmarks = null;
@@ -201,21 +202,26 @@ public class CmsXmlPage {
 
         if (element != null) {
 
-            Element data = element.element("content");      
-            content = data.getText();
+            Element data = element.element("content");
+            Attribute enabled = element.attribute("enabled");
             
-            CmsLinkTable linkTable = getLinkTable(name, language);
-            if (!linkTable.isEmpty()) {
-                
-                CmsLinkProcessor macroReplacer = new CmsLinkProcessor(linkTable);
+            if (enabled == null || enabled.getValue().equals("true")) {
             
-                try {
+                content = data.getText();
                 
-                    content = macroReplacer.processLinks(cms, content, forEditor);
-                } catch (Exception exc) {
-                    throw new CmsPageException ("HTML data processing failed", exc);
-                }
-            } 
+                CmsLinkTable linkTable = getLinkTable(name, language);
+                if (!linkTable.isEmpty()) {
+                    
+                    CmsLinkProcessor macroReplacer = new CmsLinkProcessor(linkTable);
+                
+                    try {
+                    
+                        content = macroReplacer.processLinks(cms, content, forEditor);
+                    } catch (Exception exc) {
+                        throw new CmsPageException ("HTML data processing failed", exc);
+                    }
+                } 
+            }
         }
         
         return content;
@@ -254,10 +260,23 @@ public class CmsXmlPage {
         for (Iterator i = links.elementIterator("link"); i.hasNext();) {
                     
             Element lelem = (Element)i.next();
-            linkTable.addLink(lelem.attribute("name").getValue(), 
-                    lelem.attribute("type").getValue(), 
-                    lelem.attribute("target").getValue(), 
-                    Boolean.valueOf(lelem.attribute("internal").getValue()).booleanValue());
+            Attribute lname = lelem.attribute("name");
+            Attribute type = lelem.attribute("type");
+            Attribute internal = lelem.attribute("internal");
+            
+            Element target = lelem.element("target");
+            Element anchor = lelem.element("anchor");
+            Element query  = lelem.element("query");
+            
+            CmsLink link = new CmsLink(
+                    lname.getValue(), 
+                    type.getValue(), 
+                    (target != null) ? target.getText() : null, 
+                    (anchor != null) ? anchor.getText() : null, 
+                    (query  != null) ? query.getText()  : null, 
+                    Boolean.valueOf(internal.getValue()).booleanValue());
+            
+            linkTable.addLink(link);
         }        
         
         return linkTable;
@@ -291,6 +310,27 @@ public class CmsXmlPage {
     public boolean hasElement(String name, String language) {
     
         return getBookmark(language+"_"+name) != null;
+    }
+
+    /**
+     * Checks if the element of a page object is enabled.<p>
+     * 
+     * @param name the name of the element
+     * @param language the language of the element
+     * @return true if the element exists and is not disabled
+     */
+    public boolean isEnabled(String name, String language) {
+
+        Element element = getBookmark(language+"_"+name);
+
+        if (element != null) {
+
+            Attribute enabled = element.attribute("enabled");
+            
+            return (enabled == null || enabled.getValue().equals("true"));
+        }
+        
+        return false;
     }
     
     /**
@@ -384,7 +424,7 @@ public class CmsXmlPage {
         try {
             SAXReader reader = new SAXReader();
             reader.setEntityResolver(new CmsEntityResolver(cms));
-            
+
             // TODO: check why this does not work ...
             // try {
             //    reader.setFeature("http://xml.org/sax/features/resolve-dtd-uris", false);
@@ -398,7 +438,7 @@ public class CmsXmlPage {
             // Document document = DocumentHelper.parseText(xmlData);
             return new CmsXmlPage(document);
         } catch (DocumentException e) {
-            throw new CmsPageException("Reading xml page from a String failed", e);
+            throw new CmsPageException("Reading xml page from a String failed: " + e.getMessage(), e);
         }
     }
     
@@ -444,6 +484,9 @@ public class CmsXmlPage {
      * When setting the element data, the content of this element will be
      * processed automatically.
      * 
+     * Note: setting the content will also automatically enable the element
+     * (the enabled attribute is removed).
+     * 
      * @param cms the cms object
      * @param name name of the element
      * @param language language of the element
@@ -471,6 +514,11 @@ public class CmsXmlPage {
                 data.addCDATA(linkReplacer.replaceLinks(cms, content, null));
             }
             
+            // remove enabled attribute (leads to default true)
+            Attribute enabled = element.attribute("enabled");
+            if (enabled != null) {
+                element.remove(enabled);
+            }
             
         } catch (Exception exc) {
             throw new CmsPageException ("HTML data processing failed", exc);
@@ -479,11 +527,43 @@ public class CmsXmlPage {
         links.setContent(null);
         for (Iterator i = linkTable.iterator(); i.hasNext();) {
             CmsLink link = linkTable.getLink((String)i.next());
-            links.addElement("link")
+            
+            Element linkElement = links.addElement("link")
                 .addAttribute("name", link.getName())
                 .addAttribute("type", link.getType())
-                .addAttribute("target", link.getTarget())
                 .addAttribute("internal", Boolean.toString(link.isInternal()));
+                
+            linkElement.addElement("target")
+                .addCDATA(link.getTarget());
+            
+            if (link.getAnchor() != null) {
+                linkElement.addElement("anchor")
+                    .addCDATA(link.getAnchor());
+            }
+            
+            if (link.getQuery() != null) {
+                linkElement.addElement("query")
+                    .addCDATA(link.getQuery());
+            }
+        }
+    }
+
+    /**
+     * Sets the enabled flag of an already existing element.<p>
+     * 
+     * @param name name name of the element
+     * @param language language of the element
+     * @param isEnabled enabled flag for the element
+     */
+    public void setEnabled(String name, String language, boolean isEnabled) {
+
+        Element element = getBookmark(language+"_"+name);
+        Attribute enabled = element.attribute("enabled");
+        
+        if (enabled == null) {
+            element.addAttribute("enabled", Boolean.toString(isEnabled));
+        } else {
+            enabled.setValue(Boolean.toString(isEnabled));
         }
     }
     
@@ -562,6 +642,7 @@ public class CmsXmlPage {
             format.setEncoding(encoding);
             
             XMLWriter writer = new XMLWriter(out, format);
+            writer.setEscapeText(false);
             writer.write(m_document);
             writer.close();
             

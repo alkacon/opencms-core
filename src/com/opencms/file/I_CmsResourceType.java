@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2004/01/08 13:15:30 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2004/01/12 10:06:25 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -259,6 +259,13 @@ public interface I_CmsResourceType {
     // TODO: Check where this method is called
     CmsFile exportResource(CmsObject cms, CmsFile file) throws CmsException;
 
+    /**
+     * Returns if a resource type is direct editable.<p>
+     * 
+     * @return true if the resource type is direct editable
+     */
+    boolean isDirectEditable();
+    
     /**
      * Imports a resource to the cms.<p>
      *

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2004/01/08 13:15:30 $
-* Version: $Revision: 1.99 $
+* Date   : $Date: 2004/01/12 10:06:25 $
+* Version: $Revision: 1.100 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.99 $
+ * @version $Revision: 1.100 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -369,6 +369,13 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         return file;
     }
 
+    /**
+     * @see com.opencms.file.I_CmsResourceType#isDirectEditable()
+     */
+    public boolean isDirectEditable() {
+        return false;
+    }
+    
     /**
      * @see com.opencms.file.I_CmsResourceType#copyToLostAndFound(com.opencms.file.CmsObject, java.lang.String, boolean)
      */

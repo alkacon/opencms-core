@@ -3,10 +3,12 @@
 <!ELEMENT element (links, content)>	
    <!ATTLIST element name CDATA #REQUIRED>
    <!ATTLIST element language CDATA "all">
+   <!ATTLIST element enabled (true|false) #IMPLIED>
 <!ELEMENT links (link*)>	
 <!ELEMENT link EMPTY>	
    <!ATTLIST link name CDATA #REQUIRED>
    <!ATTLIST link internal (true|false) #REQUIRED>
    <!ATTLIST link type (href|imgsrc) #REQUIRED>   
-   <!ATTLIST link target CDATA #REQUIRED>   
+   <!ATTLIST link target CDATA #REQUIRED>
+   <!ATTLIST link params CDATA #IMPLIED>   
 <!ELEMENT content (#PCDATA)>

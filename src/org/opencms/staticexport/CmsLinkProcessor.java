@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2003/12/19 12:25:05 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/01/12 10:06:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.site.CmsSiteManager;
 
 import com.opencms.file.CmsObject;
 
-
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
 import org.htmlparser.StringNode;
@@ -53,7 +52,7 @@ import org.htmlparser.visitors.NodeVisitor;
 /**
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.3
  */
 public class CmsLinkProcessor extends NodeVisitor {
@@ -158,12 +157,15 @@ public class CmsLinkProcessor extends NodeVisitor {
         switch (m_mode) {
             case C_REPLACE_LINKS:
 
-                String target = CmsLinkManager.getSitePath(m_cms, m_relativePath, linkTag.extractLink());
-                if (target != null) {
-                    linkTag.setLink(replaceLink(m_linkTable.addLink(linkTag.getTagName(), target, true)));
+                String targetUri = linkTag.extractLink();                
+                String internalUri = CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
+                
+                if (internalUri != null) {
+                    linkTag.setLink(replaceLink(m_linkTable.addLink(linkTag.getTagName(), internalUri, true)));
                 } else {
-                    linkTag.setLink(replaceLink(m_linkTable.addLink(linkTag.getTagName(), linkTag.extractLink(), false)));
+                    linkTag.setLink(replaceLink(m_linkTable.addLink(linkTag.getTagName(), targetUri, false)));
                 }
+
                 break;
                 
             case C_PROCESS_LINKS:
@@ -190,11 +192,13 @@ public class CmsLinkProcessor extends NodeVisitor {
         switch (m_mode) {
             case C_REPLACE_LINKS:
 
-                String target = CmsLinkManager.getSitePath(m_cms, m_relativePath, imageTag.getImageURL());
-                if (target != null) {
-                    imageTag.setImageURL(replaceLink(m_linkTable.addLink(imageTag.getTagName(), target, true)));
+                String targetUri = imageTag.getImageURL();   
+                String internalUri = CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
+                
+                if (internalUri != null) {
+                    imageTag.setImageURL(replaceLink(m_linkTable.addLink(imageTag.getTagName(), internalUri, true)));
                 } else {
-                    imageTag.setImageURL(replaceLink(m_linkTable.addLink(imageTag.getTagName(), imageTag.getImageURL(), false)));
+                    imageTag.setImageURL(replaceLink(m_linkTable.addLink(imageTag.getTagName(), targetUri, false)));
                 }
                 break;
                 
@@ -292,7 +296,7 @@ public class CmsLinkProcessor extends NodeVisitor {
             
             // we are in the opencms root site but not in edit mode - use link as stored
             if (!m_processEditorLinks && "".equals(m_cms.getRequestContext().getSiteRoot())) {
-                return OpenCms.getLinkManager().substituteLink(m_cms, link.getTarget());    
+                return OpenCms.getLinkManager().substituteLink(m_cms, link.getUri());    
             }
 
             // otherwise get the desired site root from the stored link
@@ -300,7 +304,7 @@ public class CmsLinkProcessor extends NodeVisitor {
             // return the link prefixed with the opencms context
             String siteRoot = link.getSiteRoot();
             if (siteRoot == null) {
-                return OpenCms.getLinkManager().substituteLink(m_cms, link.getTarget());
+                return OpenCms.getLinkManager().substituteLink(m_cms, link.getUri());
             } else {
                 site = CmsSiteManager.getSite(siteRoot);
             }
@@ -308,14 +312,14 @@ public class CmsLinkProcessor extends NodeVisitor {
             // if we are in the desired site, relative links are generated
             // otherwise, links are generated as absolute links
             if (m_cms.getRequestContext().getSiteRoot().equals(siteRoot)) {
-                return OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsTarget());
+                return OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsUri());
             } else {
-                return site.getUrl() + OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsTarget());
+                return site.getUrl() + OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsUri());
             }
         } else {
             
             // don't touch external links
-            return link.getTarget();
+            return link.getUri();
         }
     }
       

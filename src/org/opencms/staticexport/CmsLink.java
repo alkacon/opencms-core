@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLink.java,v $
- * Date   : $Date: 2003/12/18 11:55:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/01/12 10:06:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,19 @@ package org.opencms.staticexport;
 
 import org.opencms.site.CmsSiteManager;
 
+import com.opencms.util.Utils;
+
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * A single link entry in the link table.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  */
 public class CmsLink {
 
@@ -47,8 +54,20 @@ public class CmsLink {
     /** The type of the link */
     private String m_type;
     
+    /** The raw uri */
+    private String m_uri;
+    
     /** The link target (destination) */
     private String m_target;
+    
+    /** The anchor of the uri, if any */
+    private String m_anchor;
+    
+    /** The query, if any */
+    private String m_query;
+    
+    /** The parameters of the query , if any */
+    private Map m_parameters;
     
     /** Indicates if the link is an internal link within the OpenCms VFS */
     private boolean m_internal;
@@ -58,14 +77,62 @@ public class CmsLink {
      * 
      * @param name the internal name of this link
      * @param type the type of this link
-     * @param target the link target (destination)
-     * @param internal indicates if the link is intrenal within OpenCms 
+     * @param uri the link uri
+     * @param internal indicates if the link is internal within OpenCms 
      */
-    public CmsLink(String name, String type, String target, boolean internal) {
+    public CmsLink(String name, String type, String uri, boolean internal) {
+        
+        m_name = name;
+        m_type = type;
+        m_uri = uri;
+        m_internal = internal;
+        
+        String components[] = split(uri);
+        if (components != null) {
+            m_target = components[0];
+            m_anchor = components[1];
+            m_query  = components[2];
+        } else {
+            m_target = uri;
+            m_anchor = null;
+            m_query  = null;
+        }
+
+        if (m_query != null) {
+            m_parameters = getParameters(m_query);
+        } else {
+            m_parameters = new HashMap();
+        }
+    }
+
+    /**
+     * Creates a new link object.<p>
+     * 
+     * @param name the internal name of this link
+     * @param type the type of this link
+     * @param target the link target (without anchor/query)
+     * @param anchor the anchor or null 
+     * @param query the query or null
+     * @param internal indicates if the link is internal within OpenCms 
+     */
+    public CmsLink(String name, String type, String target, String anchor, String query, boolean internal) {
+        
         m_name = name;
         m_type = type;
         m_target = target;
+        m_anchor = anchor;
+        m_query = query;
         m_internal = internal;
+        
+        if (m_query != null) {
+            m_parameters = getParameters(m_query);
+        } else {
+            m_parameters = new HashMap(); 
+        }
+        
+        m_uri = m_target 
+            + ((m_query!=null)  ? "?" + m_query  : "")
+            + ((m_anchor!=null) ? "#" + m_anchor : "");
     }
     
     /**
@@ -85,6 +152,15 @@ public class CmsLink {
     public String getType() {            
         return m_type;
     }
+
+    /**
+     * Returns the raw uri of this link.<p>
+     * 
+     * @return the uri
+     */
+    public String getUri() {
+        return m_uri;
+    }
     
     /**
      * Returns the target (destination) of this link.<p>
@@ -94,17 +170,82 @@ public class CmsLink {
     public String getTarget() {            
         return m_target;
     }
+
+    /**
+     * Returns the anchor of this link.<p>
+     * 
+     * @return the anchor or null if undefined
+     */
+    public String getAnchor() {
+        return m_anchor;
+    }
+    
+    /**
+     * Returns the query of this link.<p>
+     * 
+     * @return the query or null if undefined
+     */
+    public String getQuery() {
+        return m_query;
+    }
+
+    /**
+     * Returns the map of parameters of this link.<p>
+     * 
+     * @return the map of parameters (<code>Map(String[])</code>)
+     */
+    public Map getParameterMap() {
+        
+        return m_parameters;
+    }
+    
+    /**
+     * Returns the first parameter value for the given parameter name.<p>
+     * 
+     * @param name the name of the parameter
+     * @return the first value for this name or <code>null</code>
+     */
+    public String getParameter(String name) {
+
+        String[] p = (String[])m_parameters.get(name);
+        if (p != null) {
+            return p[0];
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Returns all parameter values for the given name.<p>
+     * 
+     * @param name the name of the parameter
+     * @return a <code>String[]</code> of all parameter values or <code>null</code>
+     */
+    public String[] getParameterValues(String name) {
+        
+        return (String[])m_parameters.get(name);
+    }
+    
+    /**
+     * Returns the set of available parameter names for this link.<p>
+     * 
+     * @return a <code>Set</code> of parameter names
+     */
+    public Set getParameterNames() {
+        
+        return m_parameters.keySet();
+    }
     
     /**
      * Returns the vfs link of the target if it is internal.<p>
      * 
      * @return the full link destination or null if the link is not internal.
      */
-    public String getVfsTarget() {        
+    public String getVfsUri() {        
         
         if (m_internal) {
-            String siteRoot = CmsSiteManager.getSiteRoot(m_target);
-            return m_target.substring(siteRoot.length());
+            String siteRoot = CmsSiteManager.getSiteRoot(m_uri);
+            return m_uri.substring(siteRoot.length());
         }
         
         return null;
@@ -131,5 +272,71 @@ public class CmsLink {
      */
     public boolean isInternal() {           
         return m_internal;
-    }   
+    }
+
+    /**
+     * Reads the parameters of the given query into the parameter map.<p>
+     * 
+     * @param query the query of this link
+     * @return the parameter map
+     */
+    private static HashMap getParameters(String query) {
+        
+        HashMap parameters = new HashMap();
+        String params[] = Utils.split(query, "&");
+        for (int i = 0; i < params.length; i++) {
+            String pair[] = Utils.split(params[i], "=");
+            String[] p = (String[])parameters.get(pair[0]);
+            if (p == null) {
+                p = new String[]{pair[1]};
+            } else {
+                String[] p2 = new String[p.length+1];
+                System.arraycopy(p, 0, p2, 0, p.length);
+                p2[p2.length-1] = pair[1];
+                p = p2;
+            }
+            parameters.put(pair[0], p);
+        }
+        
+        return parameters;
+    }
+    
+    /**
+     * Splits the given uri string into its components scheme://authority/path#fragment?query
+     * @param targetUri the uri string to split
+     * @return array of component strings
+     */
+    private static String[] split (String targetUri) {
+        
+        URI uri;
+        String components[] = new String[3];
+        
+        // malformed uri
+        try {
+            uri = new URI(targetUri);
+            components[0] = ((uri.getScheme() != null) ? uri.getScheme() + ":" : "") + uri.getSchemeSpecificPart();
+            components[1] = uri.getFragment();
+            components[2] = uri.getQuery();
+            
+            if (components[0] != null) {
+                int i = components[0].indexOf("?");
+                if (i >= 0) {
+                    components[2] = components[0].substring(i+1);
+                    components[0] = components[0].substring(0, i);
+                }
+            }
+            
+            if (components[1] != null) {
+                int i = components[1].indexOf("?");
+                if (i >= 0) {
+                    components[2] = components[1].substring(i+1);
+                    components[1] = components[1].substring(0, i);
+                }
+            }
+        } catch (Exception exc) {
+            return null;
+        }
+        
+        return components; 
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/01/08 13:15:30 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/01/12 10:06:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.file.CmsResourceTypeXmlPage;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -53,7 +52,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3.0
  */
@@ -156,8 +155,8 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
             if (currentProject == I_CmsConstants.C_PROJECT_ONLINE_ID) {
                 // don't render edit area in online project
                 return null;
-            } else if ((res.getType() != CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID)) {
-                // don't render edit area for non-xmlpage resources
+            } else if (!cmsObject.getResourceType(res.getType()).isDirectEditable()) {
+                // don't render edit area for non-editable resources 
                 return null;
             } else if (CmsResource.getName(filename).startsWith(com.opencms.core.I_CmsConstants.C_TEMP_PREFIX)) {
                 // don't show edit area on temporary file

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/01/08 13:15:30 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/01/12 10:06:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType {
@@ -109,5 +109,12 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType {
         properties.put(I_CmsConstants.C_PROPERTY_TEMPLATE, masterTemplate);
         CmsFile resource = (CmsFile)createResource(cms, resourcename, properties, contents, null);                
         return resource;
+    }
+    
+    /**
+     * @see com.opencms.file.I_CmsResourceType#isDirectEditable()
+     */
+    public boolean isDirectEditable() {
+        return true;
     }
 }

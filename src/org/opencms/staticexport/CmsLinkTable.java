@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkTable.java,v $
- * Date   : $Date: 2003/12/17 17:46:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/01/12 10:06:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.util.Iterator;
  *  
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3
  */
 public class CmsLinkTable {
@@ -60,12 +60,12 @@ public class CmsLinkTable {
      * Adds a new link to the link table.<p>
      * 
      * @param type type of the link
-     * @param target link destination
+     * @param targetUri link destination
      * @param internal flag to indicate if the link is a local link
      * @return the new link entry
      */
-    public CmsLink addLink (String type, String target, boolean internal) {
-        CmsLink link = new CmsLink(C_LINK_PREFIX + m_linkTable.size(), type, target, internal);
+    public CmsLink addLink (String type, String targetUri, boolean internal) {
+        CmsLink link = new CmsLink(C_LINK_PREFIX + m_linkTable.size(), type, targetUri, internal);
         m_linkTable.put(link.getName(), link);
         return link;
     }
@@ -73,14 +73,10 @@ public class CmsLinkTable {
     /**
      * Adds a new link with a given internal name and internal flag to the link table.<p>
      * 
-     * @param name the internal name of the link
-     * @param type the type of the link
-     * @param target the destination of the link
-     * @param internal flag to indicate if the link is a local link
+     * @param link the <code>CmsLink</code> to add
      * @return the new link entry
      */
-    public CmsLink addLink (String name, String type, String target, boolean internal) {
-        CmsLink link = new CmsLink(name, type, target, internal);
+    public CmsLink addLink (CmsLink link) {
         m_linkTable.put(link.getName(), link);
         return link;
     }
@@ -112,7 +108,7 @@ public class CmsLinkTable {
     public Iterator iterator() {    
         return m_linkTable.keySet().iterator();
     }
-    
+
     /**
      * Checks if a given link target is an internal link inside the OpenCms VFS.<p>
      * 

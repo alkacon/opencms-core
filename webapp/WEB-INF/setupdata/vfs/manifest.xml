@@ -41,33 +41,6 @@
             <accesscontrol/>
         </file>
         <file>
-		<destination>system/dtds</destination>
-		<type>folder</type>
-		<uuidresource>b076c462-20c1-11d8-a718-c6eb9ef4138f</uuidresource>
-		<uuidcontent>00000000-0000-0000-0000-000000000000</uuidcontent>
-		<datelastmodified>1069767262000</datelastmodified>
-		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1069767262000</datecreated>
-		<usercreated>Admin</usercreated>
-		<flags>0</flags>
-		<properties/>
-		<accesscontrol/>
-	</file>
-	<file>
-		<source>system/dtds/page.dtd</source>
-		<destination>system/dtds/page.dtd</destination>
-		<type>plain</type>
-		<uuidresource>12b2baac-2013-11d8-8648-e9bd5c4e5b38</uuidresource>
-		<uuidcontent>12b2baad-2013-11d8-8648-e9bd5c4e5b38</uuidcontent>
-		<datelastmodified>1069853014000</datelastmodified>
-		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1069852729000</datecreated>
-		<usercreated>Admin</usercreated>
-		<flags>0</flags>
-		<properties/>
-		<accesscontrol/>
-	</file> 
-        <file>
             <destination>system/galleries</destination>
             <type>folder</type>
             <uuidresource>7fd7d3f2-c9a0-11d7-b294-cf5c34298e14</uuidresource>
@@ -333,6 +306,20 @@
             </properties>
             <accesscontrol/>
         </file>
+		<file>
+			<source>system/shared/page.dtd</source>
+			<destination>system/shared/page.dtd</destination>
+			<type>plain</type>
+			<uuidresource>12b2baac-2013-11d8-8648-e9bd5c4e5b38</uuidresource>
+			<uuidcontent>12b2baad-2013-11d8-8648-e9bd5c4e5b38</uuidcontent>
+			<datelastmodified>1069853014000</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1069852729000</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file> 
         <file>
             <destination>system/workplace</destination>
             <type>folder</type>

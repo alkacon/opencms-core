@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2004/01/07 15:27:00 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2004/01/12 10:06:25 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,9 +44,11 @@ import org.opencms.jsp.CmsJspTemplate;
 import org.opencms.loader.CmsDumpLoader;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsPointerLoader;
+import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.OpenCms;
+import org.opencms.page.CmsXmlPage;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.staticexport.CmsLinkManager;
 
@@ -61,6 +63,7 @@ import com.opencms.template.CmsXmlTemplate;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -88,7 +91,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * 
  * @since 5.0 beta 2
  */
@@ -857,6 +860,10 @@ public class CmsJspActionElement {
      * @return the processed output of an OpenCms resource in a String
      */
     public String getContent(String target) {
+        return getContent(target, null, null);
+    }
+
+    public String getContent(String target, String element, String language) {
         try {
             I_CmsResourceLoader loader = null;
             target = toAbsolute(target);
@@ -876,10 +883,24 @@ public class CmsJspActionElement {
                     CmsJspTemplate template = new CmsJspTemplate();
                     byte[] res = template.getContent(getCmsObject(), target, null, null);
                     return new String(res, getRequestContext().getEncoding());
+                } else if (loader instanceof CmsXmlPageLoader) {
+                    // xml page
+                    CmsFile file = getCmsObject().readFile(target);
+                    CmsXmlPage page = CmsXmlPage.read(getCmsObject(), file);
+                    
+                    if (element == null) {
+                        element = "body";
+                    }
+                    
+                    if (page.hasElement(element, language)) {
+                        return page.getContent(getCmsObject(), element, language);
+                    } else {
+                        return null;
+                    }
                 } else if (loader instanceof CmsXmlTemplateLoader) {
                     // XmlTemplate page (will not work if file does not use the standard XmlTemplate class)
                     CmsXmlTemplate template = new CmsXmlTemplate();
-                    byte[] res = template.getContent(getCmsObject(), target, null, null);
+                    byte[] res = template.getContent(getCmsObject(), target, element, null);
                     return new String(res, getRequestContext().getEncoding());
                 } else if (loader instanceof CmsDumpLoader) {
                     // static page
@@ -901,7 +922,7 @@ public class CmsJspActionElement {
         }
         return "";
     }
-
+    
     /**
      * Handles any exception that might occur in the context of this element to 
      * ensure that templates are not disturbed.<p>

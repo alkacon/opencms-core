@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2003/12/19 12:25:05 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/01/12 10:06:25 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsLinkManager {
     
@@ -194,14 +194,33 @@ public class CmsLinkManager {
     public static String getSitePath(CmsObject cms, String relativePath, String targetUri) {
         
         URI uri;
+        String path;
+        String fragment;
+        String query;
         
         // malformed uri
         try {
             uri = new URI(targetUri);
+            path = uri.getPath();
+            
+            fragment = uri.getFragment();
+            if (fragment != null) {
+                fragment ="#" + fragment;
+            } else {
+                fragment = "";
+            }
+            
+            query = uri.getQuery();
+            if (query != null) {
+                query = "?" + query;
+            } else {
+                query = "";
+            }
+            
         } catch (Exception exc) {   
             return null;
         }
-        
+
         // opaque uri
         if (uri.isOpaque()) { 
             return null;
@@ -211,28 +230,27 @@ public class CmsLinkManager {
         if (uri.isAbsolute()) {
             CmsSiteMatcher matcher = new CmsSiteMatcher(targetUri);
             if (OpenCms.getSiteManager().isMatching(matcher)) {
-                String path = uri.getPath();
                 if (path.startsWith(OpenCms.getOpenCmsContext())) {
                     path = path.substring(OpenCms.getOpenCmsContext().length());
                 }
-                return OpenCms.getSiteManager().matchSite(matcher).getSiteRoot() + path;
+                return OpenCms.getSiteManager().matchSite(matcher).getSiteRoot() + path + fragment + query;
             } else {
                 return null;
             }
         } 
         
         // relative uri starting with opencms context
-        if (uri.getPath().startsWith(OpenCms.getOpenCmsContext())) {
-            return cms.getRequestContext().addSiteRoot(uri.getPath().substring(OpenCms.getOpenCmsContext().length()));
+        if (path.startsWith(OpenCms.getOpenCmsContext())) {
+            return cms.getRequestContext().addSiteRoot(path.substring(OpenCms.getOpenCmsContext().length())) + fragment + query;
         }
         
         // uri with relative path is relative to the given relativePath if available and in a site, otherwise invalid
-        if (!uri.getPath().startsWith("/")) {
+        if (!path.startsWith("/")) {
             if (relativePath != null) {
-                String absolutePath = getAbsoluteUri(uri.getPath(), cms.getRequestContext().addSiteRoot(relativePath));
+                String absolutePath = getAbsoluteUri(path, cms.getRequestContext().addSiteRoot(relativePath));
                 // if (absolutePath.startsWith(cms.getRequestContext().getSiteRoot())) {
                 if (CmsSiteManager.getSiteRoot(absolutePath) != null) {
-                    return absolutePath;
+                    return absolutePath + fragment + query;
                 } 
             }
 
@@ -240,7 +258,7 @@ public class CmsLinkManager {
         }
         
         // relative uri (= vfs path relative to currently selected site root)
-        return cms.getRequestContext().addSiteRoot(uri.getPath());
+        return cms.getRequestContext().addSiteRoot(path) + fragment + query;
     }
     
     /**
