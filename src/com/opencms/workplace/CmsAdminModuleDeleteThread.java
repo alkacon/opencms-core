@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDeleteThread.java,v $
- * Date   : $Date: 2003/08/14 15:37:24 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/08/22 10:23:26 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Hanjo Riege
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
@@ -71,8 +71,8 @@ public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
      * @param reg the registry to write the new module information to
      * @param moduleName the name of the module
      * @param conflictFiles vector of conflict files
-     * @param exclusion vector of files to exclude
      * @param projectFiles vector of project files
+     * @param replaceMode the replace mode
      */
     public CmsAdminModuleDeleteThread(CmsObject cms, I_CmsRegistry reg, String moduleName, Vector conflictFiles, Vector projectFiles, boolean replaceMode) {
         super("OpenCms: Module deletion of " + moduleName);
@@ -95,24 +95,31 @@ public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
         try {
             if (DEBUG) System.err.println("CmsAdminModuleDeleteThread() started");
             String moduleName = m_moduleName.replace('\\', '/');
-
-            // create a Project to delete the module.
-            CmsProject project = m_cms.createProject(
-                "DeleteModule", 
-                "A System generated project to delete the module " + moduleName, 
-                OpenCms.getDefaultUsers().getGroupAdministrators(),
-                OpenCms.getDefaultUsers().getGroupAdministrators(),
-                I_CmsConstants.C_PROJECT_TYPE_TEMPORARY
-            );            
-            m_cms.getRequestContext().setCurrentProject(project.getId());
-
-            m_report.print(m_report.key("report.delete_module_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-            m_report.println(" <i>" + moduleName + "</i>", I_CmsReport.C_FORMAT_HEADLINE);
-
-            // copy the resources to the project
-            for(int i = 0;i < m_projectFiles.size();i++) {
-                m_cms.copyResourceToProject((String)m_projectFiles.elementAt(i));
-            }
+            CmsProject project = null;
+            
+            try {
+                m_cms.getRequestContext().saveSiteRoot();
+                m_cms.getRequestContext().setSiteRoot("/");
+                // create a Project to delete the module.
+                project = m_cms.createProject(
+                    "DeleteModule", 
+                    "A System generated project to delete the module " + moduleName, 
+                    OpenCms.getDefaultUsers().getGroupAdministrators(),
+                    OpenCms.getDefaultUsers().getGroupAdministrators(),
+                    I_CmsConstants.C_PROJECT_TYPE_TEMPORARY
+                );            
+                m_cms.getRequestContext().setCurrentProject(project.getId());
+    
+                m_report.print(m_report.key("report.delete_module_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+                m_report.println(" <i>" + moduleName + "</i>", I_CmsReport.C_FORMAT_HEADLINE);
+    
+                // copy the resources to the project
+                for (int i = 0; i < m_projectFiles.size(); i++) {
+                    m_cms.copyResourceToProject((String)m_projectFiles.elementAt(i));
+                }
+            } finally {
+                m_cms.getRequestContext().restoreSiteRoot();
+            } 
             // delete the module
             m_registry.deleteModule(m_moduleName, m_conflictFiles, m_replaceMode, m_report);
 
@@ -125,10 +132,9 @@ public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
             m_report.println(m_report.key("report.delete_module_end"), I_CmsReport.C_FORMAT_HEADLINE);
 
             if (DEBUG) System.err.println("CmsAdminModuleDeleteThread() finished");
-        }
-        catch(CmsException e) {
+        } catch (CmsException e) {
             m_report.println(e);
-            if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                 OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());
             }
             if (DEBUG) System.err.println("CmsAdminModuleDeleteThread() Exception:" + e.getMessage());
@@ -140,7 +146,7 @@ public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
      *
      * @return the part of the report that is ready
      */
-    public String getReportUpdate(){
+    public String getReportUpdate() {
         return m_report.getReportUpdate();
     }
 }
