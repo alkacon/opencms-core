@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2004/01/07 11:10:46 $
-* Version: $Revision: 1.277 $
+* Date   : $Date: 2004/01/16 17:00:50 $
+* Version: $Revision: 1.278 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.277 $ $Date: 2004/01/07 11:10:46 $
+ * @version $Revision: 1.278 $ $Date: 2004/01/16 17:00:50 $
  */
 public interface I_CmsConstants {
 
@@ -138,6 +138,9 @@ public interface I_CmsConstants {
 
     /** Property to control the template */
     String C_PROPERTY_TEMPLATE = "template";
+    
+    /** Property to control the template */
+    String C_PROPERTY_TEMPLATE_ELEMENTS = "template-elements";
 
     /** Property for the content encoding */
     String C_PROPERTY_CONTENT_ENCODING = "content-encoding";
