@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/04/05 14:23:12 $
- * Version: $Revision: 1.351 $
+ * Date   : $Date: 2004/04/07 07:38:06 $
+ * Version: $Revision: 1.352 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.351 $ $Date: 2004/04/05 14:23:12 $
+ * @version $Revision: 1.352 $ $Date: 2004/04/07 07:38:06 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5132,10 +5132,10 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                             if (OpenCms.getLog(this).isErrorEnabled()) {
                                 OpenCms.getLog(this).error("Error calling publish class of module " + (String) publishModules.elementAt(i), ec);
                             }
-                        } catch (Exception ex) {
-                            report.println(ex);
+                        } catch (Throwable t) {
+                            report.println(t);
                             if (OpenCms.getLog(this).isErrorEnabled()) {
-                                OpenCms.getLog(this).error("Error while publishing data of module " + (String) publishModules.elementAt(i), ex);
+                                OpenCms.getLog(this).error("Error while publishing data of module " + (String) publishModules.elementAt(i), t);
                             }
                         }
                     }
@@ -8680,12 +8680,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             resource = readFileHeader(context, resourceName);
 
             // check the permissions
-            checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
-            
-            if (resource.isFolder()) {
-                // folders don't have (shared) resource property values
-                property.setResourceValue(null);
-            }            
+            checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);     
 
             // write the property
             m_vfsDriver.writePropertyObject(context.currentProject(), resource, property);
@@ -8731,11 +8726,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             for (int i = 0; i < properties.size(); i++) {
                 // write the property
                 property = (CmsProperty) properties.get(i);
-                
-                if (resource.isFolder()) {
-                    // folders don't have (shared) resource property values
-                    property.setResourceValue(null);
-                }
                 
                 m_vfsDriver.writePropertyObject(context.currentProject(), resource, property);
             }
