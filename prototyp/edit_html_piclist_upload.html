@@ -1,0 +1,51 @@
+<HTML>
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+<link rel=stylesheet type="text/css" href="css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
+
+
+</HEAD>
+
+<body bgcolor="#ffffff" background="pics/bg_weiss.gif"  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<form name=UPLOAD>
+<table border=2 cellspacing=0 cellpadding=0 width=500px>
+<tr><td>
+	<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+	<tr><td colspan=2 class=head>Bilddatei hochladen</td></tr>
+	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
+	<tr>
+		<td class=formular width=10%>Name:</td>
+		<td class=dialogtxt align=left><INPUT size="30" maxlength="30" class="textfeld3" type="file" id=DATEINAME name=DATEINAME onfocus="UPLOAD.FERTIG.disabled=false"></td>
+	</tr>
+	<tr>
+		<td colspan=2 class=leerzeile>&nbsp;</td>
+	<tr>
+		<td colspan=2 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+				<td class=formular align=middle width=40%><INPUT disabled class=button width=100 type="button" value=">> Weiter" id=FERTIG name=FERTIG onClick="a=check_textfeld('UPLOAD', 'DATEINAME'); if(a==true)location='edit_html_piclist_upload1.html';"></td>
+				<td class=formular align=middle width=20%>&nbsp;</td>
+				<td class=formular align=middle width=40%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='edit_html_piclist_content.html';"></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	</table>
+</td>
+</tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+
+</body>
+</HTML>
