@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/01 19:18:50 $
- * Version: $Revision: 1.123 $
+ * Date   : $Date: 2003/08/01 19:24:34 $
+ * Version: $Revision: 1.124 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.123 $ $Date: 2003/08/01 19:18:50 $
+ * @version $Revision: 1.124 $ $Date: 2003/08/01 19:24:34 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -7412,6 +7412,15 @@ public class CmsDriverManager extends Object {
             m_vfsDriver.writeProperties(propertyInfos, context.currentProject().getId(), restoredFile, restoredFile.getType());
 
         }
+        m_userDriver.removeAllAccessControlEntries(context.currentProject(),resource.getResourceAceId());
+        // copy the access control entries
+        ListIterator aceList = m_userDriver.getAccessControlEntries(onlineProject,resource.getResourceAceId(), false).listIterator();
+        while (aceList.hasNext()) {
+            CmsAccessControlEntry ace = (CmsAccessControlEntry) aceList.next();
+            m_userDriver.createAccessControlEntry(context.currentProject(), resource.getResourceAceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
+        }
+        
+        
 
         // update the cache
         //clearResourceCache(resourceName, context.currentProject(), context.currentUser());
