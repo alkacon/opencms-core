@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupLoggingThread.java,v $
- * Date   : $Date: 2004/02/03 10:59:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/20 18:20:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.io.*;
  * the getMessages() method.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsSetupLoggingThread extends Thread {
     private static Vector messages;
@@ -83,6 +83,12 @@ public class CmsSetupLoggingThread extends Thread {
             }
             if (line != null) {
                 messages.addElement(lineNr + ":\t" + line);
+            } else {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e1) {
+                    m_stopThread = true;
+                }
             }
         }
 
