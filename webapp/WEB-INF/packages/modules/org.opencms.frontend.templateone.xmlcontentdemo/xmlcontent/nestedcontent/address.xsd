@@ -12,18 +12,25 @@
 	<xsd:complexType name="OpenCmsAddress">
 		<xsd:sequence>
 			<xsd:element name="Company" type="OpenCmsString" />
-			<xsd:element name="FirstName" type="OpenCmsString" />
-			<xsd:element name="LastName" type="OpenCmsString" />
-			<xsd:element name="Street" type="OpenCmsString" />
-			<xsd:element name="ZIP" type="OpenCmsString" />
-			<xsd:element name="City" type="OpenCmsString" />
-			<xsd:element name="Country" type="OpenCmsString" />
-			<xsd:element name="ContactData" type="OpenCmsString" minOccurs="1" maxOccurs="3" />
+			<xsd:element name="Name" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Street" type="OpenCmsString" minOccurs="0" maxOccurs="3" />
+			<xsd:element name="ZIP" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="City" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Country" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Phone" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Fax" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Email" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Link" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="ContactData" type="OpenCmsString" minOccurs="0" maxOccurs="3" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>
 
 	<xsd:annotation>
-		<xsd:appinfo/>
+		<xsd:appinfo>
+			<layouts>
+				<layout element="Link" widget="LinkGalleryWidget" />
+			</layouts>
+		</xsd:appinfo>
 	</xsd:annotation>  
 </xsd:schema>

@@ -24,7 +24,7 @@
 <p>15/12/2004: This is the third public binary alpha release of OpenCms 6.0. OpenCms 6.0 is a major
 upgrade, and it vastly expands the features of OpenCms 5.0. The alpha
 3 release improves the alpha 2 version with new features for XML
-content, fully re-written and much improved content Galleries, plus support for JDK
+content, fully re-written and much improved content galleries, plus support for JDK
 5.0 (Java 1.5).</p>
 <p><strong>Who should use this 6.0 alpha 3 version?</strong></p>
 <p>This is an alpha version. Please don't expect it to be perfectly
@@ -58,9 +58,7 @@ Q1 2005. You can help speeding up the process of development&nbsp;by providing f
 the following releases, especially regarding bugs. In case you find
 any bug, please use the <a href="${link0}"
  target="_self">OpenCms bugzilla</a> to document it, or at least
-post a note to the <A href=
-"${link1}" target=_self  mailinglist.html??
- release="" opencms="" test="">opencms-dev</A>    
+post a note to the <A href="${link1}" target=_self>opencms-dev</A>    
          mailing list. The
 more feedback and code contributions are made, the faster we
 can fix the issues and finish the development.</p>
@@ -71,17 +69,21 @@ compared to the alpha 2 version:</strong></p>
   <UL>
     <LI>Fixed issue with setup wizard in JDK 5.0</LI><LI>OpenCms now installs and runs with JDK 5.0 (please 
     note: no exhaustive tests have been done so far)</LI><LI>Added support for the PostgeSQL database (thanks to 
-    Antonio Core for his contribution)</LI><LI>Optimized DB queries and index generation for MySQL </LI></UL></LI><LI>JSP based re-implementation of the "Galleries" with 
+    Antonio Core for his contribution)</LI><LI>Optimized DB queries and index generation for MySQL 
+
+    </LI><LI>Improved DB performance on MySQL after heavy testing</LI></UL></LI><LI>JSP based re-implementation of the "Galleries" with 
   new features: 
-  <UL>
-    <LI>Modified VFS to allow multiple folder resource 
-types</LI><li>Added new resource types for image, download, link 
-    and html galleries</li><li>Added new "Image gallery" dialog for WYSIWYG editor 
+  <UL><li>Added new "Image gallery" dialog for WYSIWYG editor 
     (also available as XML content widget)</li><li>Added new "Download gallery" dialog for WYSIWYG 
     editor (also available as XML content widget)</li><li>Added new "External link gallery" dialog for 
     WYSIWYG editor (also available as XML content widget)</li><li>Added new "HTML gallery" dialog for WYSIWYG editor 
-    (also available as XML content widget)</li><li>Resource "type change" dialog can now also change the type of a
-folder (e.g. to a gallery type)</li></UL></LI><li>XML content improvements and new features: 
+    (also available as XML content widget)</li><LI>All galleries are now available on the (optional) 
+    HTMLArea editor</LI><LI>Modified VFS to allow multiple folder resource 
+    types 
+    </LI><LI>Added new resource types for image, download, link 
+    and html galleries 
+    </LI><LI>Resource "type change" dialog can now also change the type of a folder 
+    (e.g. to a gallery type)</LI></UL></LI><li>XML content improvements and new features: 
   <UL>
     <LI>Added XML content handler interface for special 
     action in the XML content lifecycle</LI><li>Added full text search capabilities for XML content 
@@ -108,7 +110,7 @@ manager</li></UL></li><li>Resolved Issues:
     "orphan" ACE entries (causing NPE errors in the Workplace permission dialog)</LI><li>Fixed issue with upload applet not working in root 
     site "/"</li><li>Fixed issue with HTML comments in editor causing 
     invalid HTML documents</li><li>Fixed issue with shutDown() method of modules not 
-    being called - Improved DB performance on MySQL after heavy testing</li><li>Fixed issue with Lucene search engine not correctly 
+    being called</li><li>Fixed issue with Lucene search engine not correctly 
     indexing pages based on non-ISO encoding</li><li>Fixed issue with password change being broken in 
     the user administration</li><li>Fixed issue with "https" scheme not correctly working in site
 configuration</li></UL> </li></UL>
@@ -246,16 +248,10 @@ OpenCms 6.0 run on your platforms, please contribute these so they
 can be included in the official release.</p>
 <p><strong>How you can help</strong></p>
 <p>Contributions to the OpenCms core development are most welcome.
-Please contact <A href=
-"${link2}"  mailto:contributions@opencms.org??>contributions@opencms.org</A> in
+Please contact <A href="${link2}">contributions@opencms.org</A> in
 case you are interested in supporting the development of OpenCms 6,
-or give your feedback on the <A href=
-"${link3}" target=_self  mailinglist.html??
- release="" opencms="" test="">opencms-dev</A> mailing list.</p>
-<p>Please use our Bugzilla to report bugs in this release: <A href=
-"${link4}" target=_self  ??
- bugzilla=
-"" www.opencms.org="" http:="">http://www.opencms.org/bugzilla/</A></p>
+or give your feedback on the <A href="${link3}" target=_self>opencms-dev</A> mailing list.</p>
+<p>Please use our Bugzilla to report bugs in this release: <A href="${link4}" target="_self">http://www.opencms.org/bugzilla/</A></p>
 <p>Thank you for using OpenCms and have fun with OpenCms 6.0
 alpha&nbsp;3 :-)</p>]]></content>
     </element>

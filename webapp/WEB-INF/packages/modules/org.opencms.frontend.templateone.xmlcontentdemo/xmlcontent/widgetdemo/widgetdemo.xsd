@@ -12,17 +12,17 @@
 	<xsd:complexType name="OpenCmsWidget">
 		<xsd:sequence>
 
-			<xsd:element name="String" type="OpenCmsString" />
-			<xsd:element name="Html" type="OpenCmsHtml" />
-			<xsd:element name="Locale" type="OpenCmsLocale" />			
-			<xsd:element name="File" type="OpenCmsVfsFile" />
-			<xsd:element name="Image" type="OpenCmsVfsFile" />
-			<xsd:element name="Download" type="OpenCmsVfsFile" />
-			<xsd:element name="Link" type="OpenCmsString" />
-			<xsd:element name="HtmlSnippet" type="OpenCmsString" />
-			<xsd:element name="Color" type="OpenCmsColor" />
-			<xsd:element name="DateTime" type="OpenCmsDateTime" />
-			<xsd:element name="Boolean" type="OpenCmsBoolean" />
+			<xsd:element name="String" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Html" type="OpenCmsHtml" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Locale" type="OpenCmsLocale" minOccurs="0" maxOccurs="2" />		
+			<xsd:element name="File" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Image" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Download" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Link" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="HtmlSnippet" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Color" type="OpenCmsColor" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="DateTime" type="OpenCmsDateTime" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Boolean" type="OpenCmsBoolean" minOccurs="0" maxOccurs="2" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>

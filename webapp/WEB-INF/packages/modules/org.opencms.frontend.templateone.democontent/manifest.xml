@@ -853,13 +853,18 @@
 		</file>
 		<file>
 			<destination>system/galleries/pics/alkacon-templateone</destination>
-			<type>folder</type>
+			<type>imagegallery</type>
 			<datelastmodified>Fri, 24 Sep 2004 16:23:54 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 24 Sep 2004 16:23:54 CEST</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Alkacon template one demo images]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>

@@ -14,9 +14,9 @@
 	<xsd:complexType name="OpenCmsBookmark">
 		<xsd:sequence>
 			<xsd:element name="Title" type="OpenCmsString" />
-			<xsd:element name="Link" type="OpenCmsString" />
 			<xsd:element name="Description" type="OpenCmsHtml" minOccurs="0" maxOccurs="1" />
-			<xsd:element name="Contact" type="OpenCmsAddress" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="Logo" type="OpenCmsVfsFile" minOccurs="0" />
+			<xsd:element name="Contact" type="OpenCmsAddress" minOccurs="0" maxOccurs="3" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>
@@ -27,8 +27,8 @@
 				<mapping element="Title" mapto="property:Title" />
 			</mappings>
 			<layouts>
-				<layout element="Link" widget="LinkGalleryWidget" />
-			</layouts>
+				<layout element="Logo" widget="ImageGalleryWidget" />
+			</layouts>				
 		</xsd:appinfo>
 	</xsd:annotation>  
 </xsd:schema>

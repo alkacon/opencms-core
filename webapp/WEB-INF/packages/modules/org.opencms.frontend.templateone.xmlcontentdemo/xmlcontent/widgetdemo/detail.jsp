@@ -6,16 +6,7 @@
 <div class="element">
 <cms:contentload collector="singleFile" param="opencms:uri" editable="true">
 
-<div class="element">
-
-<cms:contentcheck ifexists="Image">
-<a href='<cms:contentshow element="Link" />'><img src='<cms:link><cms:contentshow element="Image" /></cms:link>' border="0" align="right"></a>
-</cms:contentcheck>
-<h3><font color='<cms:contentshow element="Color" />'><cms:contentshow element="String" /></font></h3>
-
-<p><cms:contentshow element="Html" /></p>
-
-</div>
+<%@ include file="detail_include.txt" %>
 
 </cms:contentload>
 </div>
