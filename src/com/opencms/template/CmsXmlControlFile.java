@@ -12,7 +12,7 @@ import java.util.*;
  * Content definition for "clickable" and user requestable XML body files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/14 16:17:11 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
@@ -70,12 +70,8 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      */
     public String getTemplateClass() throws CmsException {
         String result = getDataValue("class");
-        if(result == null || "".equals(result)) {
-            A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlControlFile] <CLASS> tag not found in file " + getAbsoluteFilename() + ".");
-            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlControlFile] Document has errors. Removing from cache.");
-            clearFileCache(this);
-            throw new CmsException("\"CLASS\" definition tag not found in file " + getAbsoluteFilename() + ".");
-        }
+        // checking the value is not required here.
+        // the launcher takes another class if no classname was found here
         return result;
     }
     

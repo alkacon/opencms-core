@@ -10,7 +10,7 @@ import javax.servlet.http.*;
  * Classes for each customized launcher have to be implemtented.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/13 17:51:00 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/14 16:17:11 $
  */
 public interface I_CmsLauncher { 
     
@@ -23,11 +23,12 @@ public interface I_CmsLauncher {
 	/**
 	 * Start launch method called by the OpenCms system to show a resource	 
 	 *  
-	 * @param cms A_CmsObject Object for accessing system resources
-	 * @param file CmsFile Object with the selected resource to be shown
+	 * @param cms A_CmsObject Object for accessing system resources.
+	 * @param file CmsFile Object with the selected resource to be shown.
+	 * @param startTemplateClass Name of the template class to start with.
      * @exception CmsException
 	 */
-    public void initlaunch(A_CmsObject cms, CmsFile file) throws CmsException;
+    public void initlaunch(A_CmsObject cms, CmsFile file, String startTemplateClass) throws CmsException;
 	
     /**
      * Gets the ID that indicates the type of the launcher.

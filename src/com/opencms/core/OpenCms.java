@@ -27,7 +27,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.10 $ $Date: 2000/01/14 13:46:51 $  
+* @version $Revision: 1.11 $ $Date: 2000/01/14 16:17:11 $  
 * 
 */
 
@@ -128,6 +128,7 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
      */
     void showResource(A_CmsObject cms, CmsFile file) throws CmsException { 
         int launcherId = file.getLauncherType();
+        String startTemplateClass = file.getLauncherClassname();
         I_CmsLauncher launcher = m_launcherManager.getLauncher(launcherId);
         if(launcher == null) {
             String errorMessage = "Could not launch file " + file.getName() 
@@ -137,10 +138,9 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
             }
             throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
         }
-        launcher.initlaunch(cms, file);
+        launcher.initlaunch(cms, file, startTemplateClass);
     }
-    
-    
+        
     /**
      * Sets the mimetype of the response.<br>
      * The mimetype is selected by the file extension of the requested document.

@@ -26,7 +26,7 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/14 16:17:11 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels { 	
         
@@ -36,9 +36,10 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
  	 * 
 	 * @param cms A_CmsObject Object for accessing system resources
 	 * @param file CmsFile Object with the selected resource to be shown
+     * @param startTemplateClass Name of the template class to start with.
      * @exception CmsException
 	 */	
-    protected void launch(A_CmsObject cms, CmsFile file) throws CmsException {
+    protected void launch(A_CmsObject cms, CmsFile file, String startTemplateClass) throws CmsException {
         // get the CmsRequest 
         I_CmsRequest req = cms.getRequestContext().getRequest();
         
@@ -63,6 +64,12 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
         }
         
         String templateClass = doc.getTemplateClass();
+        if(templateClass == null || "".equals(templateClass)) {
+            templateClass = startTemplateClass;
+        }
+        if(templateClass == null || "".equals(templateClass)) {
+            templateClass = "com.opencms.template.CmsXmlTemplate";
+        }
         String templateName = doc.getMasterTemplate();
         
         CmsFile masterTemplate = loadMasterTemplateFile(cms, templateName, doc);
@@ -127,7 +134,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
         }
             
         if(result != null) {
-            writeBytesToResponse(cms, result, "text/plain");
+            writeBytesToResponse(cms, result);
         }
     }
 

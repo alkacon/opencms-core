@@ -31,7 +31,7 @@ import javax.servlet.http.*;
  * </UL>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/14 13:46:51 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/14 16:17:11 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
         
@@ -67,11 +67,12 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
      * After this the abstract method launch(...) is called to
      * invoke the customized part of the launcher.
      * 
-	 * @param cms A_CmsObject Object for accessing system resources
-	 * @param file CmsFile Object with the selected resource to be shown
+	 * @param cms A_CmsObject Object for accessing system resources.
+	 * @param file CmsFile Object with the selected resource to be shown.
+	 * @param startTemplateClass Name of the template class to start with.
      * @exception CmsException
      */
-    public void initlaunch(A_CmsObject cms, CmsFile file) throws CmsException {
+    public void initlaunch(A_CmsObject cms, CmsFile file, String startTemplateClass) throws CmsException {
         // Check the clearcache parameter
         
         String clearcache = cms.getRequestContext().getRequest().getParameter("_clearcache");
@@ -86,7 +87,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
             }
         }
 
-        launch(cms, file);
+        launch(cms, file, startTemplateClass);
     }
 
     /**
@@ -99,9 +100,10 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
  	 * 
 	 * @param cms A_CmsObject Object for accessing system resources
 	 * @param file CmsFile Object with the selected resource to be shown
+	 * @param startTemplateClass Name of the template class to start with.
      * @exception CmsException
 	 */	
-	protected abstract void launch(A_CmsObject cms, CmsFile file) throws CmsException;
+	protected abstract void launch(A_CmsObject cms, CmsFile file, String startTemplateClass) throws CmsException;
     
 	/**
 	 * Utility method used by the launcher implementation to give control
@@ -176,11 +178,10 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
      * @param mimeType MIME type that should be set for the output.
      * @exception CmsException
      */
-    protected void writeBytesToResponse(A_CmsObject cms, byte[] result, String mimeType) 
+    protected void writeBytesToResponse(A_CmsObject cms, byte[] result) 
             throws CmsException {
         try {
             I_CmsResponse resp = cms.getRequestContext().getResponse();
-           // resp.setContentType(mimeType);
             OutputStream out = resp.getOutputStream();
             out.write(result);
             out.flush();
