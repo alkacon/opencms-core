@@ -8,6 +8,10 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.55 Arakis - not jet released
+
+! Added documentation of OpenCms in tex-format.
+
 OpenCms 4.1.54 Arakis - 29 January 2001
 
 - ATTENTION! This version don't supports the PL/SQL resource broker. It is
