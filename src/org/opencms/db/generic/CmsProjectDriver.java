@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/15 15:06:15 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2003/09/15 15:31:53 $
+ * Version: $Revision: 1.95 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.94 $ $Date: 2003/09/15 15:06:15 $
+ * @version $Revision: 1.95 $ $Date: 2003/09/15 15:31:53 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -154,47 +154,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**
-     * Creates a serializable object in the systempropertys.
-     *
-     * @param name The name of the property.
-     * @param object The property-object.
-     *
-     * @return object The property-object.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    public Serializable addSystemProperty(String name, Serializable object) throws CmsException {
-
-        byte[] value;
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            // serialize the object
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            ObjectOutputStream oout = new ObjectOutputStream(bout);
-            oout.writeObject(object);
-            oout.close();
-            value = bout.toByteArray();
-
-            // create the object
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_SYSTEMPROPERTIES_WRITE");
-            stmt.setInt(1, m_sqlManager.nextId(C_TABLE_SYSTEMPROPERTIES));
-            stmt.setString(2, name);
-            m_sqlManager.setBytes(stmt, 3, value);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
-        } finally {
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-        return readSystemProperty(name);
-    }
-
-    /**
      * Private helper method for publihing into the filesystem.
      * test if resource must be written to the filesystem.<p>
      *
@@ -224,9 +183,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @param linkTargets A vector of strings (the linkdestinations)
      * @throws CmsException if something goes wrong  
      */
-    public void createLinkEntrys(CmsUUID pageId, Vector linkTargets) throws CmsException {
+    public void createLinkEntries(CmsUUID pageId, Vector linkTargets) throws CmsException {
         //first delete old entrys in the database
-        deleteLinkEntrys(pageId);
+        deleteLinkEntries(pageId);
         if (linkTargets == null || linkTargets.size() == 0) {
             return;
         }
@@ -260,9 +219,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @param linkTargets A vector of strings (the linkdestinations)
      * @throws CmsException if something goes wrong
      */
-    public void createOnlineLinkEntrys(CmsUUID pageId, Vector linkTargets) throws CmsException {
+    public void createLinkEntriesOnline(CmsUUID pageId, Vector linkTargets) throws CmsException {
         //first delete old entrys in the database
-        deleteLinkEntrys(pageId);
+        deleteLinkEntries(pageId);
         if (linkTargets == null || linkTargets.size() == 0) {
             return;
         }
@@ -408,25 +367,44 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * Deletes all projectResource from an given CmsProject.<p>
+     * Creates a serializable object in the systempropertys.
      *
-     * @param projectId The project in which the resource is used
-     * @throws CmsException Throws CmsException if operation was not succesful
+     * @param name The name of the property.
+     * @param object The property-object.
+     *
+     * @return object The property-object.
+     *
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public void deleteAllProjectResources(int projectId) throws CmsException {
+    public Serializable createSystemProperty(String name, Serializable object) throws CmsException {
+
+        byte[] value;
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
+            // serialize the object
+            ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            ObjectOutputStream oout = new ObjectOutputStream(bout);
+            oout.writeObject(object);
+            oout.close();
+            value = bout.toByteArray();
+
+            // create the object
             conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_DELETEALL");
-            // delete all projectResources from the database
-            stmt.setInt(1, projectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_SYSTEMPROPERTIES_WRITE");
+            stmt.setInt(1, m_sqlManager.nextId(C_TABLE_SYSTEMPROPERTIES));
+            stmt.setString(2, name);
+            m_sqlManager.setBytes(stmt, 3, value);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (IOException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } finally {
+            // close all db-resources
             m_sqlManager.closeAll(conn, stmt, null);
         }
+        return readSystemProperty(name);
     }
 
     /****************     methods for link management            ****************************/
@@ -437,7 +415,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @param pageId The resourceId (offline) of the page whose links should be deleted
      * @throws CmsException if something goes wrong
      */
-    public void deleteLinkEntrys(CmsUUID pageId) throws CmsException {
+    public void deleteLinkEntries(CmsUUID pageId) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -460,7 +438,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @param pageId The resourceId (online) of the page whose links should be deleted
      * @throws CmsException if something goes wrong
      */
-    public void deleteOnlineLinkEntrys(CmsUUID pageId) throws CmsException {
+    public void deleteLinkEntriesOnline(CmsUUID pageId) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -488,7 +466,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     public void deleteProject(CmsProject project) throws CmsException {
 
         // delete the resources from project_resources
-        deleteAllProjectResources(project.getId());
+        deleteProjectResources(project.getId());
 
         // finally delete the project
         Connection conn = null;
@@ -581,6 +559,28 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setInt(1, project.getId());
             stmt.executeUpdate();
 
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+    }
+
+    /**
+     * Deletes all projectResource from an given CmsProject.<p>
+     *
+     * @param projectId The project in which the resource is used
+     * @throws CmsException Throws CmsException if operation was not succesful
+     */
+    public void deleteProjectResources(int projectId) throws CmsException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_DELETEALL");
+            // delete all projectResources from the database
+            stmt.setInt(1, projectId);
+            stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
@@ -716,290 +716,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * Returns all projects, which are accessible by a group.<p>
-     *
-     * @param group the requesting group
-     * @return a Vector of projects
-     * @throws CmsException if something goes wrong
-     */
-    public Vector getAllAccessibleProjectsByGroup(CmsGroup group) throws CmsException {
-        Vector projects = new Vector();
-        ResultSet res = null;
-        Connection conn = null;
-        PreparedStatement stmt = null;
-
-        try {
-            // create the statement
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYGROUP");
-
-            stmt.setString(1, group.getId().toString());
-            stmt.setString(2, group.getId().toString());
-            res = stmt.executeQuery();
-
-            while (res.next()) {
-                projects.addElement(new CmsProject(res, m_sqlManager));
-            }
-        } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        return (projects);
-    }
-
-    /**
-     * Returns all projects, which are manageable by a group.<p>
-     *
-     * @param group The requesting group
-     * @return a Vector of projects
-     * @throws CmsException if something goes wrong
-     */
-    public Vector getAllAccessibleProjectsByManagerGroup(CmsGroup group) throws CmsException {
-        Vector projects = new Vector();
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            // create the statement
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYMANAGER");
-
-            stmt.setString(1, group.getId().toString());
-            res = stmt.executeQuery();
-
-            while (res.next()) {
-                projects.addElement(new CmsProject(res, m_sqlManager));
-            }
-        } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        return (projects);
-    }
-
-    /**
-     * Returns all projects, which are owned by a user.<p>
-     *
-     * @param user The requesting user
-     * @return a Vector of projects
-     * @throws CmsException if something goes wrong
-     */
-    public Vector getAllAccessibleProjectsByUser(CmsUser user) throws CmsException {
-        Vector projects = new Vector();
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            // create the statement
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYUSER");
-
-            stmt.setString(1, user.getId().toString());
-            res = stmt.executeQuery();
-
-            while (res.next()) {
-                projects.addElement(new CmsProject(res, m_sqlManager));
-            }
-        } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        return (projects);
-    }
-
-    /**
-     * Reads all export links.<p>
-     *
-     * @return a Vector(of Strings) with the links
-     * @throws CmsException if something goes wrong
-     */
-    public Vector getAllExportLinks() throws CmsException {
-        Vector retValue = new Vector();
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_EXPORT_GET_ALL_LINKS");
-            res = stmt.executeQuery();
-            while (res.next()) {
-                retValue.add(res.getString(m_sqlManager.get("C_EXPORT_LINK")));
-            }
-            return retValue;
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "getAllExportLinks()", CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, "getAllExportLinks()", CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-    }
-
-    /**
-     * Returns all projects, with the overgiven state.<p>
-     *
-     * @param state The state of the projects to read
-     * @return a Vector of projects
-     * @throws CmsException if something goes wrong
-     */
-    public Vector getAllProjects(int state) throws CmsException {
-        Vector projects = new Vector();
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            // create the statement
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYFLAG");
-
-            stmt.setInt(1, state);
-            res = stmt.executeQuery();
-
-            while (res.next()) {
-                projects.addElement(
-                    new CmsProject(
-                        res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_ID")),
-                        res.getString(m_sqlManager.get("C_PROJECTS_PROJECT_NAME")),
-                        res.getString(m_sqlManager.get("C_PROJECTS_PROJECT_DESCRIPTION")),
-                        res.getInt(m_sqlManager.get("C_PROJECTS_TASK_ID")),
-                        new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_USER_ID"))),
-                        new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_GROUP_ID"))),
-                        new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_MANAGERGROUP_ID"))),
-                        res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_FLAGS")),
-                        CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_PROJECTS_PROJECT_CREATEDATE")),
-                        res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_TYPE"))));
-            }
-        } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, "getAllProjects(int)", CmsException.C_SQL_ERROR, exc, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        return (projects);
-    }
-
-    /**
-    * Reads all export links that depend on the resource.<p>
-    * 
-    * @param resources vector of resources 
-    * @return a Vector(of Strings) with the linkrequest names
-    * @throws CmsException if something goes wrong
-    */
-    public Vector getDependingExportLinks(Vector resources) throws CmsException {
-        Vector retValue = new Vector();
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-        try {
-            Vector firstResult = new Vector();
-            Vector secondResult = new Vector();
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_EXPORT_GET_ALL_DEPENDENCIES");
-            res = stmt.executeQuery();
-            while (res.next()) {
-                firstResult.add(res.getString(m_sqlManager.get("C_EXPORT_DEPENDENCIES_RESOURCE")));
-                secondResult.add(res.getString(m_sqlManager.get("C_EXPORT_LINK")));
-            }
-            // now we have all dependencies that are there. We can search now for
-            // the ones we need
-            for (int i = 0; i < resources.size(); i++) {
-                for (int j = 0; j < firstResult.size(); j++) {
-                    if (((String) firstResult.elementAt(j)).startsWith((String) resources.elementAt(i))) {
-                        if (!retValue.contains(secondResult.elementAt(j))) {
-                            retValue.add(secondResult.elementAt(j));
-                        }
-                    } else if (((String) resources.elementAt(i)).startsWith((String) firstResult.elementAt(j))) {
-                        if (!retValue.contains(secondResult.elementAt(j))) {
-                            // only direct subfolders count
-                            int index = ((String) firstResult.elementAt(j)).length();
-                            String test = ((String) resources.elementAt(i)).substring(index);
-                            index = test.indexOf("/");
-                            if (index == -1 || index + 1 == test.length()) {
-                                retValue.add(secondResult.elementAt(j));
-                            }
-                        }
-                    }
-                }
-            }
-            return retValue;
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "getDependingExportlinks(Vector)", CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, "getDependingExportLinks(Vector)", CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-    }
-
-    /**
-     * Searches for broken links in the online project.<p>
-     *
-     * @return A Vector with a CmsPageLinks object for each page containing broken links
-     *          this CmsPageLinks object contains all links on the page withouth a valid target
-     * @throws CmsException if something goes wrong
-     */
-    public Vector getOnlineBrokenLinks() throws CmsException {
-        Vector result = new Vector();
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-        try {
-            conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_LM_GET_ONLINE_BROKEN_LINKS");
-            res = stmt.executeQuery();
-            CmsUUID current = CmsUUID.getNullUUID();
-            CmsPageLinks links = null;
-            while (res.next()) {
-                CmsUUID next = new CmsUUID(res.getString(m_sqlManager.get("C_LM_PAGE_ID")));
-                if (!next.equals(current)) {
-                    if (links != null) {
-                        result.add(links);
-                    }
-                    links = new CmsPageLinks(next);
-                    links.addLinkTarget(res.getString(m_sqlManager.get("C_LM_LINK_DEST")));
-                    try {
-                        links.setResourceName((m_driverManager.getVfsDriver().readFileHeader(I_CmsConstants.C_PROJECT_ONLINE_ID, next, false)).getName());
-                    } catch (CmsException e) {
-                        links.setResourceName("id=" + next + ". Sorry, can't read resource. " + e.getMessage());
-                    }
-                    links.setOnline(true);
-                } else {
-                    links.addLinkTarget(res.getString(m_sqlManager.get("C_LM_LINK_DEST")));
-                }
-                current = next;
-            }
-            if (links != null) {
-                result.add(links);
-            }
-            return result;
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "getOnlineBrokenLinks()", CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, "getOnlineBrokenLinks()", CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * Retrieves the online project from the database.
-     *
-     * @return com.opencms.file.CmsProject the  onlineproject for the given project.
-     * @throws CmsException Throws CmsException if the resource is not found, or the database communication went wrong.
-     */
-    public CmsProject getOnlineProject() throws CmsException {
-        return readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
-    }
-
-    /**
      * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
      */
     public void init(Configurations config, List successiveDrivers, CmsDriverManager driverManager) {
@@ -1028,32 +744,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      */
     public org.opencms.db.generic.CmsSqlManager initQueries() {
         return new org.opencms.db.generic.CmsSqlManager();
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsProjectDriver#nextPublishVersionId()
-     */
-    public int nextPublishVersionId() throws CmsException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        ResultSet res = null;
-        int versionId = 1;
-
-        try {
-            conn = m_sqlManager.getConnectionForBackup();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_PUBLISH_MAXVER");
-            res = stmt.executeQuery();
-
-            if (res.next()) {
-                versionId = res.getInt(1) + 1;
-            }
-        } catch (SQLException exc) {
-            return 1;
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-
-        return versionId;
     }
 
     /**
@@ -1651,7 +1341,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         Map sortedFolderMap = null;
         List sortedFolderList = null;
         byte[] contents = null;
-        int publishHistoryId = nextPublishVersionId();
+        int publishHistoryId = readNextPublishVersionId();
         String encoding = null;
         int m, n;
 
@@ -2069,33 +1759,137 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * Select all projectResources from an given project.<p>
+     * Searches for broken links in the online project.<p>
      *
-     * @param projectId the project in which the resource is used
-     * @return Vector of resources belongig to the project
+     * @return A Vector with a CmsPageLinks object for each page containing broken links
+     *          this CmsPageLinks object contains all links on the page withouth a valid target
      * @throws CmsException if something goes wrong
      */
-    public Vector readAllProjectResources(int projectId) throws CmsException {
-        Connection conn = null;
+    public Vector readBrokenLinksOnline() throws CmsException {
+        Vector result = new Vector();
         PreparedStatement stmt = null;
         ResultSet res = null;
-        Vector projectResources = new Vector();
+        Connection conn = null;
         try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_READALL");
-            // select all resources from the database
-            stmt.setInt(1, projectId);
+            conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_LM_GET_ONLINE_BROKEN_LINKS");
             res = stmt.executeQuery();
+            CmsUUID current = CmsUUID.getNullUUID();
+            CmsPageLinks links = null;
             while (res.next()) {
-                projectResources.addElement(res.getString("RESOURCE_NAME"));
+                CmsUUID next = new CmsUUID(res.getString(m_sqlManager.get("C_LM_PAGE_ID")));
+                if (!next.equals(current)) {
+                    if (links != null) {
+                        result.add(links);
+                    }
+                    links = new CmsPageLinks(next);
+                    links.addLinkTarget(res.getString(m_sqlManager.get("C_LM_LINK_DEST")));
+                    try {
+                        links.setResourceName((m_driverManager.getVfsDriver().readFileHeader(I_CmsConstants.C_PROJECT_ONLINE_ID, next, false)).getName());
+                    } catch (CmsException e) {
+                        links.setResourceName("id=" + next + ". Sorry, can't read resource. " + e.getMessage());
+                    }
+                    links.setOnline(true);
+                } else {
+                    links.addLinkTarget(res.getString(m_sqlManager.get("C_LM_LINK_DEST")));
+                }
+                current = next;
             }
-            res.close();
+            if (links != null) {
+                result.add(links);
+            }
+            return result;
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw m_sqlManager.getCmsException(this, "getOnlineBrokenLinks()", CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception e) {
+            throw m_sqlManager.getCmsException(this, "getOnlineBrokenLinks()", CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
+            // close all db-resources
             m_sqlManager.closeAll(conn, stmt, null);
         }
-        return projectResources;
+    }
+
+    /**
+     * Reads all export links.<p>
+     *
+     * @return a Vector(of Strings) with the links
+     * @throws CmsException if something goes wrong
+     */
+    public Vector readExportLinks() throws CmsException {
+        Vector retValue = new Vector();
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        Connection conn = null;
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_EXPORT_GET_ALL_LINKS");
+            res = stmt.executeQuery();
+            while (res.next()) {
+                retValue.add(res.getString(m_sqlManager.get("C_EXPORT_LINK")));
+            }
+            return retValue;
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, "getAllExportLinks()", CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception e) {
+            throw m_sqlManager.getCmsException(this, "getAllExportLinks()", CmsException.C_UNKNOWN_EXCEPTION, e, false);
+        } finally {
+            // close all db-resources
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+    }
+
+    /**
+    * Reads all export links that depend on the resource.<p>
+    * 
+    * @param resources vector of resources 
+    * @return a Vector(of Strings) with the linkrequest names
+    * @throws CmsException if something goes wrong
+    */
+    public Vector readExportLinks(Vector resources) throws CmsException {
+        Vector retValue = new Vector();
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        Connection conn = null;
+        try {
+            Vector firstResult = new Vector();
+            Vector secondResult = new Vector();
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_EXPORT_GET_ALL_DEPENDENCIES");
+            res = stmt.executeQuery();
+            while (res.next()) {
+                firstResult.add(res.getString(m_sqlManager.get("C_EXPORT_DEPENDENCIES_RESOURCE")));
+                secondResult.add(res.getString(m_sqlManager.get("C_EXPORT_LINK")));
+            }
+            // now we have all dependencies that are there. We can search now for
+            // the ones we need
+            for (int i = 0; i < resources.size(); i++) {
+                for (int j = 0; j < firstResult.size(); j++) {
+                    if (((String) firstResult.elementAt(j)).startsWith((String) resources.elementAt(i))) {
+                        if (!retValue.contains(secondResult.elementAt(j))) {
+                            retValue.add(secondResult.elementAt(j));
+                        }
+                    } else if (((String) resources.elementAt(i)).startsWith((String) firstResult.elementAt(j))) {
+                        if (!retValue.contains(secondResult.elementAt(j))) {
+                            // only direct subfolders count
+                            int index = ((String) firstResult.elementAt(j)).length();
+                            String test = ((String) resources.elementAt(i)).substring(index);
+                            index = test.indexOf("/");
+                            if (index == -1 || index + 1 == test.length()) {
+                                retValue.add(secondResult.elementAt(j));
+                            }
+                        }
+                    }
+                }
+            }
+            return retValue;
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, "getDependingExportlinks(Vector)", CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception e) {
+            throw m_sqlManager.getCmsException(this, "getDependingExportLinks(Vector)", CmsException.C_UNKNOWN_EXCEPTION, e, false);
+        } finally {
+            // close all db-resources
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
     }
 
     /**
@@ -2106,7 +1900,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @return the vector of link destinations
      * @throws CmsException if something goes wrong
      */
-    public Vector readLinkEntrys(CmsUUID pageId) throws CmsException {
+    public Vector readLinkEntries(CmsUUID pageId) throws CmsException {
         Vector result = new Vector();
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -2130,6 +1924,66 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
         }
+    }
+
+    /**
+     * Returns a Vector (Strings) with the link destinations of all links on the page with
+     * the pageId.<p>
+     *
+     * @param pageId The resourceId (online) of the page whose liks should be read
+     * @return the vector of link destinations
+     * @throws CmsException if something goes wrong
+     */
+    public Vector readLinkEntriesOnline(CmsUUID pageId) throws CmsException {
+        Vector result = new Vector();
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        Connection conn = null;
+        try {
+            // TODO all the link management methods should be carefully turned into project dependent code!        
+            int dummyProjectId = I_CmsConstants.C_PROJECT_ONLINE_ID;
+            conn = m_sqlManager.getConnection(dummyProjectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, dummyProjectId, "C_LM_READ_ENTRYS");
+            stmt.setString(1, pageId.toString());
+            res = stmt.executeQuery();
+            while (res.next()) {
+                result.add(res.getString(m_sqlManager.get("C_LM_LINK_DEST")));
+            }
+            return result;
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, "readOnlineLinkEntrys(CmsUUID)", CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception e) {
+            throw m_sqlManager.getCmsException(this, "readOnlineLinkEntrys(CmsUUID)", CmsException.C_UNKNOWN_EXCEPTION, e, false);
+        } finally {
+            // close all db-resources
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#nextPublishVersionId()
+     */
+    public int readNextPublishVersionId() throws CmsException {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet res = null;
+        int versionId = 1;
+
+        try {
+            conn = m_sqlManager.getConnectionForBackup();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_PUBLISH_MAXVER");
+            res = stmt.executeQuery();
+
+            if (res.next()) {
+                versionId = res.getInt(1) + 1;
+            }
+        } catch (SQLException exc) {
+            return 1;
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+
+        return versionId;
     }
 
     /**
@@ -2169,37 +2023,13 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * Returns a Vector (Strings) with the link destinations of all links on the page with
-     * the pageId.<p>
+     * Retrieves the online project from the database.
      *
-     * @param pageId The resourceId (online) of the page whose liks should be read
-     * @return the vector of link destinations
-     * @throws CmsException if something goes wrong
+     * @return com.opencms.file.CmsProject the  onlineproject for the given project.
+     * @throws CmsException Throws CmsException if the resource is not found, or the database communication went wrong.
      */
-    public Vector readOnlineLinkEntrys(CmsUUID pageId) throws CmsException {
-        Vector result = new Vector();
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-        try {
-            // TODO all the link management methods should be carefully turned into project dependent code!        
-            int dummyProjectId = I_CmsConstants.C_PROJECT_ONLINE_ID;
-            conn = m_sqlManager.getConnection(dummyProjectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, dummyProjectId, "C_LM_READ_ENTRYS");
-            stmt.setString(1, pageId.toString());
-            res = stmt.executeQuery();
-            while (res.next()) {
-                result.add(res.getString(m_sqlManager.get("C_LM_LINK_DEST")));
-            }
-            return result;
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "readOnlineLinkEntrys(CmsUUID)", CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, "readOnlineLinkEntrys(CmsUUID)", CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
+    public CmsProject readOnlineProject() throws CmsException {
+        return readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
     }
 
     /**
@@ -2383,6 +2213,176 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }
 
         return result;
+    }
+
+    /**
+     * Select all projectResources from an given project.<p>
+     *
+     * @param projectId the project in which the resource is used
+     * @return Vector of resources belongig to the project
+     * @throws CmsException if something goes wrong
+     */
+    public Vector readProjectResources(int projectId) throws CmsException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        Vector projectResources = new Vector();
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_READALL");
+            // select all resources from the database
+            stmt.setInt(1, projectId);
+            res = stmt.executeQuery();
+            while (res.next()) {
+                projectResources.addElement(res.getString("RESOURCE_NAME"));
+            }
+            res.close();
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+        return projectResources;
+    }
+
+    /**
+     * Returns all projects, with the overgiven state.<p>
+     *
+     * @param state The state of the projects to read
+     * @return a Vector of projects
+     * @throws CmsException if something goes wrong
+     */
+    public Vector readProjects(int state) throws CmsException {
+        Vector projects = new Vector();
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            // create the statement
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYFLAG");
+
+            stmt.setInt(1, state);
+            res = stmt.executeQuery();
+
+            while (res.next()) {
+                projects.addElement(
+                    new CmsProject(
+                        res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_ID")),
+                        res.getString(m_sqlManager.get("C_PROJECTS_PROJECT_NAME")),
+                        res.getString(m_sqlManager.get("C_PROJECTS_PROJECT_DESCRIPTION")),
+                        res.getInt(m_sqlManager.get("C_PROJECTS_TASK_ID")),
+                        new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_USER_ID"))),
+                        new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_GROUP_ID"))),
+                        new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_MANAGERGROUP_ID"))),
+                        res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_FLAGS")),
+                        CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_PROJECTS_PROJECT_CREATEDATE")),
+                        res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_TYPE"))));
+            }
+        } catch (SQLException exc) {
+            throw m_sqlManager.getCmsException(this, "getAllProjects(int)", CmsException.C_SQL_ERROR, exc, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+        return (projects);
+    }
+
+    /**
+     * Returns all projects, which are accessible by a group.<p>
+     *
+     * @param group the requesting group
+     * @return a Vector of projects
+     * @throws CmsException if something goes wrong
+     */
+    public Vector readProjectsForGroup(CmsGroup group) throws CmsException {
+        Vector projects = new Vector();
+        ResultSet res = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            // create the statement
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYGROUP");
+
+            stmt.setString(1, group.getId().toString());
+            stmt.setString(2, group.getId().toString());
+            res = stmt.executeQuery();
+
+            while (res.next()) {
+                projects.addElement(new CmsProject(res, m_sqlManager));
+            }
+        } catch (Exception exc) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+        return (projects);
+    }
+
+    /**
+     * Returns all projects, which are manageable by a group.<p>
+     *
+     * @param group The requesting group
+     * @return a Vector of projects
+     * @throws CmsException if something goes wrong
+     */
+    public Vector readProjectsForManagerGroup(CmsGroup group) throws CmsException {
+        Vector projects = new Vector();
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            // create the statement
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYMANAGER");
+
+            stmt.setString(1, group.getId().toString());
+            res = stmt.executeQuery();
+
+            while (res.next()) {
+                projects.addElement(new CmsProject(res, m_sqlManager));
+            }
+        } catch (Exception exc) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+        return (projects);
+    }
+
+    /**
+     * Returns all projects, which are owned by a user.<p>
+     *
+     * @param user The requesting user
+     * @return a Vector of projects
+     * @throws CmsException if something goes wrong
+     */
+    public Vector readProjectsForUser(CmsUser user) throws CmsException {
+        Vector projects = new Vector();
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            // create the statement
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYUSER");
+
+            stmt.setString(1, user.getId().toString());
+            res = stmt.executeQuery();
+
+            while (res.next()) {
+                projects.addElement(new CmsProject(res, m_sqlManager));
+            }
+        } catch (Exception exc) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+        return (projects);
     }
 
     /**
@@ -2613,7 +2613,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public void unlockProject(CmsProject project) throws CmsException {
+    public void unlockResources(CmsProject project) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
@@ -2628,86 +2628,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, null);
         }
-    }
-
-    /**
-     * Update the online link table (after a project is published).<p>
-     *
-     * @param deleted vector (of CmsResources) with the deleted resources of the project
-     * @param changed vector (of CmsResources) with the changed resources of the project
-     * @param newRes vector (of CmsResources) with the newRes resources of the project
-     * @param pageType the page type
-     * @throws CmsException if something goes wrong
-     */
-    public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newRes, int pageType) throws CmsException {
-        if (deleted != null) {
-            for (int i = 0; i < deleted.size(); i++) {
-                // delete the old values in the online table
-                if (((CmsResource) deleted.elementAt(i)).getType() == pageType) {
-                    CmsUUID id = readOnlineId(((CmsResource) deleted.elementAt(i)).getName());
-                    if (!id.isNullUUID()) {
-                        deleteOnlineLinkEntrys(id);
-                    }
-                }
-            }
-        }
-        if (changed != null) {
-            for (int i = 0; i < changed.size(); i++) {
-                // delete the old values and copy the new values from the project link table
-                if (((CmsResource) changed.elementAt(i)).getType() == pageType) {
-                    CmsUUID id = readOnlineId(((CmsResource) changed.elementAt(i)).getName());
-                    if (!id.isNullUUID()) {
-                        deleteOnlineLinkEntrys(id);
-                        createOnlineLinkEntrys(id, readLinkEntrys(((CmsResource) changed.elementAt(i)).getResourceId()));
-                    }
-                }
-            }
-        }
-        if (newRes != null) {
-            for (int i = 0; i < newRes.size(); i++) {
-                // copy the values from the project link table
-                if (((CmsResource) newRes.elementAt(i)).getType() == pageType) {
-                    CmsUUID id = readOnlineId(((CmsResource) newRes.elementAt(i)).getName());
-                    if (!id.isNullUUID()) {
-                        createOnlineLinkEntrys(id, readLinkEntrys(((CmsResource) newRes.elementAt(i)).getResourceId()));
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * This method updates a session in the database. It is used
-     * for sessionfailover.<p>
-     *
-     * @param sessionId the id of the session
-     * @param data the session data
-     * @return the amount of data written to the database
-     * @throws CmsException if something goes wrong
-     */
-    public int updateSession(String sessionId, Hashtable data) throws CmsException {
-        byte[] value = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        int retValue;
-
-        try {
-            value = serializeSession(data);
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_SESSION_UPDATE");
-            // write data to database
-            stmt.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
-            m_sqlManager.setBytes(stmt, 2, value);
-            stmt.setString(3, sessionId);
-            retValue = stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-        return retValue;
     }
 
     /**
@@ -2741,6 +2661,52 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
+     * Update the online link table (after a project is published).<p>
+     *
+     * @param deleted vector (of CmsResources) with the deleted resources of the project
+     * @param changed vector (of CmsResources) with the changed resources of the project
+     * @param newRes vector (of CmsResources) with the newRes resources of the project
+     * @param pageType the page type
+     * @throws CmsException if something goes wrong
+     */
+    public void writeProjectLinksOnline(Vector deleted, Vector changed, Vector newRes, int pageType) throws CmsException {
+        if (deleted != null) {
+            for (int i = 0; i < deleted.size(); i++) {
+                // delete the old values in the online table
+                if (((CmsResource) deleted.elementAt(i)).getType() == pageType) {
+                    CmsUUID id = readOnlineId(((CmsResource) deleted.elementAt(i)).getName());
+                    if (!id.isNullUUID()) {
+                        deleteLinkEntriesOnline(id);
+                    }
+                }
+            }
+        }
+        if (changed != null) {
+            for (int i = 0; i < changed.size(); i++) {
+                // delete the old values and copy the new values from the project link table
+                if (((CmsResource) changed.elementAt(i)).getType() == pageType) {
+                    CmsUUID id = readOnlineId(((CmsResource) changed.elementAt(i)).getName());
+                    if (!id.isNullUUID()) {
+                        deleteLinkEntriesOnline(id);
+                        createLinkEntriesOnline(id, readLinkEntries(((CmsResource) changed.elementAt(i)).getResourceId()));
+                    }
+                }
+            }
+        }
+        if (newRes != null) {
+            for (int i = 0; i < newRes.size(); i++) {
+                // copy the values from the project link table
+                if (((CmsResource) newRes.elementAt(i)).getType() == pageType) {
+                    CmsUUID id = readOnlineId(((CmsResource) newRes.elementAt(i)).getName());
+                    if (!id.isNullUUID()) {
+                        createLinkEntriesOnline(id, readLinkEntries(((CmsResource) newRes.elementAt(i)).getResourceId()));
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * @see org.opencms.db.I_CmsProjectDriver#writePublishHistory(com.opencms.file.CmsProject, int, int, java.lang.String, com.opencms.file.CmsResource)
      */
     public void writePublishHistory(CmsProject currentProject, int publishId, int tagId, String resourcename, CmsResource resource) throws CmsException {
@@ -2764,6 +2730,40 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
+    }
+
+    /**
+     * This method updates a session in the database. It is used
+     * for sessionfailover.<p>
+     *
+     * @param sessionId the id of the session
+     * @param data the session data
+     * @return the amount of data written to the database
+     * @throws CmsException if something goes wrong
+     */
+    public int writeSession(String sessionId, Hashtable data) throws CmsException {
+        byte[] value = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        int retValue;
+
+        try {
+            value = serializeSession(data);
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_SESSION_UPDATE");
+            // write data to database
+            stmt.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
+            m_sqlManager.setBytes(stmt, 2, value);
+            stmt.setString(3, sessionId);
+            retValue = stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (IOException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+        return retValue;
     }
 
     /**

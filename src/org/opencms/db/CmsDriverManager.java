@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/15 15:17:23 $
- * Version: $Revision: 1.216 $
+ * Date   : $Date: 2003/09/15 15:31:53 $
+ * Version: $Revision: 1.217 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.216 $ $Date: 2003/09/15 15:17:23 $
+ * @version $Revision: 1.217 $ $Date: 2003/09/15 15:31:53 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -465,7 +465,7 @@ public class CmsDriverManager extends Object {
                 if (suffixes == null) {
                     suffixes = new Hashtable();
                     suffixes.put(extension, resTypeName);
-                    m_projectDriver.addSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS, suffixes);
+                    m_projectDriver.createSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS, suffixes);
                 } else {
                     suffixes.put(extension, resTypeName);
                     m_projectDriver.writeSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS, suffixes);
@@ -1350,7 +1350,7 @@ public class CmsDriverManager extends Object {
             if ((offlineRes == null) || (offlineRes.getProjectLastModified() != context.currentProject().getId())) {
                 // check if there are already any subfolders of this resource
                 if (resource.endsWith("/")) {
-                    Vector projectResources = m_projectDriver.readAllProjectResources(context.currentProject().getId());
+                    Vector projectResources = m_projectDriver.readProjectResources(context.currentProject().getId());
                     for (int i = 0; i < projectResources.size(); i++) {
                         String resname = (String) projectResources.elementAt(i);
                         if (resname.startsWith(resource)) {
@@ -1622,7 +1622,7 @@ public class CmsDriverManager extends Object {
      * @param linkTarget A vector of strings (the linkdestinations).
      */
     public void createLinkEntrys(CmsUUID pageId, Vector linkTargets) throws CmsException {
-        m_projectDriver.createLinkEntrys(pageId, linkTargets);
+        m_projectDriver.createLinkEntries(pageId, linkTargets);
     }
 
     /**
@@ -1632,7 +1632,7 @@ public class CmsDriverManager extends Object {
      * @param linkTarget A vector of strings (the linkdestinations).
      */
     public void createOnlineLinkEntrys(CmsUUID pageId, Vector linkTarget) throws CmsException {
-        m_projectDriver.createOnlineLinkEntrys(pageId, linkTarget);
+        m_projectDriver.createLinkEntriesOnline(pageId, linkTarget);
     }
 
     /**
@@ -2254,7 +2254,7 @@ public class CmsDriverManager extends Object {
      * @param pageId The resourceId (offline) of the page whose links should be deleted
      */
     public void deleteLinkEntrys(CmsUUID pageId) throws CmsException {
-        m_projectDriver.deleteLinkEntrys(pageId);
+        m_projectDriver.deleteLinkEntries(pageId);
     }
 
     /**
@@ -2369,7 +2369,7 @@ public class CmsDriverManager extends Object {
                 OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTIES_MODIFIED, Collections.singletonMap("resource", delFolder)));
             }
             // unlock all resources in the project
-            m_projectDriver.unlockProject(deleteProject);
+            m_projectDriver.unlockResources(deleteProject);
             m_lockDispatcher.removeResourcesInProject(deleteProject.getId());
             clearAccessControlListCache();
             clearResourceCache();
@@ -2933,7 +2933,7 @@ public class CmsDriverManager extends Object {
         Vector groups = getGroupsOfUser(context, context.currentUser().getName());
 
         // get all projects which are owned by the user.
-        Vector projects = m_projectDriver.getAllAccessibleProjectsByUser(context.currentUser());
+        Vector projects = m_projectDriver.readProjectsForUser(context.currentUser());
 
         // get all projects, that the user can access with his groups.
         for (int i = 0; i < groups.size(); i++) {
@@ -2941,10 +2941,10 @@ public class CmsDriverManager extends Object {
             // is this the admin-group?
             if (((CmsGroup) groups.elementAt(i)).getName().equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
                 // yes - all unlocked projects are accessible for him
-                projectsByGroup = m_projectDriver.getAllProjects(I_CmsConstants.C_PROJECT_STATE_UNLOCKED);
+                projectsByGroup = m_projectDriver.readProjects(I_CmsConstants.C_PROJECT_STATE_UNLOCKED);
             } else {
                 // no - get all projects, which can be accessed by the current group
-                projectsByGroup = m_projectDriver.getAllAccessibleProjectsByGroup((CmsGroup) groups.elementAt(i));
+                projectsByGroup = m_projectDriver.readProjectsForGroup((CmsGroup) groups.elementAt(i));
             }
 
             // merge the projects to the vector
@@ -2980,7 +2980,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public Vector getAllExportLinks() throws CmsException {
-        return m_projectDriver.getAllExportLinks();
+        return m_projectDriver.readExportLinks();
     }
 
     /**
@@ -2998,7 +2998,7 @@ public class CmsDriverManager extends Object {
         Vector groups = getGroupsOfUser(context, context.currentUser().getName());
 
         // get all projects which are owned by the user.
-        Vector projects = m_projectDriver.getAllAccessibleProjectsByUser(context.currentUser());
+        Vector projects = m_projectDriver.readProjectsForUser(context.currentUser());
 
         // get all projects, that the user can manage with his groups.
         for (int i = 0; i < groups.size(); i++) {
@@ -3007,10 +3007,10 @@ public class CmsDriverManager extends Object {
             // is this the admin-group?
             if (((CmsGroup) groups.elementAt(i)).getName().equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
                 // yes - all unlocked projects are accessible for him
-                projectsByGroup = m_projectDriver.getAllProjects(I_CmsConstants.C_PROJECT_STATE_UNLOCKED);
+                projectsByGroup = m_projectDriver.readProjects(I_CmsConstants.C_PROJECT_STATE_UNLOCKED);
             } else {
                 // no - get all projects, which can be accessed by the current group
-                projectsByGroup = m_projectDriver.getAllAccessibleProjectsByManagerGroup((CmsGroup) groups.elementAt(i));
+                projectsByGroup = m_projectDriver.readProjectsForManagerGroup((CmsGroup) groups.elementAt(i));
             }
 
             // merge the projects to the vector
@@ -3257,7 +3257,7 @@ public class CmsDriverManager extends Object {
      * @return a Vector(of Strings) with the linkrequest names.
      */
     public Vector getDependingExportLinks(Vector res) throws CmsException {
-        return m_projectDriver.getDependingExportLinks(res);
+        return m_projectDriver.readExportLinks(res);
     }
 
     /**
@@ -3451,7 +3451,7 @@ public class CmsDriverManager extends Object {
      *          this CmsPageLinks object contains all links on the page withouth a valid target.
      */
     public Vector getOnlineBrokenLinks() throws CmsException {
-        return m_projectDriver.getOnlineBrokenLinks();
+        return m_projectDriver.readBrokenLinksOnline();
     }
 
     /**
@@ -5196,7 +5196,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector readAllProjectResources(CmsRequestContext context, int projectId) throws CmsException {
-        List result=getAllFullPaths(context, m_projectDriver.readAllProjectResources(projectId));
+        List result=getAllFullPaths(context, m_projectDriver.readProjectResources(projectId));
         return new Vector(result);
     }
 
@@ -5939,7 +5939,7 @@ public class CmsDriverManager extends Object {
      * @param pageId The resourceId (offline) of the page whose liks should be read.
      */
     public Vector readLinkEntrys(CmsUUID pageId) throws CmsException {
-        return m_projectDriver.readLinkEntrys(pageId);
+        return m_projectDriver.readLinkEntries(pageId);
     }
 
     /**
@@ -6001,7 +6001,7 @@ public class CmsDriverManager extends Object {
      * @param pageId The resourceId (online) of the page whose liks should be read.
      */
     public Vector readOnlineLinkEntrys(CmsUUID pageId) throws CmsException {
-        return m_projectDriver.readOnlineLinkEntrys(pageId);
+        return m_projectDriver.readLinkEntriesOnline(pageId);
     }
 
     /**
@@ -7670,7 +7670,7 @@ public class CmsDriverManager extends Object {
     public void storeSession(String sessionId, Hashtable sessionData) throws CmsException {
 
         // update the session
-        int rowCount = m_projectDriver.updateSession(sessionId, sessionData);
+        int rowCount = m_projectDriver.writeSession(sessionId, sessionData);
         if (rowCount != 1) {
             // the entry doesn't exist - create it
             m_projectDriver.createSession(sessionId, sessionData);
@@ -7881,7 +7881,7 @@ public class CmsDriverManager extends Object {
         if ((isAdmin(context) || isManagerOfProject(context)) && (project.getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED)) {
 
             // unlock all resources in the project
-            m_projectDriver.unlockProject(project);
+            m_projectDriver.unlockResources(project);
             m_lockDispatcher.removeResourcesInProject(projectId);
             clearResourceCache();
             m_projectCache.clear();
@@ -7919,7 +7919,7 @@ public class CmsDriverManager extends Object {
      * @param newRes A Vector (of CmsResources) with the newRes resources of the project.
      */
     public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newRes, int pageType) throws CmsException {
-        m_projectDriver.updateOnlineProjectLinks(deleted, changed, newRes, pageType);
+        m_projectDriver.writeProjectLinksOnline(deleted, changed, newRes, pageType);
     }
 
 
@@ -8111,7 +8111,7 @@ public class CmsDriverManager extends Object {
     public void writeCronTable(CmsRequestContext context, String crontable) throws CmsException {
         if (isAdmin(context)) {
             if (m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_CRONTABLE) == null) {
-                m_projectDriver.addSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_CRONTABLE, crontable);
+                m_projectDriver.createSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_CRONTABLE, crontable);
             } else {
                 m_projectDriver.writeSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_CRONTABLE, crontable);
             }
@@ -8135,7 +8135,7 @@ public class CmsDriverManager extends Object {
             // security is ok - write the exportpath.
             if (m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_PACKAGEPATH) == null) {
                 // the property wasn't set before.
-                m_projectDriver.addSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_PACKAGEPATH, path);
+                m_projectDriver.createSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_PACKAGEPATH, path);
             } else {
                 // overwrite the property.
                 m_projectDriver.writeSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_PACKAGEPATH, path);
@@ -8206,7 +8206,7 @@ public class CmsDriverManager extends Object {
                 }
                 if (m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS) == null) {
                     // the property wasn't set before.
-                    m_projectDriver.addSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS, extensions);
+                    m_projectDriver.createSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS, extensions);
                 } else {
                     // overwrite the property.
                     m_projectDriver.writeSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS, extensions);
@@ -8293,7 +8293,7 @@ public class CmsDriverManager extends Object {
     public void writeLinkCheckTable(CmsRequestContext context, Hashtable linkchecktable) throws CmsException {
         if (isAdmin(context)) {
             if (m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_LINKCHECKTABLE) == null) {
-                m_projectDriver.addSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_LINKCHECKTABLE, linkchecktable);
+                m_projectDriver.createSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_LINKCHECKTABLE, linkchecktable);
             } else {
                 m_projectDriver.writeSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_LINKCHECKTABLE, linkchecktable);
             }

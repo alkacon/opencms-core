@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/22 14:54:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/09/15 15:31:53 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.6 $ $Date: 2003/08/22 14:54:43 $
+ * @version $Revision: 1.7 $ $Date: 2003/09/15 15:31:53 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -62,7 +62,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#addSystemProperty(java.lang.String, java.io.Serializable)
      */
-    public Serializable addSystemProperty(String name, Serializable object) throws CmsException {
+    public Serializable createSystemProperty(String name, Serializable object) throws CmsException {
         byte[] value;
         PreparedStatement stmt = null;
         PreparedStatement stmt2 = null;
@@ -219,7 +219,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#updateSession(java.lang.String, java.util.Hashtable)
      */
-    public int updateSession(String sessionId, Hashtable data) throws CmsException {
+    public int writeSession(String sessionId, Hashtable data) throws CmsException {
         byte[] value = null;
         PreparedStatement stmt = null;
         PreparedStatement stmt2 = null;
