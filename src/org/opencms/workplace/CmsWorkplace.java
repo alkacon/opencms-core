@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/06/25 16:12:50 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/06/30 14:28:59 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.http.HttpSession;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
@@ -64,6 +64,9 @@ public abstract class CmsWorkplace {
     private HttpSession m_session;
     private CmsWorkplaceSettings m_settings;
     private String m_resourceUri = null;
+    
+    public static final int HTML_START = 0;
+    public static final int HTML_END = 1;
         
     /**
      * Public constructor.<p>

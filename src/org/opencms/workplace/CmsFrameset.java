@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2003/06/25 13:48:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/06/30 14:28:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
@@ -557,20 +557,17 @@ public class CmsFrameset extends CmsWorkplace {
     }
         
     /**
-     * Returns the html for a button bar start.<p>
+     * Returns the html for a button bar.<p>
      * 
-     * @return the html for a button bar start
+     * @param segment the HTML segment (START / END)
+     * 
+     * @return a button bar html start / end segment 
      */
-    public String buttonBarStart() {
-        return "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr>\n";
+    public String buttonBar(int segment) {
+        if (segment == HTML_START) {
+            return "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr>\n";
+        } else {
+            return "</tr></table>";
+        }
     }
-   
-    /**
-     * Returns the html for a button bar end.<p>  
-     * 
-     * @return the html for a button bar end
-     */
-    public String buttonBarEnd() {
-        return "</tr></table>";
-    }  
 }
