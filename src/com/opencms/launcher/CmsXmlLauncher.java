@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2003/02/26 10:30:36 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/06/11 17:04:38 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.http.HttpServletRequest;
  * be used to create output.<p>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.44 $ $Date: 2003/02/26 10:30:36 $
+ * @version $Revision: 1.45 $ $Date: 2003/06/11 17:04:38 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I_CmsConstants {
     
@@ -252,9 +252,10 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
             if(elementreplace){
                 // we cant cach this
                 eldefs.add(replaceDef);
-                cmsUri = new CmsUri(elemDesc, cms.getReadingpermittedGroup(
-                            cms.getRequestContext().currentProject().getId(),
-                            templateName), eldefs, Utils.isHttpsResource(cms, file));
+//				TODO: fix this later - check how to do this without getReadingpermittedGroup
+//				String readAccessGroup = CmsObject.C_GROUP_ADMIN;
+				String readAccessGroup = cms.getReadingpermittedGroup(cms.getRequestContext().currentProject().getId(),templateName);
+                cmsUri = new CmsUri(elemDesc, readAccessGroup, eldefs, Utils.isHttpsResource(cms, file));
             }else{
                 cmsUri = new CmsUri(elemDesc, cms.getReadingpermittedGroup(
                             cms.getRequestContext().currentProject().getId(),

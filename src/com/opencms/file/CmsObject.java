@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/11 11:36:42 $
-* Version: $Revision: 1.281 $
+* Date   : $Date: 2003/06/11 17:04:23 $
+* Version: $Revision: 1.282 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.281 $
+ * @version $Revision: 1.282 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -1882,7 +1882,7 @@ public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
      *          Admingroup for no Group.
      */
     public String getReadingpermittedGroup(int projectId, String resource) throws CmsException {
-        return m_driverManager.getReadingpermittedGroup(projectId, getSiteRoot(resource));
+        return m_driverManager.getReadingpermittedGroup(m_context.currentUser(), m_context.currentProject(), projectId, getSiteRoot(resource));
     }
 
 /**
@@ -4479,11 +4479,12 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
     }
     
     // TODO: added for testing purposes - check later, if useful/neccessary
+    
     public CmsAccessControlList getAccessControlList(String resourceName) throws CmsException {
 		CmsResource res = readFileHeader(resourceName);
 		return m_driverManager.getAccessControlList(m_context.currentUser(), m_context.currentProject(), res); 
     }
-
+	
 	public Vector getAccessControlEntries(String resourceName) throws CmsException {
 		return getAccessControlEntries(resourceName, true);    
 	}
@@ -4560,5 +4561,10 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 		CmsResource source = readFileHeader(sourceName);
 		CmsResource dest = readFileHeader(destName);
 		m_driverManager.copyAccessControlEntries(m_context.currentUser(), m_context.currentProject(), source, dest);
+	}
+	
+	public void writeAccessControlEntries(String resourceName, Vector acEntries) throws CmsException {
+		CmsResource resource = readFileHeader(resourceName);
+		m_driverManager.writeAccessControlEntries(m_context.currentUser(), m_context.currentProject(), resource, acEntries);
 	}
 }

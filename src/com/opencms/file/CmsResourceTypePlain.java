@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2003/06/10 16:21:00 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/06/11 17:04:23 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -395,8 +395,10 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
 			launcherStartClass = cms.getResourceType(type).getLauncherClass();
         }
         // try to read the new owner and group
+        // TODO: fix this later
         CmsUser resowner = null;
         CmsGroup resgroup = null;
+        int resaccess = 0;
         try{
             resowner = cms.readUser(user);
         } catch (CmsException e){
@@ -416,8 +418,13 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
             resgroup = cms.getRequestContext().currentGroup();  
         }       
         try {
+        	resaccess = Integer.parseInt(access);
+        } catch (Exception e) {
+        	//
+        }
+        try {
             importedResource = cms.doImportResource(destination, resourceType ,properties, launcherType, 
-                                             launcherStartClass, resowner.getName(), resgroup.getName(), Integer.parseInt(access), lastmodified, content);
+                                             launcherStartClass, resowner.getName(), resgroup.getName(), resaccess, lastmodified, content);
             if(importedResource != null){
                 changed = false;
             }
@@ -427,7 +434,7 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
         if(changed){
         	// if the resource already exists it must be updated
             lockResource(cms,destination, true);
-            cms.doWriteResource(destination,properties,resowner.getName(), resgroup.getName(),Integer.parseInt(access),resourceType,content);
+            cms.doWriteResource(destination,properties,resowner.getName(), resgroup.getName(),resaccess,resourceType,content);
             importedResource = cms.readFileHeader(destination);
         }
 

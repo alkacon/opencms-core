@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/11 11:35:47 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/06/11 17:03:42 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import com.opencms.util.SqlHelper;
  * Generic (ANSI-SQL) database server implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2003/06/11 11:35:47 $
+ * @version $Revision: 1.15 $ $Date: 2003/06/11 17:03:42 $
  * @since 5.1.2
  */
 public class CmsUserDriver extends Object implements I_CmsUserDriver {
@@ -653,49 +653,6 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             m_sqlManager.closeAll(conn, stmt, res);
         }
         return groups;
-    }
-    
-    /**
-     * Checks which Group can read the resource and all the parent folders.
-     *
-     * @param projectid the project to check the permission.
-     * @param res The resource name to be checked.
-     * @return The Group Id of the Group which can read the resource.
-     *          null for all Groups and
-     *          Admingroup for no Group.
-     */
-    public String getReadingpermittedGroup(int projectId, String resource) throws CmsException {
-        CmsResource res = m_driverManager.getVfsDriver().readFileHeader(projectId, resource, false);
-        CmsUUID groupId = CmsUUID.getNullUUID();
-        boolean noGroupCanReadThis = false;
-        do {
-            int flags = res.getAccessFlags();
-            if (!((flags & I_CmsConstants.C_ACCESS_PUBLIC_READ) == I_CmsConstants.C_ACCESS_PUBLIC_READ)) {
-                if ((flags & I_CmsConstants.C_ACCESS_GROUP_READ) == I_CmsConstants.C_ACCESS_GROUP_READ) {
-                    if ((groupId.isNullUUID()) || (groupId.equals(res.getGroupId()))) {
-                        groupId = res.getGroupId();
-                    } else {
-                        CmsUUID result = checkGroupDependence(groupId, res.getGroupId());
-                        if (result.isNullUUID()) {
-                            noGroupCanReadThis = true;
-                        } else {
-                            groupId = result;
-                        }
-                    }
-                } else {
-                    noGroupCanReadThis = true;
-                }
-            }
-            res = m_driverManager.getVfsDriver().readFileHeader(projectId, res.getParentId());
-        } while (!(noGroupCanReadThis || I_CmsConstants.C_ROOT.equals(res.getAbsolutePath())));
-        if (noGroupCanReadThis) {
-            return I_CmsConstants.C_GROUP_ADMIN;
-        }
-        if (groupId.isNullUUID()) {
-            return null;
-        } else {
-            return readGroup(groupId).getName();
-        }
     }
 
     /**

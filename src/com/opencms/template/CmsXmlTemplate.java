@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/05/15 12:39:35 $
-* Version: $Revision: 1.111 $
+* Date   : $Date: 2003/06/11 17:05:01 $
+* Version: $Revision: 1.112 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.111 $ $Date: 2003/05/15 12:39:35 $
+ * @version $Revision: 1.112 $ $Date: 2003/06/11 17:05:01 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -1584,6 +1584,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             CmsElementCache elementCache = cms.getRequestContext().getElementCache();
             variantCachesize = elementCache.getVariantCachesize();
 
+//			TODO: fix this later - check how to do this without getReadingpermittedGroup
             readAccessGroup = cms.getReadingpermittedGroup(cms.getRequestContext().currentProject().getId(),templateFile);
             CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, null, parameters, null);
 

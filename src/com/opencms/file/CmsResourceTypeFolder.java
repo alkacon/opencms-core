@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/06/10 16:21:00 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/06/11 17:04:23 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants, Serializable, com.opencms.workplace.I_CmsWpConstants {
 
@@ -748,8 +748,10 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
 
         boolean changed = true;
         // try to read the new owner and group
+        // TODO: fix this later
         CmsUser resowner = null;
         CmsGroup resgroup = null;
+        int resaccess = 0;
         try{
         	resowner = cms.readUser(user);
         } catch (CmsException e){
@@ -768,10 +770,15 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
             }             
         	resgroup = cms.getRequestContext().currentGroup();	
         } 
+        try {
+        	resaccess = Integer.parseInt(access);
+        } catch (Exception e){
+        	// 
+        }
         // try to create the resource		
         try {
             importedResource = cms.doImportResource(destination, C_TYPE_FOLDER, properties, C_UNKNOWN_LAUNCHER_ID, 
-                                             C_UNKNOWN_LAUNCHER, resowner.getName(), resgroup.getName(), Integer.parseInt(access), lastmodified, new byte[0]);
+                                             C_UNKNOWN_LAUNCHER, resowner.getName(), resgroup.getName(), resaccess, lastmodified, new byte[0]);
             if(importedResource != null){
                 changed = false;
             }
@@ -808,11 +815,12 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                 }
             }
             // check changes of the owner, group and access
-            if(importedResource.getAccessFlags() != Integer.parseInt(access) ||
-                   (!importedResource.getOwnerId().equals(resowner.getId())) ||
-                   (!importedResource.getGroupId().equals(resgroup.getId()))){
-                changed = true;            
-            }
+            // TODO: fix this later
+            //if(importedResource.getAccessFlags() != resaccess ||
+            //       (!importedResource.getOwnerId().equals(resowner.getId())) ||
+            //       (!importedResource.getGroupId().equals(resgroup.getId()))){
+            //    changed = true;            
+            //}
             // check changes of the resourcetype
             if(importedResource.getType() != cms.getResourceType(type).getResourceType()){
             	changed = true;
@@ -820,7 +828,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
             // update the folder if something has changed
             if(changed){
             	lockResource(cms,importedResource.getAbsolutePath(), true);
-            	cms.doWriteResource(importedResource.getAbsolutePath(),properties,resowner.getName(), resgroup.getName(),Integer.parseInt(access),C_TYPE_FOLDER,new byte[0]);
+            	cms.doWriteResource(importedResource.getAbsolutePath(),properties,resowner.getName(), resgroup.getName(),resaccess,C_TYPE_FOLDER,new byte[0]);
             }
         }
 

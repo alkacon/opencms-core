@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2003/06/11 11:36:42 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2003/06/11 17:04:23 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * @author Andreas Schouten
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.55 $ $Date: 2003/06/11 11:36:42 $
+ * @version $Revision: 1.56 $ $Date: 2003/06/11 17:04:23 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -796,8 +796,9 @@ public class CmsExport implements I_CmsConstants, Serializable {
         	addElement(m_docXml, acentry, C_EXPORT_TAG_FLAGS, new Integer(ace.getFlags()).toString());
         	
         	Element acpermissionset = m_docXml.createElement(C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET); 
-        	addElement(m_docXml, acentry, C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS, new Integer(ace.getAllowedPermissions()).toString());
-        	addElement(m_docXml, acentry, C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS, new Integer(ace.getDeniedPermissions()).toString());
+        	acentry.appendChild(acpermissionset);
+        	addElement(m_docXml, acpermissionset, C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS, new Integer(ace.getAllowedPermissions()).toString());
+        	addElement(m_docXml, acpermissionset, C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS, new Integer(ace.getDeniedPermissions()).toString());
         }
     }
 

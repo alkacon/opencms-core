@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/06 12:48:11 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/06/11 17:03:42 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import com.opencms.security.CmsAccessControlEntry;
  * Definitions of all required user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/06/06 12:48:11 $
+ * @version $Revision: 1.8 $ $Date: 2003/06/11 17:03:42 $
  * @since 5.1.2
  */
 public interface I_CmsUserDriver {
@@ -67,7 +67,6 @@ public interface I_CmsUserDriver {
     Vector getChild(String groupname) throws CmsException;
     Vector getGroups() throws CmsException;
     Vector getGroupsOfUser(String name) throws CmsException;
-    String getReadingpermittedGroup(int projectId, String resource) throws CmsException;
     Vector getUsers(int type) throws CmsException;
     Vector getUsers(int type, String namefilter) throws CmsException;
     Vector getUsersByLastname(String lastname, int userType, int userStatus, int wasLoggedIn, int nMax) throws CmsException;

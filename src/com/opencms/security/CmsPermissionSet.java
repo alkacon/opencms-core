@@ -51,16 +51,16 @@ public class CmsPermissionSet {
 			String suffix = tok.nextToken();
 			switch (suffix.charAt(0)) {
 				case 'R': case 'r':
-					if (prefix.charAt(0) == '+') m_allowed |= I_CmsConstants.C_ACCESS_READ;
-					if (prefix.charAt(0) == '-') m_denied |= I_CmsConstants.C_ACCESS_READ;
+					if (prefix.charAt(0) == '+') m_allowed |= I_CmsConstants.C_PERMISSION_READ;
+					if (prefix.charAt(0) == '-') m_denied |= I_CmsConstants.C_PERMISSION_READ;
 					break;
 				case 'W': case 'w':
-					if (prefix.charAt(0) == '+') m_allowed |= I_CmsConstants.C_ACCESS_WRITE;
-					if (prefix.charAt(0) == '-') m_denied |= I_CmsConstants.C_ACCESS_WRITE;				
+					if (prefix.charAt(0) == '+') m_allowed |= I_CmsConstants.C_PERMISSION_WRITE;
+					if (prefix.charAt(0) == '-') m_denied |= I_CmsConstants.C_PERMISSION_WRITE;				
 					break;
 				case 'V': case 'v':
-					if (prefix.charAt(0) == '+') m_allowed |= I_CmsConstants.C_ACCESS_VISIBLE;
-					if (prefix.charAt(0) == '-') m_denied |= I_CmsConstants.C_ACCESS_VISIBLE;
+					if (prefix.charAt(0) == '+') m_allowed |= I_CmsConstants.C_PERMISSION_VIEW;
+					if (prefix.charAt(0) == '-') m_denied |= I_CmsConstants.C_PERMISSION_VIEW;
 					break;
 				case 'I': case 'i':
 					if (prefix.charAt(0) == '+') m_flags |= I_CmsConstants.C_ACCESSFLAGS_INHERITED;
@@ -139,12 +139,12 @@ public class CmsPermissionSet {
 		
 	public String getPermissionString() {
 		StringBuffer p = new StringBuffer("");
-		p.append(((m_allowed & I_CmsConstants.C_ACCESS_READ)>0)    ? "+r":""); 
-		p.append(((m_allowed & I_CmsConstants.C_ACCESS_WRITE)>0)   ? "+w":"");
-		p.append(((m_allowed & I_CmsConstants.C_ACCESS_VISIBLE)>0) ? "+v":"");
-		p.append(((m_denied  & I_CmsConstants.C_ACCESS_READ)>0)    ? "-r":""); 
-		p.append(((m_denied  & I_CmsConstants.C_ACCESS_WRITE)>0)   ? "-w":"");
-		p.append(((m_denied  & I_CmsConstants.C_ACCESS_VISIBLE)>0) ? "-v":"");
+		p.append(((m_allowed & I_CmsConstants.C_PERMISSION_READ)>0)    ? "+r":""); 
+		p.append(((m_allowed & I_CmsConstants.C_PERMISSION_WRITE)>0)   ? "+w":"");
+		p.append(((m_allowed & I_CmsConstants.C_PERMISSION_VIEW)>0) ? "+v":"");
+		p.append(((m_denied  & I_CmsConstants.C_PERMISSION_READ)>0)    ? "-r":""); 
+		p.append(((m_denied  & I_CmsConstants.C_PERMISSION_WRITE)>0)   ? "-w":"");
+		p.append(((m_denied  & I_CmsConstants.C_PERMISSION_VIEW)>0) ? "-v":"");
 		return p.toString();			
 	}
 	

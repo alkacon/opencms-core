@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/05/21 14:34:28 $
-* Version: $Revision: 1.92 $
+* Date   : $Date: 2003/06/11 17:04:23 $
+* Version: $Revision: 1.93 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,20 +28,17 @@
 
 package com.opencms.file;
 
-import com.opencms.boot.CmsBase;
-import com.opencms.core.A_OpenCms;
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.core.OpenCms;
-import com.opencms.flex.util.CmsStringSubstitution;
-import com.opencms.linkmanagement.CmsPageLinks;
-import com.opencms.report.I_CmsReport;
-import com.opencms.template.A_CmsXmlContent;
-import com.opencms.template.CmsXmlXercesParser;
-import com.opencms.util.LinkSubstitution;
-import com.opencms.workplace.I_CmsWpConstants;
-
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -62,6 +59,21 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
+import com.opencms.boot.CmsBase;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.OpenCms;
+import com.opencms.flex.util.CmsStringSubstitution;
+import com.opencms.flex.util.CmsUUID;
+import com.opencms.linkmanagement.CmsPageLinks;
+import com.opencms.report.I_CmsReport;
+import com.opencms.security.CmsAccessControlEntry;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.template.CmsXmlXercesParser;
+import com.opencms.util.LinkSubstitution;
+import com.opencms.workplace.I_CmsWpConstants;
+
 
 /**
  * Holds the functionaility to import resources from the filesystem
@@ -71,7 +83,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.92 $ $Date: 2003/05/21 14:34:28 $
+ * @version $Revision: 1.93 $ $Date: 2003/06/11 17:04:23 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -126,6 +138,9 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     /** Groups to create during import are stored here */
     private Stack m_groupsToCreate = new Stack();
 
+	/** Access control entries for a single resource */
+	private Vector m_acEntriesToCreate = new Vector();
+	
     /**
      * In this vector we store the imported pages (as Strings from getAbsolutePath()),
      * after the import we check them all to update the link tables for the linkmanagement.
@@ -653,11 +668,11 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         String propertyName, 
         String propertyValue
     ) throws CmsException {
-        NodeList fileNodes, propertyNodes;
-        Element currentElement, currentProperty;
+        NodeList fileNodes, propertyNodes, acentryNodes;
+        Element currentElement, currentProperty, currentEntry;
         String source, destination, type, user, group, access, launcherStartClass, timestamp;
         long lastmodified = 0;
-        Map properties;
+        Map properties, acentries;
         
         Vector types = new Vector(); // stores the file types for which the property already exists
         if (excludeList == null) {
@@ -784,6 +799,25 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     
                     // import the specified file 
                     importResource(source, destination, type, user, group, access, lastmodified, properties, launcherStartClass, writtenFilenames, fileCodes);
+
+					// write all imported access control entries for this file
+					acentryNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
+					acentries = new HashMap();
+					// collect all access control entries
+					String resid = getTextNodeValue(currentElement, C_EXPORT_TAG_ID);
+					for (int j = 0; j < acentryNodes.getLength(); j++) {
+						currentEntry = (Element) acentryNodes.item(j);
+						// get the data of the access control entry
+						String id = getTextNodeValue(currentEntry, C_EXPORT_TAG_ID);
+						String flags = getTextNodeValue(currentEntry, C_EXPORT_TAG_FLAGS);
+						String allowed = getTextNodeValue(currentEntry, C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS);
+						String denied = getTextNodeValue(currentEntry, C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS);
+
+						// add the entry to the list
+						// addImportAccessControlEntry(resid, id, allowed, denied, flags);
+					}
+					// importAccessControlEntries(destination);
+					
                 } else {
                     // skip the file import, just print out the information to the report
                     m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
@@ -1006,6 +1040,30 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         }
     }
 
+	private void importAccessControlEntries(String destination)
+		throws CmsException {
+		try {
+			try {
+				m_report.print(m_report.key("report.importing_accesscontrolentries"), I_CmsReport.C_FORMAT_NOTE);
+				m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+				m_cms.writeAccessControlEntries(C_ROOT + destination, m_acEntriesToCreate);
+				m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+			} catch (CmsException exc){
+				m_report.println(m_report.key("report.not_created"), I_CmsReport.C_FORMAT_OK);
+			}
+		} catch (Exception exc){
+			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+		} finally {
+			m_acEntriesToCreate = new Vector();
+		}
+	}
+	
+	private void addImportAccessControlEntry (String resid, String id, String allowed, String denied, String flags) {
+
+		CmsAccessControlEntry ace = new CmsAccessControlEntry(new CmsUUID(resid), new CmsUUID(id), Integer.parseInt(allowed), Integer.parseInt(denied), Integer.parseInt(flags));
+		m_acEntriesToCreate.add(ace);
+	}		
+		
     /**
      * Checks all new imported pages and create or updates the entrys in the
      * database for the linkmanagement.<p>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
-* Date   : $Date: 2003/02/02 11:02:03 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/06/11 17:04:38 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.38 $ $Date: 2003/02/02 11:02:03 $
+ * @version $Revision: 1.39 $ $Date: 2003/06/11 17:04:38 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
 
@@ -109,9 +109,10 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
             if(cmsUri == null) {
                 // hammer nich
                 CmsElementDescriptor elemDesc = new CmsElementDescriptor(templateClass, file.getAbsolutePath());
-                cmsUri = new CmsUri(elemDesc, cms.getReadingpermittedGroup(
-                        cms.getRequestContext().currentProject().getId(),
-                        file.getAbsolutePath()), (CmsElementDefinitionCollection)null,
+//				TODO: fix this later - check how to do this without getReadingpermittedGroup
+//				String readAccessGroup = CmsObject.C_GROUP_ADMIN;
+				String readAccessGroup = cms.getReadingpermittedGroup(cms.getRequestContext().currentProject().getId(), file.getAbsolutePath());
+                cmsUri = new CmsUri(elemDesc, readAccessGroup, (CmsElementDefinitionCollection)null,
                         Utils.isHttpsResource(cms, file));
                 elementCache.getUriLocator().put(uriDesc, cmsUri);
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/11 11:36:14 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/06/11 17:03:42 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,13 +101,13 @@ import com.opencms.workplace.CmsAdminVfsLinkManagement;
 
 
 /**
- * @version $Revision: 1.18 $ $Date: 2003/06/11 11:36:14 $
+ * @version $Revision: 1.19 $ $Date: 2003/06/11 17:03:42 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.18 $ $Date: 2003/06/11 11:36:14 $
+ * @version $Revision: 1.19 $ $Date: 2003/06/11 17:03:42 $
  */
 public class CmsDriverManager implements I_CmsConstants {
    
@@ -195,7 +195,7 @@ public class CmsDriverManager implements I_CmsConstants {
 			
 			permissions.denyPermissions(denied);
 
-// System.err.println ("Checking " + getUser().getName() + " " + getProject().getName() + ", Resource " + resource.getName() + " against " + permissions.toString());
+ System.err.println ("Checking " + getUser().getName() + " " + getProject().getName() + ", Resource " + resource.getName() + " against " + permissions.toString());
 
 			return permissions;
 		}
@@ -3786,10 +3786,64 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, Stri
      *          Admingroup for no Group.
      */
     // TODO: check why this is neccessary
-    public String getReadingpermittedGroup(int projectId, String resource) throws CmsException {
-        return m_userDriver.getReadingpermittedGroup(projectId, resource);
-    }
+    public String getReadingpermittedGroup(CmsUser currentUser, CmsProject currentProject, int projectId, String resource) throws CmsException {
 
+		CmsResource res = m_vfsDriver.readFileHeader(projectId, resource, false);
+		CmsAccessControlList acList = getAccessControlList(currentUser, currentProject, res);
+		
+		String rpgroupName = null;
+		
+		// if possible, prefer public read
+		CmsGroup g = readGroup(currentUser, I_CmsConstants.C_GROUP_GUEST);
+		if ((acList.getPermissions(g).getPermissions() & C_PERMISSION_READ) > 0)
+			return g.getName();
+			
+		// check if any of the groups of the current user has read permissions
+		Enumeration groups = getGroupsOfUser(currentUser, currentUser.getName()).elements();
+		while (rpgroupName == null && groups.hasMoreElements()) {
+			
+			g = (CmsGroup)groups.nextElement();
+			if ((acList.getPermissions(g).getPermissions() & C_PERMISSION_READ) > 0)
+				rpgroupName = g.getName(); 
+		}
+		
+System.err.println("ReadingpermittedGroup=" + rpgroupName);
+		return (rpgroupName != null) ? rpgroupName : I_CmsConstants.C_GROUP_ADMIN;
+		
+		/*
+		CmsUUID groupId = CmsUUID.getNullUUID();
+		boolean noGroupCanReadThis = false;
+		do {
+			int flags = res.getAccessFlags();
+			if (!((flags & I_CmsConstants.C_ACCESS_PUBLIC_READ) == I_CmsConstants.C_ACCESS_PUBLIC_READ)) {
+				if ((flags & I_CmsConstants.C_ACCESS_GROUP_READ) == I_CmsConstants.C_ACCESS_GROUP_READ) {
+					if ((groupId.isNullUUID()) || (groupId.equals(res.getGroupId()))) {
+						groupId = res.getGroupId();
+					} else {
+						CmsUUID result = m_userDriver.checkGroupDependence(groupId, res.getGroupId());
+						if (result.isNullUUID()) {
+							noGroupCanReadThis = true;
+						} else {
+							groupId = result;
+						}
+					}
+				} else {
+					noGroupCanReadThis = true;
+				}
+			}
+			res = m_vfsDriver.readFileHeader(projectId, res.getParentId());
+		} while (!(noGroupCanReadThis || I_CmsConstants.C_ROOT.equals(res.getAbsolutePath())));
+		if (noGroupCanReadThis) {
+			return I_CmsConstants.C_GROUP_ADMIN;
+		}
+		if (groupId.isNullUUID()) {
+			return null;
+		} else {
+			return m_userDriver.readGroup(groupId).getName();
+		}
+		*/
+	}
+	
     /**
      * Returns the parent group of a group<P/>
      *
@@ -9121,6 +9175,15 @@ protected void validName(String name, boolean blank) throws CmsException {
 	public void writeAccessControlEntry(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsAccessControlEntry acEntry) throws CmsException {
 
 		m_userDriver.writeAccessControlEntry(currentProject,acEntry);
+	}
+	
+	public void writeAccessControlEntries(CmsUser currentUser, CmsProject currentProject, CmsResource resource, Vector acEntries) throws CmsException {
+	
+		removeAllAccessControlEntries(currentUser, currentProject, resource);
+		Iterator i = acEntries.iterator();
+		while (i.hasNext()) {
+			m_userDriver.writeAccessControlEntry(currentProject, (CmsAccessControlEntry)i.next());		
+		}
 	}
 	
 	/**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2003/02/15 11:14:54 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/06/11 17:05:01 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Hashtable;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.33 $ $Date: 2003/02/15 11:14:54 $
+ * @version $Revision: 1.34 $ $Date: 2003/06/11 17:05:01 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
@@ -204,6 +204,7 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
      */
     public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters){
         String readAccessGroup = CmsObject.C_GROUP_ADMIN;
+        // TODO: fix this later - check how to do this without getReadingpermittedGroup
         try{
             readAccessGroup = cms.getReadingpermittedGroup(
                                 cms.getRequestContext().currentProject().getId(), templateFile);

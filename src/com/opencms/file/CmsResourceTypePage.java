@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/06/10 16:21:00 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2003/06/11 17:04:23 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Implementation of a resource type for "editable content pages" in OpenCms.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.54 $ $Date: 2003/06/10 16:21:00 $
+ * @version $Revision: 1.55 $ $Date: 2003/06/11 17:04:23 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, I_CmsWpConstants {
 
@@ -612,8 +612,10 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
 			launcherStartClass = cms.getResourceType(type).getLauncherClass();
         }
         // try to read the new owner and group
+		// TODO: fix this later
         CmsUser resowner = null;
         CmsGroup resgroup = null;
+		int resaccess = 0;
         try{
         	resowner = cms.readUser(user);
         } catch (CmsException e){
@@ -632,9 +634,14 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
             }  
         	resgroup = cms.getRequestContext().currentGroup();	
         }        
+		try {
+			resaccess = Integer.parseInt(access);
+		} catch (Exception e){
+			// 
+		}
         try {
             importedResource = cms.doImportResource(destination, resourceType ,properties, launcherType, 
-                                             launcherStartClass, resowner.getName(), resgroup.getName(), Integer.parseInt(access), lastmodified, content);
+                                             launcherStartClass, resowner.getName(), resgroup.getName(), resaccess, lastmodified, content);
             if(importedResource != null){
                 changed = false;
             }
@@ -644,7 +651,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         if(changed){
         	// if the resource already exists it must be updated
             lockResource(cms,destination, true);
-            cms.doWriteResource(destination,properties,resowner.getName(), resgroup.getName(),Integer.parseInt(access),resourceType,content);
+            cms.doWriteResource(destination,properties,resowner.getName(), resgroup.getName(),resaccess,resourceType,content);
             importedResource = cms.readFileHeader(destination);
         }
 
