@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsUndelete.java,v $
- * Date   : $Date: 2003/07/22 17:12:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/30 13:34:50 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
@@ -97,7 +97,7 @@ public class CmsUndelete extends CmsDialog {
         } else {                        
             setAction(ACTION_DEFAULT);
             // build title for delete dialog     
-            setParamTitle(key("title.undelete") + ": " + CmsResource.getName(getParamFile()));
+            setParamTitle(key("title.undelete") + ": " + CmsResource.getName(getParamResource()));
         }      
     } 
 
@@ -120,7 +120,7 @@ public class CmsUndelete extends CmsDialog {
         } catch (CmsException e) {
             // prepare common message part
             String message = "<p>\n" 
-                + key("title.undelete") + ": " + getParamFile() + "\n</p>\n";                 
+                + key("title.undelete") + ": " + getParamResource() + "\n</p>\n";                 
             // error during deletion, show error dialog
             setParamErrorstack(e.getStackTraceAsString());
             setParamMessage(message + key("error.message." + getParamDialogtype()));
@@ -140,7 +140,7 @@ public class CmsUndelete extends CmsDialog {
         // on folder deletion display "please wait" screen, not for simple file touching
         if (! DIALOG_WAIT.equals(getParamAction())) {
             try {
-                CmsFolder folder = getCms().readFolder(getParamFile(), true);
+                CmsFolder folder = getCms().readFolder(getParamResource(), true);
                 // return false, this will trigger the "please wait" screen
                 if (folder.isFolder()) {
                     return false;
@@ -150,7 +150,7 @@ public class CmsUndelete extends CmsDialog {
         }
          
         // undelete the resource
-        getCms().undeleteResource(getParamFile());
+        getCms().undeleteResource(getParamResource());
         
         return true;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2003/07/29 15:33:51 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/30 13:34:50 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */
@@ -117,7 +117,7 @@ public class CmsRename extends CmsDialog {
         } else {                        
             setAction(ACTION_DEFAULT);
             // build title for delete dialog     
-            setParamTitle(key("title.rename") + ": " + CmsResource.getName(getParamFile()));
+            setParamTitle(key("title.rename") + ": " + CmsResource.getName(getParamResource()));
         }      
     } 
 
@@ -136,7 +136,7 @@ public class CmsRename extends CmsDialog {
         } catch (CmsException e) {
             // prepare common message part
             String message = "<p>\n" 
-                + key("source") + ": " + getParamFile() + "<br>\n" 
+                + key("source") + ": " + getParamResource() + "<br>\n" 
                 + key("target") + ": " + getParamTarget() + "\n</p>\n";
            
                   
@@ -162,7 +162,7 @@ public class CmsRename extends CmsDialog {
         // calculate the target name
         if (! target.startsWith("/")) {
             // target is not an absolute path, add the current parent folder
-            target = CmsResource.getParent(getParamFile()) + target; 
+            target = CmsResource.getParent(getParamResource()) + target; 
         }
         
         // check if target already exists, if so, throw exception and terminate
@@ -176,7 +176,7 @@ public class CmsRename extends CmsDialog {
         }
         
         // rename the resource
-        getCms().renameResource(getParamFile(), target);
+        getCms().renameResource(getParamResource(), target);
         return true;
     }
 }

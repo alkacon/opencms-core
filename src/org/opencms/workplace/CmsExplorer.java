@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/30 13:34:50 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2003/07/30 13:36:48 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,15 +61,13 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 5.1
  */
 public class CmsExplorer extends CmsWorkplace {
     
     private static final int C_ENTRYS_PER_PAGE = 50;
-    
-    boolean m_showLinks = false;
     
     /**
      * Public constructor.<p>
@@ -83,8 +81,8 @@ public class CmsExplorer extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
-    protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {       
-        String currentResource = request.getParameter("resource");
+    protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        String currentResource = null;
         String mode = request.getParameter("mode");
         if (mode != null) {
             settings.setExplorerMode(mode);
@@ -93,14 +91,16 @@ public class CmsExplorer extends CmsWorkplace {
                 settings.setExplorerMode("explorerview");
             }
         }
-        
-        boolean showLinks = "true".equals(request.getParameter("showlinks"));
-        
-        if (showLinks) {
+
+        if ("vfslink".equals(settings.getExplorerMode())) {
+            currentResource = request.getParameter("file");
             settings.setExplorerResource(currentResource);
         } else {
-            if (currentResource != null && currentResource.startsWith("vfslink:")) {
-                showLinks = true;
+            currentResource = request.getParameter("folder");
+
+            if ((currentResource != null) && (currentResource.startsWith("vfslink:"))) {
+                // this is a link check, remove the prefix
+                settings.setExplorerMode("vfslink");
                 settings.setExplorerResource(currentResource.substring(8));
             } else {
                 if ((currentResource != null) && (!"".equals(currentResource)) && folderExists(getCms(), currentResource)) {
@@ -115,11 +115,11 @@ public class CmsExplorer extends CmsWorkplace {
             }
         }
         
-        String selectedPage = request.getParameter("page");
-        if (selectedPage != null) {
+        String selPage = request.getParameter("selPage");
+        if (selPage != null) {
             int page = 1;
             try {
-                page = Integer.parseInt(selectedPage);
+                page = Integer.parseInt(selPage);
             } catch (NumberFormatException e) {
                 // default is 1
             }
@@ -186,7 +186,8 @@ public class CmsExplorer extends CmsWorkplace {
      *
      * @return the html for the explorer file list
      */
-    public String getFileListFunction() {        
+    public String getFileListFunction() { 
+        boolean isInsideCurrentProject = false;       
         // if mode is "listonly", only the list will be shown
         boolean listonly = "listonly".equals(getSettings().getExplorerMode()); 
         // if mode is "projectview", all changed files in that project will be shown
@@ -352,7 +353,7 @@ public class CmsExplorer extends CmsWorkplace {
                 if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) { 
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, this.getClass().getName() + " error getting lock state for resource " + res + " " + e.getMessage());
                 }             
-            }            
+            }      
             
             isInsideCurrentProject = getCms().isInsideCurrentProject(res);      
             
@@ -555,7 +556,7 @@ public class CmsExplorer extends CmsWorkplace {
                 } else {
                     grey = true;
                 }
-                    */
+                */
                 
                 if (getCms().isInsideCurrentProject(rootFolder)) {
                     grey = false;

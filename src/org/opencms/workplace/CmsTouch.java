@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2003/07/22 17:12:01 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/30 13:34:50 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */
@@ -169,7 +169,7 @@ public class CmsTouch extends CmsDialog {
         } else {                        
             setAction(ACTION_DEFAULT);
             // build title for touch dialog     
-            setParamTitle(key("title.touch") + ": " + CmsResource.getName(getParamFile()));
+            setParamTitle(key("title.touch") + ": " + CmsResource.getName(getParamResource()));
         }      
     }
     
@@ -183,7 +183,7 @@ public class CmsTouch extends CmsDialog {
         
         CmsResource res = null;
         try {
-            res = getCms().readFileHeader(getParamFile());
+            res = getCms().readFileHeader(getParamResource());
         } catch (CmsException e) {
             return "";
         }    
@@ -216,7 +216,7 @@ public class CmsTouch extends CmsDialog {
         } catch (CmsException e) {
             // prepare common message part
             String message = "<p>\n" 
-                + key("title.touch") + ": " + getParamFile() + "\n</p>\n"; 
+                + key("title.touch") + ": " + getParamResource() + "\n</p>\n"; 
                 
             // error during touching, show error dialog
             setParamErrorstack(e.getStackTraceAsString());
@@ -236,14 +236,14 @@ public class CmsTouch extends CmsDialog {
     private boolean performTouchOperation() throws CmsException {
 
         // on folder copy display "please wait" screen, not for simple file copy
-        CmsResource sourceRes = getCms().readFileHeader(getParamFile());
+        CmsResource sourceRes = getCms().readFileHeader(getParamResource());
         if (sourceRes.isFolder() && ! DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
             return false;
         }
 
         // get the current resource name
-        String filename = getParamFile();
+        String filename = getParamResource();
 
         // get the new timestamp for the resource(s) from request parameter
         long timeStamp;

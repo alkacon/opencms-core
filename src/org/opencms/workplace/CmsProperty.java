@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/07/29 10:45:00 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/30 13:34:50 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1
  */
@@ -138,7 +138,7 @@ public class CmsProperty extends CmsDialog {
      * @throws CmsException if something goes wrong
      */
     public Vector getPropertyDefinitions() throws CmsException {
-        CmsResource res = getCms().readFileHeader(getParamFile());
+        CmsResource res = getCms().readFileHeader(getParamResource());
         I_CmsResourceType type = getCms().getResourceType(res.getType());
         return getCms().readAllPropertydefinitions(type.getResourceTypeName());           
     }          
@@ -154,13 +154,13 @@ public class CmsProperty extends CmsDialog {
         // set the action for the JSP switch 
         if (DIALOG_SHOW_DEFAULT.equals(getParamAction())) {
             setAction(ACTION_DEFAULT);
-            setParamTitle(key("title.property") + ": " + CmsResource.getName(getParamFile()));
+            setParamTitle(key("title.property") + ": " + CmsResource.getName(getParamResource()));
         } else if (DIALOG_SHOW_EDIT.equals(getParamAction())) {
             setAction(ACTION_SHOW_EDIT);
-            setParamTitle(key("title.editpropertyinfo") + ": " + CmsResource.getName(getParamFile()));                            
+            setParamTitle(key("title.editpropertyinfo") + ": " + CmsResource.getName(getParamResource()));                            
         } else if (DIALOG_SHOW_DEFINE.equals(getParamAction())) {
             setAction(ACTION_SHOW_DEFINE);
-            setParamTitle(key("title.newpropertydef") + ": " + CmsResource.getName(getParamFile()));
+            setParamTitle(key("title.newpropertydef") + ": " + CmsResource.getName(getParamResource()));
         } else if (DIALOG_SAVE_EDIT.equals(getParamAction())) {
             setAction(ACTION_SAVE_EDIT);
         } else if (DIALOG_SAVE_DEFINE.equals(getParamAction())) {
@@ -168,7 +168,7 @@ public class CmsProperty extends CmsDialog {
         } else { 
             // TODO: check here if another default dialog must be displayed                       
             setAction(ACTION_DEFAULT); 
-            setParamTitle(key("title.property") + ": " + CmsResource.getName(getParamFile()));
+            setParamTitle(key("title.property") + ": " + CmsResource.getName(getParamResource()));
         }      
     } 
     
@@ -182,11 +182,11 @@ public class CmsProperty extends CmsDialog {
         StringBuffer retValue = new StringBuffer(256);
         Map properties = null;
         try {
-            properties = getCms().readProperties(getParamFile());
+            properties = getCms().readProperties(getParamResource());
         } catch (CmsException e) {
             // error getting properties, show error dialog
             setParamErrorstack(e.getStackTraceAsString());
-            String message = "Error reading properties from resource " + getParamFile();
+            String message = "Error reading properties from resource " + getParamResource();
             setParamMessage(message + key("error.message." + getParamDialogtype()));
             setParamReasonSuggestion(getErrorSuggestionDefault());
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
@@ -261,7 +261,7 @@ public class CmsProperty extends CmsDialog {
         // get all used properties for the resource
         Map activeProperties = null;
         try {
-            activeProperties = getCms().readProperties(getParamFile());
+            activeProperties = getCms().readProperties(getParamResource());
         } catch (CmsException e) { }
         boolean present = false;
         if (propertyDef.size() > 0) {
@@ -318,7 +318,7 @@ public class CmsProperty extends CmsDialog {
      * @return the HTML output String for the buttons
      */
     public String buildActionButtons() {
-        String resourceName = getParamFile();
+        String resourceName = getParamResource();
         CmsResource file = null;
         CmsLock lock = null;
         
@@ -417,7 +417,7 @@ public class CmsProperty extends CmsDialog {
      * @throws CmsException if creation is not successful
      */
     private boolean performDefineOperation() throws CmsException {
-        CmsResource res = getCms().readFileHeader(getParamFile());
+        CmsResource res = getCms().readFileHeader(getParamResource());
         String newProperty = getParamNewproperty();
         if (newProperty != null && !"".equals(newProperty.trim())) {
             getCms().createPropertydefinition(newProperty, res.getType());
@@ -461,7 +461,7 @@ public class CmsProperty extends CmsDialog {
      */
     private boolean performEditOperation(HttpServletRequest request) throws CmsException {
         Vector propertyDef = getPropertyDefinitions();
-        Map activeProperties = getCms().readProperties(getParamFile());
+        Map activeProperties = getCms().readProperties(getParamResource());
         
         // check all property definitions of the resource for new values
         for (int i=0; i<propertyDef.size(); i++) {
@@ -479,13 +479,13 @@ public class CmsProperty extends CmsDialog {
             if (emptyParam) {
                 // parameter is empty, check if the property has to be deleted
                 if (activeProperties.containsKey(curProperty.getName())) {
-                    getCms().deleteProperty(getParamFile(), curProperty.getName());
+                    getCms().deleteProperty(getParamResource(), curProperty.getName());
                 }
             } else {
                 // parameter is not empty, check if the value has changed
                 String oldValue = request.getParameter(PREFIX_HIDDEN+propName);
                 if (!paramValue.equals(oldValue)) {
-                    getCms().writeProperty(getParamFile(), curProperty.getName(), paramValue);
+                    getCms().writeProperty(getParamResource(), curProperty.getName(), paramValue);
                 }
             }
         }     

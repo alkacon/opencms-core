@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2003/07/22 17:12:01 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/30 13:34:50 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
@@ -122,7 +122,7 @@ public class CmsMove extends CmsDialog {
         } else {                        
             setAction(ACTION_DEFAULT);
             // build title for copy dialog     
-            setParamTitle(key("title.move") + ": " + CmsResource.getName(getParamFile()));
+            setParamTitle(key("title.move") + ": " + CmsResource.getName(getParamResource()));
         }      
     } 
 
@@ -145,7 +145,7 @@ public class CmsMove extends CmsDialog {
         } catch (CmsException e) {
             // prepare common message part
             String message = "<p>\n" 
-                + key("source") + ": " + getParamFile() + "<br>\n" 
+                + key("source") + ": " + getParamResource() + "<br>\n" 
                 + key("target") + ": " + getParamTarget() + "\n</p>\n";
             // check if this exception requires a confirmation or error screen
             if ((e.getType() == CmsException.C_FILE_EXISTS)) {
@@ -171,7 +171,7 @@ public class CmsMove extends CmsDialog {
     private boolean performMoveOperation() throws CmsException {
 
         // on folder copy display "please wait" screen, not for simple file copy
-        CmsResource sourceRes = getCms().readFileHeader(getParamFile());
+        CmsResource sourceRes = getCms().readFileHeader(getParamResource());
         if (sourceRes.isFolder() && ! DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
             return false;
@@ -181,21 +181,21 @@ public class CmsMove extends CmsDialog {
         String target = getParamTarget();
         if (target == null) target = "";
         
-        if (target.equals(getParamFile())) {
+        if (target.equals(getParamResource())) {
             throw new CmsException("Can't move resource onto itself.", CmsException.C_FILESYSTEM_ERROR);
         }
         
         // calculate the target name
         if (! target.startsWith("/")) {
             // target is not an absolute path, add the current parent folder
-            target = CmsResource.getParent(getParamFile()) + target; 
+            target = CmsResource.getParent(getParamResource()) + target; 
         }
         try {
             CmsResource res = getCms().readFileHeader(target);
             if (res.isFolder()) {
                 // target folder already exists, so we add the current folder name
                 if (! target.endsWith("/")) target += "/";
-                target = target + CmsResource.getName(getParamFile());
+                target = target + CmsResource.getName(getParamResource());
                 if (target.endsWith("/")) target = target.substring(0, target.length()-1);
             }
         } catch (CmsException e) {
@@ -222,7 +222,7 @@ public class CmsMove extends CmsDialog {
         } 
                 
         // move the resource
-        getCms().moveResource(getParamFile(), target);
+        getCms().moveResource(getParamResource(), target);
         return true;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsUndoChanges.java,v $
- * Date   : $Date: 2003/07/22 17:12:01 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/30 13:34:50 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -97,11 +97,11 @@ public class CmsUndoChanges extends CmsDialog {
         } else {                        
             setAction(ACTION_DEFAULT);
             // build title for delete dialog     
-            setParamTitle(key("title.undochanges") + ": " + CmsResource.getName(getParamFile()));
+            setParamTitle(key("title.undochanges") + ": " + CmsResource.getName(getParamResource()));
         }
         
         try {
-            setCurrentResource(getCms().readFileHeader(getParamFile()));
+            setCurrentResource(getCms().readFileHeader(getParamResource()));
         } catch (CmsException e) { }
               
     } 
@@ -136,7 +136,7 @@ public class CmsUndoChanges extends CmsDialog {
     private boolean performUndoChangesOperation() throws CmsException {     
          
         // undo changes on the resource
-        getCms().undoChanges(getParamFile());
+        getCms().undoChanges(getParamResource());
         
         return true;
     }
@@ -171,7 +171,7 @@ public class CmsUndoChanges extends CmsDialog {
      * @return the name of the current resource
      */
     public String getFileName() {
-        return CmsResource.getName(getParamFile());
+        return CmsResource.getName(getParamResource());
     }
     
     /**
