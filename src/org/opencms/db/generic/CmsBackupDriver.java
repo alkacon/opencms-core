@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/10/08 17:01:21 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2003/10/09 16:53:43 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.67 $ $Date: 2003/10/08 17:01:21 $
+ * @version $Revision: 1.68 $ $Date: 2003/10/09 16:53:43 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -132,7 +132,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt.setInt(3, resourcetype);
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+            throw m_sqlManager.getCmsException(this, "PropertyDefinition="+name+"; ResourceType="+resourcetype, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -748,18 +748,18 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         PreparedStatement stmt = null;
         Connection conn = null;
 
-        String resourceName = resource.getRootPath();
+        /*String resourceName = resource.getRootPath();
         // hack: this never should happen, but it does.......
         if ((resource.isFolder()) && (!resourceName.endsWith("/"))) {
             resourceName += "/";
-        }
+        }*/
 
         CmsUUID resourceId = resource.getResourceId();
         try {
             conn = m_sqlManager.getConnectionForBackup();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_READALL_BACKUP");
             stmt.setString(1, resourceId.toString());
-            stmt.setString(2, resourceName);
+            stmt.setString(2, resource.getStructureId().toString());
             stmt.setInt(3, resource.getType());
             stmt.setInt(4, resource.getTagId());
             result = stmt.executeQuery();
@@ -944,7 +944,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                     stmt.setInt(2, m_sqlManager.nextId(m_sqlManager.readQuery("C_TABLE_PROPERTIES_BACKUP")));
                     stmt.setInt(3, propdef.getId());
                     stmt.setString(4, resource.getResourceId().toString());
-                    stmt.setString(5, resource.getRootPath());
+                    //stmt.setString(5, resource.getRootPath());
+                    stmt.setString(5, resource.getStructureId().toString());
                     stmt.setString(6, m_sqlManager.validateNull(value));
                     stmt.setInt(7, tagId);
                     stmt.setInt(8, versionId);
