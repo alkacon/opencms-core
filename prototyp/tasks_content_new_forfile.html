@@ -1,0 +1,156 @@
+<html>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '5_2_2_2_2_1.html';
+}
+
+function fillDate()
+{
+	if(aktTag<10){aktTag='0'+aktTag;}
+	if(aktMonat<10){aktMonat='0'+aktMonat;}
+	document.NEWTASK.DATE.value=aktTag+'.'+aktMonat+'.'+aktJahr;
+}
+
+//-->
+</script>
+
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="css/format.css">
+<!-- Ende Style -->
+
+<!-- Beginn externe Scripte wegen Datumsprüfung-->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
+<!-- um 2te Combobox zu füllen -->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms_task.js"></SCRIPT>
+<!-- Script wegen Datumsprüfung-->
+
+</head>
+
+<body bgcolor="#ffffff" background="pics/bg_weiss.gif"  bgproperties=fixed onLoad="fillDate();window.top.body.admin_head.admincontenturl='administration_content_projectresent.html';">
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<form id=NEWTASK name=NEWTASK>
+
+<!-- Tabellenaufbau für Neue Aufgabe-->
+<table border=2 cellspacing=0 cellpadding=0 width=500px>
+<tr><td><table cellspacing=0 cellpadding=3 border=0 width=100% height=100%>
+
+	<!-- Beginn Überschrift blau-->
+	<tr><td colspan=5 class=head>Neue Aufgabe erstellen f&uuml;r Datei "XY" in Projekt "Relaunch Sozial"</td></tr>
+	<!-- Ende Überschrift blau-->
+	
+	<!-- Beginn Leerzele-->
+	<tr><td colspan=5 class=leerzeile>&nbsp;</td></tr>
+	<!-- Ende Leerzeile-->
+	
+	<!-- Beginn Inhalt -->
+	<tr>
+		<td class=formular>Aufgabe für:</td>
+		<td class=dialogtxt colspan=2>
+			<select name="TEAM" width=150 style="width:150px" onchange="if(this.selectedIndex)setUser(document.NEWTASK.USER, this.options[this.selectedIndex].value);">
+				<option>Bitte Rolle wählen ...			
+				<option value="it">IT
+				<option selected value="html">HTML
+				<option value="graf">Grafik
+				<option value="undef">alle
+			</select>
+		</td>
+		<td class=dialogtxt colspan=2 align=left>
+			<SCRIPT LANGUAGE="JavaScript">
+				writeUser();
+				if(document.NEWTASK.TEAM.selectedIndex > 0)setUser(document.NEWTASK.USER, document.NEWTASK.TEAM.options[document.NEWTASK.TEAM.selectedIndex].value);
+			</SCRIPT>
+		</td>
+	</tr>
+	<tr>
+		<td class=formular>Aufgabe:</td>
+		<td class=dialogtxt colspan=4>
+			<input type="text" size=53 class="textfeld2" value="Aufgabenbezeichnung" name="TASK" id="TASK">
+		</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt colspan=5>
+		<TEXTAREA rows=6 cols=60 class="textarea" id=DESCRIPTION name=DESCRIPTION>
+Ausführliche Aufgabenbeschreibung
+			</TEXTAREA>
+		</td>
+	</tr>
+	<tr nowrap>
+		<td class=formular>Fällig am:</td>
+		<td class=dialogtxt valign=top >
+			<input type="text" class="textfeld" maxlength=10 name="DATE" id="DATE">
+		</td>
+		<td class=dialogtxt width=80px align=left>
+			<a href="javascript:opensmallwin('timerrefresh.html', 'Kalender', 250, 350)"><img src="pics/ic_timer.gif" border=0 width=16 height=16 align=left hspace=0></a>
+			<!--a href="timer.html"><img src="pics/ic_timer.gif" border=0 width=16 height=16 align=left hspace=0></a-->		
+		</td>
+		<td class=formular>Priorität:</td>
+		<td class=dialogtxt>
+			<select name="PRIO" width=150 style="width:150px" >
+				<option value="1">hoch
+				<option value="2" selected>mittel
+				<option value="3">niedrig
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt colspan=5>
+			<INPUT type="checkbox" checked id=MSG name=MSG> Benachrichtigung bei Annahme
+		</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt colspan=5>
+			<INPUT type="checkbox" checked id=MSG name=MSG> Benachrichtigung bei Übergabe
+		</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt colspan=5>
+			<INPUT type="checkbox" checked id=MSG name=MSG> Benachrichtigung bei Fertigstellung
+		</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt colspan=5>
+			<INPUT type="checkbox" checked id=MSG name=MSG> Alle Rollenmitglieder von Aufgabe Benachrichtigen
+		</td>
+	</tr>
+	<!-- Ende Inhalt -->
+	
+	<!-- Beginn Leerzele-->
+	<tr><td colspan=5 class=leerzeile>&nbsp;</td></tr>
+	<!-- Ende Leerzeile-->
+
+	<!-- Beginn Buttonleiste Zurück inaktiv-->
+	<tr><td colspan=5 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+				<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="OK" id=OK name=OK onClick="ok=checkDate(DATE.value);if(ok)window.history.back();"></td>
+				<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL name=CANCEL onClick="window.history.back();"></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	<!-- Ende Buttonleiste-->
+	</table>
+</td>
+</tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+<!-- Ende Zentrierung -->
+
+</body>
+</html>
