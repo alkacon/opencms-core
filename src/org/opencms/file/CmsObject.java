@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/08/18 11:43:22 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2004/08/20 11:44:14 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,9 @@ import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
-import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsSessionInfoManager;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
@@ -54,7 +52,6 @@ import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +72,10 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.68 $
+ * @version $Revision: 1.69 $
+ */
+/**
+ * Comment for <code>CmsObject</code>.<p>
  */
 public class CmsObject {
 
@@ -1110,6 +1110,20 @@ public class CmsObject {
         return m_driverManager.readResource(m_context, 
             addSiteRoot(resourcename), filter);
     }
+    
+    /**
+     * Reads all resources below the given path matching the filter criteria.<p>
+     * 
+     * @param parentPath the parent path or null
+     * @param filter the filter
+     * @return a list of CmsResource objects matching the filter criteria
+     * @throws CmsException if something goes wrong
+     */
+    public List readResources(String parentPath, CmsResourceFilter filter) throws CmsException {
+        
+        return m_driverManager.readResources(m_context, 
+            addSiteRoot(parentPath), filter);
+    }
 
     /**
      * Reads a folder resource from the VFS,
@@ -1177,12 +1191,13 @@ public class CmsObject {
     /**
      * Reads all resources of a project that match a given state from the VFS.<p>
      * 
-     * Possible values for the <code>state<code> parameter are:<ul>
+     * Possible values for the <code>state</code> parameter are:
+     * <ul>
      * <li><code>{@link I_CmsConstants#C_STATE_CHANGED}</code>: Read all "changed" resources in the project</li>
      * <li><code>{@link I_CmsConstants#C_STATE_NEW}</code>: Read all "new" resources in the project</li>
      * <li><code>{@link I_CmsConstants#C_STATE_DELETED}</code>: Read all "deleted" resources in the project</li>
      * <li><code>{@link I_CmsConstants#C_STATE_KEEP}</code>: Read all resources either "changed", "new" or "deleted" in the project</li></ul>
-     *
+     * 
      * @param projectId the id of the project to read the file resources for
      * @param state the resource state to match 
      *
@@ -2317,7 +2332,7 @@ public class CmsObject {
     public CmsGroup createGroup(String name, String description, int flags, String parent) throws CmsException {
         return m_driverManager.createGroup(m_context, name, description, flags, parent);
     }
-    
+
     /**
      * Changes the type of the user.<p>
      *

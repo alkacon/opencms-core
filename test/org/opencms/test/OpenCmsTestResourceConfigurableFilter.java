@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceConfigurableFilter.java,v $
- * Date   : $Date: 2004/06/25 16:37:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/20 11:44:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package org.opencms.test;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class OpenCmsTestResourceConfigurableFilter extends OpenCmsTestResourceFilter {
 
@@ -53,9 +53,7 @@ public class OpenCmsTestResourceConfigurableFilter extends OpenCmsTestResourceFi
         m_isTouched = true;
         m_length = true;
         m_siblingCount = true;
-        m_loaderId = true;
         m_name = true;
-        m_parentId = true;
         m_projectLastModified = true;
         m_resourceId = true;
         m_state = true;
@@ -85,9 +83,7 @@ public class OpenCmsTestResourceConfigurableFilter extends OpenCmsTestResourceFi
         m_isTouched = baseFilter.testTouched();
         m_length = baseFilter.testLength();
         m_siblingCount = baseFilter.testSiblingCount();
-        m_loaderId = baseFilter.testLoaderId();
         m_name = baseFilter.testName();
-        m_parentId = baseFilter.testParentId();
         m_projectLastModified = baseFilter.testProjectLastModified();
         m_resourceId = baseFilter.testResourceId();
         m_state = baseFilter.testState();
@@ -173,13 +169,6 @@ public class OpenCmsTestResourceConfigurableFilter extends OpenCmsTestResourceFi
     }
     
     /**
-     * Disables the loader Id test.<p>
-     */
-    public void disableLoaderIdTest() {
-        m_loaderId = false;
-    }
-    
-    /**
      * Disables the lockstate test.<p>
      */
     public void disableLockTest() {
@@ -191,13 +180,6 @@ public class OpenCmsTestResourceConfigurableFilter extends OpenCmsTestResourceFi
      */
     public void disableNameTest() {
         m_name = false;
-    }
-    
-    /**
-     * Disables the parent Id test.<p>
-     */
-    public void disableParentIdTest() {
-        m_parentId = false;
     }
     
     /**

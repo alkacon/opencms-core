@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorage.java,v $
- * Date   : $Date: 2004/07/03 10:21:56 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/08/20 11:44:49 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Map;
  * Storage object for storing all attributes of vfs resources.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class OpenCmsTestResourceStorage {
 
@@ -128,6 +128,15 @@ public class OpenCmsTestResourceStorage {
     public String getName() {
         
         return m_name;
+    }
+    
+    /**
+     * Returns the size of the storage.<p>
+     * 
+     * @return the size of the storage
+     */
+    public int size() {
+        return m_storage.size();
     }
     
     /**

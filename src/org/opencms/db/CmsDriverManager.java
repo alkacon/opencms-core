@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/08/19 15:06:58 $
- * Version: $Revision: 1.410 $
+ * Date   : $Date: 2004/08/20 11:43:57 $
+ * Version: $Revision: 1.411 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.410 $ $Date: 2004/08/19 15:06:58 $
+ * @version $Revision: 1.411 $ $Date: 2004/08/20 11:43:57 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2481,6 +2481,80 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // access was granted - return the file-header.
         return resource;
     }        
+
+    /**
+     * Reads all resources below the given parentPath matching the filter criteria.<p>
+     * 
+     * @param context the current request context
+     * @param parentPath the path to the parent resource or null 
+     * @param filter the filter criteria to apply
+     * @return a list with resources below parentPath matchin the filter criteria
+     *  
+     * @throws CmsException if something goes wrong
+     */
+    public List readResources(CmsRequestContext context, String parentPath, CmsResourceFilter filter) throws CmsException {
+
+        String path = null;
+        
+        // check parent if neccessary
+        if (parentPath != null) {
+            CmsResource parent = m_vfsDriver.readFileHeader(
+                context.currentProject().getId(), 
+                parentPath, 
+                filter.includeDeleted());
+            
+            // check the access permissions
+            checkPermissions(context, parent, I_CmsConstants.C_READ_ACCESS, true, filter);
+
+            if ((!filter.isValid(context, parent))) {
+                // the parent folder was found, but it is invalid according to the selected filter
+                // child resources are not available
+                return Collections.EMPTY_LIST;
+            }
+        
+            path = parent.getRootPath();
+        }
+        
+        // try to get the sub resources from the cache
+        String cacheKey = getCacheKey(context.currentUser().getName() + filter.getCacheId(), context.currentProject(), path);
+        List subResources = (List)m_resourceListCache.get(cacheKey);        
+
+        if (subResources != null && subResources.size() > 0) {
+            // the parent folder is not deleted, and the sub resources were cached, no further operations required
+            // we must however still filter the cached results for release/expiration date
+            return setFullResourceNames(context, subResources, filter);
+        }
+
+        // read the result form the database
+        subResources = m_vfsDriver.readResources(
+            context.currentProject().getId(), 
+            path, 
+            filter.getType(), 
+            filter.getState(), 
+            filter.getModifiedAfter(), 
+            filter.getModifiedBefore(), 
+            I_CmsConstants.C_READMODE_INCLUDE_TREE
+            | (((filter.getMode() & CmsResourceFilter.C_FILTER_REQUIRE_CHILDS) > 0) ? I_CmsConstants.C_READMODE_EXCLUDE_TREE : 0)
+            | (((filter.getMode() & CmsResourceFilter.C_FILTER_EXCLUDE_TYPE) > 0) ? I_CmsConstants.C_READMODE_EXCLUDE_TYPE : 0) 
+            | (((filter.getMode() & CmsResourceFilter.C_FILTER_EXCLUDE_STATE) > 0) ? I_CmsConstants.C_READMODE_EXCLUDE_STATE : 0)
+        );
+        
+        for (int i=0; i<subResources.size(); i++) {
+            CmsResource currentResource = (CmsResource)subResources.get(i);
+            int perms = hasPermissions(context, currentResource, I_CmsConstants.C_READ_OR_VIEW_ACCESS, true, filter);
+            if (PERM_DENIED == perms) {
+                subResources.remove(i--);
+            }              
+        }
+
+        // cache the sub resources
+        m_resourceListCache.put(cacheKey, subResources);
+
+        // filter the result to remove resources outside release / expiration time window
+        // the setting of resource names aboce is NOR redundant, since the loop above
+        // is much more efficient than reading the path again
+        return setFullResourceNames(context, subResources, filter);
+    }
     
     /**
      * Reads a folder from the VFS,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/08/19 15:06:58 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2004/08/20 11:43:58 $
+ * Version: $Revision: 1.89 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,11 +51,11 @@ import java.util.List;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.88 $ $Date: 2004/08/19 15:06:58 $
+ * @version $Revision: 1.89 $ $Date: 2004/08/20 11:43:58 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
-    
+         
     /**
      * Creates a CmsFile instance from a JDBC ResultSet.<p>
      * 
@@ -344,6 +344,28 @@ public interface I_CmsVfsDriver {
      */
     List readPropertyObjects(CmsProject project, CmsResource resource) throws CmsException;   
 
+    /**
+     * Reads all resources inside a given project matching the criteria specified by parameter values.<p>
+     * 
+     * 
+     * @param projectId the project id for matching resources or C_READ_OFFLINE_PROJECTS
+     * @param parentPath the path to the resource used as root of the searched subtree or C_READ_IGNORE_PARENT (C_READMODE_EXCLUDE_TREE means to read immidiate children only) 
+     * @param type the resource type of matching resources or C_READ_IGNORE_TYPES (meaning inverted by C_READMODE_EXCLUDE_TYPE)
+     * @param state the state of matching resources or C_READ_IGNORE_STATE (meaning inverted by C_READMODE_EXCLUDE_STATE)
+     * @param startTime the start of the time range for the last modification date of matching resources or C_READ_IGNORE_TIME 
+     * @param endTime the end of the time range for the last modification date of mathcing resources or C_READ_IGNORE_TIME
+     * @param mode additional mode flags:
+     *  C_READMODE_INCLUDE_TREE 
+     *  C_READMODE_EXCLUDE_TREE
+     *  C_READMODE_INCLUDE_PROJECT
+     *  C_READMODE_EXCLUDE_TYPE
+     *  C_READMODE_EXCLUDE_STATE
+     * 
+     * @return a list of CmsResource objects matching the given criteria
+     * @throws CmsException if something geos wrong
+     */
+    List readResources(int projectId, String parentPath, int type, int state, long startTime, long endTime, int mode) throws CmsException;
+        
     /**
      * Reads all resources inside a given project and with a given state.<p>
      * 

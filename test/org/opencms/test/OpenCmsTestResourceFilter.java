@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceFilter.java,v $
- * Date   : $Date: 2004/07/03 10:21:56 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/08/20 11:44:49 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public abstract class OpenCmsTestResourceFilter {
 
@@ -92,7 +92,9 @@ public abstract class OpenCmsTestResourceFilter {
   
     /** Definition of a filter used for the publsihResource method. */   
     public static final OpenCmsTestResourceFilter FILTER_PUBLISHRESOURCE = getFilterPublishResource();
-  
+ 
+    /** Definition of a filter used for the replaceResource method. */
+    public static final OpenCmsTestResourceFilter FILTER_REPLACERESOURCE = getFilterReplaceResource();
     
     /** Flag to enable/disable access (ACL) tests. */
     protected boolean m_acl;
@@ -127,17 +129,11 @@ public abstract class OpenCmsTestResourceFilter {
     /** Flag to enable/disable length tests. */
     protected boolean m_length;
 
-    /** Flag to enable/disable loader id tests. */
-    protected boolean m_loaderId;
-
     /** Flag to enable/disable lock state tests. */
     protected boolean m_lockstate; 
 
     /** Flag to enable/disable name tests. */
     protected boolean m_name;
-
-    /** Flag to enable/disable parent id tests. */
-    protected boolean m_parentId;
 
     /** Flag to enable/disable project last modified tests. */
     protected boolean m_projectLastModified;
@@ -319,7 +315,6 @@ public abstract class OpenCmsTestResourceFilter {
         filter.disableDateCreatedTest();
         filter.disableLockTest();
         filter.disableNameTest();
-        filter.disableParentIdTest();
         filter.disableAceTest();
         return filter; 
     }    
@@ -338,7 +333,6 @@ public abstract class OpenCmsTestResourceFilter {
         filter.disableStructureIdTest();
         filter.disableLockTest();
         filter.disableNameTest();
-        filter.disableParentIdTest();
         return filter; 
     }   
     
@@ -356,7 +350,6 @@ public abstract class OpenCmsTestResourceFilter {
         filter.disableStructureIdTest();
         filter.disableLockTest();
         filter.disableNameTest();
-        filter.disableParentIdTest();
         filter.disableSiblingCountTest();
         return filter; 
     }
@@ -425,6 +418,24 @@ public abstract class OpenCmsTestResourceFilter {
         return filter;
     }
     
+    /**
+     * Creates a new filter used for the "replaceResource" method.<p>
+     * 
+     * @return the created filter
+     */
+    private static OpenCmsTestResourceFilter getFilterReplaceResource() {
+
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
+
+        filter.disableLockTest();
+        filter.disableStateTest();
+        filter.disableDateLastModifiedTest();
+        filter.disableUserLastModifiedTest();
+        filter.disableContentsTest();
+        filter.disableLengthTest();
+        filter.disableProjectLastModifiedTest();
+        return filter;
+    }
     
     /**
      * Returns true if the acl test is enabled.<p>
@@ -518,15 +529,6 @@ public abstract class OpenCmsTestResourceFilter {
     }
     
     /**
-     * Returns true if the loader Id test is enabled.<p>
-     *
-     * @return true or false
-     */
-    public boolean testLoaderId() {
-        return m_loaderId;
-    }
-    
-    /**
      * Returns true if the lockstate test is enabled.<p>
      *
      * @return true or false
@@ -542,15 +544,6 @@ public abstract class OpenCmsTestResourceFilter {
      */
     public boolean testName() {
         return m_name;
-    }
-    
-    /**
-     * Returns true if the parent Id test is enabled.<p>
-     *
-     * @return true or false
-     */
-    public boolean testParentId() {
-        return m_parentId;
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/07/18 16:33:00 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/08/20 11:44:20 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public interface I_CmsConstants {
 
@@ -1230,6 +1230,39 @@ public interface I_CmsConstants {
     
     /** Mode for reading project resources from the db. */
     int C_READMODE_UNMATCHSTATE = 2;
+    
+    /** Indicates to ignore the resource path when matching resources. */
+    String C_READ_IGNORE_PARENT = null;
+    
+    /** Indicates to ignore the resource type when matching resources. */
+    int C_READ_IGNORE_TYPE = -1;
+    
+    /** Indicates to ignore the resource state when matching resources. */
+    int C_READ_IGNORE_STATE = -1;
+    
+    /** Indicates to ignore the time value. */
+    long C_READ_IGNORE_TIME = 0L;
+    
+    /** Indicates to match all successors. */
+    int C_READMODE_INCLUDE_TREE = 0;
+    
+    /** Indicates to match immediate children only. */
+    int C_READMODE_EXCLUDE_TREE = 1;
+    
+    /** Indicates to match resources in given project only. */
+    int C_READMODE_INCLUDE_PROJECT = 2;
+    
+    /** Indicates to match resources NOT having the given type. */
+    int C_READMODE_EXCLUDE_TYPE = 4;
+    
+    /** Indicates to match resources NOT having the given state. */
+    int C_READMODE_EXCLUDE_STATE = 8;
+    
+    /** Indicates to order the result by the paths to the resources. */
+    int C_READMODE_ORDER_BY_PATH = 16;
+    
+    /** Indicates to order the result by the lastmodified date. */
+    int C_READMODE_ORDER_BY_LASTMODIFIED = 32;
 
     /** Identifier for x-forwarded-for (i.e. proxied) request headers. */
     String C_HEADER_X_FORWARDED_FOR = "x-forwarded-for";

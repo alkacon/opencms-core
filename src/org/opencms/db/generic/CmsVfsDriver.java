@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/08/19 15:06:58 $
- * Version: $Revision: 1.200 $
+ * Date   : $Date: 2004/08/20 11:44:06 $
+ * Version: $Revision: 1.201 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,11 +70,20 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.200 $ $Date: 2004/08/19 15:06:58 $
+ * @version $Revision: 1.201 $ $Date: 2004/08/20 11:44:06 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
 
+    /** Operator to concatenate include conditions. */
+    static String C_BEGIN_INCLUDE_CONDITION = " AND (";
+    
+    /** Operator to concatenate exclude conditions. */
+    static String C_BEGIN_EXCLUDE_CONDITION = " AND NOT (";
+    
+    /** String to end a single condition. */
+    static String C_END_CONDITION = ") ";
+    
     /** The driver manager. */    
     protected CmsDriverManager m_driverManager;
     
@@ -1137,6 +1146,183 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         return propertyDefinitions;
     }
 
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#readResources(int, java.lang.String, int, int, long, long, int)
+     */
+    public List readResources (int projectId, String parentPath, int type, int state, long startTime, long endTime, int mode) throws CmsException {
+
+        List result = new ArrayList();
+        
+        String query;
+        StringBuffer conditions = new StringBuffer();
+        List params = new ArrayList(5);
+        
+        // prepare the selection criteria
+        prepareProjectCondition(projectId, mode, conditions, params);
+        preparePathCondition(projectId, parentPath, mode, conditions, params);
+        prepareTypeCondition(projectId, type, mode, conditions, params);
+        prepareStateCondition(projectId, state, mode, conditions, params);
+        prepareTimeRangeCondition(projectId, startTime, endTime, conditions, params);
+
+        // now read matching resources within the subtree 
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection();
+            query = m_sqlManager.readQuery(projectId, "C_RESOURCES_READ_SUBTREE"); 
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, query + conditions);
+            
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setString(i+1, (String)params.get(i));
+            }
+            
+            res = stmt.executeQuery();
+            while (res.next()) {
+                CmsResource resource = createResource(res, projectId);
+                result.add(resource);
+            }
+            
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception exc) {
+            throw new CmsException("readResources " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+        
+        return result;
+    }
+
+    /**
+     * Appends the appropriate selection criteria related with the projectId.<p>
+     * 
+     * @param projectId the id of the project of the resources
+     * @param mode the selection mode
+     * @param conditions buffer to append the selection criteria
+     * @param params list to append the selection params
+     */
+    private void prepareProjectCondition(int projectId, int mode, StringBuffer conditions, List params) {
+        if ((mode & I_CmsConstants.C_READMODE_INCLUDE_PROJECT) > 0) {    
+            // C_READMODE_INCLUDE_PROJECT: add condition to match the PROJECT_ID
+            conditions.append(C_BEGIN_INCLUDE_CONDITION);
+            conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_PROJECT_ID"));
+            conditions.append(C_END_CONDITION);
+            params.add(String.valueOf(projectId));
+        }
+    }
+    
+    /**
+     * Appends the appropriate selection criteria related with the parentPath.<p>
+     * 
+     * @param projectId the id of the project of the resources
+     * @param parentPath the parent path
+     * @param mode the selection mode
+     * @param conditions buffer to append the selection criteria
+     * @param params list to append the selection params
+     */
+    private void preparePathCondition(int projectId, String parentPath, int mode, StringBuffer conditions, List params) {
+        if (parentPath != I_CmsConstants.C_READ_IGNORE_PARENT) {
+            // C_READ_IGNORE_PARENT: if NOT set, add condition to match the parent path as prefix of RESOURCE_PATH
+            conditions.append(C_BEGIN_INCLUDE_CONDITION);
+            conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_PATH_PREFIX"));
+            conditions.append(C_END_CONDITION);
+            params.add(addTrailingSeparator(parentPath) + "%");
+        }
+        
+        if ((mode & I_CmsConstants.C_READMODE_EXCLUDE_TREE) > 0) {
+            // C_READ_CHILDS: add condition to read immediate childs only
+            conditions.append(C_BEGIN_EXCLUDE_CONDITION);
+            conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_PATH_PREFIX"));
+            conditions.append(C_END_CONDITION);
+            params.add(addTrailingSeparator(parentPath) + "%/_%");
+        }
+    }
+
+    /**
+     * Appends the appropriate selection criteria related with the resource type.<p>
+     * 
+     * @param projectId the id of the project of the resources
+     * @param type the resource type
+     * @param mode the selection mode
+     * @param conditions buffer to append the selection criteria
+     * @param params list to append the selection params
+     */
+    private void prepareTypeCondition(int projectId, int type, int mode, StringBuffer conditions, List params) {
+        if (type != I_CmsConstants.C_READ_IGNORE_TYPE) {
+            if ((mode & I_CmsConstants.C_READMODE_EXCLUDE_TYPE) > 0) {
+                // C_READ_FILE_TYPES: add condition to match against any type, but not given type
+                conditions.append(C_BEGIN_EXCLUDE_CONDITION);
+                conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_RESOURCE_TYPE"));
+                conditions.append(C_END_CONDITION);
+                params.add(String.valueOf(type));
+            } else {
+                //otherwise add condition to match against given type if neccessary
+                conditions.append(C_BEGIN_INCLUDE_CONDITION);
+                conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_RESOURCE_TYPE"));
+                conditions.append(C_END_CONDITION);
+                params.add(String.valueOf(type));
+            }
+        }        
+    }
+    
+    /**
+     * Appends the appropriate selection criteria related with the resource state.<p>
+     * 
+     * @param projectId the id of the project of the resources
+     * @param state the resource state
+     * @param mode the selection mode
+     * @param conditions buffer to append the selection criteria
+     * @param params list to append the selection params
+     */
+    private void prepareStateCondition(int projectId, int state, int mode, StringBuffer conditions, List params) {
+        if (state != I_CmsConstants.C_READ_IGNORE_STATE) {
+            if ((mode & I_CmsConstants.C_READMODE_EXCLUDE_STATE) > 0) {
+                // C_READ_MODIFIED_STATES: add condition to match against any state but not given state
+                conditions.append(C_BEGIN_EXCLUDE_CONDITION);
+                conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_RESOURCE_STATE"));
+                conditions.append(C_END_CONDITION);
+                params.add(String.valueOf(state));
+                params.add(String.valueOf(state));
+            } else {
+                // otherwise add condition to match against given state if neccessary
+                conditions.append(C_BEGIN_INCLUDE_CONDITION);
+                conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_RESOURCE_STATE"));
+                conditions.append(C_END_CONDITION);
+                params.add(String.valueOf(state));
+                params.add(String.valueOf(state));
+            }
+        }        
+    }
+    
+    /**
+     * Appends the appropriate selection criteria related with the date of the last modification.<p>
+     * 
+     * @param projectId the id of the project of the resources
+     * @param startTime start of the time range
+     * @param endTime end of the time range
+     * @param conditions buffer to append the selection criteria
+     * @param params list to append the selection params
+     */
+    private void prepareTimeRangeCondition(int projectId, long startTime, long endTime, StringBuffer conditions, List params) {
+        if (startTime != I_CmsConstants.C_READ_IGNORE_TIME) {
+            // C_READ_IGNORE_TIME: if NOT set, add condition to match lastmodified date against startTime
+            conditions.append(C_BEGIN_INCLUDE_CONDITION);
+            conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_DATE_LASTMODIFIED_AFTER"));
+            conditions.append(C_END_CONDITION);
+            params.add(String.valueOf(startTime));
+        }   
+        
+        if (endTime != I_CmsConstants.C_READ_IGNORE_TIME) {
+            // C_READ_IGNORE_TIME: if NOT set, add condition to match lastmodified date against endTime
+            conditions.append(C_BEGIN_INCLUDE_CONDITION);
+            conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_DATE_LASTMODIFIED_BEFORE"));
+            conditions.append(C_END_CONDITION);
+            params.add(String.valueOf(endTime));
+        }        
+    }
+    
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readResources(int, long, long)
      */
