@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPasswordHandler.java,v $
- * Date   : $Date: 2004/11/17 11:34:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/12/21 11:35:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.main.CmsException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.1.11 
  */
 public interface I_CmsPasswordHandler extends I_CmsConfigurationParameterHandler {
@@ -91,10 +91,15 @@ public interface I_CmsPasswordHandler extends I_CmsConfigurationParameterHandler
     String digest(String password, String digestType, String inputEncoding) throws CmsException;
 
     /**
-     * Checks an OpenCms password.<p>
+     * This method checks if a new password follows the rules for
+     * new passwords, which are defined by a Class configured in 
+     * the opencms.properties file.<p>
+     * 
+     * If this method throws no exception the password is valid.<p>
      *
-     * @param password the password to check
-     * @throws CmsSecurityException if something goes wrong
+     * @param password the password to check.
+     * 
+     * @throws CmsSecurityException if something goes wrong.
      */
     void validatePassword(String password) throws CmsSecurityException;
     

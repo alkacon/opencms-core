@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2004/12/20 17:25:31 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2004/12/21 11:35:00 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Map;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.43 $ $Date: 2004/12/20 17:25:31 $
+ * @version $Revision: 1.44 $ $Date: 2004/12/21 11:35:00 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -164,10 +164,10 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * Only groups that contain no subgroups can be deleted.<p>
      * 
-     * @param dbc the current database context
-     * @param name the name of the group that is to be deleted
+     * @param dbc the current database context.
+     * @param name the name of the group that is to be deleted.
      *
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
     void deleteGroup(CmsDbContext dbc, String name) throws CmsException;
 
@@ -184,11 +184,11 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     /**
      * Removes a user from a group.<p>
      * 
-     * @param dbc the current database context
-     * @param userId the id of the user that is to be removed from the group
-     * @param groupId the id of the group
+     * @param dbc the current database context.
+     * @param userId the id of the user that is to be removed from the group.
+     * @param groupId the id of the group.
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
     void deleteUserInGroup(CmsDbContext dbc, CmsUUID userId, CmsUUID groupId) throws CmsException;
 
@@ -339,55 +339,60 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     /**
      * Reads all child groups of a group.<p>
      *
-     * @param dbc the current database context
-     * @param groupname the name of the group to read the child groups from
+     * @param dbc the current database context.
+     * @param groupname the name of the group to read the child groups from.
      * 
-     * @return users a Vector of all child groups or null
-     * @throws CmsException if operation was not succesful
+     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     List readChildGroups(CmsDbContext dbc, String groupname) throws CmsException;
 
     /**
      * Reads a group based on the group id.<p>
      * 
-     * @param dbc the current database context
-     * @param groupId the id of the group that is to be read
+     * @param dbc the current database context.
+     * @param groupId the id of the group that is to be read.
      * 
-     * @return the group that was read
-     * @throws CmsException if something goes wrong
+     * @return the group that was read.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     CmsGroup readGroup(CmsDbContext dbc, CmsUUID groupId) throws CmsException;
 
     /**
      * Reads a group based on the group name.<p>
      * 
-     * @param dbc the current database context
-     * @param groupName the name of the group that is to be read
+     * @param dbc the current database context.
+     * @param groupName the name of the group that is to be read.
      * 
-     * @return the group that was read
-     * @throws CmsException if something goes wrong
+     * @return the group that was read.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     CmsGroup readGroup(CmsDbContext dbc, String groupName) throws CmsException;
 
     /**
      * Reads all existing groups.<p>
      *
-     * @param dbc the current database context
+     * @param dbc the current database context.
      * 
-     * @return a Vector of all existing groups
-     * @throws CmsException if something goes wrong
+     * @return a list of all <code>{@link CmsGroup}</code> objects.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     List readGroups(CmsDbContext dbc) throws CmsException;
 
     /**
      * Reads all groups the given user is a member in.<p>
      *
-     * @param dbc the current database context
-     * @param userId the id of the user
-     * @param paramStr additional parameter
+     * @param dbc the current database context.
+     * @param userId the id of the user.
+     * @param paramStr additional parameter.
      * 
-     * @return all groups the given user is a member in
-     * @throws CmsException if something goes wrong
+     * @return a list of <code>{@link CmsGroup}</code> objects.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     List readGroupsOfUser(CmsDbContext dbc, CmsUUID userId, String paramStr) throws CmsException;
 
@@ -462,12 +467,13 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     /**
      * Reads all users that are members of the given group.<p>
      *
-     * @param dbc the current database context
-     * @param name the name of the group to read the users from
-     * @param type the type of the users to read
+     * @param dbc the current database context.
+     * @param name the name of the group to read the users from.
+     * @param type the type of the users to read.
      * 
-     * @return all users that are members of the given group
-     * @throws CmsException if something goes wrong
+     * @return all <code>{@link CmsUser}</code> objects in the group.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     List readUsersOfGroup(CmsDbContext dbc, String name, int type) throws CmsException;
 
@@ -534,12 +540,17 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     throws CmsException;
 
     /**
-     * Updates an already existing group.<p>
-     * 
-     * @param dbc the current database context
-     * @param group the group to update
+     * Writes an already existing group.<p>
      *
-     * @throws CmsException if something goes wrong
+     * The group id has to be a valid OpenCms group id.<br>
+     * 
+     * The group with the given id will be completely overriden
+     * by the given data.<p>
+     * 
+     * @param dbc the current database context.
+     * @param group the group to update.
+     *
+     * @throws CmsException if something goes wrong.
      */
     void writeGroup(CmsDbContext dbc, CmsGroup group) throws CmsException;
 

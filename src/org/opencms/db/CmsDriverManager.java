@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/12/20 17:25:30 $
- * Version: $Revision: 1.462 $
+ * Date   : $Date: 2004/12/21 11:34:59 $
+ * Version: $Revision: 1.463 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -95,7 +95,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.462 $ $Date: 2004/12/20 17:25:30 $
+ * @version $Revision: 1.463 $ $Date: 2004/12/21 11:34:59 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2346,16 +2346,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Delete a group from the Cms.<p>
+     * Deletes a user group.<p>
      *
-     * Only groups that contain no subgroups can be deleted.
-     * Only the admin can do this.
-     * Only users, which are in the group "administrators" are granted.
+     * Only groups that contain no subgroups can be deleted.<p>
      * 
-     * @param dbc the current database context
-     * @param name the name of the group that is to be deleted
+     * @param dbc the current database context.
+     * @param name the name of the group that is to be deleted.
      *
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsException if operation was not succesfull.
      */
     public void deleteGroup(CmsDbContext dbc, String name) throws CmsException {
 
@@ -3155,12 +3153,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Returns all child groups of a group.<p>
      *
-     * All users are granted, except the anonymous user.
-     *
-     * @param dbc the current database context
-     * @param groupname the name of the group
+     * @param dbc the current database context.
+     * @param groupname the name of the group.
      * 
-     * @return groups a Vector of all child groups or null
+     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>.
      * 
      * @throws CmsException if operation was not succesful.
      */
@@ -3178,14 +3174,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
     /**
      * Returns all child groups of a group.<p>
+     * 
      * This method also returns all sub-child groups of the current group.
      *
-     * All users are granted, except the anonymous user.
-     *
-     * @param dbc the current database context
-     * @param groupname the name of the group
-     * @return a Vector of all child groups or null
-     * @throws CmsException if operation was not succesful
+     * @param dbc the current database context.
+     * @param groupname the name of the group.
+     * 
+     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public List getChilds(CmsDbContext dbc, String groupname) throws CmsException {
 
@@ -3234,15 +3231,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Returns the list of groups to which the user directly belongs to<P/>
+     * Returns the list of groups to which the user directly belongs to.<p>
      *
-     * <B>Security:</B>
-     * All users are granted.
-     *
-     * @param dbc the current database context
+     * @param dbc the current database context.
      * @param username The name of the user.
-     * @return Vector of groups
-     * @throws CmsException Throws CmsException if operation was not succesful
+     * 
+     * @return a list of <code>{@link CmsGroup}</code> objects.
+     * 
+     * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public List getDirectGroupsOfUser(CmsDbContext dbc, String username) throws CmsException {
 
@@ -3253,11 +3249,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Returns all groups.<p>
      *
-     * All users are granted, except the anonymous user.
-     *
-     * @param dbc the current database context
-     * @return users a Vector of all existing groups
-     * @throws CmsException if operation was not succesful
+     * @param dbc the current database context.
+     * 
+     * @return a list of all <code>{@link CmsGroup}</code> objects.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public List getGroups(CmsDbContext dbc) throws CmsException {
 
@@ -3272,13 +3268,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Returns the groups of a Cms user.<p>
+     * Returns the groups of a user.<p>
      * 
-     * @param dbc the current database context
-     * @param username the name of the user
+     * @param dbc the current database context.
+     * @param username the name of the user.
      *
-     * @return a vector of Cms groups filtered by the specified IP address
-     * @throws CmsException if operation was not succesful
+     * @return a list of <code>{@link CmsGroup}</code> objects.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public List getGroupsOfUser(CmsDbContext dbc, String username)
     throws CmsException {
@@ -3289,12 +3286,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Returns the groups of a Cms user filtered by the specified IP address.<p>
      * 
-     * @param dbc the current database context
-     * @param username the name of the user
-     * @param remoteAddress the IP address to filter the groups in the result vector
+     * @param dbc the current database context.
+     * @param username the name of the user.
+     * @param remoteAddress the IP address to filter the groups in the result list.
      *
-     * @return a vector of Cms groups
-     * @throws CmsException if operation was not succesful
+     * @return a list of <code>{@link CmsGroup}</code> objects.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public List getGroupsOfUser(
         CmsDbContext dbc,
@@ -3651,8 +3649,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Returns all users.<p>
      *
-     * All users are granted, except the anonymous user.
-     *
      * @param dbc the current database context.
      * 
      * @return a list of all <code>{@link CmsUser}</code> objects.
@@ -3696,12 +3692,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Returns a list of users in a group.<p>
      *
-     * All users are granted, except the anonymous user.
-     *
-     * @param dbc the current database context
-     * @param groupname the name of the group to list users from
+     * @param dbc the current database context.
+     * @param groupname the name of the group to list users from.
      * 
-     * @return vector of users
+     * @return all <code>{@link CmsUser}</code> objects in the group.
      * 
      * @throws CmsException if operation was not succesful
      */
@@ -4898,15 +4892,17 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * you can control what type of resources you want in the result list:
      * files, folders, or both.<p>
      * 
-     * @param dbc the current database context
-     * @param resource the resource to return the child resources for
-     * @param filter the resource filter to use
-     * @param getFolders if true the child folders are included in the result
-     * @param getFiles if true the child files are included in the result
+     * This method is mainly used by the workplace explorer.<p> 
      * 
-     * @return a list of all child resources
+     * @param dbc the current database context.
+     * @param resource the resource to return the child resources for.
+     * @param filter the resource filter to use.
+     * @param getFolders if true the child folders are included in the result.
+     * @param getFiles if true the child files are included in the result.
      * 
-     * @throws CmsException if something goes wrong
+     * @return a list of all child resources.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public List readChildResources(
         CmsDbContext dbc,
@@ -5070,12 +5066,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Reads the group of a project from the OpenCms.<p>
+     * Reads the group of a project.<p>
      *
-     * @param dbc the current database context
-     * @param project the project to read from
+     * @param dbc the current database context.
+     * @param project the project to read from.
      * 
-     * @return the group of a resource
+     * @return the group of a resource.
      */
     public CmsGroup readGroup(CmsDbContext dbc, CmsProject project) {
 
@@ -5117,14 +5113,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Returns a group object.<p>
+     * Reads a group based on its id.<p>
      *
-     * @param dbc the current database context
-     * @param groupId the id of the group that is to be read
+     * @param dbc the current database context.
+     * @param groupId the id of the group that is to be read.
      * 
-     * @return the requested group
+     * @return the requested group.
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not succesful.
      */
     public CmsGroup readGroup(CmsDbContext dbc, CmsUUID groupId) throws CmsException {
 
@@ -5132,13 +5128,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Returns a group object.<p>
+     * Reads a group based on its name.<p>
      * 
-     * @param dbc the current database context
-     * @param groupname the name of the group that is to be read
+     * @param dbc the current database context.
+     * @param groupname the name of the group that is to be read.
      *
-     * @return the requested group
-     * @throws CmsException if operation was not succesful
+     * @return the requested group.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public CmsGroup readGroup(CmsDbContext dbc, String groupname) throws CmsException {
 
@@ -5153,14 +5150,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Reads the manager group of a project from the OpenCms.<p>
+     * Reads the manager group of a project.<p>
      *
-     * All users are granted.
-     *
-     * @param dbc the current database context
-     * @param project the project to read from
+     * @param dbc the current database context.
+     * @param project the project to read from.
      * 
-     * @return the group of a resource
+     * @return the group of a resource.
      */
     public CmsGroup readManagerGroup(CmsDbContext dbc, CmsProject project) {
 
@@ -6173,10 +6168,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Read a web user from the database.<p>
      * 
-     * @param dbc the current database context
-     * @param username the web user to read
-     * @return the read web user
-     * @throws CmsException if the user could not be read 
+     * @param dbc the current database context.
+     * @param username the web user to read.
+     * 
+     * @return the read web user.
+     * 
+     * @throws CmsException if the user could not be read. 
      */
     public CmsUser readWebUser(CmsDbContext dbc, String username) throws CmsException {
 
@@ -6186,13 +6183,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Returns a user object if the password for the user is correct.<p>
      *
-     * All users are granted.
+     * If the user/pwd pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
      *
-     * @param dbc the current database context
-     * @param username the username of the user that is to be read
-     * @param password the password of the user that is to be read
+     * @param dbc the current database context.
+     * @param username the username of the user that is to be read.
+     * @param password the password of the user that is to be read.
      * 
-     * @return user read form the cms
+     * @return the webuser read.
+     * 
      * @throws CmsException if operation was not succesful
      */
     public CmsUser readWebUser(CmsDbContext dbc, String username, String password) throws CmsException {
@@ -6241,13 +6239,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Removes a user from a group.<p>
      *
-     * Only users, which are in the group "administrators" are granted.
-     * 
-     * @param dbc the current database context
-     * @param username the name of the user that is to be removed from the group
-     * @param groupname the name of the group
+     * @param dbc the current database context.
+     * @param username the name of the user that is to be removed from the group.
+     * @param groupname the name of the group.
      *
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not succesful.
      */
     public void removeUserFromGroup(
         CmsDbContext dbc,
@@ -6348,13 +6344,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Resets the password for a specified user.<p>
      *
-     * @param dbc the current database context
-     * @param username the name of the user
-     * @param oldPassword the old password
-     * @param newPassword the new password
+     * @param dbc the current database context.
+     * @param username the name of the user.
+     * @param oldPassword the old password.
+     * @param newPassword the new password.
      * 
-     * @throws CmsException if the user data could not be read from the database
-     * @throws CmsSecurityException if the specified username and old password could not be verified
+     * @throws CmsException if the user data could not be read from the database.
+     * @throws CmsSecurityException if the specified username and old password could not be verified.
      */
     public void resetPassword(CmsDbContext dbc, String username, String oldPassword, String newPassword)
     throws CmsException, CmsSecurityException {
@@ -6503,15 +6499,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Sets a new parent-group for an already existing group in the Cms.<p>
+     * Sets a new parent-group for an already existing group.<p>
      *
-     * Only the admin can do this.
-     * 
-     * @param dbc the current database context
-     * @param groupName the name of the group that should be written to the Cms
-     * @param parentGroupName the name of the parentGroup to set, or null if the parent group should be deleted
+     * @param dbc the current database context.
+     * @param groupName the name of the group that should be written.
+     * @param parentGroupName the name of the parent group to set, 
+     *                      or <code>null</code> if the parent
+     *                      group should be deleted.
      *
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsException if operation was not succesfull.
      */
     public void setParentGroup(
         CmsDbContext dbc,
@@ -6542,11 +6538,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Sets the password for a user.<p>
      *
-     * Only users in the group "Administrators" are granted.<p>
-     * 
-     * @param dbc the current database context
-     * @param username the name of the user
-     * @param newPassword the new password
+     * @param dbc the current database context.
+     * @param username the name of the user.
+     * @param newPassword the new password.
      * 
      * @throws CmsException if operation was not succesfull.
      */
@@ -7060,16 +7054,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Checks if a user is member of a group.<p>
-     *
-     * All users are granted, except the anonymous user.
+     * Tests if a user is member of the given group.<p>
      * 
-     * @param dbc the current database context
-     * @param username the name of the user to check
-     * @param groupname the name of the group to check
+     * @param dbc the current database context.
+     * @param username the name of the user to check.
+     * @param groupname the name of the group to check.
      *
-     * @return true or false
-     * @throws CmsException if operation was not succesful
+     * @return <code>true</code>, if the user is in the group; or <code>false</code> otherwise.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public boolean userInGroup(
         CmsDbContext dbc,
@@ -7109,12 +7102,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
     /**
      * This method checks if a new password follows the rules for
-     * new passwords, which are defined by a Class configured in opencms.properties.<p>
+     * new passwords, which are defined by a Class implementing the 
+     * <code>{@link org.opencms.security.I_CmsPasswordHandler}<code> 
+     * interface and configured in the opencms.properties file.<p>
      * 
-     * If this method throws no exception the password is valid.
+     * If this method throws no exception the password is valid.<p>
      *
-     * @param password the new password that has to be checked
-     * @throws CmsSecurityException if the password is not valid
+     * @param password the new password that has to be checked.
+     * 
+     * @throws CmsSecurityException if the password is not valid.
      */
     public void validatePassword(String password) throws CmsSecurityException {
 
@@ -7346,14 +7342,17 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Writes an already existing group in the Cms.<p>
+     * Writes an already existing group.<p>
      *
-     * Only the admin can do this.<p>
+     * The group id has to be a valid OpenCms group id.<br>
      * 
-     * @param dbc the current database context
-     * @param group the group that should be written to the Cms
+     * The group with the given id will be completely overriden
+     * by the given data.<p>
      * 
-     * @throws CmsException if operation was not succesfull
+     * @param dbc the current database context.
+     * @param group the group that should be written.
+     * 
+     * @throws CmsException if operation was not succesfull.
      */
     public void writeGroup(CmsDbContext dbc, CmsGroup group) throws CmsException {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/12/20 17:25:30 $
- * Version: $Revision: 1.102 $
+ * Date   : $Date: 2004/12/21 11:34:59 $
+ * Version: $Revision: 1.103 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.102 $
+ * @version $Revision: 1.103 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -733,8 +733,10 @@ public class CmsObject {
     }
 
     /**
-     * Deletes a group.<p>
+     * Deletes a user group.<p>
      *
+     * Only groups that contain no subgroups can be deleted.<p>
+     * 
      * @param delgroup the name of the group.
      * 
      * @throws CmsException  if operation was not successful.
@@ -1030,7 +1032,7 @@ public class CmsObject {
      *
      * @param groupname the name of the group.
      * 
-     * @return groups a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>.
+     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>.
      * 
      * @throws CmsException if operation was not successful.
      */
@@ -1044,7 +1046,7 @@ public class CmsObject {
      * 
      * @param groupname the name of the group.
      * 
-     * @return groups a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>.
+     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>.
      * 
      * @throws CmsException if operation was not successful.
      */
@@ -1307,6 +1309,8 @@ public class CmsObject {
      * With the <code>{@link CmsResourceFilter}</code> provided as parameter
      * you can control if you want to include deleted, invisible or 
      * time-invalid resources in the result.<p>
+     * 
+     * This method is mainly used by the workplace explorer.<p>
      * 
      * @param resourcename the full path of the resource to return the child resources for.
      * @param filter the resource filter to use.
@@ -2724,7 +2728,7 @@ public class CmsObject {
     /**
      * Returns a web user if the password for the user is correct.<p>
      *
-     * If the user/pwd pair is not valid a <code>CmsException</code> is thrown.<p>
+     * If the user/pwd pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
      *
      * @param username the username of the user that is to be read.
      * @param password the password of the user that is to be read.
@@ -2862,6 +2866,7 @@ public class CmsObject {
      * @param newPassword the new password.
      * 
      * @throws CmsException if the user data could not be read from the database.
+     * @throws CmsSecurityException if the specified username and old password could not be verified.
      */
     public void setPassword(String username, String oldPassword, String newPassword) throws CmsException {
 
@@ -2961,7 +2966,7 @@ public class CmsObject {
     }
 
     /**
-     * Tests, if a user is member of the given group.<p>
+     * Tests if a user is member of the given group.<p>
      *
      * @param username the name of the user to test.
      * @param groupname the name of the group to test.
@@ -2996,8 +3001,9 @@ public class CmsObject {
 
     /**
      * This method checks if a new password follows the rules for
-     * new passwords, which are defined by a Class configured in 
-     * the opencms.properties file.<p>
+     * new passwords, which are defined by a Class implementing the 
+     * <code>{@link org.opencms.security.I_CmsPasswordHandler}<code> 
+     * interface and configured in the opencms.properties file.<p>
      * 
      * If this method throws no exception the password is valid.<p>
      *
@@ -3052,9 +3058,9 @@ public class CmsObject {
      * The group with the given id will be completely overriden
      * by the given data.<p>
      *
-     * @param group the group that should be written to the Cms.
+     * @param group the group that should be written.
      * 
-     * @throws CmsException  if operation was not successful.
+     * @throws CmsException if operation was not successful.
      */
     public void writeGroup(CmsGroup group) throws CmsException {
 

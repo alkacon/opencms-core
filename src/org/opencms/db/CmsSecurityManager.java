@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/12/21 10:44:54 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/12/21 11:35:23 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -1211,15 +1211,14 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Delete a group from the Cms.<p>
+     * Delete a user group.<p>
      *
-     * Only groups that contain no subgroups can be deleted. Only the admin can do this.
-     * Only users, which are in the group "administrators" are granted.<p>
+     * Only groups that contain no subgroups can be deleted.<p> 
      * 
-     * @param context the current request context
-     * @param name the name of the group that is to be deleted
+     * @param context the current request context.
+     * @param name the name of the group that is to be deleted.
      *
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsException if operation was not succesfull.
      */
     public void deleteGroup(CmsRequestContext context, String name) throws CmsException {
 
@@ -1620,11 +1619,11 @@ public final class CmsSecurityManager {
     /**
      * Returns all child groups of a group.<p>
      *
-     * All users are granted, except the anonymous user.<p>
-     *
-     * @param context the current request context
-     * @param groupname the name of the group
-     * @return groups a list of all child groups or null
+     * @param context the current request context.
+     * @param groupname the name of the group.
+     * 
+     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>.
+     * 
      * @throws CmsException if operation was not succesful.
      */
     public List getChild(CmsRequestContext context, String groupname) throws CmsException {
@@ -1646,12 +1645,12 @@ public final class CmsSecurityManager {
      * 
      * This method also returns all sub-child groups of the current group.<p>
      *
-     * All users are granted, except the anonymous user.<p>
-     *
-     * @param context the current request context
-     * @param groupname the name of the group
-     * @return a list of all child groups or null
-     * @throws CmsException if operation was not succesful
+     * @param context the current request context.
+     * @param groupname the name of the group.
+     * 
+     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public List getChilds(CmsRequestContext context, String groupname) throws CmsException {
 
@@ -1678,14 +1677,14 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Returns the list of groups to which the user directly belongs to<P/>
+     * Returns the list of groups to which the user directly belongs to.<p>
      *
-     * All users are granted.<p>
-     *
-     * @param context the current request context
+     * @param context the current request context.
      * @param username The name of the user.
-     * @return list of groups
-     * @throws CmsException Throws CmsException if operation was not succesful
+     * 
+     * @return a list of <code>{@link CmsGroup}</code> objects.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public List getDirectGroupsOfUser(CmsRequestContext context, String username) throws CmsException {
 
@@ -1704,11 +1703,11 @@ public final class CmsSecurityManager {
     /**
      * Returns all groups.<p>
      *
-     * All users are granted, except the anonymous user.<p>
-     *
-     * @param context the current request context
-     * @return users a list of all existing groups
-     * @throws CmsException if operation was not succesful
+     * @param context the current request context.
+     * 
+     * @return a list of all <code>{@link CmsGroup}</code> objects.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public List getGroups(CmsRequestContext context) throws CmsException {
 
@@ -1725,12 +1724,14 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Returns the groups of a Cms user.<p>
+     * Returns the groups of a user.<p>
      * 
-     * @param context the current request context
-     * @param username the name of the user
-     * @return a list of Cms groups filtered by the specified IP address
-     * @throws CmsException if operation was not succesful
+     * @param context the current request context.
+     * @param username the name of the user.
+     * 
+     * @return a list of <code>{@link CmsGroup}</code> objects.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public List getGroupsOfUser(CmsRequestContext context, String username) throws CmsException {
 
@@ -1749,11 +1750,13 @@ public final class CmsSecurityManager {
     /**
      * Returns the groups of a Cms user filtered by the specified IP address.<p>
      * 
-     * @param context the current request context
-     * @param username the name of the user
-     * @param remoteAddress the IP address to filter the groups in the result list
-     * @return a list of Cms groups
-     * @throws CmsException if operation was not succesful
+     * @param context the current request context.
+     * @param username the name of the user.
+     * @param remoteAddress the IP address to filter the groups in the result list.
+     * 
+     * @return a list of <code>{@link CmsGroup}</code> objects filtered by the specified IP address.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public List getGroupsOfUser(CmsRequestContext context, String username, String remoteAddress) throws CmsException {
 
@@ -2035,12 +2038,12 @@ public final class CmsSecurityManager {
     /**
      * Returns a list of users in a group.<p>
      *
-     * All users are granted, except the anonymous user.<p>
-     *
-     * @param context the current request context
-     * @param groupname the name of the group to list users from
-     * @return list of users
-     * @throws CmsException if operation was not succesful
+     * @param context the current request context.
+     * @param groupname the name of the group to list users from.
+     * 
+     * @return all <code>{@link CmsUser}</code> objects in the group.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public List getUsersOfGroup(CmsRequestContext context, String groupname) throws CmsException {
 
@@ -2737,6 +2740,8 @@ public final class CmsSecurityManager {
      * you can control what type of resources you want in the result list:
      * files, folders, or both.<p>
      * 
+     * This method is mainly used by the workplace explorer.<p> 
+     * 
      * @param context the current request context
      * @param resource the resource to return the child resources for
      * @param filter the resource filter to use
@@ -2876,12 +2881,12 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reads the group of a project from the OpenCms.<p>
+     * Reads the group of a project.<p>
      *
-     * @param context the current request context
-     * @param project the project to read from
+     * @param context the current request context.
+     * @param project the project to read from.
      * 
-     * @return the group of a resource
+     * @return the group of a resource.
      */
     public CmsGroup readGroup(CmsRequestContext context, CmsProject project) {
 
@@ -2920,15 +2925,14 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Returns a group object.<p>
+     * Reads a group based on its id.<p>
      *
-     * All users are granted.<p>
-     *
-     * @param context the current request context
-     * @param groupId the id of the group that is to be read
+     * @param context the current request context.
+     * @param groupId the id of the group that is to be read.
      * 
-     * @return the requested group
-     * @throws CmsException if operation was not succesful
+     * @return the requested group.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public CmsGroup readGroup(CmsRequestContext context, CmsUUID groupId) throws CmsException {
 
@@ -2945,13 +2949,14 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Returns a group object.<p>
+     * Reads a group based on its name.<p>
      * 
-     * @param context the current request context
-     * @param groupname the name of the group that is to be read
+     * @param context the current request context.
+     * @param groupname the name of the group that is to be read.
      *
-     * @return the requested group
-     * @throws CmsException if operation was not succesful
+     * @return the requested group.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public CmsGroup readGroup(CmsRequestContext context, String groupname) throws CmsException {
 
@@ -2968,14 +2973,12 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reads the manager group of a project from the OpenCms.<p>
+     * Reads the manager group of a project.<p>
      *
-     * All users are granted.
-     *
-     * @param context the current request context
-     * @param project the project to read from
+     * @param context the current request context.
+     * @param project the project to read from.
      * 
-     * @return the group of a resource
+     * @return the group of a resource.
      */
     public CmsGroup readManagerGroup(CmsRequestContext context, CmsProject project) {
 
@@ -3893,13 +3896,15 @@ public final class CmsSecurityManager {
     /**
      * Returns a user object if the password for the user is correct.<p>
      *
-     * All users are granted.<p>
+     * If the user/pwd pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
      *
-     * @param context the current request context
-     * @param username the username of the user that is to be read
-     * @param password the password of the user that is to be read
-     * @return user read form the cms
-     * @throws CmsException if operation was not succesful
+     * @param context the current request context.
+     * @param username the username of the user that is to be read.
+     * @param password the password of the user that is to be read.
+     * 
+     * @return the webuser read.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public CmsUser readWebUser(CmsRequestContext context, String username, String password) throws CmsException {
 
@@ -3942,13 +3947,11 @@ public final class CmsSecurityManager {
     /**
      * Removes a user from a group.<p>
      *
-     * Only users, which are in the group "administrators" are granted.
-     * 
-     * @param context the current request context
-     * @param username the name of the user that is to be removed from the group
-     * @param groupname the name of the group
+     * @param context the current request context.
+     * @param username the name of the user that is to be removed from the group.
+     * @param groupname the name of the group.
      *
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not succesful.
      */
     public void removeUserFromGroup(CmsRequestContext context, String username, String groupname) throws CmsException {
 
@@ -4004,13 +4007,13 @@ public final class CmsSecurityManager {
     /**
      * Resets the password for a specified user.<p>
      *
-     * @param context the current request context
-     * @param username the name of the user
-     * @param oldPassword the old password
-     * @param newPassword the new password
+     * @param context the current request context.
+     * @param username the name of the user.
+     * @param oldPassword the old password.
+     * @param newPassword the new password.
      * 
-     * @throws CmsException if the user data could not be read from the database
-     * @throws CmsSecurityException if the specified username and old password could not be verified
+     * @throws CmsException if the user data could not be read from the database.
+     * @throws CmsSecurityException if the specified username and old password could not be verified.
      */
     public void resetPassword(CmsRequestContext context, String username, String oldPassword, String newPassword)
     throws CmsException, CmsSecurityException {
@@ -4073,15 +4076,15 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Sets a new parent-group for an already existing group in the Cms.<p>
+     * Sets a new parent-group for an already existing group.<p>
      *
-     * Only the admin can do this.<p>
-     * 
-     * @param context the current request context
-     * @param groupName the name of the group that should be written to the Cms
-     * @param parentGroupName the name of the parentGroup to set, or null if the parent group should be deleted
+     * @param context the current request context.
+     * @param groupName the name of the group that should be written.
+     * @param parentGroupName the name of the parent group to set, 
+     *                      or <code>null</code> if the parent
+     *                      group should be deleted.
      *
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsException if operation was not succesfull.
      */
     public void setParentGroup(CmsRequestContext context, String groupName, String parentGroupName) throws CmsException {
 
@@ -4104,11 +4107,10 @@ public final class CmsSecurityManager {
     /**
      * Sets the password for a user.<p>
      *
-     * Only users in the group "Administrators" are granted.<p>
+     * @param context the current request context.
+     * @param username the name of the user.
+     * @param newPassword the new password.
      * 
-     * @param context the current request context
-     * @param username the name of the user
-     * @param newPassword the new password
      * @throws CmsException if operation was not succesfull.
      */
     public void setPassword(CmsRequestContext context, String username, String newPassword) throws CmsException {
@@ -4299,16 +4301,15 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Checks if a user is member of a group.<p>
+     * Tests if a user is member of the given group.<p>
      *
-     * All users are granted, except the anonymous user.<p>
+     * @param context the current request context.
+     * @param username the name of the user to check.
+     * @param groupname the name of the group to check.
+     *
+     * @return <code>true</code>, if the user is in the group; or <code>false</code> otherwise.
      * 
-     * @param context the current request context
-     * @param username the name of the user to check
-     * @param groupname the name of the group to check
-     *
-     * @return true or false
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not succesful.
      */
     public boolean userInGroup(CmsRequestContext context, String username, String groupname) throws CmsException {
 
@@ -4346,12 +4347,15 @@ public final class CmsSecurityManager {
 
     /**
      * This method checks if a new password follows the rules for
-     * new passwords, which are defined by a Class configured in opencms.properties.<p>
+     * new passwords, which are defined by a Class implementing the 
+     * <code>{@link org.opencms.security.I_CmsPasswordHandler}<code> 
+     * interface and configured in the opencms.properties file.<p>
      * 
      * If this method throws no exception the password is valid.<p>
      *
-     * @param password the new password that has to be checked
-     * @throws CmsSecurityException if the password is not valid
+     * @param password the new password that has to be checked.
+     * 
+     * @throws CmsSecurityException if the password is not valid.
      */
     public void validatePassword(String password) throws CmsSecurityException {
 
@@ -4419,14 +4423,17 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Writes an already existing group in the Cms.<p>
+     * Writes an already existing group.<p>
      *
-     * Only the admin can do this.
+     * The group id has to be a valid OpenCms group id.<br>
      * 
-     * @param context the current request context
-     * @param group the group that should be written to the Cms
+     * The group with the given id will be completely overriden
+     * by the given data.<p>
+     * 
+     * @param context the current request context.
+     * @param group the group that should be written.
      *
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsException if operation was not succesfull.
      */
     public void writeGroup(CmsRequestContext context, CmsGroup group) throws CmsException {
 
