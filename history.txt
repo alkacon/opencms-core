@@ -11,6 +11,8 @@ Legend:
 OpenCms 4.3.39 Bela Tegeuse - xx July 2001
 * Fixed bug: when deleting folders all subfolders must be deleted too, starting with the last
   folder in the foldertree
+* Fixed bug when synchronize resources: do not throw an exception if the resource is already 
+  locked because that's ok
 - Switched the license to LGPL.
 - Changed the logic in setup-wizard for checking the supported servlet-engines.
 
