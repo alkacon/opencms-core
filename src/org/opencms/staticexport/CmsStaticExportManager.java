@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/08/15 17:38:04 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/15 18:35:23 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -134,7 +134,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         m_cacheExportUris = new CmsLruHashMap(1024);      
         
         // register this object as event listener
-        OpenCms.addCmsEventListener(this, new int[] {I_CmsEventListener.EVENT_PUBLISH_PROJECT, I_CmsEventListener.EVENT_CLEAR_CACHES} );  
+        OpenCms.addCmsEventListener(this, new int[] {I_CmsEventListener.EVENT_PUBLISH_PROJECT, I_CmsEventListener.EVENT_CLEAR_CACHES});  
     }
     
     /**
@@ -220,6 +220,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * 
      * @param req the current request
      * @param res the current response
+     * @param cms an initialized cms context (should be initialized with the "Guest" user only)
+     * @param data the static export data set
      * @throws CmsException in case of errors accessing the VFS
      * @throws ServletException in case of errors accessing the servlet 
      * @throws IOException in case of erros writing to the export output stream
@@ -312,6 +314,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * Returns the export data for the request, if null is returned no export is required.<p>
      * 
      * @param request the request to check for export data
+     * @param cms an initialized cms context (should be initialized with the "Guest" user only
      * @return the export data for the request, if null is returned no export is required
      */
     public CmsStaticExportData getExportData(HttpServletRequest request, CmsObject cms) {                
@@ -549,9 +552,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     
     /**
      * Set the list of all resources that have the "exportname" property set.<p>
-     * 
-     * @param cms the current cms context
-     * @param resources the list of all resources that have the "exportname" property set
      */
     public synchronized void setExportnames() {        
         Vector resources;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/08/15 17:38:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/08/15 18:35:23 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -368,14 +368,14 @@ public class OpenCmsCore {
      * Destroys this OpenCms instance.<p> 
      */    
     protected synchronized void destroy() {
+        m_instance = null;
+        
         if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
             OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] Performing shutdown ...");
         }
         try {
             m_scheduler.shutDown();
-            CmsObject cms = new CmsObject();
-            cms.init(m_driverManager);
-            cms.destroy();
+            m_driverManager.destroy();
         } catch (Throwable e) {
             if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                 OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCms]" + e.toString());
@@ -383,7 +383,7 @@ public class OpenCmsCore {
         }
         try {
             Utils.getModulShutdownMethods(OpenCms.getRegistry());
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             // log exception since we are about to shutdown anyway
             if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                 OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCms] Module shutdown exception: " + e);
@@ -392,8 +392,6 @@ public class OpenCmsCore {
         if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
             OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] ... shutdown completed.");
         }        
-                
-        m_instance = null;
     }
      
     /**

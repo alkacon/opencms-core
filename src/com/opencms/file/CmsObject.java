@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/15 17:38:04 $
-* Version: $Revision: 1.379 $
+* Date   : $Date: 2003/08/15 18:35:23 $
+* Version: $Revision: 1.380 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.379 $
+ * @version $Revision: 1.380 $
  */
 public class CmsObject {
 
@@ -1046,14 +1046,6 @@ public class CmsObject {
      */
     public void deleteWebUser(CmsUUID userId) throws CmsException {
         m_driverManager.deleteWebUser(m_context, userId);
-    }
-
-    /**
-     * Destroys the resource borker and required modules and connections.
-     * @throws CmsException if operation was not successful.
-     */
-    public void destroy() throws Throwable, CmsException {
-        m_driverManager.destroy();
     }
 
     /**
