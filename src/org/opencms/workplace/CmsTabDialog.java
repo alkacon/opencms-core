@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsTabDialog.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/03/12 17:03:42 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,32 +55,27 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1.12
  */
 public abstract class CmsTabDialog extends CmsDialog {
 
+    /** Name of the request parameter for the set button pressed flag */
+    public static final String PARAM_SETPRESSED = "setpressed";
     /** Name of the request parameter for the current tab */
     public static final String PARAM_TAB = "tab";
     
     /** Value for the action: switch the tab */
-    public static final int ACTION_SWITCHTAB = 100;
-    
-    /** Value for the action: button "ok" clicked */
-    public static final int ACTION_OK = 101;
-    /** Value for the action: button "set" clicked */
-    public static final int ACTION_SET = 102; 
+    public static final int ACTION_SWITCHTAB = 100; 
     
     /** Request parameter value for the action: switch the tab */
-    public static final String DIALOG_SWITCHTAB = "switchtab";
-    /** Request parameter value for the action: ok */
-    public static final String DIALOG_OK = "ok";
-    /** Request parameter value for the action: set */
-    public static final String DIALOG_SET = "set";
+    public static final String DIALOG_SWITCHTAB = "switchtab"; 
     
     /** Stores the current tab */
     private String m_paramTab;
+    /** Determines if the "set" button was pressed */
+    private String m_paramSetPressed;
     
     /**
      * Public constructor.<p>
@@ -100,7 +95,25 @@ public abstract class CmsTabDialog extends CmsDialog {
      */
     public CmsTabDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
         this(new CmsJspActionElement(context, req, res));
-    }        
+    }   
+    
+    /**
+     * Returns the value of the setpressed parameter.<p>
+     * 
+     * @return the value of the setpressed parameter
+     */    
+    public String getParamSetPressed() {
+        return m_paramSetPressed;
+    }
+
+    /**
+     * Sets the value of the setpressed parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamSetPressed(String value) {
+        m_paramSetPressed = value;
+    }
     
     
     /**
@@ -290,9 +303,14 @@ public abstract class CmsTabDialog extends CmsDialog {
         result.append("\tdocument.forms[0]." + PARAM_ACTION + ".value = \"" + DIALOG_SWITCHTAB + "\";\n");
         result.append("\tdocument.forms[0].submit();\n");
         result.append("}\n");
-        result.append("function setButtonAction() {\n");
-        result.append("\tdocument.forms[0]." + PARAM_ACTION + ".value = \"" + DIALOG_SET + "\";\n");
-        result.append("\tdocument.forms[0].submit();\n");
+        result.append("function submitAction(actionValue, theForm) {\n");
+        result.append("\ttheForm." + PARAM_FRAMENAME + ".value = window.name;\n");
+        result.append("\tif (actionValue == \"" + DIALOG_SET + "\") {\n");
+        result.append("\t\ttheForm." + PARAM_ACTION + ".value = \"" + DIALOG_SET + "\";\n");
+        result.append("\t} else if (actionValue == \"" + DIALOG_CANCEL + "\") {\n");
+        result.append("\t\ttheForm." + PARAM_ACTION + ".value = \"" + DIALOG_CANCEL + "\";\n");
+        result.append("\t}\n");
+        result.append("\ttheForm.submit();\n");
         result.append("}\n");
         result.append("//-->\n</script>\n");
         return result.toString();

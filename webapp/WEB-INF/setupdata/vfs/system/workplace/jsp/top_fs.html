@@ -84,9 +84,9 @@ initHist();
 </head>
 
 <frameset rows="24,*,24" border="0" frameborder="0" framespacing="0">
-    <frame name="head" src="top_head.html" noresize scrolling="no">
-    <frame name="body" src="<%= wp.getSkinUri() %>files/empty.html" noresize scrolling="no">
-    <frame name="foot" src="top_foot.html" noresize scrolling="no">
+    <frame <%= wp.getFrameSource("head", cms.link("top_head.html")) %> noresize scrolling="no">
+    <frame <%= wp.getFrameSource("body", wp.getSettings().getViewUri()) %> noresize scrolling="no">
+    <frame <%= wp.getFrameSource("foot", cms.link("top_foot.html")) %> noresize scrolling="no">
 </frameset>
 
 </html>

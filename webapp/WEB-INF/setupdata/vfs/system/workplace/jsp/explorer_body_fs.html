@@ -14,8 +14,8 @@
 </head>
 
 <frameset cols="20%,80%" framespacing="2">
-    <frame name="explorer_tree"  src="tree_fs.html">
-    <frame name="explorer_files" src="explorer_files.html?mode=explorerview">
+    <frame <%= wp.getFrameSource("explorer_tree", cms.link("tree_fs.html")) %>>
+    <frame <%= wp.getFrameSource("explorer_files", cms.link("explorer_files.html?mode=explorerview")) %>>
 </frameset>
 
 </html>

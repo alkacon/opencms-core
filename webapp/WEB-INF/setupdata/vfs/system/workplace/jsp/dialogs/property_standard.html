@@ -7,11 +7,39 @@
 	
 switch (wp.getAction()) {
 
+case CmsProperty.ACTION_CLOSEPOPUP_SAVE:
+//////////////////// ACTION: save edited properties for the current resource type and close the popup window
+
+	wp.actionEdit(request);
+
+
+case CmsProperty.ACTION_CLOSEPOPUP:
+//////////////////// ACTION: close the popup window
+%>
+	
+	<html><head></head>
+	<script type="text/javascript">
+		window.close();
+	</script>
+	</head></html>
+	
+<%
+break;
+
+
+case CmsProperty.ACTION_CANCEL:
+//////////////////// ACTION: cancel button pressed
+
+	wp.actionCloseDialog();
+
+break;
+
+
 case CmsProperty.ACTION_SAVE_EDIT:
 //////////////////// ACTION: save edited properties for the current resource type and close dialog
 
 	wp.actionEdit(request);
-	wp.closeDialog();
+	wp.actionCloseDialog();
 
 break;
 
@@ -43,14 +71,16 @@ function checkName() {
 }
 //-->
 </script>
+<%= wp.dialogScriptSubmit() %>
 <%= wp.bodyStart("dialog") %>
 
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="submitAction('<%= wp.DIALOG_OK %>', form);">
 
 <%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
 <table border="0" width="100%">
 <tr>
@@ -114,6 +144,7 @@ function definePropertyForm() {
 }
 //-->
 </script>
+<%= wp.dialogScriptSubmit() %>
 <%= wp.bodyStart("dialog") %>
 
 <%= wp.dialogStart() %>
@@ -122,13 +153,14 @@ function definePropertyForm() {
 <%@ include file="common/resourceinfo.txt" %>
 <%= wp.dialogSpacer() %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="submitAction('<%= wp.DIALOG_OK %>', form);">
 <%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
 <%= wp.buildEditForm() %>
 
 <%= wp.dialogContentEnd() %>
-<%= wp.dialogButtonRowOkCancelDefine() %>
+<%= wp.dialogButtonsOkCancelDefine() %>
 </form>
 
 <%= wp.dialogEnd() %>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2004/03/12 17:03:42 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -69,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  * 
  * @since 5.1
  */
@@ -271,12 +270,8 @@ public abstract class CmsWorkplace {
         }            
         settings.setSite(siteRoot);
         
-        // check out the user information for a default view that might be stored there
-        Hashtable startSettings =
-                    (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);  
-        if (startSettings != null) {
-            settings.setViewUri(OpenCms.getLinkManager().substituteLink(cms, (String)startSettings.get(I_CmsConstants.C_START_VIEW)));
-        }
+        // get the default view from the user settings
+        settings.setViewUri(OpenCms.getLinkManager().substituteLink(cms, settings.getUserSettings().getStartView()));
         
         // save the visible resource types for the current user
         settings.setResourceTypes(initWorkplaceResourceTypes(cms));
@@ -616,6 +611,24 @@ public abstract class CmsWorkplace {
         result.append("//-->\n");
         result.append("</script>\n");
         return result.toString();
+    }
+    
+    /**
+     * Returns the html for the frame name and source and stores this information in the workplace settings.<p>
+     * 
+     * @param frameName the name of the frame
+     * @param uri the absolute path of the frame
+     * @return the html for the frame name and source
+     */
+    public String getFrameSource(String frameName, String uri) {
+        String frameString = "name=\"" + frameName + "\" src=\"" + uri + "\"";
+        int paramIndex = uri.indexOf("?");
+        if (paramIndex != -1) {
+            // remove request parameters from URI before putting it to Map
+            uri = uri.substring(0, uri.indexOf("?"));
+        }
+        getSettings().getFrameUris().put(frameName, uri);
+        return frameString;
     }
     
     /**

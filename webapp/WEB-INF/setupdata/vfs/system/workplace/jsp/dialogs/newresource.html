@@ -1,0 +1,58 @@
+<%@ page import="org.opencms.workplace.*" buffer="none" %><%	
+
+	// initialize the workplace class
+	CmsNewResource wp = new CmsNewResource(pageContext, request, response);
+	
+//////////////////// start of switch statement 
+	
+switch (wp.getAction()) {
+
+case CmsNewResource.ACTION_OK:
+//////////////////// ACTION: ok button pressed
+	wp.actionNext();
+break;
+
+case CmsNewResource.ACTION_CANCEL:
+//////////////////// ACTION: cancel button pressed
+	wp.actionCloseDialog();
+break;
+
+case CmsNewResource.ACTION_DEFAULT:
+default:
+//////////////////// ACTION: show undo changes dialog (default)
+
+	wp.setParamAction(wp.DIALOG_OK);
+
+%><%= wp.htmlStart("help.explorer.new.file") %>
+
+<%= wp.dialogScriptSubmit() %>
+
+<%= wp.bodyStart("dialog") %>
+<%= wp.dialogStart() %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %>
+
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="submitAction('<%= wp.DIALOG_OK %>', form);">
+<%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+
+<%= wp.buildNewList(null) %>
+
+<%= wp.dialogContentEnd() %>
+
+<!-- button row start -->
+<div class="dialogbuttons" unselectable="on">
+<input name="ok" type="submit" value="OK" class="dialogbutton">
+<input name="cancel" type="button" value="Abbrechen" onclick="submitAction('cancel', form);" class="dialogbutton">
+</div>
+<!-- button row end -->
+
+</form>
+
+<%= wp.dialogEnd() %>
+
+<%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %>
+<%
+} 
+//////////////////// end of switch statement 
+%>

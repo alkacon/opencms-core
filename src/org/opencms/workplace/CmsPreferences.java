@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/03/07 19:21:54 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/03/12 17:03:42 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,14 +60,11 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1.12
  */
 public class CmsPreferences extends CmsTabDialog {
-    
-    /** Value for the action: cancel button */
-    public static final int ACTION_CANCEL = 200;
     
     /** Value for the action: change the password */
     public static final int ACTION_CHPWD = 202;
@@ -80,9 +77,6 @@ public class CmsPreferences extends CmsTabDialog {
     
     /** Constant for filter */
     private static final String C_SPACER = "------------------------------------------------";
-    
-    /** Request parameter value for the action: cancel button */
-    public static final String DIALOG_CANCEL = "cancel";
     
     /** Request parameter value for the action: change the password */
     public static final String DIALOG_CHPWD = "chpwd";
@@ -225,22 +219,6 @@ public class CmsPreferences extends CmsTabDialog {
     }  
     
     /**
-     * Performs the cancel operation of the settings dialog, i.e. redirecting to the right workplace view.<p>
-     */
-    public void actionCancel() {
-        try {
-            if (getSettings().isViewAdministration()) {                  
-                String adminLink = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/administration.html";
-                sendCmsRedirect(adminLink);
-            } else {
-                sendCmsRedirect(C_PATH_WORKPLACE + "/explorer_fs.html");
-            }
-        } catch (IOException e) {
-            // do nothing
-        }
-    }
-    
-    /**
      * Performs the change password action.<p>
      * 
      * @throws JspException if inclusion of error element fails
@@ -330,16 +308,10 @@ public class CmsPreferences extends CmsTabDialog {
         try {
             if (DIALOG_SET.equals(getParamAction())) {
                 // after "set" action, leave dialog open 
-                sendCmsRedirect(C_PATH_DIALOGS + "/preferences.html?" + PARAM_TAB + "=" + getActiveTab());
+                sendCmsRedirect(C_PATH_DIALOGS + "/preferences.html?" + PARAM_TAB + "=" + getActiveTab() + "&" + PARAM_SETPRESSED + "=true");
             } else {
-                // after "ok" action, close dialog and reload the workplace view
-                setParamOkFunctions("window.top.location.reload(true);");
-                try {
-                    closeDialog();
-                } catch (JspException e) {
-                    // closing dialog failed, redirect to dialog with action set to reload the workplace
-                    sendCmsRedirect(C_PATH_DIALOGS + "/preferences.html?" + PARAM_ACTION + "=" + DIALOG_RELOAD);
-                }    
+                // redirect to dialog with action set to reload the workplace
+                sendCmsRedirect(C_PATH_DIALOGS + "/preferences.html?" + PARAM_ACTION + "=" + DIALOG_RELOAD);
             }
         } catch (IOException e) {
             // error during redirect, do nothing 
@@ -753,20 +725,6 @@ public class CmsPreferences extends CmsTabDialog {
         result.append("</table>\n");
         
         return result.toString();
-    }
-    
-    /**
-     * Returns the action for the "cancel" button of the error dialog.<p>
-     * 
-     * This overwrites the cancel method of the CmsDialog class.<p>
-     * 
-     * Always use this value, do not write anything directly in the html page.<p>
-     * 
-     * @return the default action for a "cancel" button
-     */
-    public String buttonActionCancel() {
-        String target = OpenCms.getLinkManager().substituteLink(getCms(), CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
-        return "onClick=\"top.location.href='" + target + "';\"";
     }
     
     /**

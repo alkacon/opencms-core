@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2004/02/25 14:21:04 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/03/12 17:03:42 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
@@ -68,6 +68,7 @@ public class CmsWorkplaceSettings {
     private Map m_resourceTypes;
     private Map m_treeSite;
     private Map m_treeType;
+    private Map m_frameUris;
     
     private CmsUser m_user;
     private CmsUserSettings m_userSettings;
@@ -82,6 +83,7 @@ public class CmsWorkplaceSettings {
         m_treeType = new HashMap();
         m_treeSite = new HashMap();
         m_resourceTypes = new HashMap();
+        m_frameUris = new HashMap();
         m_currentSite = OpenCms.getSiteManager().getDefaultSite().getSiteRoot();
     }
 
@@ -162,6 +164,15 @@ public class CmsWorkplaceSettings {
      */
     public boolean getExplorerShowLinks() {
         return m_explorerShowLinks;
+    }
+    
+    /**
+     * Returns the frame URIs of the currently loaded frameset, with the frame names as keys.<p>
+     * 
+     * @return the frame URIs of the currently loaded frameset
+     */
+    public Map getFrameUris() {
+        return m_frameUris;
     }
 
     /**
@@ -364,6 +375,15 @@ public class CmsWorkplaceSettings {
      */
     public synchronized void setExplorerShowLinks(boolean b) {
         m_explorerShowLinks = b;
+    }
+    
+    /**
+     * Sets the frame URIs of the currently loaded frameset, with the frame names as keys.<p>
+     * 
+     * @param frameUris the frame URIs of the currently loaded frameset
+     */
+    public synchronized void setFrameUris(Map frameUris) {
+        m_frameUris = frameUris;
     }
 
     /**

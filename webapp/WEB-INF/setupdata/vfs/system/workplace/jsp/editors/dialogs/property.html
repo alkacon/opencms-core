@@ -2,10 +2,41 @@
 
 	// initialize the workplace class
 	CmsDialogProperty wp = new CmsDialogProperty(pageContext, request, response);
+	String additionalScript = "";
 	
 //////////////////// start of switch statement 
 	
 switch (wp.getAction()) {
+
+case CmsDialogProperty.ACTION_CLOSEPOPUP_SAVE:
+//////////////////// ACTION: save edited properties for the current resource type and close the popup window
+
+	wp.actionEdit(request);
+	if (wp.hasTemplateChanged()) {
+		additionalScript = "window.opener.buttonAction(1);";
+	}
+
+
+case CmsDialogProperty.ACTION_CLOSEPOPUP:
+//////////////////// ACTION: close the popup window
+%>
+	
+	<html><head></head>
+	<script type="text/javascript">
+		<%= additionalScript %>
+		window.close();
+	</script>
+	</head></html>
+	
+<%
+break;
+
+case CmsDialogProperty.ACTION_CANCEL:
+//////////////////// ACTION: cancel button pressed, close dialog
+
+wp.actionCloseDialog();
+
+break;
 
 
 case CmsDialogProperty.ACTION_SAVE_EDIT:
@@ -125,6 +156,7 @@ function toggleNav() {
 
 //-->
 </script>
+<%= wp.dialogScriptSubmit() %>
 <%= wp.bodyStart("dialog") %>
 
 <%= wp.dialogStart() %>
@@ -132,6 +164,7 @@ function toggleNav() {
 
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
 <%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
 <%= wp.buildEditForm() %>
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2004/03/12 17:03:42 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 5.1
  */
@@ -88,6 +88,8 @@ public class CmsFrameset extends CmsWorkplace {
         String newView = request.getParameter("wpView");
         if (newView != null) {
             settings.setViewUri(newView);
+            // TODO: This is a workaround to make dialogs work in the legacy XMLTemplate views
+            settings.getFrameUris().put("body", newView);
         }
         
         // check if the user requested a site change

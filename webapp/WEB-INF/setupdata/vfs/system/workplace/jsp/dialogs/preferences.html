@@ -10,16 +10,17 @@ switch (wp.getAction()) {
 case CmsPreferences.ACTION_CANCEL:		
 //////////////////// ACTION: cancel button pressed, leave dialog
 
-	wp.actionCancel();
-	
-break;
+	if (!"true".equals(wp.getParamSetPressed())) {
+		wp.actionCloseDialog();
+		break;
+	}	
+
 case CmsPreferences.ACTION_RELOAD:		
 //////////////////// ACTION: reload the workplace window after pressing "ok"
 %>
 <html>
 <head></head>
-<body onload="window.top.location.reload(true);">
-</body>
+<body onload="window.top.location.reload(true);"></body>
 </html>
 <%
 	
@@ -48,19 +49,11 @@ default:
 	wp.setParamAction(wp.DIALOG_OK);
 
 %><%= wp.htmlStart() %>
-<script type="text/javascript">
-<!--
-function cancelButtonAction() {
-	document.forms[0].<%= wp.PARAM_ACTION %>.value = "<%= wp.DIALOG_CANCEL %>";
-    document.forms[0].submit();
-}
-//-->
-</script>
 <%= wp.bodyStart("dialog") %>
 <%= wp.dialogStart() %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
-<%= wp.paramsAsHidden() %>
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="submitAction('<%= wp.DIALOG_OK %>', form);">
+<%= wp.paramsAsHidden() %><input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 <%= wp.dialogTabContentStart(wp.getParamTitle(), "style=\"height: 260px;\" id=\"tabcontent\"") %>
 
 <%
@@ -311,7 +304,7 @@ case 6:
 %>
 
 <%= wp.dialogTabContentEnd() %>
-<%= wp.dialogButtonRowSetOkCancel("onclick=\"setButtonAction();\"", null, "onclick=\"cancelButtonAction();\"") %>
+<%= wp.dialogButtonsSetOkCancel(null, null, null) %>
 </form>
 
 <%= wp.dialogEnd() %>

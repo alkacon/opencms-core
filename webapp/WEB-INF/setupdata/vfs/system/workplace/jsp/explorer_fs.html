@@ -15,7 +15,7 @@
 
 <frameset rows="24,*" border="0" frameborder="0" framespacing="0">
     <frame name="explorer_head" src="<%= wp.getSkinUri() %>files/empty.html" noresize scrolling="no">
-    <frame name="explorer_body" src="explorer_body_fs.html" noresize scrolling="no">
+    <frame <%= wp.getFrameSource("explorer_body", cms.link("explorer_body_fs.html")) %> noresize scrolling="no">
 </frameset>
 
 </html>

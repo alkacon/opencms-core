@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/03/05 15:03:46 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/03/12 17:03:42 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.3.0
  */
@@ -75,6 +75,8 @@ public class CmsDialogProperty extends CmsProperty {
     
     /** Stores the property names which should be listed in the edit form */
     public static final String[] PROPERTIES = {I_CmsConstants.C_PROPERTY_TITLE, I_CmsConstants.C_PROPERTY_KEYWORDS, I_CmsConstants.C_PROPERTY_DESCRIPTION };
+    
+    private boolean m_templateChanged = false;
     
     /**
      * Public constructor with JSP action element.<p>
@@ -110,8 +112,8 @@ public class CmsDialogProperty extends CmsProperty {
             if (isEditable()) {
                 performEditOperation(request);    
             }  
-            // return to the explorer view 
-            closeDialog();         
+            // return to the workplace
+            actionCloseDialog();         
         } catch (CmsException e) {
             // error defining property, show error dialog
             setParamErrorstack(e.getStackTraceAsString());
@@ -419,6 +421,7 @@ public class CmsDialogProperty extends CmsProperty {
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
+        boolean isPopup = Boolean.valueOf(getParamIsPopup()).booleanValue();
         // set the action for the JSP switch 
         if (DIALOG_SHOW_DEFAULT.equals(getParamAction())) {
             // redirect to the default OpenCms dialog
@@ -430,7 +433,18 @@ public class CmsDialogProperty extends CmsProperty {
             }          
         } else if (DIALOG_SAVE_EDIT.equals(getParamAction())) {
             // save the edited properties
-            setAction(ACTION_SAVE_EDIT);
+            if (isPopup) {
+                setAction(ACTION_CLOSEPOPUP_SAVE);
+            } else {
+                setAction(ACTION_SAVE_EDIT);
+            }
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {
+            // save the edited properties
+            if (isPopup) {
+                setAction(ACTION_CLOSEPOPUP);
+            } else {
+                setAction(ACTION_CANCEL);
+            }
         } else {                   
             setAction(ACTION_EDIT); 
             String resName = CmsResource.getName(getParamResource());
@@ -490,9 +504,7 @@ public class CmsDialogProperty extends CmsProperty {
             writeProperty(I_CmsConstants.C_PROPERTY_TEMPLATE, paramValue, oldValue, activeProperties);
             if (paramValue != null && !paramValue.equals(oldValue)) {
                 // template has changed, refresh editor window
-                if (getParamOkFunctions() != null && getParamOkFunctions().startsWith("window.close()")) {
-                    setParamOkFunctions("window.opener.buttonAction(1);");
-                }
+                m_templateChanged = true;
             }
                   
         } finally {
@@ -501,6 +513,15 @@ public class CmsDialogProperty extends CmsProperty {
             }
         }
         return true;
+    }
+    
+    /**
+     * Returns if the template property was changed.<p>
+     * 
+     * @return true if the template property was changed, otherwise false
+     */
+    public boolean hasTemplateChanged() {
+        return m_templateChanged;
     }
     
     /**

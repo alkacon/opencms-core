@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2004/02/25 10:28:33 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/03/12 17:03:42 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringSubstitution;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 5.1
  */
@@ -58,6 +59,16 @@ public class CmsDialog extends CmsWorkplace {
     public static final int ACTION_CONFIRMED = 1;
     /** Value for the action: wait (show please wait screen) */
     public static final int ACTION_WAIT = 2;
+    /** Value for the action: ok */
+    public static final int ACTION_OK= 3;
+    /** Value for the action: cancel */
+    public static final int ACTION_CANCEL = 4;
+    /** Value for the action: button "set" clicked */
+    public static final int ACTION_SET = 5;
+    /** Value for the action: close popup window */
+    public static final int ACTION_CLOSEPOPUP = 6;
+    /** Value for the action: save & close popup window */
+    public static final int ACTION_CLOSEPOPUP_SAVE = 7;
     
     // note: action values 90 - 99 are reserved for reports
     /** Value for the action: begin the report */
@@ -84,20 +95,28 @@ public class CmsDialog extends CmsWorkplace {
     public static final int BUTTON_ADVANCED = 3;
     /** Constant for the "Set" button in the build button methods */
     public static final int BUTTON_SET = 4;
-    /** Constant for the "OK" button without form submission in the build button methods */
-    public static final int BUTTON_OK_NO_SUBMIT = 5;
     /** Constant for the "Details" button in the build button methods */
-    public static final int BUTTON_DETAILS = 6;
+    public static final int BUTTON_DETAILS = 5;
+    /** Constant for the "OK" button in the build button methods (without form submission) */
+    public static final int BUTTON_OK_NO_SUBMIT = 6;
     
     /** Request parameter value for the action: dialog confirmed */
     public static final String DIALOG_CONFIRMED = "confirmed";
     /** Request parameter value for the action: show please wait screen */
     public static final String DIALOG_WAIT = "wait";
+    /** Request parameter value for the action: ok */
+    public static final String DIALOG_OK = "ok";
+    /** Request parameter value for the action: cancel */
+    public static final String DIALOG_CANCEL = "cancel";
+    /** Request parameter value for the action: set */
+    public static final String DIALOG_SET = "set";
     
     /** Request parameter name for the action */
     public static final String PARAM_ACTION = "action";
     /** Request parameter name for the file */
     public static final String PARAM_FILE = "file";
+    /** Request parameter name for the frame name */
+    public static final String PARAM_FRAMENAME = "framename";
     /** Request parameter name for the target */
     public static final String PARAM_TARGET = "target";
     /** Request parameter name for the dialog type */
@@ -127,6 +146,7 @@ public class CmsDialog extends CmsWorkplace {
     private String m_paramResource;
     private String m_paramDialogtype;
     private String m_paramErrorstack;
+    private String m_paramFrameName;
     private String m_paramMessage;
     private String m_paramTitle;
     private String m_paramOklink;
@@ -404,6 +424,28 @@ public class CmsDialog extends CmsWorkplace {
     }
     
     /**
+     * Returns the value of the frame name parameter.<p>
+     * 
+     * @return the value of the errorstack parameter
+     */    
+    public String getParamFramename()  {
+        if (m_paramFrameName != null && !"null".equals(m_paramFrameName)) {
+            return m_paramFrameName;
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * Sets the value of the frame name parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamFramename(String value) {
+        m_paramFrameName = value;
+    }
+    
+    /**
      * Returns the oklink parameter.<p>
      * 
      * Use this parameter to define the target of the "ok" button when closing the dialog.<p>
@@ -503,6 +545,35 @@ public class CmsDialog extends CmsWorkplace {
             }
             
         }
+    }
+    
+    /**
+     * Used to close the current JSP dialog.<p>
+     * 
+     * This method tries to include the URI stored in the workplace settings.
+     * This URI is determined by the frame name, which has to be set 
+     * in the framename parameter.<p>
+     * 
+     * @throws JspException if including an element fails
+     */
+    public void actionCloseDialog() throws JspException {
+        if (getParamFramename() != null) {
+            // framename parameter found, get URI
+            String frameUri = (String)getSettings().getFrameUris().get(getParamFramename());
+            if (frameUri != null) {
+                // URI found, include it
+                if (frameUri.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
+                    frameUri = frameUri.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
+                }    
+                getJsp().include(frameUri);
+            } else {
+                // no URI found, include the explorer file list
+                getJsp().include(C_FILE_EXPLORER_FILELIST);
+            }
+        } else {
+            // no framename parameter found, include the explorer file list
+            getJsp().include(C_FILE_EXPLORER_FILELIST);
+        }       
     }
     
     /**
@@ -799,6 +870,24 @@ public class CmsDialog extends CmsWorkplace {
     }
     
     /**
+     * Builds the html for the button row under the dialog content area, including buttons.<p>
+     * 
+     * @param buttons array of constants of which buttons to include in the row
+     * @param attributes array of Strings for additional button attributes
+     * @return the html for the button row under the dialog content area, including buttons
+     */
+    public String dialogButtons(int[] buttons, String[] attributes) {
+        StringBuffer result = new StringBuffer(256);
+        result.append(dialogButtonRow(HTML_START));
+        for (int i=0; i<buttons.length; i++)  {
+            dialogButtonsHtml(result, buttons[i], attributes[i]);
+        }        
+        
+        result.append(dialogButtonRow(HTML_END));        
+        return result.toString();
+    }
+    
+    /**
      * Appends a space char. between tag attribs.<p>
      * 
      * @param attribute a tag attribute
@@ -824,74 +913,149 @@ public class CmsDialog extends CmsWorkplace {
      * @param button a integer key to identify the button
      * @param attribute an optional string with possible tag attributes, or null
      */
+    protected void dialogButtonsHtml(StringBuffer result, int button, String attribute) {
+        attribute = appendDelimiter(attribute);
+        
+        switch (button) {
+        case BUTTON_OK:
+            result.append("<input name=\"ok\" value=\"");
+            result.append(key("button.ok")+"\"");
+            if (attribute.toLowerCase().indexOf("onclick") == -1) {
+                result.append(" type=\"submit\"");
+            } else {
+                result.append(" type=\"button\"");
+            }
+            result.append(" class=\"dialogbutton\"");
+            result.append(attribute);
+            result.append(">\n");
+            break;
+        case BUTTON_CANCEL:
+            result.append("<input name=\"cancel\" type=\"button\" value=\"");
+            result.append(key("button.cancel")+"\"");
+            if (attribute.toLowerCase().indexOf("onclick") == -1) {
+                result.append(" onclick=\"submitAction('" + DIALOG_CANCEL + "', form);\"");
+            }
+            result.append(" class=\"dialogbutton\"");
+            result.append(attribute);
+            result.append(">\n");
+            break;
+        case BUTTON_CLOSE:
+            result.append("<input name=\"close\" type=\"button\" value=\"");
+            result.append(key("button.close")+"\"");
+            if (attribute.toLowerCase().indexOf("onclick") == -1) {
+                result.append(" onclick=\"submitAction('" + DIALOG_CANCEL + "', form);\"");
+            }
+            result.append(" class=\"dialogbutton\"");
+            result.append(attribute);
+            result.append(">\n");
+            break;
+        case BUTTON_ADVANCED:
+            result.append("<input name=\"advanced\" type=\"button\" value=\"");
+            result.append(key("button.advanced")+"\"");
+            result.append(" class=\"dialogbutton\"");
+            result.append(attribute);
+            result.append(">\n");
+            break;
+        case BUTTON_SET:
+            result.append("<input name=\"set\" type=\"button\" value=\"");
+            result.append(key("button.submit")+"\"");
+            if (attribute.toLowerCase().indexOf("onclick") == -1) {
+                result.append(" onclick=\"submitAction('" + DIALOG_SET + "', form);\"");
+            }
+            result.append(" class=\"dialogbutton\"");
+            result.append(attribute);
+            result.append(">\n");
+            break;
+        case BUTTON_DETAILS:
+            result.append("<input name=\"details\" type=\"button\" value=\"");
+            result.append(key("button.detail")+"\"");
+            result.append(" class=\"dialogbutton\"");
+            result.append(attribute);
+            result.append(">\n");
+            break;
+        default:
+            // not a valid button code, just insert a warning in the HTML
+            result.append("<!-- invalid button code: ");
+            result.append(button);
+            result.append(" -->\n");
+        }
+    }
+    
+    /**
+     * Renders the HTML for a single input button of a specified type.<p>
+     * 
+     * @param result a string buffer where the rendered HTML gets appended to
+     * @param button a integer key to identify the button
+     * @param attribute an optional string with possible tag attributes, or null
+     */
     protected void dialogButtonRowHtml(StringBuffer result, int button, String attribute) {
         attribute = appendDelimiter(attribute);
         
         switch (button) {
-                case BUTTON_OK:
-                    result.append("<input name=\"ok\" type=\"submit\" value=\"");
-                    result.append(key("button.ok"));
-                    result.append("\" class=\"dialogbutton\"");
-                    result.append(attribute);
-                    result.append(">\n");
-                    break;
-                case BUTTON_OK_NO_SUBMIT:
-                    result.append("<input name=\"ok\" type=\"button\" value=\"");
-                    result.append(key("button.ok"));
-                    result.append("\" class=\"dialogbutton\"");
-                    result.append(attribute);
-                    result.append(">\n");
-                    break;
-                case BUTTON_CANCEL:
-                    result.append("<input name=\"cancel\" type=\"button\" value=\"");
-                    result.append(key("button.cancel")+"\"");
-                    if (attribute.toLowerCase().indexOf("onclick") == -1) {
-                        result.append(" ");
-                        result.append(buttonActionCancel());
-                    }
-                    result.append(" class=\"dialogbutton\"");
-                    result.append(attribute);
-                    result.append(">\n");
-                    break;
-                case BUTTON_CLOSE:
-                    result.append("<input name=\"close\" type=\"button\" value=\"");
-                    result.append(key("button.close")+"\"");
-                    if (attribute.toLowerCase().indexOf("onclick") == -1) {
-                        result.append(" ");
-                        result.append(buttonActionClose());
-                    }
-                    result.append(" class=\"dialogbutton\"");
-                    result.append(attribute);
-                    result.append(">\n");
-                    break;
-                case BUTTON_ADVANCED:
-                    result.append("<input name=\"advanced\" type=\"button\" value=\"");
-                    result.append(key("button.advanced")+"\"");
-                    result.append(" class=\"dialogbutton\"");
-                    result.append(attribute);
-                    result.append(">\n");
-                    break;
-                case BUTTON_SET:
-                    result.append("<input name=\"set\" type=\"button\" value=\"");
-                    result.append(key("button.submit")+"\"");
-                    result.append(" class=\"dialogbutton\"");
-                    result.append(attribute);
-                    result.append(">\n");
-                    break;
-                case BUTTON_DETAILS:
-                    result.append("<input name=\"details\" type=\"button\" value=\"");
-                    result.append(key("button.detail")+"\"");
-                    result.append(" class=\"dialogbutton\"");
-                    result.append(attribute);
-                    result.append(">\n");
-                    break;
-                default:
-                    // not a valid button code, just insert a warning in the HTML
-                    result.append("<!-- invalid button code: ");
-                    result.append(button);
-                    result.append(" -->\n");
+            case BUTTON_OK:
+            result.append("<input name=\"ok\" type=\"submit\" value=\"");
+            result.append(key("button.ok"));
+            result.append("\" class=\"dialogbutton\"");
+            result.append(attribute);
+            result.append(">\n");
+            break;
+        case BUTTON_OK_NO_SUBMIT:
+            result.append("<input name=\"ok\" type=\"button\" value=\"");
+            result.append(key("button.ok"));
+            result.append("\" class=\"dialogbutton\"");
+            result.append(attribute);
+            result.append(">\n");
+            break;
+        case BUTTON_CANCEL:
+            result.append("<input name=\"cancel\" type=\"button\" value=\"");
+            result.append(key("button.cancel")+"\"");
+            if (attribute.toLowerCase().indexOf("onclick") == -1) {
+                result.append(" ");
+                result.append(buttonActionCancel());
             }
+            result.append(" class=\"dialogbutton\"");
+            result.append(attribute);
+            result.append(">\n");
+            break;
+        case BUTTON_CLOSE:
+            result.append("<input name=\"close\" type=\"button\" value=\"");
+            result.append(key("button.close")+"\"");
+            if (attribute.toLowerCase().indexOf("onclick") == -1) {
+                result.append(" ");
+                result.append(buttonActionClose());
+            }
+            result.append(" class=\"dialogbutton\"");
+            result.append(attribute);
+            result.append(">\n");
+            break;
+        case BUTTON_ADVANCED:
+            result.append("<input name=\"advanced\" type=\"button\" value=\"");
+            result.append(key("button.advanced")+"\"");
+            result.append(" class=\"dialogbutton\"");
+            result.append(attribute);
+            result.append(">\n");
+            break;
+        case BUTTON_SET:
+            result.append("<input name=\"set\" type=\"button\" value=\"");
+            result.append(key("button.submit")+"\"");
+            result.append(" class=\"dialogbutton\"");
+            result.append(attribute);
+            result.append(">\n");
+            break;
+        case BUTTON_DETAILS:
+            result.append("<input name=\"details\" type=\"button\" value=\"");
+            result.append(key("button.detail")+"\"");
+            result.append(" class=\"dialogbutton\"");
+            result.append(attribute);
+            result.append(">\n");
+            break;
+        default:
+            // not a valid button code, just insert a warning in the HTML
+            result.append("<!-- invalid button code: ");
+            result.append(button);
+            result.append(" -->\n");
         }
+    }
         
     /**
      * Builds a button row with an "ok" and a "cancel" button.<p>
@@ -923,6 +1087,30 @@ public class CmsDialog extends CmsWorkplace {
      */
     public String dialogButtonRowOkCancelAdvanced(String okAttributes, String cancelAttributes, String advancedAttributes) {
         return dialogButtonRow(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_ADVANCED}, new String[] {okAttributes, cancelAttributes, advancedAttributes});
+    }
+    
+    /**
+     * Builds a button row with an "ok", a "cancel" and an "advanced" button.<p>
+     * 
+     * @param okAttributes additional attributes for the "ok" button
+     * @param cancelAttributes additional attributes for the "cancel" button
+     * @param advancedAttributes additional attributes for the "advanced" button
+     * @return the button row 
+     */
+    public String dialogButtonsOkCancelAdvanced(String okAttributes, String cancelAttributes, String advancedAttributes) {
+        return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_ADVANCED}, new String[] {okAttributes, cancelAttributes, advancedAttributes});
+    }
+    
+    /**
+     * Builds a button row with a "set", an "ok", and a "cancel" button.<p>
+     * 
+     * @param setAttributes additional attributes for the "set" button
+     * @param okAttributes additional attributes for the "ok" button
+     * @param cancelAttributes additional attributes for the "cancel" button
+     * @return the button row 
+     */
+    public String dialogButtonsSetOkCancel(String setAttributes, String okAttributes, String cancelAttributes) {
+        return dialogButtons(new int[] {BUTTON_SET, BUTTON_OK, BUTTON_CANCEL}, new String[] {setAttributes, okAttributes, cancelAttributes});
     }
     
     /**
@@ -993,6 +1181,27 @@ public class CmsDialog extends CmsWorkplace {
      */    
     public String dialogButtonRowCloseDetails(String closeAttribute, String detailsAttribute) {
         return dialogButtonRow(new int[] {BUTTON_CLOSE, BUTTON_DETAILS}, new String[] {closeAttribute, detailsAttribute});
+    }
+    
+    /**
+     * Builds the standard javascript for submitting the dialog.<p>
+     * 
+     * @return the standard javascript for submitting the dialog
+     */
+    public String dialogScriptSubmit() {
+        StringBuffer result = new StringBuffer(512);
+        result.append("<script type=\"text/javascript\">\n");
+        result.append("function submitAction(actionValue, theForm) {\n");
+        result.append("\ttheForm." + PARAM_FRAMENAME + ".value = window.name;\n");
+        result.append("\tif (actionValue == \"" + DIALOG_OK + "\") {\n");
+        result.append("\t\ttheForm.submit();\n");
+        result.append("\t} else {\n");
+        result.append("\t\ttheForm." + PARAM_ACTION + ".value = \"" + DIALOG_CANCEL + "\";\n");
+        result.append("\t\ttheForm.submit();\n");
+        result.append("\t}\n");
+        result.append("}\n");
+        result.append("</script>\n");
+        return result.toString();        
     }
         
     /**

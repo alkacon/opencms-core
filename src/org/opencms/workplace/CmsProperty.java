@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2004/02/21 17:11:42 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/03/12 17:03:42 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 5.1
  */
@@ -226,14 +226,25 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
+        boolean isPopup = Boolean.valueOf(getParamIsPopup()).booleanValue();
         // set the action for the JSP switch 
         if (DIALOG_SHOW_DEFINE.equals(getParamAction())) {
             setAction(ACTION_SHOW_DEFINE);
             setParamTitle(key("title.newpropertydef") + ": " + CmsResource.getName(getParamResource()));
         } else if (DIALOG_SAVE_EDIT.equals(getParamAction())) {
-            setAction(ACTION_SAVE_EDIT);
+            if (isPopup) {
+                setAction(ACTION_CLOSEPOPUP_SAVE);
+            } else {
+                setAction(ACTION_SAVE_EDIT);
+            }
         } else if (DIALOG_SAVE_DEFINE.equals(getParamAction())) {
             setAction(ACTION_SAVE_DEFINE);
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {
+            if (isPopup) {
+                setAction(ACTION_CLOSEPOPUP);
+            } else {
+                setAction(ACTION_CANCEL);
+            }
         } else { 
             // set the default action: show edit form               
             setAction(ACTION_DEFAULT);
@@ -260,7 +271,7 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
             result.append(">\n");
             break;
         default :
-            super.dialogButtonRowHtml(result, button, attribute);
+            super.dialogButtonsHtml(result, button, attribute);
         }
     }
     
@@ -269,11 +280,11 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
      * 
      * @return the button row
      */
-    public String dialogButtonRowOkCancelDefine() {
+    public String dialogButtonsOkCancelDefine() {
         if (isEditable()) {
-            return dialogButtonRow(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DEFINE}, new String[] {null, null, "onclick=\"definePropertyForm();\""});
+            return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DEFINE}, new String[] {null, null, "onclick=\"definePropertyForm();\""});
         } else {
-            return dialogButtonRow(new int[] {BUTTON_CLOSE}, new String[] {null});
+            return dialogButtons(new int[] {BUTTON_CLOSE}, new String[] {null});
             
         }
     }

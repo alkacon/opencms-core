@@ -6719,6 +6719,33 @@
 		<accesscontrol/>
 	</file>
 	<file>
+		<source>system/workplace/jsp/dialogs/newresource.html</source>
+		<destination>system/workplace/jsp/dialogs/newresource.html</destination>
+		<type>jsp</type>
+		<uuidresource>f46779a9-7341-11d8-96a4-5572444d6632</uuidresource>
+		<uuidcontent>f46779aa-7341-11d8-96a4-5572444d6632</uuidcontent>
+		<datelastmodified>1079108141000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1078998811000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property>
+				<name>content-encoding</name>
+				<value><![CDATA[ISO-8859-1]]></value>
+			</property>
+			<property>
+				<name>export</name>
+				<value><![CDATA[false]]></value>
+			</property>
+			<property>
+				<name>Title</name>
+				<value><![CDATA[Dialog - New resource]]></value>
+			</property>
+		</properties>
+		<accesscontrol/>
+	</file> 
+	<file>
 		<source>system/workplace/jsp/editors/dialogs/property.html</source>
 		<destination>system/workplace/jsp/editors/dialogs/property.html</destination>
 		<type>jsp</type>

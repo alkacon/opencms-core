@@ -20,8 +20,8 @@ function show_help()
 
 <!-- Beginn Aufbau der Frames Task -->
 <frameset rows="40,*" border=0 frameborder=0 framespacing=0>
-	<frame name="tasks_head" src="tasks_head.html" marginwidth=1 marginheight=5 leftmargin=1 topmargin=1 noresize scrolling=no>
-	<frame name="tasks_body" src="tasks_content.html" marginwidth=8 marginheight=8 leftmargin=8 topmargin=8>
+	<frame name="tasks_head" src="]]><LINK>/system/workplace/action/tasks_head.html</LINK><![CDATA[" marginwidth=1 marginheight=5 leftmargin=1 topmargin=1 noresize scrolling=no>
+	<frame name="tasks_body" src="]]><LINK>/system/workplace/action/tasks_content.html</LINK><![CDATA[" marginwidth=8 marginheight=8 leftmargin=8 topmargin=8>
 </frameset>
 <!-- Ende Definition Frames Task -->
 
