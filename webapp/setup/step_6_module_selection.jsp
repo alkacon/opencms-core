@@ -224,7 +224,7 @@ OpenCms Setup Wizard - Module selection
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 
 <% if (Bean.isInitialized()) { %>
-<form method="get" class="nomargin" name="modules" onSubmit="sortAvailableModules();">
+<form method="post" class="nomargin" name="modules" onSubmit="sortAvailableModules();">
 <input type="hidden" name="installModules" value="">
 <table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
 <tr>
