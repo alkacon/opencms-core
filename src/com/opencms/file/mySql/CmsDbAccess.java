@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/12/07 15:38:34 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2000/12/14 08:17:41 $
+ * Version: $Revision: 1.44 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.43 $ $Date: 2000/12/07 15:38:34 $ * 
+ * @version $Revision: 1.44 $ $Date: 2000/12/14 08:17:41 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -156,7 +156,6 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 				statementDestroy.executeUpdate();
 				statementDestroy.clearParameters();
 			}
-	 			res.close();
 		} catch (SQLException e){
 			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		  }finally {
@@ -166,6 +165,12 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 				if( statementDestroy != null) {
 					m_pool.putPreparedStatement(m_cq.C_FILE_DELETE_KEY, statementDestroy);
 				}
+				if (res != null){
+					try{
+						res.close();
+					} catch (SQLException sqlex){
+					}		
+				}	
 			 }	
 	}
 	/**
@@ -499,45 +504,46 @@ protected void initIdStatements() throws com.opencms.core.CmsException {
 	((com.opencms.file.mySql.CmsDbPool) m_pool).initIdStatement(m_cq.C_SYSTEMID_WRITE_KEY, m_cq.C_SYSTEMID_WRITE);
 	((com.opencms.file.mySql.CmsDbPool) m_pool).initIdStatement(m_cq.C_SYSTEMID_UNLOCK_KEY, m_cq.C_SYSTEMID_UNLOCK);
 }
-	/**
-	 * Private method to get the next id for a table.
-	 * This method is synchronized, to generate unique id's.
-	 * 
-	 * @param key A key for the table to get the max-id from.
-	 * @return next-id The next possible id for this table.
-	 */
-	protected synchronized int nextId(int key) 
-		 throws CmsException {
-		
-		int newId = C_UNKNOWN_INT;
-		PreparedStatement statement = null;
-		ResultSet res = null;
-		try {
-			statement = ((com.opencms.file.mySql.CmsDbPool)m_pool).getIdStatement(m_cq.C_SYSTEMID_LOCK_KEY);
-			statement.executeUpdate();
-			
-			statement = ((com.opencms.file.mySql.CmsDbPool)m_pool).getIdStatement(m_cq.C_SYSTEMID_READ_KEY);
-			statement.setInt(1,key);
-			res = statement.executeQuery();
-			if (res.next()){
-				newId = res.getInt(m_cq.C_SYSTEMID_ID);
-				res.close();
-			}else{
-				 throw new CmsException("[" + this.getClass().getName() + "] "+" cant read Id! ",CmsException.C_NO_GROUP);		
-			}
-			statement = ((com.opencms.file.mySql.CmsDbPool)m_pool).getIdStatement(m_cq.C_SYSTEMID_WRITE_KEY);
-			statement.setInt(1,newId+1);
-			statement.setInt(2,key);
-			statement.executeUpdate();
-			
-			statement = ((com.opencms.file.mySql.CmsDbPool)m_pool).getIdStatement(m_cq.C_SYSTEMID_UNLOCK_KEY);
-			statement.executeUpdate();
-			
-		} catch (SQLException e){
-			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+/**
+ * Private method to get the next id for a table.
+ * This method is synchronized, to generate unique id's.
+ * 
+ * @param key A key for the table to get the max-id from.
+ * @return next-id The next possible id for this table.
+ */
+protected synchronized int nextId(int key) throws CmsException {
+	int newId = C_UNKNOWN_INT;
+	PreparedStatement statement = null;
+	ResultSet res = null;
+	try {
+		statement = ((com.opencms.file.mySql.CmsDbPool) m_pool).getIdStatement(m_cq.C_SYSTEMID_LOCK_KEY);
+		statement.executeUpdate();
+		statement = ((com.opencms.file.mySql.CmsDbPool) m_pool).getIdStatement(m_cq.C_SYSTEMID_READ_KEY);
+		statement.setInt(1, key);
+		res = statement.executeQuery();
+		if (res.next()) {
+			newId = res.getInt(m_cq.C_SYSTEMID_ID);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + " cant read Id! ", CmsException.C_NO_GROUP);
 		}
-		return(	newId );
+		statement = ((com.opencms.file.mySql.CmsDbPool) m_pool).getIdStatement(m_cq.C_SYSTEMID_WRITE_KEY);
+		statement.setInt(1, newId + 1);
+		statement.setInt(2, key);
+		statement.executeUpdate();
+		statement = ((com.opencms.file.mySql.CmsDbPool) m_pool).getIdStatement(m_cq.C_SYSTEMID_UNLOCK_KEY);
+		statement.executeUpdate();
+	} catch (SQLException e) {
+		throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	} finally {
+		if (res != null) {
+			try {
+				res.close();
+			} catch (SQLException sqlex) {
+			}
+		}
 	}
+	return (newId);
+}
 /**
  * Publishes a specified project to the online project. <br>
  *
@@ -995,331 +1001,326 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 	} // end of for
 	//clearFilesTable();
 }
-	/**
-	 * Reads a file from the Cms.<BR/>
-	 * 
-	 * @param projectId The Id of the project in which the resource will be used.
-	 * @param onlineProjectId The online projectId of the OpenCms.
-	 * @param filename The complete name of the new file (including pathinformation).
-	 * 
-	 * @return file The read file.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	 public CmsFile readFile(int projectId,
-							 int onlineProjectId,
-							 String filename)
-		 throws CmsException {
-		 
-		
-		 CmsFile file = null;
-		 PreparedStatement statement = null;
-		 ResultSet res = null;
-		 try {
-			 // if the actual project is the online project read file header and content
-			 // from the online project
-			 if (projectId == onlineProjectId) {
-					statement = m_pool.getPreparedStatement(m_cq.C_FILE_READ_ONLINE_KEY);
-					statement.setString(1, filename);
-					statement.setInt(2,onlineProjectId);
-					res = statement.executeQuery();  
-					if(res.next()) {
-					  int resId=res.getInt(m_cq.C_RESOURCES_RESOURCE_ID);
-					  int parentId=res.getInt(m_cq.C_RESOURCES_PARENT_ID);
-					  int resType= res.getInt(m_cq.C_RESOURCES_RESOURCE_TYPE);
-					  int resFlags=res.getInt(m_cq.C_RESOURCES_RESOURCE_FLAGS);
-					  int userId=res.getInt(m_cq.C_RESOURCES_USER_ID);
-					  int groupId= res.getInt(m_cq.C_RESOURCES_GROUP_ID);
-					  int fileId=res.getInt(m_cq.C_RESOURCES_FILE_ID);
-					  int accessFlags=res.getInt(m_cq.C_RESOURCES_ACCESS_FLAGS);
-					  int state= res.getInt(m_cq.C_RESOURCES_STATE);
-					  int lockedBy= res.getInt(m_cq.C_RESOURCES_LOCKED_BY);
-					  int launcherType= res.getInt(m_cq.C_RESOURCES_LAUNCHER_TYPE);
-					  String launcherClass=  res.getString(m_cq.C_RESOURCES_LAUNCHER_CLASSNAME);
-					  long created=SqlHelper.getTimestamp(res,m_cq.C_RESOURCES_DATE_CREATED).getTime();
-					  long modified=SqlHelper.getTimestamp(res,m_cq.C_RESOURCES_DATE_LASTMODIFIED).getTime();
-					  int modifiedBy=res.getInt(m_cq.C_RESOURCES_LASTMODIFIED_BY);
-					  int resSize= res.getInt(m_cq.C_RESOURCES_SIZE);
-					  byte[] content=res.getBytes(m_cq.C_RESOURCES_FILE_CONTENT);
-			  
-									 
-					  file=new CmsFile(resId,parentId,fileId,filename,resType,resFlags,userId,
-								groupId,onlineProjectId,accessFlags,state,lockedBy,
-								launcherType,launcherClass,created,modified,modifiedBy,
-								content,resSize);	
-	 
-						  res.close();
-					 } else {
-					   throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);  
-				  }                
-			 } else {
-			   // reading a file from an offline project must be done in two steps:
-			   // first read the file header from the offline project, then get either
-			   // the file content of the offline project (if it is already existing)
-			   // or form the online project.
-			   
-			   // get the file header
-		   
-			   file=readFileHeader(projectId, filename);
-	  
-			   // check if the file is marked as deleted
-				 if ((file != null) && (file.getState() == C_STATE_DELETED)) {
-				   throw new CmsException("["+this.getClass().getName()+"] "+CmsException.C_RESOURCE_DELETED); 
-			   }
-			   // read the file content
-		 
-				   statement = m_pool.getPreparedStatement(m_cq.C_FILE_READ_KEY);
-				   statement.setInt(1,file.getFileId());
-				   res = statement.executeQuery();
-				   if (res.next()) {
-					   file.setContents(res.getBytes(m_cq.C_FILE_CONTENT));
-				   } else {
-						 throw new CmsException("["+this.getClass().getName()+"]"+filename,CmsException.C_NOT_FOUND);  
-				   }
-				res.close();       
-			 }                
-		 } catch (SQLException e){
-			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
- 		} catch (CmsException ex) {
-			throw ex;
- 		} catch( Exception exc ) {
-			throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-		}finally {
-			if (projectId == onlineProjectId) {
-				if( statement != null) {
-					m_pool.putPreparedStatement(m_cq.C_FILE_READ_ONLINE_KEY, statement);
-				}
-			}else{
-				if( statement != null) {
-					m_pool.putPreparedStatement(m_cq.C_FILE_READ_KEY, statement);
-				}
-			}	
-		  }
-		 return file;
-	 }
-	/**
-	 * Reads a session from the database.
-	 * 
-	 * @param sessionId, the id og the session to read.
-	 * @return the read session as Hashtable.
-	 * @exception thorws CmsException if something goes wrong.
-	 */
-	public Hashtable readSession(String sessionId) 
-		throws CmsException {
-		PreparedStatement statement = null;
-		ResultSet res = null;
-		Hashtable session = null;
-		
-		try	{			
-			statement = m_pool.getPreparedStatement(m_cq.C_SESSION_READ_KEY);
-			statement.setString(1,sessionId);
-			statement.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis() - C_SESSION_TIMEOUT ));
-			
+/**
+ * Reads a file from the Cms.<BR/>
+ * 
+ * @param projectId The Id of the project in which the resource will be used.
+ * @param onlineProjectId The online projectId of the OpenCms.
+ * @param filename The complete name of the new file (including pathinformation).
+ * 
+ * @return file The read file.
+ * 
+ * @exception CmsException Throws CmsException if operation was not succesful
+ */
+public CmsFile readFile(int projectId, int onlineProjectId, String filename) throws CmsException {
+	CmsFile file = null;
+	PreparedStatement statement = null;
+	ResultSet res = null;
+	ResultSet res2 = null;
+	try {
+		// if the actual project is the online project read file header and content
+		// from the online project
+		if (projectId == onlineProjectId) {
+			statement = m_pool.getPreparedStatement(m_cq.C_FILE_READ_ONLINE_KEY);
+			statement.setString(1, filename);
+			statement.setInt(2, onlineProjectId);
 			res = statement.executeQuery();
-			
-			// create new Cms user object
-			if(res.next()) {
-				// read the additional infos.
-				byte[] value = res.getBytes(1);
-				// now deserialize the object
-				ByteArrayInputStream bin= new ByteArrayInputStream(value);
-				ObjectInputStream oin = new ObjectInputStream(bin);
-				session =(Hashtable)oin.readObject();
+			if (res.next()) {
+				int resId = res.getInt(m_cq.C_RESOURCES_RESOURCE_ID);
+				int parentId = res.getInt(m_cq.C_RESOURCES_PARENT_ID);
+				int resType = res.getInt(m_cq.C_RESOURCES_RESOURCE_TYPE);
+				int resFlags = res.getInt(m_cq.C_RESOURCES_RESOURCE_FLAGS);
+				int userId = res.getInt(m_cq.C_RESOURCES_USER_ID);
+				int groupId = res.getInt(m_cq.C_RESOURCES_GROUP_ID);
+				int fileId = res.getInt(m_cq.C_RESOURCES_FILE_ID);
+				int accessFlags = res.getInt(m_cq.C_RESOURCES_ACCESS_FLAGS);
+				int state = res.getInt(m_cq.C_RESOURCES_STATE);
+				int lockedBy = res.getInt(m_cq.C_RESOURCES_LOCKED_BY);
+				int launcherType = res.getInt(m_cq.C_RESOURCES_LAUNCHER_TYPE);
+				String launcherClass = res.getString(m_cq.C_RESOURCES_LAUNCHER_CLASSNAME);
+				long created = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_CREATED).getTime();
+				long modified = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_LASTMODIFIED).getTime();
+				int modifiedBy = res.getInt(m_cq.C_RESOURCES_LASTMODIFIED_BY);
+				int resSize = res.getInt(m_cq.C_RESOURCES_SIZE);
+				byte[] content = res.getBytes(m_cq.C_RESOURCES_FILE_CONTENT);
+				file = new CmsFile(resId, parentId, fileId, filename, resType, resFlags, userId, groupId, onlineProjectId, accessFlags, state, lockedBy, launcherType, launcherClass, created, modified, modifiedBy, content, resSize);
 			} else {
-				res.close();
-				deleteSessions();
+				throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
 			}
+		} else {
+			// reading a file from an offline project must be done in two steps:
+			// first read the file header from the offline project, then get either
+			// the file content of the offline project (if it is already existing)
+			// or form the online project.
 
-			res.close();            
-		 }
-		catch (SQLException e){
-			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		}
-		catch (Exception e) {
-			throw new CmsException("["+this.getClass().getName()+"]", e);			
-		} finally {
-			if( statement != null) {
-				m_pool.putPreparedStatement(m_cq.C_SESSION_READ_KEY, statement);
+			// get the file header
+
+			file = readFileHeader(projectId, filename);
+
+			// check if the file is marked as deleted
+			if ((file != null) && (file.getState() == C_STATE_DELETED)) {
+				throw new CmsException("[" + this.getClass().getName() + "] " + CmsException.C_RESOURCE_DELETED);
+			}
+			// read the file content
+
+			statement = m_pool.getPreparedStatement(m_cq.C_FILE_READ_KEY);
+			statement.setInt(1, file.getFileId());
+			res2 = statement.executeQuery();
+			if (res2.next()) {
+				file.setContents(res2.getBytes(m_cq.C_FILE_CONTENT));
+			} else {
+				throw new CmsException("[" + this.getClass().getName() + "]" + filename, CmsException.C_NOT_FOUND);
 			}
 		}
-		return session;
-	}
-	/**
-	 * Reads a task from the Cms.
-	 * 
-	 * @param id The id of the task to read.
-	 * 
-	 * @return a task object or null if the task is not found.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public CmsTask readTask(int id)
-		throws CmsException {
-		ResultSet res;
-		CmsTask task = null;
-		PreparedStatement statement = null;
-		
-		try {
-			statement = m_pool.getPreparedStatement(m_cq.C_TASK_READ_KEY);
-			statement.setInt(1,id);
-			res = statement.executeQuery();
-			if(res.next()) {
-				id = res.getInt(m_cq.C_TASK_ID);
-				String name = res.getString(m_cq.C_TASK_NAME);
-				int autofinish = res.getInt(m_cq.C_TASK_AUTOFINISH);
-				java.sql.Timestamp starttime = SqlHelper.getTimestamp(res,m_cq.C_TASK_STARTTIME);
-				java.sql.Timestamp timeout = SqlHelper.getTimestamp(res,m_cq.C_TASK_TIMEOUT);
-				java.sql.Timestamp endtime = SqlHelper.getTimestamp(res,m_cq.C_TASK_ENDTIME);
-				java.sql.Timestamp wakeuptime = SqlHelper.getTimestamp(res,m_cq.C_TASK_WAKEUPTIME);
-				int escalationtype = res.getInt(m_cq.C_TASK_ESCALATIONTYPE);
-				int initiatoruser = res.getInt(m_cq.C_TASK_INITIATORUSER);
-				int originaluser = res.getInt(m_cq.C_TASK_ORIGINALUSER);
-				int agentuser = res.getInt(m_cq.C_TASK_AGENTUSER);
-				int role = res.getInt(m_cq.C_TASK_ROLE);
-				int root = res.getInt(m_cq.C_TASK_ROOT);
-				int parent = res.getInt(m_cq.C_TASK_PARENT);
-				int milestone = res.getInt(m_cq.C_TASK_MILESTONE);
-				int percentage = res.getInt(m_cq.C_TASK_PERCENTAGE);
-				String permission = res.getString(m_cq.C_TASK_PERMISSION);
-				int priority = res.getInt(m_cq.C_TASK_PRIORITY);
-				int state = res.getInt(m_cq.C_TASK_STATE);
-				int tasktype = res.getInt(m_cq.C_TASK_TASKTYPE);
-				String htmllink = res.getString(m_cq.C_TASK_HTMLLINK);
+	} catch (SQLException e) {
+		throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	} catch (CmsException ex) {
+		throw ex;
+	} catch (Exception exc) {
+		throw new CmsException("readFile " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+	} finally {
+		if (projectId == onlineProjectId) {
+			if (statement != null) {
+				m_pool.putPreparedStatement(m_cq.C_FILE_READ_ONLINE_KEY, statement);
+			}
+		} else {
+			if (statement != null) {
+				m_pool.putPreparedStatement(m_cq.C_FILE_READ_KEY, statement);
+			}
+		}
+		if (res != null) {
+			try {
 				res.close();
-				task =  new CmsTask(id, name, state, tasktype, root, parent,
-									initiatoruser, role, agentuser, originaluser,
-									starttime, wakeuptime, timeout, endtime,
-									percentage, permission, priority, escalationtype,
-									htmllink, milestone, autofinish);
-			}
-		} catch( SQLException exc ) {
-			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
-		} catch( Exception exc ) {
-			  throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-		} finally {
-			if(statement != null) {
-				m_pool.putPreparedStatement(m_cq.C_TASK_READ_KEY, statement);
+			} catch (SQLException sqlex) {
 			}
 		}
-		return task;
+		if (res2 != null) {
+			try {
+				res2.close();
+			} catch (SQLException sqlex) {
+			}
+		}
 	}
-		/**
-	 * Reads all tasks of a user in a project.
-	 * @param project The Project in which the tasks are defined.
-	 * @param agent The task agent   
-	 * @param owner The task owner .
-	 * @param group The group who has to process the task.	 
-	 * @tasktype C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
-	 * @param orderBy Chooses, how to order the tasks.
-	 * @param sort Sort Ascending or Descending (ASC or DESC)
-	 * 
-	 * @return A vector with the tasks
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, 
-							CmsGroup role, int tasktype, 
-							String orderBy, String sort)
-		throws CmsException {
-		boolean first = true;
-		Vector tasks = new Vector(); // vector for the return result
-		CmsTask task = null;		 // tmp task for adding to vector
-		ResultSet recset = null; 
-		
-		// create the sql string depending on parameters
-		// handle the project for the SQL String
-		String sqlstr = "SELECT * FROM " + m_cq.C_TABLENAME_TASK+" WHERE ";
-		if(project!=null){
-			sqlstr = sqlstr + m_cq.C_TASK_ROOT + "=" + project.getTaskId();
-			first = false;
+	return file;
+}
+/**
+ * Reads a session from the database.
+ * 
+ * @param sessionId, the id og the session to read.
+ * @return the read session as Hashtable.
+ * @exception thorws CmsException if something goes wrong.
+ */
+public Hashtable readSession(String sessionId) throws CmsException {
+	PreparedStatement statement = null;
+	ResultSet res = null;
+	Hashtable session = null;
+	try {
+		statement = m_pool.getPreparedStatement(m_cq.C_SESSION_READ_KEY);
+		statement.setString(1, sessionId);
+		statement.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis() - C_SESSION_TIMEOUT));
+		res = statement.executeQuery();
+
+		// create new Cms user object
+		if (res.next()) {
+			// read the additional infos.
+			byte[] value = res.getBytes(1);
+			// now deserialize the object
+			ByteArrayInputStream bin = new ByteArrayInputStream(value);
+			ObjectInputStream oin = new ObjectInputStream(bin);
+			session = (Hashtable) oin.readObject();
+		} else {
+			deleteSessions();
 		}
-		else
-		{
-			sqlstr = sqlstr + m_cq.C_TASK_ROOT + "<>0 AND " + m_cq.C_TASK_PARENT + "<>0";
-			first = false;
+	} catch (SQLException e) {
+		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	} catch (Exception e) {
+		throw new CmsException("[" + this.getClass().getName() + "]", e);
+	} finally {
+		if (statement != null) {
+			m_pool.putPreparedStatement(m_cq.C_SESSION_READ_KEY, statement);
 		}
-		
-		// handle the agent for the SQL String
-		if(agent!=null){
-			if(!first){
-				sqlstr = sqlstr + " AND ";
+		if (res != null) {
+			try {
+				res.close();
+			} catch (SQLException sqlex) {
 			}
-			sqlstr = sqlstr + m_cq.C_TASK_AGENTUSER + "=" + agent.getId();
-			first = false;
 		}
-		
-		// handle the owner for the SQL String
-		if(owner!=null){
-			if(!first){
-				sqlstr = sqlstr + " AND ";
+	}
+	return session;
+}
+/**
+ * Reads a task from the Cms.
+ * 
+ * @param id The id of the task to read.
+ * 
+ * @return a task object or null if the task is not found.
+ * 
+ * @exception CmsException Throws CmsException if something goes wrong.
+ */
+public CmsTask readTask(int id) throws CmsException {
+	ResultSet res = null;
+	CmsTask task = null;
+	PreparedStatement statement = null;
+	try {
+		statement = m_pool.getPreparedStatement(m_cq.C_TASK_READ_KEY);
+		statement.setInt(1, id);
+		res = statement.executeQuery();
+		if (res.next()) {
+			id = res.getInt(m_cq.C_TASK_ID);
+			String name = res.getString(m_cq.C_TASK_NAME);
+			int autofinish = res.getInt(m_cq.C_TASK_AUTOFINISH);
+			java.sql.Timestamp starttime = SqlHelper.getTimestamp(res, m_cq.C_TASK_STARTTIME);
+			java.sql.Timestamp timeout = SqlHelper.getTimestamp(res, m_cq.C_TASK_TIMEOUT);
+			java.sql.Timestamp endtime = SqlHelper.getTimestamp(res, m_cq.C_TASK_ENDTIME);
+			java.sql.Timestamp wakeuptime = SqlHelper.getTimestamp(res, m_cq.C_TASK_WAKEUPTIME);
+			int escalationtype = res.getInt(m_cq.C_TASK_ESCALATIONTYPE);
+			int initiatoruser = res.getInt(m_cq.C_TASK_INITIATORUSER);
+			int originaluser = res.getInt(m_cq.C_TASK_ORIGINALUSER);
+			int agentuser = res.getInt(m_cq.C_TASK_AGENTUSER);
+			int role = res.getInt(m_cq.C_TASK_ROLE);
+			int root = res.getInt(m_cq.C_TASK_ROOT);
+			int parent = res.getInt(m_cq.C_TASK_PARENT);
+			int milestone = res.getInt(m_cq.C_TASK_MILESTONE);
+			int percentage = res.getInt(m_cq.C_TASK_PERCENTAGE);
+			String permission = res.getString(m_cq.C_TASK_PERMISSION);
+			int priority = res.getInt(m_cq.C_TASK_PRIORITY);
+			int state = res.getInt(m_cq.C_TASK_STATE);
+			int tasktype = res.getInt(m_cq.C_TASK_TASKTYPE);
+			String htmllink = res.getString(m_cq.C_TASK_HTMLLINK);
+			task = new CmsTask(id, name, state, tasktype, root, parent, initiatoruser, role, agentuser, 
+								originaluser, starttime, wakeuptime, timeout, endtime, percentage, 
+								permission, priority, escalationtype, htmllink, milestone, autofinish);
+		}
+	} catch (SQLException exc) {
+		throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+	} catch (Exception exc) {
+		throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+	} finally {
+		if (statement != null) {
+			m_pool.putPreparedStatement(m_cq.C_TASK_READ_KEY, statement);
+		}
+		if (res != null) {
+			try {
+				res.close();
+			} catch (SQLException sqlex) {
 			}
-			sqlstr = sqlstr + m_cq.C_TASK_INITIATORUSER + "=" + owner.getId();
-			first = false;
 		}
-		
-		// handle the role for the SQL String
-		if(role!=null){
-			if(!first){
-				sqlstr = sqlstr+" AND ";
-			}
-			sqlstr = sqlstr + m_cq.C_TASK_ROLE + "=" + role.getId();
-			first = false;
+	}
+	return task;
+}
+/**
+ * Reads all tasks of a user in a project.
+ * @param project The Project in which the tasks are defined.
+ * @param agent The task agent   
+ * @param owner The task owner .
+ * @param group The group who has to process the task.	 
+ * @tasktype C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
+ * @param orderBy Chooses, how to order the tasks.
+ * @param sort Sort Ascending or Descending (ASC or DESC)
+ * 
+ * @return A vector with the tasks
+ * 
+ * @exception CmsException Throws CmsException if something goes wrong.
+ */
+public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGroup role, int tasktype, String orderBy, String sort) throws CmsException {
+	boolean first = true;
+	Vector tasks = new Vector(); // vector for the return result
+	CmsTask task = null; // tmp task for adding to vector
+	ResultSet recset = null;
+
+	// create the sql string depending on parameters
+	// handle the project for the SQL String
+	String sqlstr = "SELECT * FROM " + m_cq.C_TABLENAME_TASK + " WHERE ";
+	if (project != null) {
+		sqlstr = sqlstr + m_cq.C_TASK_ROOT + "=" + project.getTaskId();
+		first = false;
+	} else {
+		sqlstr = sqlstr + m_cq.C_TASK_ROOT + "<>0 AND " + m_cq.C_TASK_PARENT + "<>0";
+		first = false;
+	}
+
+	// handle the agent for the SQL String
+	if (agent != null) {
+		if (!first) {
+			sqlstr = sqlstr + " AND ";
 		}
-		
-		sqlstr = sqlstr + getTaskTypeConditon(first, tasktype);
-		
-		// handel the order and sort parameter for the SQL String
-		if(orderBy!=null) {
-			if(!orderBy.equals("")) {
-				sqlstr = sqlstr + " ORDER BY " + orderBy;
-				if(orderBy!=null) {
-					if(!orderBy.equals("")) {
-						sqlstr = sqlstr + " " + sort;
-					}
+		sqlstr = sqlstr + m_cq.C_TASK_AGENTUSER + "=" + agent.getId();
+		first = false;
+	}
+
+	// handle the owner for the SQL String
+	if (owner != null) {
+		if (!first) {
+			sqlstr = sqlstr + " AND ";
+		}
+		sqlstr = sqlstr + m_cq.C_TASK_INITIATORUSER + "=" + owner.getId();
+		first = false;
+	}
+
+	// handle the role for the SQL String
+	if (role != null) {
+		if (!first) {
+			sqlstr = sqlstr + " AND ";
+		}
+		sqlstr = sqlstr + m_cq.C_TASK_ROLE + "=" + role.getId();
+		first = false;
+	}
+	sqlstr = sqlstr + getTaskTypeConditon(first, tasktype);
+
+	// handel the order and sort parameter for the SQL String
+	if (orderBy != null) {
+		if (!orderBy.equals("")) {
+			sqlstr = sqlstr + " ORDER BY " + orderBy;
+			if (orderBy != null) {
+				if (!orderBy.equals("")) {
+					sqlstr = sqlstr + " " + sort;
 				}
 			}
-		}	
-		
-		try {
-			
-			Statement statement = m_pool.getStatement();
-			recset = statement.executeQuery(sqlstr);
-			
-			// if resultset exists - return vector of tasks
-			while(recset.next()) {
-					task =  new CmsTask(recset.getInt(m_cq.C_TASK_ID),
-									recset.getString(m_cq.C_TASK_NAME),
-									recset.getInt(m_cq.C_TASK_STATE),
-									recset.getInt(m_cq.C_TASK_TASKTYPE),
-									recset.getInt(m_cq.C_TASK_ROOT),
-									recset.getInt(m_cq.C_TASK_PARENT),
-									recset.getInt(m_cq.C_TASK_INITIATORUSER),
-									recset.getInt(m_cq.C_TASK_ROLE),
-									recset.getInt(m_cq.C_TASK_AGENTUSER),
-									recset.getInt(m_cq.C_TASK_ORIGINALUSER),
-									SqlHelper.getTimestamp(recset,m_cq.C_TASK_STARTTIME),
-									SqlHelper.getTimestamp(recset,m_cq.C_TASK_WAKEUPTIME),
-									SqlHelper.getTimestamp(recset,m_cq.C_TASK_TIMEOUT),
-									SqlHelper.getTimestamp(recset,m_cq.C_TASK_ENDTIME),
-									recset.getInt(m_cq.C_TASK_PERCENTAGE),
-									recset.getString(m_cq.C_TASK_PERMISSION),
-									recset.getInt(m_cq.C_TASK_PRIORITY),
-									recset.getInt(m_cq.C_TASK_ESCALATIONTYPE),
-									recset.getString(m_cq.C_TASK_HTMLLINK),
-									recset.getInt(m_cq.C_TASK_MILESTONE),
-									recset.getInt(m_cq.C_TASK_AUTOFINISH));
-				
-				tasks.addElement(task);
-			}
-			
-		} catch( SQLException exc ) {
-			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
-		} catch( Exception exc ) {
-			  throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
-		
-		return tasks;
 	}
+	try {
+		Statement statement = m_pool.getStatement();
+		recset = statement.executeQuery(sqlstr);
+
+		// if resultset exists - return vector of tasks
+		while (recset.next()) {
+			task = new CmsTask(recset.getInt(m_cq.C_TASK_ID), 
+								recset.getString(m_cq.C_TASK_NAME), 
+								recset.getInt(m_cq.C_TASK_STATE), 
+								recset.getInt(m_cq.C_TASK_TASKTYPE), 
+								recset.getInt(m_cq.C_TASK_ROOT), 
+								recset.getInt(m_cq.C_TASK_PARENT), 
+								recset.getInt(m_cq.C_TASK_INITIATORUSER), 
+								recset.getInt(m_cq.C_TASK_ROLE), 
+								recset.getInt(m_cq.C_TASK_AGENTUSER), 
+								recset.getInt(m_cq.C_TASK_ORIGINALUSER), 
+								SqlHelper.getTimestamp(recset, m_cq.C_TASK_STARTTIME), 
+								SqlHelper.getTimestamp(recset, m_cq.C_TASK_WAKEUPTIME), 
+								SqlHelper.getTimestamp(recset, m_cq.C_TASK_TIMEOUT), 
+								SqlHelper.getTimestamp(recset, m_cq.C_TASK_ENDTIME), 
+								recset.getInt(m_cq.C_TASK_PERCENTAGE), 
+								recset.getString(m_cq.C_TASK_PERMISSION), 
+								recset.getInt(m_cq.C_TASK_PRIORITY), 
+								recset.getInt(m_cq.C_TASK_ESCALATIONTYPE), 
+								recset.getString(m_cq.C_TASK_HTMLLINK), 
+								recset.getInt(m_cq.C_TASK_MILESTONE), 
+								recset.getInt(m_cq.C_TASK_AUTOFINISH));
+			tasks.addElement(task);
+		}
+	} catch (SQLException exc) {
+		throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+	} catch (Exception exc) {
+		throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+	} finally {
+		if (recset != null) {
+			try {
+				recset.close();
+			} catch (SQLException sqlex) {
+			}
+		}
+	}
+	return tasks;
+}
 	/**
 	 * Writes a property for a file or folder.
 	 * 
