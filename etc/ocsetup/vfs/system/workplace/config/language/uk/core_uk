@@ -525,6 +525,8 @@
             <center>Center</center>
             <changed>Date changed</changed>
             <changesubresources>Modify all subfolders /files</changesubresources>
+            <channelavailable>available channels</channelavailable>
+            <channelselected>selected channels</channelselected>
             <city>City</city>
             <color>Color</color>
             <colorcode>Choosen Color</colorcode>

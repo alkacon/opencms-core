@@ -525,6 +525,8 @@
             <center>Centro</center>
             <changed>Modificato il</changed>
             <changesubresources>Modifica tutte le sottocartelle /files</changesubresources>
+            <channelavailable>available channels</channelavailable>
+            <channelselected>selected channels</channelselected>
             <city>Città</city>
             <color>Colore</color>
             <colorcode>Colore Scelto</colorcode>

@@ -523,6 +523,8 @@
             <center>Zentriert</center>
             <changed>Geändert am</changed>
             <changesubresources>Alle Unterverzeichnisse / Dateien ändern</changesubresources>
+            <channelavailable>verfügbare Channels</channelavailable>
+            <channelselected>ausgewählte Channels</channelselected>
             <city>Ort</city>
             <color>Farbe</color>
             <colorcode>Gewählte Farbe</colorcode>

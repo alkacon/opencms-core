@@ -180,7 +180,7 @@ function setMediaAction(para) {
 <![CDATA[ 
 <table cellpadding="3" cellspacing="2" border="0" align="center">
 <tr>
-    <td class="formular">ausgewählte Channels</td><td></td><td class="formular">verfügbare Channels</td>
+    <td class="formular">]]><LABEL value="input.channelselected"/><![CDATA[</td><td></td><td class="formular">]]><LABEL value="input.channelavailable"/><![CDATA[</td>
 </tr>
 <tr>
     <td class="formular">
