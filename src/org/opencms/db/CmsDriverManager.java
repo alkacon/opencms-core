@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/24 13:20:19 $
- * Version: $Revision: 1.281 $
+ * Date   : $Date: 2003/10/28 11:31:27 $
+ * Version: $Revision: 1.282 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.281 $ $Date: 2003/10/24 13:20:19 $
+ * @version $Revision: 1.282 $ $Date: 2003/10/28 11:31:27 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2217,7 +2217,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         // if selected, add all links pointing to this resource to the list of files that get deleted/removed  
         if (deleteOption == I_CmsConstants.C_DELETE_OPTION_DELETE_VFS_LINKS) {
-            resources.addAll(readSiblings(context, filename, false));
+            resources.addAll(readSiblings(context, filename, false, false));
         }
 
         // ensure that each link pointing to the resource is unlocked or locked by the current user
@@ -4644,7 +4644,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             boolean isInside = false;
             boolean isOutside = false;
             // check if one of the other vfs links lies in a labeled site folder
-            List vfsLinkList = m_vfsDriver.readSiblings(context.currentProject(), resource);
+            List vfsLinkList = m_vfsDriver.readSiblings(context.currentProject(), resource, false);
             setFullResourceNames(context, vfsLinkList);
             Iterator i = vfsLinkList.iterator();
             while (i.hasNext() && (!isInside || !isOutside)) {
@@ -5068,9 +5068,10 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @param report a report object to provide the loggin messages
      * @param publishHistoryId unique int ID to identify each publish task in the publish history
      * @param directPublishResource a resource to be published directly
+     * @param directPublishSiblings if a CmsResource that should get published directly is provided as an argument, all eventual siblings of this resource get published too, if this flag is true
      * @throws Exception if something goes wrong
      */
-    public synchronized void publishProject(CmsObject cms, CmsRequestContext context, I_CmsReport report, CmsUUID publishHistoryId, CmsResource directPublishResource) throws Exception {
+    public synchronized void publishProject(CmsObject cms, CmsRequestContext context, I_CmsReport report, CmsUUID publishHistoryId, CmsResource directPublishResource, boolean directPublishSiblings) throws Exception {
         Vector changedResources = new Vector();
         Vector changedModuleMasters = new Vector();
         int publishProjectId = context.currentProject().getId();
@@ -5100,7 +5101,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                     }
                 }
 
-                m_projectDriver.publishProject(context, report, readProject(I_CmsConstants.C_PROJECT_ONLINE_ID), publishHistoryId, directPublishResource, isHistoryEnabled(cms), tagId, maxVersions);
+                m_projectDriver.publishProject(context, report, readProject(I_CmsConstants.C_PROJECT_ONLINE_ID), publishHistoryId, directPublishResource, directPublishSiblings, isHistoryEnabled(cms), tagId, maxVersions);
 
                 // don't publish COS module data if a file gets published directly
                 if (!directPublishFile) {
@@ -6697,16 +6698,17 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @param context the request context
      * @param resourcename the name of the specified resource
      * @param readAllSiblings true if the specified resource should be included in the result; false, if the specified resource should be excluded from the result
+     * @param includeDeleted true if deleted siblings should be included in the result List
      * @return a List of CmsResources
      * @throws CmsException if something goes wrong
      */
-    public List readSiblings(CmsRequestContext context, String resourcename, boolean readAllSiblings) throws CmsException {
+    public List readSiblings(CmsRequestContext context, String resourcename, boolean readAllSiblings, boolean includeDeleted) throws CmsException {
         if (resourcename == null || "".equals(resourcename)) {
             return Collections.EMPTY_LIST;
         }
 
-        CmsResource resource = readFileHeader(context, resourcename);
-        List siblings = m_vfsDriver.readSiblings(context.currentProject(), resource);
+        CmsResource resource = readFileHeader(context, resourcename, includeDeleted);
+        List siblings = m_vfsDriver.readSiblings(context.currentProject(), resource, includeDeleted);
 
         int n = siblings.size();
         for (int i = 0; i < n; i++) {
@@ -8499,6 +8501,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @param publishedBoResource the CmsPublishedResource onject representing the published COS resource
      * @param publishId unique int ID to identify each publish task in the publish history
      * @param tagId the backup tag revision
+     * @throws CmsException if something goes wrong
      */    
     public void postPublishBoResource(CmsRequestContext context, CmsPublishedResource publishedBoResource, CmsUUID publishId, int tagId) throws CmsException {
         m_projectDriver.writePublishHistory(context.currentProject(), publishId, tagId, publishedBoResource.getContentDefinitionName(), publishedBoResource.getMasterId(), publishedBoResource.getType(), publishedBoResource.getState());

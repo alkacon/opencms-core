@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/09/17 13:04:46 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2003/10/28 11:31:27 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Map;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.45 $ $Date: 2003/09/17 13:04:46 $
+ * @version $Revision: 1.46 $ $Date: 2003/10/28 11:31:27 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -350,7 +350,7 @@ public final class CmsLockDispatcher extends Object {
         // inevitably result in an infinite loop...        
 
         CmsResource resource = internalReadFileHeader(driverManager, context, resourcename);
-        List siblings = driverManager.getVfsDriver().readSiblings(context.currentProject(), resource);
+        List siblings = driverManager.getVfsDriver().readSiblings(context.currentProject(), resource, false);
 
         int n = siblings.size();
         for (int i = 0; i < n; i++) {

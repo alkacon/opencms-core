@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/10/21 14:55:14 $
- * Version: $Revision: 1.129 $
+ * Date   : $Date: 2003/10/28 11:31:27 $
+ * Version: $Revision: 1.130 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.129 $ $Date: 2003/10/21 14:55:14 $
+ * @version $Revision: 1.130 $ $Date: 2003/10/28 11:31:27 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -698,7 +698,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 m_driverManager.getVfsDriver().writeResourceState(context.currentProject(), resource, CmsDriverManager.C_UPDATE_ALL);
             }
 
-            m_driverManager.getVfsDriver().writeLastModifiedProjectId(context.currentProject(), 0, resource);
+            //m_driverManager.getVfsDriver().writeLastModifiedProjectId(context.currentProject(), 0, resource);
         } catch (CmsException e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error reseting resource state of " + resource.toString(), e);
@@ -1307,7 +1307,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#publishProject(com.opencms.file.CmsRequestContext, org.opencms.report.I_CmsReport, com.opencms.file.CmsProject, int, com.opencms.file.CmsResource, boolean, int, int)
      */
-    public synchronized void publishProject(CmsRequestContext context, I_CmsReport report, CmsProject onlineProject, CmsUUID publishHistoryId, CmsResource directPublishResource, boolean backupEnabled, int backupTagId, int maxVersions) throws Exception {
+    public synchronized void publishProject(CmsRequestContext context, I_CmsReport report, CmsProject onlineProject, CmsUUID publishHistoryId, CmsResource directPublishResource, boolean directPublishSiblings, boolean backupEnabled, int backupTagId, int maxVersions) throws Exception {
         CmsFolder currentFolder = null;
         CmsResource currentFileHeader = null;
         CmsLock currentLock = null;
@@ -1327,6 +1327,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         int publishedFileCount = 0;
         Set publishedContentIds = (Set) new HashSet();
         boolean directPublishFile = context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH && directPublishResource != null && directPublishResource.isFile();
+        List siblings = null;
+        CmsResource currentSibling = null;
 
         try {
             if (backupEnabled) {
@@ -1446,10 +1448,27 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             report.println(report.key("report.publish_prepare_files"), I_CmsReport.C_FORMAT_HEADLINE);
             report.print(report.key("report.publish_read_projectfiles") + report.key("report.dots"));
             if (directPublishFile) {
-                // a file gets published directly- add just this single resource 
-                // to the unpublished offline file headers
+                // a file gets published directly- add this resource to the unpublished offline file headers
                 offlineFiles = (List) new ArrayList();
                 offlineFiles.add(directPublishResource);
+                
+                if (directPublishSiblings) {
+                    // add optionally all siblings of the direct published resource
+                    siblings = m_driverManager.readSiblings(context, directPublishResource.getRootPath(), false, true);
+                    
+                    i = siblings.iterator();
+                    while (i.hasNext()) {
+                        currentSibling = (CmsResource) i.next();
+                        
+                        try {
+                            m_driverManager.getVfsDriver().readFolder(I_CmsConstants.C_PROJECT_ONLINE_ID, currentSibling.getParentStructureId());
+                            offlineFiles.add(currentSibling);
+                        } catch (CmsException e) {
+                            // the parent folder of the current sibling 
+                            // is not yet published- skip this sibling
+                        }
+                    }
+                }
             } else {
                 // a project gets published- add all unpublished offline file headers
                 offlineFiles = m_driverManager.getVfsDriver().readFiles(context.currentProject().getId());
@@ -1473,11 +1492,20 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         // it is published, if it was changed to deleted in the current project
                         String delProject = m_driverManager.getVfsDriver().readProperty(I_CmsConstants.C_PROPERTY_INTERNAL, context.currentProject().getId(), currentFileHeader, currentFileHeader.getType());
 
-                        if (delProject != null && delProject.equals("" + context.currentProject().getId())) {
+                        /*
+                        if (directPublishResource != null && directPublishResource.isFile() && directPublishSiblings && !currentFileHeader.equals(directPublishResource)) {
+                            // siblings of a deleted file that gets published directly should be also
+                            // published, no matter in which project they have been deleted
                             publishCurrentResource = true;
                         } else {
-                            publishCurrentResource = false;
-                        }
+                        */
+                            // a project gets published or a folder gets published directly
+                            if (delProject != null && delProject.equals("" + context.currentProject().getId())) {
+                                publishCurrentResource = true;
+                            } else {
+                                publishCurrentResource = false;
+                            }                            
+                        //}
                         break;
 
                         // the current resource is new   
@@ -1502,8 +1530,10 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 }
 
                 if (context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH && directPublishResource != null) {
-                    // the resource must be a sub resource of the direct-publish-resource in case of a "direct publish"
-                    publishCurrentResource = publishCurrentResource && currentResourceName.startsWith(directPublishResource.getRootPath());
+                    if (directPublishResource.isFolder()) {
+                        // the resource must be a sub resource of the direct-publish-resource in case of a "direct publish"
+                        publishCurrentResource = publishCurrentResource && currentResourceName.startsWith(directPublishResource.getRootPath());
+                    }
                 } else {
                     // the resource must be in one of the paths defined for the project
                     publishCurrentResource = publishCurrentResource && CmsProject.isInsideProject(projectResources, currentFileHeader);
@@ -1670,6 +1700,11 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             if (offlineFiles != null) {
                 offlineFiles.clear();
                 offlineFiles = null;
+            }
+            
+            if (siblings != null) {
+                siblings.clear();
+                siblings = null;
             }
 
             currentFileHeader = null;

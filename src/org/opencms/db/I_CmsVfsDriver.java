@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/25 14:39:00 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2003/10/28 11:31:27 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.62 $ $Date: 2003/09/25 14:39:00 $
+ * @version $Revision: 1.63 $ $Date: 2003/10/28 11:31:27 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -270,10 +270,11 @@ public interface I_CmsVfsDriver {
      * 
      * @param currentProject the current project
      * @param resource the specified resource
+     * @param includeDeleted true if deleted siblings should be included in the result List
      * @return a List with the fileheaders
      * @throws CmsException if something goes wrong
      */
-    List readSiblings(CmsProject currentProject, CmsResource resource) throws CmsException;
+    List readSiblings(CmsProject currentProject, CmsResource resource, boolean includeDeleted) throws CmsException;
 
     /**
      * Reads the resource names (including the site-root and path) of all resources having set

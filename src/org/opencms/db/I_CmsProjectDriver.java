@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/10/10 11:58:37 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2003/10/28 11:31:27 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.36 $ $Date: 2003/10/10 11:58:37 $
+ * @version $Revision: 1.37 $ $Date: 2003/10/28 11:31:27 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -274,13 +274,14 @@ public interface I_CmsProjectDriver {
      * @param report an I_CmsReport instance to print output messages
      * @param onlineProject the online project
      * @param publishHistoryId unique int ID to identify each publish task in the publish history
-     * @param directPublishResource a CmsResource that gets directly published, or null if an entire project gets published
+     * @param directPublishResource a CmsResource that gets directly published; or null if an entire project gets published
+     * @param directPublishSiblings if a CmsResource that should get published directly is provided as an argument, all eventual siblings of this resource get published too, if this flag is true
      * @param backupEnabled true if published resources should be written to the Cms backup
      * @param backupTagId the backup tag ID
      * @param maxVersions maximum number of backup versions
      * @throws Exception if something goes wrong
      */
-    void publishProject(CmsRequestContext context, I_CmsReport report, CmsProject onlineProject, CmsUUID publishHistoryId, CmsResource directPublishResource, boolean backupEnabled, int backupTagId, int maxVersions) throws Exception;
+    void publishProject(CmsRequestContext context, I_CmsReport report, CmsProject onlineProject, CmsUUID publishHistoryId, CmsResource directPublishResource, boolean directPublishSiblings, boolean backupEnabled, int backupTagId, int maxVersions) throws Exception;
 
     /**
      * Searches for broken links in the online project.<p>

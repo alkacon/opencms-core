@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/10/14 15:21:23 $
- * Version: $Revision: 1.150 $
+ * Date   : $Date: 2003/10/28 11:31:27 $
+ * Version: $Revision: 1.151 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.150 $ $Date: 2003/10/14 15:21:23 $
+ * @version $Revision: 1.151 $ $Date: 2003/10/28 11:31:27 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -135,7 +135,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 newState = I_CmsConstants.C_STATE_CHANGED;
 
                 // remove the existing file and it's properties
-                List modifiedResources = readSiblings(project, res);
+                List modifiedResources = readSiblings(project, res, false);
                 deleteProperties(project.getId(), res);
                 removeFile(project, res, true);
 
@@ -588,7 +588,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 newState = I_CmsConstants.C_STATE_CHANGED;
 
                 // remove the existing file and it's properties
-                List modifiedResources = readSiblings(project, res);
+                List modifiedResources = readSiblings(project, res, false);
                 deleteProperties(project.getId(), res);
                 removeFile(project, res, true);
 
@@ -1739,7 +1739,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readSiblings(com.opencms.file.CmsProject, com.opencms.file.CmsResource)
      */
-    public List readSiblings(CmsProject currentProject, CmsResource resource) throws CmsException {
+    public List readSiblings(CmsProject currentProject, CmsResource resource, boolean includeDeleted) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
@@ -1748,7 +1748,11 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         try {
             conn = m_sqlManager.getConnection(currentProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_SELECT_NONDELETED_VFS_LINKS");
+            if (includeDeleted) {
+                stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_SELECT_VFS_LINKS");
+            } else {
+                stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_SELECT_NONDELETED_VFS_LINKS");
+            }
             stmt.setString(1, resource.getResourceId().toString());
             res = stmt.executeQuery();
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/10/23 14:49:08 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2003/10/28 11:31:27 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -1575,7 +1575,11 @@ public class OpenCmsCore {
                 getLog(CmsLog.CHANNEL_INIT).info(". Export vfs prefix    : " + m_exportProperties.getVfsPrefix());
                 getLog(CmsLog.CHANNEL_INIT).info(". Export link style    : " + (m_exportProperties.relativLinksInExport()?"relative":"absolute"));                
             }
-        }        
+        } 
+        
+        // set the property whether siblings should get published if a file gets published directly
+        String directPublishSiblings = conf.getString("workplace.directpublish.siblings", "false");
+        setRuntimeProperty("workplace.directpublish.siblings", directPublishSiblings);
     }
 
     /**

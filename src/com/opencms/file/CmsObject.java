@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/10/24 13:20:19 $
-* Version: $Revision: 1.428 $
+* Date   : $Date: 2003/10/28 11:31:27 $
+* Version: $Revision: 1.429 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.428 $
+ * @version $Revision: 1.429 $
  */
 public class CmsObject {
 
@@ -1604,7 +1604,7 @@ public class CmsObject {
      * Reads all siblings that point to the resource record of a specified resource name.<p>
      */
     public List getAllVfsLinks(String resourcename) throws CmsException {
-        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), true);
+        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), true, false);
     }
 
     /**
@@ -1612,7 +1612,7 @@ public class CmsObject {
      * excluding the specified resource from the result.<p>
      */
     public List getAllVfsSoftLinks(String resourcename) throws CmsException {       
-        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), false);
+        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), false, false);
     } 
 
     /**
@@ -2650,7 +2650,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void publishProject(I_CmsReport report) throws CmsException {
-        publishProject(report, null);
+        publishProject(report, null, false);
     }
 
     /**
@@ -2660,10 +2660,11 @@ public class CmsObject {
      * I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH before.
      * 
      * @param report the report
-     * @param directPublishResource the resource to get published direct, or null
+     * @param directPublishResource a CmsResource that gets directly published; or null if an entire project gets published
+     * @param directPublishSiblings if a CmsResource that should get published directly is provided as an argument, all eventual siblings of this resource get publish too, if this flag is true
      * @throws CmsException if something goes wrong
      */
-    public void publishProject(I_CmsReport report, CmsResource directPublishResource) throws CmsException {
+    public void publishProject(I_CmsReport report, CmsResource directPublishResource, boolean directPublishSiblings) throws CmsException {
         Vector changedResources = null;
         Vector changedModuleMasters = null;
         boolean success = false;
@@ -2676,7 +2677,10 @@ public class CmsObject {
 
         synchronized (m_driverManager) {            
             try {
-                m_driverManager.publishProject(this, m_context, report, publishHistoryId, directPublishResource);
+                                
+                // TODO use the directPublishSiblings argument here instead of reading the runtime property when the direct-publish-dialog got customized with an option to publish siblings
+                boolean rtimeProp = ((String)OpenCms.getRuntimeProperty("workplace.directpublish.siblings")).equalsIgnoreCase("true");
+                m_driverManager.publishProject(this, m_context, report, publishHistoryId, directPublishResource, rtimeProp);
 
                 if (CmsXmlTemplateLoader.getOnlineElementCache() != null) {
                     CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
@@ -2761,7 +2765,7 @@ public class CmsObject {
         
         try {
             m_context.currentProject().setType(I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH);
-            publishProject(report, resource);
+            publishProject(report, resource, false);
         } catch (CmsException e) {
             throw e;
         } finally {
