@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/01/23 09:06:55 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/02/03 14:20:24 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -786,8 +786,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             bodyfile = m_cms.readFile(bodyname);
             
             if (m_convertToXmlPage) {
-                String localeName = OpenCms.getLocaleManager().getDefaultLocaleNames(m_cms, CmsResource.getParentFolder(resname))[0];
-                CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(bodyfile.getContents()), "body", localeName); 
+                CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(bodyfile.getContents()), "body", getLocaleName(resname, properties)); 
                 
                 if (xmlPage != null) {
                     xmlPage.write(pagefile);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/02/02 09:12:51 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/02/03 14:20:24 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,6 +54,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
@@ -349,6 +350,29 @@ public abstract class A_CmsImport implements I_CmsImport {
         return "".getBytes();
     }
 
+    /**
+     * Returns the appropriate locale name for the given destination.<p>
+     * 
+     * @param destination the destination path (parent must exist)
+     * @param properties the properties to check at first
+     * @return the name of the locale
+     * @throws CmsException if something goes wrong
+     */
+    protected String getLocaleName(String destination, Map properties) throws CmsException {
+        String localeName = (String)properties.get(I_CmsConstants.C_PROPERTY_LOCALE);
+        if (localeName == null) {
+            localeName = m_cms.readProperty(CmsResource.getParentFolder(destination), I_CmsConstants.C_PROPERTY_LOCALE, true);
+        }
+        if (localeName != null) {
+            if (localeName.indexOf(",") >= 0) {
+                localeName = localeName.substring(0, localeName.indexOf(","));
+            }
+        } else {
+            localeName = OpenCms.getLocaleManager().getDefaultLocaleNames(m_cms, CmsResource.getParentFolder(destination))[0];
+        }
+        return localeName;
+    }
+    
     /**
      * Gets all properties from one file node in the manifest.xml.<p>
      * 
