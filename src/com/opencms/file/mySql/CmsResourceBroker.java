@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/21 10:10:21 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/08/22 13:22:49 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2000/08/21 10:10:21 $
+ * @version $Revision: 1.23 $ $Date: 2000/08/22 13:22:49 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1798,6 +1798,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		throws CmsException {
 		CmsUser agent = m_dbAccess.readUser(agentName, C_USER_TYPE_SYSTEMUSER);
 		CmsGroup role = m_dbAccess.readGroup(roleName);
+		System.err.println("ResourceBroker, createTask, agent="+agent+", role="+role);
 		java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
 		java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
 		
@@ -1805,7 +1806,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 											 projectid,
 											 taskType, 
 											 currentUser.getId(),
-											 agent.getId(),  // Agent is not known yet
+											 agent.getId(),
 											 role.getId(), 
 											 taskName, now, timestamp, priority);
 		if(taskComment!=null && !taskComment.equals("")) {
@@ -1842,12 +1843,18 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		CmsGroup role = m_dbAccess.readGroup(roleName);
 		java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
 		java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
+		int agentId = C_UNKNOWN_ID;
+		try {
+			agentId = m_dbAccess.readUser(agentName, C_USER_TYPE_SYSTEMUSER).getId();
+		} catch (Exception e) {
+			// ignore that this user doesn't exist and create a task for the role
+		}
 		
 		return m_dbAccess.createTask(currentProject.getTaskId(), 
 									 currentProject.getTaskId(),
 									 1, // standart Task Type
 									 currentUser.getId(),
-									 C_UNKNOWN_ID,  // Agent is not known yet
+									 agentId,
 									 role.getId(), 
 									 taskname, now, timestamp, priority);
 	}

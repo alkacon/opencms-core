@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/08/17 16:05:56 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/08/22 13:22:48 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import source.org.apache.java.util.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.18 $ $Date: 2000/08/17 16:05:56 $
+ * @version $Revision: 1.19 $ $Date: 2000/08/22 13:22:48 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -577,9 +577,12 @@ public class CmsShell implements I_CmsConstants {
 		for (int i=0; i< paths.size(); i++) {
 			exportPaths[i] = (String) paths.elementAt(i);
 		} 
-		
+		boolean excludeSystem = true; 
+		if (pathList.startsWith("/system/") || (pathList.indexOf(";/system/") > -1)) {
+			excludeSystem = false;
+		}
 		try {
-			m_cms.exportResources(exportFile, exportPaths);
+			m_cms.exportResources(exportFile, exportPaths, excludeSystem);
 		} catch( Exception exc ) {
 			printException(exc);
 		}

@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGroups.java,v $
- * Date   : $Date: 2000/08/08 14:08:30 $
- * Version: $Revision: 1.11 $Selector
+ * Date   : $Date: 2000/08/22 13:22:51 $
+ * Version: $Revision: 1.12 $Selector
 
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.11 $ $Date: 2000/08/08 14:08:30 $
+ * @version $Revision: 1.12 $ $Date: 2000/08/22 13:22:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -303,12 +303,12 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 							// now change the list of users of this group but take into account that
 							// the default group of a user can't be removed
 							
-							Vector allUsers = cms.getUsersOfGroup(groupname);
+							Vector allUsers = cms.getUsersOfGroup(groupname); 
 							boolean defaultProblem=false;
 							Vector falseUsers= new Vector();
 							for (int z=0; z < allUsers.size(); z++) {
 								String theUserName = ((CmsUser) allUsers.elementAt(z)).getName();
-								String theDefaultGroupName = ((CmsUser) allUsers.elementAt(z)).getDefaultGroup().getName();
+								String theDefaultGroupName = ((CmsUser) allUsers.elementAt(z)).getDefaultGroup().getName(); 
 								
 								if (!selectedUsers.contains(theUserName)) {
 									// the user should be deleted

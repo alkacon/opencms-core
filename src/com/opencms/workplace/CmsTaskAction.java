@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
- * Date   : $Date: 2000/08/08 14:08:32 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/08/22 13:22:51 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.19 $ $Date: 2000/08/08 14:08:32 $
+ * @version $Revision: 1.20 $ $Date: 2000/08/22 13:22:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLogChannels {
@@ -144,8 +144,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 		GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]),
 													  Integer.parseInt(splittetDate[1]) - 1,
 													  Integer.parseInt(splittetDate[0]), 0, 0, 0);
-		long timeout = cal.getTime().getTime();
-		
+		long timeout = cal.getTime().getTime(); 
 		CmsTask task = cms.createTask(agentName, roleName, taskName, 
 										taskcomment, timeout, priority);
 		cms.setTaskPar(task.getId(),C_TASKPARA_ACCEPTATION, paraAcceptation);

@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/08/14 09:31:37 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/08/22 13:22:51 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 200C_RESOURCES_GET_FILESINFOLDER_KEY0  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.7 $ $Date: 2000/08/14 09:31:37 $
+ * @version $Revision: 1.8 $ $Date: 2000/08/22 13:22:51 $
  */
 public interface I_CmsQuerys {
 	
@@ -294,7 +294,14 @@ public interface I_CmsQuerys {
 	public static final String C_GROUPS_USERINGROUP = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPUSERS WHERE GROUP_ID = ? AND USER_ID = ?";
 
 	public static final Integer C_GROUPS_GETUSERSOFGROUP_KEY = new Integer(212);
-	public static final String C_GROUPS_GETUSERSOFGROUP = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS  G, "
+	public static final String C_GROUPS_GETUSERSOFGROUP = "SELECT U.USER_INFO, U.USER_ID, U.USER_NAME,U.USER_PASSWORD, "+
+														  "U.USER_RECOVERY_PASSWORD, U.USER_DESCRIPTION, "+
+														  "U.USER_FIRSTNAME,U.USER_LASTNAME,U.USER_EMAIL, "+
+														  "U.USER_LASTLOGIN,U.USER_LASTUSED,U.USER_FLAGS, " +
+														  "U.USER_DEFAULT_GROUP_ID, DG.PARENT_GROUP_ID, "+
+														  "DG.GROUP_NAME, DG.GROUP_DESCRIPTION, DG.GROUP_FLAGS, "+
+														  "U.USER_ADDRESS, U.USER_SECTION, U.USER_TYPE "+
+										    			  " FROM " + C_DATABASE_PREFIX + "GROUPS  G, "
 														  + C_DATABASE_PREFIX + "USERS  U, "
 														  + C_DATABASE_PREFIX + "GROUPUSERS  GU, "
 														  + C_DATABASE_PREFIX + "GROUPS  DG "
@@ -501,6 +508,7 @@ public interface I_CmsQuerys {
 											   "USER_LASTUSED = ?, " +
 											   "USER_FLAGS = ?, " +
 											   "USER_INFO = ?, " +
+											   "USER_DEFAULT_GROUP_ID = ?, "+
 											   "USER_ADDRESS = ?, " +
 											   "USER_SECTION = ?, " +
 											   "USER_TYPE = ? " +

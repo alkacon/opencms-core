@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
- * Date   : $Date: 2000/08/08 14:08:32 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/08/22 13:22:51 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.20 $ $Date: 2000/08/08 14:08:32 $
+ * @version $Revision: 1.21 $ $Date: 2000/08/22 13:22:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -150,7 +150,7 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 		if(parameters.get("ok") != null) {
 			
 			// try to create the task
-			try {
+			try { 
 				CmsTaskAction.create(cms, 
 									 (String)parameters.get("USER"), 
 									 (String)parameters.get("TEAM"),

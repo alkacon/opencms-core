@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
- * Date   : $Date: 2000/08/11 13:00:46 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/08/22 13:22:51 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/08/11 13:00:46 $
+ * @version $Revision: 1.9 $ $Date: 2000/08/22 13:22:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -91,11 +91,11 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
 					exportPaths[i] = (String) resourceNames.elementAt(i); 
 				} 
 				
-				boolean includeSystem=false; 
-				if (parameters.get("workplace") != null) {
-					includeSystem=true;
+				boolean excludeSystem=false; 
+				if (parameters.get("nosystem") != null) {
+					excludeSystem=true;
 				}
-				cms.exportResources(cms.readExportPath() + fileName, exportPaths, includeSystem);
+				cms.exportResources(cms.readExportPath() + fileName, exportPaths, excludeSystem);
 				templateSelector = "done";
 			} else if ("import".equals(action)) {
 				// import the database

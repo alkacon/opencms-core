@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/08/21 10:10:20 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/08/22 13:22:49 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.20 $ $Date: 2000/08/21 10:10:20 $ * 
+ * @version $Revision: 1.21 $ $Date: 2000/08/22 13:22:49 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2573,7 +2573,7 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, CmsProject onlin
 										   SqlHelper.getTimestamp(res,C_USERS_USER_LASTUSED).getTime(),
 										   res.getInt(C_USERS_USER_FLAGS),
 										   info,
-										   new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
+ 										   new CmsGroup(res.getInt(C_USERS_USER_DEFAULT_GROUP_ID),
 														res.getInt(C_GROUPS_PARENT_GROUP_ID),
 														res.getString(C_GROUPS_GROUP_NAME),
 														res.getString(C_GROUPS_GROUP_DESCRIPTION),
@@ -6054,11 +6054,12 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, CmsProject onlin
 			statement.setTimestamp(5, new Timestamp(user.getLastlogin()));
 			statement.setTimestamp(6, new Timestamp(user.getLastUsed()));
 			statement.setInt(7,user.getFlags());
-			statement.setBytes(8,value);
-			statement.setString(9,user.getAddress());
-			statement.setString(10,user.getSection());
-			statement.setInt(11,user.getType());
-			statement.setInt(12,user.getId());
+			statement.setBytes(8,value); 
+ 			statement.setInt(9, user.getDefaultGroupId());
+ 			statement.setString(10,user.getAddress());
+ 			statement.setString(11,user.getSection());
+ 			statement.setInt(12,user.getType());
+ 			statement.setInt(13,user.getId());
 			statement.executeUpdate();
 		}
 		catch (SQLException e){

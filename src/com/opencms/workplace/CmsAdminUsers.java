@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
- * Date   : $Date: 2000/08/08 14:08:30 $
- * Version: $Revision: 1.10 $Selector
+ * Date   : $Date: 2000/08/22 13:22:51 $
+ * Version: $Revision: 1.11 $Selector
 
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -43,68 +43,63 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.10 $ $Date: 2000/08/08 14:08:30 $
+ * @version $Revision: 1.11 $ $Date: 2000/08/22 13:22:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants {
 
-	 /**
-	 * change the groups of the user
-	 * <P>
-	 * the Vector newGroups holds all groups, which theUser will be in afterwards
-	 * the amount of database access is kept small with this funcion  
-	 * @param cms CmsObject Object for accessing system resources.
-	 * @param theUser the user whose data will be changed
-	 * @param defaultGroupName String which holds the name of the default group theUser should get 
-	 * @param newGroups Vector of Strings with the names of the new groups of theUser
-	 * @exception CmsException
-	 */
-	
-	private void changeGroups(CmsObject cms, CmsUser theUser, String defaultGroupName, Vector newGroups) 
-		throws CmsException {
-		String username = (String) theUser.getName();
-		Vector oldGroups = cms.getGroupsOfUser(username);
-		Vector oldGroupnames = new Vector();
-		
-		if (defaultGroupName == null) {
-			throw new CmsException("method 'changeGroups': default group set to null", 
-									CmsException.C_NO_DEFAULT_GROUP);
+/**
+ * change the groups of the user
+ * <P>
+ * the Vector newGroups holds all groups, which theUser will be in afterwards
+ * the amount of database access is kept small with this funcion  
+ * @param cms CmsObject Object for accessing system resources.
+ * @param theUser the user whose data will be changed
+ * @param defaultGroupName String which holds the name of the default group theUser should get 
+ * @param newGroups Vector of Strings with the names of the new groups of theUser
+ * @exception CmsException
+ */
+
+private void changeGroups(CmsObject cms, CmsUser theUser, String defaultGroupName, Vector newGroups) throws CmsException {
+	String username = (String) theUser.getName();
+	Vector oldGroups = cms.getGroupsOfUser(username);
+	Vector oldGroupnames = new Vector();
+	if (defaultGroupName == null) {
+		throw new CmsException("method 'changeGroups': default group set to null", CmsException.C_NO_DEFAULT_GROUP);
+	} 
+	theUser.setDefaultGroup(cms.readGroup(defaultGroupName));
+	cms.writeUser(theUser); // update in the database
+	theUser = (CmsUser) cms.readUser(username);
+	if (oldGroups != null) {
+		for (int z = 0; z < oldGroups.size(); z++) {
+			oldGroupnames.addElement(((CmsGroup) oldGroups.elementAt(z)).getName());
 		}
-	 
-		theUser.setDefaultGroup(cms.readGroup(defaultGroupName));
-		cms.writeUser(theUser);  // update in the database
-		theUser = (CmsUser) cms.readUser(username);
-		if (oldGroups != null) {
-			for (int z=0; z < oldGroups.size(); z++) {
-				oldGroupnames.addElement(((CmsGroup) oldGroups.elementAt(z)).getName());
-			}
-			String oldDefaultGroup = theUser.getDefaultGroup().getName();
-			
-			oldGroupnames.removeElement(oldDefaultGroup);
-			// delete the user from the groups which are not in newGroups
-			for (int z=0; z < oldGroupnames.size(); z++) {
-				String groupname = (String) oldGroupnames.elementAt(z);			
-				if (!newGroups.contains(groupname)) {
-					try {
-						cms.removeUserFromGroup(username, groupname);
-					} catch (CmsException e) {
-						// can happen when this group has been deleted _indirectly_ before
-					}
-				}
-			} 
-		}	
-		if (newGroups != null) { 
-			// now add the user to the new groups, which he not yet belongs to
-			for (int z=0; z < newGroups.size(); z++) {
-				String groupname = (String) newGroups.elementAt(z);
-				if (! cms.userInGroup(username, groupname)){	
-					cms.addUserToGroup(username, groupname);
+		String oldDefaultGroup = theUser.getDefaultGroup().getName();
+		oldGroupnames.removeElement(oldDefaultGroup);
+		// delete the user from the groups which are not in newGroups
+		for (int z = 0; z < oldGroupnames.size(); z++) {
+			String groupname = (String) oldGroupnames.elementAt(z);
+			if (!newGroups.contains(groupname)) {
+				try {
+					cms.removeUserFromGroup(username, groupname);
+				} catch (CmsException e) {
+					// can happen when this group has been deleted _indirectly_ before
 				}
 			}
-		}	
-		cms.writeUser(theUser);  // update in the database
-		theUser = (CmsUser) cms.readUser(username);
+		}
 	}
+	if (newGroups != null) {
+		// now add the user to the new groups, which he not yet belongs to
+		for (int z = 0; z < newGroups.size(); z++) {
+			String groupname = (String) newGroups.elementAt(z);
+			if (!cms.userInGroup(username, groupname)) {
+				cms.addUserToGroup(username, groupname);
+			}
+		}
+	}
+	cms.writeUser(theUser); // update in the database
+	theUser = (CmsUser) cms.readUser(username); 
+}
 	/**
 	 * Gets the content of a defined section in a given template file and its subtemplates
 	 * with the given parameters. 

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/08/21 10:10:18 $
- * Version: $Revision: 1.114 $
+ * Date   : $Date: 2000/08/22 13:22:48 $
+ * Version: $Revision: 1.115 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.114 $ $Date: 2000/08/21 10:10:18 $ * 
+ * @version $Revision: 1.115 $ $Date: 2000/08/22 13:22:48 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2565,11 +2565,11 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, in
 										   SqlHelper.getTimestamp(res,C_USERS_USER_LASTUSED).getTime(),
 										   res.getInt(C_USERS_USER_FLAGS),
 										   info,
-										   new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
+										    new CmsGroup(res.getInt(C_USERS_USER_DEFAULT_GROUP_ID),
 														res.getInt(C_GROUPS_PARENT_GROUP_ID),
 														res.getString(C_GROUPS_GROUP_NAME),
 														res.getString(C_GROUPS_GROUP_DESCRIPTION),
-														res.getInt(C_GROUPS_GROUP_FLAGS)),
+														res.getInt(C_GROUPS_GROUP_FLAGS)), 
 										   res.getString(C_USERS_USER_ADDRESS),
 										   res.getString(C_USERS_USER_SECTION),
 										   res.getInt(C_USERS_USER_TYPE));
@@ -6062,10 +6062,11 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, in
 			statement.setTimestamp(6, new Timestamp(user.getLastUsed()));
 			statement.setInt(7,user.getFlags());
 			statement.setBytes(8,value);
-			statement.setString(9,checkNull(user.getAddress()));
-			statement.setString(10,checkNull(user.getSection()));
-			statement.setInt(11,user.getType());
-			statement.setInt(12,user.getId());
+			statement.setInt(9, user.getDefaultGroupId());
+			statement.setString(10,checkNull(user.getAddress()));
+			statement.setString(11,checkNull(user.getSection()));
+			statement.setInt(12,user.getType());
+			statement.setInt(13,user.getId());
 			statement.executeUpdate();
 		}
 		catch (SQLException e){

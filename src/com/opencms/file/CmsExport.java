@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2000/08/11 12:58:57 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/08/22 13:22:48 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/08/11 12:58:57 $
+ * @version $Revision: 1.8 $ $Date: 2000/08/22 13:22:48 $
  */
 public class CmsExport implements I_CmsConstants {
 	
@@ -79,7 +79,7 @@ public class CmsExport implements I_CmsConstants {
 	/**
 	 * Decides, if the system should be included to the export.
 	 */
-	private boolean m_includeSystem;
+	private boolean m_excludeSystem;
 	
 	/**
 	 * This constructs a new CmsImport-object which imports the resources.
@@ -99,15 +99,16 @@ public class CmsExport implements I_CmsConstants {
 	 * @param importFile the file or folder to import from.
 	 * @param exportPaths the paths of folders and files to write into the exportFile
 	 * @param cms the cms-object to work with.
-	 * @param includeSystem decides, if to include the system-stuff.
+	 * @param excludeSystem if true, the system folder is excluded, if false exactly the resources in
+	 *        exportPaths are included
 	 * @exception CmsException the CmsException is thrown if something goes wrong.
 	 */
-	public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean includeSystem) 
+	public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem) 
 		throws CmsException {
 		
 		m_exportFile = exportFile; 
 		m_cms = cms;
-		m_includeSystem = includeSystem;
+		m_excludeSystem = excludeSystem;
 
 		Vector folderNames = new Vector();
 		Vector fileNames = new Vector();
@@ -117,11 +118,7 @@ public class CmsExport implements I_CmsConstants {
 			} else {
 				fileNames.addElement(exportPaths[i]);
 			}
-		}
-		// excplicitly include system if chosen
-		if (includeSystem) {
-			folderNames.addElement("/system/");
-		}
+		} 
 		
 		// open the import resource
 		getExportResource();
@@ -309,7 +306,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
 	
 			// check if this is a system-folder and if it should be included.
 			if(folder.getAbsolutePath().startsWith("/system/")) {
-				if(m_includeSystem) {
+				if(!m_excludeSystem) {
 					// export this folder
 					writeXmlEntrys(folder);
 					// export all resources in this folder
