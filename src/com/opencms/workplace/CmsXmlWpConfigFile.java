@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
-* Date   : $Date: 2001/07/31 15:50:20 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2001/09/05 10:28:20 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Alexander Lucas
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.34 $ $Date: 2001/07/31 15:50:20 $
+ * @version $Revision: 1.35 $ $Date: 2001/09/05 10:28:20 $
  */
 
 public class CmsXmlWpConfigFile {
@@ -131,6 +131,7 @@ public class CmsXmlWpConfigFile {
         } else {
             names.add("binary");    values.add("binary");
             names.add("plain");     values.add("plain");
+            names.add("image");     values.add("image");
         }
     }
 
