@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHtmlExtractor.java,v $
- * Date   : $Date: 2004/11/16 16:57:59 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlExtractor.java,v $
+ * Date   : $Date: 2004/11/19 15:07:22 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,10 @@
 //
 // Revision Control Information
 //
-// $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHtmlExtractor.java,v $
+// $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlExtractor.java,v $
 // $Author: c.weinholz $
-// $Date: 2004/11/16 16:57:59 $
-// $Revision: 1.4 $
+// $Date: 2004/11/19 15:07:22 $
+// $Revision: 1.1 $
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -53,7 +53,7 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-package org.opencms.search.documents;
+package org.opencms.util;
 
 import org.opencms.staticexport.CmsLinkProcessor;
 
@@ -74,7 +74,7 @@ import org.htmlparser.visitors.NodeVisitor;
 /**
  * Extracts plain text from HTML.<p>
  * 
- * @version $Revision: 1.4 $ $Date: 2004/11/16 16:57:59 $
+ * @version $Revision: 1.1 $ $Date: 2004/11/19 15:07:22 $
  * @author  Carsten Weinholz (c.weinholz@alkacon.com)
  *
  * @author Derrick Oswald

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2004/11/16 16:58:38 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/11/19 15:07:44 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsHtmlConverter;
+import org.opencms.util.CmsHtmlExtractor;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
@@ -55,7 +56,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -254,8 +255,12 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
      */
     public String getPlainText(CmsObject cms, I_CmsXmlDocument document) {
         
-        // TODO: implement tag removal
-        return this.getStringValue(cms, document);
+        try {
+            CmsHtmlExtractor extractor = new CmsHtmlExtractor();
+            return extractor.extractText(this.getStringValue(cms, document), document.getEncoding());
+        } catch (Exception exc) {
+            return null;   
+        }
     }
     
     /**

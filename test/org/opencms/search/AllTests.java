@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/AllTests.java,v $
- * Date   : $Date: 2004/11/17 14:37:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/19 15:08:13 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,23 +28,34 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.search;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-
 /**
  * Comment for <code>AllTests</code>.<p>
  */
-public class AllTests {
+public final class AllTests {
 
+    /**
+     * Hide constructor to prevent generation of class instances.<p>
+     */
+    private AllTests() {
+        // empty
+    }
+
+    /**
+     * Returns the JUnit test suite for this package.<p>
+     * 
+     * @return the JUnit test suite for this package
+     */
     public static Test suite() {
 
         TestSuite suite = new TestSuite("Test for org.opencms.search");
         //$JUnit-BEGIN$
-        suite.addTest(TestCmsSearchIndexer.suite());
+        suite.addTest(TestCmsSearch.suite());
         //$JUnit-END$
         return suite;
     }

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/Attic/TestCmsSearchIndexer.java,v $
- * Date   : $Date: 2004/11/16 16:59:14 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
+ * Date   : $Date: 2004/11/19 15:08:13 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,10 +31,13 @@
  
 package org.opencms.search;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.test.OpenCmsTestCase;
+
+import java.util.List;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -46,14 +49,14 @@ import junit.framework.TestSuite;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @version $Revision: 1.1 $
  */
-public class TestCmsSearchIndexer extends OpenCmsTestCase {
+public class TestCmsSearch extends OpenCmsTestCase {
   
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
      */    
-    public TestCmsSearchIndexer(String arg0) {
+    public TestCmsSearch(String arg0) {
         super(arg0);
     }
     
@@ -65,10 +68,11 @@ public class TestCmsSearchIndexer extends OpenCmsTestCase {
     public static Test suite() {
         
         TestSuite suite = new TestSuite();
-        suite.setName(TestCmsSearchIndexer.class.getName());
+        suite.setName(TestCmsSearch.class.getName());
                 
-        suite.addTest(new TestCmsSearchIndexer("testCmsSearchIndexer"));
-               
+        suite.addTest(new TestCmsSearch("testCmsSearchIndexer"));
+        suite.addTest(new TestCmsSearch("testCmsSearchXmlContent"));
+        
         TestSetup wrapper = new TestSetup(suite) {
             
             protected void setUp() {
@@ -92,5 +96,36 @@ public class TestCmsSearchIndexer extends OpenCmsTestCase {
         
         I_CmsReport report = new CmsShellReport();
         OpenCms.getSearchManager().updateIndex(report);
+    }
+    
+    /**
+     * Test the cms search indexer.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testCmsSearchXmlContent() throws Throwable {
+        
+        CmsObject cms = getCmsObject();     
+        echo("Testing search for xml contents");
+        
+        CmsSearch cmsSearchBean = new CmsSearch();
+        cmsSearchBean.init(cms);
+        cmsSearchBean.setIndex("Offline project (VFS)");
+        List results;
+        
+        cmsSearchBean.setQuery(">>SearchEgg1<<");
+        results = cmsSearchBean.getSearchResult();
+        assertEquals(1, results.size());
+        assertEquals("/sites/default/xmlcontent/article_0001.html", ((CmsSearchResult)results.get(0)).getPath());
+        
+        cmsSearchBean.setQuery(">>SearchEgg2<<");
+        results = cmsSearchBean.getSearchResult();
+        assertEquals(1, results.size());
+        assertEquals("/sites/default/xmlcontent/article_0002.html", ((CmsSearchResult)results.get(0)).getPath());
+        
+        cmsSearchBean.setQuery(">>SearchEgg3<<");
+        results = cmsSearchBean.getSearchResult();
+        assertEquals(1, results.size());
+        assertEquals("/sites/default/xmlcontent/article_0003.html", ((CmsSearchResult)results.get(0)).getPath());
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/11/19 09:06:48 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/11/19 15:06:37 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,11 +48,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
@@ -63,7 +61,7 @@ import org.apache.lucene.index.IndexWriter;
  * Implements the general management and configuration of the search and 
  * indexing facilities in OpenCms.<p>
  * 
- * @version $Revision: 1.26 $ $Date: 2004/11/19 09:06:48 $
+ * @version $Revision: 1.27 $ $Date: 2004/11/19 15:06:37 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -696,9 +694,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @return the set of names of all configured documenttypes
      */
-    protected Set getDocumentTypes() {
+    protected List getDocumentTypes() {
 
-        Set names = new HashSet();
+        List names = new ArrayList();
         for (Iterator i = m_documentTypes.values().iterator(); i.hasNext();) {
             I_CmsDocumentFactory factory = (I_CmsDocumentFactory)i.next();
             names.add(factory.getName());
@@ -738,8 +736,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         List resourceTypes = null;
         List mimeTypes = null;
         Class c = null;
-        String resourceType = null;
-        String resourceTypeId = null;
 
         m_documentTypes = new HashMap();
 
@@ -794,44 +790,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         + " failed", exc);
                 }
 
-                for (int j = 0, m = resourceTypes.size(); j < m; j++) {
-
-                    resourceType = (String)resourceTypes.get(j);
-                    resourceTypeId = null;
-
-                    try {
-                        resourceTypeId = documentFactory.getDocumentKey(resourceType);
-                    } catch (Exception exc) {
-                        throw new CmsIndexException("["
-                            + this.getClass().getName()
-                            + "] "
-                            + "Instanciation of resource type '"
-                            + resourceType
-                            + "' failed", exc);
-                    }
-
-                    if (mimeTypes.size() > 0) {
-                        for (int k = 0, l = mimeTypes.size(); k < l; k++) {
-
-                            String mimeType = (String)mimeTypes.get(k);
-
-                            if (OpenCms.getLog(this).isDebugEnabled()) {
-                                OpenCms.getLog(this)
-                                    .debug(
-                                        "Configured document class: "
-                                            + className
-                                            + " for "
-                                            + resourceType
-                                            + ":"
-                                            + mimeType);
-                            }
-
-                            m_documentTypes.put(resourceTypeId + ":" + mimeType, documentFactory);
-                        }
-                    } else {
-                        m_documentTypes.put(resourceTypeId + "", documentFactory);
-                    }
+                for (Iterator key = documentFactory.getDocumentKeys(resourceTypes, mimeTypes).iterator(); key.hasNext();) {
+                    m_documentTypes.put(key.next(), documentFactory);
                 }
+
             } catch (CmsException e) {
                 if (OpenCms.getLog(this).isWarnEnabled()) {
                     OpenCms.getLog(this).warn("Configuration of documenttype " + name + " failed", e);

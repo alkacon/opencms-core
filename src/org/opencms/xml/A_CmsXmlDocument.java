@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/11/17 12:16:59 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/11/19 15:07:36 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.3.5
  */
 public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -161,7 +161,6 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         result.append('[');
         result.append(index);
         result.append(']');
-
         return result.toString();
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/Attic/CmsXmlSimpleHtmlValue.java,v $
- * Date   : $Date: 2004/11/16 16:58:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/11/19 15:07:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
+import org.opencms.util.CmsHtmlExtractor;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -43,7 +44,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public class CmsXmlSimpleHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -172,8 +173,12 @@ public class CmsXmlSimpleHtmlValue extends A_CmsXmlContentValue implements I_Cms
      */
     public String getPlainText(CmsObject cms, I_CmsXmlDocument document) {
         
-        // TODO: implement tag removal
-        return this.getStringValue(cms, document);
+        try {
+            CmsHtmlExtractor extractor = new CmsHtmlExtractor();
+            return extractor.extractText(this.getStringValue(cms, document), document.getEncoding());
+        } catch (Exception exc) {
+            return null;   
+        }
     }
     
     /**

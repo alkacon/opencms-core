@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2004/11/19 09:09:12 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/11/19 15:07:07 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,13 +33,15 @@ package org.opencms.search.documents;
 import org.opencms.main.CmsException;
 import org.opencms.search.A_CmsIndexResource;
 
+import java.util.List;
+
 
 import org.apache.lucene.document.Document;
 
 /**
  * Implementation interface for lucene document factories used in OpenCms.<p>
  * 
- * @version $Revision: 1.10 $ $Date: 2004/11/19 09:09:12 $
+ * @version $Revision: 1.11 $ $Date: 2004/11/19 15:07:07 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  */
@@ -74,6 +76,18 @@ public interface I_CmsDocumentFactory {
      * @throws CmsException if something goes wrong
      */
     String getDocumentKey(String resourceType) throws CmsException;
+
+    /**
+     * Returns a list of document keys for the documenttype.<p>
+     * The list of accepted resource types may contain a catch-all entry "*";
+     * in this case, a list for all possible resource types is returned.
+     * 
+     * @param resourceTypes list of accepted resource types
+     * @param mimeTypes list of accepted mime types
+     * @return a list of document keys for this document factory
+     * @throws CmsException if something goes wrong
+     */
+    List getDocumentKeys(List resourceTypes, List mimeTypes) throws CmsException;
     
     /**
      * Returns the name of the documenttype.<p>

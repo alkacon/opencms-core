@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsXmlDocument.java,v $
- * Date   : $Date: 2004/11/19 09:08:40 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsXmlContentDocument.java,v $
+ * Date   : $Date: 2004/11/19 15:07:07 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,14 +37,15 @@ import org.opencms.search.CmsIndexException;
 import org.opencms.search.A_CmsIndexResource;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
-import org.opencms.xml.page.CmsXmlPage;
-import org.opencms.xml.page.CmsXmlPageFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.I_CmsResourceType;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -56,10 +57,10 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cms resource 
  * of type <code>CmsResourceTypeXmlContent</code>.<p>
  * 
- * @version $Revision: 1.2 $ $Date: 2004/11/19 09:08:40 $
+ * @version $Revision: 1.1 $ $Date: 2004/11/19 15:07:07 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
-public class CmsXmlDocument extends CmsVfsDocument {
+public class CmsXmlContentDocument extends CmsVfsDocument {
 
     /**
      * Creates a new instance of this lucene document factory.<p>
@@ -67,7 +68,7 @@ public class CmsXmlDocument extends CmsVfsDocument {
      * @param cms the cms object
      * @param name name of the documenttype
      */
-    public CmsXmlDocument (CmsObject cms, String name) {
+    public CmsXmlContentDocument (CmsObject cms, String name) {
         super(cms, name);
     }
     
@@ -98,15 +99,13 @@ public class CmsXmlDocument extends CmsVfsDocument {
             List elements = xmlContent.getNames(locale);
             StringBuffer content = new StringBuffer();
             for (Iterator i = elements.iterator(); i.hasNext();) {
-                List values = xmlContent.getValues((String)i.next(), locale);
-                for (Iterator j = values.iterator(); j.hasNext();) {
-                    I_CmsXmlContentValue value = (I_CmsXmlContentValue)j.next();
-                    String plainText = value.getPlainText(m_cms, xmlContent);
-                    if (plainText != null) {
-                        content.append(value);
-                    }
-                }                
-            }
+                I_CmsXmlContentValue value = xmlContent.getValue((String)i.next(), locale);
+                String plainText = value.getPlainText(m_cms, xmlContent);
+                if (plainText != null) {
+                    content.append(plainText);
+                    content.append('\n');
+                }
+            }                
             
             rawContent = content.toString();
             // CmsHtmlExtractor extractor = new CmsHtmlExtractor();
@@ -130,5 +129,25 @@ public class CmsXmlDocument extends CmsVfsDocument {
         document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, getRawContent(resource, language)));
         
         return document;
+    }
+    
+    /**
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#getDocumentKeys(java.util.List, java.util.List)
+     */
+    public List getDocumentKeys(List resourceTypes, List mimeTypes) throws CmsException {
+     
+        if (resourceTypes.contains("*")) {
+            ArrayList allTypes = new ArrayList();
+            for (Iterator i = OpenCms.getResourceManager().getResourceTypes().iterator(); i.hasNext();) {
+                I_CmsResourceType resourceType = (I_CmsResourceType)i.next();
+                if (resourceType instanceof CmsResourceTypeXmlContent 
+                    && ((CmsResourceTypeXmlContent)resourceType).getConfiguration().containsKey(CmsResourceTypeXmlContent.C_CONFIGURATION_SCHEMA)) {
+                    allTypes.add(resourceType.getTypeName());
+                }
+            }
+            resourceTypes = allTypes;
+        }
+        
+        return super.getDocumentKeys(resourceTypes, mimeTypes);
     }
 }

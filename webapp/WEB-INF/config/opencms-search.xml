@@ -16,7 +16,7 @@
 					<mimetype>text/html</mimetype>
 				</mimetypes>
 				<resourcetypes>
-					<resourcetype>org.opencms.file.types.CmsResourceTypeXmlPage</resourcetype>
+					<resourcetype>xmlpage</resourcetype>
 				</resourcetypes>
 			</documenttype>	
 			<documenttype>
@@ -26,7 +26,7 @@
 					<mimetype>text/html</mimetype>
 				</mimetypes>
 				<resourcetypes>
-					<resourcetype>org.opencms.file.types.CmsResourceTypePlain</resourcetype>
+					<resourcetype>plain</resourcetype>
 				</resourcetypes>
 			</documenttype>			
 			<documenttype>
@@ -34,7 +34,7 @@
 				<class>org.opencms.search.documents.CmsTextDocument</class>
 				<mimetypes/>
 				<resourcetypes>
-					<resourcetype>org.opencms.file.types.CmsResourceTypeJsp</resourcetype>
+					<resourcetype>jsp</resourcetype>
 				</resourcetypes>
 			</documenttype>						
 			<documenttype>
@@ -44,8 +44,8 @@
 					<mimetype>application/pdf</mimetype>
 				</mimetypes>
 				<resourcetypes>
-					<resourcetype>org.opencms.file.types.CmsResourceTypeBinary</resourcetype>
-					<resourcetype>org.opencms.file.types.CmsResourceTypePlain</resourcetype>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
 				</resourcetypes>
 			</documenttype>			
 			<documenttype>
@@ -55,8 +55,8 @@
 					<mimetype>application/msword</mimetype>
 				</mimetypes>
 				<resourcetypes>
-					<resourcetype>org.opencms.file.types.CmsResourceTypeBinary</resourcetype>
-					<resourcetype>org.opencms.file.types.CmsResourceTypePlain</resourcetype>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
 				</resourcetypes>
 			</documenttype>			
 			<documenttype>
@@ -66,8 +66,8 @@
 					<mimetype>application/vnd.ms-excel</mimetype>
 				</mimetypes>
 				<resourcetypes>
-					<resourcetype>org.opencms.file.types.CmsResourceTypeBinary</resourcetype>
-					<resourcetype>org.opencms.file.types.CmsResourceTypePlain</resourcetype>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
 				</resourcetypes>
 			</documenttype>			
 			<documenttype>
@@ -75,15 +75,23 @@
 				<class>org.opencms.search.documents.CmsVfsDocument</class>
 				<mimetypes/>
 				<resourcetypes>
-					<resourcetype>org.opencms.file.types.CmsResourceTypeImage</resourcetype>
+					<resourcetype>image</resourcetype>
 				</resourcetypes>
-			</documenttype>			
+			</documenttype>
+			<documenttype>
+				<name>xmlcontent</name>
+				<class>org.opencms.search.documents.CmsXmlContentDocument</class>
+				<mimetypes/>
+				<resourcetypes>
+					<resourcetype>*</resourcetype>
+				</resourcetypes>
+			</documenttype>				
 			<documenttype>
 				<name>generic</name>
 				<class>org.opencms.search.documents.CmsVfsDocument</class>
 				<mimetypes/>
 				<resourcetypes>
-					<resourcetype>org.opencms.file.types.CmsResourceTypePlain</resourcetype>
+					<resourcetype>*</resourcetype>
 				</resourcetypes>
 			</documenttype>									
 		</documenttypes>
@@ -151,6 +159,7 @@
 	                <name>msword</name>
 	                <name>msexcel</name>
 	                <name>image</name>
+					<name>xmlcontent</name>
 	                <name>generic</name>				
 				</documenttypes-indexed>				
 			</indexsource>
@@ -165,6 +174,7 @@
 	                <name>page</name>
 	                <name>text</name>
 	                <name>jsp</name>
+					<name>xmlcontent</name>
 	                <name>generic</name>
 				</documenttypes-indexed>
 			</indexsource>	

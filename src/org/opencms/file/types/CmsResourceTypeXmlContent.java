@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2004/11/19 09:05:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/11/19 15:05:47 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.5
  */
@@ -80,14 +80,6 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
 
     /** The (optional) schema of this resource. */
     private String m_schema;
-
-    /**
-     * Constructor to initialize the instance as generic xml content.<p>
-     */
-    public CmsResourceTypeXmlContent() {
-        m_resourceType = C_RESOURCE_TYPE_ID;
-        m_resourceTypeName = C_RESOURCE_TYPE_NAME;
-    }
     
     /**
      * @see org.opencms.file.types.A_CmsResourceType#addConfigurationParameter(java.lang.String, java.lang.String)

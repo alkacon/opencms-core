@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/11/16 15:12:53 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/11/19 15:06:37 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,9 +46,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
@@ -65,7 +65,7 @@ import org.apache.lucene.search.Searcher;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.26 $ $Date: 2004/11/16 15:12:53 $
+ * @version $Revision: 1.27 $ $Date: 2004/11/19 15:06:37 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -329,11 +329,18 @@ public class CmsSearchIndex {
      * @param path path of the folder or channel
      * @return the name set of documenttypes of a folder
      */
-    public Set getDocumenttypes(String path) {
+    public List getDocumenttypes(String path) {
 
-        Set documenttypes = null;
+        List documenttypes = null;
         if (m_documenttypes != null) {
-            documenttypes = (Set)m_documenttypes.get(path);
+            for (Iterator i = m_documenttypes.keySet().iterator(); i.hasNext();) {
+                String key = (String)i.next();
+                // NOTE: assumed that configured resource paths do not overlap, otherwise result is undefined
+                if (path.startsWith(key)) {
+                    documenttypes = (List)m_documenttypes.get(key);
+                    break;
+                }
+            }
         }
         if (documenttypes == null) {
             documenttypes = OpenCms.getSearchManager().getDocumentTypes();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsVfsIndexResource.java,v $
- * Date   : $Date: 2004/11/19 09:06:48 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/11/19 15:06:37 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,12 +34,13 @@ package org.opencms.search;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.OpenCms;
+import org.opencms.search.documents.CmsVfsDocument;
 
 /**
  * Contains the data of a VFS Cms resource specified by a Lucene 
  * search result document.<p>
  * 
- * @version $Revision: 1.8 $ $Date: 2004/11/19 09:06:48 $
+ * @version $Revision: 1.9 $ $Date: 2004/11/19 15:06:37 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -57,11 +58,9 @@ public class CmsVfsIndexResource extends A_CmsIndexResource {
         m_id = res.getResourceId();
         m_name = res.getName();
         
-        // TODO: needs a better way to identify the generic type of a resource
         try {
             I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(res.getTypeId());
-            I_CmsResourceType genericType = (I_CmsResourceType)resourceType.getClass().newInstance();
-            m_type = genericType.getTypeId();
+            m_type = resourceType.getTypeId();
         } catch (Exception exc) {
             m_type = res.getTypeId();
         }
@@ -70,12 +69,19 @@ public class CmsVfsIndexResource extends A_CmsIndexResource {
         m_mimeType = OpenCms.getResourceManager().getMimeType(res.getName(), null);
         m_path = res.getRootPath();
     }
-
+    
     /**
      * @see org.opencms.search.A_CmsIndexResource#getDocumentKey(boolean)
      */
     public String getDocumentKey(boolean withMimeType) {
 
-        return "VFS" + getType() + ((withMimeType) ? ":" + getMimetype() : "");
+        StringBuffer result = new StringBuffer(32);
+        result.append(CmsVfsDocument.C_DOCUMENT_KEY_PREFIX);
+        result.append(getType());
+        if (withMimeType) {
+            result.append(":");
+            result.append(getMimetype());
+        }
+        return result.toString();
     }
 }

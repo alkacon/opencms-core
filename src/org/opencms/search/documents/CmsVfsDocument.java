@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsVfsDocument.java,v $
- * Date   : $Date: 2004/11/19 09:07:46 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/11/19 15:07:07 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,13 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.A_CmsIndexResource;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.lucene.document.DateField;
 import org.apache.lucene.document.Document;
@@ -46,11 +51,14 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a vfs resource 
  * of any type derived from <code>CmsResource</code>.<p>
  * 
- * @version $Revision: 1.10 $ $Date: 2004/11/19 09:07:46 $
+ * @version $Revision: 1.11 $ $Date: 2004/11/19 15:07:07 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsVfsDocument implements I_CmsDocumentFactory {
 
+    /** The vfs prefix for document keys. */
+    public static final String C_DOCUMENT_KEY_PREFIX = "VFS";
+    
     /**
      * The cms object.
      */
@@ -134,9 +142,43 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
     public String getDocumentKey(String resourceType) throws CmsException {
         
         try {
-            return "VFS" + ((I_CmsResourceType)Class.forName(resourceType).newInstance()).getTypeId();
+            return C_DOCUMENT_KEY_PREFIX + ((I_CmsResourceType)Class.forName(resourceType).newInstance()).getTypeId();
         } catch (Exception exc) {
             throw new CmsException("Instanciation of resource class " + resourceType + " failed", exc);
         }
+    }
+    
+    /**
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#getDocumentKeys(java.util.List, java.util.List)
+     */
+    public List getDocumentKeys(List resourceTypes, List mimeTypes) throws CmsException {
+     
+        ArrayList keys = new ArrayList();
+        
+        if (resourceTypes.contains("*")) {
+            ArrayList allTypes = new ArrayList();
+            for (Iterator i = OpenCms.getResourceManager().getResourceTypes().iterator(); i.hasNext();) {
+                I_CmsResourceType resourceType = (I_CmsResourceType)i.next();
+                allTypes.add(resourceType.getTypeName());
+            }
+            resourceTypes = allTypes;
+        }
+        
+        try {
+            for (Iterator i = resourceTypes.iterator(); i.hasNext();) {
+                
+                int id = OpenCms.getResourceManager().getResourceType((String)i.next()).getTypeId();                
+                for (Iterator j = mimeTypes.iterator(); j.hasNext();) {
+                    keys.add(C_DOCUMENT_KEY_PREFIX + id + ":" + (String)j.next());
+                }
+                if (mimeTypes.isEmpty()) {
+                    keys.add(C_DOCUMENT_KEY_PREFIX + id);
+                }
+            }
+        } catch (Exception exc) {
+            throw new CmsException ("Creation of document keys failed.", exc);
+        }
+        
+        return keys;
     }
 }

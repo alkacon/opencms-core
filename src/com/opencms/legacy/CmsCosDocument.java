@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosDocument.java,v $
- * Date   : $Date: 2004/11/19 09:04:18 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/11/19 15:05:36 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,11 +35,14 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
-import org.opencms.search.documents.CmsHtmlExtractor;
 import org.opencms.search.documents.I_CmsDocumentFactory;
+import org.opencms.util.CmsHtmlExtractor;
 
 import com.opencms.defaults.master.*;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.lucene.document.DateField;
@@ -50,7 +53,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cos resource 
  * of any type derived from <code>CmsMasterDataSet</code>.<p>
  * 
- * @version $Revision: 1.7 $ $Date: 2004/11/19 09:04:18 $
+ * @version $Revision: 1.8 $ $Date: 2004/11/19 15:05:36 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
@@ -58,6 +61,9 @@ import org.apache.lucene.document.Field;
  */
 public class CmsCosDocument implements I_CmsCosDocumentFactory {
 
+    /** The cos prefix for document keys. */
+    public static final String C_DOCUMENT_KEY_PREFIX = "COS";
+    
     /* Matches anything that is not a number, hex-number, uuid or whitespace */
     private static final Pattern C_NON_NUM_UUID_WS = Pattern.compile("[^a-fA-F0-9\\-_\\s]");
     
@@ -174,9 +180,33 @@ public class CmsCosDocument implements I_CmsCosDocumentFactory {
      */
     public String getDocumentKey(String resourceType) throws CmsException {
         try {
-            return "COS" + ((CmsMasterContent)Class.forName(resourceType).newInstance()).getSubId();
+            return C_DOCUMENT_KEY_PREFIX + ((CmsMasterContent)Class.forName(resourceType).newInstance()).getSubId();
         } catch (Exception exc) {
             throw new CmsException ("Instanciation of resource type class " + resourceType + " failed.", exc);
         }
+    }
+    
+    /**
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#getDocumentKeys(java.util.List, java.util.List)
+     */
+    public List getDocumentKeys(List resourceTypes, List mimeTypes) throws CmsException {
+           
+        ArrayList keys = new ArrayList();
+        
+        try {
+            for (Iterator i = resourceTypes.iterator(); i.hasNext();) {
+                
+                int id = ((CmsMasterContent)Class.forName((String)i.next()).newInstance()).getSubId();                
+                for (Iterator j = resourceTypes.iterator(); j.hasNext();) {
+                    keys.add(C_DOCUMENT_KEY_PREFIX + id + ":" + (String)j.next());
+                }
+                
+                keys.add(C_DOCUMENT_KEY_PREFIX + id);
+            }
+        } catch (Exception exc) {
+            throw new CmsException ("Creation of document keys failed.", exc);
+        }
+        
+        return keys;
     }
 }
