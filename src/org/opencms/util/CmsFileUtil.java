@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2004/08/19 12:25:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/09/20 08:15:33 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -137,10 +137,10 @@ public final class CmsFileUtil {
     }
 
     /**
-     * Reads a file from test folder and converts it to a String with the specified encoding.<p> 
+     * Reads a file from the RFS and converts it to a String with the specified encoding.<p> 
      * 
      * @param filename the file to read 
-     * @param encoding the encodin to use when converting the file content to a String
+     * @param encoding the encoding to use when converting the file content to a String
      * @return the read file convered to a String
      * @throws IOException in case of file access errors
      */

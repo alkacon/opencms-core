@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPermissions.java,v $
- * Date   : $Date: 2004/08/27 15:54:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/09/20 08:19:52 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -102,22 +102,22 @@ public class TestPermissions extends OpenCmsTestCase {
      * @throws Throwable if something goes wrong
      */
     public void testDefaultPermissions() throws Throwable {
-        
+
         CmsObject cms = getCmsObject();
         echo("Testing default permissions");
-        
+
         String resourcename = "testDefaultPermissions.txt";
         cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
-        
+
         cms.addUser("testAdmin", "secret", "Administrators", "", null);
         cms.addUser("testProjectmanager", "secret", "Projectmanagers", "", null);
         cms.addUser("testUser", "secret", "Users", "", null);
         cms.addUser("testGuest", "secret", "Guests", "", null);
-        
-        assertEquals("+r+w+v+c+d",cms.getPermissions(resourcename,"testAdmin").getPermissionString());
-        assertEquals("+r+w+v+c+d",cms.getPermissions(resourcename,"testProjectmanager").getPermissionString());
-        assertEquals("+r+w+v+c",cms.getPermissions(resourcename,"testUser").getPermissionString());
-        assertEquals("+r+v",cms.getPermissions(resourcename,"testGuest").getPermissionString());
+
+        assertEquals("+r+w+v+c+d", cms.getPermissions(resourcename, "testAdmin").getPermissionString());
+        assertEquals("+r+w+v+c+d", cms.getPermissions(resourcename, "testProjectmanager").getPermissionString());
+        assertEquals("+r+w+v+c", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("+r+v", cms.getPermissions(resourcename, "testGuest").getPermissionString());
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2004/09/20 05:41:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/09/20 08:20:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -231,7 +231,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         assertState(cms, resourceB, I_CmsConstants.C_STATE_UNCHANGED);
         
         // we use the default "Offline" project as "projectA"
-        CmsProject projectA = cms.readProject("Offline");        
+//        CmsProject projectA = cms.readProject("Offline");        
         
         // create "projectB" as Admin user       
         cms.createProject(

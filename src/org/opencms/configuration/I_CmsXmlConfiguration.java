@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2004/08/19 11:26:33 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/09/20 08:15:06 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -147,7 +147,7 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
      * Returns the external system id prefix of the DTD file for this XML configuration,
      * e.g. <code>http://www.opencms.org/dtd/6.0/</code>.<p>
      * 
-     * The full system id for the DTD is calculated lile this:
+     * The full system id for the DTD is calculated like this:
      * <code>{@link #getDtdSystemLocation()} + {@link #getDtdUrlPrefix()}</code>.<p>
      *  
      * @return the system id prefix of the DTD file for this XML configuration
