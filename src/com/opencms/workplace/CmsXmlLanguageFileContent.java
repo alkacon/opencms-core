@@ -156,13 +156,13 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent {
         CmsFile file = null;
         for(int i = 0;i < langFiles.size();i++) {
             file = (CmsFile)langFiles.elementAt(i);
-            if(file.getState() != I_CmsConstants.C_STATE_DELETED) {
+            if(! file.getName().toLowerCase().endsWith(".txt") && file.getState() != I_CmsConstants.C_STATE_DELETED) {
                 try {
                     init(cms, file.getAbsolutePath());
                     readIncludeFile(file.getAbsolutePath());
                 } catch(Exception exc) {
                     if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL) ) {
-                        A_OpenCms.log(C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".mergeLanguageFiles/3] Error merging language file: " + file.getAbsolutePath());
+                        A_OpenCms.log(C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".mergeLanguageFiles/3] Error merging language file: " + file.getAbsolutePath() + ", " + exc.toString() );
                     }
                 }
             }
