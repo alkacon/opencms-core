@@ -8,7 +8,7 @@ import junit.framework.TestCase;
  * Test cases for the class "CmsStringSubstitution"
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0
  */
@@ -20,9 +20,6 @@ public class CmsStringSubstitutionTest extends TestCase {
 	 */
 	public CmsStringSubstitutionTest(String arg0) {
 		super(arg0);
-	}
-
-	public void testCmsStringSubstitution() {
 	}
 
 	public void testSubstitute() {
