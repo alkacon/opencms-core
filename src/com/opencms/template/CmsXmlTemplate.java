@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2002/05/08 07:29:20 $
-* Version: $Revision: 1.95 $
+* Date   : $Date: 2002/07/24 12:33:55 $
+* Version: $Revision: 1.96 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.95 $ $Date: 2002/05/08 07:29:20 $
+ * @version $Revision: 1.96 $ $Date: 2002/07/24 12:33:55 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -551,7 +551,10 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             }
         }
         HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
-        String servletPath = cms.getRequestContext().getRequest().getServletUrl() + "/";
+        String servletPath = cms.getRequestContext().getRequest().getServletUrl();
+        if(!servletPath.endsWith("/")){
+            servletPath = cms.getRequestContext().getRequest().getServletUrl() + "/";
+        }
 
         // Get the user's browser
         String browser = orgReq.getHeader("user-agent");
