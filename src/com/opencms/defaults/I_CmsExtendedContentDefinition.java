@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/I_CmsExtendedContentDefinition.java,v $
-* Date   : $Date: 2003/05/15 12:39:35 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/07/14 15:07:13 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ public interface I_CmsExtendedContentDefinition {
      *
      * @return int The unique id of the cd
      */
-    public CmsUUID getId();
+    CmsUUID getId();
 
     /**
      * Returns the projectId of the content definition.
@@ -54,7 +54,7 @@ public interface I_CmsExtendedContentDefinition {
      *
      * @return int The project id
      */
-    public int getProjectId();
+    int getProjectId();
 
     /**
      * Returns the state of the content definition:
@@ -62,7 +62,7 @@ public interface I_CmsExtendedContentDefinition {
      *
      * @return int The state of the cd
      */
-    public int getState();
+    int getState();
 
     /**
      * Returns the projectId of the content definition
@@ -71,85 +71,87 @@ public interface I_CmsExtendedContentDefinition {
      *
      * @return int The id of the project
      */
-    public int getLockedInProject();
+    int getLockedInProject();
 
     /**
      * Returns the date of the last modification of the content definition
      *
      * @return long The date of the last modification
      */
-    public long getDateLastModified();
+    long getDateLastModified();
 
     /**
      * Returns the date of the creation of the content definition
      *
      * @return long The date of the creation
      */
-    public long getDateCreated();
+    long getDateCreated();
 
     /**
      * Returns the id of the user who has modified the content definition
      *
      * @return int The id of the user who has modified the cd
      */
-    public CmsUUID getLastModifiedBy();
+    CmsUUID getLastModifiedBy();
 
     /**
      * Returns the name of the user who has modified the content definition
      *
      * @return String The name of the user who has modified the cd
      */
-    public String getLastModifiedByName();
+    String getLastModifiedByName();
 
     /**
      * Returns the id of the version in the history of the content definition
      *
      * @return int The id of the version
      */
-    public int getVersionId();
+    int getVersionId();
 
     /**
      * Returns the title of the content definition
      *
      * @return String The title of the cd
      */
-    public String getTitle();
+    String getTitle();
 
     /**
      * Returns the ownerId of the content definition
      *
      * @return int The ownerId of the cd
      */
-    public CmsUUID getOwner();
+    CmsUUID getOwner();
 
     /**
      * Returns the groupId of the content definition
      *
      * @return int The groupId of the cd
      */
-    public CmsUUID getGroupId();
+    CmsUUID getGroupId();
 
     /**
      * Returns the access flags of the content definition
      *
      * @return int The access flags of the cd
      */
-    public int getAccessFlags();
+    int getAccessFlags();
 
     /**
      * Publishes the content definition directly
      *
      * @param cms The CmsObject
+     * @throws Exception if something goes wrong
      */
-    public void publishResource(CmsObject cms) throws Exception;
+    void publishResource(CmsObject cms) throws Exception;
 
     /**
      * Undelete method
      * for undelete instance of content definition
      *
      * @param cms The CmsObject
+     * @throws Exception if something goes wrong
      */
-    public void undelete(CmsObject cms) throws Exception;
+    void undelete(CmsObject cms) throws Exception;
 
 
     /**
@@ -158,26 +160,29 @@ public interface I_CmsExtendedContentDefinition {
      *
      * @param cms The CmsObject
      * @param versionId The id of the version to restore
+     * @throws Exception if something goes wrong
      */
-    public void restore(CmsObject cms, int versionId) throws Exception;
+    void restore(CmsObject cms, int versionId) throws Exception;
 
     /**
      * Change owner method
      * for changing permissions of content definition
      *
      * @param cms The CmsObject
-     * @param owner The id of the new owner
+     * @param ownerId The id of the new owner
+     * @throws Exception if something goes wrong
      */
-    public void chown(CmsObject cms, CmsUUID ownerId) throws Exception;
+    void chown(CmsObject cms, CmsUUID ownerId) throws Exception;
 
     /**
      * Change group method
      * for changing permissions of content definition
      *
      * @param cms The CmsObject
-     * @param group The id of the new group
+     * @param groupId The id of the new group
+     * @throws Exception if something goes wrong
      */
-    public void chgrp(CmsObject cms, CmsUUID groupId) throws Exception;
+    void chgrp(CmsObject cms, CmsUUID groupId) throws Exception;
 
     /**
      * Change access flags method
@@ -185,8 +190,9 @@ public interface I_CmsExtendedContentDefinition {
      *
      * @param cms The CmsObject
      * @param accessflags The new access flags
+     * @throws Exception if something goes wrong
      */
-    public void chmod(CmsObject cms, int accessflags) throws Exception;
+    void chmod(CmsObject cms, int accessflags) throws Exception;
 
     /**
      * Copy method
@@ -194,8 +200,9 @@ public interface I_CmsExtendedContentDefinition {
      *
      * @param cms The CmsObject
      * @return int The id of the new content definition
+     * @throws Exception if something goes wrong
      */
-    public CmsUUID copy(CmsObject cms) throws Exception;
+    CmsUUID copy(CmsObject cms) throws Exception;
 
     /**
      * History method
@@ -203,8 +210,9 @@ public interface I_CmsExtendedContentDefinition {
      *
      * @param cms The CmsObject
      * @return Vector The versions of the cd in the history
+     * @throws Exception if something goes wrong
      */
-    public Vector getHistory(CmsObject cms) throws Exception;
+    Vector getHistory(CmsObject cms) throws Exception;
 
     /**
      * History method
@@ -213,6 +221,7 @@ public interface I_CmsExtendedContentDefinition {
      * @param cms The CmsObject
      * @param versionId The version id
      * @return Object The object with the version of the cd
+     * @throws Exception if something goes wrong
      */
-    public Object getVersionFromHistory(CmsObject cms, int versionId) throws Exception;
+    Object getVersionFromHistory(CmsObject cms, int versionId) throws Exception;
 }
