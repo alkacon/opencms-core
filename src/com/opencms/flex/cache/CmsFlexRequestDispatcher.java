@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2003/06/05 19:02:04 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/06/25 13:49:14 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
         
@@ -200,7 +200,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                 }                       
             } else { 
                 // Cache is on and resource is not yet cached, so we need to read the cache key for the response
-                CmsFlexCacheKey res_key = cache.getKey(CmsFlexCacheKey.getKeyName(m_vfsTarget, w_req.isOnline()));            
+                CmsFlexCacheKey res_key = cache.getKey(CmsFlexCacheKey.getKeyName(m_vfsTarget, w_req.isOnline(), w_req.isWorkplace()));            
                 if (res_key != null) {
                     // Key already in cache, reuse it
                     w_res.setCmsCacheKey(res_key);                                             
@@ -210,7 +210,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                     try {
                         // Read caching property from requested VFS resource                                     
                         cacheProperty = cms.readProperty(m_vfsTarget, com.opencms.flex.I_CmsResourceLoader.C_LOADER_CACHEPROPERTY);                    
-                        cache.putKey(w_res.setCmsCacheKey(m_vfsTarget, cacheProperty, f_req.isOnline()));                                            
+                        cache.putKey(w_res.setCmsCacheKey(m_vfsTarget, cacheProperty, f_req.isOnline(), f_req.isWorkplace()));                                            
                     } catch (com.opencms.core.CmsException e) {
                         if (e.getType() == CmsException.C_FLEX_CACHE) {
                             // Invalid key is ignored but logged, used key is cache=never

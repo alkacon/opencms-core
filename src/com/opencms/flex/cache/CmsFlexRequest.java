@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequest.java,v $
- * Date   : $Date: 2003/06/05 19:02:04 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/06/25 13:49:14 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.core.A_OpenCms;
 import com.opencms.file.CmsObject;
 import com.opencms.flex.CmsEvent;
 import com.opencms.flex.I_CmsEventListener;
+import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -55,15 +56,15 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
-    
-    /** The wrapped HttpServletRequest */    
-    private HttpServletRequest m_req = null;
-        
+           
     /** The requested resource (target resource) */    
     private String m_resource = null;
+    
+    /** Flag to indicate if this is a workplace resource */    
+    private boolean m_isWorkplaceResource = false;
     
     /** The CmsFlexCacheKey for this request */
     private CmsFlexCacheKey m_key = null;
@@ -108,7 +109,6 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      */    
     public CmsFlexRequest(HttpServletRequest req, CmsFlexController controller) {
         super(req);
-        m_req = req;
         m_controller = controller;
         m_resource = m_controller.getCmsFile().getAbsolutePath();
         CmsObject cms = m_controller.getCmsObject();
@@ -155,7 +155,8 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                 }
             }
         }  
-        m_canCache = (((m_isOnline || m_controller.getCmsCache().cacheOffline()) && ! nocachepara) || dorecompile);
+        m_isWorkplaceResource = m_resource.startsWith(I_CmsWpConstants.C_VFS_PATH_WORKPLACE);
+        m_canCache = (((m_isOnline || m_isWorkplaceResource || m_controller.getCmsCache().cacheOffline()) && ! nocachepara) || dorecompile);
         m_doRecompile = dorecompile;
         if (DEBUG) System.err.println("[FlexRequest] Constructing new Flex request for resource: " + m_resource);
     }
@@ -169,7 +170,6 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      */    
     CmsFlexRequest(HttpServletRequest req, CmsFlexController controller, String resource) {
         super(req);
-        m_req = req;
         m_controller = controller;
         m_resource = toAbsolute(resource);
         // must reset request URI/URL buffer here because m_resource has changed
@@ -444,7 +444,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     CmsFlexCacheKey getCmsCacheKey() {
         // The key for this request is only calculated if actually requested
         if (m_key == null) {
-            m_key = new CmsFlexCacheKey(this, m_resource, m_isOnline);
+            m_key = new CmsFlexCacheKey(this, m_resource, m_isOnline, m_isWorkplaceResource);
         }
         return m_key;
     }
@@ -458,6 +458,12 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * when building cache keys.
      * Any resource from a request that isOnline() will be saved with
      * the [online] suffix and vice versa.<p>
+     * 
+     * Resources in the OpenCms workplace are not distinguised between 
+     * online and offline but have their own suffix [workplace].
+     * The assumption is that if you do change the workplace, this is
+     * only on true development macines so you can do the cache clearing 
+     * manually if required.<p> 
      *
      * The suffixes are used so that we have a simple String name
      * for the resources in the cache. This makes it easy to
@@ -468,6 +474,21 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     public boolean isOnline() {
         return m_isOnline;
     }
+    
+    /**
+     * Returns true if the requested file is a workplace resource.<p>
+     * 
+     * Resources in the OpenCms workplace are not distinguised between 
+     * online and offline but have their own suffix [workplace].
+     * The assumption is that if you do change the workplace, this is
+     * only on true development macines so you can do the cache clearing 
+     * manually if required.<p>
+     *  
+     * @return true if the requested file is a workplace resource
+     */
+    boolean isWorkplace() {
+        return m_isWorkplaceResource;
+    }    
     
     /** 
      * This is needed to decide if this request can be cached or not.<p>

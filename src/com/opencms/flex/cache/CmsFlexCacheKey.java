@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2003/06/05 19:02:04 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/06/25 13:49:14 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.ServletRequest;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsFlexCacheKey {
     
@@ -94,9 +94,6 @@ public class CmsFlexCacheKey {
         "always", "never", "uri", "user", "groups", "params", "no-params", "timeout", "publish-clear", "schemes", "ports", "false", "parse-error", "true"});
     //   0         1        2      3       4         5         6            7          8                9          10       11       12             13
     
-    /** Flag used to determine if this key is from a request or not */
-    private boolean m_isRequest;
-    
     /** Flag raised in case a key parse error occured */
     private boolean m_parseError = false;
     
@@ -113,14 +110,14 @@ public class CmsFlexCacheKey {
      *
      * @param target the requested resource in the OpenCms VFS
      * @param online must be true for an online resource, false for offline resources
+     * @param workplace must be true for all workplace resources
      * @param request the request to construct the key for
      */    
-    public CmsFlexCacheKey(ServletRequest request, String target, boolean online) {
+    public CmsFlexCacheKey(ServletRequest request, String target, boolean online, boolean workplace) {
                 
-        m_resource = getKeyName(target, online);     
+        m_resource = getKeyName(target, online, workplace);     
         m_variation = "never";
         
-        m_isRequest = true;
         // Fetch the cms from the request
         CmsObject cms = ((CmsFlexController)request.getAttribute(CmsFlexController.ATTRIBUTE_NAME)).getCmsObject();        
         // Get the top-level file name / uri
@@ -162,12 +159,12 @@ public class CmsFlexCacheKey {
      *
      * @param target the requested resource
      * @param cacheDirectives the cache directives of the resource (value of the property "cache")
+     * @param workplace must be true for all workplace resources
      * @param online must be true for an online resource, false for offline resources
      */        
-    public CmsFlexCacheKey(String target, String cacheDirectives, boolean online) {
-        m_resource = getKeyName(target, online);     
+    public CmsFlexCacheKey(String target, String cacheDirectives, boolean online, boolean workplace) {
+        m_resource = getKeyName(target, online, workplace);     
         m_variation = "never";
-        m_isRequest = false;
         if (cacheDirectives != null) parseFlexKey(cacheDirectives);
         if (DEBUG) System.err.println("CmsFlexCacheKey for response generated:\n" + this.toString());
     }
@@ -178,10 +175,19 @@ public class CmsFlexCacheKey {
      *
      * @param name the name of the resource
      * @param online must be true for an online resource, false for offline resources
+     * @param workplace must be true for all workplace resources
      * @return fhe FlexCache key name
      */
-    public static String getKeyName(String name, boolean online) {
-        return name + (online?CmsFlexCache.C_CACHE_ONLINESUFFIX:CmsFlexCache.C_CACHE_OFFLINESUFFIX);             
+    public static String getKeyName(String name, boolean online, boolean workplace) {
+        StringBuffer result = new StringBuffer(name);
+        if (workplace) {
+            result.append(CmsFlexCache.C_CACHE_WORKPLACESUFFIX);
+        } else if (online) {
+            result.append(CmsFlexCache.C_CACHE_ONLINESUFFIX);
+        } else {
+            result.append(CmsFlexCache.C_CACHE_OFFLINESUFFIX);
+        }
+        return result.toString();           
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCache.java,v $
- * Date   : $Date: 2003/06/05 19:02:04 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/06/25 13:49:14 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -107,6 +107,9 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
     
     /** Suffix to append to online cache entries */
     public static String C_CACHE_OFFLINESUFFIX = " [offline]";
+    
+    /** Suffix to append to workplace cache entries */
+    public static String C_CACHE_WORKPLACESUFFIX = " [workplace]";
     
     /** Hashmap to store the Entries for fast lookup */
     private java.util.Map m_resourceMap;
@@ -130,7 +133,8 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
     public static final int C_CLEAR_ONLINE_ENTRIES = 3;
     public static final int C_CLEAR_OFFLINE_ALL = 4;
     public static final int C_CLEAR_OFFLINE_ENTRIES = 5;
-    
+    public static final int C_CLEAR_WORKPLACE_ALL = 6;
+        
     /** The LRU cache to organize the cached entries. */
     private CmsFlexLruCache m_entryLruCache;
     
@@ -225,7 +229,8 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
     }
     
     /**
-     * Clears all entries in the cache, online or offline.
+     * Clears all entries in the cache, online or offline.<p>
+     * 
      * The keys are not cleared.<p>
      *
      * Only users with administrator permissions are allowed
@@ -252,7 +257,8 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
     }
     
     /**
-     * Clears all entries and all keys from offline projects in the cache.
+     * Clears all entries and all keys from offline projects in the cache.<p>
+     * 
      * Cached resources from the online project are not touched.<p>
      *
      * Only users with administrator permissions are allowed
@@ -264,11 +270,12 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
         if (! isEnabled()) return;
         if (! isAdmin(cms)) return;
         if (DEBUG > 0) System.err.println("FlexCache: Clearing offline keys & entries");
-        clearOneHalf(C_CACHE_OFFLINESUFFIX, false);
+        clearAccordingToSuffix(C_CACHE_OFFLINESUFFIX, false);
     }
     
     /**
-     * Clears all entries from offline projects in the cache.
+     * Clears all entries from offline projects in the cache.<p>
+     * 
      * The keys from the offline projects are not cleared.
      * Cached resources from the online project are not touched.<p>
      *
@@ -281,11 +288,12 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
         if (! isEnabled()) return;
         if (! isAdmin(cms)) return;
         if (DEBUG > 0) System.err.println("FlexCache: Clearing offline entries");
-        clearOneHalf(C_CACHE_OFFLINESUFFIX, true);
+        clearAccordingToSuffix(C_CACHE_OFFLINESUFFIX, true);
     }
     
     /**
-     * Clears all entries and all keys from the online project in the cache.
+     * Clears all entries and all keys from the online project in the cache.<p>
+     * 
      * Cached resources from the offline projects are not touched.<p>
      *
      * Only users with administrator permissions are allowed
@@ -297,11 +305,12 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
         if (! isEnabled()) return;
         if (! isAdmin(cms)) return;
         if (DEBUG > 0) System.err.println("FlexCache: Clearing online keys & entries");
-        clearOneHalf(C_CACHE_ONLINESUFFIX, false);
+        clearAccordingToSuffix(C_CACHE_ONLINESUFFIX, false);
     }
     
     /**
-     * Clears all entries from the online project in the cache.
+     * Clears all entries from the online project in the cache.<p>
+     * 
      * The keys from the online project are not cleared.
      * Cached resources from the offline projects are not touched.<p>
      *
@@ -314,7 +323,24 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
         if (! isEnabled()) return;
         if (! isAdmin(cms)) return;
         if (DEBUG > 0) System.err.println("FlexCache: Clearing online entries");
-        clearOneHalf(C_CACHE_ONLINESUFFIX, true);
+        clearAccordingToSuffix(C_CACHE_ONLINESUFFIX, true);
+    }
+    
+    /**
+     * Clears all entries and all keys from workplace in the cache.<p>
+     * 
+     * Cached resources outside the workplace are not touched.<p>
+     *
+     * Only users with administrator permissions are allowed
+     * to perform this operation.<p>
+     *
+     * @param cms the CmsObject used for user authorization
+     */    
+    private void clearWorkplace(CmsObject cms) {
+        if (!isEnabled()) return;
+        if (!isAdmin(cms)) return;
+        if (DEBUG > 0) System.err.println("FlexCache: Clearing online keys & entries");
+        clearAccordingToSuffix(C_CACHE_WORKPLACESUFFIX, false);
     }
     
     /**
@@ -524,6 +550,9 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
                         break;
                     case C_CLEAR_OFFLINE_ENTRIES:
                         clearOfflineEntries(event.getCmsObject());
+                        break;
+                    case C_CLEAR_WORKPLACE_ALL:
+                        clearWorkplace(event.getCmsObject());
                         break;
                 }
         }
@@ -769,7 +798,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
      * @param entriesOnly if <code>true</code>, only entries will be cleared, otherwise
      *         the entries and the keys will be cleared
      */    
-    private synchronized void clearOneHalf(String suffix, boolean entriesOnly) {
+    private synchronized void clearAccordingToSuffix(String suffix, boolean entriesOnly) {
         java.util.Set keys = new java.util.HashSet(m_resourceMap.keySet());
         java.util.Iterator i = keys.iterator();
         while (i.hasNext()) {
@@ -824,7 +853,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.19 $ 
+     * @version $Revision: 1.20 $ 
      */
     class CmsFlexCacheVariation extends Object implements com.opencms.flex.util.I_CmsFlexLruCacheObject {
         
