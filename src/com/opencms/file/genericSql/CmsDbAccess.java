@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/03/02 18:43:55 $
-* Version: $Revision: 1.273 $
+* Date   : $Date: 2003/03/04 17:19:27 $
+* Version: $Revision: 1.274 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -54,6 +54,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -74,9 +75,12 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.273 $ $Date: 2003/03/02 18:43:55 $ *
+ * @version $Revision: 1.274 $ $Date: 2003/03/04 17:19:27 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
+    
+    protected static int C_RESTYPE_LINK_ID = 2;
+    protected static boolean C_USE_TARGET_DATE = true;    
 
     /**
      * The name of the pool to use
@@ -3341,7 +3345,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             con = DriverManager.getConnection(usedPool);
             statement = con.prepareStatement(m_cq.get("C_RESOURCES_GET_FILESINFOLDER"+usedStatement));
             statement.setInt(1, parentFolder.getResourceId());
-            statement.setInt(2, projectId);
             res = statement.executeQuery();
 
             // create new file objects
@@ -3353,7 +3356,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
                 int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
                 int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
                 int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
                 int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
                 int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
@@ -3365,9 +3367,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                
+                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
+                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
+                }                
 
                 file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
-                                groupId,projectID,accessFlags,state,lockedBy,
+                                groupId,lockedInProject,accessFlags,state,lockedBy,
                                 launcherType,launcherClass,created,modified,modifiedBy,
                                 new byte[0],resSize, lockedInProject);
 
@@ -3533,6 +3539,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                
+                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
+                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
+                }
+                                
                 CmsResource resResource = new CmsResource(resId,parentId,fileId,resName,resType,resFlags,userId,
                                 groupId,projectID,accessFlags,state,lockedBy,
                                 launcherType,launcherClass,created,modified,modifiedBy,
@@ -3630,6 +3641,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                
+                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
+                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
+                }
+                                
                 CmsResource resResource = new CmsResource(resId,parentId,fileId,resName,resType,resFlags,userId,
                                 groupId,projectID,accessFlags,state,lockedBy,
                                 launcherType,launcherClass,created,modified,modifiedBy,
@@ -4087,7 +4103,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param resources a Vector to store the created resources in.
      * @throws SQLException if there is an sql-error.
      */
-    void getResourcesInFolderHelper(ResultSet res, Vector resources) throws SQLException {
+    void getResourcesInFolderHelper(ResultSet res, Vector resources) throws SQLException, CmsException {
         String lastfile = null;
         CmsResource resource;
 
@@ -4115,6 +4131,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 int resSize = res.getInt(m_cq.get("C_RESOURCES_SIZE"));
                 int modifiedBy = res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                
+                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
+                    modified = this.fetchDateFromResource(lockedInProject, resFlags, modified);
+                }
+                                
                 resource = new CmsResource(resId, parentId, fileId, resName, resType, resFlags, userId,
                                             groupId, projectID, accessFlags, state, lockedBy, launcherType,
                                             launcherClass, created, modified, modifiedBy, resSize, lockedInProject);
@@ -5717,6 +5738,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 int lockedInProject=res.getInt("LOCKED_IN_PROJECT");
+                
+                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
+                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
+                }
+                                
                 file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
                                 groupId,projectID,accessFlags,state,lockedBy,
                                 launcherType,launcherClass,created,modified,modifiedBy,
@@ -6044,6 +6070,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 byte[] content=getBytesFromResultset(res, m_cq.get("C_RESOURCES_FILE_CONTENT"));
                 int resProjectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                
+                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
+                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
+                }
+                                
                 file = new CmsFile(resId,parentId,fileId,filename,resType,resFlags,userId,
                                    groupId,resProjectId,accessFlags,state,lockedBy,
                                    launcherType,launcherClass,created,modified,modifiedBy,
@@ -7207,6 +7238,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 byte[] content=getBytesFromResultset(res,m_cq.get("C_RESOURCES_FILE_CONTENT"));
                 int resProjectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                
+                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
+                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
+                }
+                                
                 file = new CmsFile(resId,parentId,fileId,filename,resType,resFlags,userId,
                                    groupId,resProjectId,accessFlags,state,lockedBy,
                                    launcherType,launcherClass,created,modified,modifiedBy,
@@ -7310,6 +7346,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
                 byte[] content=getBytesFromResultset(res,m_cq.get("C_RESOURCES_FILE_CONTENT"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                
+                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
+                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
+                }
+                                
                 file = new CmsFile(resId,parentId,fileId,filename,resType,resFlags,userId,
                                    groupId,projectId,accessFlags,state,lockedBy,
                                    launcherType,launcherClass,created,modified,modifiedBy,
@@ -7472,6 +7513,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                
+                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
+                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
+                }
+                                
                 file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
                                 groupId,projectID,accessFlags,state,lockedBy,
                                 launcherType,launcherClass,created,modified,modifiedBy,
@@ -7575,6 +7621,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                
+                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
+                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
+                }
+                                
                 file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
                                 groupId,projectID,accessFlags,state,lockedBy,
                                 launcherType,launcherClass,created,modified,modifiedBy,
@@ -7678,6 +7729,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                
+                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
+                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
+                }
+                                
                 file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
                                 groupId,projectID,accessFlags,state,lockedBy,
                                 launcherType,launcherClass,created,modified,modifiedBy,
@@ -7783,6 +7839,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                
+                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
+                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
+                }
+                                
                 file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
                                 groupId,projectID,accessFlags,state,lockedBy,
                                 launcherType,launcherClass,created,modified,modifiedBy,
@@ -8070,6 +8131,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                
+                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
+                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
+                }
+                                
                 file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
                                 groupId,projectID,accessFlags,state,lockedBy,
                                 launcherType,launcherClass,created,modified,modifiedBy,
@@ -8195,6 +8261,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 byte[] fileContent = getBytesFromResultset(res,m_cq.get("C_FILE_CONTENT"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
                 //byte[] fileContent = new byte[0];
+                
+                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
+                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
+                }
+                                
                 file = new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
                                 groupId,projectID,accessFlags,state,lockedBy,
                                 launcherType,launcherClass,created,modified,modifiedBy,
@@ -8930,6 +9001,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                
+                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
+                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
+                }                
 
                 file=new CmsResource(resId,parentId,fileId,resName,resType,resFlags,
                                      userId,groupId,projectId,accessFlags,state,lockedBy,
@@ -9327,6 +9402,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                
+                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
+                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
+                }
+                                
                 file=new CmsResource(resId,parentId,fileId,resName,resType,resFlags,
                                      userId,groupId,projectId,accessFlags,state,lockedBy,
                                      launcherType,launcherClass,created,modified,modifiedBy,
@@ -9427,6 +9507,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 
+                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
+                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
+                }
+                
                 file=new CmsResource(resId,parentId,fileId,resName,resType,resFlags,
                                      userId,groupId,projectId,accessFlags,state,lockedBy,
                                      launcherType,launcherClass,created,modified,modifiedBy,
@@ -12355,6 +12439,11 @@ public CmsTask readTask(int id) throws CmsException {
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                
+                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
+                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
+                }
+                                
                 file=new CmsResource(resId,parentId,fileId,resName,resType,resFlags,
                                      userId,groupId,projectId,accessFlags,state,lockedBy,
                                      launcherType,launcherClass,created,modified,modifiedBy,
@@ -12447,6 +12536,11 @@ public CmsTask readTask(int id) throws CmsException {
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 byte[] fileContent = getBytesFromResultset(res,m_cq.get("C_FILE_CONTENT"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                
+                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
+                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
+                }
+                                
                 file = new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
                                 groupId,projectID,accessFlags,state,lockedBy,
                                 launcherType,launcherClass,created,modified,modifiedBy,
@@ -12689,4 +12783,385 @@ public CmsTask readTask(int id) throws CmsException {
             }
         }
     }
+    
+    /**
+     * Update the resources flag attribute of all resources.
+     * 
+     * @param theProject the resources in this project are updated
+     * @param theValue the new int value of the resource fags attribute
+     * @return the count of affected rows
+     */
+    public int updateAllResourceFlags(CmsProject theProject, int theValue) throws CmsException {
+        String query = "C_UPDATE_ALL_RESOURCE_FLAGS";
+        String pool = m_poolName;
+        PreparedStatement stmnt = null;
+        Connection con = null;
+        int rowCount = 0;
+
+        // check if we need to use the same query working on the tables of the online project
+        if (theProject.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+            pool = m_poolNameOnline;
+            query += "_ONLINE";
+        }
+
+        try {
+            // execute the query
+            con = DriverManager.getConnection(pool);
+            stmnt = con.prepareStatement(m_cq.get(query));
+            stmnt.setInt(1, theValue);
+            rowCount = stmnt.executeUpdate();
+        } catch (SQLException e) {
+            rowCount = 0;
+            throw new CmsException("[" + this.getClass().getName() + ".updateAllResourceFlags()] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+        } finally {
+            if (stmnt != null) {
+                try {
+                    stmnt.close();
+                } catch (SQLException exc) {
+                }
+            }
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException exc) {
+                }
+            }
+        }
+
+        return rowCount;
+    }
+
+    /**
+     * Fetch all VFS links pointing to other VFS resources.
+     * 
+     * @param theProject the resources in this project are updated
+     * @param theResourceIDs reference to an ArrayList where the ID's of the fetched links are stored
+     * @param theLinkContents reference to an ArrayList where the contents of the fetched links (= VFS resource names of the targets) are stored
+     * @param theResourceTypeLinkID reference to an ArrayList where the resource names of the fetched links are stored
+     * @return the count of affected rows
+     */
+    public int fetchAllVfsLinks(CmsProject theProject, ArrayList theResourceIDs, ArrayList theLinkContents, ArrayList theLinkResources, int theResourceTypeLinkID) throws CmsException {
+        String query = "C_SELECT_VFS_LINK_RESOURCES";
+        String contentColumn = "FILE_CONTENT";
+        String pool = m_poolName;
+        PreparedStatement stmnt = null;
+        Connection con = null;
+        int rowCount = 0;
+        ResultSet result = null;
+
+        // check if we need to use the same query working on the tables of the online project
+        if (theProject.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+            pool = m_poolNameOnline;
+            query += "_ONLINE";
+        }
+
+        try {
+            // execute the query
+            con = DriverManager.getConnection(pool);
+            stmnt = con.prepareStatement(m_cq.get(query));
+            stmnt.setInt(1, theResourceTypeLinkID);
+            result = stmnt.executeQuery();
+
+            while (result.next()) {
+                theResourceIDs.add((Integer) new Integer(result.getInt(1)));
+                theLinkContents.add((String) new String(getBytesFromResultset(result, m_cq.get("C_FILE_CONTENT"))));
+                theLinkResources.add((String) result.getString(3));
+                rowCount++;
+            }
+        } catch (SQLException e) {
+            rowCount = 0;
+            throw new CmsException("[" + this.getClass().getName() + ".fetchAllVfsLinks()] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+        } finally {
+            if (stmnt != null) {
+                try {
+                    stmnt.close();
+                } catch (SQLException exc) {
+                }
+            }
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException exc) {
+                }
+            }
+        }
+
+        return rowCount;
+    }
+
+    /**
+     * Fetch the ID for a given VFS link target.
+     * 
+     * @param theProject the CmsProject where the resource is fetched
+     * @param theResourceName the name of the resource for which we fetch it's ID
+     * @param skipResourceTypeID targets of this resource type are ignored
+     * @return the ID of the resource, or -1
+     */
+    public int fetchResourceID(CmsProject theProject, String theResourceName, int skipResourceTypeID) throws CmsException {
+        String query = "C_SELECT_RESOURCE_ID";
+        String pool = m_poolName;
+        PreparedStatement stmnt = null;
+        Connection con = null;
+        int resourceID = 0;
+        ResultSet result = null;
+
+        // check if we need to use the same query working on the tables of the online project
+        if (theProject.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+            pool = m_poolNameOnline;
+            query += "_ONLINE";
+        }
+
+        try {
+            // execute the query
+            con = DriverManager.getConnection(pool);
+            stmnt = con.prepareStatement(m_cq.get(query));
+            stmnt.setString(1, theResourceName);
+            result = stmnt.executeQuery();
+
+            if (result.next()) {
+                int resourceTypeID = result.getInt(2);
+
+                if (resourceTypeID != skipResourceTypeID) {
+                    resourceID = result.getInt(1);
+                } else {
+                    resourceID = -1;
+                }
+            } else {
+                resourceID = 0;
+            }
+        } catch (SQLException e) {
+            resourceID = 0;
+            throw new CmsException("[" + this.getClass().getName() + ".fetchResourceID()] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+        } finally {
+            if (stmnt != null) {
+                try {
+                    stmnt.close();
+                } catch (SQLException exc) {
+                }
+            }
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException exc) {
+                }
+            }
+        }
+
+        return resourceID;
+    }
+
+    /**
+     * Update the resource flag attribute for a given resource.
+     * 
+     * @param theProject the CmsProject where the resource is updated
+     * @param theResourceID the ID of the resource which is updated
+     * @param theValue the new value of the resource flag attribute
+     * @return the count of affected rows (should be 1, unless an error occurred)
+     */
+    public int updateResourceFlags(CmsProject theProject, int theResourceID, int theValue) throws CmsException {
+        String query = "C_UPDATE_RESOURCE_FLAGS";
+        String pool = m_poolName;
+        PreparedStatement stmnt = null;
+        Connection con = null;
+        int rowCount = 0;
+
+        // check if we need to use the same query working on the tables of the online project
+        if (theProject.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+            pool = m_poolNameOnline;
+            query += "_ONLINE";
+        }
+
+        try {
+            // execute the query
+            con = DriverManager.getConnection(pool);
+            stmnt = con.prepareStatement(m_cq.get(query));
+            stmnt.setInt(1, theValue);
+            stmnt.setInt(2, theResourceID);
+            rowCount = stmnt.executeUpdate();
+        } catch (SQLException e) {
+            rowCount = 0;
+            throw new CmsException("[" + this.getClass().getName() + ".updateResourceFlags()] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+        } finally {
+            if (stmnt != null) {
+                try {
+                    stmnt.close();
+                } catch (SQLException exc) {
+                }
+            }
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException exc) {
+                }
+            }
+        }
+
+        return rowCount;
+    }
+
+    /**
+     * Fetches all VFS links pointing to a given resource ID.
+     * 
+     * @param theProject the current project
+     * @param theResourceID the ID of the resource of which the VFS links are fetched
+     * @param theResourceTypeLinkID the resource type ID of VFS links
+     * @return an ArrayList with the resource names of the fetched VFS links
+     * @throws CmsException
+     */
+    public ArrayList fetchVfsLinksForResourceID(CmsProject theProject, int theResourceID, int theResourceTypeLinkID) throws CmsException {
+        String query = "C_SELECT_VFS_LINKS";
+        String pool = m_poolName;
+        PreparedStatement stmnt = null;
+        Connection con = null;
+        ResultSet result = null;
+        ArrayList vfsLinks = new ArrayList();
+
+        // check if we need to use the same query working on the tables of the online project
+        if (theProject.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+            pool = m_poolNameOnline;
+            query += "_ONLINE";
+        }
+
+        try {
+            // execute the query
+            con = DriverManager.getConnection(pool);
+            stmnt = con.prepareStatement(m_cq.get(query));
+            stmnt.setInt(1, theResourceID);
+            stmnt.setInt(2, theResourceTypeLinkID);
+            stmnt.setInt(3, C_STATE_DELETED);
+            result = stmnt.executeQuery();
+
+            while (result.next()) {
+                CmsResource resource = this.readFileHeader(theProject.getId(), result.getString(1));
+
+                if (resource != null) {
+                    vfsLinks.add(resource);
+                }
+            }
+        } catch (SQLException e) {
+            throw new CmsException("[" + this.getClass().getName() + ".fetchVfsLinksForResourceID()] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+        } finally {
+            if (stmnt != null) {
+                try {
+                    stmnt.close();
+                } catch (SQLException exc) {
+                }
+            }
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException exc) {
+                }
+            }
+        }
+
+        return vfsLinks;
+    }
+
+    /**
+     * Fetches the RESOURCE_FLAGS attribute for a given resource name.
+     * This method is slighty more efficient that calling readFileHeader().
+     * 
+     * @param theProject the current project to choose the right SQL query
+     * @param theResourceName the name of the resource of which the resource flags are fetched
+     * @return the value of the resource flag attribute.
+     * @throws CmsException
+     */
+    public int fetchResourceFlags(CmsProject theProject, String theResourceName) throws CmsException {
+        String query = "C_SELECT_RESOURCE_FLAGS";
+        String pool = m_poolName;
+        PreparedStatement stmnt = null;
+        Connection con = null;
+        int resourceFlags = 0;
+        ResultSet result = null;
+
+        // check if we need to use the same query working on the tables of the online project
+        if (theProject.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+            pool = m_poolNameOnline;
+            query += "_ONLINE";
+        }
+
+        try {
+            // execute the query
+            con = DriverManager.getConnection(pool);
+            stmnt = con.prepareStatement(m_cq.get(query));
+            stmnt.setString(1, theResourceName);
+            result = stmnt.executeQuery();
+
+            if (result.next()) {
+                resourceFlags = result.getInt(1);
+            } else {
+                resourceFlags = 0;
+            }
+        } catch (SQLException e) {
+            resourceFlags = 0;
+            throw new CmsException("[" + this.getClass().getName() + ".fetchResourceID()] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+        } finally {
+            if (stmnt != null) {
+                try {
+                    stmnt.close();
+                } catch (SQLException exc) {
+                }
+            }
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException exc) {
+                }
+            }
+        }
+
+        return resourceFlags;
+    }
+
+    protected long fetchDateFromResource(int theProjectId, int theResourceId, long theDefaultDate) throws CmsException {
+        String query = "C_SELECT_RESOURCE_DATE_LASTMODIFIED";
+        String pool = m_poolName;
+        PreparedStatement stmnt = null;
+        Connection con = null;
+        ResultSet result = null;
+        long date_lastModified = theDefaultDate;
+
+        // check if we need to use the same query working on the tables of the online project
+        if (theProjectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+            pool = m_poolNameOnline;
+            query += "_ONLINE";
+        }
+
+        try {
+            // execute the query
+            con = DriverManager.getConnection(pool);
+            stmnt = con.prepareStatement(m_cq.get(query));
+            stmnt.setInt(1, theResourceId);
+            result = stmnt.executeQuery();
+
+            if (result.next()) {
+                date_lastModified = SqlHelper.getTimestamp(result, m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+                //System.err.println( "date: " + result.getObject(1).toString() );
+            } else {
+                date_lastModified = theDefaultDate;
+            }
+        } catch (SQLException e) {
+            //System.err.println( "\n[" + this.getClass().getName() + ".fetchDateFromResource()] " + e.toString() );
+            date_lastModified = theDefaultDate;
+            throw new CmsException("[" + this.getClass().getName() + ".fetchDateFromResource()] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+        } finally {
+            if (stmnt != null) {
+                try {
+                    stmnt.close();
+                } catch (SQLException exc) {
+                }
+            }
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException exc) {
+                }
+            }
+        }
+
+        //System.err.println( "\n[" + this.getClass().getName() + ".fetchDateFromResource()] date: " + date_lastModified ); 
+        return date_lastModified;
+    }    
+    
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
-* Date   : $Date: 2003/01/20 17:57:51 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/03/04 17:19:29 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import java.util.Properties;
  * This interface is defines all queries used in the DB-Access class.
  * @author Michael Emmerich
  *
- * @version $Revision: 1.43 $ $Date: 2003/01/20 17:57:51 $
+ * @version $Revision: 1.44 $ $Date: 2003/03/04 17:19:29 $
  */
 public class CmsQueries
 {
@@ -83,7 +83,15 @@ public class CmsQueries
                 }
             }
         }
-        String value = m_queries.getProperty(queryName);
+        
+        String value = null;
+        
+        if ((value=m_queries.getProperty(queryName))==null) {
+            if(A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsQueries] query '" + queryName + "' not found in query.properties!" );
+            }            
+        }
+        
         return value;
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/04 00:34:38 $
-* Version: $Revision: 1.196 $
+* Date   : $Date: 2003/03/04 17:19:29 $
+* Version: $Revision: 1.197 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.file;
 import com.opencms.core.CmsException;
 import com.opencms.report.I_CmsReport;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
@@ -45,7 +46,7 @@ import source.org.apache.java.util.Configurations;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.196 $ $Date: 2003/03/04 00:34:38 $
+ * @version $Revision: 1.197 $ $Date: 2003/03/04 17:19:29 $
  *
  */
 
@@ -3885,4 +3886,68 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      */
     public Vector getVisibleResourcesWithProperty(CmsUser currentUser, CmsProject currentProject, String propertyDefinition,
                                            String propertyValue, int resourceType) throws CmsException;
+                                           
+    /**
+     * Rebuilds the internal datastructure to join links with their targets. Each target saves the total count of
+     * links pointing to itself. Each links saves the ID of it's target.
+     * 
+     * @param cms the user's CmsObject instance
+     * @param theUser the user
+     * @param theProject the project
+     * @param theReport the report to print the output
+     * @return an ArrayList with the resources which were identified as broken links
+     * @see com.opencms.file.genericSql.CmsDbAccess#updateResourceFlags
+     * @see com.opencms.file.genericSql.CmsDbAccess#fetchLinkTargetIDs
+     * @see com.opencms.file.genericSql.CmsDbAccess#fetchVfsLinks
+     * @see com.opencms.file.genericSql.CmsDbAccess#updateAllResourceFlags
+     */      
+    public ArrayList joinLinksToTargets(CmsObject cms, CmsUser theUser, CmsProject theProject, I_CmsReport theReport)
+        throws CmsException; 
+        
+    /**
+     * Fetches all VFS links pointing to a given resource name.
+     * 
+     * @param cms the current user's CmsObject instance
+     * @param theProject the current project
+     * @param theResourceName the name of the resource of which the VFS links are fetched
+     * @return an ArrayList with the resource names of the fetched VFS links
+     * @throws CmsException
+     */        
+    public ArrayList fetchVfsLinksForResource( CmsUser theUser, CmsProject theProject, String theResourceName ) 
+        throws CmsException;
+        
+    /**
+     * Decrement the VFS link counter for a resource. 
+     * 
+     * @param theProject the current project
+     * @param theResourceName the name of the resource for which the link count is decremented
+     * @throws CmsException
+     * @return the current link count of the specified resource
+     */         
+    public int decrementLinkCountForResource( CmsProject theProject, String theResourceName ) 
+        throws CmsException;     
+        
+    /**
+     * Increment the VFS link counter for a resource. 
+     * 
+     * @param theProject the current project
+     * @param theResourceName the name of the resource for which the link count is incremented
+     * @throws CmsException
+     * @return the current link count of the specified resource
+     */        
+    public int incrementLinkCountForResource( CmsProject theProject, String theResourceName ) 
+        throws CmsException; 
+        
+    /**
+     * Save the ID of the target resource for a VFS link.
+     * The target ID is saved in the RESOURCE_FLAGS table attribute.
+     * 
+     * @param theProject the current project
+     * @param theLinkResourceName the resource name of the VFS link
+     * @param theTargetResourceName the name of the link's target resource
+     * @throws CmsException
+     */         
+    public void linkResourceToTarget( CmsProject theProject, String theLinkResourceName, String theTargetResourceName ) 
+        throws CmsException;
+                                                      
 }

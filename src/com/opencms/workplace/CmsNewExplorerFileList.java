@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/03/02 18:43:54 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2003/03/04 17:19:27 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ import com.opencms.util.Utils;
 
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 
@@ -58,7 +59,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.59 $ $Date: 2003/03/02 18:43:54 $
+ * @version $Revision: 1.60 $ $Date: 2003/03/04 17:19:27 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
 
@@ -138,8 +139,13 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
 
         // get the right folder
         String currentFolder = (String)parameters.get("folder");
-        if((currentFolder != null) && (!"".equals(currentFolder)) && folderExists(cms,
-                currentFolder)) {
+        if ((currentFolder != null) && (currentFolder.startsWith("vfslink:"))) {
+            // this is a link chck, remove the prefix
+            parameters.put("mode", "vfslink");
+            parameters.put("file", currentFolder.substring(8));  
+        } else {
+            if((currentFolder != null) && (!"".equals(currentFolder)) && 
+                    folderExists(cms, currentFolder)) {
             session.putValue(C_PARA_FILELIST, currentFolder);
         }else {
             currentFolder = (String)session.getValue(C_PARA_FILELIST);
@@ -148,7 +154,36 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 session.putValue(C_PARA_FILELIST, currentFolder);
             }
         }
+        }
 
+        String mode = (String)parameters.get("mode");
+        // if the parameter mode=listonly is set, only the list will be shown
+        boolean listonly = "listonly".equals(mode); 
+        // if the parameter mode=projectview is set, all changed files in that project will be shown
+        boolean projectView = "projectview".equals(mode);
+        // if the parameter mode=vfslinks is set, the links to a target file will be shown
+        boolean vfslinkView = "vfslink".equals(mode);
+        if (vfslinkView) {
+            String file = (String)parameters.get("file");
+            boolean found = true;
+            try {
+                CmsResource res = cms.readFileHeader(file);
+            } catch (CmsException e) {
+                // file was not readable
+                found = false;
+            }
+            if (found) {
+                // file / folder exists and is readable
+                currentFolder = "vfslink:" + file;
+            } else {
+                // show the root folder in case of an error and reset the state
+                currentFolder = cms.rootFolder().getAbsolutePath();
+                vfslinkView = false;
+                parameters.remove("mode");
+            }
+            session.putValue(C_PARA_FILELIST, currentFolder);            
+        }
+        
         if (DEBUG > 2) {
             // output parameters
             System.err.println("[" + System.currentTimeMillis() + "] CmsNewExplorerFileList.getContent() called");
@@ -162,11 +197,6 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             System.err.println();
         }
 
-        String mode = (String)parameters.get("mode");
-        // if the parameter mode=listonly is set, only the list will be shown
-        boolean listonly = "listonly".equals(mode);
-        // if the parameter mode=projectview is set, all changed files in that project will be shown
-        boolean projectView = "projectview".equals(mode);
         boolean noKontext = "false".equals(parameters.get("kontext"));
 
         // the flaturl to use for changing folders
@@ -186,7 +216,12 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         check = cms.getFileSystemFolderChanges();
 
         // get the currentFolder Id
-        int currentFolderId = (cms.readFolder(currentFolder)).getResourceId();
+        int currentFolderId;
+        if (! vfslinkView) {
+            currentFolderId = (cms.readFolder(currentFolder)).getResourceId();
+        } else {
+            currentFolderId = -1;            
+        }
         // start creating content
         StringBuffer content = new StringBuffer(2048);
         content.append("<html> \n<head> \n");
@@ -201,7 +236,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         } else {
             content.append("top.openfolderMethod='openthisfolder';\n");
         }
-        if(projectView) {
+        if(projectView || vfslinkView) {
             content.append("top.projectView=true;\n");
         } else {
             content.append("top.projectView=false;\n");
@@ -238,8 +273,11 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         content.append(check);
         content.append(");\n");
         // set the writeAccess for the current Folder
+        boolean writeAccess = true;
+        if (! vfslinkView) {        
         CmsFolder test = cms.readFolder(currentFolder);
-        boolean writeAccess = test.getProjectId() == cms.getRequestContext().currentProject().getId();
+            writeAccess = test.getProjectId() == cms.getRequestContext().currentProject().getId();
+        }
         content.append("top.enableNewButton(");
         content.append(writeAccess);
         content.append(");\n");
@@ -269,7 +307,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         int selectedPage = 1;
         int numberOfPages = 0;
         int maxEntrys = C_ENTRYS_PER_PAGE; // later this comes from the usersettings
-        if(!(listonly || projectView)){
+        if(!(listonly || projectView || vfslinkView)){
             String selPage = (String)parameters.get("selPage");
             if(selPage == null || "".equals(selPage)){
                 selPage = (String)session.getValue(C_SESSION_CURRENT_PAGE);
@@ -303,7 +341,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             content.append(res.getName());
             content.append("\",");
             // the path
-            if(projectView){
+            if(projectView || vfslinkView){
                 content.append("\"");
                 content.append(res.getPath());
                 content.append("\",");
@@ -401,7 +439,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         }
 
         //  now the tree, only if changed
-        if(newTreePlease && (!listonly)) {
+        if(newTreePlease && (!(listonly || vfslinkView))) {
             content.append("\n top.rT();\n");
             Vector tree = cms.getFolderTree();
             int startAt = 1;
@@ -701,6 +739,10 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 session.removeValue("filter");
                 return cms.readProjectView(currentProjectId, filter);
             }
+        } else if ("vfslink".equals(mode)) {
+            String file = (String)parameters.get("file");
+            List list = cms.fetchVfsLinksForResource(file);          
+            return new Vector(list);
         } else {
             return cms.getResourcesInFolder(param);
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/03/04 00:34:38 $
-* Version: $Revision: 1.261 $
+* Date   : $Date: 2003/03/04 17:19:29 $
+* Version: $Revision: 1.262 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import com.opencms.template.cache.CmsElementCache;
 import com.opencms.util.LinkSubstitution;
 import com.opencms.util.Utils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -64,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.261 $
+ * @version $Revision: 1.262 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -2517,6 +2518,10 @@ public void publishProject(int id, I_CmsReport report) throws CmsException {
             m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
         }
     }
+    
+    CmsProject onlineProject = this.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+    this.joinLinksToTargets(onlineProject, report);
+        
     this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_PROJECT, theProject);
 }
 
@@ -4309,4 +4314,133 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
     protected void doTouch( String resourceName, long timestamp ) throws CmsException {
         m_rb.touch( m_context.currentUser(), m_context.currentProject(), getSiteRoot(resourceName), timestamp );
     }    
+    
+    /**
+     * Joins all links with their targets for the current project.
+     * 
+     * @return an ArrayList with the resources identified as broken links
+     * @see com.opencms.file.genericSql.CmsResourceBroker#joinLinksToTargets
+     * @throws CmsException
+     */
+    public ArrayList joinLinksToTargets() throws CmsException {
+        return this.joinLinksToTargets( m_context.currentProject() );
+    }
+    
+    /**
+     * Joins all links with their targets for a given project.
+     * 
+     * @param theProject the CmsProject for which the links should be joined with their targets
+     * @return an ArrayList with the resources identified as broken links
+     * @see com.opencms.file.genericSql.CmsResourceBroker#joinLinksToTargets
+     * @throws CmsException
+     */    
+    public ArrayList joinLinksToTargets( CmsProject theProject ) throws CmsException {
+        return this.joinLinksToTargets( theProject, new CmsShellReport() );
+    }
+
+    /**
+     * Joins all VFS links with their target resources for the current project, 
+     * printing the output to the specified report.
+     * 
+     * @param theReport the report to print the output
+     * @return an ArrayList with the resources identified as broken links
+     * @see com.opencms.file.genericSql.CmsResourceBroker#joinLinksToTargets
+     * @throws CmsException
+     */  
+    public ArrayList joinLinksToTargets( I_CmsReport theReport ) throws CmsException {    
+        return this.joinLinksToTargets( m_context.currentProject(), theReport );
+    }
+
+    /**
+     * Joins all VFS links with their target resources for a given project, 
+     * printing the output to the given report.
+     * 
+     * @param theProject the CmsProject for which the links should be joined with their targets
+     * @param theReport the report to print the output
+     * @return an ArrayList with the resources identified as broken links
+     * @see com.opencms.file.genericSql.CmsResourceBroker#joinLinksToTargets
+     * @throws CmsException
+     */ 
+    public ArrayList joinLinksToTargets( CmsProject theProject, I_CmsReport theReport ) throws CmsException {  
+        return this.joinLinksToTargets( m_context.currentUser(), theProject, theReport );  
+    }
+    
+    /**
+     * Joins all VFS links with their target resources for a given project, 
+     * printing the output to the given report.
+     * 
+     * @param theUser the current user
+     * @param theProject the CmsProject for which the links should be joined with their targets
+     * @param theReport the report to print the output
+     * @return an ArrayList with the resources identified as broken links
+     * @see com.opencms.file.genericSql.CmsResourceBroker#joinLinksToTargets
+     * @throws CmsException
+     */     
+    public ArrayList joinLinksToTargets(CmsUser theUser, CmsProject theProject, I_CmsReport theReport) throws CmsException {
+        theReport.println(theReport.key("report.link_check_vfs_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+        
+        if (theProject.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID && this.getOnlineElementCache() != null) {
+            // clear the online element cache
+            this.clearElementCache();
+        }
+
+        // clear the resource broker cache
+        this.clearcache();
+        
+        ArrayList brokenLinks = m_rb.joinLinksToTargets(this, theUser, theProject, theReport);        
+        theReport.println(theReport.key("report.link_check_vfs_end"), I_CmsReport.C_FORMAT_HEADLINE);
+        
+        return brokenLinks;
+    }
+    
+    /**
+     * Fetches the resource names of all VFS links pointing to a given resource as an ArrayList.
+     * 
+     * @param theResourceName the name of the resource for which all VFS links are fetched
+     * @return an ArrayList with the resources names of all links pointint to the specified resource
+     * @throws CmsException
+     */
+    public ArrayList fetchVfsLinksForResource( String theResourceName ) throws CmsException {        
+        return m_rb.fetchVfsLinksForResource( m_context.currentUser(), m_context.currentProject(), this.getSiteRoot(theResourceName) );
+    }
+    
+    /**
+     * Decrement the VFS link counter for a resource. 
+     * The link counter is saved in the RESOURCE_FLAGS table attribute.
+     * 
+     * @param theResourceName the name of the resource for which the link count is decremented
+     * @return the current link count of the specified resource
+     * @throws CmsException
+     */
+    protected int doDecrementLinkCountForResource( String theResourceName ) throws CmsException {    
+        //System.err.println( this.getClass().getName() + " decrementing link count of: " + theResourceName );   
+        return m_rb.decrementLinkCountForResource( m_context.currentProject(), this.getSiteRoot(theResourceName) );  
+    }  
+    
+    /**
+     * Increment the VFS link counter for a resource. 
+     * The link counter is saved in the RESOURCE_FLAGS table attribute.
+     * 
+     * @param theResourceName the name of the resource for which the link count is incremented
+     * @return the current link count of the specified resource
+     * @throws CmsException
+     */    
+    protected int doIncrementLinkCountForResource( String theResourceName ) throws CmsException {  
+        //System.err.println( this.getClass().getName() + " incrementing link count of: " + theResourceName );              
+        return m_rb.incrementLinkCountForResource( m_context.currentProject(), this.getSiteRoot(theResourceName) ); 
+    }  
+    
+    /**
+     * Save the ID of the target resource for a VFS link.
+     * The target ID is saved in the RESOURCE_FLAGS table attribute.
+     * 
+     * @param theLinkResourceName the resource name of the VFS link
+     * @param theTargetResourceName the name of the link's target resource
+     * @throws CmsException
+     */
+    public void linkResourceToTarget( String theLinkResourceName, String theTargetResourceName ) throws CmsException {         
+        //System.err.println( this.getClass().getName() + " linking " + theLinkResourceName + " with " +  theTargetResourceName );
+        m_rb.linkResourceToTarget( m_context.currentProject(), this.getSiteRoot(theLinkResourceName), this.getSiteRoot(theTargetResourceName) );
+    }   
+    
 }
