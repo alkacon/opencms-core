@@ -191,6 +191,8 @@
                 <addgroup>Sorry, the group could not be created..</addgroup>
                 <database>Sorry, the database could not be imported / exported.</database>
                 <linkcheckerror>The url could not be connected. You can store the link now or you can change it.</linkcheckerror>
+                <linkbrowser>Sorry, you can't use the link browser yet.</linkbrowser>
+                <linkgallery>You don't have permission to create a new gallery in this project.</linkgallery>
                 <lock>Sorry, the file could not be locked.</lock>
                 <lockchange>Sorry, the file lock could not be stolen.</lockchange>
                 <login>Sorry, the user could not log in to the system.</login>
@@ -249,6 +251,8 @@
                 <extNav3>The chosen colour is not in the format #000000 to #FFFFFF.</extNav3>
                 <foldercreate>Maybe you don't have the needed permissions or this folder already exist.</foldercreate>
                 <gallerynoright>You don't have the rights to create this new galery in this project.</gallerynoright>
+                <linknogallery>There is no link gallery yet.</linknogallery>
+                <linkbrowser>The folder for the link galleries doesn't exist.</linkbrowser>
                 <lock>Either you don't have the needed permissions, or the contents of this file are locked by someone else.</lock>
                 <lockchange>The file is locked by another user.</lockchange>
                 <login>The data entered is not correct.</login>
@@ -307,6 +311,8 @@
                 <downbrowser>Create the folder for the download galleries or contact your system administrator.</downbrowser>
                 <downnogallery>Please first create a gallery with the menu item Administration/Download Galleries.</downnogallery> 
                 <editorsave>Save the filecontent into a local editor, close the file and check the lock state.</editorsave>
+                <linkbrowser>Create the folder for the link galleries or contact your system administrator.</linkbrowser>
+				<linknogallery>Please first create a gallery with the menu item Administration/External Link Management.</linknogallery>
                 <lock></lock>
                 <lockchange>Please try again later, or contact your system administrator.</lockchange>
                 <login>Please check the entered data or contact your system administrator.</login>
@@ -355,6 +361,8 @@
                 <downgallery>Creating new Download Gallery</downgallery>
                 <editorsave>Save File</editorsave>
                 <foldercreate>Create Folder</foldercreate>
+				<linkbrowser>Link Browser</linkbrowser>
+                <linkgallery>Creating new Link Gallery</linkgallery>
                 <lock>Lock File</lock>
                 <lockchange>Steal Lock</lockchange>
                 <login>Login Error</login>

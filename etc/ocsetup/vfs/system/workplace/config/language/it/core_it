@@ -189,6 +189,8 @@
                 <addgroup>Spiacente, il gruppo non ha potuto essere creato.</addgroup>
                 <database>Spiacente, il database non ha potuto essere importato / esportato.</database>
                 <linkcheckerror>The url could not be connected. You can store the link now or you can change it.</linkcheckerror>
+				<linkbrowser>Sorry, you can't use the link browser yet.</linkbrowser>
+				<linkgallery>You don't have permission to create a new gallery in this project.</linkgallery>
                 <lock>Spiacente, il file non ha potuto essere bloccato.</lock>
                 <lockchange>Spiacente, il blocco sul file non ha potuto essere rubato.</lockchange>
                 <login>Spiacente, l'utente non ha potuto accedere al sistema.</login>
@@ -247,6 +249,8 @@
                 <extNav3>Il colore scelto non è nel formato da #000000 a #FFFFFF.</extNav3>
                 <foldercreate>Forse non hai i permessi necessari o questa cartella esiste già.</foldercreate>
                 <gallerynoright>Non hai i diritti per creare questa nuova galleria in questo progetto.</gallerynoright>
+                <linknogallery>There is no link gallery yet.</linknogallery>
+				<linkbrowser>The folder for the link galleries doesn't exist.</linkbrowser>
                 <lock>O non hai i permessi necessari, o i contenuti di questo file sono bloccati da qualcun'altro.</lock>
                 <lockchange>Il file è bloccato da un altro utente.</lockchange>
                 <login>I dati introdotti non sono corretti.</login>
@@ -305,6 +309,8 @@
                 <downbrowser>Crea la cartella per le gallerie di download o contatta il tuo amministratore di sistema.</downbrowser>
                 <downnogallery>Per favore crea prima una galleria con la voce di menu Amministrazione/Gallerie di Download.</downnogallery>
                 <editorsave>Salva il contenuto del file in un editor locale, chiudi il file e controlla lo stato di blocco.</editorsave>
+                <linkbrowser>Create the folder for the link galleries or contact your system administrator.</linkbrowser>
+				<linknogallery>Please first create a gallery with the menu item Administration/External Link Management.</linknogallery>
                 <lock></lock>
                 <lockchange>Per favore riprova più tardi, o contatta il tuo amministratore di sistema.</lockchange>
                 <login>Per favore controlla i dati introdotti o contatta il tuo amministratore di sistema.</login>
@@ -353,6 +359,8 @@
                 <downgallery>Creazione nuova Galleria di Download</downgallery>
                 <editorsave>Salva File</editorsave>
                 <foldercreate>Crea Cartella</foldercreate>
+				<linkbrowser>Link Browser</linkbrowser>
+                <linkgallery>Creating new Link Gallery</linkgallery>
                 <lock>Blocca File</lock>
                 <lockchange>Ruba Blocco</lockchange>
                 <login>Errore di Accesso</login>

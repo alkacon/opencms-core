@@ -189,6 +189,8 @@
                 <addgroup>Die Gruppe konnte nicht angelegt werden.</addgroup>
                 <database>Leider konnte die Datenbank nicht exportiert oder importiert werden.</database>
                 <linkcheckerror>Zu der angegebenen URL konnte keine Verbindung aufgebaut werden. Sie haben die Möglichkeit, die Verknüpfung trotzdem speichern oder sie zu korrigieren.</linkcheckerror>
+                <linkbrowser>Sie können den Linkbrowser noch nicht benutzen.</linkbrowser>
+                <linkgallery>Leider trat ein Fehler beim Anlegen der neuen Galerie auf!</linkgallery>
                 <lock>Leider konnte die Datei nicht auf Sie gesperrt werden.</lock>
                 <lockchange>Leider konnte die Dateisperrung nicht übernommen werden.</lockchange>
                 <login>Der Benutzer konnte nicht im System angemeldet werden.</login> 
@@ -247,6 +249,8 @@
                 <extNav3>Die Farbauswahl ist nicht im Format #000000 bis #FFFFFF angegeben.</extNav3>
                 <foldercreate>Eventuell haben Sie nicht die Berechtigung für diese Aktion oder es existiert schon ein Ordner mit diesem Namen.</foldercreate>
                 <gallerynoright>Sie haben in diesem Projekt keine Berechtigung die Galerie anzulegen</gallerynoright>
+                <linknogallery>Es existiert noch keine Linkgalerie.</linknogallery>
+				<linkbrowser>Der Ordner für die Linkgalerien existiert noch nicht.</linkbrowser>
                 <lock>Entweder haben Sie nicht die Zugriffsrechte diese Datei zu sperren, oder die Körperdatei wurde von einer anderen Steuerdatei gesperrt.</lock>
                 <lockchange>Die Datei ist noch von einem anderen Benutzer geöffnet.</lockchange>
                 <login>Die Anmeldedaten sind ungültig oder falsch eingegeben.</login>
@@ -306,6 +310,8 @@
                 <downbrowser>Legen sie den Ordner für die Downloadgalerien an oder kontaktieren Sie Ihren Systemadministrator.</downbrowser>
                 <downnogallery>Bitte legen Sie erst eine Galerie unter dem Menüpunkt Administration/Downloadgalerien an.</downnogallery>
                 <editorsave>Speichern Sie den Dateiinhalt in einem lokalen Editor zwischen, schließen Sie die Datei und überprüfen Sie die Sperrung.</editorsave>
+                <linkbrowser>Legen sie den Ordner für die Linkgalerien an oder kontaktieren Sie Ihren Systemadministrator.</linkbrowser>
+                <linknogallery>Bitte legen Sie erst eine Galerie unter dem Menüpunkt Administration/Externe Link-Verwaltung an.</linknogallery>
                 <lock></lock>
                 <lockchange>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</lockchange>
                 <login>Bitte überprüfen Sie Ihre Eingabe oder wenden Sie sich an den Systemadministrator.</login>
@@ -353,6 +359,8 @@
                 <downgallery>Neue Bildergalerie anlegen</downgallery>
                 <editorsave>Datei speichern</editorsave>
                 <foldercreate>Neues Verzeichnis anlegen</foldercreate>
+                <linkbrowser>Linkgalerie öffnen</linkbrowser>
+				<linkgallery>Linkgalerie anlegen</linkgallery>
                 <lock>Datei sperren</lock>
                 <lockchange>Datei Sperrung übernehmen</lockchange>
                 <login>Anmeldungsfehler</login>
