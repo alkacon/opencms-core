@@ -85,7 +85,7 @@
             </tr>
 
             <tr>
-                <td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0"></td>
+                <td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0">&nbsp;</td>
             </tr>
             <% if(setupOk)  { %>
             <tr>
@@ -97,7 +97,7 @@
                             else    {
                                 out.print("<script language='Javascript'>document.location.href='" + nextPage + "';</script>");
                             }
-                        } else { %>
+                        } else { %>					
                     <table border="0" cellpadding="5">
                         <tr><td class="bold" width="100">JDK version:</td><td width="300"><%= JDKVersion %></td><td width="30"><% if(supportedJDK)out.print("<img src='check.gif'>");else out.print("<img src='cross.gif'>"); %></td></tr>                                          
                         <tr><td class="bold">Servlet engine:</td><td><%= servletEngine %></td><td><% if(supportedServletEngine)out.print("<img src='check.gif'>");else if (unsupportedServletEngine > -1)out.print("<img src='cross.gif'>");else out.print("<img src='unknown.gif'>"); %></td></tr>
@@ -134,12 +134,12 @@
                             }
                         %></td>
                         </tr>
-                        <tr><td colspan="3" height="30">&nbsp;</td></tr>
-                        <input type="hidden" name="systemInfo" value="<% if(systemOk)out.print("true");else out.print("false"); %>">                        
+                        <tr><td colspan="3" height="30">&nbsp;</td></tr>                        
                         <% if(!systemOk)    { %>                        
                             <tr><td colspan="3" class="bold" align="center"><input type="checkbox" name="accept" value="true"> I have noticed that my system may not have the necessary components to use OpenCms. Continue anyway.</td></tr>
                         <% } %>                     
                     </table>
+					<input type="hidden" name="systemInfo" value="<% if(systemOk)out.print("true");else out.print("false"); %>">                        						
                     <% } %>
                 </td>
             </tr>
