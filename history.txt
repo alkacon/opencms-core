@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/04/16 10:54:08 $
- * Version: $Revision: 1.471 $
+ * Date   : $Date: 2003/04/23 15:24:04 $
+ * Version: $Revision: 1.472 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -22,11 +22,10 @@ Legend:
 OpenCms 5.0 (next version)
 ! Added "import.immutable.resources" setting to opencms.properties, all resources
   listed there will be igored during an import if they already exist
-! The size of the file upload can now be limited with the opencms.property setting "workplace.file.maxuploadsize"
+! The size of the file upload can now be limited with the opencms.properties setting "workplace.file.maxuploadsize"
 ! Added method getContent() to com.opencms.jsp.CmsJspActionElement
-! Added method isInWorkplaceMode() to com.opencms.jsp.CmsJspActionElement
 ! Export and import for module data now use a report output instead of writing to the console
-! OpenCms now sets a "Server" response header "OpenCms/{version_number}"
+! OpenCms now sets a "Server" http response header "OpenCms/{version_number}"
 ! The file last modified date is now saved when exporting and importing data from the VFS
 ! Added links management for VFS links, it's mow possible to find all VFS links that point to a specific file
 ! Added feature to convert content from old export format (4.x) to 5.0 version,
@@ -41,7 +40,7 @@ OpenCms 5.0 (next version)
 * Database field sizes for user, group and project names have been increased to 64 characters
 * Fixed issue #71: CronScheduler does not longer re-open the DB connections if OpenCms is shut down
 * Fixed issue with JSP static export not always restoring the previous URI context
-* Fixed compatibility issues with MySQL 4 (note that MySQL 4 has not been extensivly tested with OpenCmd so far)
+* Fixed compatibility issues with MySQL 4.0.x, OpenCms now supports MySQL 4.0.x
 * Fixed issue #56: Links in "Text" pages edited with the WYSIWYG "Edit as HTML"
 * Fixed issue with hardcoded servlet context path in <edittemplate>, it's now possible to 
   rename the servlet context and the images still work in the editor
@@ -69,7 +68,7 @@ OpenCms 5.0 (next version)
 - Updated OpenCms TLD for modified options of the <cms:include> tag
 - The "bodyloader" for the JSP / XMLTemplate integration is now a default part of the installation, 
   located in the new /system/shared/ directory
-- Improved logging output if OpenCms can not be initialized properly
+- Improved logging output if OpenCms is initialized
 
 OpenCms 5.0 "release candidate" (rc) 2  Kaitain - 04 February 2003
 ! Improved editor GUI (for both source code and WYSIWYG editor) 
