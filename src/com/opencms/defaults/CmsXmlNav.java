@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2001/08/17 10:10:08 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2001/10/24 07:46:58 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.*;
  *
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.34 $ $Date: 2001/08/17 10:10:08 $
+ * @version $Revision: 1.35 $ $Date: 2001/10/24 07:46:58 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 
@@ -168,6 +168,7 @@ public class CmsXmlNav extends A_CmsNavBase {
                     }
                 }
                 template.setData("navlevel", new Integer(rightLevel).toString());
+                String link="";
                 // check whether the link is folder
                 if (navLink[i].endsWith("/")) {
                     // read the property of link file
@@ -179,21 +180,25 @@ public class CmsXmlNav extends A_CmsNavBase {
                     // read the file, if the file does'nt exist then write the uri as a link
                     try {
                         cms.readFile(navLink[i] + navIndex);
+                        link=navLink[i] + navIndex;
                         template.setData("navlink", servletPath + navLink[i] + navIndex);
                     } catch (CmsException e) {
+                        link=requestedUri;
                         template.setData("navlink", servletPath + requestedUri);
                     }
                 } else {
                     // read the file, if the file does'nt exist then write the uri as a link
                     try {
                         cms.readFile(navLink[i]);
+                        link=navLink[i];
                         template.setData("navlink", servletPath + navLink[i]);
                     } catch (CmsException e) {
+                        link=requestedUri;
                         template.setData("navlink", servletPath + requestedUri);
                     }
                 }
                 // Check if nav is current nav
-                if (navLink[i].equals(currentFolder) || navLink[i].equals(requestedUri)) {
+                if (link.equals(requestedUri)) {
                     result.append(template.getProcessedDataValue("navcurrent", this, userObject));
                 } else {
                     result.append(template.getProcessedDataValue("naventry", this, userObject));
