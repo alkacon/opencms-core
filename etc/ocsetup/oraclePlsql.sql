@@ -206,3 +206,5 @@ CREATE INDEX TASKLOG_USERREF ON
 
 CREATE INDEX TASKPAR_REF ON 
   CMS_TASKPAR(REF);
+  
+@/oracleplsql/install_with_db.sql;  
