@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/06/05 14:15:48 $
-* Version: $Revision: 1.74 $
+* Date   : $Date: 2003/06/09 16:34:35 $
+* Version: $Revision: 1.75 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import com.opencms.security.I_CmsPrincipal;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.74 $ $Date: 2003/06/05 14:15:48 $
+ * @version $Revision: 1.75 $ $Date: 2003/06/09 16:34:35 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -3696,7 +3696,7 @@ class CmsShellCommands implements I_CmsConstants {
 				I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
 				if (true) {
 					String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();							
-					System.out.println(pName + ": " + ace.getPermissionString() + " " + ace);
+					System.out.println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
 				}
 			}
 		} catch (Exception e) {
@@ -3719,7 +3719,7 @@ class CmsShellCommands implements I_CmsConstants {
 				I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
 				if (acePrincipal.equals(principal)) {
 					String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();							
-					System.out.println(pName + ": " + ace.getPermissionString() + " " + ace);
+					System.out.println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
 				}
 			}
 		} catch (Exception e) {
@@ -3738,7 +3738,7 @@ class CmsShellCommands implements I_CmsConstants {
     		Enumeration principals = acList.getPrincipals();
 			while (principals.hasMoreElements()) {
 				I_CmsPrincipal p = m_cms.lookupPrincipal((CmsUUID)principals.nextElement()); 
-				System.out.println(p.getName() + ": " + acList.getPermissionString(p));
+				System.out.println(p.getName() + ": " + acList.getPermissions(p).getPermissionString());
 			}
     	} catch (Exception e) {
 			CmsShell.printException(e);    	
@@ -3753,7 +3753,7 @@ class CmsShellCommands implements I_CmsConstants {
 	 */
 	public void getPermissions(String resourceName, String userName){
     	try {
-			System.out.println(CmsAccessControlEntry.toPermissionString(m_cms.getPermissions(resourceName, userName),0,0));
+    		System.out.println(m_cms.getPermissions(resourceName,userName).getPermissionString());
     	} catch (Exception e) {
 			CmsShell.printException(e);    	
 		}    	
@@ -3766,23 +3766,9 @@ class CmsShellCommands implements I_CmsConstants {
 	 */
 	public void getPermissions(String resourceName){
 		try {
-			System.out.println(CmsAccessControlEntry.toPermissionString(m_cms.getPermissions(resourceName),0,0));
+			System.out.println(m_cms.getPermissions(resourceName).getPermissionString());
 		} catch (Exception e) {
 			CmsShell.printException(e);    	
 		}    	
-	}
-	
-	/**
-	 * Checks if the current user has the requestd permissions on the given resource.
-	 * 	 
-	 * @param resourceName
-	 * @param permissionString
-	 */
-	public void checkPermissions(String resourceName, String permissionString){
-		try {
-			System.out.println(m_cms.checkPermissions(resourceName, permissionString));
-		} catch (Exception e) {
-			CmsShell.printException(e);    	
-		}   
 	}
 }
