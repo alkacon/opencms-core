@@ -2,6 +2,9 @@
 <% /* Initialize the Bean */ %>
 <jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" />
 
+<% /* Import packages */ %>
+<%@ page import="com.opencms.boot.*,java.util.*" %>
+
 <%
     
     /* true if properties are initialized */
