@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2002/06/30 21:50:12 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2002/07/23 08:59:07 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.32 $ $Date: 2002/06/30 21:50:12 $
+ * @version $Revision: 1.33 $ $Date: 2002/07/23 08:59:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -149,9 +149,6 @@ public class CmsEditor extends CmsWorkplaceDefault {
         boolean exitRequested = ((action != null) && (C_EDIT_ACTION_EXIT.equals(action)
                 || C_EDIT_ACTION_SAVEEXIT.equals(action)));
 
-        // flag for extended features in the editor, e.g. list of external links
-        I_CmsRegistry registry = cms.getRegistry();
-        boolean extendedNavigation = "on".equals(registry.getSystemValue("extendedNavigation"));
 
         // For further processing we possibly need the encoder
         Encoder enc = new Encoder();
@@ -203,15 +200,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);
         String sectionName = getBrowserSpecificSection(cms, xmlTemplateDocument, parameters);
-
-        // show the button for the link list ?
-        if (templateFile.equalsIgnoreCase(xmlTemplateDocument.C_TEMPLATEPATH+"edit_html_main")) {
-            if (extendedNavigation){
-                xmlTemplateDocument.setData("linklist", xmlTemplateDocument.getProcessedDataValue("linklist_enabled", this));
-            } else {
-                xmlTemplateDocument.setData("linklist", xmlTemplateDocument.getProcessedDataValue("linklist_disabled", this));
-            }
-        }
+        
         // Put the "file" datablock for processing in the template file.
         // It will be inserted in a hidden input field and given back when submitting.
         xmlTemplateDocument.setData(C_PARA_FILE, file);
