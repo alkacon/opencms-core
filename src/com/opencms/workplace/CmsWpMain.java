@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2001/02/06 09:48:07 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2001/02/21 16:50:23 $
+* Version: $Revision: 1.32 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2001/02/06 09:48:07 $
+ * @version $Revision: 1.32 $ $Date: 2001/02/21 16:50:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -78,6 +78,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
         CmsRequestContext reqCont = cms.getRequestContext();
         String newGroup = (String)parameters.get("group");
         String newProject = (String)parameters.get("project");
+System.err.println("mgm---- XXXXXXXXXXXXXXXXXXXXXXXXXXX the project: "+newProject);
         String newView = (String)parameters.get(C_PARA_VIEW);
         CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile,
                 elementName, parameters, templateSelector);
@@ -91,8 +92,10 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 
         // Check if the user requested a project change
         if(newProject != null && !("".equals(newProject))) {
-            if(!(newProject.equals(reqCont.currentProject().getName()))) {
+System.err.println("mgm----  change?  "+Integer.parseInt(newProject) +" "+ reqCont.currentProject().getId());
+            if(!(Integer.parseInt(newProject) == reqCont.currentProject().getId())) {
                 reqCont.setCurrentProject(Integer.parseInt(newProject));
+System.err.println("mgm--------------------------------- setCurrentProject to "+ Integer.parseInt(newProject));
             }
         }
 
@@ -189,6 +192,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
         String currentProject = null;
         Vector allProjects = cms.getAllAccessibleProjects();
         currentProject = reqCont.currentProject().getName();
+        int currentProjectId = reqCont.currentProject().getId();
 
         // Now loop through all projects and fill the result vectors
         int numProjects = allProjects.size();
@@ -199,7 +203,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
             String loopProjectId = loopProject.getId() + "";
             values.addElement(loopProjectId);
             names.addElement(loopProjectName);
-            if(loopProjectName.equals(currentProject)) {
+            if(loopProject.getId() == currentProjectId ) {
 
                 // Fine. The project of this loop is the user's current project. Save it!
                 currentProjectNum = i;
