@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/02/15 18:02:29 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/02/17 18:40:25 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,12 +37,14 @@ import com.opencms.core.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
+import javax.servlet.http.*;
+
 /**
  * Template class for displaying the processed contents of hierachical XML template files
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2000/02/15 18:02:29 $
+ * @version $Revision: 1.13 $ $Date: 2000/02/17 18:40:25 $
  */
 public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -343,6 +345,64 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
 
         return result;
     }
+    
+    /**
+     * Inserts the correct stylesheet into the layout template.
+     * <P>
+     * This method can be called using <code>&lt;METHOD name="getStylesheet"&gt;</code>
+     * in the template file.
+     * <P>
+     * When using this method follwing parameters should be defined
+     * either in the page file or in the template file:
+     * <ul>
+     * <li><code>root.stylesheet-ie</code></li>
+     * <li><code>root.stylesheet-ns</code></li>
+     * </ul>
+     * These parameters should contain the correct OpenCms path
+     * for the Internet Explorer and Netscape Navigate 
+     * specific stylesheets.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getStylesheet(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException {
+
+        // First create a copy of the parameter hashtable
+        Hashtable parameterHashtable = (Hashtable)((Hashtable)userObject).clone();
+
+        CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile)doc;
+        
+        // Get the styles from the parameter hashtable
+        String styleIE = (String)parameterHashtable.get("root.stylesheet-ie");
+        String styleNS = (String)parameterHashtable.get("root.stylesheet-ns");
+                
+        if(styleIE == null) {
+            styleIE = templateFile.getParameter("root", "stylesheet-ie");
+        }
+
+        if(styleNS == null) {
+            styleNS = templateFile.getParameter("root", "stylesheet-ns");
+        }
+        
+        // TODO: Check if the parameters really exist
+        
+        HttpServletRequest req = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
+        String servletPath = req.getServletPath() + "/";
+
+        // Get the user's browser
+        String browser = req.getHeader("user-agent");                
+        if(browser.indexOf("MSIE") >-1) {
+			return servletPath + styleIE;
+		} else {
+			return servletPath + styleNS;
+		}
+            
+    }  
     
     /**
      * For debugging purposes only.
