@@ -29,145 +29,118 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Indicates if the text of the editor window is already set
-var textSetted = false;
-var isLedit = false;
+// Indicates if the content of the editor window is already set
+var contentSetted = false;
 
 // loads the file content into the editor
-function setText() {
+function initContent() {
 	// setting text can not be done now here for the text editor.
 	// MS IE 5 has problems with setting text when the editor control is
 	// not loaded. 
 	// Workaround: focus() the text editor here and set the text
 	// using the onFocus event of the editor.
-	if(document.forms.EDITOR.edit1) document.forms.EDITOR.edit1.focus();
+	document.getElementById("edit1").innerText = decodeURIComponent(text);
 }
 
-// load the file content into the editor. this is called by the onFocus event of the edit control
-function setTextDelayed() {
-	var classid = "" + document.EDITOR.edit1.classid;
-	isLedit = (classid.indexOf("EB3A74C0") >= 0);
-	if(! textSetted) {
-		if (isLedit) {
-			document.EDITOR.edit1.Text = decodeURIComponent(text);
-			document.EDITOR.edit1.ClearModify(2);
-		} else {
-		document.EDITOR.edit1.value = decodeURIComponent(text);
-		}
-		textSetted = true;
-	}
-}
-
-
-function doSubmit() {
-	if(isLedit) {
-		document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.Text);
-	} else {
-		document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.value);
-	}
-}
-
-function doNsEdit(para) {
-	switch(para) {
-	case 1:
-		document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.value);
-		document.EDITOR.action.value = "exit";
-		document.EDITOR.target = "_top";
-		document.EDITOR.submit();
-		break;
-	case 2:
-		document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.value);
-		document.EDITOR.action.value = "saveexit";
-		document.EDITOR.target = "_top";
-		document.EDITOR.submit();
-		break;
-	case 3:
-		document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.value);
-		document.EDITOR.action.value = "save";
-		document.EDITOR.target = "_self";
-		document.EDITOR.submit();
-		break;
-	case 55:
-		document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.value);
-		document.EDITOR.action.value = "saveaction";
-		document.EDITOR.target = "_top";
-		document.EDITOR.submit();
-		break;
-	}
+function saveContent() {
+	document.EDITOR.content.value = encodeURIComponent(document.getElementById("edit1").innerText);
 }
 
 function doEdit(para) {
+	document.getElementById("edit1").focus();
+	var _form = document.EDITOR;
 	switch(para) {
 	case 1:
-		doSubmit();
-		document.EDITOR.action.value = "exit";
-		document.EDITOR.target = "_top";
-		document.EDITOR.submit();
+		saveContent();
+		_form.action.value = "exit";
+		_form.target = "_top";
+		_form.submit();
 		break;
 	case 2:
-		doSubmit();
-		document.EDITOR.action.value = "saveexit";
-		document.EDITOR.target = "_top";
-		document.EDITOR.submit();
-		break;
-	case SAVEACTION:
-		doSubmit();
-		document.EDITOR.action.value = "saveaction";
-		document.EDITOR.target = "_top";
-		document.EDITOR.submit();
+		saveContent();
+		_form.action.value = "saveexit";
+		_form.target = "_top";
+		_form.submit();
 		break;
 	case 3:
-		doSubmit();
-		document.EDITOR.action.value = "save";
-		document.EDITOR.target = "_self";
-		document.EDITOR.submit();
+		saveContent();
+		_form.action.value = "save";
+		_form.target = "_self";
+		_form.submit();
 		break;
 	case 4:
-		document.all.edit1.Undo();
-		break;  
+		saveContent();
+		_form.action.value = "saveaction";
+		_form.target = "_top";
+		_form.submit();
+		break;
 	case 5:
-		document.all.edit1.Redo();
+		undo();
 		break;  
 	case 6:
-		document.all.edit1.ShowFindDialog();
-		break;
+		redo();
+		break;    
 	case 7:
-		document.all.edit1.ShowReplaceDialog();
+		cut();
 		break;
 	case 8:
-		document.all.edit1.ShowGotoLineDialog();
-		break;  
+		copy();
+		break;
 	case 9:
-		document.all.edit1.CutToClipboard();
-		break;
-	case 10:
-		document.all.edit1.CopyToClipboard();
-		break;
-	case 11:
-		document.all.edit1.PasteFromClipboard();
-		break;
-	case 12:
-		document.all.edit1.OpenFile();
-		break;
-	case 13:
-		document.all.edit1.SaveFile();
-		break;
-	case 14:
-		document.all.edit1.SaveFileAs();
-		break;
-	case 15:
-		document.all.edit1.PrintText();
-		break;
-	case 16:
-		// dummy tag for help
+		paste();
 		break;
 	default:
 		alert("Sorry, the requested function " + para + " is not implemented.");
 		break;  
 	}   
-	document.EDITOR.edit1.focus();
 }
 
+function sendCtrlZ() {
+  var evtObj = document.createEventObject();
+  //var str = 'Z';
+  evtObj.ctrlKey = true;
+  evtObj.keyCode = 26;
+  //evtObj.keyCode = str.charCodeAt(0);
+  document.fireEvent("onkeypress",evtObj);
+  event.cancelBubble = true;
+}
+
+
+function undo() {
+	// sendCtrlZ();
+    document.execCommand("Undo");   
+}
+
+function redo() {
+    document.execCommand("Redo");   
+}
+
+function cut() {
+    document.execCommand("Cut");   
+}
+
+function copy() {
+    document.execCommand("Copy");   
+}
+
+function paste() {
+	document.getElementById("edit1").setActive();
+	document.getElementById("edit1").selection = document.selection.createRange();
+    document.getElementById("edit1").selection.execCommand("Paste");   
+}
+
+function checkTab() {
+    // cache the selection
+    document.getElementById("edit1").selection =	document.selection.createRange(); 
+    setTimeout("processTab()", 0);
+}
+
+function processTab() {
+  // insert tab character in place of cached selection
+  document.getElementById("edit1").selection.text = String.fromCharCode(9);
+  // set the focus
+  document.getElementById("edit1").focus();
+}
 
 // This is not used on the code editor, but must be there since it is called on onLoad() event
 function initStyles() {

@@ -6993,25 +6993,6 @@
 		<accesscontrol/>
 	</file>
 	<file>
-		<source>system/workplace/jsp/editors/msdhtml/form_ns.txt</source>
-		<destination>system/workplace/jsp/editors/msdhtml/form_ns.txt</destination>
-		<type>plain</type>
-		<uuidresource>bfa90602-1c31-11d8-83e0-c6eb9ef4138f</uuidresource>
-		<uuidcontent>bfa90603-1c31-11d8-83e0-c6eb9ef4138f</uuidcontent>
-		<datelastmodified>1070889221000</datelastmodified>
-		<userlastmodified>Admin</userlastmodified>
-		<datecreated>1069426100000</datecreated>
-		<usercreated>Admin</usercreated>
-		<flags>0</flags>
-		<properties>
-			<property>
-				<name>Title</name>
-				<value><![CDATA[Text editor part for Netscape]]></value>
-			</property>
-		</properties>
-		<accesscontrol/>
-	</file>
-	<file>
 		<source>system/workplace/jsp/editors/msdhtml/form_text.txt</source>
 		<destination>system/workplace/jsp/editors/msdhtml/form_text.txt</destination>
 		<type>plain</type>

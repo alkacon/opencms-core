@@ -2,27 +2,19 @@
 <%= wp.buttonBarStartTab(0, 5) %>
 <%
 if (options.showElement("button.customized")) {%>
-	<td><%= wp.buttonActionDirectEdit("doEdit(55);", buttonStyle) %></td><%
+	<td><%= wp.buttonActionDirectEdit("doEdit(4);", buttonStyle) %></td><%
 }
 %>
 <%= wp.button("javascript:doEdit(2);", null, "save_exit", "button.saveclose", buttonStyle) %>
 <%= wp.button("javascript:doEdit(3);", null, "save", "button.save", buttonStyle) %>
+<%--<%= wp.buttonBarSeparator(5, 5) %>
+<%= wp.button("javascript:doEdit(5);", null, "undo", "button.undo", buttonStyle) %>
+<%= wp.button("javascript:doEdit(6);", null, "redo", "button.redo", buttonStyle) %>--%>
 <%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:doEdit(4);", null, "undo", "button.undo", buttonStyle) %>
-<%= wp.button("javascript:doEdit(5);", null, "redo", "button.redo", buttonStyle) %>
-<%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:doEdit(6);", null, "editorsearch", "button.search", buttonStyle) %>
-<%= wp.button("javascript:doEdit(7);", null, "replace", "button.replace", buttonStyle) %>
-<%= wp.button("javascript:doEdit(8);", null, "goto", "button.goto", buttonStyle) %>
-<%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:doEdit(9);", null, "cut", "button.cut", buttonStyle) %>
-<%= wp.button("javascript:doEdit(10);", null, "copy", "button.copy", buttonStyle) %>
-<%= wp.button("javascript:doEdit(11);", null, "paste", "button.paste", buttonStyle) %>
+<%= wp.button("javascript:doEdit(7);", null, "cut", "button.cut", buttonStyle) %>
+<%= wp.button("javascript:doEdit(8);", null, "copy", "button.copy", buttonStyle) %>
+<%= wp.button("javascript:doEdit(9);", null, "paste", "button.paste", buttonStyle) %>
 <%			
-if (options.showElement("button.print")) {%>
-	<%= wp.buttonBarSeparator(5, 5) %>
-	<%= wp.button("javascript:doEdit(15);", null, "print", "button.print", buttonStyle) %><%
-}
 if (wp.isHelpEnabled()) {%>
 	<%= wp.buttonBarSeparator(5, 5) %>
 	<%= wp.button("javascript:treewin=opensmallwin(workplacePath + 'help/" + wp.getLocale() + "/" + wp.key("help.pageeditor") + "', '" + wp.key("button.help") + "', 600, 450);treewin.focus();", null, "help", "button.help", buttonStyle) %><%
@@ -36,62 +28,4 @@ if (wp.isHelpEnabled()) {%>
 <tr>
 <tr>
 	<td class="texteditor" height="100%" width="100%">
-		<OBJECT classid="clsid:EB3A74C0-5343-101D-BB4D-040224009C02" width="100%" height="100%" id="edit1" name="edit1" onFocus="setTextDelayed();">
-			<PARAM NAME="_StockProps" VALUE="125">
-			<PARAM NAME="Text" VALUE="Loading .....">
-			<PARAM NAME="ForeColor" VALUE="0">
-			<PARAM NAME="BackColor" VALUE="16777215">
-			<PARAM NAME="BorderStyle" VALUE="1">
-			<PARAM NAME="Enabled" VALUE="-1">
-			<PARAM NAME="AutoIndent" VALUE="-1">
-			<PARAM NAME="BackColorSelected" VALUE="8388608">
-			<PARAM NAME="BookmarksMax" VALUE="16">
-			<PARAM NAME="CanChangeFile" VALUE="0">
-			<PARAM NAME="CanChangeFont" VALUE="0">
-			<PARAM NAME="CaretWidth" VALUE="0">
-			<PARAM NAME="DefaultSelection" VALUE="-1">
-			<PARAM NAME="ExtraComments" VALUE="0">
-			<PARAM NAME="Item2AsComment" VALUE="0">
-			<PARAM NAME="UnixStyleSave" VALUE="0">
-			<PARAM NAME="CurrentWordAsText" VALUE="0">
-			<PARAM NAME="MultilineItems" VALUE="0">
-			<PARAM NAME="MultilineStrings" VALUE="0">
-			<PARAM NAME="SinglelineStrings" VALUE="0">
-			<PARAM NAME="ExtraHorzSpacing" VALUE="3">
-			<PARAM NAME="ExtraVertSpacing" VALUE="0">
-			<PARAM NAME="FileMask" VALUE="/All Files/*.*/">
-			<PARAM NAME="FileName" VALUE="+">
-			<PARAM NAME="ForeColorSelected" VALUE="16777215">
-			<PARAM NAME="HasFile" VALUE="-1">
-			<PARAM NAME="HasMenu" VALUE="0">
-			<PARAM NAME="Highlight" VALUE="0">
-			<PARAM NAME="InsertMode" VALUE="1">
-			<PARAM NAME="ScrollBars" VALUE="3">
-			<PARAM NAME="Syntax" VALUE="">
-			<PARAM NAME="PaintMode" VALUE="0">
-			<PARAM NAME="TabStopSize" VALUE="4">
-			<PARAM NAME="ReadOnly" VALUE="0">
-			<PARAM NAME="UndoDepth" VALUE="-1">
-			<PARAM NAME="InitializeType" VALUE="0">
-			<PARAM NAME="GroupNumber" VALUE="0">
-			<PARAM NAME="StartInComments" VALUE="0">
-			<PARAM NAME="MacStyleSave" VALUE="0">
-			<PARAM NAME="WantTab" VALUE="-1">
-			<PARAM NAME="WordWrap" VALUE="0">
-			<PARAM NAME="WordWrapAuto" VALUE="-1">
-			<PARAM NAME="WordWrapRMargin" VALUE="0">
-			<PARAM NAME="WordWrapWidth" VALUE="0">
-			<PARAM NAME="NoPrintDialog" VALUE="0">
-			<PARAM NAME="NoPrintProgress" VALUE="0">
-			<PARAM NAME="WrapKeys" VALUE="0">
-			<PARAM NAME="BackColorPrint" VALUE="16777215">
-			<PARAM NAME="PrintJobName" VALUE="Document">
-			<PARAM NAME="ZeroSubstitute" VALUE="0">
-		</OBJECT>
-		<script type="text/javascript">
-		<!--
-			if (document.edit1 != true) {
-				loadSimple = true;		
-			}
-		// -->
-		</script>
+		<textarea id="edit1" name="edit1" style="width:100%; height:100%; background-color: #ffffff; font-family: 'Fixedsys'; margin:0px; padding:0px;"></textarea>

@@ -225,7 +225,7 @@ function checkPopup() {
 }
 
 
-function doSubmit() {
+function saveContent() {
 	var _form = document.EDITOR;
 	var _editor = _form.EDIT_HTML;
 	if (_editor.DOM.documentElement) {
@@ -247,29 +247,29 @@ function doEditHTML(para) {
 		// exit
 		_form.action.value = "exit";
 		_form.target = "_top";
-		doSubmit();
+		saveContent();
 		_form.submit();
 		break;
 	case 2:
 		// save & exit
-	        _form.action.value = "saveexit";
-	        _form.target = "_top";
-	        doSubmit();
-	        _form.submit();
+	    _form.action.value = "saveexit";
+	    _form.target = "_top";
+	    saveContent();
+	    _form.submit();
 		break;
 	case 3:
 		// exit
-	        _form.action.value = "save";
-	        _form.target = "_self";
-	        doSubmit();
-	        _form.submit();
+	    _form.action.value = "save";
+	    _form.target = "_self";
+	    saveContent();
+	    _form.submit();
 		break;
 	case 55:
 		// save and reload top
-	        _form.action.value = "saveaction";
-	        _form.target = "_top";
-	        doSubmit();
-	        _form.submit();
+	    _form.action.value = "saveaction";
+	    _form.target = "_top";
+	    saveContent();
+	    _form.submit();
 		break;
 	case 4:
 		// undo
@@ -447,7 +447,7 @@ function doEditHTML(para) {
 }
 
 // Includes the document source into the HTML editor and sets up the context menue
-function setText() {
+function initContent() {
 	document.EDITOR.EDIT_HTML.SourceCodePreservation = true;
 	document.EDITOR.EDIT_HTML.DocumentHTML = decodeURIComponent(text);
 	GeneralContextMenu[0] = new ContextMenuItem(LANG_CUT, DECMD_CUT);

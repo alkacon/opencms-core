@@ -33,124 +33,110 @@
 // Script for simple page editor
 //------------------------------------------------------//
 
-// Definition of constants
-var CLOSE=1;
-var SAVECLOSE=2;
-var SAVE=3;
-var SAVEACTION=55;
-
 // dialog windows
 var dialogElementWindow = null;
 var dialogPropertyWindow = null;
 
-// Indicates if the text of the editor window is already set
-var textSetted = false;
+// Indicates if the content of the editor window is already set
+var contentSetted = false;
 
 // loads the file content into the editor
-function setText()
+function initContent()
 {
     // setting text can not be done now here for the text editor.
-    // MS IE 5 has problems with setting text when the editor control is
+    // MS IE 5 has problems with setting text when the editor textarea is
     // not loaded. 
     // Workaround: focus() the text editor here and set the text
-    // using the onFocus event of the editor.
+    // using the onFocus event of the textarea.
 
     if (document.forms.EDITOR.edit1) document.forms.EDITOR.edit1.focus();
 }
 
-// load the file content into the editor. this is called by the onFocus event of the edit control
-function setTextDelayed()
+// load the file content into the editor. This is called by the onFocus event of the edit textarea
+function initContentDelayed()
 {
-	if(!textSetted) {
-        document.EDITOR.edit1.value = decodeURIComponent(text);
-		textSetted = true;
+	if(!contentSetted) {
+        document.EDITOR.edit1.value = decodeURIComponent(__content);
+		contentSetted = true;
 	}
 }
 
-function doSubmit() {
-    // We have to do a blur on the textarea here. otherwise netscape may have problems with reading the value
-    document.EDITOR.edit1.blur();
+// saves the editors contents
+function saveContent() {
+	// we have to do a blur on the textarea here. Otherwise Netscape may have problems with reading the value
+	document.EDITOR.edit1.blur();
     document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.value);
 }
 
-// Function action on button click for Netscape Navigator
-function doNsEdit(para) {
-    switch(para)
-    {
+// action on button click 
+function buttonAction(para) {
+	var _form = document.EDITOR;
+	_form.action.value = "";
+    switch (para) {
     case 1:
-    {
-        document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.value);
-        document.EDITOR.action.value = "exit";
-        document.EDITOR.target = "_top";
-        document.EDITOR.submit();
+        // reload the editor
+    	saveContent();
+        _form.action.value = "show";
+        _form.target = "_self";
+        _form.submit();
         break;
-    }
     case 2:
-    {
-        document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.value);
-        document.EDITOR.action.value = "saveexit";
-        document.EDITOR.target = "_top";
-        document.EDITOR.submit();
+        // preview selected 
+    	saveContent();
+        _form.action.value = "preview";
+        _form.target = "PREVIEW";
+        _form.submit();
         break;
-    }
     case 3:
-    {
-        document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.value);
-        document.EDITOR.action.value = "save";
-        document.EDITOR.target = "_self";
-        document.EDITOR.submit();
+        // change element
+    	saveContent();
+        _form.action.value = "changeelement";
+        _form.target = "_self";
+        _form.submit();
+        break;
+    case 4:
+        // open elements window
+    	saveContent();
+        dialogElementWindow = window.open("about:blank","DIALOGELEMENT","width=320,height=250,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
+        document.ELEMENTS.submit();
+        dialogElementWindow.focus();
+        break;      
+    case 5:
+        // open properties window
+    	saveContent();
+        dialogPropertyWindow = window.open("about:blank","DIALOGPROPERTY","width=600,height=280,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
+        document.PROPERTIES.submit();
+        dialogPropertyWindow.focus();
+        break;
+    case 6:
+    	// exit without saving 
+    	saveContent();
+        _form.action.value = "exit";
+        _form.target = "_top";
+        _form.submit();
+        break;
+    case 7:
+    	// save and exit
+    	saveContent();
+        _form.action.value = "saveexit";
+        _form.target = "_top";
+        _form.submit();
+        break;
+    case 8:
+    	// save
+    	saveContent();
+        _form.action.value = "save";
+        _form.target = "_self";
+        _form.submit();
+        break;
+    case 9:
+    	// save and reload top editor frame
+    	saveContent();
+        _form.action.value = "saveaction";
+        _form.target = "_top";
+        _form.submit();
         break;
     }
-    case SAVEACTION:
-    {
-        document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.value);
-        document.EDITOR.action.value = "saveaction";
-        document.EDITOR.target = "_top";
-        document.EDITOR.submit();
-        break;
-    }
-    }
-}
-
-// which button is clicked
-function doTemplSubmit(para) {
-	document.EDITOR.action.value = "";
-	switch (para)
-	{
-	case 1:
-		// reload the editor
-		doSubmit();
-		document.EDITOR.action.value = "show";
-		document.EDITOR.target = "_self";
-		document.EDITOR.submit();
-		break;
-	case 2:
-		// preview selected	
-		doSubmit();		
-		document.EDITOR.action.value = "preview";
-		document.EDITOR.target = "PREVIEW";
-		document.EDITOR.submit();
-		break;
-	case 3:
-		// change body;
-		doSubmit();
-		document.EDITOR.action.value = "changeelement";
-		document.EDITOR.target = "_self";
-		document.EDITOR.submit();
-		break;
-	case 4:
-		// open elements window;
-		dialogElementWindow = window.open("about:blank","DIALOGELEMENT","width=320,height=250,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
-		document.ELEMENTS.submit();
-		dialogElementWindow.focus();
-		break;		
-	case 5:
-		// open properties window;
-		dialogPropertyWindow = window.open("about:blank","DIALOGPROPERTY","width=600,height=280,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
-		document.PROPERTIES.submit();
-		dialogPropertyWindow.focus();
-		break;
-	}
 }
 
 function deleteEditorContent(bodyName, language) {
@@ -162,9 +148,9 @@ function deleteEditorContent(bodyName, language) {
 function changeBody(bodyName, language) {
 	if (bodyName != document.EDITOR.bodyname.value && language == document.EDITOR.bodylanguage.value) {
 		document.EDITOR.bodyname.value = bodyName;
-		doTemplSubmit(3);	
+		buttonAction(3);	
 	} else {
-		doTemplSubmit(1);
+		buttonAction(1);
 	}
 }
 
