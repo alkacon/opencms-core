@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsContent.java,v $
- * Date   : $Date: 2000/06/29 12:35:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/06/30 07:32:54 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,14 +34,7 @@ package com.opencms.template;
  * Classes for each customized content type have to be implemetented.
  * 
  * @author Mario Stanke
- * @version $Revision: 1.1 $ $Date: 2000/06/29 12:35:20 $
+ * @version $Revision: 1.2 $ $Date: 2000/06/30 07:32:54 $
  */
-public interface I_CmsContent extends Cloneable {
-     
-    /**
-     * Creates a clone of this object.
-     * @return cloned object
-     * @exception CloneNotSupportedException
-     */
-    public Object clone() throws CloneNotSupportedException;
+public interface I_CmsContent extends Cloneable { 
 }
