@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbImportFiles.java,v $
- * Date   : $Date: 2000/03/24 14:33:59 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/03/31 09:13:41 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.template.*;
  * imports an generated (with db export) XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.13 $ $Date: 2000/03/24 14:33:59 $
+ * @version $Revision: 1.14 $ $Date: 2000/03/31 09:13:41 $
  */
 class CmsDbImportFiles implements I_CmsConstants {
 	
@@ -295,23 +295,39 @@ class CmsDbImportFiles implements I_CmsConstants {
 	 */
 	private byte[] readContent(String s_content) {
 		
-		byte[] fContent=new byte[(s_content.length()/2)];
-		
 		Vector v_erg= new Vector();
 		int sl=(s_content.length())-1;
 		int i, code, erg;
 		
 		for(i=0; i<sl; i+=2) {
-			 char sh1=s_content.charAt(i);
-			 char sh0=s_content.charAt(i+1);
-			 code= decodeHex(sh1);
-			 erg=code*16;
-			 code= decodeHex(sh0);
-			 erg= (erg+code)-128;
-			 v_erg.addElement(Integer.toString(erg));
+			char sh1=s_content.charAt(i);
+			
+			// is it a valig hex-char?
+			while( ! isValidHexChar(sh1) ) {
+				// no, get the next one!
+				i++;
+				sh1=s_content.charAt(i);
+			}
+
+			char sh0=s_content.charAt(i+1);
+			
+			// is it a valig hex-char?
+			while( ! isValidHexChar(sh0) ) {
+				// no, get the next one!
+				i++;
+				sh0=s_content.charAt(i+1);
+			}
+			
+			code= decodeHex(sh1);
+			erg=code*16;
+			code= decodeHex(sh0);
+			erg= (erg+code)-128;
+			v_erg.addElement(Integer.toString(erg));
 		}
 
 		sl=v_erg.size();
+		
+		byte[] fContent=new byte[sl];
 		
 		for(i=0; i<sl; i++) {
 			fContent[i]=(byte)Integer.parseInt( v_erg.elementAt(i).toString());	
@@ -373,6 +389,19 @@ class CmsDbImportFiles implements I_CmsConstants {
 	}
 	// end decodeHex
 	
-			
+	/**
+	 * Checks, if this is a valid hex-char
+	 * @param c The char to check.
+	 * @return whether it is a valid char, or not.
+	 */
+	private boolean isValidHexChar(char c) {
+		if( ( (c >= '0') && ( c <= '9') ) || 
+			( (c >= 'a') && ( c <= 'f') ) || 
+			( (c >= 'A') && ( c <= 'F') ) ) {
+			return true;
+		} else {
+			return false;
+		}
+	}			
 }
  //end class

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbExportFile.java,v $
- * Date   : $Date: 2000/03/27 16:22:10 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/03/31 09:13:41 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.template.*;
  * Exports Files from database into XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.6 $ $Date: 2000/03/27 16:22:10 $
+ * @version $Revision: 1.7 $ $Date: 2000/03/31 09:13:41 $
  */
 
 class CmsDbExportFile implements I_CmsConstants {
@@ -157,7 +157,7 @@ class CmsDbExportFile implements I_CmsConstants {
 		Enumeration fifenum=filesinfolder.elements();
 		while (fifenum.hasMoreElements()) {
 			CmsFile fif=(CmsFile)fifenum.nextElement();
-			System.out.print("Exporting: " + fif.getName());
+			System.out.println("Exporting: " + fif.getName());
 			System.out.flush();
 			m_newElement= m_docXml.createElement(C_TFILEOBJ);
 			m_firstElement.appendChild(m_newElement);
@@ -169,7 +169,7 @@ class CmsDbExportFile implements I_CmsConstants {
 		Enumeration sfenum=subfolders.elements();
 		while (sfenum.hasMoreElements()) {
 			CmsFolder sf=(CmsFolder)sfenum.nextElement();
-			System.out.print("Exporting: " + sf.getAbsolutePath());
+			System.out.println("Exporting: " + sf.getAbsolutePath());
 			System.out.flush();
 			fileExport(sf.getAbsolutePath(), parentName+sf.getName());
 		}
@@ -296,6 +296,7 @@ class CmsDbExportFile implements I_CmsConstants {
 			int i=0;
 			int l=fcontent.length;
 			StringBuffer content=new StringBuffer();
+			int breakCounter = 0;
 			
 			for(i=0; i<l; i++) {
 				value=Integer.parseInt(String.valueOf(fcontent[i]));
@@ -306,6 +307,11 @@ class CmsDbExportFile implements I_CmsConstants {
 				}
 				
 				content.append(shelp);
+				breakCounter ++;
+				if(breakCounter > 60) {
+					breakCounter = 0;
+					content.append("\n");
+				}
 			}
 			
 			m_newElement=m_docXml.createElement(C_FCONTENT);
