@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/04/02 16:59:28 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/04/05 05:44:19 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 public class CmsLinkManager {
     
@@ -90,6 +90,7 @@ public class CmsLinkManager {
      */
     public static String getAbsoluteUri(String relativeUri, String baseUri) {
         if ((relativeUri == null) || (relativeUri.charAt(0) == '/')) {
+            // uri is null or already absolute
             return relativeUri;
         }
         try {
@@ -97,7 +98,11 @@ public class CmsLinkManager {
             if (url.getQuery() == null) {
                 return url.getPath();
             } else {
-                return url.getPath() + "?" + url.getQuery();
+                StringBuffer result = new StringBuffer(url.getPath().length() + url.getQuery().length() + 2);
+                result.append(url.getPath());
+                result.append('?');
+                result.append(url.getQuery());
+                return result.toString();
             }
         } catch (MalformedURLException e) {
             return relativeUri;
@@ -306,7 +311,7 @@ public class CmsLinkManager {
                 CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
                 cms.getRequestContext().setSiteRoot(cmsParam.getRequestContext().getSiteRoot());
                 // let's look up export property in VFS
-                String exportValue = cms.readProperty(vfsName, I_CmsConstants.C_PROPERTY_EXPORT, true);
+                String exportValue = cms.readPropertyObject(vfsName, I_CmsConstants.C_PROPERTY_EXPORT, true).getValue();
                 if (exportValue == null) {
                     // no setting found for "export" property
                     if (OpenCms.getStaticExportManager().getExportPropertyDefault()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/03/29 10:39:53 $
- * Version: $Revision: 1.109 $
+ * Date   : $Date: 2004/04/05 05:40:34 $
+ * Version: $Revision: 1.110 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.109 $
+ * @version $Revision: 1.110 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -302,7 +302,7 @@ public final class OpenCmsCore {
             if (resource.isFolder()) {
                 // the resource is a folder, check if C_PROPERTY_DEFAULT_FILE is set on folder
                 try {                
-                    String defaultFileName = cms.readProperty(CmsResource.getFolderPath(cms.readAbsolutePath(resource)), I_CmsConstants.C_PROPERTY_DEFAULT_FILE);
+                    String defaultFileName = cms.readPropertyObject(CmsResource.getFolderPath(cms.readAbsolutePath(resource)), I_CmsConstants.C_PROPERTY_DEFAULT_FILE, false).getValue();
                     if (defaultFileName != null) {
                         // property was set, so look up this file first
                         String tmpResourceName = CmsResource.getFolderPath(cms.readAbsolutePath(resource)) + defaultFileName;
