@@ -105,7 +105,7 @@ wp.setParamAction("secure");
       if(CmsSiteManager.getCurrentSite(wp.getCms()).hasSecureServer()) { 
       %>
 
-        <td><%= wp.key("input.secure") %>&nbsp;</td>
+        <td style="white-space:nowrap;"><%= wp.key("input.secure") %>&nbsp;</td>
         <td>
           <%= wp.buildRadio(I_CmsConstants.C_PROPERTY_SECURE) %>
         </td>
@@ -119,13 +119,20 @@ wp.setParamAction("secure");
       <% } %>
       </tr>
 
+      <% 
+      // folders can not be marked as secure 
+      if(!wp.getCms().readResource(wp.getParamResource()).isFolder()) {
+      %>
+      
       <tr>
-        <td><%= wp.key("input.intern") %>&nbsp;</td>
+        <td style="white-space:nowrap;"><%= wp.key("input.intern") %>&nbsp;</td>
         <td class="maxwidth" style="padding-left: 5px;">
           <input type="checkbox" id="intern" name="intern" value="true" style="text-align:left" onclick="checkNoSecureNorExport()" <%= Boolean.valueOf(wp.readInternProp()).booleanValue() ? "checked=\"checked\"" : "" %>>
           </td>
          
       </tr>
+      
+      <% } %>      
 
     </table>
 
@@ -142,14 +149,14 @@ wp.setParamAction("secure");
     <table border="0">
 
       <tr>
-        <td><%= wp.key("input.export") %>&nbsp;</td>
+        <td style="white-space:nowrap;"><%= wp.key("input.export") %>&nbsp;</td>
         <td>
           <%= wp.buildRadio(I_CmsConstants.C_PROPERTY_EXPORT) %>
         </td>
       </tr>
     
       <tr>
-        <td><%= wp.key("input.exportname") %>&nbsp;</td>
+        <td style="white-space:nowrap;"><%= wp.key("input.exportname") %>&nbsp;</td>
 
         <td class="maxwidth" style="padding-left: 5px;">
           <input type="text" id="exportname" name="exportname" class="maxwidth" value="<%= wp.readProperty(I_CmsConstants.C_PROPERTY_EXPORTNAME) %>">
