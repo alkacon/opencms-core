@@ -14,6 +14,7 @@ OpenCms 4.3.22 Bela Tegeuse -
   actions. You have to get the new registry.xml and the new cmssetup.txt.
 ! The launchernames are stored in the registry.xml
 * Bugfixing in PL/SQL-Procedures for access
+* Bug fixed in online-help. The index is now displayed correct.
 
 OpenCms 4.3.21 Bela Tegeuse - 28 June 2001
 * General Bugfixing
