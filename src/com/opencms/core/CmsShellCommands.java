@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/06/25 16:17:35 $
-* Version: $Revision: 1.81 $
+* Date   : $Date: 2003/06/26 15:32:22 $
+* Version: $Revision: 1.82 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.81 $ $Date: 2003/06/25 16:17:35 $
+ * @version $Revision: 1.82 $ $Date: 2003/06/26 15:32:22 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -1427,14 +1427,13 @@ class CmsShellCommands implements I_CmsConstants {
      * E.g. <code>&lt;system&gt;&lt;mailserver&gt;mail.server.com&lt;/mailserver&gt;&lt;/system&gt;</code>
      * can be requested via <code>getSystemValue("mailserver");</code> and returns "mail.server.com.
      *
-     * @param String the key of the system-value.
+     * @param key the key of the system-value
      */
     public void getSystemValue(String key) {
         try {
             I_CmsRegistry reg = m_cms.getRegistry();
             System.out.println(reg.getSystemValue(key));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1442,7 +1441,7 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * Returns all values for a system-key.
      *
-     * @param String the key of the system-value.
+     * @param sysKey the key of the system-value.
      */
     public void getSystemValues(String sysKey) {
         try {
@@ -1453,8 +1452,7 @@ class CmsShellCommands implements I_CmsConstants {
                 Object key = keys.nextElement();
                 System.out.println(key + "->" + res.get(key));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1468,8 +1466,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void getTaskPar(String taskid, String parname) {
         try {
             System.out.println(m_cms.getTaskPar(Integer.parseInt(taskid), parname));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1482,8 +1479,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void getTaskType(String taskname) {
         try {
             System.out.println(m_cms.getTaskType(taskname));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1497,8 +1493,7 @@ class CmsShellCommands implements I_CmsConstants {
             for(int i = 0;i < users.size();i++) {
                 System.out.println((CmsUser)users.elementAt(i));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1514,8 +1509,7 @@ class CmsShellCommands implements I_CmsConstants {
             for(int i = 0;i < users.size();i++) {
                 System.out.println((CmsUser)users.elementAt(i));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1531,16 +1525,19 @@ class CmsShellCommands implements I_CmsConstants {
             for(int i = 0;i < users.size();i++) {
                 System.out.println((CmsUser)users.elementAt(i));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
 
     /**
-     * Returns all groups of a user.
+     * Returns all users matchin the given criteria.
      *
-     * @param groupname The name of the group.
+     * @param Lastname		the lastname of the users
+     * @param userType		either "systemuser" or "webuser"
+     * @param userStatus	either "enabled" or "disabled"
+     * @param wasLoggedIn	"never" or "once" or "whatever"
+     * @param nMax			maximum number of user entries to return
      */
     public void getUsersByLastname(String Lastname, String userType,
                                    String userStatus, String wasLoggedIn,
@@ -1595,16 +1592,13 @@ class CmsShellCommands implements I_CmsConstants {
             for(int i = 0;i < users.size();i++) {
                 System.out.println((CmsUser)users.elementAt(i));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
 
     /**
-     * Imports a module into the cms.
-     *
-     * @param moduleZip The file-name of module to import.
+     * Returns the mapping of views to actions.
      */
     public void getViews() {
         try {
@@ -1615,8 +1609,7 @@ class CmsShellCommands implements I_CmsConstants {
             for(int i = 0;i < max;i++) {
                 System.out.println(views.elementAt(i) + " -> " + urls.elementAt(i));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1637,13 +1630,12 @@ class CmsShellCommands implements I_CmsConstants {
      * Prints signature of all possible commands containing a certain string.<br>
      * May also be used to print signature of a specific command by giving full command name.
      *
-     * @param String The String to search for in the commands
+     * @param searchString The String to search for in the commands
      */
     public void help(String searchString) {
         if(searchString.equals("help")) {
             printHelpText();
-        }
-        else {
+        } else {
             Method meth[] = getClass().getMethods();
             for(int z = 0;z < meth.length;z++) {
                 if((meth[z].getDeclaringClass() == getClass()) && (meth[z].getModifiers() == Modifier.PUBLIC)
@@ -1659,10 +1651,9 @@ class CmsShellCommands implements I_CmsConstants {
      * it to the OpenCms system.
      * Used in the OpenCms console only.
      *
-     * @author Alexander Lucas
      * @param filename Local file to be uploaded.
      * @return Byte array containing the file content.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     private byte[] importFile(String filename) throws CmsException {
         File file = null;
@@ -1673,8 +1664,7 @@ class CmsShellCommands implements I_CmsConstants {
         // First try to load the file
         try {
             file = new File(filename);
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             file = null;
         }
         if(file == null) {
@@ -1690,8 +1680,7 @@ class CmsShellCommands implements I_CmsConstants {
             importInput = new FileInputStream(file);
             importInput.read(result);
             importInput.close();
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             throw new CmsException(e.toString(), CmsException.C_UNKNOWN_EXCEPTION);
         }
         return result;
@@ -1708,8 +1697,7 @@ class CmsShellCommands implements I_CmsConstants {
         // import the resources
         try {
             m_cms.importFolder(importFile, importPath);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1727,8 +1715,7 @@ class CmsShellCommands implements I_CmsConstants {
             for(int i = 0;i < conflicts.size();i++) {
                 System.out.println(conflicts.elementAt(i));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1746,8 +1733,7 @@ class CmsShellCommands implements I_CmsConstants {
             for(int i = 0;i < resources.size();i++) {
                 System.out.println(resources.elementAt(i));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1763,8 +1749,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             I_CmsRegistry reg = m_cms.getRegistry();
             reg.importModule(importFile, new Vector(), new CmsShellReport());
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1794,8 +1779,7 @@ class CmsShellCommands implements I_CmsConstants {
             // finally publish the project
             m_cms.unlockProject(id);
             m_cms.publishProject(id);            
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1810,8 +1794,7 @@ class CmsShellCommands implements I_CmsConstants {
         // import the resources
         try {
             m_cms.importResources(importFile, C_ROOT);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1832,8 +1815,7 @@ class CmsShellCommands implements I_CmsConstants {
             m_cms.importResources(importFile, C_ROOT);
             m_cms.unlockProject(id);
             m_cms.publishProject(id);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }    
@@ -1849,8 +1831,7 @@ class CmsShellCommands implements I_CmsConstants {
         // import the resources
         try {
             m_cms.importResources(importFile, importPath);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1861,8 +1842,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void isAdmin() {
         try {
             System.out.println(m_cms.getRequestContext().isAdmin());
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1873,8 +1853,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void isProjectManager() {
         try {
             System.out.println(m_cms.getRequestContext().isProjectManager());
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1891,8 +1870,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void lockedBy(String resource) {
         try {
             System.out.println(m_cms.lockedBy(resource));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1908,8 +1886,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void lockResource(String resource) {
         try {
             m_cms.lockResource(resource);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1929,12 +1906,10 @@ class CmsShellCommands implements I_CmsConstants {
             //m_cms.lockResource(resource, Boolean.getBoolean(force));
             if(force.toLowerCase().equals("true")) {
                 m_cms.lockResource(resource, true);
-            }
-            else {
+            } else {
                 m_cms.lockResource(resource, false);
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1949,8 +1924,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             m_cms.loginUser(username, password);
             whoami();
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
             System.out.println("Login failed!");
         }
@@ -1975,8 +1949,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void loginWebUser(String username, String password) {
         try {
             System.out.println(m_cms.loginWebUser(username, password));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -1990,8 +1963,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void moveFile(String source, String destination) {
         try {
             m_cms.moveResource(source, destination);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2005,8 +1977,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void moveResource(String source, String destination) {
         try {
             m_cms.moveResource(source, destination);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2035,8 +2006,7 @@ class CmsShellCommands implements I_CmsConstants {
             int projectId = Integer.parseInt(id);
             m_cms.unlockProject(projectId);
             m_cms.publishProject(projectId);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2049,8 +2019,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void publishResource(String resourceName) {
         try {
             m_cms.publishResource(resourceName);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2067,19 +2036,17 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * Reads the agent of a task from the OpenCms.
      *
-     * @param task the task to read the agent from.
+     * @param taskId the task to read the agent from.
      */
     public void readAgent(String taskId) {
         try {
             CmsTask task = m_cms.readTask(Integer.parseInt(taskId));
             if(task == null) {
                 System.out.println("No task: " + task);
-            }
-            else {
+            } else {
                 System.out.println(m_cms.readAgent(task));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2099,8 +2066,7 @@ class CmsShellCommands implements I_CmsConstants {
             for(int i = 0;i < files.size();i++) {
                 System.out.println((CmsResource)files.elementAt(i));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2121,8 +2087,7 @@ class CmsShellCommands implements I_CmsConstants {
                 System.out.print(key + "=");
                 System.out.println(properties.get(key));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2139,8 +2104,7 @@ class CmsShellCommands implements I_CmsConstants {
             for(int i = 0;i < propertydefs.size();i++) {
                 System.out.println((CmsPropertydefinition)propertydefs.elementAt(i));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2149,13 +2113,12 @@ class CmsShellCommands implements I_CmsConstants {
      * Reads the export-path for the system.
      * This path is used for db-export and db-import.
      *
-     * @return the exportpath.
+     * @returns the exportpath.
      */
-    public void readExportPath() throws CmsException {
+    public void readExportPath() {
         try {
             System.out.println(m_cms.readExportPath());
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2168,8 +2131,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void readFile(String filename) {
         try {
             System.out.println(m_cms.readFile(filename));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2183,8 +2145,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             System.out.println(m_cms.readFile(filename));
             System.out.println(new String(m_cms.readFile(filename).getContents()));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2201,8 +2162,7 @@ class CmsShellCommands implements I_CmsConstants {
                 String ext = (String)extensions.get(key);
                 System.out.println(key + ": " + ext);
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2216,8 +2176,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void readFileHeader(String filename) {
         try {
             System.out.println(m_cms.readFileHeader(filename));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2233,8 +2192,7 @@ class CmsShellCommands implements I_CmsConstants {
             for(int i = 0;i < files.size();i++) {
                 System.out.println(files.elementAt(i));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2247,8 +2205,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void readFolder(String folder) {
         try {
             System.out.println(m_cms.readFolder(folder));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2257,9 +2214,10 @@ class CmsShellCommands implements I_CmsConstants {
      * Reads all given tasks from a user for a project.
      *
      * @param projectId the id of the project in which the tasks are defined.
-     * @param owner the owner of the task.
-     * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+     * @param ownerName the owner of the task.
+     * @param taskType the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
      * @param orderBy specifies how to order the tasks.
+     * @param sort specifies the sort order
      */
     public void readGivenTasks(String projectId, String ownerName, String taskType, String orderBy, String sort) {
         try {
@@ -2267,8 +2225,7 @@ class CmsShellCommands implements I_CmsConstants {
             for(int i = 0;i < tasks.size();i++) {
                 System.out.println(tasks.elementAt(i));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2277,14 +2234,11 @@ class CmsShellCommands implements I_CmsConstants {
      * Returns a group in the Cms.
      *
      * @param groupname The name of the group to be returned.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void readGroup(String groupname) {
         try {
             System.out.println(m_cms.readGroup(groupname));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2292,39 +2246,25 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * Returns a group in the Cms.
      *
-     * @param groupid The id of the group to be returned.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
+     * @param groupId The id of the group to be returned.
      */
     public void readGroupById(String groupId) {
         try {
             System.out.println(m_cms.readGroup(new CmsUUID(groupId)));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
 
     /**
      * Reads the group of a project from the OpenCms.
+     * 
+     * @param project the id of the project
      */
     public void readGroupOfProject(String project) {
         try {
             System.out.println(m_cms.readGroup(m_cms.readProject(Integer.parseInt(project))));
-        }
-        catch(Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Reads the group of a resource from the Cms.
-     */
-    public void readGroupOfResource(String resource) {
-        try {
-            System.out.println(m_cms.readGroup(m_cms.readFileHeader(resource)));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2337,29 +2277,26 @@ class CmsShellCommands implements I_CmsConstants {
     public void readGroupOfTask(String task) {
         try {
             System.out.println(m_cms.readGroup(m_cms.readTask(Integer.parseInt(task))));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
 
     /**
      * Reads the managergroup of a project from the Cms.
+     * 
+     * @param project the id of the project
      */
     public void readManagerGroup(String project) {
         try {
             System.out.println(m_cms.readManagerGroup(m_cms.readProject(Integer.parseInt(project))));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
 
     /**
-     * Gets all CmsMountPoints.
-     * All mountpoints will be returned.
-     *
-     * @return the mountpoints - or null if they doesen't exists.
+     * Gets all mime types.
      */
     public void readMimeTypes() {
         try {
@@ -2370,8 +2307,7 @@ class CmsShellCommands implements I_CmsConstants {
                 key = (String)keys.nextElement();
                 System.out.println(key + " : " + mimeTypes.get(key));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2384,32 +2320,33 @@ class CmsShellCommands implements I_CmsConstants {
     public void readOriginalAgent(String task) {
         try {
             System.out.println(m_cms.readOriginalAgent(m_cms.readTask(Integer.parseInt(task))));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
 
     /**
      * Reads the owner of a project from the Cms.
+     * 
+     * @param project the id of the project
      */
     public void readOwnerOfProject(String project) {
         try {
             System.out.println(m_cms.readOwner(m_cms.readProject(Integer.parseInt(project))));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
 
     /**
      * Reads the owner of a resource from the Cms.
+     * 
+     * @param resource the name of the resource
      */
     public void readOwnerOfResource(String resource) {
         try {
             System.out.println(m_cms.readOwner(m_cms.readFileHeader(resource)));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2417,13 +2354,12 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * Reads the owner (initiator) of a task from the Cms.
      *
-     * @param tasktThe task to read the owner from.
+     * @param task The task to read the owner from.
      */
     public void readOwnerOfTask(String task) {
         try {
             System.out.println(m_cms.readOwner(m_cms.readTask(Integer.parseInt(task))));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2431,14 +2367,13 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * Reads a project from the Cms.
      *
-     * @param name The id of the project to read.
+     * @param id The id of the project to read.
      */
     public void readProject(String id) {
         try {
             int projectId = Integer.parseInt(id);
             System.out.println(m_cms.readProject(projectId).toString());
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2454,8 +2389,7 @@ class CmsShellCommands implements I_CmsConstants {
             for(int i = 0;i < logs.size();i++) {
                 System.out.println(logs.elementAt(i));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2468,8 +2402,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void readProjectOfResource(String res) {
         try {
             System.out.println(m_cms.readProject(m_cms.readFileHeader(res)));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2482,8 +2415,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void readProjectOfTask(String task) {
         try {
             System.out.println(m_cms.readProject(m_cms.readTask(Integer.parseInt(task))));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2497,8 +2429,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void readProperty(String name, String property) {
         try {
             System.out.println(m_cms.readProperty(name, property));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2512,8 +2443,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void readPropertydefinition(String name, String resourcetype) {
         try {
             System.out.println(m_cms.readPropertydefinition(name, resourcetype));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2526,8 +2456,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void readTask(String id) {
         try {
             System.out.println(m_cms.readTask(Integer.parseInt(id)));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2543,8 +2472,7 @@ class CmsShellCommands implements I_CmsConstants {
             for(int i = 0;i < logs.size();i++) {
                 System.out.println(logs.elementAt(i));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2563,8 +2491,7 @@ class CmsShellCommands implements I_CmsConstants {
             for(int i = 0;i < tasks.size();i++) {
                 System.out.println(tasks.elementAt(i));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2573,7 +2500,7 @@ class CmsShellCommands implements I_CmsConstants {
      * Reads all tasks for a role in a project.
      *
      * @param projectId the id of the Project in which the tasks are defined.
-     * @param user the user who has to process the task.
+     * @param roleName the role who has to process the task.
      * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
      * @param orderBy specifies how to order the tasks.
      * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
@@ -2584,8 +2511,7 @@ class CmsShellCommands implements I_CmsConstants {
             for(int i = 0;i < tasks.size();i++) {
                 System.out.println(tasks.elementAt(i));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2594,7 +2520,7 @@ class CmsShellCommands implements I_CmsConstants {
      * Reads all tasks for a user in a project.
      *
      * @param projectId the id of the Project in which the tasks are defined.
-     * @param role the user who has to process the task.
+     * @param userName the user who has to process the task.
      * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
      * @param orderBy specifies how to order the tasks.
      * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
@@ -2605,8 +2531,7 @@ class CmsShellCommands implements I_CmsConstants {
             for(int i = 0;i < tasks.size();i++) {
                 System.out.println(tasks.elementAt(i));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2619,8 +2544,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void readUser(String username) {
         try {
             System.out.println(m_cms.readUser(username));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2629,12 +2553,12 @@ class CmsShellCommands implements I_CmsConstants {
      * Returns a user object.<P/>
      *
      * @param username The name of the user that is to be read.
+     * @param password the password of this user
      */
     public void readUser(String username, String password) {
         try {
             System.out.println(m_cms.readUser(username, password));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2647,8 +2571,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void readWebUser(String username) {
         try {
             System.out.println(m_cms.readWebUser(username));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2657,25 +2580,24 @@ class CmsShellCommands implements I_CmsConstants {
      * Returns a user object.<P/>
      *
      * @param username The name of the user that is to be read.
+     * @param password the password of this user
      */
     public void readWebUser(String username, String password) {
         try {
             System.out.println(m_cms.readWebUser(username, password));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
     /**
      * Reactivates a task from the Cms.
      *
-     * @param taskid the Id of the task to accept.
+     * @param taskId the Id of the task to accept.
      */
     public void reaktivateTask(String taskId) {
         try {
             m_cms.reaktivateTask(Integer.parseInt(taskId));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2684,14 +2606,13 @@ class CmsShellCommands implements I_CmsConstants {
      * Recovers the password for a user.
      *
      * @param username The name of the user.
-     * @param recoverPassword The recover password to check the access.
+     * @param recPassword The recover password to check the access.
      * @param newPassword The new password.
      */
     public void recoverPassword(String username, String recPassword, String newPassword) {
         try {
             m_cms.recoverPassword(username, recPassword, newPassword);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2705,8 +2626,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void removeUserFromGroup(String username, String groupname) {
         try {
             m_cms.removeUserFromGroup(username, groupname);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2720,8 +2640,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void renameFile(String oldname, String newname) {
         try {
             m_cms.renameResource(oldname, newname);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2735,8 +2654,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void renameResource(String oldname, String newname) {
         try {
             m_cms.renameResource(oldname, newname);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2759,14 +2677,11 @@ class CmsShellCommands implements I_CmsConstants {
 
     /**
      * Returns the root-folder object.
-     *
-     * @return the root-folder object.
      */
     public void rootFolder() {
         try {
             System.out.println(m_cms.rootFolder());
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2780,8 +2695,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             int projectId = Integer.parseInt(id);
             System.out.println(m_cms.getRequestContext().setCurrentProject(projectId).toString());
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2789,15 +2703,14 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * This method sets the author of the module.
      *
-     * @param String the name of the module.
-     * @param String the name of the author.
+     * @param modulename the name of the module.
+     * @param author the name of the author.
      */
     public void setModuleAuthor(String modulename, String author) {
         try {
             I_CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleAuthor(modulename, author);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2805,15 +2718,14 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * This method sets the email of author of the module.
      *
-     * @param String the name of the module.
-     * @param String the email of author of the module.
+     * @param modulename the name of the module.
+     * @param email the email of author of the module.
      */
     public void setModuleAuthorEmail(String modulename, String email) {
         try {
             I_CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleAuthorEmail(modulename, email);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2821,16 +2733,15 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * Sets the create date of the module.
      *
-     * @param String the name of the module.
-     * @param long the create date of the module.
+     * @param modulname the name of the module.
+     * @param createdate the create date of the module.
      */
     public void setModuleCreateDate(String modulname, String createdate) {
         try {
             I_CmsRegistry reg = m_cms.getRegistry();
             long date = Long.parseLong(createdate);
             reg.setModuleCreateDate(modulname, date);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2838,15 +2749,14 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * Sets the description of the module.
      *
-     * @param String the name of the module.
-     * @param String the description of the module.
+     * @param module the name of the module.
+     * @param description the description of the module.
      */
     public void setModuleDescription(String module, String description) {
         try {
             I_CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleDescription(module, description);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2854,15 +2764,14 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * Sets the url to the documentation of the module.
      *
-     * @param String the name of the module.
-     * @param java.lang.String the url to the documentation of the module.
+     * @param modulename the name of the module.
+     * @param url the url to the documentation of the module.
      */
     public void setModuleDocumentPath(String modulename, String url) {
         try {
             I_CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleDocumentPath(modulename, url);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2870,31 +2779,29 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * Sets the classname, that receives all maintenance-events for the module.
      *
-     * @param String the name of the module.
-     * @param java.lang.Class that receives all maintenance-events for the module.
+     * @param modulname the name of the module.
+     * @param classname class that receives all maintenance-events for the module.
      */
     public void setModuleMaintenanceEventClass(String modulname, String classname) {
         try {
             I_CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleMaintenanceEventClass(modulname, classname);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
 
     /**
-     * Sets the description of the module.
+     * Sets the nice name of the module.
      *
-     * @param String the name of the module.
-     * @param String the nice name of the module.
+     * @param module the name of the module.
+     * @param nicename the nice name of the module.
      */
     public void setModuleNiceName(String module, String nicename) {
         try {
             I_CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleNiceName(module, nicename);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2902,15 +2809,14 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * This method sets the version of the module.
      *
-     * @param String the name of the module.
-     * @param the version of the module.
+     * @param modulename the name of the module.
+     * @param version the version of the module.
      */
     public void setModuleVersion(String modulename, String version) {
         try {
             I_CmsRegistry reg = m_cms.getRegistry();            
             reg.setModuleVersion(modulename, version);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2918,16 +2824,15 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * Sets a view for a module
      *
-     * @param String the name of the module.
-     * @param String the name of the view, that is implemented by the module.
-     * @param String the url of the view, that is implemented by the module.
+     * @param modulename the name of the module.
+     * @param viewname the name of the view, that is implemented by the module.
+     * @param viewurl the url of the view, that is implemented by the module.
      */
     public void setModuleView(String modulename, String viewname, String viewurl) {
         try {
             I_CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleView(modulename, viewname, viewurl);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2935,14 +2840,13 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * Set a new name for a task.
      *
-     * @param taskid the id of the task.
+     * @param taskId the id of the task.
      * @param name the new name of the task.
      */
     public void setName(String taskId, String name) {
         try {
             m_cms.setName(Integer.parseInt(taskId), name);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2957,8 +2861,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void setParentGroup(String groupName, String parentGroupName) {
         try {
             m_cms.setParentGroup(groupName, parentGroupName);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2972,8 +2875,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void setPassword(String username, String newPassword) {
         try {
             m_cms.setPassword(username, newPassword);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2988,8 +2890,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void setPassword(String username, String oldPassword, String newPassword) {
         try {
             m_cms.setPassword(username, oldPassword, newPassword);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -2997,14 +2898,13 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * Sets the priority of a task.
      *
-     * @param taskid the id of the task.
+     * @param taskId the id of the task.
      * @param priority the new priority value.
      */
     public void setPriority(String taskId, String priority) {
         try {
             m_cms.setPriority(Integer.parseInt(taskId), Integer.parseInt(priority));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -3013,14 +2913,13 @@ class CmsShellCommands implements I_CmsConstants {
      * Sets the recovery password for a user.
      *
      * @param username The name of the user.
-     * @param password The password.
+     * @param oldPassword The password.
      * @param newPassword The new recovery password.
      */
     public void setRecoveryPassword(String username, String oldPassword, String newPassword) {
         try {
             m_cms.setRecoveryPassword(username, oldPassword, newPassword);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -3035,8 +2934,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void setTaskPar(String taskid, String parname, String parvalue) {
         try {
             m_cms.setTaskPar(Integer.parseInt(taskid), parname, parvalue);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -3044,26 +2942,26 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * Sets the timeout of a task.
      *
-     * @param taskid the id of the task.
+     * @param taskId the id of the task.
      * @param timeout the new timeout value.
      */
     public void setTimeout(String taskId, String timeout) {
         try {
             m_cms.setTimeout(Integer.parseInt(taskId), Long.parseLong(timeout));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
 
     /**
      * Sets the current group of the current user.
+     * 
+     * @param groupname the name of the group
      */
     public void setUserCurrentGroup(String groupname) {
         try {
             m_cms.getRequestContext().setCurrentGroup(groupname);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -3071,13 +2969,12 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * Echos the input to output.
      *
-     * @param echo The echo to be written to output.
+     * @param param The echo to be written to output.
      */
     public void shortException(String param) {
         if(param.toLowerCase().equals("on")) {
             CmsShell.m_shortException = true;
-        }
-        else {
+        } else {
             if(param.toLowerCase().equals("off")) {
                 CmsShell.m_shortException = false;
             }
@@ -3088,8 +2985,6 @@ class CmsShellCommands implements I_CmsConstants {
     * Synchronize cms-resources on virtual filesystem with the server filesystem.
     *
     * @param resourceName the name (absolute Path) of the resource that should be synchronized.
-    *
-    * @throws CmsException if operation was not successful.
     */
     public void syncFolder(String resourceName){
         // synchronize the resources
@@ -3124,8 +3019,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void unlockProject(String id) {
         try {
             m_cms.unlockProject(Integer.parseInt(id));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -3140,8 +3034,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void unlockResource(String resource) {
         try {
             m_cms.unlockResource(resource);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -3157,8 +3050,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void uploadFile(String lokalfile, String folder, String filename, String type) {
         try {
             System.out.println((CmsFile)m_cms.createResource(folder, filename, type, null, importFile(lokalfile)));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -3180,14 +3072,13 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * Checks if a user is member of a group.<P/>
      *
-     * @param nameuser The name of the user to check.
+     * @param username The name of the user to check.
      * @param groupname The name of the group to check.
      */
     public void userInGroup(String username, String groupname) {
         try {
             System.out.println(m_cms.userInGroup(username, groupname));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -3210,13 +3101,12 @@ class CmsShellCommands implements I_CmsConstants {
      * Writes the export-path for the system.
      * This path is used for db-export and db-import.
      *
-     * @param mountpoint The mount point in the Cms filesystem.
+     * @param path The new export path.
      */
-    public void writeExportPath(String path) throws CmsException {
+    public void writeExportPath(String path) {
         try {
             m_cms.writeExportPath(path);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -3234,15 +3124,13 @@ class CmsShellCommands implements I_CmsConstants {
             CmsGroup group = m_cms.readGroup(name);
             if(Integer.parseInt(flags) == C_FLAG_DISABLED) {
                 group.setDisabled();
-            }
-            else {
+            } else {
                 group.setEnabled();
             }
 
             // write it back
             m_cms.writeGroup(group);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -3257,35 +3145,10 @@ class CmsShellCommands implements I_CmsConstants {
     public void writeProperty(String name, String property, String value) {
         try {
             m_cms.writeProperty(name, property, value);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
-
-    /**
-     * Writes the propertydefinition for the resource type.<BR/>
-     *
-     * @param name The name of the propertydefinition to overwrite.
-     * @param resourcetype The name of the resource type to read the
-     * propertydefinitions for.
-     * @param type The new type of the propertydefinition (normal|optional).
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
-     * @deprecated Do not use this method any longer because there is no type of propertydefinition
-     */
-    /*
-    public void writePropertydefinition(String name, String resourcetype, String type) {
-        try {
-            CmsPropertydefinition propertydef = m_cms.readPropertydefinition(name, resourcetype);
-            //propertydef.setPropertydefType(Integer.parseInt(type));
-            System.out.println(m_cms.writePropertydefinition(propertydef));
-        }
-        catch(Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-    */
 
     /**
      * Writes a new user tasklog for a task.
@@ -3296,8 +3159,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void writeTaskLog(String taskid, String comment) {
         try {
             m_cms.writeTaskLog(Integer.parseInt(taskid), comment);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -3307,13 +3169,12 @@ class CmsShellCommands implements I_CmsConstants {
      *
      * @param taskid the Id of the task .
      * @param comment the description for the log
-     * @param tasktype the type of the tasklog. User tasktypes must be greater than 100.
+     * @param taskType the type of the tasklog. User tasktypes must be greater than 100.
      */
     public void writeTaskLog(String taskid, String comment, String taskType) {
         try {
             m_cms.writeTaskLog(Integer.parseInt(taskid), comment, Integer.parseInt(taskType));
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -3331,15 +3192,13 @@ class CmsShellCommands implements I_CmsConstants {
             CmsUser user = m_cms.readUser(name);
             if(Integer.parseInt(flags) == C_FLAG_DISABLED) {
                 user.setDisabled();
-            }
-            else {
+            } else {
                 user.setEnabled();
             }
 
             // write it back
             m_cms.writeUser(user);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -3357,15 +3216,13 @@ class CmsShellCommands implements I_CmsConstants {
             CmsUser user = m_cms.readUser(name, C_USER_TYPE_WEBUSER);
             if(Integer.parseInt(flags) == C_FLAG_DISABLED) {
                 user.setDisabled();
-            }
-            else {
+            } else {
                 user.setEnabled();
             }
 
             // write it back
             m_cms.writeUser(user);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -3391,20 +3248,20 @@ class CmsShellCommands implements I_CmsConstants {
     public void readCronTable() {
         try {
             System.out.println(m_cms.readCronTable());
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
 
     /**
      * Writes the Crontable.
+     * 
+     * @param crontable a crontable entry
      */
     public void writeCronTable(String crontable) {
         try {
             m_cms.writeCronTable(crontable);
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -3418,8 +3275,7 @@ class CmsShellCommands implements I_CmsConstants {
             for(int i = 0;i < projects.size();i++) {
                 System.out.println((CmsBackupProject)projects.elementAt(i));
             }
-        }
-        catch(Exception exc) {
+        } catch(Exception exc) {
             CmsShell.printException(exc);
         }
     }
@@ -3474,10 +3330,6 @@ class CmsShellCommands implements I_CmsConstants {
      * </ul>
      *
      * @param resourcename A part of resourcename
-     *
-     * @return subfolders A Vector with resources.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void readResourcesLikeName(String resourcename) {
         try{
@@ -3496,7 +3348,7 @@ class CmsShellCommands implements I_CmsConstants {
      * 
      * @param weeks The number of weeks: the max age of the remaining versions
      */
-    public void deleteBackups(String weeks) throws CmsException{
+    public void deleteBackups(String weeks) {
         try{
             System.out.println("Oldest remaining version: "+m_cms.deleteBackups(Integer.parseInt(weeks)));
         } catch (Exception e){
@@ -3618,8 +3470,8 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * Displays the current permissions of a user on a given resource.
      * 
-	 * @param resourceName
-	 * @param userName
+	 * @param resourceName	the name of the resource
+	 * @param userName		the name of the user
 	 */
 	public void getPermissions(String resourceName, String userName){
     	try {
@@ -3632,7 +3484,7 @@ class CmsShellCommands implements I_CmsConstants {
 	/**
 	 * Displays the permissions of the current user on a given resource
 	 * 
-	 * @param resourceName
+	 * @param resourceName the name of the resource
 	 */
 	public void getPermissions(String resourceName){
 		try {
