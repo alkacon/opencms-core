@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/10/21 14:55:14 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2003/11/04 08:22:03 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -280,8 +280,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         Iterator it = publishedResources.iterator();
         while (it.hasNext()) {
             CmsPublishedResource res = (CmsPublishedResource)it.next();                    
-            if (res.isNew() || res.isUnChanged() || !res.isVfsResource()) {
-                // new resources, unchanged ones and non vfs resources don't need to be deleted
+            if (res.isUnChanged() || !res.isVfsResource()) {
+                // unchanged resources and non vfs resources don't need to be deleted
                 continue;
             }
             
