@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/06/04 15:42:06 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/06/05 10:10:35 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  */
 public class CmsObject {
 
@@ -1673,18 +1673,6 @@ public class CmsObject {
     }
 
     /**
-     * This method can be called, to determine if the file-system was changed in the past.
-     * <br>
-     * A module can compare its previously stored number with the returned number.
-     * If they differ, the file system has been changed.
-     *
-     * @return the number of file-system-changes.
-     */
-    public long getFileSystemFolderChanges() {
-        return (m_driverManager.getFileSystemFolderChanges());
-    }
-
-    /**
      * Returns all groups in the Cms.
      *
      * @return a Vector of all groups in the Cms.
@@ -1717,17 +1705,6 @@ public class CmsObject {
     public Vector getGroupsOfUser(String username, String remoteAddress) throws CmsException {
         return m_driverManager.getGroupsOfUser(m_context, username, remoteAddress);
     }     
-
-    /**
-     * This is the port the workplace access is limited to. With the opencms.properties
-     * the access to the workplace can be limited to a user defined port. With this
-     * feature a firewall can block all outside requests to this port with the result
-     * the workplace is only available in the local net segment.
-     * @return the portnumber or -1 if no port is set.
-     */
-    public int getLimitedWorkplacePort() {
-        return m_driverManager.getLimitedWorkplacePort();
-    }
 
     /**
      * Returns a list of all currently logged in users.
@@ -2076,7 +2053,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
-        return m_driverManager.hasPermissions(m_context, resource, requiredPermissions, false);
+        return 0 == m_driverManager.hasPermissions(m_context, resource, requiredPermissions, CmsResourceFilter.ALL, false).intValue();
     }
 
     /**
@@ -2089,7 +2066,7 @@ public class CmsObject {
      */
     public boolean hasPermissions(String resourceName, CmsPermissionSet requiredPermissions) throws CmsException {
         CmsResource resource = readFileHeader(resourceName);
-        return m_driverManager.hasPermissions(m_context, resource, requiredPermissions, false);
+        return 0 == m_driverManager.hasPermissions(m_context, resource, requiredPermissions, CmsResourceFilter.ALL, false).intValue();
     }
 
     /**

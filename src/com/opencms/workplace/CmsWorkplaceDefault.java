@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2004/05/13 13:58:10 $
-* Version: $Revision: 1.73 $
+* Date   : $Date: 2004/06/05 10:10:45 $
+* Version: $Revision: 1.74 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.Vector;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.73 $ $Date: 2004/05/13 13:58:10 $
+ * @version $Revision: 1.74 $ $Date: 2004/06/05 10:10:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -570,10 +570,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
      * @param cms the CmsObject to check the port with.
      */
     protected boolean checkPort(CmsObject cms) {
-        int portnumber = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServerPort();
-        int limitedPort = cms.getLimitedWorkplacePort();
-        return ( (limitedPort == -1) ||
-                 ( limitedPort == portnumber) );
+        return true;
     }
 
     /**
