@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/01/16 15:43:44 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/01/20 15:58:00 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,21 +30,26 @@
  */
 package org.opencms.workplace.editor;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
-import com.opencms.flex.jsp.CmsJspActionElement;
-import com.opencms.util.Encoder;
-import com.opencms.workplace.I_CmsWpConstants;
-
+import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.OpenCms;
+import org.opencms.page.CmsXmlPage;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceAction;
 
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+import com.opencms.file.CmsResourceTypeXmlPage;
+import com.opencms.flex.jsp.CmsJspActionElement;
+import com.opencms.util.Encoder;
+import com.opencms.workplace.I_CmsWpConstants;
+
 import java.io.IOException;
+import java.util.Locale;
 
 import javax.servlet.jsp.JspException;
 
@@ -52,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.3.0
  */
@@ -142,7 +147,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
     /**
      * @see org.opencms.workplace.editor.I_CmsEditorActionHandler#getEditMode(com.opencms.file.CmsObject, java.lang.String)
      */
-    public String getEditMode(CmsObject cmsObject, String filename) {
+    public String getEditMode(CmsObject cmsObject, String filename, CmsXmlPage page, String element) {
     
         try {
             
@@ -175,6 +180,15 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
                 return C_EDITMODE_DISABLED;
             }
   
+            // check if the desired element is available (in case of xml page)
+            if (page != null && element != null) {
+                Locale l = OpenCms.getLocaleManager().getLocale(cmsObject, filename, page.getLanguages()); 
+                String localeProp = l.toString();
+                if (!page.hasElement(element, localeProp) || !page.isEnabled(element, localeProp)) {
+                    return C_EDITMODE_INACTIVE;
+                }
+            }
+
             // otherwise the resource is editable
             return C_EDITMODE_ENABLED;
             

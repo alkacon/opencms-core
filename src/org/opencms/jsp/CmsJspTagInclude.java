@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2004/01/06 16:15:51 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/01/20 15:59:13 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,10 @@
  
 package org.opencms.jsp;
 
+import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.main.OpenCms;
+import org.opencms.page.CmsXmlPage;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.editor.I_CmsEditorActionHandler;
 
@@ -60,7 +62,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -445,10 +447,10 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         
         if (editable) {
             I_CmsEditorActionHandler actionClass = (I_CmsEditorActionHandler)OpenCms.getRuntimeProperty(I_CmsEditorActionHandler.EDITOR_ACTION);
-            editMode = actionClass.getEditMode(controller.getCmsObject(), target);
+            editMode = actionClass.getEditMode(controller.getCmsObject(), target, (CmsXmlPage)req.getAttribute(CmsXmlPageLoader.C_XMLPAGE_OBJECT), element);
             editArea = (String) context.getAttribute(I_CmsEditorActionHandler.C_EDIT_AREA);
         }
-        
+
         try {         
             
             // Include editarea start element if enabled

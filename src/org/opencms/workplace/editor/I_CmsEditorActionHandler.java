@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/I_CmsEditorActionHandler.java,v $
- * Date   : $Date: 2004/01/06 16:15:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/01/20 15:58:00 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,8 @@
  */
 package org.opencms.workplace.editor;
 
+import org.opencms.page.CmsXmlPage;
+
 import com.opencms.file.CmsObject;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
@@ -45,7 +47,7 @@ import javax.servlet.jsp.JspException;
  * The class you enter must implement this interface to perform the editor action.<p>  
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.0
  */
@@ -146,8 +148,10 @@ public interface I_CmsEditorActionHandler {
      * 
      * @param cmsObject the cms object
      * @param filename name of the resource
+     * @param page the <code>CmsXmlPage</code> instance of the file or <code>null</code>
+     * @param element of the desired element or <code>null</code>
      * @return the current edit mode ( null | inactive | disabled | enabled )
      */
-    String getEditMode(CmsObject cmsObject, String filename);
+    String getEditMode(CmsObject cmsObject, String filename, CmsXmlPage page, String element);
 
 }
