@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoop.java,v $
- * Date   : $Date: 2004/12/03 18:40:22 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/12/11 12:35:14 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagContentContainer {
@@ -56,7 +56,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
 
     /** Name of the current element (including the index). */
     private String m_currentElement;
-
+    
     /** Name of the content node element to show. */
     private String m_element;
 
@@ -91,12 +91,15 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
     public int doStartTag() throws JspException {
 
         // get a reference to the parent "content container" class
-        Tag ancestor = findAncestorWithClass(this, CmsJspTagContentLoad.class);
+        Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
         if (ancestor == null) {
-            throw new JspTagException("Tag 'contentloop' without required parent tag 'contentload' found!");
+            throw new JspTagException("Tag <contentloop> without required parent tag found!");
         }
         m_parentTag = (I_CmsJspTagContentContainer)ancestor;
 
+        // append to parent element name (required for nested schemas)
+        m_element =  CmsXmlUtils.concatXpath(m_parentTag.getXmlDocumentElement(), m_element);
+        
         // get loaded content from parent <contentload> tag
         m_content = m_parentTag.getXmlDocument();
         m_locale = m_parentTag.getXmlDocumentLocale();
@@ -159,13 +162,13 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
      */
     public void release() {
 
-        super.release();
         m_element = null;
         m_currentElement = null;
         m_content = null;
         m_locale = null;
         m_parentTag = null;
         m_index = 0;
+        super.release();
     }
 
     /**

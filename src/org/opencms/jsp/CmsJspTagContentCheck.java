@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentCheck.java,v $
- * Date   : $Date: 2004/11/08 15:06:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/12/11 12:35:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.jsp;
 
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
+import org.opencms.xml.CmsXmlUtils;
 
 import java.util.Locale;
 
@@ -46,7 +47,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public class CmsJspTagContentCheck extends TagSupport {
@@ -64,6 +65,7 @@ public class CmsJspTagContentCheck extends TagSupport {
      * Internal action method to check the elements from the provided XML content item.<p>
      * 
      * @param elementList the list of elements to check for
+     * @param prefix the Xpath prefix to append the elements to (in case of nested schemas) 
      * @param checkall flag to indicate that all elements should be checked
      * @param checknone flag to indicate that the check is done for nonexisting elements
      * @param content the XML content document to check the elements from
@@ -73,6 +75,7 @@ public class CmsJspTagContentCheck extends TagSupport {
      */
     public static boolean contentCheckTagAction(
         String elementList,
+        String prefix,
         boolean checkall,
         boolean checknone,
         A_CmsXmlDocument content,
@@ -82,7 +85,7 @@ public class CmsJspTagContentCheck extends TagSupport {
         String elements[] = CmsStringUtil.splitAsArray(elementList, ',');
         for (int i = (elements.length - 1); i >= 0; i--) {
             
-            String element = elements[i].trim();            
+            String element = CmsXmlUtils.concatXpath(prefix, elements[i].trim());            
             found = found || content.hasValue(element, locale);
             
             if (found && checknone) {
@@ -114,12 +117,13 @@ public class CmsJspTagContentCheck extends TagSupport {
             throw new JspTagException("Tag <contentcheck> without required parent tag <contentload> found!");
         }
         I_CmsJspTagContentContainer contentContainer = (I_CmsJspTagContentContainer)ancestor;
-
+        String prefix = contentContainer.getXmlDocumentElement();
+        
         // get loaded content from parent <contentload> tag
         A_CmsXmlDocument xmlContent = contentContainer.getXmlDocument();
         Locale locale = contentContainer.getXmlDocumentLocale();
 
-        if (contentCheckTagAction(m_elementList, m_checkall, m_checknone, xmlContent, locale)) {
+        if (contentCheckTagAction(m_elementList, prefix,  m_checkall, m_checknone, xmlContent, locale)) {
             return EVAL_BODY_INCLUDE;
         } else {
             return SKIP_BODY;

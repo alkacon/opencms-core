@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2004/11/17 12:16:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/12/11 12:35:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.CmsXmlUtils;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -53,7 +54,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public class CmsJspTagContentShow extends TagSupport {
@@ -110,7 +111,7 @@ public class CmsJspTagContentShow extends TagSupport {
         // get a reference to the parent "content container" class
         Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
         if (ancestor == null) {
-            throw new JspTagException("Tag <contentshow> without required parent tag <contentload> found!");
+            throw new JspTagException("Tag <contentshow> without required parent tag found!");
         }
         I_CmsJspTagContentContainer contentContainer = (I_CmsJspTagContentContainer)ancestor;
 
@@ -122,6 +123,8 @@ public class CmsJspTagContentShow extends TagSupport {
 
         if (CmsStringUtil.isEmpty(element)) {
             element = contentContainer.getXmlDocumentElement();
+        } else {
+            element = CmsXmlUtils.concatXpath(contentContainer.getXmlDocumentElement(), element);
         }
 
         String content;
