@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2002/04/05 06:37:10 $
-* Version: $Revision: 1.197 $
+* Date   : $Date: 2002/04/30 09:33:23 $
+* Version: $Revision: 1.198 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.197 $ $Date: 2002/04/05 06:37:10 $
+ * @version $Revision: 1.198 $ $Date: 2002/04/30 09:33:23 $
  */
 public interface I_CmsConstants {
 
@@ -565,6 +565,11 @@ public interface I_CmsConstants {
      * The name of the resourcetype-extension.
      */
     static final String C_SYSTEMPROPERTY_EXTENSIONS = "EXTENSIONS";
+
+    /**
+     * The name of the linkchecktable-systemproperty.
+     */
+    static final String C_SYSTEMPROPERTY_LINKCHECKTABLE = "LINKCHECKTABLE";
 
     /**
      * The key for the username in the user information hashtable.
@@ -1240,6 +1245,16 @@ public interface I_CmsConstants {
      * (i.e. the search module)
      */
     static final String C_PUBLISH_METHOD_LINK = "linkpublish";
+
+    /**
+     * The name of the rootfolder for external links
+     */
+    static final String C_LINKGALLERY_ROOTFOLDER = "/externallinks/";
+
+    /**
+     * The key for the date of the last linkcheck in the linkchecktable
+     */
+    static final String C_LINKCHECKTABLE_DATE = "linkcheckdate";
 }
 
 
