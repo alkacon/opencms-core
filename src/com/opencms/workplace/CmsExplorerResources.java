@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerResources.java,v $
-* Date   : $Date: 2001/09/13 09:05:23 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/04/29 09:36:32 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -94,6 +94,7 @@ public class CmsExplorerResources extends CmsWorkplaceDefault implements I_CmsCo
         jsOutput.append("\n this.userName = \"" + cms.getRequestContext().currentUser().getName() + "\";\n");
         jsOutput.append("\n this.serverName = \"" + ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerName() + "\";\n");
         jsOutput.append(" this.langback=\"" + lang.getLanguageValue("button.back") + "\";\n");
+        jsOutput.append(" this.langsearch=\"" + lang.getLanguageValue("button.search") + "\";\n");
         jsOutput.append(" this.langup=\"" + lang.getLanguageValue("button.parent") + "\";\n");
         jsOutput.append(" this.langnew=\"" + lang.getLanguageValue("button.new") + "\";\n");
         jsOutput.append(" this.langadress=\"" + lang.getLanguageValue("input.adress") + ":\";\n");
