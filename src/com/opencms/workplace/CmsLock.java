@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLock.java,v $
- * Date   : $Date: 2000/05/30 11:44:51 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/05/30 14:36:05 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.23 $ $Date: 2000/05/30 11:44:51 $
+ * @version $Revision: 1.24 $ $Date: 2000/05/30 14:36:05 $
  */
 public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -81,6 +81,7 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
+        
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
         
         // the template to be displayed
@@ -123,6 +124,7 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         
 		boolean hlock=true;
         if (lock != null) {
+            
             if (lock.equals("true")) {
 				if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
 					String bodyPath = getBodyPath(cms,(CmsFile) file);
@@ -134,7 +136,12 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
 							cms.lockResource(bodyPath);
 						}
 					}catch (CmsException e){
-						//TODO: ErrorHandling
+                        if (e.getType()==CmsException.C_ACCESS_DENIED) {
+                            template="accessdenied";
+                        } else {
+                            throw e;
+                        }
+       
 					}
 				} else if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_NEWSPAGE_NAME) ){
 					String newsContentPath = getNewsContentPath(cms,(CmsFile) file);
@@ -146,7 +153,11 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
 							cms.lockResource(newsContentPath);
 						}
 					}catch (CmsException e){
-						//TODO: ErrorHandling
+						if (e.getType()==CmsException.C_ACCESS_DENIED) {
+                            template="accessdenied";
+                        } else {
+                            throw e;
+                        }
 					}
 				} else if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_FOLDER_NAME) ){
                     try {
@@ -183,6 +194,7 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         
         // process the selected template 
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
+        
     }
 	
 	/**

@@ -199,4 +199,9 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <TEMPLATE name="error">
 <ERRORPAGE title="error.title.chgrp" message="error.message.chgrp" reason="error.reason.chgrp" suggestion="error.suggestion.chgrp" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
 </TEMPLATE>
+
+<TEMPLATE name="erroraccessdenied">
+<ERRORPAGE title="error.title.accessdenied" message="error.message.accessdenied" reason="error.reason.accessdenied" suggestion="error.suggestion.accessdenied" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
+</TEMPLATE>
+
 </WORKPLACE>

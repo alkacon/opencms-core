@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
- * Date   : $Date: 2000/05/30 11:44:52 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/05/30 14:36:05 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.22 $ $Date: 2000/05/30 11:44:52 $
+ * @version $Revision: 1.23 $ $Date: 2000/05/30 14:36:05 $
  */
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -128,7 +128,14 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
 							cms.unlockResource(bodyPath);
 						}
 					}catch (CmsException e){
-						//TODO: ErrorHandling
+                	    if (e.getType()==CmsException.C_NO_ACCESS) {
+                            template="erroraccessdenied";
+                            CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
+	                    	xmlTemplateDocument.setData("details",file.getName());
+                            return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
+                        } else {
+                            throw e;
+                        }
 					}
 				} else if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_NEWSPAGE_NAME) ){
 					String newsContentPath = getNewsContentPath(cms, (CmsFile)file);
@@ -138,20 +145,36 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
 							cms.unlockResource(newsContentPath);
 						}
 					}catch (CmsException e){
-						//TODO: ErrorHandling
+                 		if (e.getType()==CmsException.C_NO_ACCESS) {
+                            template="erroraccessdenied";
+                            CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
+                        	xmlTemplateDocument.setData("details",file.getName());
+                            return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
+                        } else {
+                            throw e;
+                        }
 					}
 				} else if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_FOLDER_NAME) ){
                     try {
                         cms.unlockResource(C_CONTENTBODYPATH+filename.substring(1));
                     } catch (CmsException e) {
-                    }
+                 }
                 }                
-                
-                cms.unlockResource(filename);
-				session.removeValue(C_PARA_FILE);
+                try {
+                    cms.unlockResource(filename);
+				    session.removeValue(C_PARA_FILE);
+                } catch (CmsException e) {
+                    if (e.getType()==CmsException.C_NO_ACCESS) {
+                            template="erroraccessdenied";
+                            CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
+		                    xmlTemplateDocument.setData("details",file.getName());
+                            return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
+                        } else {
+                            throw e;
+                        }
+                  }
             }
-             // TODO: ErrorHandling
-             // return to filelist
+            // return to filelist
             try {
                 if(lasturl == null || "".equals(lasturl)) {
                     cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);

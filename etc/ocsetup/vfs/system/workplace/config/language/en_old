@@ -109,6 +109,7 @@
 		
 		<error>		
 			<message>
+				<accessdenied>The access to the selected resource is denied.</accessdenied>
 				<badcharacter>invalid character : </badcharacter>
 				<chgrp>Sorry, the group could not be changed.</chgrp>
 				<chmod>Sorry, the permission could not be changed.</chmod>
@@ -144,6 +145,7 @@
 				<upload>Sorry, the file could not be uploaded.</upload>
 			</message>
 			<reason>
+				<accessdenied>You either don't have the access rights fot the selected operation or the folder is locked.</accessdenied>
 				<addgroup>The group name must be entered.</addgroup>
 				<chgrp>You don't have the needed permissions.</chgrp>
 				<chmod>You don't have the needed permissions.</chmod>
@@ -188,6 +190,7 @@
 				<upload>The file content is empty.</upload>
 			</reason>
 			<suggestion>
+				<accessdenied>Check the access rights of the resource and the lock state of the folder.</accessdenied>
 				<adduser>Please check the entered data or contact your system administrator.</adduser>
 				<chgrp>Please contact your system administrator.</chgrp>
 				<chmod>Please contact your system administrator.</chmod>
@@ -221,6 +224,7 @@
 				<upload>Please check the filename, or contact your system administrator.</upload>
 			</suggestion>
  		<title>	
+				<accessdenied>Access denied</accessdenied>
 			 	<adduser>Create new User</adduser>
 				<addgroup>Create new Group</addgroup>
 				<changeuser>Change User</changeuser>
