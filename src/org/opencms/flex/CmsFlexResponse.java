@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2003/11/14 10:09:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/11/17 07:50:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
     
@@ -346,6 +346,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         if (! hasIncludeList()) {
             // No include list, so no includes and we just use the bytes as they are in one block
             m_cachedEntry.add(result);
+            result = null;
         } else {
             // Process the include list
             int max = result.length;
@@ -388,6 +389,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                 m_cachedEntry.add(piece);
                 piece = null;
             }           
+            result = null;
             if (! i.hasNext()) {
                 // Delete the include list if all include calls are handled
                 m_includeList = null;
@@ -966,7 +968,16 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
          */
         public void clear() {
             m_stream = new java.io.ByteArrayOutputStream(1024);
-        }        
+        }
+        
+        /**
+         * @see java.io.OutputStream#close()
+         */
+        public void close() throws IOException {
+            m_stream = null;
+            m_servletStream = null;
+            super.close();
+        }
     }    
     
 }
