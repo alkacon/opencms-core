@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/04/07 07:40:00 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2004/04/28 22:26:26 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -251,7 +251,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // set the export URL
         exportManager.setExportUrl(configuration.getString(
             "staticexport.url",
-            "http://127.0.0.1:8080/opencms/handle404"));
+            "http://127.0.0.1:8080" + contextName + "/handle404"));
 
         // get the export prefix variables for rfs and vfs
         String rfsPrefix = configuration.getString("staticexport.prefix_rfs", contextName + "/export");
