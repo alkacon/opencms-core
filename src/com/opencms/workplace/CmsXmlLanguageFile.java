@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2003/01/30 19:36:48 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/01/31 10:03:25 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,10 +34,8 @@ package com.opencms.workplace;
  * XML format, hence the name "XmlLanguageFile". Since 5.0rc2 this class has
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
- * TODO: Implement a fallback-mechanism to read from the old format if all else fails.<p>
- *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.38 $ $Date: 2003/01/30 19:36:48 $
+ * @version $Revision: 1.39 $ $Date: 2003/01/31 10:03:25 $
  */
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -68,25 +66,41 @@ public class CmsXmlLanguageFile {
     /** Set of locales form the installed modules */
     private static Set m_moduleMessages = null;     
     
-    /** DEBUG flag */
-    private static final int DEBUG = 0;
-    	 
+    /** Flag to indicate support for old locale mechanism */
+    private boolean m_supportOldLocale = false;
+    
+    /** CmsObject provided with the constructror */
+    private CmsObject m_cms;
+    
+    /** Locale (2 letter ISO country code like "en") */
+    private String m_locale;
+    	         
     /**
-     * Constructor for creating a new language file object containing the content
-     * of the corresponding system language file for the current user.<p>
+     * Constructor for creating a new language file 
+     * initialized with the workplace preferences locale of the current user.<p>
      * 
      * @param cms for accessing system resources
      */    
 	public CmsXmlLanguageFile(CmsObject cms) throws CmsException {
-        m_messages = new CmsMessages(C_BUNDLE_NAME, getCurrentUserLanguage(cms));
-        m_moduleMessages = collectModuleMessages(cms);
-//		String curLanguage = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
-//		m_languageFile = (CmsXmlLanguageFileContent)(CmsXmlWpTemplateFile.getLangFileFromCache(curLanguage));
-//		if(m_languageFile == null){
-//			m_languageFile = new CmsXmlLanguageFileContent(cms);
-//		}
+        this(cms, getCurrentUserLanguage(cms));
 	}
 
+    /**
+     * Constructor for creating a new language file 
+     * initialized with the provided locale.<p>
+     *
+     * @param cms for accessing system resources
+     * @param locale the locale to initialize 
+     */
+    public CmsXmlLanguageFile(CmsObject cms, String locale) throws CmsException {
+        m_cms = cms;
+        m_locale = locale;
+        m_messages = new CmsMessages(C_BUNDLE_NAME, m_locale);        
+        m_moduleMessages = collectModuleMessages(m_cms);
+        Boolean flag = (Boolean)A_OpenCms.getRuntimeProperty("compatibility.support.oldlocales");
+        m_supportOldLocale = (flag!=null)?flag.booleanValue():false;        
+    }
+    
     /**
      * Gathers all localization files for the workplace from the different modules.<p>
      * 
@@ -117,19 +131,6 @@ public class CmsXmlLanguageFile {
             }
         }
         return bundles;
-    }
-
-
-    /**
-     * Constructor for creating a new language file object containing the contents
-     * of the given filename.<p>
-     *
-     * @param cms for accessing system resources
-     * @param filename name of the file to be read
-     */
-    public CmsXmlLanguageFile(CmsObject cms, String locale) throws CmsException {
-        m_messages = new CmsMessages(C_BUNDLE_NAME, locale);
-//        m_languageFile = new CmsXmlLanguageFileContent(cms, filename);
     }
 
     /**
@@ -168,13 +169,23 @@ public class CmsXmlLanguageFile {
                 // ignore and continue looking in the other bundles
             }
         }
+        if (m_supportOldLocale) {
+            // we have not found the key and we are in old compatiblity mode,
+            // so let's look up the XML locales
+            try {
+                CmsXmlLanguageFileContent langFile = new CmsXmlLanguageFileContent(m_cms, m_locale);
+                String value = langFile.getLanguageValue(keyName); 
+                if (value != null) return value;                              
+            } catch (CmsException e) {
+                // we have not found the keyName in the XML files either
+            }
+        }
+        
         if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, this.getClass().getName() + 
                 ".getLanguageValue() - Missing value for locale key: " + keyName);
-        }
-        return "??? " + keyName + " ???";
-
-//    	return m_languageFile.getDataValue(tag);	
+        }        
+        return "??? " + keyName + " ???";	
     }
         
     /**
