@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/17 16:00:09 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2000/06/18 08:50:38 $
+ * Version: $Revision: 1.57 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.56 $ $Date: 2000/06/17 16:00:09 $
+ * @version $Revision: 1.57 $ $Date: 2000/06/18 08:50:38 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -80,6 +80,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
     private CmsCache m_userCache=null;
     private CmsCache m_resourceCache=null;
     private CmsCache m_projectCache=null;
+    private CmsCache m_groupCache=null;
     
     // Internal ResourceBroker methods   
     
@@ -103,8 +104,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         // initalize the caches
         // todo: define cache sizes in opencms.property file
         m_userCache=new CmsCache(50);
+        m_groupCache = new CmsCache(50);
         m_projectCache = new CmsCache(50);
         m_resourceCache=new CmsCache(1000);
+        
         
     }
 	
@@ -1500,8 +1503,16 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
 							   CmsResource resource) 
-        throws CmsException {      
-        return m_dbAccess.readGroup(resource.getGroupId()) ;
+        throws CmsException {   
+        CmsGroup group=null;
+        // try to read group form cache
+        group=(CmsGroup)m_groupCache.get(resource.getGroupId());
+     
+        if (group== null) {
+            group=m_dbAccess.readGroup(resource.getGroupId()) ;
+            m_groupCache.put(resource.getGroupId(),group);
+        }
+        return group;
     }
 							
 	/**
@@ -1557,8 +1568,17 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
 								CmsProject project) 
         throws CmsException {
-
-		return this.m_dbAccess.readGroup(project.getGroupId());
+        
+        CmsGroup group=null;
+        // try to read group form cache
+        group=(CmsGroup)m_groupCache.get(project.getGroupId());
+    
+        if (group== null) {
+            group=m_dbAccess.readGroup(project.getGroupId()) ;
+            m_groupCache.put(project.getGroupId(),group);
+        } 
+            
+        return group;
     }
 	
 	/**
@@ -1576,8 +1596,14 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsGroup readManagerGroup(CmsUser currentUser, CmsProject currentProject, 
 									 CmsProject project) 
         throws CmsException {
-		
-		return m_dbAccess.readGroup(project.getManagerGroupId());
+		     CmsGroup group=null;
+        // try to read group form cache
+        group=(CmsGroup)m_groupCache.get(project.getManagerGroupId());
+        if (group== null) {
+            group=m_dbAccess.readGroup(project.getManagerGroupId()) ;
+            m_groupCache.put(project.getManagerGroupId(),group);
+        }
+        return group;
     }
 	
 	/**
@@ -1850,7 +1876,15 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
 								String groupname)
         throws CmsException {
-        return m_dbAccess.readGroup(groupname);
+        CmsGroup group=null;
+        // try to read group form cache
+        group=(CmsGroup)m_groupCache.get(groupname);
+        System.err.println("Got from cache "+group);
+        if (group== null) {
+            group=m_dbAccess.readGroup(groupname) ;
+            m_groupCache.put(groupname,group);
+        }
+        return group;
         
      
     }
@@ -2118,6 +2152,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         // Check the security
 		if( isAdmin(currentUser, currentProject) ) {
 			m_dbAccess.writeGroup(group);
+            m_groupCache.put(group.getName(),group);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + group.getName(), 
 				CmsException.C_NO_ACCESS);
@@ -2153,6 +2188,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
             // delete group only if it has no childs and there are no users in this group.
             if ((childs == null) && ((users == null) || (users.size() == 0))) {                  
 			    m_dbAccess.deleteGroup(delgroup);
+                m_groupCache.remove(delgroup);
             } else {
                 throw new CmsException(delgroup, CmsException.C_GROUP_NOT_EMPTY);	
             }
@@ -2192,7 +2228,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			group.setParentId(parentGroupId);
 			
 			// write the changes to the cms
-			m_dbAccess.writeGroup(group);
+			writeGroup(currentUser,currentProject,group);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + groupName, 
 				CmsException.C_NO_ACCESS);
@@ -2443,7 +2479,20 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         throws CmsException {
         // check security
 		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
-          return m_dbAccess.getParent(groupname);
+          CmsGroup group=readGroup(currentUser,currentProject,groupname);
+     
+          if (group.getParentId()==C_UNKNOWN_ID) {
+              return null;
+          }
+          
+          // try to read from cache
+          CmsGroup parent=(CmsGroup)m_groupCache.get(group.getParentId());
+          if (parent==null) {
+              parent=m_dbAccess.readGroup(group.getParentId());
+              m_groupCache.put(group.getParentId(),parent);
+          }
+          return parent;
+          //return m_dbAccess.getParent(groupname);
    		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + groupname, 
 				CmsException.C_NO_ACCESS);
