@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/flex/util/Attic/AllTests.java,v $
- * Date   : $Date: 2003/02/11 16:58:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/02/11 17:12:03 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,17 +34,19 @@ import junit.framework.TestSuite;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0
  */
 public class AllTests {
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite("Tests for package com.opencms.flex.util");
-        //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(CmsResourceTranslatorTest.class));
-        //$JUnit-END$
-        return suite;
-    }
+	public static Test suite() {
+		TestSuite suite =
+			new TestSuite("Tests for package com.opencms.flex.util");
+		//$JUnit-BEGIN$
+		suite.addTest(new TestSuite(CmsResourceTranslatorTest.class));
+		suite.addTest(new TestSuite(CmsStringSubstitutionTest.class));
+		//$JUnit-END$
+		return suite;
+	}
 }
