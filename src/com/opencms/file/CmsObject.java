@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/11/15 16:41:21 $
-* Version: $Revision: 1.205 $
+* Date   : $Date: 2001/11/19 09:28:11 $
+* Version: $Revision: 1.206 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.205 $ $Date: 2001/11/15 16:41:21 $
+ * @version $Revision: 1.206 $ $Date: 2001/11/19 09:28:11 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -832,6 +832,32 @@ public CmsFile createFile(String folder, String filename, byte[] contents, Strin
 public CmsFolder createFolder(String folder, String newFolderName) throws CmsException {
     return (CmsFolder)createResource(folder, newFolderName, C_TYPE_FOLDER_NAME);
 }
+
+/**
+ * Creates a new channel.
+ *
+ * @param parentChannel the complete path to the channel in which the new channel
+ * will be created.
+ * @param newChannelName the name of the new channel.
+ *
+ * @return folder a <code>CmsFolder</code> object representing the newly created channel.
+ *
+ * @exception CmsException if the channelname is not valid, or if the user has not the appropriate rights to create
+ * a new channel.
+ *
+ */
+public CmsFolder createChannel(String parentChannel, String newChannelName) throws CmsException {
+    try {
+        setContextToCos();
+        Hashtable properties = new Hashtable();
+        int newChannelId = com.opencms.dbpool.CmsIdGenerator.nextId(com.opencms.defaults.master.CmsChannelBackoffice.C_TABLE_CHANNELID);
+        properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, newChannelId+"");
+        return (CmsFolder)createResource(parentChannel, newChannelName, C_TYPE_FOLDER_NAME, properties);
+    } finally {
+        setContextToVfs();
+    }
+}
+
 /**
  * Creates a new folder.
  *

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/11/15 16:41:21 $
-* Version: $Revision: 1.188 $
+* Date   : $Date: 2001/11/19 09:28:11 $
+* Version: $Revision: 1.189 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.188 $ $Date: 2001/11/15 16:41:21 $
+ * @version $Revision: 1.189 $ $Date: 2001/11/19 09:28:11 $
  */
 public interface I_CmsConstants {
 
@@ -1163,6 +1163,11 @@ public interface I_CmsConstants {
      * The root name of the COS
      */
     static final String C_ROOTNAME_COS = "/cos";
+
+    /**
+     * The name of the entry for the id generator to create new channelid's
+     */
+    static final String C_TABLE_CHANNELID = "CORE_CHANNEL_ID";
 
     /**
      * The modus the cmsObject runs in. There are three diffrent: online, offline

@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
- * Author : $Author: e.falkenhan $
- * Date   : $Date: 2001/11/02 14:42:43 $
- * Version: $Revision: 1.1 $
+ * Author : $Author: a.schouten $
+ * Date   : $Date: 2001/11/19 09:28:11 $
+ * Version: $Revision: 1.2 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -41,8 +41,8 @@ import java.lang.*;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.1 $
- * $Date: 2001/11/02 14:42:43 $
+ * $Revision: 1.2 $
+ * $Date: 2001/11/19 09:28:11 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -50,7 +50,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
     /**
      * The name of the "tablekey" for the channel id
      */
-    private static final String C_TABLE_CHANNELID = "CORE_CHANNEL_ID";
+    private static final String C_TABLE_CHANNELID = I_CmsConstants.C_TABLE_CHANNELID;
 
     // definition of the error codes used by this content defintion
     private static String C_CHANNELNAME_ERRFIELD="channelname";
