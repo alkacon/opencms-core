@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/02/17 10:29:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/02/17 11:03:20 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/02/17 10:29:50 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/17 11:03:20 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -102,14 +102,15 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                 }
                 try {
                    // create the content for the page file
-                    System.err.println("create content");
+                   System.err.println("create content");
                    content=createPagefile("com.opencms.workplace.CmsXmlTemplate",
                                           templatefile,
-                                          C_CONTENTTEMPLATEPATH+currentFilelist+newFile);              
+                                          C_CONTENTTEMPLATEPATH+currentFilelist.substring(1,currentFilelist.length())+newFile);              
                    // check if the nescessary folders for the content files are existing.
                    // if not, create the missing folders.
                    System.err.println("check folders");
                    checkFolders(cms,currentFilelist);
+                   
                    // create the page file
                    System.err.println("create file "+currentFilelist+newFile);
                    CmsFile file=cms.createFile(currentFilelist,newFile,content,"page");
@@ -117,9 +118,11 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                    cms.lockResource(file.getAbsolutePath());
                    System.err.println("write metainfo file "+file);
                    cms.writeMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE,title);
+                   
                    // now create the page content file
                    System.err.println("create content "+C_CONTENTBODYPATH+currentFilelist+newFile);
                    CmsFile contentfile=cms.createFile(C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length()),newFile,new byte[0],"plain");
+                   
                    // set the flags for the content file to internal use, the content 
                    // should not be loaded 
            /*        System.err.println("set flags");
@@ -141,13 +144,10 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                 } catch (Exception e) {
                       throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
                 }
-                
-                
             }
         } else {
             session.removeValue(C_PARA_FILE);
         }
-
         // get the document to display
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
     
@@ -188,13 +188,13 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
             elEldef.setAttribute("name","body");
     	    firstElement.appendChild(elEldef);    
         
-            //add eleement ELEMENTDEF.CLASS
+            //add element ELEMENTDEF.CLASS
             Element elElClass= docXml.createElement("CLASS");
 		    elEldef.appendChild(elElClass);
             Node noElClass = docXml.createTextNode(classname);
 		    elElClass.appendChild(noElClass);
         
-            //add eleement ELEMENTDEF.TEMPLATE
+            //add element ELEMENTDEF.TEMPLATE
             Element elElTempl= docXml.createElement("TEMPLATE");
 		    elEldef.appendChild(elElTempl);
             Node noElTempl = docXml.createTextNode(contenttemplate);
