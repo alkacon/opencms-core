@@ -7,7 +7,7 @@
 <title>OpenCMS</title>
 
 <SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
-	window.top.head.location.reload(true);
+	window.top.location.reload(true);
 </SCRIPT>
 
 </head>
