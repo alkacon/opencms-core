@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/12/17 12:23:22 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2004/12/21 10:38:29 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.76 $ $Date: 2004/12/17 12:23:22 $
+ * @version $Revision: 1.77 $ $Date: 2004/12/21 10:38:29 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -680,7 +680,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         Connection conn = null;
         try {
             // get parent group
-            parent = readGroup(null, groupname);
+            parent = readGroup(dbc, groupname);
             // parent group exists, so get all childs
             if (parent != null) {
                 // create statement
