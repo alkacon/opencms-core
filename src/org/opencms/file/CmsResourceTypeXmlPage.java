@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/05/24 17:24:21 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/06/04 10:48:52 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,18 +44,16 @@ import org.opencms.xml.page.CmsXmlPage;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Describes the resource type "xmlpage".<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -67,9 +65,9 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
     public static final String C_RESOURCE_TYPE_NAME = "xmlpage";
              
     /**
-     * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
+     * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, List, byte[], java.lang.Object)
      */
-    public CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException {
+    public CmsResource createResource(CmsObject cms, String resourcename, List properties, byte[] contents, Object parameter) throws CmsException {
         CmsFile file = cms.doCreateFile(resourcename, contents, C_RESOURCE_TYPE_NAME, properties);
         cms.doLockResource(resourcename, CmsLock.C_MODE_COMMON);
 
@@ -88,8 +86,8 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
      * @return the created resource 
      * @throws CmsException if something goes wrong
      */
-    public CmsResource createResourceForTemplate(CmsObject cms, String resourcename, Hashtable properties, byte[] contents, String masterTemplate) throws CmsException {        
-        properties.put(I_CmsConstants.C_PROPERTY_TEMPLATE, masterTemplate);
+    public CmsResource createResourceForTemplate(CmsObject cms, String resourcename, List properties, byte[] contents, String masterTemplate) throws CmsException {        
+        properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_TEMPLATE, masterTemplate, null));
         CmsFile resource = (CmsFile)createResource(cms, resourcename, properties, contents, null);                
         return resource;
     }

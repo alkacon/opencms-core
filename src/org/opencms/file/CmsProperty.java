@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2004/05/26 09:37:57 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/06/04 10:48:52 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import java.util.RandomAccess;
  * control about which resource types support which property definitions.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2004/05/26 09:37:57 $
+ * @version $Revision: 1.14 $ $Date: 2004/06/04 10:48:52 $
  * @since build_5_1_14
  */
 public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
@@ -163,6 +163,10 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
     public CmsProperty() {
         
         // noting to do, all values will be initialized with "null" or "false" by default
+        m_key = null;
+        m_structureValue = null;
+        m_resourceValue = null;
+        m_autoCreatePropertyDefinition = false;        
     }
 
     /**
@@ -171,17 +175,30 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * If the property definition does not exist for the resource type it
      * is automatically created when this propery is written.
      * 
-     * @param propertyName the name of the property definition
+     * @param key the name of the property definition
      * @param structureValue the value to write as structure property
      * @param resourceValue the value to write as resource property 
      */
-    public CmsProperty(String propertyName, String structureValue, String resourceValue) {
+    public CmsProperty(String key, String structureValue, String resourceValue) {
         
-        m_key = propertyName;
+        this(key, structureValue, resourceValue, true);
+    } 
+    
+    /**
+     * Creates a new CmsProperty object using the provided values.<p>
+     * 
+     * @param key the name of the property definition
+     * @param structureValue the value to write as structure property
+     * @param resourceValue the value to write as resource property 
+     * @param autoCreatePropertyDefinition true, if the property definition for this property should be created mplicitly on any write operation if doesn't exist already
+     */    
+    public CmsProperty(String key, String structureValue, String resourceValue, boolean autoCreatePropertyDefinition) {
+        
+        m_key = key;
         m_structureValue = structureValue;
         m_resourceValue = resourceValue;
-        m_autoCreatePropertyDefinition = true;
-    }    
+        m_autoCreatePropertyDefinition = autoCreatePropertyDefinition;
+    }     
 
     /**
      * Returns the null property object.<p>
@@ -284,6 +301,37 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
         }
 
         return result;
+    }
+    
+    /**
+     * Searches in a list for the first occurence of a Cms property object with the given key.<p> 
+     *
+     * @param key a property key
+     * @param list a list of Cms property objects
+     * @return the index of the first occurrence of the key in they specified list, or the "null-property" {@link #C_NULL_PROPERTY} if the key is not found
+     */    
+    public static final CmsProperty get(String key, List list) {
+        CmsProperty property = null;
+        
+        // choose the fastest method to traverse the list
+        if (list instanceof RandomAccess) {
+            for (int i = 0, n = list.size(); i < n; i++) {
+                property = (CmsProperty)list.get(i);
+                if (property.m_key.equals(key)) {
+                    return property;
+                }
+            }
+        } else {
+            Iterator i = list.iterator();
+            while (i.hasNext()) {
+                property = (CmsProperty)i.next();
+                if (property.m_key.equals(key)) {
+                    return property;
+                }
+            }
+        }
+        
+        return C_NULL_PROPERTY;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/05/21 15:16:44 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/06/04 10:48:52 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.importexport;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeFolder;
 import org.opencms.file.CmsResourceTypeXmlPage;
@@ -51,7 +52,6 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.zip.ZipFile;
@@ -272,7 +272,7 @@ public class CmsImportVersion3 extends A_CmsImport {
         
         List fileNodes, acentryNodes;
         Element currentElement, currentEntry;
-        Map properties = null;
+        List properties = null;
 
         if (m_importingChannelData) {
             m_cms.getRequestContext().saveSiteRoot();
@@ -358,7 +358,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                     m_report.print(translatedName);
                     m_report.print(m_report.key("report.dots"));
                     // get all properties
-                    properties = getPropertiesFromXml(currentElement, resType, propertyName, propertyValue, deleteProperties);
+                    properties = readPropertiesFromManifest(currentElement, resType, propertyName, propertyValue, deleteProperties);
                     // import the resource               
 
                     CmsResource res = importResource(source, destination, type, uuidstructure, uuidresource, uuidcontent, datelastmodified, userlastmodified, datecreated, usercreated, flags, properties, writtenFilenames, fileCodes);
@@ -429,7 +429,7 @@ public class CmsImportVersion3 extends A_CmsImport {
       *       not used when null
       * @return imported resource
       */
-    private CmsResource importResource(String source, String destination, String type, String uuidstructure, String uuidresource, String uuidcontent, long datelastmodified, String userlastmodified, long datecreated, String usercreated, String flags, Map properties, Vector writtenFilenames, Vector fileCodes) {
+    private CmsResource importResource(String source, String destination, String type, String uuidstructure, String uuidresource, String uuidcontent, long datelastmodified, String userlastmodified, long datecreated, String usercreated, String flags, List properties, Vector writtenFilenames, Vector fileCodes) {
 
         boolean success = true;
         byte[] content = null;
@@ -445,7 +445,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                         destination += I_CmsConstants.C_FOLDER_SEPARATOR;
                     }
                     CmsResource channel = m_cms.readFileHeader(I_CmsConstants.C_ROOT + destination);
-                    channelId = m_cms.readProperty(m_cms.readAbsolutePath(channel), I_CmsConstants.C_PROPERTY_CHANNELID);
+                    channelId = m_cms.readPropertyObject(m_cms.readAbsolutePath(channel), I_CmsConstants.C_PROPERTY_CHANNELID, false).getValue();
                 } catch (Exception e) {
                     // ignore the exception, a new channel id will be generated
                 }
@@ -454,7 +454,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                     int newChannelId = org.opencms.db.CmsDbUtil.nextId(I_CmsConstants.C_TABLE_CHANNELID);
                     channelId = "" + newChannelId;
                 }
-                properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, channelId);
+                properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_CHANNELID, channelId, null));
             }
             // get the file content
             if (source != null) {
@@ -507,8 +507,8 @@ public class CmsImportVersion3 extends A_CmsImport {
                 if (content != null) {
 
                     //get the encoding
-                    String encoding;
-                    encoding = (String)properties.get(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING);
+                    String encoding = null;                    
+                    encoding = CmsProperty.get(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, properties).getValue();
                     if (encoding == null) {
                         encoding = OpenCms.getSystemInfo().getDefaultEncoding();
                     }                    

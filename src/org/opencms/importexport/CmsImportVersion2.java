@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/05/24 17:07:19 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2004/06/04 10:48:52 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.importexport;
 import org.opencms.db.CmsDbUtil;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -312,7 +313,7 @@ public class CmsImportVersion2 extends A_CmsImport {
         long lastmodified = 0;
         int resourceTypeId = I_CmsConstants.C_UNKNOWN_ID;
         int resourceTypeLoaderId = I_CmsConstants.C_UNKNOWN_ID;
-        Map properties = null;
+        List properties = null;
         boolean old_overwriteCollidingResources = false;
 
         if (m_importingChannelData) {
@@ -423,7 +424,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                     m_report.print(m_report.key("report.dots"));
 
                     // get all properties
-                    properties = getPropertiesFromXml(currentElement, resourceTypeId, propertyName, propertyValue, deleteProperties);
+                    properties = readPropertiesFromManifest(currentElement, resourceTypeId, propertyName, propertyValue, deleteProperties);
 
                     // import the specified file 
                     CmsResource res = importResource(source, destination, uuid, uuidfile, uuidresource, resourceTypeId, resourceTypeName, resourceTypeLoaderId, lastmodified, properties, writtenFilenames, fileCodes);
@@ -497,7 +498,7 @@ public class CmsImportVersion2 extends A_CmsImport {
      *       not used when null
      * @return imported resource
      */
-    private CmsResource importResource(String source, String destination, String uuid, String uuidfile, String uuidresource, int resourceTypeId, String resourceTypeName, int resourceTypeLoaderId, long lastmodified, Map properties, Vector writtenFilenames, Vector fileCodes) {
+    private CmsResource importResource(String source, String destination, String uuid, String uuidfile, String uuidresource, int resourceTypeId, String resourceTypeName, int resourceTypeLoaderId, long lastmodified, List properties, Vector writtenFilenames, Vector fileCodes) {
 
         boolean success = true;
         byte[] content = null;
@@ -526,7 +527,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                     int newChannelId = CmsDbUtil.nextId(I_CmsConstants.C_TABLE_CHANNELID);
                     channelId = "" + newChannelId;
                 }
-                properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, channelId);
+                properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_CHANNELID, channelId, null));
             }
 
             // get the file content
@@ -810,13 +811,13 @@ public class CmsImportVersion2 extends A_CmsImport {
             // get all properties      
              
             
-            Map properties = m_cms.readProperties(resname);
+            List properties = m_cms.readPropertyObjects(resname, false);
             // now get the content of the bodyfile and insert it into the control file                   
             bodyfile = m_cms.readFile(bodyname);
             
             //get the encoding
-            String encoding;
-            encoding = (String)properties.get(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING);
+            String encoding = null;                    
+            encoding = CmsProperty.get(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, properties).getValue();
             if (encoding == null) {
                 encoding = OpenCms.getSystemInfo().getDefaultEncoding();
             }
@@ -836,20 +837,21 @@ public class CmsImportVersion2 extends A_CmsImport {
             
             // write all changes                     
             m_cms.writeFile(pagefile);
-            // add the template property to the controlfile                      
-            m_cms.writeProperty(resname, I_CmsConstants.C_PROPERTY_TEMPLATE, mastertemplate, true);
+            // add the template property to the controlfile
+            m_cms.writePropertyObject(resname, new CmsProperty(I_CmsConstants.C_PROPERTY_TEMPLATE, mastertemplate, null));
             // if set, add the bodyclass as property
             if (bodyclass != null && !"".equals(bodyclass)) {
-                m_cms.writeProperty(resname, I_CmsConstants.C_PROPERTY_BODY_CLASS, bodyclass, true);
+                m_cms.writePropertyObject(resname, new CmsProperty(I_CmsConstants.C_PROPERTY_BODY_CLASS, bodyclass, null));
             }
             // if set, add bodyparams as properties
             if (bodyparams != null) {
                 for (Iterator p = bodyparams.keySet().iterator(); p.hasNext();) {
                     String key = (String)p.next();
-                    m_cms.writeProperty(resname, key, (String)bodyparams.get(key), true);
+                    m_cms.writePropertyObject(resname, new CmsProperty(key, (String)bodyparams.get(key), null));
                 }
             }
-            m_cms.writeProperties(resname, properties, true);
+            CmsProperty.setAutoCreatePropertyDefinitions(properties, true);
+            m_cms.writePropertyObjects(resname, properties);
             m_cms.touch(resname, pagefile.getDateLastModified(), false, pagefile.getUserLastModified());
             // done, ulock the resource                   
             m_cms.unlockResource(resname, false);

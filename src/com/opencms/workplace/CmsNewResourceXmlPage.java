@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceXmlPage.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2004/06/04 10:48:52 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import com.opencms.template.A_CmsXmlContent;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -59,7 +60,7 @@ import org.w3c.dom.Document;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.12 $ $Date: 2004/06/04 10:48:52 $
  */
 public class CmsNewResourceXmlPage extends CmsWorkplaceDefault {
 
@@ -133,15 +134,15 @@ public class CmsNewResourceXmlPage extends CmsWorkplaceDefault {
                             + currentFilelist.substring(1, currentFilelist.length()) + newFile);
                     */
                     
-                    Hashtable prop = new Hashtable();
-                    if( title != null && !title.equals("") ) {
-                        prop.put(C_PROPERTY_TITLE, title);
+                    List prop = new ArrayList();
+                    if (title != null && !title.equals("")) {
+                        prop.add(new org.opencms.file.CmsProperty(C_PROPERTY_TITLE, title, null));
                     }
-                    if( keywords != null && !keywords.equals("") ) {
-                        prop.put(C_PROPERTY_KEYWORDS, keywords);
+                    if (keywords != null && !keywords.equals("")) {
+                        prop.add(new org.opencms.file.CmsProperty(C_PROPERTY_KEYWORDS, keywords, null));
                     }
-                    if( description != null && !description.equals("") ) {
-                        prop.put(C_PROPERTY_DESCRIPTION, description);
+                    if (description != null && !description.equals("")) {
+                        prop.add(new org.opencms.file.CmsProperty(C_PROPERTY_DESCRIPTION, description, null));
                     }
 
                     byte[] bodyBytes = null;

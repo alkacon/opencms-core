@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/05/31 08:11:55 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/06/04 10:48:52 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  */
 public class CmsObject {
 
@@ -516,7 +516,7 @@ public class CmsObject {
             Hashtable properties = new Hashtable();
             int newChannelId = org.opencms.db.CmsDbUtil.nextId(I_CmsConstants.C_TABLE_CHANNELID);
             properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, newChannelId + "");
-            return (CmsFolder)createResource(parentChannel, newChannelName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, properties);
+            return (CmsFolder)createResource(parentChannel, newChannelName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, CmsProperty.toList(properties));
         } finally {
             getRequestContext().restoreSiteRoot();
         }
@@ -547,7 +547,7 @@ public class CmsObject {
      * @param filename the name of the new file.
      * @param contents the contents of the new file.
      * @param type the resourcetype of the new file.
-     * @param properties A Hashtable of properties, that should be set for this file.
+     * @param properties A list of properties, that should be set for this file.
      * The keys for this Hashtable are the names for properties, the values are
      * the values for the properties.
      *
@@ -559,7 +559,7 @@ public class CmsObject {
      *
      * @deprecated Use createResource instead.
      */
-    public CmsFile createFile(String folder, String filename, byte[] contents, int type, Hashtable properties) throws CmsException {
+    public CmsFile createFile(String folder, String filename, byte[] contents, int type, List properties) throws CmsException {
         return (CmsFile)createResource(folder, filename, type, properties, contents);
     }
 
@@ -672,7 +672,7 @@ public class CmsObject {
      * @return the new resource
      * @throws CmsException if something goes wrong
      */
-    public CmsResource createResource(String newResourceName, int type, Map properties, byte[] contents, Object parameter) throws CmsException {
+    public CmsResource createResource(String newResourceName, int type, List properties, byte[] contents, Object parameter) throws CmsException {
         return getResourceType(type).createResource(this, newResourceName, properties, contents, parameter);
     }
 
@@ -686,7 +686,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsResource createResource(String folder, String name, int type) throws CmsException {
-        return createResource(folder + name, type, new HashMap(), new byte[0], null);
+        return createResource(folder + name, type, Collections.EMPTY_LIST, new byte[0], null);
     }
 
     /**
@@ -699,7 +699,7 @@ public class CmsObject {
      * @return the new resource
      * @throws CmsException if something goes wrong
      */
-    public CmsResource createResource(String folder, String name, int type, Map properties) throws CmsException {
+    public CmsResource createResource(String folder, String name, int type, List properties) throws CmsException {
         return createResource(folder + name, type, properties, new byte[0], null);
     }
 
@@ -714,7 +714,7 @@ public class CmsObject {
      * @return the new resource
      * @throws CmsException if something goes wrong
      */
-    public CmsResource createResource(String folder, String name, int type, Map properties, byte[] contents) throws CmsException {
+    public CmsResource createResource(String folder, String name, int type, List properties, byte[] contents) throws CmsException {
         return createResource(folder + name, type, properties, contents, null);
     }
 
@@ -1085,17 +1085,17 @@ public class CmsObject {
     /**
      * Creates a new file with the given content and resourcetype.<br>
      *
-     * @param newFileName the name of the new file.
-     * @param contents the contents of the new file.
-     * @param type the resourcetype of the new file.
-     *
+     * @param newFileName the name of the new file
+     * @param contents the contents of the new file
+     * @param type the resourcetype of the new file
+     * @param properties a list of Cms property objects
      * @return file a <code>CmsFile</code> object representing the newly created file.
      *
      * @throws CmsException if the resourcetype is set to folder. The CmsException is also thrown, if the
      * filename is not valid or if the user has not the appropriate rights to create a new file.
      */
-    protected CmsFile doCreateFile(String newFileName, byte[] contents, String type) throws CmsException {
-        CmsFile file = m_driverManager.createFile(m_context, addSiteRoot(newFileName), contents, type, Collections.EMPTY_LIST);
+    protected CmsFile doCreateFile(String newFileName, byte[] contents, String type, List properties) throws CmsException {
+        CmsFile file = m_driverManager.createFile(m_context, addSiteRoot(newFileName), contents, type, properties);
         return file;
     }
 
@@ -1130,7 +1130,7 @@ public class CmsObject {
      * Creates a new folder.
      *
      * @param newFolderName the name of the new folder.
-     * @param properties A Hashtable of properties, that should be set for this folder.
+     * @param properties A list of properties, that should be set for this folder.
      * The keys for this Hashtable are the names for property-definitions, the values are
      * the values for the properties.
      *
@@ -1139,9 +1139,9 @@ public class CmsObject {
      * a new folder.
      *
      */
-    protected CmsFolder doCreateFolder(String newFolderName, Map properties) throws CmsException {
+    protected CmsFolder doCreateFolder(String newFolderName, List properties) throws CmsException {
         // TODO new property model: creating folders does not support the new property model yet
-        CmsFolder cmsFolder = m_driverManager.createFolder(m_context, addSiteRoot(newFolderName), CmsProperty.toList(properties));
+        CmsFolder cmsFolder = m_driverManager.createFolder(m_context, addSiteRoot(newFolderName), properties);
         return cmsFolder;
     }
 
@@ -1205,10 +1205,8 @@ public class CmsObject {
      * a new resource
      *
      */
-    protected CmsResource doImportResource(CmsResource resource, byte content[], Map properties, String destination) throws CmsException {
-        // TODO new property model: the import/export does not support the new property model yet
-        CmsResource cmsResource = m_driverManager.importResource(m_context, addSiteRoot(destination), resource, content, CmsProperty.toList(properties));
-        return cmsResource;
+    protected CmsResource doImportResource(CmsResource resource, byte content[], List properties, String destination) throws CmsException {
+        return m_driverManager.importResource(m_context, addSiteRoot(destination), resource, content, properties);
     }
 
     /**
@@ -1268,11 +1266,11 @@ public class CmsObject {
      * @return the replaced resource
      * @throws CmsException if something goes wrong
      */
-    protected CmsResource doReplaceResource(String resName, byte[] newResContent, int newResType, Map newResProps) throws CmsException {
+    protected CmsResource doReplaceResource(String resName, byte[] newResContent, int newResType, List newResProps) throws CmsException {
         CmsResource res = null;
 
         // TODO new property model: replacing resource does not yet support the new property model
-        res = m_driverManager.replaceResource(m_context, addSiteRoot(resName), newResType, CmsProperty.toList(newResProps), newResContent);
+        res = m_driverManager.replaceResource(m_context, addSiteRoot(resName), newResType, newResProps, newResContent);
         return res;
     }
 
@@ -1374,9 +1372,8 @@ public class CmsObject {
     * @param filecontent the new filecontent of the resource
     * @throws CmsException if something goes wrong
     */
-    protected void doWriteResource(String resourcename, Map properties, byte[] filecontent) throws CmsException {
-        // TODO new property model: the import/export does not support the new property model yet
-        m_driverManager.writeResource(m_context, addSiteRoot(resourcename), CmsProperty.toList(properties), filecontent);
+    protected void doWriteResource(String resourcename, List properties, byte[] filecontent) throws CmsException {
+        m_driverManager.writeResource(m_context, addSiteRoot(resourcename), properties, filecontent);
     }
 
     /**
@@ -2122,7 +2119,7 @@ public class CmsObject {
      * @return the imported CmsResource
      * @throws CmsException if operation was not successful
      */
-    public CmsResource importResource(CmsResource resource, byte[] content, Map properties, String importpath) throws CmsException {
+    public CmsResource importResource(CmsResource resource, byte[] content, List properties, String importpath) throws CmsException {
         return getResourceType(resource.getType()).importResource(this, resource, content, properties, importpath);
     }
 
@@ -2563,27 +2560,6 @@ public class CmsObject {
      */
     public Vector readAllProjectResources(int projectId) throws CmsException {
         return m_driverManager.readAllProjectResources(m_context, projectId);
-    }
-
-    /**
-     * Returns a list of all properties of a file or folder.
-     *
-     * @param filename the name of the resource for which the property has to be read
-     *
-     * @return a Vector of Strings
-     *
-     * @throws CmsException if operation was not succesful
-     * @deprecated use readProperties(String) instead
-     */
-    public Map readAllProperties(String filename) throws CmsException {
-        Map result = new HashMap();
-        Map properties = readProperties(filename, false);
-        
-        if (properties != null) {
-            result.putAll(properties);
-        }
-        
-        return result;
     }
 
     /**
@@ -3353,21 +3329,22 @@ public class CmsObject {
      * @param content the content of the new resource
      * @throws CmsException if something goes wrong
      */
-    public void replaceResource(String resourcename, int type, Map properties, byte[] content) throws CmsException {
+    public void replaceResource(String resourcename, int type, List properties, byte[] content) throws CmsException {
         // read the properties of the existing file
-        Map resProps = null;
+        List existingProperties = null;
         try {
-            resProps = readAllProperties(resourcename);
+            existingProperties = readPropertyObjects(resourcename, false);
         } catch (CmsException e) {
-            resProps = new HashMap();
+            existingProperties = Collections.EMPTY_LIST;
         }
 
         // add the properties that might have been collected during a file-upload
         if (properties != null) {
-            resProps.putAll(properties);
+            existingProperties.removeAll(properties);
+            existingProperties.addAll(properties);
         }
 
-        getResourceType(readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getType()).replaceResource(this, resourcename, resProps, content, type);
+        getResourceType(readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getType()).replaceResource(this, resourcename, existingProperties, content, type);
     }
 
     /**
@@ -4075,6 +4052,9 @@ public class CmsObject {
     
     /**
      * Writes a list of property objects to the database mapped to a specified resource.<p>
+     * 
+     * Code calling this method has to ensure that the properties in the specified list are
+     * disjunctive.<p>
      * 
      * @param resourceName the name of resource where the property is mapped to
      * @param properties a list of CmsPropertys object containing a structure and/or resource value

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/06/01 15:27:41 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/06/04 10:48:52 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,11 +41,9 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
@@ -54,7 +52,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
     
@@ -208,9 +206,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
+     * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, List, byte[], java.lang.Object)
      */
-    public CmsResource createResource(CmsObject cms, String newFolderName, Map properties, byte[] contents, Object parameter) throws CmsException {
+    public CmsResource createResource(CmsObject cms, String newFolderName, List properties, byte[] contents, Object parameter) throws CmsException {
         contents = null;
         if (!newFolderName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
             newFolderName += I_CmsConstants.C_FOLDER_SEPARATOR;
@@ -313,10 +311,13 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
 
 
     /**
-     * @see org.opencms.file.I_CmsResourceType#importResource(org.opencms.file.CmsObject, org.opencms.file.CmsResource, byte[], java.util.Map, java.lang.String)
+     * @see org.opencms.file.I_CmsResourceType#importResource(org.opencms.file.CmsObject, org.opencms.file.CmsResource, byte[], List, java.lang.String)
      */
-    public CmsResource importResource(CmsObject cms, CmsResource resource, byte[] content, Map properties, String destination) throws CmsException {
+    public CmsResource importResource(CmsObject cms, CmsResource resource, byte[] content, List properties, String destination) throws CmsException {
         CmsResource importedResource = null;
+        CmsProperty property = null, oldProperty = null;
+        int found = 0;
+        
         if (!destination.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
             destination += I_CmsConstants.C_FOLDER_SEPARATOR;
         }
@@ -331,39 +332,48 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         } catch (CmsException e) {
             // an exception is thrown if the folder already exists
         }
+        
         if (changed) {
             changed = false;
             //the resource exists, check if properties has to be updated
             importedResource = cms.readFolder(destination);
-            Map oldProperties = cms.readProperties(cms.readAbsolutePath(importedResource));
+            List oldProperties = cms.readPropertyObjects(cms.readAbsolutePath(importedResource), false);
             if (oldProperties == null) {
-                oldProperties = new HashMap();
+                oldProperties = Collections.EMPTY_LIST;
             }
             if (properties == null) {
-                properties = new Hashtable();
+                properties = Collections.EMPTY_LIST;
             }
+            
+            // find the delta between imported and existing properties
             if (properties.size() > 0) {
-                // if no properties are to be imported we do not need to check the old properties
                 if (oldProperties.size() != properties.size()) {
                     changed = true;
                 } else {
-                    // check each of the properties
-                    Iterator i = properties.keySet().iterator();
-                    while (i.hasNext()) {
-                        String curKey = (String)i.next();
-                        String value = (String)properties.get(curKey);
-                        String oldValue = (String)oldProperties.get(curKey);
-                        if ((oldValue == null) || !(value.trim().equals(oldValue.trim()))) {
+                    for (int i = 0, n = properties.size(); i < n; i++) {
+                        found = -1;
+                        property = (CmsProperty)properties.get(i);
+
+                        if ((found = oldProperties.indexOf(property)) == -1
+                            || (oldProperty = (CmsProperty)oldProperties.get(found)) == null) {
+                            changed = true;
+                            break;
+                        }
+
+                        if (oldProperty.getStructureValue().equals(property.getStructureValue())
+                            || !oldProperty.getResourceValue().equals(property.getResourceValue())) {
                             changed = true;
                             break;
                         }
                     }
                 }
             }
+            
             // check changes of the resourcetype
             if (importedResource.getType() != getResourceType()) {
                 changed = true;
             }
+            
             // update the folder if something has changed
             if (changed) {
                 lockResource(cms, cms.readAbsolutePath(importedResource), true, CmsLock.C_MODE_COMMON);
@@ -436,9 +446,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], int)
+     * @see org.opencms.file.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, java.lang.String, List, byte[], int)
      */
-    public void replaceResource(CmsObject cms, String resourceName, Map resourceProperties, byte[] resourceContent, int newResType) {
+    public void replaceResource(CmsObject cms, String resourceName, List resourceProperties, byte[] resourceContent, int newResType) {
         // folders cannot be replaced yet...
     }
 

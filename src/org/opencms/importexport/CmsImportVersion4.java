@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/05/21 15:16:44 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/06/04 10:48:52 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package org.opencms.importexport;
 
 import org.opencms.configuration.CmsImportExportConfiguration;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeFolder;
 import org.opencms.file.CmsResourceTypeXmlPage;
@@ -48,11 +49,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.security.MessageDigest;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.zip.ZipFile;
@@ -285,7 +285,7 @@ public class CmsImportVersion4 extends A_CmsImport {
 
        List fileNodes, acentryNodes;
        Element currentElement, currentEntry;
-       Map properties = null;
+       List properties = null;
 
        if (m_importingChannelData) {
            m_cms.getRequestContext().saveSiteRoot();
@@ -299,12 +299,12 @@ public class CmsImportVersion4 extends A_CmsImport {
        // get list of unwanted properties
        List deleteProperties = OpenCms.getImportExportManager().getIgnoredProperties();
        if (deleteProperties == null) {
-           deleteProperties = new ArrayList();
+           deleteProperties = Collections.EMPTY_LIST;
        }
        // get list of immutable resources
        List immutableResources = OpenCms.getImportExportManager().getImmutableResources();
        if (immutableResources == null) {
-           immutableResources = new ArrayList();
+           immutableResources = Collections.EMPTY_LIST;
        }
        // get the wanted page type for imported pages
        m_convertToXmlPage = OpenCms.getImportExportManager().convertToXmlPage();
@@ -375,7 +375,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                    m_report.print(translatedName);
                    m_report.print(m_report.key("report.dots"));
                    // get all properties
-                   properties = getPropertiesFromXml(currentElement, resType, propertyName, propertyValue, deleteProperties);
+                   properties = readPropertiesFromManifest(currentElement, resType, propertyName, propertyValue, deleteProperties);
                    // import the resource               
                    CmsResource res = importResource(source, destination, resType,  loaderId, uuidresource, uuidcontent, datelastmodified, userlastmodified, datecreated, usercreated, flags, properties);
                    // if the resource was imported add the access control entrys if available
@@ -463,7 +463,7 @@ public class CmsImportVersion4 extends A_CmsImport {
         long datecreated, 
         String usercreated, 
         String flags, 
-        Map properties
+        List properties
     ) {
 
         byte[] content = null;
@@ -526,8 +526,8 @@ public class CmsImportVersion4 extends A_CmsImport {
                 
                 if (content != null) {
                     //get the encoding
-                    String encoding;
-                    encoding = (String)properties.get(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING);
+                    String encoding = null;                    
+                    encoding = CmsProperty.get(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, properties).getValue();
                     if (encoding == null) {
                         encoding = OpenCms.getSystemInfo().getDefaultEncoding();
                     }  

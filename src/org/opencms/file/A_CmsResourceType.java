@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2004/06/01 15:27:41 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/06/04 10:48:52 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
-import java.util.Map;
+import java.util.List;
 
 import org.apache.commons.collections.ExtendedProperties;
 
@@ -44,7 +44,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -95,9 +95,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
+     * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, List, byte[], java.lang.Object)
      */
-    public abstract CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException;
+    public abstract CmsResource createResource(CmsObject cms, String resourcename, List properties, byte[] contents, Object parameter) throws CmsException;
 
     /**
      * @see org.opencms.file.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, java.lang.String, int)
@@ -148,9 +148,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public abstract String getResourceTypeName();
     
     /**
-     * @see org.opencms.file.I_CmsResourceType#importResource(org.opencms.file.CmsObject, org.opencms.file.CmsResource, byte[], java.util.Map, java.lang.String)
+     * @see org.opencms.file.I_CmsResourceType#importResource(org.opencms.file.CmsObject, org.opencms.file.CmsResource, byte[], List, java.lang.String)
      */
-    public CmsResource importResource(CmsObject cms, CmsResource resource, byte[] content, Map properties, String destination) throws CmsException {
+    public CmsResource importResource(CmsObject cms, CmsResource resource, byte[] content, List properties, String destination) throws CmsException {
         CmsResource importedResource = null;
         CmsResource existingResource = null;
 
@@ -228,9 +228,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], int)
+     * @see org.opencms.file.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, java.lang.String, List, byte[], int)
      */
-    public void replaceResource(CmsObject cms, String resourcename, Map properties, byte[] content, int type) throws CmsException {
+    public void replaceResource(CmsObject cms, String resourcename, List properties, byte[] content, int type) throws CmsException {
         cms.doReplaceResource(resourcename, content, type, properties);
     }
 

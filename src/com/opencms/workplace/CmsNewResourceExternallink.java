@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceExternallink.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2004/06/04 10:48:52 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypePointer;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -42,10 +43,11 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.10 $ $Date: 2004/06/04 10:48:52 $
  */
 
 public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
@@ -229,21 +231,20 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
                         linkResource = editFile;
                     } else {
                         // link URL is a file, so create the new file
-                        Hashtable prop = new Hashtable();
-                        prop.put(C_PROPERTY_TITLE, title);
-                        if (step.equals("1")) {
-                            //if (!targetName.startsWith("/")) {
-                            //    checkurl = CmsLinkCheck.checkUrl(targetName);
-                            //}
-                        }
+                        List properties = null;
+                        if (title != null) {
+                            properties = new ArrayList();
+                            properties.add(new org.opencms.file.CmsProperty(I_CmsConstants.C_PROPERTY_TITLE, title, null));
+                        } else {
+                            properties = Collections.EMPTY_LIST;
+                        } 
+                        
                         checkurl=true;
-                        if (checkurl ) {
-                            Map targetProperties = null;
-                            
-                            
+                        
+                        if (checkurl ) {                                                       
                             // TODO VFS links: creates an external HTTP link following the new linking paradigm
                             //linkResource = cms.createVfsLink(foldername + filename, targetName, targetProperties);
-                            linkResource = cms.createResource(foldername + filename, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, prop, targetName.getBytes(), targetProperties);
+                            linkResource = cms.createResource(foldername + filename, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, properties, targetName.getBytes(), null);
                         }
                         
                  

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2004/06/01 15:27:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/04 10:48:52 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * Defines of all methods that a specific resource type has to implement.
@@ -118,7 +118,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @return file a CmsResource representing the newly created file
      * @throws CmsException if something goes wrong
      */
-    CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException;
+    CmsResource createResource(CmsObject cms, String resourcename, List properties, byte[] contents, Object parameter) throws CmsException;
 
     /**
      * Deletes a resource.<p>
@@ -189,7 +189,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @return the imported CmsResource
      * @throws CmsException if operation was not successful
      */
-    CmsResource importResource(CmsObject cms, CmsResource resource, byte[] content, Map properties, String destination) throws CmsException;
+    CmsResource importResource(CmsObject cms, CmsResource resource, byte[] content, List properties, String destination) throws CmsException;
     
     /**
      * Initializes the resource type, called only once after class instance generation
@@ -248,7 +248,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @throws CmsException if something goes wrong
      */
     // TODO: Allow null valued for properties / content / type
-    void replaceResource(CmsObject cms, String resourcename, Map properties, byte[] content, int type) throws CmsException;
+    void replaceResource(CmsObject cms, String resourcename, List properties, byte[] content, int type) throws CmsException;
 
     /**
      * Restores a file in the current project with a version from the backup.<p>

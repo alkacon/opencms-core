@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypePointer.java,v $
- * Date   : $Date: 2004/05/24 17:24:05 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/04 10:48:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,13 +35,13 @@ import org.opencms.loader.CmsPointerLoader;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * Implementation of a resource type for external links
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsResourceTypePointer extends A_CmsResourceType {
 
@@ -73,9 +73,9 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
     } 
     
     /**
-     * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
+     * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, List, byte[], java.lang.Object)
      */
-    public CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException {
+    public CmsResource createResource(CmsObject cms, String resourcename, List properties, byte[] contents, Object parameter) throws CmsException {
 
         // create the new pointer
         CmsResource res = cms.doCreateFile(resourcename, contents, getResourceTypeName(), properties);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2004/03/19 13:52:51 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2004/06/04 10:48:52 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,8 +44,11 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,7 +60,7 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.60 $ $Date: 2004/03/19 13:52:51 $
+ * @version $Revision: 1.61 $ $Date: 2004/06/04 10:48:52 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault {
     
@@ -337,7 +340,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
 
                         // create the new file.
                         try {
-                            cms.createResource(currentFolder + filename, type, new Hashtable(), filecontent, null);
+                            cms.createResource(currentFolder + filename, type, Collections.EMPTY_LIST, filecontent, null);
                         }
                         catch (CmsException e) {
                             if (replaceResource) {
@@ -391,19 +394,21 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
 
                         // todo: error handling if file already exits
                         int type = cms.getResourceTypeId(newtype);
-                        Hashtable prop = new Hashtable();
-                        // check if a file title was given
+                        List properties = null;
                         if (title != null) {
-                            prop.put(C_PROPERTY_TITLE, title);
+                            properties = new ArrayList();
+                            properties.add(new org.opencms.file.CmsProperty(I_CmsConstants.C_PROPERTY_TITLE, title, null));
+                        } else {
+                            properties = Collections.EMPTY_LIST;
                         }
 
                         try {
-                            cms.createResource(currentFolder + filename, type, prop, filecontent, null);
+                            cms.createResource(currentFolder + filename, type, properties, filecontent, null);
                         }
                         catch (CmsException e) {
                             if (replaceResource) {
                                 cms.lockResource(currentFolder + filename, true);
-                                cms.replaceResource(currentFolder + filename, type, prop, filecontent);
+                                cms.replaceResource(currentFolder + filename, type, properties, filecontent);
                                 //cms.unlockResource( currentFolder + filename );
                                 session.putValue(CmsNewResourceUpload.C_PARAM_OVERWRITE, "no");
                             }

@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2004/04/11 17:29:48 $
- * Version: $Revision: 1.28 $
- * Date   : $Date: 2004/04/11 17:29:48 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/06/04 10:48:53 $
+ * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/06/04 10:48:53 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,15 +33,14 @@
 
 package org.opencms.synchronize;
 
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
-import org.opencms.report.I_CmsReport;
-
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeFolder;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
+import org.opencms.report.I_CmsReport;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -51,6 +50,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -62,7 +62,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.28 $ $Date: 2004/04/11 17:29:48 $
+ * @version $Revision: 1.29 $ $Date: 2004/06/04 10:48:53 $
  */
 public class CmsSynchronize {
 
@@ -304,7 +304,7 @@ public class CmsSynchronize {
             m_report.print(foldername);
             m_report.print(m_report.key("report.dots")); 
                         
-            CmsResource newFolder = m_cms.createResource(foldername, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, new HashMap(), new byte[0], null);
+            CmsResource newFolder = m_cms.createResource(foldername, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, Collections.EMPTY_LIST, new byte[0], null);
             // now check if there is some external method to be called which 
             // should modify the imported resource in the VFS
             Iterator i = m_synchronizeModifications.iterator();

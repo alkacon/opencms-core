@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/04/05 05:40:08 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/06/04 10:48:52 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public interface I_CmsConstants {
 
@@ -823,6 +823,16 @@ public interface I_CmsConstants {
      * A tag in the manifest-file.
      */
     String C_EXPORT_TAG_PROPERTY = "property";
+    
+    /**
+     * Key for the type attrib. of a property element.<p>
+     */
+    String C_EXPORT_TAG_PROPERTY_ATTRIB_TYPE = "type";
+    
+    /**
+     * Value for the "shared" type attrib. of a property element.<p>
+     */    
+    String C_EXPORT_TAG_PROPERTY_ATTRIB_TYPE_SHARED = "shared";
 
     /**
      * A tag in the manifest-file.

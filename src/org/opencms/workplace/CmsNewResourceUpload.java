@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/04 10:48:53 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -65,7 +66,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3.3
  */
@@ -239,7 +240,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
                     // determine the resource type id from the given information
                     int resTypeId = computeFileType(newResname, contentType);
                     // create the resource
-                    getCms().createResource(getParamResource(), resTypeId, new Hashtable(), content, null);
+                    getCms().createResource(getParamResource(), resTypeId, Collections.EMPTY_LIST, content, null);
                 }
                 fi.delete();
             } else {

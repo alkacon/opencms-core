@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/04/11 16:48:35 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/06/04 10:48:52 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
@@ -61,7 +62,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
@@ -83,7 +83,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.32 $ $Date: 2004/04/11 16:48:35 $
+ * @version $Revision: 1.33 $ $Date: 2004/06/04 10:48:52 $
  */
 public class CmsExport implements Serializable {
 
@@ -346,7 +346,7 @@ public class CmsExport implements Serializable {
                     // default for selected age (if not set by user) is <code>long 0</code> (i.e. 1970)
                     if (folder.getDateLastModified() >= m_contentAge) {
                         // only export folder data to manifest.xml if it has changed
-                        exportResource(folder, false);
+                        appendResourceToManifest(folder, false);
                     }
 
                     // export all sub-resources in this folder
@@ -444,7 +444,7 @@ public class CmsExport implements Serializable {
             if (!m_superFolders.contains(addFolder)) {
                 // This super folder was NOT added previously. Add it now!
                 CmsFolder folder = getCms().readFolder(addFolder);
-                exportResource(folder, false);
+                appendResourceToManifest(folder, false);
                 // Remember that this folder was added
                 m_superFolders.addElement(addFolder);
             }
@@ -576,10 +576,10 @@ public class CmsExport implements Serializable {
                 // add the resource id to the storage to mark that this resource was already exported
                 m_exportedResources.add(file.getResourceId());
                 // create the manifest-entrys
-                exportResource(file, true);
+                appendResourceToManifest(file, true);
             } else {
                 // only create the manifest-entrys
-                exportResource(file, false);
+                appendResourceToManifest(file, false);
             }
             // check if the resource is a page of the old style. if so, export the body as well       
             if (getCms().getResourceType(file.getType()).getResourceTypeName().equals("page")) {
@@ -646,15 +646,19 @@ public class CmsExport implements Serializable {
      * @throws CmsException if something goes wrong
      * @throws SAXException if something goes wrong procesing the manifest.xml
      */
-    private void exportResource(CmsResource resource, boolean source) throws CmsException, SAXException {
+    private void appendResourceToManifest(CmsResource resource, boolean source) throws CmsException, SAXException {
+        CmsProperty property = null;
+        String key = null, value = null;
+        Element propertyElement = null;
+        
         // define the file node
-        Element e = m_fileNode.addElement(I_CmsConstants.C_EXPORT_TAG_FILE);
+        Element fileElement = m_fileNode.addElement(I_CmsConstants.C_EXPORT_TAG_FILE);
 
         // only write <source> if resource is a file
         String fileName = trimResourceName(getCms().readAbsolutePath(resource));
         if (resource.isFile()) {
             if (source) {
-                e.addElement(I_CmsConstants.C_EXPORT_TAG_SOURCE).addText(fileName);
+                fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_SOURCE).addText(fileName);
             }
         } else {
             // output something to the report for the folder
@@ -666,49 +670,65 @@ public class CmsExport implements Serializable {
         }
 
         // <destination>
-        e.addElement(I_CmsConstants.C_EXPORT_TAG_DESTINATION).addText(fileName);
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DESTINATION).addText(fileName);
         // <type>
-        e.addElement(I_CmsConstants.C_EXPORT_TAG_TYPE).addText(getCms().getResourceType(resource.getType()).getResourceTypeName());
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_TYPE).addText(getCms().getResourceType(resource.getType()).getResourceTypeName());
         //  <uuidresource>
-        e.addElement(I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE).addText(resource.getResourceId().toString());
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE).addText(resource.getResourceId().toString());
         //  <uuidcontent>
-        e.addElement(I_CmsConstants.C_EXPORT_TAG_UUIDCONTENT).addText(resource.getFileId().toString());
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_UUIDCONTENT).addText(resource.getFileId().toString());
         // <datelastmodified>
-        e.addElement(I_CmsConstants.C_EXPORT_TAG_DATELASTMODIFIED).addText(String.valueOf(resource.getDateLastModified()));
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATELASTMODIFIED).addText(String.valueOf(resource.getDateLastModified()));
         // <userlastmodified>
-        e.addElement(I_CmsConstants.C_EXPORT_TAG_USERLASTMODIFIED).addText(getCms().readUser(resource.getUserLastModified()).getName());
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_USERLASTMODIFIED).addText(getCms().readUser(resource.getUserLastModified()).getName());
         // <datecreated>
-        e.addElement(I_CmsConstants.C_EXPORT_TAG_DATECREATED).addText(String.valueOf(resource.getDateCreated()));
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATECREATED).addText(String.valueOf(resource.getDateCreated()));
         // <usercreated>
-        e.addElement(I_CmsConstants.C_EXPORT_TAG_USERCREATED).addText(getCms().readUser(resource.getUserCreated()).getName());
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_USERCREATED).addText(getCms().readUser(resource.getUserCreated()).getName());
         // <flags>
         int resFlags = resource.getFlags();
         resFlags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
-        e.addElement(I_CmsConstants.C_EXPORT_TAG_FLAGS).addText(Integer.toString(resFlags));
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_FLAGS).addText(Integer.toString(resFlags));
 
-        // append the node for properties
-        Element p = e.addElement(I_CmsConstants.C_EXPORT_TAG_PROPERTIES);
+        // write the properties to the manifest
+        Element propertiesElement = fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_PROPERTIES);
+        List properties = getCms().readPropertyObjects(getCms().readAbsolutePath(resource), false);
+        for (int i = 0, n = properties.size(); i < n; i++) {
+            property = (CmsProperty)properties.get(i);
+            key = property.getKey();
 
-        // read the properties
-        Map fileProperties = getCms().readProperties(getCms().readAbsolutePath(resource));
-        Iterator i = fileProperties.keySet().iterator();
-        // create xml-elements for the properties
-        while (i.hasNext()) {
-            String key = (String)i.next();
-            // make sure channel id property is not exported with module data
-            if ((!isExportingCosData()) || (!I_CmsConstants.C_PROPERTY_CHANNELID.equals(key))) {
-                // append the node for a property
-                Element q = p.addElement(I_CmsConstants.C_EXPORT_TAG_PROPERTY);
-                q.addElement(I_CmsConstants.C_EXPORT_TAG_NAME).addText(key);
-                q.addElement(I_CmsConstants.C_EXPORT_TAG_VALUE).addCDATA((String)fileProperties.get(key));
+            // make sure the channel ID property is not exported with module data
+            if (isExportingCosData() && I_CmsConstants.C_PROPERTY_CHANNELID.equals(key)) {
+                continue;
+            }
+            
+            for (int j = 0; j < 2; j++) {
+                // iterations made here:
+                // 0) append individual/structure property value
+                // 1) append shared/resource property value
+                if ((j == 0 && (value = property.getStructureValue()) != null)
+                    || (j == 1 && (value = property.getResourceValue()) != null)) {
+                    propertyElement = propertiesElement.addElement(I_CmsConstants.C_EXPORT_TAG_PROPERTY);
+
+                    if (j == 1) {
+                        // add a type attrib. to the property node in case of a shared/resource property value
+                        propertyElement.addAttribute(
+                            I_CmsConstants.C_EXPORT_TAG_PROPERTY_ATTRIB_TYPE,
+                            I_CmsConstants.C_EXPORT_TAG_PROPERTY_ATTRIB_TYPE_SHARED);
+                    }
+
+                    propertyElement.addElement(I_CmsConstants.C_EXPORT_TAG_NAME).addText(key);
+                    propertyElement.addElement(I_CmsConstants.C_EXPORT_TAG_VALUE).addCDATA(value);
+                }
             }
         }
+        
         // append the nodes for access control entries
-        Element acl = e.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRIES);
+        Element acl = fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRIES);
 
         // read the access control entries
         Vector fileAcEntries = getCms().getAccessControlEntries(getCms().readAbsolutePath(resource), false);
-        i = fileAcEntries.iterator();
+        Iterator i = fileAcEntries.iterator();
 
         // create xml elements for each access control entry
         while (i.hasNext()) {
@@ -738,7 +758,7 @@ public class CmsExport implements Serializable {
         }
         
         // write the XML
-        digestElement(m_fileNode, e);
+        digestElement(m_fileNode, fileElement);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/05/21 15:16:44 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/06/04 10:48:52 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.importexport;
 
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypePointer;
 import org.opencms.i18n.CmsLocaleManager;
@@ -49,18 +50,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Stack;
-import java.util.Vector;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
@@ -232,7 +226,7 @@ public abstract class A_CmsImport implements I_CmsImport {
      * @throws CmsException if something goes wrong
      */
     protected void convertPointerToSiblings() throws CmsException {
-        HashSet checkedProperties = new HashSet();
+        Set checkedProperties = new HashSet();
         Iterator keys = m_linkStorage.keySet().iterator();
         int linksSize = m_linkStorage.size();
         int i = 0;
@@ -240,7 +234,7 @@ public abstract class A_CmsImport implements I_CmsImport {
         while (keys.hasNext()) {
             String key = (String)keys.next();
             String link = (String)m_linkStorage.get(key);
-            HashMap properties = (HashMap)m_linkPropertyStorage.get(key);
+            List properties = (List)m_linkPropertyStorage.get(key);
             m_report.print(" ( " + (++i) + " / " + linksSize + " ) ", I_CmsReport.C_FORMAT_NOTE);
             m_report.print(m_report.key("report.convert_link"), I_CmsReport.C_FORMAT_NOTE);
             m_report.print(key + " ");
@@ -286,40 +280,39 @@ public abstract class A_CmsImport implements I_CmsImport {
                 }
 
             } else {
-                    // make sure all found properties are already defined
-                    Iterator propKeys = properties.keySet().iterator();
-                    while (propKeys.hasNext()) {
-                        String property = (String)propKeys.next();
-                        if (!checkedProperties.contains(property)) {
-                            // check the current property and create it, if necessary
-                            createPropertydefinition(property, CmsResourceTypePointer.C_RESOURCE_TYPE_ID);
-                            checkedProperties.add(property);
-                        }
+                // make sure all found properties are already defined
+                for (int j = 0, n = properties.size(); j < n; j++) {
+                    CmsProperty property = (CmsProperty)properties.get(j);
+                    
+                    if (!checkedProperties.contains(property)) {
+                        // check the current property and create it, if necessary
+                        checkPropertyDefinition(property.getKey(), CmsResourceTypePointer.C_RESOURCE_TYPE_ID);
+                        checkedProperties.add(property);                        
                     }
-                    m_cms.createResource(key, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, properties, link.getBytes(), null);
-                    m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);  
+                }
+                m_cms.createResource(key, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, properties, link.getBytes(), null);
+                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
             }
-
         }
         m_linkStorage = null;
         m_linkPropertyStorage = null;
     }
 
     /**
-     * Creates missing property definitions if needed.<p>
+     * Tries to read the property definition for a specified key.<p>
+     * The property defintion gets created if it is missing.<p>
      *
-     * @param name the name of the property
+     * @param key the key of the property
      * @param resourceType the type of the resource
-     *
      * @throws CmsException if something goes wrong
      */
-    private void createPropertydefinition(String name, int resourceType) throws CmsException {
-        // does the propertydefinition exists already?
+    private void checkPropertyDefinition(String key, int resourceType) throws CmsException {
         try {
-            m_cms.readPropertydefinition(name, resourceType);
+            // try to read the property definition
+            m_cms.readPropertydefinition(key, resourceType);
         } catch (CmsException exc) {
-            // no: create it
-            m_cms.createPropertydefinition(name, resourceType);
+            // create missing property definitions
+            m_cms.createPropertydefinition(key, resourceType);
         }
     }
 
@@ -376,10 +369,10 @@ public abstract class A_CmsImport implements I_CmsImport {
      * @return the locale
      * @throws CmsException if something goes wrong
      */
-    protected Locale getLocale(String destination, Map properties) throws CmsException {
-        String localeName = (String)properties.get(I_CmsConstants.C_PROPERTY_LOCALE);
+    protected Locale getLocale(String destination, List properties) throws CmsException {        
+        String localeName = CmsProperty.get(I_CmsConstants.C_PROPERTY_LOCALE, properties).getValue();
         if (localeName == null) {
-            localeName = m_cms.readProperty(CmsResource.getParentFolder(destination), I_CmsConstants.C_PROPERTY_LOCALE, true);
+            localeName = m_cms.readPropertyObject(CmsResource.getParentFolder(destination), I_CmsConstants.C_PROPERTY_LOCALE, true).getValue();
         }
         if (localeName != null) {
             if (localeName.indexOf(",") >= 0) {
@@ -392,45 +385,75 @@ public abstract class A_CmsImport implements I_CmsImport {
     }
     
     /**
-     * Gets all properties from one file node in the manifest.xml.<p>
+     * Reads all properties below a specified parent element from manifest.xml.<p>
      * 
-     * @param currentElement the current file node
+     * @param parentElement the current file node
      * @param resType the resource type of this node
-     * @param propertyName name of a property to be added to all resources
-     * @param propertyValue value of that property
-     * @param deleteProperties the list of properies to be deleted
-     * @return HashMap with all properties blonging to the resource
+     * @param propertyKey key of a property to be added to all resources, or null
+     * @param propertyValue value of the property to be added to all resources, or null
+     * @param ignoredPropertyKeys a list of properies to be ignored
+     * @return ArrayList with all properties
      * @throws CmsException if something goes wrong
      */
-    protected HashMap getPropertiesFromXml(Element currentElement, int resType, String propertyName, String propertyValue, List deleteProperties) throws CmsException {
-        // get all properties for this file
-        List propertyNodes = currentElement.selectNodes("./" + I_CmsConstants.C_EXPORT_TAG_PROPERTIES + "/" + I_CmsConstants.C_EXPORT_TAG_PROPERTY);
-        // clear all stores for property information
-        HashMap properties = new HashMap();
-        // add the module property to properties
-        if (propertyName != null && propertyValue != null && !"".equals(propertyName)) {
-            createPropertydefinition(propertyName, resType);
-            properties.put(propertyName, propertyValue);
+    protected List readPropertiesFromManifest(
+        Element parentElement,
+        int resType,
+        String propertyKey,
+        String propertyValue,
+        List ignoredPropertyKeys) throws CmsException {
+
+        // all imported Cms property objects are collected in map first forfaster access
+        Map properties = new HashMap();
+        CmsProperty property = null;
+        List propertyElements = parentElement.selectNodes("./"
+            + I_CmsConstants.C_EXPORT_TAG_PROPERTIES
+            + "/"
+            + I_CmsConstants.C_EXPORT_TAG_PROPERTY);
+        Element propertyElement = null;
+        String key = null, value = null;
+        Attribute attrib = null;
+
+        if (propertyKey != null && propertyValue != null && !"".equals(propertyKey)) {
+            // TODO I can't remember at the moment this piece of code is still required or not
+            checkPropertyDefinition(propertyKey, resType);
+            properties.put(propertyKey, propertyValue);
         }
-        // walk through all properties
-        for (int j = 0; j < propertyNodes.size(); j++) {
-            Element currentProperty = (Element)propertyNodes.get(j);
-            // get name information for this property
-            String name = CmsImport.getChildElementTextValue(currentProperty, I_CmsConstants.C_EXPORT_TAG_NAME);
-            // check if this is an unwanted property
-            if ((name != null) && (!deleteProperties.contains(name))) {
-                // get value information for this property
-                String value = CmsImport.getChildElementTextValue(currentProperty, I_CmsConstants.C_EXPORT_TAG_VALUE);
-                if (value == null) {
-                    // create an empty property
-                    value = "";
-                }
-                // add property
-                properties.put(name, value);
-                createPropertydefinition(name, resType);
+
+        // iterate over all property elements
+        for (int i = 0, n = propertyElements.size(); i < n; i++) {
+            propertyElement = (Element)propertyElements.get(i);
+            key = CmsImport.getChildElementTextValue(propertyElement, I_CmsConstants.C_EXPORT_TAG_NAME);
+
+            if (key == null || ignoredPropertyKeys.contains(key)) {
+                // continue if the current property (key) should be ignored or is null
+                continue;
             }
+
+            // all Cms properties are collected in a map keyed by their property keys
+            if ((property = (CmsProperty)properties.get(key)) == null) {
+                property = new CmsProperty();
+                property.setKey(key);
+                property.setAutoCreatePropertyDefinition(true);
+                properties.put(key, property);
+            }
+
+            if ((value = CmsImport.getChildElementTextValue(propertyElement, I_CmsConstants.C_EXPORT_TAG_VALUE)) == null) {
+                value = "";
+            }
+
+            if ((attrib = propertyElement.attribute(I_CmsConstants.C_EXPORT_TAG_PROPERTY_ATTRIB_TYPE)) != null
+                && attrib.getValue().equals(I_CmsConstants.C_EXPORT_TAG_PROPERTY_ATTRIB_TYPE_SHARED)) {
+                // it is a shared/resource property value
+                property.setResourceValue(value);
+            } else {
+                // it is an individual/structure value
+                property.setStructureValue(value);
+            }
+            
+            checkPropertyDefinition(key, resType);
         }
-        return properties;
+
+        return new ArrayList(properties.values());
     }
 
     /**

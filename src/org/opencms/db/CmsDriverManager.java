@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/05/31 08:11:56 $
- * Version: $Revision: 1.366 $
+ * Date   : $Date: 2004/06/04 10:48:52 $
+ * Version: $Revision: 1.367 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.366 $ $Date: 2004/05/31 08:11:56 $
+ * @version $Revision: 1.367 $ $Date: 2004/06/04 10:48:52 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -6155,7 +6155,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @return List of CmsResource's
      * @throws CmsException if something goes wrong
      */
-    public List readPathInProject(int projectId, String path, CmsResourceFilter filter) throws CmsException {
+    protected List readPathInProject(int projectId, String path, CmsResourceFilter filter) throws CmsException {
         // splits the path into folder and filename tokens
         StringTokenizer tokens = null;
         // # of folders in the path
@@ -8724,10 +8724,10 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         try {
             // read the file header
-            resource = readFileHeader(context, resourceName, CmsResourceFilter.ALL);
+            resource = readFileHeader(context, resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
 
             // check the permissions
-            checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.ALL);     
+            checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.IGNORE_EXPIRATION);     
 
             // write the property
             m_vfsDriver.writePropertyObject(context.currentProject(), resource, property);
@@ -8754,6 +8754,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     /**
      * Writes a list of property objects to the database mapped to a specified resource.<p>
      * 
+     * Code calling this method has to ensure that the properties in the specified list are
+     * disjunctive.<p>
+     * 
      * @param context the context of the current request
      * @param resourceName the name of resource where the property is mapped to
      * @param properties a list of CmsPropertys object containing a structure and/or resource value
@@ -8762,18 +8765,31 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     public void writePropertyObjects(CmsRequestContext context, String resourceName, List properties) throws CmsException {
         CmsProperty property = null;
         CmsResource resource = null;
+        Map keyValidationMap = new HashMap();
 
         try {
+            // check if the properties in the specified list are disjunctive.
+            // in other words: the specified list must not contain two or more
+            // Cms property objects with the same key
+            for (int i = 0, n = properties.size(); i < n; i++) {
+                property = (CmsProperty)properties.get(i);
+                
+                if (!keyValidationMap.containsKey(property.getKey())) {
+                    keyValidationMap.put(property.getKey(), null);
+                } else {
+                    throw new CmsException("Lists of Cms properties must be disjunct.");
+                }
+            }
+            
             // read the file header
-            resource = readFileHeader(context, resourceName, CmsResourceFilter.ALL);
+            resource = readFileHeader(context, resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
 
             // check the permissions
-            checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.ALL);
+            checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.IGNORE_EXPIRATION);
 
             for (int i = 0; i < properties.size(); i++) {
                 // write the property
-                property = (CmsProperty) properties.get(i);
-                
+                property = (CmsProperty) properties.get(i);                
                 m_vfsDriver.writePropertyObject(context.currentProject(), resource, property);
             }
 
@@ -8783,7 +8799,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             } else {
                 m_vfsDriver.writeFolder(context.currentProject(), (CmsFolder) resource, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
             }
-        } finally {
+        } finally {            
             // update the driver manager cache
             clearResourceCache();
             m_propertyCache.clear();

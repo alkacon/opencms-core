@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2004/05/21 15:10:42 $
-* Version: $Revision: 1.68 $
+* Date   : $Date: 2004/06/04 10:48:53 $
+* Version: $Revision: 1.69 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.defaults.master;
 
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsResourceTypeFolder;
@@ -56,8 +57,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.68 $
- * $Date: 2004/05/21 15:10:42 $
+ * $Revision: 1.69 $
+ * $Date: 2004/06/04 10:48:53 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsExtendedContentDefinition{
 
@@ -345,7 +346,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
                 // this is a new row - call the create statement
                 // first set the new channelId
                 setNewChannelId();
-                newChannel = cms.createResource(m_parentchannel, m_channelname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, m_properties);
+                newChannel = cms.createResource(m_parentchannel, m_channelname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, CmsProperty.toList(m_properties));
                 cms.lockResource(cms.readAbsolutePath(newChannel), true);
             } else {
                 if (!"".equals(m_channel.getName())) {

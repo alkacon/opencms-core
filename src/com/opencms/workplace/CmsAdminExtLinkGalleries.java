@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminExtLinkGalleries.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2004/06/04 10:48:52 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,13 +34,17 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeFolder;
 import org.opencms.file.CmsResourceTypePointer;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,7 +52,7 @@ import java.util.Map;
  * <p>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.30 $ $Date: 2004/02/22 13:52:27 $
+ * @version $Revision: 1.31 $ $Date: 2004/06/04 10:48:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -235,9 +239,15 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                         }
                         CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
                         String firstTitlePart = lang.getLanguageValue("explorer.linkto") + " " + link;
-                        // create the new file
-                        Hashtable prop = new Hashtable();
-                        prop.put(C_PROPERTY_TITLE, firstTitlePart);
+                        
+                        List properties = null;
+                        if (firstTitlePart != null) {
+                            properties = new ArrayList();
+                            properties.add(new org.opencms.file.CmsProperty(I_CmsConstants.C_PROPERTY_TITLE, firstTitlePart, null));
+                        } else {
+                            properties = Collections.EMPTY_LIST;
+                        }                        
+                        
                         try{
                             if(step.equals("1")){
                                 // TODO: write some better link check which will not fail if there is
@@ -245,8 +255,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                                 //checkurl = CmsLinkCheck.checkUrl(link);
                             }
                             if(checkurl){
-                                Map targetProperties = null;
-                                cms.createResource(foldername+filename, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, prop, link.getBytes(), targetProperties);
+                                cms.createResource(foldername+filename, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, properties, link.getBytes(), null);
                             }
                         } catch (CmsException e){
                             error = e.getShortException();

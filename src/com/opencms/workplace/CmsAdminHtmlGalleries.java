@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHtmlGalleries.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2004/06/04 10:48:52 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,19 +33,23 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Template Class for administration of html galleries
  * <p>
  *
  * @author simmeu
- * @version $Revision: 1.23 $ $Date: 2004/02/22 13:52:27 $
+ * @version $Revision: 1.24 $ $Date: 2004/06/04 10:48:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -205,9 +209,16 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
 
 				if (filename != null && !"".equals(filename)) {
 					// create the new file
-					Hashtable prop = new Hashtable();
-					prop.put(C_PROPERTY_TITLE, pagetitle);
-					cms.createResource(foldername, filename, cms.getResourceTypeId(type), prop, new byte[0]);
+                    
+                    List properties = null;
+                    if (pagetitle != null) {
+                        properties = new ArrayList();
+                        properties.add(new org.opencms.file.CmsProperty(I_CmsConstants.C_PROPERTY_TITLE, pagetitle, null));
+                    } else {
+                        properties = Collections.EMPTY_LIST;
+                    }                    
+                    
+					cms.createResource(foldername, filename, cms.getResourceTypeId(type), properties, new byte[0]);
 				}
 			}
 		}
