@@ -1,0 +1,200 @@
+<?xml version="1.0"?>
+<WORKPLACE>	
+
+<filterparameter></filterparameter>
+<tabledatabegin><![CDATA[<td>]]></tabledatabegin>
+<tabledataend><![CDATA[</td>]]></tabledataend>
+<tablerowbegin><![CDATA[<tr>]]></tablerowbegin>
+<tablerowend><![CDATA[</tr>]]></tablerowend>
+<singlerow></singlerow>
+
+<TEMPLATE>
+
+<![CDATA[
+
+<html>
+
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+
+<link rel=stylesheet type="text/css" href="../css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms_edithtml.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">admincontenturl="NewsBodyBackoffice.html";</SCRIPT>
+
+
+<SCRIPT LANGUAGE="JavaScript">
+    ns = (document.layers)? true:false;
+    ie = (document.all)? true:false;
+
+    var nshowmuch=0;
+    opts=new Array()
+
+    function opt(p,l){
+        this.param=p;
+        this.llink=l;
+    }
+
+    function addoption(bla){
+        if(ns){
+            if(document.layers.pull.document.swl.checkbox.length<1+nshowmuch){
+
+                //window.alert(nshowmuch);
+                //opts[nshowmuch] = new opt(bla,p,l);
+
+                nshowmuch++;
+
+                for(i=0;i<document.layers.pull.document.swl.checkbox.length;i++){
+                    document.layers.pull.document.swl.checkbox.options[document.layers.pull.document.swl.checkbox.length] = null;
+                }
+
+                temp = new Option(bla);
+                document.layers.pull.document.swl.checkbox.options[document.layers.pull.document.swl.checkbox.length] = temp;
+                document.layers.pull.document.swl.checkbox.options[document.layers.pull.document.swl.checkbox.length-1].value = document.layers.pull.document.swl.checkbox.length-1;
+
+                if(nshowmuch == 1)document.layers.pull.document.swl.checkbox.options[0].selected=true;
+
+                history.go(0);
+            }
+        }
+
+        if(ie){
+            //opts[document.swl.checkbox.length] = new opt(bla,p,l);
+            temp = new Option(bla);
+            document.swl.checkbox.options[document.swl.checkbox.length]= temp;
+            document.swl.checkbox.options[document.swl.checkbox.length-1].value=document.swl.checkbox.length-1;
+        }
+
+    }
+
+
+
+    if(ns){
+    	var layerzeigen_01= 'document.layers.';
+    	var layerzeigen_02= '.visibility="show"';
+    	var layerverstecken_01= 'document.layers.';
+    	var layerverstecken_02= '.visibility="hide"';
+    }
+
+    if(ie){
+    	var layerzeigen_01= 'document.all.';
+    	var layerzeigen_02= '.style.visibility="visible"';
+    	var layerverstecken_01= 'document.all.';
+    	var layerverstecken_02= '.style.visibility="hidden"';
+    }
+    
+    var isshown=true;
+
+    function dellyr(welche){
+        eval(layerverstecken_01+welche+layerverstecken_02);
+    }
+    function showlyr(welche){
+        eval(layerzeigen_01+welche+layerzeigen_02);
+    }
+
+    function switchl(){
+
+//document.swl.checkbox.bla.value="hjkshjs";
+    //document.swl.checkbox.options[0].text="blahhhhh";
+    //alert(document.forms.swl.checkbox.value); ie geht! ns nicht
+
+//alert(document.layers.pull.document.swl.checkbox.selectedIndex); nur ns!!!!!!!!!!!!!!!!
+//alert(document.swl.checkbox.selectedIndex); nur ie !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    if(ns){
+        //window.alert(document.layers.pull.document.swl.checkbox.selectedIndex);
+        if(opts[document.layers.pull.document.swl.checkbox.selectedIndex].param==true){
+            showlyr('feld');
+        } else {
+            // hier richtigen frame angeben!
+            //document.location=opts[document.layers.pull.document.swl.checkbox.selectedIndex].llink;
+            dellyr('feld');
+        }
+    }
+    if(ie){
+        if(opts[document.swl.checkbox.selectedIndex].param==true){
+            showlyr('feld');
+        } else {
+            // hier richtigen frame angeben!
+            //document.location=opts[document.swl.checkbox.selectedIndex].llink;
+            dellyr('feld');
+        }
+    }
+	window.top.admin_content.location.href='NewsBodyBackoffice.html?selectbox=' + document.swl.checkbox.selectedIndex;
+
+}
+    function testit(){
+		]]><PROCESS>selectionbox</PROCESS><![CDATA[
+        if(opts.length==1){
+            if(ns)document.location=opts[document.layers.pull.document.swl.checkbox.selectedIndex].llink;
+            if(ie)document.location=opts[document.swl.checkbox.selectedIndex].llink;
+            dellyr("pull");
+            dellyr("feld");
+        }
+
+        else{
+            if(opts[0].param==false){
+                dellyr("feld");
+                showlyr("pull");
+            }else{
+            }
+       }
+                showlyr("feld");
+                showlyr("pull");
+    }
+
+
+</SCRIPT>
+
+</head>
+
+<body bgcolor="#C0C0C0" onLoad=testit();switchl();>
+
+<table cellspacing=0 cellpadding=4 border=0>
+	<tr>
+		<td class=menu nowrap width=32px valign=top>
+			<a href="javascript:if(admincontenturl=='NewsBodyBackoffice.html'){updateFrame('body.admin_content','NewsBodyBackoffice.html');}" 
+				onclick="parent.frames[1].location.href=admincontenturl;"  
+				onMouseDown="ChPush('bt_back')" onMouseUp="ChOn('bt_back')" onMouseOver="ChOn('bt_back')" onMouseOut="ChOff('bt_back')">
+				<img src="]]><METHOD name="picsUrl">bt_back_off.gif"</METHOD><![CDATA[" name="bt_back" alt="Zurück" border=0 width=32 heigth=32>
+			</a>
+		</td>
+		<td class=menu nowrap width=32px valign=top>
+			<a href="javascript:document.location.href='NewsEditBackoffice.html';parent.frames[1].location.href='NewsEditBodyBackoffice.html'"  
+				onMouseDown="ChPush('bt_new')" onMouseUp="ChOn('bt_new')" onMouseOver="ChOn('bt_new')" onMouseOut="ChOff('bt_new')">
+				<img src="]]><METHOD name="picsUrl">bt_new_off.gif"</METHOD><![CDATA[" name="bt_new" alt="Neu" border=0 width=32 heigth=32>
+			</a>
+		</td>
+		</form>	
+            <td valign=top>
+            <div id="pull" style="position:relative; visibility:hide">
+                <form name=swl>]]><LABEL value="backoffice.head.filter"/><![CDATA[:
+        		<select class=textfeld name="checkbox" id="checkbox" onchange="javascript:switchl();" size="1"/></select>
+                </form>
+            </div>
+            </td>
+            <td valign=top>
+                <div id="feld" style="position:relative; visibility:hide">
+                    <form>]]><LABEL value="backoffice.head.filter"/><![CDATA[:
+                        <input type=text>&nbsp;&nbsp;&nbsp;
+                        <input type=submit value="]]><LABEL value="button.ok"/><![CDATA[" onClick="javascript:window.top.admin_content.location.reload();"/>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+
+]]>
+
+</TEMPLATE>
+
+<singleselection><![CDATA[addoption("]]><PROCESS>selectname</PROCESS><![CDATA[");
+        		 opts[ ]]><PROCESS>selectnumber</PROCESS><![CDATA[ ] 
+        		 = new opt(]]><PROCESS>selectparameter</PROCESS><![CDATA[,
+        		 "]]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/NewsAdminBackoffice.html");]]>
+</singleselection>
+
+</WORKPLACE>
+
