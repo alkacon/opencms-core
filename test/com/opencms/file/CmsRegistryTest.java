@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/file/Attic/CmsRegistryTest.java,v $
- * Date   : $Date: 2003/09/05 16:08:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/12 11:48:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import junit.framework.TestCase;
 
 /**
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0
  */
@@ -58,13 +58,16 @@ public class CmsRegistryTest extends TestCase {
         super(arg0);
     }
     
+    /**
+     * Tests the method getSubNodeValues.<p>
+     */
     public void testGetSubNodeValues() {
         try {
             String registryPath = System.getProperty("user.dir") + C_REGISTRY_PATH;
             CmsRegistry registry = new CmsRegistry(registryPath);
             Element systemElement = registry.getSystemElement();
             
-            Map test1 = registry.getSubNodeValues(systemElement,"testnode");
+            Map test1 = registry.getSubNodeValues(systemElement, "testnode");
             
             // Test
             //  <key0></key0>

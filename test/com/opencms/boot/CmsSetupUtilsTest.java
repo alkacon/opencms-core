@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/boot/Attic/CmsSetupUtilsTest.java,v $
- * Date   : $Date: 2003/09/02 12:15:38 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/09/12 11:49:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import source.org.apache.java.util.ExtendedProperties;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.0
  */
@@ -61,6 +61,11 @@ public class CmsSetupUtilsTest extends TestCase {
         super(arg0);
     }
     
+    /**
+     * Tests the method saveProperties.<p>
+     * 
+     * @throws IOException if something goes wrong
+     */
     public void testSaveProperties() throws IOException {
         CmsSetupUtils utils = new CmsSetupUtils("");
         utils.setConfigPath("");
@@ -78,7 +83,7 @@ public class CmsSetupUtilsTest extends TestCase {
         System.err.println("Checking properties from " + outputFile);
         ExtendedProperties newProperties = CmsSetupUtils.loadProperties(outputFile);
         
-        for (Iterator i = oldProperties.keySet().iterator(); i.hasNext(); ) {
+        for (Iterator i = oldProperties.keySet().iterator(); i.hasNext();) {
             String key = (String)i.next();
             String oldValue = "", newValue = "";
             Object obj = oldProperties.get(key);
@@ -87,12 +92,12 @@ public class CmsSetupUtilsTest extends TestCase {
                 StringBuffer buf;
                 
                 buf = new StringBuffer();
-                for (Iterator j = ((Vector)obj).iterator(); j.hasNext(); )
+                for (Iterator j = ((Vector)obj).iterator(); j.hasNext();)
                     buf.append("\"" + (String)j.next() + "\"");
                 oldValue = buf.toString();
                 
                 buf = new StringBuffer();
-                for (Iterator j = ((Vector)newProperties.get(key)).iterator(); j.hasNext(); )
+                for (Iterator j = ((Vector)newProperties.get(key)).iterator(); j.hasNext();)
                     buf.append("\"" + (String)j.next() + "\"");
                 newValue = buf.toString();
 
