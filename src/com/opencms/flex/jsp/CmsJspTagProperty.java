@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagProperty.java,v $
- * Date   : $Date: 2003/03/07 15:16:36 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/03/14 12:54:51 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,51 @@ import com.opencms.util.Encoder;
 
 /**
  * Provides access to the properties of a resource in the OpenCms VFS .<p>
+ * 
+ * Of particular importance is the setting of the <code>file</code> attribute,
+ * which can take the following values.<p>
+ * 
+ * This attribute allows you to specify where to search for the property.<BR>            
+ * The following values are supported: 
+ * </P>
+ * <DL>
+ *   <DT><b>uri</b> (default) 
+ *   <DD>  Look up  the property on the file with the 
+ *   uri requested by the user. 
+ *   <DT><b>search.uri</b> or <b>search</b> 
+ *   <DD>Look up the property by also checking all parent folders for the property, 
+ *   starting with the file with uri requested by the user and 
+ *   going "upward" if the property was not found there. 
+ *   <DT><b>element.uri</b> 
+ *   <DD>Look up the property on the currently 
+ *   processed sub - element. This is useful in templates or other pages that 
+ *   consist of many elements.   
+ *   <DT><b>search.element.uri</b> 
+ *   <DD>Look up the property by also checking all parent folders for the 
+ *   property, starting with the file with the currently processed sub - 
+ *   element and going "upward" if the property was not found there.
+ *   <DT><B>{some-file-uri}</B> 
+ *   <DD>Look up the property on that exact file 
+ *   uri in the OpenCms VFS,<EM> fallback if no other valid option is 
+ *   selected for the file attribute.</EM>           
+ *   </DD>
+ * </DL>
+ *   
+ * <P>There are also some deprecated options for the "file" value that are 
+ * still supported but should not longer be used:</P>
+ * <DL>
+ *   <DT>parent 
+ *   <DD>same as <STRONG>uri</STRONG> 
+ *   <DT>search-parent 
+ *   <DD>same as <STRONG>search.uri</STRONG> 
+ *   <DT>this
+ *   <DD>same as <STRONG>element.uri</STRONG> 
+ *   <DT>search-this 
+ *   <DD>same as <STRONG>search.element.uri</STRONG></DD>
+ * </DL>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -64,8 +106,7 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     private final static int DEBUG = 0;
     
     /** static array of the possible "file" properties */
-    private static final String[] m_actionValues =
-        {
+    private static final String[] m_actionValues = {
             USE_URI,
             USE_PARENT,
             USE_SEARCH,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavElement.java,v $
- * Date   : $Date: 2003/03/02 18:43:53 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/03/14 12:54:51 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,11 +37,10 @@ import com.opencms.file.CmsResource;
 import java.util.Map;
 
 /**
- * Bean to extract navigation information from the OpenCms VFS folder
- * structure.<p>
+ * Bean to collect navigation information from a resource in the OpenCms VFS.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsJspNavElement implements Comparable {
     
@@ -91,7 +90,7 @@ public class CmsJspNavElement implements Comparable {
      * @param resource will be passed to <code>init</code>
      * @param properties will be passed to <code>init</code>
      * 
-     * @see #init(String, Hashtable)
+     * @see #init(String, Map)
      */
     public CmsJspNavElement(String resource, Map properties) {
         init(resource, properties, -1);
@@ -105,14 +104,14 @@ public class CmsJspNavElement implements Comparable {
      * @param properties will be passed to <code>init</code>
      * @param navTreeLevel will be passed to <code>init</code>
      * 
-     * @see #init(String, Hashtable, int)
+     * @see #init(String, Map, int)
      */    
     public CmsJspNavElement(String resource, Map properties, int navTreeLevel) {
         init(resource, properties, navTreeLevel);
     }
     
     /**
-     * Same as calling {@link #init(String, Hashtable, int) 
+     * Same as calling {@link #init(String, Map, int) 
      * init(String, Hashtable, -1)}.<p>
      * 
      * @param resource the name of the resource to extract the navigation 

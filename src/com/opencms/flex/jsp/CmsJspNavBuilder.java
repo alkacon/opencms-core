@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2003/03/04 17:28:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/03/14 12:54:51 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,10 +42,13 @@ import java.util.Map;
 import java.util.Vector;
 
 /**
- * Bean to provide a convenient way to build navigation structures.<p>
+ * Bean to provide a convenient way to build navigation structures based on 
+ * {@link com.opencms.flex.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
+ * 
+ * @see com.opencms.flex.jsp.CmsJspNavElement
  * 
  * @since 5.0
  */

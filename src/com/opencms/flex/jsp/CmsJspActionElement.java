@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/03/06 19:25:29 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/03/14 12:54:51 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Bean to be used on JSP pages scriplet code that provides direct 
+ * Bean to be used in JSP scriptlet code that provides direct 
  * access to the functionality offered by the opencms taglib.<p>
  * 
  * By instanciating a bean of this type and accessing the methods provided by 
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.0 beta 2
  */
@@ -282,7 +282,7 @@ public class CmsJspActionElement {
     /**
      * Returns a selected file property value, same as using 
      * the <code>&lt;cms:property name="..." /&gt;</code> tag or
-     * calling {@link #property(String name, <code>null</code>, <code>null</code>, <code>false</code>)}.<p>
+     * calling {@link #property(String name, String null, String null, boolean false)}.<p>
      * 
      * @param name the name of the property to look for
      * @return the value of the property found, or null if the property could not be found
@@ -297,7 +297,7 @@ public class CmsJspActionElement {
     /**
      * Returns a selected file property value, same as using 
      * the <code>&lt;cms:property name="..." file="..." /&gt;</code> tag or
-     * calling {@link #property(String name, String file, <code>null</code>, <code>false</code>)}.<p>
+     * calling {@link #property(String name, String file, String null, boolean false)}.<p>
      * 
      * @param name the name of the property to look for
      * @param file the file (or folder) to look at for the property
@@ -313,7 +313,7 @@ public class CmsJspActionElement {
     /**
      * Returns a selected file property value, same as using
      * the <code>&lt;cms:property name="..." file="..." default="..." /&gt;</code> tag or
-     * calling {@link #property(String name, String file, String defaultValue, <code>false</code>)}.<p>
+     * calling {@link #property(String name, String file, String defaultValue, boolean false)}.<p>
      *
      * @param name the name of the property to look for
      * @param file the file (or folder) to look at for the property
