@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<OnlineForms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templateone.form/schemas/form.xsd">
+  <OnlineForm language="en">
+    <MailFrom><![CDATA[templateonedemo@opencms.org]]></MailFrom>
+    <MailTo><![CDATA[info@alkacon.com]]></MailTo>
+    <MailSubject><![CDATA[Contact request from template one XML content demo form]]></MailSubject>
+    <MailText name="MailText0">
+      <links/>
+      <content><![CDATA[<h1>Data from contact form in template one XML content demo</h1><p>The form has been filled out with the following data: </p>]]></content>
+    </MailText>
+    <FormText name="FormText0">
+      <links/>
+      <content><![CDATA[<h3>Contact Alkacon</h3><p>Please use this form to contact us with questions or comments regarding our OpenCms services offerings. An Alkacon Software representative will contact you back as soon as possible, usually on the next business day. Keep in mind that Alkacon Software operates in the European / German time zone.</p>]]></content>
+    </FormText>
+    <InputField>
+      <FieldType><![CDATA[radio]]></FieldType>
+      <FieldLabel><![CDATA[Title]]></FieldLabel>
+      <FieldMandatory>true</FieldMandatory>
+      <FieldDefault><![CDATA[Mrs|Mr]]></FieldDefault>
+    </InputField>
+    <InputField>
+      <FieldType><![CDATA[text]]></FieldType>
+      <FieldLabel><![CDATA[Your name:]]></FieldLabel>
+      <FieldMandatory>true</FieldMandatory>
+    </InputField>
+    <InputField>
+      <FieldType><![CDATA[text]]></FieldType>
+      <FieldLabel><![CDATA[Company:]]></FieldLabel>
+      <FieldMandatory>true</FieldMandatory>
+    </InputField>
+    <InputField>
+      <FieldType><![CDATA[select]]></FieldType>
+      <FieldLabel><![CDATA[Position:]]></FieldLabel>
+      <FieldMandatory>true</FieldMandatory>
+      <FieldDefault><![CDATA[:Please select|dev:Software Developer|con:Consultant|tpm:Technical Project Manager|pm:Project Manager|cto:Technical Director/CTO|ceo:Executive Director/CEO]]></FieldDefault>
+    </InputField>
+    <InputField>
+      <FieldType><![CDATA[text]]></FieldType>
+      <FieldLabel><![CDATA[Street address:]]></FieldLabel>
+      <FieldMandatory>true</FieldMandatory>
+    </InputField>
+    <InputField>
+      <FieldType><![CDATA[text]]></FieldType>
+      <FieldLabel><![CDATA[Zip code:]]></FieldLabel>
+      <FieldMandatory>true</FieldMandatory>
+      <FieldValidation><![CDATA[\d*]]></FieldValidation>
+    </InputField>
+    <InputField>
+      <FieldType><![CDATA[text]]></FieldType>
+      <FieldLabel><![CDATA[City:]]></FieldLabel>
+      <FieldMandatory>true</FieldMandatory>
+    </InputField>
+    <InputField>
+      <FieldType><![CDATA[text]]></FieldType>
+      <FieldLabel><![CDATA[Country:]]></FieldLabel>
+      <FieldMandatory>true</FieldMandatory>
+    </InputField>
+    <InputField>
+      <FieldType><![CDATA[email]]></FieldType>
+      <FieldLabel><![CDATA[E-Mail:]]></FieldLabel>
+      <FieldMandatory>true</FieldMandatory>
+    </InputField>
+    <InputField>
+      <FieldType><![CDATA[text]]></FieldType>
+      <FieldLabel><![CDATA[Phone:]]></FieldLabel>
+      <FieldMandatory>false</FieldMandatory>
+    </InputField>
+    <InputField>
+      <FieldType><![CDATA[text]]></FieldType>
+      <FieldLabel><![CDATA[Fax:]]></FieldLabel>
+      <FieldMandatory>false</FieldMandatory>
+    </InputField>
+    <InputField>
+      <FieldType><![CDATA[checkbox]]></FieldType>
+      <FieldLabel><![CDATA[Area of interest:]]></FieldLabel>
+      <FieldMandatory>true</FieldMandatory>
+      <FieldDefault><![CDATA[ocms:Alkacon OpenCms services|info:Alkacon company information]]></FieldDefault>
+    </InputField>
+    <InputField>
+      <FieldType><![CDATA[textarea]]></FieldType>
+      <FieldLabel><![CDATA[Message/Comment:]]></FieldLabel>
+      <FieldMandatory>false</FieldMandatory>
+    </InputField>
+    <FormConfirmation name="FormConfirmation0">
+      <links/>
+      <content><![CDATA[<h3>Thank you very much! We shall contact you immediately.</h3><p>You entered the following data in your contact request</p>]]></content>
+    </FormConfirmation>
+    <OptionalFormConfiguration>
+      <MailType><![CDATA[html]]></MailType>
+      <MailCC/>
+      <MailBCC/>
+      <ShowCheck>true</ShowCheck>
+      <CheckText name="CheckText0">
+        <links/>
+        <content><![CDATA[<h3>Check submitted data</h3><p>Before finally submitting your contact data, you can check the entries and correct them, if necessary. The following data will be submitted after pressing &quot;All OK&quot;:</p>]]></content>
+      </CheckText>
+      <FormAttributes/>
+      <FormFieldAttributes/>
+    </OptionalFormConfiguration>
+    <OptionalConfirmationMail>
+      <ConfirmationMailEnabled>true</ConfirmationMailEnabled>
+      <ConfirmationMailOptional>true</ConfirmationMailOptional>
+      <ConfirmationCheckboxLabel><![CDATA[Send a copy of the form data to your own email address]]></ConfirmationCheckboxLabel>
+      <ConfirmationField><![CDATA[9]]></ConfirmationField>
+      <ConfirmationMailSubject><![CDATA[Alkacon contact]]></ConfirmationMailSubject>
+      <ConfirmationMailText name="ConfirmationMailText0">
+        <links/>
+        <content><![CDATA[<h1>Contact form data</h1><p>Thank you very much for contacting Alkacon Software - The OpenCms experts. An Alkacon Software representative will contact you back as soon as possible, usually on the next business day. Keep in mind that Alkacon Software operates in the European / German time zone.</p><p>You entered the following data in the contact form: </p>]]></content>
+      </ConfirmationMailText>
+    </OptionalConfirmationMail>
+  </OnlineForm>
+</OnlineForms>

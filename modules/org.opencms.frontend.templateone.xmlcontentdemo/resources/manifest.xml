@@ -22,6 +22,7 @@
 		<dateinstalled/>
 		<dependencies>
 			<dependency name="org.opencms.frontend.templateone" version="0.9"/>
+			<dependency name="org.opencms.frontend.templateone.form" version="0.9"/>
 			<dependency name="org.opencms.editors.htmlarea" version="0.9"/>
 		</dependencies>
 		<exportpoints>
@@ -592,6 +593,36 @@
 				<property>
 					<name>style_side_uri</name>
 					<value><![CDATA[/xmlcontent/side-elements/list_tree_side.html]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/onlineform.html</source>
+			<destination>xmlcontent/onlineform.html</destination>
+			<type>emailform</type>
+			<uuidresource>daad87c3-81cb-11d9-a0db-db858f1793fe</uuidresource>
+			<datelastmodified>Fri, 18 Feb 2005 17:09:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 18 Feb 2005 16:40:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[10]]></value>
+				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.form/pages/form.html]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Contact form]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Contact form]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
