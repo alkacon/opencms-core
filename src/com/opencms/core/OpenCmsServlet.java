@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2001/01/12 07:16:33 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2001/01/12 10:58:55 $
+ * Version: $Revision: 1.71 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.70 $ $Date: 2001/01/12 07:16:33 $  
+* @version $Revision: 1.71 $ $Date: 2001/01/12 10:58:55 $  
 * 
 * */
 
@@ -477,7 +477,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		System.err.print(new Date() + " doGet()  reqAm:" + m_currentRequestAmount + " users:" + m_sessionStorage.size() + " " + delta + "ms");
 		System.err.print( (" ["+total+"/"+free+"/"+(total-free)+"] "));
 		System.err.print("threads:" + Thread.activeCount() + " ");
-		System.err.println(cmsReq.getRequestedResource());
+		System.err.println(cmsReq.getRequestedResource() + " " + cms.getRequestContext().currentUser().getName());
 	}
 	/**
 	* Method invoked on each HTML POST request. 
@@ -531,7 +531,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		System.err.print(new Date() + " doPost() reqAm:" + m_currentRequestAmount + " users:" + m_sessionStorage.size() + " " + delta + "ms");
 		System.err.print( (" ["+total+"/"+free+"/"+(total-free)+"] "));
 		System.err.print("threads:" + Thread.activeCount() + " ");
-		System.err.println(cmsReq.getRequestedResource());
+		System.err.println(cmsReq.getRequestedResource() + " " + cms.getRequestContext().currentUser().getName());
 	}
 	/**
 	 * This method performs the error handling for the OpenCms.
