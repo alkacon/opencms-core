@@ -13,6 +13,7 @@ OpenCms 4.3.22 Bela Tegeuse -
   on the resourcetype, so there is a special class for each resource type that handles the
   actions. You have to get the new registry.xml and the new cmssetup.txt.
 ! The launchernames are stored in the registry.xml
+! The element cache can now cache methods like elements. 
 * Bugfixing in PL/SQL-Procedures for access
 * Bug fixed in online-help. The index is now displayed correct.
 * Bug fixed in sending emails from OpenCms.
