@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/23 07:50:25 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2003/09/23 10:35:55 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.62 $ $Date: 2003/09/23 07:50:25 $
+ * @version $Revision: 1.63 $ $Date: 2003/09/23 10:35:55 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -124,6 +124,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         PreparedStatement stmt2 = null;
         Connection conn = null;
         CmsBackupResource currentResource = null;
+        int size = existingBackups.size()-1;
         int count = existingBackups.size() - maxVersions;
 
         try {
@@ -132,7 +133,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt2 = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_DELETEALL_BACKUP");
 
             for (int i = 0; i < count; i++) {
-                currentResource = (CmsBackupResource)existingBackups.get(i);
+                currentResource = (CmsBackupResource)existingBackups.get(size-i);
                 // delete the resource
                 stmt1.setString(1, currentResource.getStructureId().toString());
                 stmt1.setInt(2, currentResource.getTagId());
@@ -505,7 +506,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
 
         try {
             conn = m_sqlManager.getConnectionForBackup();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_READ_ALL_VERSIONS_BACKUP");
+             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_READ_ALL_VERSIONS_BACKUP");
+
             stmt.setString(1, resourceId.toString());
             res = stmt.executeQuery();
             while (res.next()) {
@@ -983,7 +985,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             writeBackupProperties(publishProject, resource, properties, backupPkId, tagId, versionId);
 
             // now check if there are old backup versions to delete
-            List existingBackups = readBackupFileHeaders(resource.getStructureId());
+            List existingBackups = readBackupFileHeaders(resource.getResourceId());
             if (existingBackups.size() > maxVersions) {
                 // delete redundant backups
                 deleteBackups(existingBackups, maxVersions);
