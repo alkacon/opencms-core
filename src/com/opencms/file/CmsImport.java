@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/08/11 12:58:57 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/08/15 16:25:30 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import org.w3c.dom.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2000/08/11 12:58:57 $
+ * @version $Revision: 1.15 $ $Date: 2000/08/15 16:25:30 $
  */
 public class CmsImport implements I_CmsConstants {
 	
@@ -251,14 +251,13 @@ public class CmsImport implements I_CmsConstants {
 			if(source == null) {
 				// this is a directory
 				try {
-				   CmsFolder cmsfolder= m_cms.createFolder(path, name, properties);  
+				   CmsFolder cmsfolder= m_cms.createFolder(path, name, properties);
 				   fullname = cmsfolder.getAbsolutePath();                             
 				   state=C_STATE_NEW;
-				} catch (CmsException e) {
-					// an exception is thrown if the folder already exists 
+				} catch (CmsException e) { 
+					// an exception is thrown if the folder already exists
 				   state=C_STATE_CHANGED;
-				}
-
+				} 
 			} else {
 				// this is a file
 				// first delete the file, so it can be overwritten
@@ -269,10 +268,8 @@ public class CmsImport implements I_CmsConstants {
 					   state=C_STATE_NEW;
 					   // ignore the exception, the file dosen't exist
 				}
-				// now create the file
-		  
+				// now create the file 
 				fullname = m_cms.createFile(path, name, getFileBytes(source), type, properties).getAbsolutePath();
-			
 			}
 		  
 			if (fullname!=null) {

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/08/14 09:31:36 $
- * Version: $Revision: 1.112 $
+ * Date   : $Date: 2000/08/15 16:25:30 $
+ * Version: $Revision: 1.113 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.112 $ $Date: 2000/08/14 09:31:36 $ * 
+ * @version $Revision: 1.113 $ $Date: 2000/08/15 16:25:30 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -863,59 +863,67 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			 }	
 		 return readFile(project.getId(),onlineProject.getId(),filename);
 	 }
-	/**
-	 * Creates a new folder 
-	 * 
-	 * @param user The user who wants to create the folder.
-	 * @param project The project in which the resource will be used.
-	 * @param parentId The parentId of the folder.
-	 * @param fileId The fileId of the folder.
-	 * @param foldername The complete path to the folder in which the new folder will 
-	 * be created.
-	 * @param flags The flags of this resource.
-	 * 
-	 * @return The created folder.
-	 * @exception CmsException Throws CmsException if operation was not succesful.
-	 */
-	 public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, 
-								   int fileId, String foldername, int flags)
-		 throws CmsException {
-		 
-		 int resourceId = nextId(C_TABLE_RESOURCES);
-			
-		 PreparedStatement statement = null;
-		 try {  
-			// write new resource to the database
-			statement=m_pool.getPreparedStatement(C_RESOURCES_WRITE_KEY);
-			statement.setInt(1,resourceId);
-			statement.setInt(2,parentId);
-			statement.setString(3, foldername);
-			statement.setInt(4,C_TYPE_FOLDER);
-			statement.setInt(5,flags);
-			statement.setInt(6,user.getId());
-			statement.setInt(7,user.getDefaultGroupId());
-			statement.setInt(8,project.getId());
-			statement.setInt(9,fileId);
-			statement.setInt(10,C_ACCESS_DEFAULT_FLAGS);
-			statement.setInt(11,C_STATE_NEW);
-			statement.setInt(12,C_UNKNOWN_ID);
-			statement.setInt(13,C_UNKNOWN_LAUNCHER_ID);
-			statement.setString(14,C_UNKNOWN_LAUNCHER);
-			statement.setTimestamp(15,new Timestamp(System.currentTimeMillis()));
-			statement.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
-			statement.setInt(17,0);
-			statement.setInt(18,user.getId());
-			statement.executeUpdate();
-			
-		   } catch (SQLException e){
-			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		 }finally {
-				if( statement != null) {
-					m_pool.putPreparedStatement(C_RESOURCES_WRITE_KEY, statement);
-				}
-			 }  
-		 return readFolder(project.getId(),foldername);
-	 }
+/**
+ * Creates a new folder 
+ * 
+ * @param user The user who wants to create the folder.
+ * @param project The project in which the resource will be used.
+ * @param parentId The parentId of the folder.
+ * @param fileId The fileId of the folder.
+ * @param foldername The complete path to the folder in which the new folder will 
+ * be created.
+ * @param flags The flags of this resource.
+ * 
+ * @return The created folder.
+ * @exception CmsException Throws CmsException if operation was not succesful.
+ */
+public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, int fileId, String foldername, int flags) throws CmsException {
+	
+	CmsFolder oldFolder = null;
+	int state = C_STATE_NEW;  
+	// Test if the folder is already there and marked as deleted.
+	// If so, delete it
+	try {
+		oldFolder = readFolder(project.getId(), foldername);
+		if (oldFolder.getState() == C_STATE_DELETED) {
+			removeFolder(oldFolder);
+			state = C_STATE_CHANGED;
+		}
+	} catch (CmsException e) {
+	}
+	int resourceId = nextId(C_TABLE_RESOURCES);
+	PreparedStatement statement = null;
+	try {
+		// write new resource to the database
+		statement = m_pool.getPreparedStatement(C_RESOURCES_WRITE_KEY);
+		statement.setInt(1, resourceId);
+		statement.setInt(2, parentId);
+		statement.setString(3, foldername);
+		statement.setInt(4, C_TYPE_FOLDER);
+		statement.setInt(5, flags);
+		statement.setInt(6, user.getId());
+		statement.setInt(7, user.getDefaultGroupId());
+		statement.setInt(8, project.getId());
+		statement.setInt(9, fileId);
+		statement.setInt(10, C_ACCESS_DEFAULT_FLAGS);
+		statement.setInt(11, state);
+		statement.setInt(12, C_UNKNOWN_ID);
+		statement.setInt(13, C_UNKNOWN_LAUNCHER_ID);
+		statement.setString(14, C_UNKNOWN_LAUNCHER);
+		statement.setTimestamp(15, new Timestamp(System.currentTimeMillis()));
+		statement.setTimestamp(16, new Timestamp(System.currentTimeMillis()));
+		statement.setInt(17, 0);
+		statement.setInt(18, user.getId());
+		statement.executeUpdate();
+	} catch (SQLException e) {
+		throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	} finally {
+		if (statement != null) {
+			m_pool.putPreparedStatement(C_RESOURCES_WRITE_KEY, statement);
+		}
+	}
+	return readFolder(project.getId(), foldername);
+}
 	/**
 	 * Creates a new folder from an existing folder object.
 	 * 
@@ -940,7 +948,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		  CmsFolder oldFolder = null;
 		  int state=0;         
 		  if (project.equals(onlineProject)) {
-			 state= folder.getState();
+			 state=folder.getState();
 		  } else {
 			 state=C_STATE_NEW;
 		  }
@@ -971,7 +979,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				statement.setInt(8,project.getId());
 				statement.setInt(9,fileId);
 				statement.setInt(10,folder.getAccessFlags());
-				statement.setInt(11,C_STATE_NEW);
+				statement.setInt(11,state);
 				statement.setInt(12,folder.isLockedBy());
 				statement.setInt(13,folder.getLauncherType());
 				statement.setString(14,folder.getLauncherClassname());

@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/08/11 12:57:36 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/08/15 16:25:29 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import source.org.apache.java.util.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.16 $ $Date: 2000/08/11 12:57:36 $
+ * @version $Revision: 1.17 $ $Date: 2000/08/15 16:25:29 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -234,7 +234,7 @@ public class CmsShell implements I_CmsConstants {
 		} catch(Exception exc) {
 			if (exc instanceof InvocationTargetException) {
 				Throwable ex=((InvocationTargetException)exc).getTargetException();
-				System.err.println("Got Exception while useing reflection:");
+				System.err.println("Got Exception while using reflection:");
 				ex.printStackTrace();
 			} else {                
 			    printException(exc);

@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/08/08 14:08:21 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2000/08/15 16:25:30 $
+ * Version: $Revision: 1.54 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.53 $ $Date: 2000/08/08 14:08:21 $  
+* @version $Revision: 1.54 $ $Date: 2000/08/15 16:25:30 $  
 * 
 * */
 
@@ -402,7 +402,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		output.append("</BODY>\n");
 		output.append("</html>\n");
 		return output.toString();
-	 } 
+	 }
 	/**
 	 * Destroys all running threads before closing the VM.
 	 */
@@ -809,7 +809,6 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 					try {
 						long ms = System.currentTimeMillis();
 						m_opencms.storeSession(session.getId(), sessionData);
-						System.err.println("Storing session takes: " + (System.currentTimeMillis() - ms) + " ms");
 					} catch(CmsException exc) {
 						if(A_OpenCms.isLogging()) {
 							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[OpenCmsServlet] cannot store session: " + com.opencms.util.Utils.getStackTrace(exc));
@@ -837,5 +836,5 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 			}
 		}
 		   
-	 } 
-}  
+	 }
+}

@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/08/14 09:31:37 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/08/15 16:25:31 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.18 $ $Date: 2000/08/14 09:31:37 $ * 
+ * @version $Revision: 1.19 $ $Date: 2000/08/15 16:25:31 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -191,134 +191,123 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 
 
 	
-	/**
-	 * Instanciates the access-module and sets up all required modules and connections.
-	 * @param config The OpenCms configuration.
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public CmsDbAccess(Configurations config) 
-		throws CmsException {
-
-		String rbName = null;
-		String driver = null;
-		String url = null;
-		String user = null;
-		String password = null;
-		String digest = null;
-		String exportpoint = null;
-		String exportpath = null;
-		int sleepTime;
-		boolean fillDefaults = true;
-		int maxConn;
-		
-		
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] init the dbaccess-module.");
-		}
-
-		// read the name of the rb from the properties
-		rbName = (String)config.getString(C_CONFIGURATION_RESOURCEBROKER);
-		
-		// read the exportpoints
-		m_exportpointStorage = new Hashtable();
-		int i = 0;
-		while ((exportpoint = config.getString(C_EXPORTPOINT + Integer.toString(i))) != null){
-			exportpath = config.getString(C_EXPORTPOINT_PATH + Integer.toString(i));
-			if (exportpath != null){
-				m_exportpointStorage.put(exportpoint, exportpath);
-			} 	
-			i++;
-		}
-
-		// read all needed parameters from the configuration
-		driver = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_DRIVER);
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read driver from configurations: " + driver);
-		}
-		
-		url = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_URL);
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read url from configurations: " + url);
-		}
-		
-		user = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_USER);
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read user from configurations: " + user);
-		}
-		
-		password = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_PASSWORD, "");
-		
-		maxConn = config.getInteger(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_MAX_CONN);
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read maxConn from configurations: " + maxConn);
-		}
-		
-		digest = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_DIGEST, "MD5");
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read digest from configurations: " + digest);
-		}
-		
-		sleepTime = config.getInteger(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_GUARD, 120);
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read guard-sleeptime from configurations: " + sleepTime);
-		}
-		
-		// create the digest
-		try {
-			m_digest = MessageDigest.getInstance(digest);
-			if(A_OpenCms.isLogging()) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] digest created, using: " + m_digest.toString() );
-			}
-		} catch (NoSuchAlgorithmException e){
-			if(A_OpenCms.isLogging()) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] error creating digest - using clear paswords: " + e.getMessage());
-			}
-		}
-		
-		// create the pool
-		m_pool = new CmsDbPool(driver, url, user, password, maxConn);
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] pool created");
-		}
-		
-		// now init the statements
-		initStatements();
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] all statements initialized in the pool");
-		}
-		
-		// now init the max-ids for key generation
-		initMaxIdValues();
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] max-ids initialized");
-		}
-		
-		// have we to fill the default resource like root and guest?
-		try {
-			CmsProject project = readProject(C_PROJECT_ONLINE_ID);
-			if( project.getName().equals( C_PROJECT_ONLINE ) ) {
-				// online-project exists - no need of filling defaults
-				fillDefaults = false;
-			}
-		} catch(Exception exc) {
-			// ignore the exception - fill defaults stays at true.
-		}
-		
-		if(fillDefaults) {
-			// YES!
-			if(A_OpenCms.isLogging()) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] fill default resources");
-			}
-			fillDefaults();			
-		}
-		
-		// start the connection-guard
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] start connection guard");
-		}
-		m_guard = new CmsConnectionGuard(m_pool, sleepTime);
-		m_guard.start();		
+/**
+ * Instanciates the access-module and sets up all required modules and connections.
+ * @param config The OpenCms configuration.
+ * @exception CmsException Throws CmsException if something goes wrong.
+ */
+public CmsDbAccess(Configurations config) throws CmsException {
+	String rbName = null;
+	String driver = null;
+	String url = null;
+	String user = null;
+	String password = null;
+	String digest = null;
+	String exportpoint = null;
+	String exportpath = null;
+	int sleepTime;
+	boolean fillDefaults = true;
+	int maxConn;
+	if (A_OpenCms.isLogging()) {
+		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] init the dbaccess-module.");
 	}
+
+	// read the name of the rb from the properties
+	rbName = (String) config.getString(C_CONFIGURATION_RESOURCEBROKER);
+
+	// read the exportpoints
+	m_exportpointStorage = new Hashtable();
+	int i = 0; 
+	while ((exportpoint = config.getString(C_EXPORTPOINT + Integer.toString(i))) != null) {
+		exportpath = config.getString(C_EXPORTPOINT_PATH + Integer.toString(i));
+		if (exportpath != null) {
+			m_exportpointStorage.put(exportpoint, exportpath);
+		}
+		i++;
+	}
+
+	// read all needed parameters from the configuration
+	driver = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_DRIVER);
+	if (A_OpenCms.isLogging()) {
+		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read driver from configurations: " + driver);
+	}
+	url = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_URL);
+	if (A_OpenCms.isLogging()) {
+		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read url from configurations: " + url);
+	}
+	user = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_USER);
+	if (A_OpenCms.isLogging()) {
+		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read user from configurations: " + user);
+	}
+	password = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_PASSWORD, "");
+	maxConn = config.getInteger(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_MAX_CONN);
+	if (A_OpenCms.isLogging()) {
+		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read maxConn from configurations: " + maxConn);
+	}
+	digest = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_DIGEST, "MD5");
+	if (A_OpenCms.isLogging()) {
+		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read digest from configurations: " + digest);
+	}
+	sleepTime = config.getInteger(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_GUARD, 120);
+	if (A_OpenCms.isLogging()) {
+		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read guard-sleeptime from configurations: " + sleepTime);
+	}
+
+	// create the digest
+	try {
+		m_digest = MessageDigest.getInstance(digest);
+		if (A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] digest created, using: " + m_digest.toString());
+		}
+	} catch (NoSuchAlgorithmException e) {
+		if (A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] error creating digest - using clear paswords: " + e.getMessage());
+		}
+	}
+
+	// create the pool
+	m_pool = new CmsDbPool(driver, url, user, password, maxConn);
+	if (A_OpenCms.isLogging()) {
+		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] pool created");
+	}
+
+	// now init the statements
+	initStatements();
+	if (A_OpenCms.isLogging()) {
+		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] all statements initialized in the pool");
+	}
+
+	// now init the max-ids for key generation
+	initMaxIdValues();
+	if (A_OpenCms.isLogging()) {
+		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] max-ids initialized");
+	}
+
+	// have we to fill the default resource like root and guest?
+	try {
+		CmsProject project = readProject(C_PROJECT_ONLINE_ID);
+		if (project.getName().equals(C_PROJECT_ONLINE)) {
+			// online-project exists - no need of filling defaults
+			fillDefaults = false;
+		}
+	} catch (Exception exc) {
+		// ignore the exception - fill defaults stays at true.
+	}
+	if (fillDefaults) {
+		// YES!
+		if (A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] fill default resources");
+		}
+		fillDefaults();
+	}
+
+	// start the connection-guard
+	if (A_OpenCms.isLogging()) {
+		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] start connection guard");
+	}
+	m_guard = new CmsConnectionGuard(m_pool, sleepTime);
+	m_guard.start();
+}
 	/**
 	 * Creates a serializable object in the systempropertys.
 	 * 
@@ -563,7 +552,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		
 		 throws CmsException {
   
-		// get the parent resource in the offline project
+		 // get the parent resource in the offline project
 		 int id=C_UNKNOWN_ID;
 		 try {
 			CmsResource parent=readResource(project,resource.getParent());
@@ -845,134 +834,134 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			 }	
 		 return readFile(project.getId(),onlineProject.getId(),filename);
 	 }
-	/**
-	 * Creates a new folder 
-	 * 
-	 * @param user The user who wants to create the folder.
-	 * @param project The project in which the resource will be used.
-	 * @param parentId The parentId of the folder.
-	 * @param fileId The fileId of the folder.
-	 * @param foldername The complete path to the folder in which the new folder will 
-	 * be created.
-	 * @param flags The flags of this resource.
-	 * 
-	 * @return The created folder.
-	 * @exception CmsException Throws CmsException if operation was not succesful.
-	 */
-	 public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, 
-								   int fileId, String foldername, int flags)
-		 throws CmsException {
-		 
-		 int resourceId = nextId(C_TABLE_RESOURCES);
-			
-		 PreparedStatement statement = null;
-		 try {  
-			// write new resource to the database
-			statement=m_pool.getPreparedStatement(C_RESOURCES_WRITE_KEY);
-			statement.setInt(1,resourceId);
-			statement.setInt(2,parentId);
-			statement.setString(3, foldername);
-			statement.setInt(4,C_TYPE_FOLDER);
-			statement.setInt(5,flags);
-			statement.setInt(6,user.getId());
-			statement.setInt(7,user.getDefaultGroupId());
-			statement.setInt(8,project.getId());
-			statement.setInt(9,fileId);
-			statement.setInt(10,C_ACCESS_DEFAULT_FLAGS);
-			statement.setInt(11,C_STATE_NEW);
-			statement.setInt(12,C_UNKNOWN_ID);
-			statement.setInt(13,C_UNKNOWN_LAUNCHER_ID);
-			statement.setString(14,C_UNKNOWN_LAUNCHER);
-			statement.setTimestamp(15,new Timestamp(System.currentTimeMillis()));
-			statement.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
-			statement.setInt(17,0);
-			statement.setInt(18,user.getId());
-			statement.executeUpdate();
-			
-		   } catch (SQLException e){
-			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		 }finally {
-				if( statement != null) {
-					m_pool.putPreparedStatement(C_RESOURCES_WRITE_KEY, statement);
-				}
-			 }  
-		 return readFolder(project.getId(),foldername);
-	 }
-	/**
-	 * Creates a new folder from an existing folder object.
-	 * 
-	 * @param user The user who wants to create the folder.
-	 * @param project The project in which the resource will be used.
-	 * @param onlineProject The online project of the OpenCms.
-	 * @param folder The folder to be written to the Cms.
-	 * @param parentId The parentId of the resource.
-	 *
-	 * @param foldername The complete path of the new name of this folder.
-	 * 
-	 * @return The created folder.
-	 * @exception CmsException Throws CmsException if operation was not succesful.
-	 */
-	 public CmsFolder createFolder(CmsUser user,
-								   CmsProject project,
-								   CmsProject onlineProject,
-								   CmsFolder folder,
-								   int parentId,
-								   String foldername)
-		 throws CmsException{
-		  CmsFolder oldFolder = null;
-		  int state=0;         
-		  if (project.equals(onlineProject)) {
-			 state= folder.getState();
-		  } else {
-			 state=C_STATE_NEW;
-		  }
-		 
-		   // Test if the file is already there and marked as deleted.
-		   // If so, delete it
-		   try {
-				 oldFolder = readFolder(project.getId(),foldername);
-				 if (oldFolder.getState() == C_STATE_DELETED){
-					removeFolder(oldFolder);
-					state = C_STATE_CHANGED;
-				 }	     
-		   } catch (CmsException e) {}
+/**
+ * Creates a new folder 
+ * 
+ * @param user The user who wants to create the folder.
+ * @param project The project in which the resource will be used.
+ * @param parentId The parentId of the folder.
+ * @param fileId The fileId of the folder.
+ * @param foldername The complete path to the folder in which the new folder will 
+ * be created.
+ * @param flags The flags of this resource.
+ * 
+ * @return The created folder.
+ * @exception CmsException Throws CmsException if operation was not succesful.
+ */
+public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, int fileId, String foldername, int flags) throws CmsException {
+	CmsFolder oldFolder = null;
+	int state = C_STATE_NEW;  
 	
-		   int resourceId = nextId(C_TABLE_RESOURCES);
-	       int fileId = nextId(C_TABLE_FILES);
-		   PreparedStatement statement = null;
-			try {   
-				// write new resource to the database
-				statement = m_pool.getPreparedStatement(C_RESOURCES_WRITE_KEY);
-				statement.setInt(1,resourceId);
-				statement.setInt(2,parentId);
-				statement.setString(3, foldername);
-				statement.setInt(4,folder.getType());
-				statement.setInt(5,folder.getFlags());
-				statement.setInt(6,folder.getOwnerId());
-				statement.setInt(7,folder.getGroupId());
-				statement.setInt(8,project.getId());
-				statement.setInt(9,fileId);
-				statement.setInt(10,folder.getAccessFlags());
-				statement.setInt(11,C_STATE_NEW);
-				statement.setInt(12,folder.isLockedBy());
-				statement.setInt(13,folder.getLauncherType());
-				statement.setString(14,folder.getLauncherClassname());
-				statement.setTimestamp(15,new Timestamp(folder.getDateCreated()));
-				statement.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
-				statement.setInt(17,0);
-				statement.setInt(18,user.getId());
-				statement.executeUpdate();
-
-			} catch (SQLException e){
-			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-			}finally {
-				if( statement != null) {
-					m_pool.putPreparedStatement(C_RESOURCES_WRITE_KEY, statement);
-				}
-			 }  
-		 //return readFolder(project,folder.getAbsolutePath());
-		 return readFolder(project.getId(),foldername);
-	 }
+	// Test if the folder is already there and marked as deleted.
+	// If so, delete it
+	try { 
+		oldFolder = readFolder(project.getId(), foldername);
+		if (oldFolder.getState() == C_STATE_DELETED) {  
+			removeFolder(oldFolder);
+			state = C_STATE_CHANGED;
+		}
+	} catch (CmsException e) { 
+	}
+	int resourceId = nextId(C_TABLE_RESOURCES);
+	PreparedStatement statement = null;
+	try {
+		// write new resource to the database
+		statement = m_pool.getPreparedStatement(C_RESOURCES_WRITE_KEY);
+		statement.setInt(1, resourceId);
+		statement.setInt(2, parentId);
+		statement.setString(3, foldername);
+		statement.setInt(4, C_TYPE_FOLDER);
+		statement.setInt(5, flags);
+		statement.setInt(6, user.getId());
+		statement.setInt(7, user.getDefaultGroupId());
+		statement.setInt(8, project.getId());
+		statement.setInt(9, fileId);
+		statement.setInt(10, C_ACCESS_DEFAULT_FLAGS);
+		statement.setInt(11, state);
+		statement.setInt(12, C_UNKNOWN_ID);
+		statement.setInt(13, C_UNKNOWN_LAUNCHER_ID);
+		statement.setString(14, C_UNKNOWN_LAUNCHER);
+		statement.setTimestamp(15, new Timestamp(System.currentTimeMillis()));
+		statement.setTimestamp(16, new Timestamp(System.currentTimeMillis()));
+		statement.setInt(17, 0);
+		statement.setInt(18, user.getId());
+		statement.executeUpdate();
+	} catch (SQLException e) {
+		throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	} finally {
+		if (statement != null) {
+			m_pool.putPreparedStatement(C_RESOURCES_WRITE_KEY, statement);
+		}
+	}  
+	return readFolder(project.getId(), foldername); 
+}
+/**
+ * Creates a new folder from an existing folder object.
+ * 
+ * @param user The user who wants to create the folder.
+ * @param project The project in which the resource will be used.
+ * @param onlineProject The online project of the OpenCms.
+ * @param folder The folder to be written to the Cms.
+ * @param parentId The parentId of the resource.
+ *
+ * @param foldername The complete path of the new name of this folder.
+ * 
+ * @return The created folder.
+ * @exception CmsException Throws CmsException if operation was not succesful.
+ */
+public CmsFolder createFolder(CmsUser user, CmsProject project, CmsProject onlineProject, CmsFolder folder, int parentId, String foldername) throws CmsException {
+	CmsFolder oldFolder = null;
+	int state = 0;
+	if (project.equals(onlineProject)) {
+		state = folder.getState();
+	} else {
+		state = C_STATE_NEW;
+	}
+	// Test if the file is already there and marked as deleted.
+	// If so, delete it
+	try {
+		oldFolder = readFolder(project.getId(), foldername);
+		if (oldFolder.getState() == C_STATE_DELETED) {
+			removeFolder(oldFolder);
+			state = C_STATE_CHANGED;
+		}
+	} catch (CmsException e) {
+	}
+	int resourceId = nextId(C_TABLE_RESOURCES);
+	int fileId = nextId(C_TABLE_FILES);
+	PreparedStatement statement = null;
+	try {
+		// write new resource to the database
+		statement = m_pool.getPreparedStatement(C_RESOURCES_WRITE_KEY);
+		statement.setInt(1, resourceId);
+		statement.setInt(2, parentId);
+		statement.setString(3, foldername);
+		statement.setInt(4, folder.getType());
+		statement.setInt(5, folder.getFlags());
+		statement.setInt(6, folder.getOwnerId());
+		statement.setInt(7, folder.getGroupId());
+		statement.setInt(8, project.getId());
+		statement.setInt(9, fileId);
+		statement.setInt(10, folder.getAccessFlags());
+		statement.setInt(11, state);
+		statement.setInt(12, folder.isLockedBy());
+		statement.setInt(13, folder.getLauncherType());
+		statement.setString(14, folder.getLauncherClassname());
+		statement.setTimestamp(15, new Timestamp(folder.getDateCreated()));
+		statement.setTimestamp(16, new Timestamp(System.currentTimeMillis()));
+		statement.setInt(17, 0);
+		statement.setInt(18, user.getId());
+		statement.executeUpdate();
+	} catch (SQLException e) {
+		throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	} finally {
+		if (statement != null) {
+			m_pool.putPreparedStatement(C_RESOURCES_WRITE_KEY, statement);
+		}
+	}
+	//return readFolder(project,folder.getAbsolutePath());
+	return readFolder(project.getId(), foldername);
+}
 	 // methods working with users and groups
 	
 	/**
@@ -3031,8 +3020,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 
 	public void publishProject(CmsUser user, int projectId, CmsProject onlineProject)
 
-		throws CmsException {
-		
+		throws CmsException { 
 		CmsAccessFilesystem discAccess = new CmsAccessFilesystem(m_exportpointStorage);
 		CmsFolder currentFolder = null;
 		CmsFile currentFile = null;
@@ -3055,11 +3043,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 
 				deletedFolders.addElement(currentFolder);
 			// C_STATE_NEW	
-			}else if (currentFolder.getState() == C_STATE_NEW){
+			} else if (currentFolder.getState() == C_STATE_NEW){
 	   
 				// export to filesystem if necessary
 				String exportKey = checkExport(currentFolder.getAbsolutePath());
-				if (exportKey != null){
+				if (exportKey != null){ 
 					discAccess.createFolder(currentFolder.getAbsolutePath(), exportKey);
 				}
 				// get parentId for onlineFolder either from folderIdIndex or from the database
@@ -3090,7 +3078,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			}else if (currentFolder.getState() == C_STATE_CHANGED){
    				// export to filesystem if necessary
 				String exportKey = checkExport(currentFolder.getAbsolutePath());
-				if (exportKey != null){
+				if (exportKey != null){ 
 					discAccess.createFolder(currentFolder.getAbsolutePath(), exportKey);
 				}
 
@@ -3156,9 +3144,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + onlineFolder.toString() + " Message= " + exc.getMessage());
 					}
 				}
-			// C_STATE_UNCHANGED	
-			}else if(currentFolder.getState() == C_STATE_UNCHANGED){
-			 
+			// C_STATE_UNCHANGED
+			} else if(currentFolder.getState() == C_STATE_UNCHANGED){ 
 				CmsFolder onlineFolder = null;
 				try{
 					onlineFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
@@ -3207,7 +3194,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	  			// delete in filesystem if necessary
 				String exportKey = checkExport(currentFile.getAbsolutePath());
 				if (exportKey != null){
-					try {
+					try { 
 					discAccess.removeResource(currentFile.getAbsolutePath(), exportKey);
 					} catch (Exception ex) {
 										 }
@@ -3304,7 +3291,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			}else if (currentFile.getState() == C_STATE_NEW){
 				// export to filesystem if necessary
 				String exportKey = checkExport(currentFile.getAbsolutePath());
-				if (exportKey != null){
+				if (exportKey != null){ 
 					discAccess.writeFile(currentFile.getAbsolutePath(), exportKey, readFileContent(currentFile.getFileId()));
 				}
 
@@ -5130,20 +5117,20 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	  * @exception CmsException Throws CmsException if operation was not succesful
 	  */
 	 public void removeFolder(CmsFolder folder) 
-		throws CmsException{
-		 
+		throws CmsException{ 
+			
 		 // the current implementation only deletes empty folders
 		 // check if the folder has any files in it
 		 Vector files= getFilesInFolder(folder);
 		 files=getUndeletedResources(files);
-		 if (files.size()==0) {
+		 if (files.size()==0) { 
 			 // check if the folder has any folders in it
-			 Vector folders= getSubFolders(folder);
+			 Vector folders= getSubFolders(folder); 
 			 folders=getUndeletedResources(folders);
 			 if (folders.size()==0) {
 			 //this folder is empty, delete it
 		     PreparedStatement statement = null;
-				 try {          
+				 try {           
 					// delete the folder
 		            statement = m_pool.getPreparedStatement(C_RESOURCES_ID_DELETE_KEY);
 		            statement.setInt(1,folder.getResourceId());

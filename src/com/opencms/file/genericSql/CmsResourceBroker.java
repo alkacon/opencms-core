@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/11 14:26:53 $
- * Version: $Revision: 1.101 $
+ * Date   : $Date: 2000/08/15 16:25:30 $
+ * Version: $Revision: 1.102 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.101 $ $Date: 2000/08/11 14:26:53 $
+ * @version $Revision: 1.102 $ $Date: 2000/08/15 16:25:30 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1183,14 +1183,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			resource = readFolder(currentUser,currentProject,filename);
 			 } else {
 			resource = (CmsFile)readFileHeader(currentUser,currentProject,filename);
-		}
-		
+		} 
 		
 		// has the user write-access? and is he owner or admin?
-		if( accessWrite(currentUser, currentProject, resource) &&
-			( (resource.getOwnerId() == currentUser.getId()) || 
-			  isAdmin(currentUser, currentProject))) {
-				
+		if( accessWrite(currentUser, currentProject, resource)) { 
 		 
 			resource.setState(state);
 			// write-acces  was granted - write the file.
@@ -1205,9 +1201,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			}
 			m_subresCache.clear();
 			// inform about the file-system-change
-			fileSystemChanged();
-			
-
+			fileSystemChanged();  
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
 				CmsException.C_NO_ACCESS);
@@ -4199,133 +4193,124 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		
 		return retValue;
 	}
-	/**
-	 * Reads a folder from the Cms.<BR/>
-	 * 
-	 * <B>Security:</B>
-	 * Access is granted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read the resource</li>
-	 * </ul>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param foldername The complete path of the folder to be read.
-	 * 
-	 * @return folder The read folder.
-	 * 
-	 * @exception CmsException will be thrown, if the folder couldn't be read. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 */
-	public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject,
-								String folder) 
-		throws CmsException {
-		CmsFolder cmsFolder;
-	  		// read the resource from the currentProject, or the online-project
-		 try {
-			   cmsFolder = (CmsFolder)m_resourceCache.get(C_FOLDER+currentProject.getId()+folder);
-			   if (cmsFolder==null) {
-			    cmsFolder =  m_dbAccess.readFolder(currentProject.getId(), folder);
-				m_resourceCache.put(C_FOLDER+currentProject.getId()+folder,(CmsFolder)cmsFolder);
-				}
+/**
+ * Reads a folder from the Cms.<BR/>
+ * 
+ * <B>Security:</B>
+ * Access is granted, if:
+ * <ul>
+ * <li>the user has access to the project</li>
+ * <li>the user can read the resource</li>
+ * </ul>
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param foldername The complete path of the folder to be read.
+ * 
+ * @return folder The read folder.
+ * 
+ * @exception CmsException will be thrown, if the folder couldn't be read. 
+ * The CmsException will also be thrown, if the user has not the rights 
+ * for this resource.
+ */
+public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, String folder) throws CmsException {
+	CmsFolder cmsFolder;
+	// read the resource from the currentProject, or the online-project
+	try {
+		cmsFolder = (CmsFolder) m_resourceCache.get(C_FOLDER + currentProject.getId() + folder);
+		if (cmsFolder == null) {
+			cmsFolder = m_dbAccess.readFolder(currentProject.getId(), folder);
+			if (cmsFolder.getState() != C_STATE_DELETED) {
+				m_resourceCache.put(C_FOLDER + currentProject.getId() + folder, (CmsFolder) cmsFolder);
+			}		
+		}
+	} catch (CmsException exc) {
+		// the resource was not readable
 
-		 } catch(CmsException exc) {
-			 // the resource was not readable
+		if (currentProject.equals(onlineProject(currentUser, currentProject))) {
 
-			 if(currentProject.equals(onlineProject(currentUser, currentProject))) {
-				   
-				 // this IS the onlineproject - throw the exception
-				 throw exc;
-			 } else {
-
-				 // try to read the resource in the onlineproject
-				 cmsFolder = (CmsFolder)m_resourceCache.get(C_FOLDER+C_PROJECT_ONLINE_ID+folder);
-
-				 if (cmsFolder==null) {		
-	
-				    cmsFolder = cmsFolder = m_dbAccess.readFolder(C_PROJECT_ONLINE_ID,folder);
-	 
-					m_resourceCache.put(C_FOLDER+currentProject.getId()+folder,(CmsFolder)cmsFolder);                 
-				 }
-			 }
-		 }
-	
-		if( accessRead(currentUser, currentProject, (CmsResource)cmsFolder) ) {
-			// acces to all subfolders was granted - return the folder.
-			if (cmsFolder.getState() == C_STATE_DELETED) {
-				throw new CmsException("["+this.getClass().getName()+"]"+cmsFolder.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);  
-			} else {
-				   return cmsFolder;
-			}
+			// this IS the onlineproject - throw the exception
+			throw exc;
 		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + folder,
-				CmsException.C_ACCESS_DENIED);
+
+			// try to read the resource in the onlineproject
+			cmsFolder = (CmsFolder) m_resourceCache.get(C_FOLDER + C_PROJECT_ONLINE_ID + folder);
+			if (cmsFolder == null) {
+				cmsFolder = cmsFolder = m_dbAccess.readFolder(C_PROJECT_ONLINE_ID, folder);
+				m_resourceCache.put(C_FOLDER + currentProject.getId() + folder, (CmsFolder) cmsFolder);
+			}
 		}
 	}
-	/**
-	 * Reads a folder from the Cms.<BR/>
-	 * 
-	 * <B>Security:</B>
-	 * Access is granted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read the resource</li>
-	 * </ul>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param folder The complete path to the folder from which the folder will be 
-	 * read.
-	 * @param foldername The name of the folder to be read.
-	 * 
-	 * @return folder The read folder.
-	 * 
-	 * @exception CmsException will be thrown, if the folder couldn't be read. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 */
-	public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject,
-								String folder, String folderName)
-		throws CmsException {
-	 
-		CmsFolder cmsFolder;
-		// read the resource from the currentProject, or the online-project
-		 try {
-			 cmsFolder = (CmsFolder)m_resourceCache.get(C_FOLDER+currentProject.getId()+folder + folderName);
-			 if (cmsFolder==null) {
-			    cmsFolder = m_dbAccess.readFolder(currentProject.getId(), 
-													          folder + folderName);
-				m_resourceCache.put(C_FOLDER+currentProject.getId()+folder + folderName,(CmsFolder)cmsFolder);
-				}
-		 } catch(CmsException exc) {
-			 // the resource was not readable
-			 if(currentProject.equals(onlineProject(currentUser, currentProject))) {
-				 // this IS the onlineproject - throw the exception
-				 throw exc;
-			 } else {
-				 // try to read the resource in the onlineproject
-				 cmsFolder = (CmsFolder)m_resourceCache.get(C_FOLDER+C_PROJECT_ONLINE_ID+folder + folderName);
-				 if (cmsFolder==null) {			    
-				    cmsFolder = cmsFolder = m_dbAccess.readFolder(C_PROJECT_ONLINE_ID,folder + folderName);
-					m_resourceCache.put(C_FOLDER+currentProject.getId()+folder + folderName,(CmsFolder)cmsFolder);                 }
-			 }
-		 }
-		 
-		if( accessRead(currentUser, currentProject, (CmsResource)cmsFolder) ) {
-				
-			// acces to all subfolders was granted - return the folder.
-			if (cmsFolder.getState() == C_STATE_DELETED) {
-				throw new CmsException("["+this.getClass().getName()+"]"+cmsFolder.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);  
-			} else {
-			   return cmsFolder;
-			}
+	if (accessRead(currentUser, currentProject, (CmsResource) cmsFolder)) {
+		// acces to all subfolders was granted - return the folder.
+		if (cmsFolder.getState() == C_STATE_DELETED) {
+			throw new CmsException("[" + this.getClass().getName() + "]" + cmsFolder.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);
 		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + folder + folderName, 
-				CmsException.C_ACCESS_DENIED);
+			return cmsFolder;
+		}
+	} else {
+		throw new CmsException("[" + this.getClass().getName() + "] " + folder, CmsException.C_ACCESS_DENIED);
+	}
+}
+/**
+ * Reads a folder from the Cms.<BR/>
+ * 
+ * <B>Security:</B>
+ * Access is granted, if:
+ * <ul>
+ * <li>the user has access to the project</li>
+ * <li>the user can read the resource</li>
+ * </ul>
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param folder The complete path to the folder from which the folder will be 
+ * read.
+ * @param foldername The name of the folder to be read.
+ * 
+ * @return folder The read folder.
+ * 
+ * @exception CmsException will be thrown, if the folder couldn't be read. 
+ * The CmsException will also be thrown, if the user has not the rights 
+ * for this resource.
+ */
+public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, String folder, String folderName) throws CmsException {
+	CmsFolder cmsFolder;
+	// read the resource from the currentProject, or the online-project
+	try {
+		cmsFolder = (CmsFolder) m_resourceCache.get(C_FOLDER + currentProject.getId() + folder + folderName);
+		if (cmsFolder == null) {
+			cmsFolder = m_dbAccess.readFolder(currentProject.getId(), folder + folderName);
+			if (cmsFolder.getState() != C_STATE_DELETED) {
+				m_resourceCache.put(C_FOLDER + currentProject.getId() + folder + folderName, (CmsFolder) cmsFolder);
+			}
+		}
+	} catch (CmsException exc) {
+		// the resource was not readable
+		if (currentProject.equals(onlineProject(currentUser, currentProject))) {
+			// this IS the onlineproject - throw the exception
+			throw exc;
+		} else {
+			// try to read the resource in the onlineproject
+			cmsFolder = (CmsFolder) m_resourceCache.get(C_FOLDER + C_PROJECT_ONLINE_ID + folder + folderName);
+			if (cmsFolder == null) {
+				cmsFolder = cmsFolder = m_dbAccess.readFolder(C_PROJECT_ONLINE_ID, folder + folderName);
+				m_resourceCache.put(C_FOLDER + currentProject.getId() + folder + folderName, (CmsFolder) cmsFolder);
+			}
 		}
 	}
+	if (accessRead(currentUser, currentProject, (CmsResource) cmsFolder)) {
+
+		// acces to all subfolders was granted - return the folder.
+		if (cmsFolder.getState() == C_STATE_DELETED) {
+			throw new CmsException("[" + this.getClass().getName() + "]" + cmsFolder.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);
+		} else {
+			return cmsFolder;
+		}
+	} else {
+		throw new CmsException("[" + this.getClass().getName() + "] " + folder + folderName, CmsException.C_ACCESS_DENIED);
+	}
+}
 	/**
 	 * Reads all given tasks from a user for a project.
 	 * 

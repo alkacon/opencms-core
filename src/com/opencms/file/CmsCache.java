@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCache.java,v $
- * Date   : $Date: 2000/08/08 14:08:22 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/08/15 16:25:30 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import com.opencms.core.*;
  * data read from the File DB.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/08/08 14:08:22 $
+ * @version $Revision: 1.10 $ $Date: 2000/08/15 16:25:30 $
  */
 
 public class CmsCache implements I_CmsConstants {
@@ -118,8 +118,7 @@ public class CmsCache implements I_CmsConstants {
 		CmsCachedObject ret=null;
 	
 		// get object from cache
-		cachedObject=(CmsCachedObject)cache.get(key);  
-						
+		cachedObject=(CmsCachedObject)cache.get(key);   
 		// not empty?
 		if (cachedObject != null) {
 			// update  timestamp
@@ -199,7 +198,7 @@ public class CmsCache implements I_CmsConstants {
 	 * @param strKey The key for the new object stroed in the cache.
 	 * @param value The value of the new object stroed in the cache.
 	 */
-	public void put(String strKey, Object value) {
+	public void put(String strKey, Object value) { 
 		if (cache.size() < max_objects) {
 			cache.put(strKey,new CmsCachedObject(value));
 	
@@ -225,7 +224,7 @@ public class CmsCache implements I_CmsConstants {
 	 * Removes a CmsCachedObject from the cache.
 	 * @param key The key of the Object to be removed from the cache.
 	 */
-	public  void remove(String key)	{
+	public  void remove(String key)	{ 
 	  cache.remove(key);
 	}
 	/**

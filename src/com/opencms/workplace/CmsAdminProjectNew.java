@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/08/08 14:08:30 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2000/08/15 16:25:33 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.32 $ $Date: 2000/08/08 14:08:30 $
+ * @version $Revision: 1.33 $ $Date: 2000/08/15 16:25:33 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -145,7 +145,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		 }
 			   
 		 return access;
-	 } 
+	 }
 	/**
 	 * Gets the content of a defined section in a given template file and its subtemplates
 	 * with the given parameters. 
@@ -293,6 +293,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 				if(!"errornewproject".equals(templateSelector)) {   
 					// finally create the project
 		 			CmsProject project = cms.createProject(newName, newDescription, newGroup, newManagerGroup);
+		 			  
 					// change the current project
 					reqCont.setCurrentProject(project.getId());
 					// copy the resources to the project   

@@ -2,8 +2,8 @@ package com.opencms.file.utils;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsAccessFilesystem.java,v $
- * Date   : $Date: 2000/08/08 14:08:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/08/15 16:25:32 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -69,27 +69,27 @@ public class CmsAccessFilesystem implements I_CmsConstants {
 		path = exportpath + filename.substring(exportpoint.length());
 		return path;
 	}
-	/**
-	 * Creates a new folder 
-	 * 
-	 * @param foldername The complete path to the folder. 
-	 *  
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful.
-	 */
-	 public void createFolder(String foldername, String key)
-		 throws CmsException {
+/**
+ * Creates a new folder 
+ * 
+ * @param foldername The complete path to the folder. 
+ *  
+ * 
+ * @exception CmsException Throws CmsException if operation was not succesful.
+ */
+public void createFolder(String foldername, String key) throws CmsException {
 
-		  // create folder
-		  File discFolder=new File(absoluteName(foldername,key));
-		  // check if this folder already exits
-		  if (!discFolder.exists())	{
-			boolean success=discFolder.mkdir();
-			if (!success) {
-			//	throw new CmsException("[" + this.getClass().getName() + "] "+foldername,CmsException.C_FILESYSTEM_ERROR);
-			}
-		  }
-	 } 
+	// create folder
+	File discFolder = new File(absoluteName(foldername, key));
+	// check if this folder already exits
+	if (!discFolder.exists()) {
+		boolean success = discFolder.mkdir();
+		if ((!success) && A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsAccessFilesystem] Couldn't create folder " + absoluteName(foldername, key) + ".");
+		}
+		//	throw new CmsException("[" + this.getClass().getName() + "] "+foldername,CmsException.C_FILESYSTEM_ERROR);
+	}
+}
 	 /**
 	  * Deletes a file or folder in the filesytem. 
 	  * 
@@ -107,7 +107,7 @@ public class CmsAccessFilesystem implements I_CmsConstants {
 			//		 throw new CmsException("[" + this.getClass().getName() + "] "+filename,CmsException.C_FILESYSTEM_ERROR);
 			}
 		 }
-	 } 
+	 }
 	/**
 	 * Creates or writes a file with the given content.
 	 *
@@ -130,5 +130,5 @@ public class CmsAccessFilesystem implements I_CmsConstants {
 			 } catch (Exception e) {
 			  // throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage());
 			 }	
-	 } 
+	 }
 }

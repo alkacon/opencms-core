@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/11 14:26:53 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/08/15 16:25:31 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/08/11 14:26:53 $
+ * @version $Revision: 1.18 $ $Date: 2000/08/15 16:25:31 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1182,15 +1182,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			resource = readFolder(currentUser,currentProject,filename);
 			 } else {
 			resource = (CmsFile)readFileHeader(currentUser,currentProject,filename);
-		}
+		} 
 		
-		
-		// has the user write-access? and is he owner or admin?
-		if( accessWrite(currentUser, currentProject, resource) &&
-			( (resource.getOwnerId() == currentUser.getId()) || 
-			  isAdmin(currentUser, currentProject))) {
-				
-		 
+		// has the user write-access?
+		if( accessWrite(currentUser, currentProject, resource)) {
 			resource.setState(state);
 			// write-acces  was granted - write the file.
 			if (filename.endsWith("/")) { 
@@ -1432,7 +1427,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				String parent = onlineRes.getParent();
 				Stack resources=new Stack();
 	
-				// go through all parens and store them on a stack
+				// go through all parents and store them on a stack
 				while(parent != null) {
 					// read the online-resource
 				   	onlineRes = readFileHeader(currentUser,online, parent);
@@ -1625,32 +1620,30 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		validFilename(newFolderName);
 		CmsFolder cmsFolder = readFolder(currentUser,currentProject, folder);
 		if( accessCreate(currentUser, currentProject, (CmsResource)cmsFolder) ) {
-				
 			// write-acces  was granted - create the folder.
 	 		CmsFolder newFolder = m_dbAccess.createFolder(currentUser, currentProject, 
 														  cmsFolder.getResourceId(),
 														  C_UNKNOWN_ID,
 														  folder + newFolderName + 
 														  C_FOLDER_SEPERATOR,
-														  0);
+														  0); 
 			// update the access flags
 			Hashtable startSettings=null;
 			Integer accessFlags=null;
 			startSettings=(Hashtable)currentUser.getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
 			if (startSettings != null) {
 				accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
-				if (accessFlags != null) {
+				if (accessFlags != null) { 
 					newFolder.setAccessFlags(accessFlags.intValue());
 				}
-			}
+			} 
 			if(currentGroup != null) {
 				newFolder.setGroupId(currentGroup.getId());
-			}
+			} 
 			newFolder.setState(C_STATE_NEW);
 		
 			m_dbAccess.writeFolder(currentProject, newFolder, false);
-			m_subresCache.clear();
-										
+			m_subresCache.clear(); 
 			// write metainfos for the folder
 			writeProperties(currentUser,currentProject, newFolder.getAbsolutePath(), propertyinfos);
 			// inform about the file-system-change
@@ -1982,21 +1975,19 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */	
 	public void deleteFolder(CmsUser currentUser, CmsProject currentProject,
 							 String foldername)
-		throws CmsException {
-		
+		throws CmsException { 
 		CmsResource onlineFolder;
 		
-		// read the folder, that shold be deleted
-		CmsFolder cmsFolder = readFolder(currentUser,currentProject,foldername);
+		// read the folder, that should be deleted
+		CmsFolder cmsFolder = readFolder(currentUser,currentProject,foldername); 
 		try {
 			onlineFolder = readFolder(currentUser,onlineProject(currentUser, currentProject), foldername);
 		} catch (CmsException exc) {
 			// the file dosent exist
 			onlineFolder = null;
-		}
+		} 
 		// check, if the user may delete the resource
-		if( accessWrite(currentUser, currentProject, cmsFolder) ) {
-				
+		if( accessWrite(currentUser, currentProject, cmsFolder) ) { 	
 			// write-acces  was granted - delete the folder and metainfos.
 			deleteAllProperties(currentUser,currentProject, cmsFolder.getAbsolutePath());
 			if(onlineFolder == null) {
@@ -2005,7 +1996,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			} else {
 				m_dbAccess.deleteFolder(currentProject,cmsFolder, false);
 			}
-			// update cache
+			// update cache 
 			m_resourceCache.remove(C_FOLDER+currentProject.getId()+foldername);
 			m_subresCache.clear();
 			
@@ -3086,8 +3077,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		  
 			chstate(currentUser,offlineProject,offlineRes.getAbsolutePath(),C_STATE_UNCHANGED);
 		   
-			
-		
+			 
 		    // now walk recursive through all files and folders, and copy them too
 		    if(onlineRes.isFolder()) {
 			    Vector files = getFilesInFolder(currentUser,onlineProject, resource);
@@ -4134,7 +4124,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		 CmsResource cmsFile;
 		 
 		 // check if this method is misused to read a folder
-		 if (filename.endsWith("/")) {
+		 if (filename.endsWith("/")) { 
 			 return (CmsResource) readFolder(currentUser,currentProject,filename);
 		 }
 				  
@@ -4199,71 +4189,65 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		
 		return retValue;
 	}
-	/**
-	 * Reads a folder from the Cms.<BR/>
-	 * 
-	 * <B>Security:</B>
-	 * Access is granted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read the resource</li>
-	 * </ul>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param foldername The complete path of the folder to be read.
-	 * 
-	 * @return folder The read folder.
-	 * 
-	 * @exception CmsException will be thrown, if the folder couldn't be read. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 */
-	public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject,
-								String folder) 
-		throws CmsException {
-		CmsFolder cmsFolder;
-	  		// read the resource from the currentProject, or the online-project
-		 try {
-			   cmsFolder = (CmsFolder)m_resourceCache.get(C_FOLDER+currentProject.getId()+folder);
-			   if (cmsFolder==null) {
-			    cmsFolder =  m_dbAccess.readFolder(currentProject.getId(), folder);
-				m_resourceCache.put(C_FOLDER+currentProject.getId()+folder,(CmsFolder)cmsFolder);
-				}
-
-		 } catch(CmsException exc) {
-			 // the resource was not readable
-
-			 if(currentProject.equals(onlineProject(currentUser, currentProject))) {
-				   
-				 // this IS the onlineproject - throw the exception
-				 throw exc;
-			 } else {
-
-				 // try to read the resource in the onlineproject
-				 cmsFolder = (CmsFolder)m_resourceCache.get(C_FOLDER+C_PROJECT_ONLINE_ID+folder);
-
-				 if (cmsFolder==null) {		
-	
-				    cmsFolder = cmsFolder = m_dbAccess.readFolder(C_PROJECT_ONLINE_ID,folder);
-	 
-					m_resourceCache.put(C_FOLDER+currentProject.getId()+folder,(CmsFolder)cmsFolder);                 
-				 }
-			 }
-		 }
-	
-		if( accessRead(currentUser, currentProject, (CmsResource)cmsFolder) ) {
-			// acces to all subfolders was granted - return the folder.
-			if (cmsFolder.getState() == C_STATE_DELETED) {
-				throw new CmsException("["+this.getClass().getName()+"]"+cmsFolder.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);  
-			} else {
-				   return cmsFolder;
+/**
+ * Reads a folder from the Cms.<BR/>
+ * 
+ * <B>Security:</B>
+ * Access is granted, if:
+ * <ul>
+ * <li>the user has access to the project</li>
+ * <li>the user can read the resource</li>
+ * </ul>
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param foldername The complete path of the folder to be read.
+ * 
+ * @return folder The read folder.
+ * 
+ * @exception CmsException will be thrown, if the folder couldn't be read. 
+ * The CmsException will also be thrown, if the user has not the rights 
+ * for this resource.
+ */
+public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, String folder) throws CmsException {
+	CmsFolder cmsFolder;
+	// read the resource from the currentProject, or the online-project
+	try {
+		cmsFolder = (CmsFolder) m_resourceCache.get(C_FOLDER + currentProject.getId() + folder);
+		if (cmsFolder == null) {
+			cmsFolder = m_dbAccess.readFolder(currentProject.getId(), folder);
+			if (cmsFolder.getState() != C_STATE_DELETED) {
+				m_resourceCache.put(C_FOLDER + currentProject.getId() + folder, (CmsFolder) cmsFolder);
 			}
+		}
+	} catch (CmsException exc) {
+		// the resource was not readable
+
+		if (currentProject.equals(onlineProject(currentUser, currentProject))) {
+
+			// this IS the onlineproject - throw the exception
+			throw exc;
 		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + folder,
-				CmsException.C_ACCESS_DENIED);
+
+			// try to read the resource in the onlineproject
+			cmsFolder = (CmsFolder) m_resourceCache.get(C_FOLDER + C_PROJECT_ONLINE_ID + folder);
+			if (cmsFolder == null) {
+				cmsFolder = cmsFolder = m_dbAccess.readFolder(C_PROJECT_ONLINE_ID, folder);
+				m_resourceCache.put(C_FOLDER + currentProject.getId() + folder, (CmsFolder) cmsFolder);
+			}
 		}
 	}
+	if (accessRead(currentUser, currentProject, (CmsResource) cmsFolder)) {
+		// acces to all subfolders was granted - return the folder.
+		if (cmsFolder.getState() == C_STATE_DELETED) { 
+			throw new CmsException("[" + this.getClass().getName() + "]" + cmsFolder.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);
+		} else {
+			return cmsFolder;
+		}
+	} else {
+		throw new CmsException("[" + this.getClass().getName() + "] " + folder, CmsException.C_ACCESS_DENIED);
+	}
+}
 	/**
 	 * Reads a folder from the Cms.<BR/>
 	 * 
@@ -4297,7 +4281,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 if (cmsFolder==null) {
 			    cmsFolder = m_dbAccess.readFolder(currentProject.getId(), 
 													          folder + folderName);
-				m_resourceCache.put(C_FOLDER+currentProject.getId()+folder + folderName,(CmsFolder)cmsFolder);
+			    if (cmsFolder.getState() != C_STATE_DELETED) { 
+					m_resourceCache.put(C_FOLDER+currentProject.getId()+folder + folderName,(CmsFolder)cmsFolder);
+				}
+				
 				}
 		 } catch(CmsException exc) {
 			 // the resource was not readable
@@ -5857,32 +5844,30 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 									  String resource, Hashtable propertyinfos)
 		throws CmsException {
 		// read the resource
-   
+ 
 
 		CmsResource res = readFileHeader(currentUser,currentProject, resource);
-
+ 
 		// check the security
 		if( ! accessWrite(currentUser, currentProject, res) ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
 				CmsException.C_NO_ACCESS);
-		}
-
-		
+		} 
 		m_dbAccess.writeProperties(propertyinfos,res.getResourceId(),res.getType());
 		m_propertyCache.clear();
-		if (res.getState()==C_STATE_UNCHANGED) {
+		if (res.getState()==C_STATE_UNCHANGED) { 
 			res.setState(C_STATE_CHANGED);
-		}
-		if(res.isFile()){     
+		} 
+		if(res.isFile()){
 			m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, false);
 			// update the cache           
 			m_resourceCache.put(C_FILE+currentProject.getId()+resource,res);
-		} else {
+		} else { 
 			m_dbAccess.writeFolder(currentProject, readFolder(currentUser,currentProject, resource), false);		
 			// update the cache           
 			m_resourceCache.put(C_FOLDER+currentProject.getId()+resource,(CmsFolder)res);    
-		}
-		m_subresCache.clear();
+		} 
+		m_subresCache.clear(); 
 	}
 	/**
 	 * Writes a propertyinformation for a file or folder.

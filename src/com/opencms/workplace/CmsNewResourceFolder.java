@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2000/08/08 14:08:31 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/08/15 16:25:33 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/08/08 14:08:31 $
+ * @version $Revision: 1.12 $ $Date: 2000/08/15 16:25:33 $
  */
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,
 																   I_CmsConstants {
@@ -89,10 +89,9 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
 				try {
 							
 				   // create the folder
-				   CmsFolder folder=cms.createFolder(currentFilelist,newFolder);
-				   cms.lockResource(folder.getAbsolutePath());
-				   cms.writeProperty(folder.getAbsolutePath(),C_PROPERTY_TITLE,title);
-		 
+				   CmsFolder folder=cms.createFolder(currentFilelist,newFolder); 
+				   cms.lockResource(folder.getAbsolutePath());  
+				   cms.writeProperty(folder.getAbsolutePath(),C_PROPERTY_TITLE,title); 
 				   // now check if navigation informations have to be added to the new page.
 				   if (navtitle != null) {
 					   cms.writeProperty(folder.getAbsolutePath(),C_PROPERTY_NAVTEXT,navtitle);                       
@@ -237,7 +236,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
 		 
 			
 			return storage;            
-	  }  
+	  }
 	  /**
 	  * Gets the files displayed in the navigation select box.
 	  * @param cms The CmsObject.
@@ -268,7 +267,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
 			}
    
 			return new Integer(values.size()-1);           
-	  }  
+	  }
 	  /**
 	  * Gets the templates displayed in the template select box.
 	  * @param cms The CmsObject.
@@ -297,7 +296,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
 				}
 			}
 			return new Integer(0);           
-	  }  
+	  }
 	 /**
 	 * Indicates if the results of this class are cacheable.
 	 * 
@@ -343,7 +342,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
 				}
 			}
 		}
-	  }  
+	  }
 	/**
 	 * Updates the navigation position of all resources in the actual folder.
 	 * @param cms The CmsObject.
@@ -382,5 +381,5 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
 				newPos=1;
 			}
 			cms.writeProperty(newfolder.getAbsolutePath(),C_PROPERTY_NAVPOS,new Float(newPos).toString());             
-	  }  
+	  }
 }
