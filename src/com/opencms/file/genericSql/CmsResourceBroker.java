@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/06 17:17:15 $
-* Version: $Revision: 1.364 $
+* Date   : $Date: 2003/03/06 19:21:24 $
+* Version: $Revision: 1.365 $
 
 *
 * This library is part of OpenCms -
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.364 $ $Date: 2003/03/06 17:17:15 $
+ * @version $Revision: 1.365 $ $Date: 2003/03/06 19:21:24 $
 
  *
  */
@@ -8678,7 +8678,7 @@ protected void validName(String name, boolean blank) throws CmsException {
                 }
             }
             else if (!linkTarget.substring(siteRootLen).startsWith("/")) {
-                theReport.println(theReport.key("report.link_check_vfs_external_link") + ": " + currentVfsLink + " -> " + currentVfsLinkTarget, I_CmsReport.C_FORMAT_WARNING);
+                // theReport.println(theReport.key("report.link_check_vfs_external_link") + ": " + currentVfsLink + " -> " + currentVfsLinkTarget, I_CmsReport.C_FORMAT_NOTE);
                 if (CmsAdminVfsLinkManagement.DEBUG) {
                     System.err.println( i + ": skipping " + currentVfsLink + " -> " + currentVfsLinkTarget + " (external link)");
                 }                
