@@ -1,7 +1,7 @@
 /*
 * File   : $Source $
-* Date   : $Date: 2001/11/15 11:12:56 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/11/15 16:44:21 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,5 +55,5 @@ public interface I_CmsTimedContentDefinition {
      *
      * @return The date as a long value, or 0 if not used.
      */
-    public long getOtherChangeDate();
+    public long getAdditionalChangeDate();
 }
