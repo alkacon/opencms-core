@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/08/17 16:46:57 $
- * Version: $Revision: 1.197 $
+ * Date   : $Date: 2004/08/18 08:45:31 $
+ * Version: $Revision: 1.198 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.197 $ $Date: 2004/08/17 16:46:57 $
+ * @version $Revision: 1.198 $ $Date: 2004/08/18 08:45:31 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1932,8 +1932,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                         // create the property definition implicitly in the backup tables
                         m_driverManager.getBackupDriver().createBackupPropertyDefinition(property.getKey(), I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
                     } catch (Exception e) {
-                        if (OpenCms.getLog(this).isErrorEnabled()) {
-                            OpenCms.getLog(this).error("[" + this.getClass().getName() + "] " + e.toString());
+                        // -cw-  replaced error with warning - exception will happen when publishing new properties
+                        if (OpenCms.getLog(this).isWarnEnabled()) {
+                            OpenCms.getLog(this).warn("Backup property definition not created: " + e.toString());
                         }
                     }
                 }
