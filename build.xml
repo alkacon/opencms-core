@@ -30,7 +30,7 @@
     <property name="build.inputlib.fesi"        value="${build.inputlib}/fesi.jar"/>            
     <property name="build.inputlib.oracle"      value="${build.inputlib}/classes12.zip"/>
     <property name="build.inputlib.fop"         value="${build.inputlib}/fop_bin.jar"/>     
-    <property name="build.inputlib.oro"         value="${build.inputlib}/jakarta-oro-2.0.4.jar"/>
+    <property name="build.inputlib.oro"         value="${build.inputlib}/jakarta-oro-2.0.6.jar"/>
     <property name="build.inputlib.tidy"        value="${build.inputlib}/Tidy.jar"/>
     
     <property name="build.version.propertyfile" value="${build.classes}/com/opencms/core/version.properties"/>

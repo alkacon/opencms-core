@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2002/03/25 13:18:42 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2002/04/10 08:22:11 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -171,7 +171,7 @@ public class LinkSubstitution {
             // we have to register this link to the requestcontex
             cms.getRequestContext().addLink(link);
             // and we have to process the startrule
-            String startRule = OpenCms.getLinkRuleStart();
+            String startRule = OpenCms.getStaticExportProperties().getStartRule();
             if(startRule != null && !"".equals(startRule)){
                 try{
                     link = c_perlUtil.substitute(startRule, link);
@@ -196,13 +196,14 @@ public class LinkSubstitution {
         if(httpsMode){
             needsScheme = CmsStaticExport.needsScheme(link);
         }
-        String[] rules = cms.getLinkRules(modus);
+        String[] rules = cms.getStaticExportProperties().getLinkRules(modus);
         if(rules == null || rules.length == 0){
             return link;
         }
         String retValue = link;
         for(int i=0; i<rules.length; i++){
             try{
+                boolean nextRule = true;
                 if("*dynamicRules*".equals(rules[i])){
                     // here we go trough our dynamic rules
                     Vector booleanReplace = new Vector();
@@ -210,21 +211,28 @@ public class LinkSubstitution {
                     Boolean goOn =(Boolean)booleanReplace.firstElement();
                     if(goOn.booleanValue()){
                         link = retValue;
+                    }else{
+                        nextRule = false;
                     }
                 }else{
-                    retValue = c_perlUtil.substitute(rules[i], link);
+                    StringBuffer result = new StringBuffer();
+                    int matches = c_perlUtil.substitute(result, rules[i], link);
+                    if(matches != 0){
+                        retValue = result.toString();
+                        nextRule = false;
+                    }
                 }
-                if(!link.equals(retValue)){
+                if(!nextRule){
                     // found the match
                     if(httpsMode && !retValue.startsWith("http")){
                         if(needsScheme){
-                            retValue = cms.getUrlPrefixArray()[3] + retValue;
+                            retValue = cms.getStaticExportProperties().getUrlPrefixArray()[3] + retValue;
                         }
                     }else{
-                        if(cms.relativLinksInExport() && modus == cms.C_MODUS_EXPORT
-                                && (retValue != null) && retValue.startsWith(cms.getUrlPrefixArray()[0])){
+                        if(cms.getStaticExportProperties().relativLinksInExport() && modus == cms.C_MODUS_EXPORT
+                                && (retValue != null) && retValue.startsWith(cms.getStaticExportProperties().getUrlPrefixArray()[0])){
                             // we want the path relative
-                            retValue = getRelativePath(cms.getRequestContext().getRequest().getRequestedResource(), retValue.substring((cms.getUrlPrefixArray()[0]).length()));
+                            retValue = getRelativePath(cms.getRequestContext().getRequest().getRequestedResource(), retValue.substring((cms.getStaticExportProperties().getUrlPrefixArray()[0]).length()));
                         }
                     }
                     return retValue;
@@ -237,12 +245,12 @@ public class LinkSubstitution {
         }
         if(httpsMode && !retValue.startsWith("http")){
             if(needsScheme){
-                retValue = cms.getUrlPrefixArray()[3] + retValue;
+                retValue = cms.getStaticExportProperties().getUrlPrefixArray()[3] + retValue;
             }
         }else{
-            if(cms.relativLinksInExport() && modus == cms.C_MODUS_EXPORT && (retValue != null) && retValue.startsWith(cms.getUrlPrefixArray()[0])){
+            if(cms.getStaticExportProperties().relativLinksInExport() && modus == cms.C_MODUS_EXPORT && (retValue != null) && retValue.startsWith(cms.getStaticExportProperties().getUrlPrefixArray()[0])){
                 // we want the path relative
-                retValue = getRelativePath(cms.getRequestContext().getRequest().getRequestedResource(), retValue.substring((cms.getUrlPrefixArray()[0]).length()));
+                retValue = getRelativePath(cms.getRequestContext().getRequest().getRequestedResource(), retValue.substring((cms.getStaticExportProperties().getUrlPrefixArray()[0]).length()));
             }
         }
         return retValue;

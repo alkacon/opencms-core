@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExportThread.java,v $
-* Date   : $Date: 2002/01/18 08:29:02 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/04/10 08:22:11 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ public class CmsAdminStaticExportThread extends Thread implements I_CmsConstants
         String errormessage = "Error exporting resources:\n";
         try {
             // start the export
-            m_cms.exportStaticResources(m_cms.getStaticExportStartPoints(), null, null);
+            m_cms.exportStaticResources(m_cms.getStaticExportProperties().getStartPoints(), null, null);
 
         }catch(CmsException e){
             everythingOk = false;

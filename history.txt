@@ -15,6 +15,9 @@ OpenCms 4.7.4 Ecaz - 10 April 2002
   there was an SQLException the connection will be destroyed and a new will be created.
   If the property is not set no test will be performed.
   pool.mysql.testQuery = select count(*) from CMS_USERS
+! New way to configure the static export. The default value for the resource property
+  'export' can be switched from true to dynamic setting the staticexport.default.export 
+  value in the opencms.propertys from true to dynamic. 
 * Fixed bug when creating pages: when changing the navigation checkbox the value for 
   default body must be set to the previously selected value.
 - Now the image list generates image urls without any server information. E.g:

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2001/12/21 13:19:31 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2002/04/10 08:22:11 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.apache.oro.text.perl.*;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -78,7 +78,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
         String action = (String)parameters.get("action");
         if(action == null || "dynPrint".equals(action)) {
             // This is an initial request of the static export page
-            Vector exportStartPoints = cms.getStaticExportStartPoints();
+            Vector exportStartPoints = cms.getStaticExportProperties().getStartPoints();
             String allStartPoints = "";
             if(exportStartPoints != null){
                 for(int i=0; i<exportStartPoints.size(); i++){
@@ -87,7 +87,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
                 }
             }
             xmlTemplateDocument.setData("exportpoints", allStartPoints);
-            xmlTemplateDocument.setData("path", cms.getStaticExportPath());
+            xmlTemplateDocument.setData("path", cms.getStaticExportProperties().getExportPath());
             if("dynPrint".equals(action)){
                 // print the dynamic rules to the errorlog
                 System.err.println("");
@@ -214,7 +214,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
     public Boolean isExportActive(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         CmsRequestContext reqCont = cms.getRequestContext();
         boolean isProMan = isProjectManager(cms, lang, parameters).booleanValue();
-        return new Boolean(cms.isStaticExportEnabled() && isProMan);
+        return new Boolean(cms.getStaticExportProperties().isStaticExportEnabled() && isProMan);
     }
 
     /** Parse the string which holds all resources

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/04/05 06:36:10 $
-* Version: $Revision: 1.226 $
+* Date   : $Date: 2002/04/10 08:22:11 $
+* Version: $Revision: 1.227 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.226 $ $Date: 2002/04/05 06:36:10 $
+ * @version $Revision: 1.227 $ $Date: 2002/04/10 08:22:11 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1672,15 +1672,6 @@ public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
     }
 
     /**
-     * Returns the ruleset for link replacement.
-     * @param state. defines which set is needed.
-     * @return String[] the ruleset.
-     */
-    public String[] getLinkRules(int state){
-        return OpenCms.getLinkRules(state);
-    }
-
-    /**
      * Replaces the link according to the rules and registers it to the
      * requestcontex if we are in export modus.
      * @param link. The link to process.
@@ -1691,51 +1682,10 @@ public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
     }
 
     /**
-     * Returns a Vector (of Strings) with the names of the vfs resources (files
-     * and folders) where the export should start.
-     *
-     * @return Vector with resources for the export.
+     * Returns the properties for the static export.
      */
-    public Vector getStaticExportStartPoints(){
-        return OpenCms.getStaticExportStartPoints();
-    }
-
-    /**
-     * Returns the exportpath for the static export.
-     */
-    public String getStaticExportPath(){
-        return OpenCms.getStaticExportPath() ;
-    }
-
-    /**
-     * Returns true, if the static export is enabled.
-     * @return true, if the static export is enabled.
-     */
-    public boolean isStaticExportEnabled(){
-        return OpenCms.isStaticExportEnabled();
-    }
-
-    /**
-     * Returns the value of the static export enable.
-     * (needed for the false_ssl feature)
-     */
-    public String getStaticExportEnabledValue(){
-        return OpenCms.getStaticExportEnabledValue();
-    }
-
-    /**
-     * Returns true if the links in the static export should be relative.
-     */
-    public boolean relativLinksInExport(){
-        return OpenCms.relativLinksInExport();
-    }
-
-    /**
-     * Gets the prefix array for the linkreplacement
-     * @return String[4]
-     */
-    public String[] getUrlPrefixArray(){
-        return OpenCms.getUrlPrefixArray();
+    public static CmsStaticExportProperties getStaticExportProperties(){
+        return OpenCms.getStaticExportProperties();
     }
 
     /**
@@ -2321,12 +2271,12 @@ public void publishProject(int id) throws CmsException {
         getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
         clearcache();
         // do static export if the static-export is enabled in opencms.properties
-        if (this.isStaticExportEnabled()){
+        if (this.getStaticExportProperties().isStaticExportEnabled()){
             try{
                 int oldId = m_context.currentProject().getId();
                 m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
                 Vector linkChanges = new Vector();
-                this.exportStaticResources(this.getStaticExportStartPoints(),
+                this.exportStaticResources(this.getStaticExportProperties().getStartPoints(),
                                  linkChanges, allChanged);
                 m_context.setCurrentProject(oldId);
                 Utils.getModulPublishMethods(this, linkChanges);
@@ -2335,7 +2285,7 @@ public void publishProject(int id) throws CmsException {
                 ex.printStackTrace();
             }
         }else{
-            if("false_ssl".equalsIgnoreCase(this.getStaticExportEnabledValue())){
+            if("false_ssl".equalsIgnoreCase(this.getStaticExportProperties().getStaticExportEnabledValue())){
                 // just generate the link rules, in case there were properties changed
                 int oldId = m_context.currentProject().getId();
                 m_context.setCurrentProject(C_PROJECT_ONLINE_ID);

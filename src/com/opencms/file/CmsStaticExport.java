@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/03/27 14:06:01 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2002/04/10 08:22:11 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.24 $ $Date: 2002/03/27 14:06:01 $
+ * @version $Revision: 1.25 $ $Date: 2002/04/10 08:22:11 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -132,7 +132,7 @@ public class CmsStaticExport implements I_CmsConstants{
         m_cms = cms;
         m_startpoints = startpoints;
         m_changedLinks = changedLinks;
-        m_exportPath = cms.getStaticExportPath();
+        m_exportPath = cms.getStaticExportProperties().getExportPath();
         c_perlUtil = new Perl5Util();
         if(changedResources != null){
             m_afterPublish = true;
@@ -275,7 +275,7 @@ public class CmsStaticExport implements I_CmsConstants{
         try{
             // get the resources with the property exportname
             Vector resWithProp = null;
-            if(!"false_ssl".equalsIgnoreCase(m_cms.getStaticExportEnabledValue())){
+            if(!"false_ssl".equalsIgnoreCase(m_cms.getStaticExportProperties().getStaticExportEnabledValue())){
                 resWithProp = m_cms.getResourcesWithProperty(C_PROPERTY_EXPORTNAME);
                 // generate the dynamic rules for the nice exportnames
                 if(resWithProp != null && resWithProp.size() != 0){
@@ -285,7 +285,11 @@ public class CmsStaticExport implements I_CmsConstants{
                         CmsResource resource = (CmsResource)resWithProp.elementAt(i);
                         String oldName = resource .getAbsolutePath();
                         String newName = m_cms.readProperty(oldName, C_PROPERTY_EXPORTNAME);
-                        m_dynamicExportNameRules.addElement("s#^"+oldName+"#"+m_cms.getUrlPrefixArray()[0]+newName+"#");
+                        if(m_cms.getStaticExportProperties().isExportDefault()){
+                            m_dynamicExportNameRules.addElement("s#^"+oldName+"#"+m_cms.getStaticExportProperties().getUrlPrefixArray()[0]+newName+"#");
+                        }else{
+                            m_dynamicExportNameRules.addElement("s#^("+m_cms.getStaticExportProperties().getUrlPrefixArray()[0]+")"+oldName+"#$1"+newName+"#");
+                        }
                         m_dynamicExportNameRulesExtern.addElement("s#^"+oldName+"#"+newName+"#");
                     }
                 }
@@ -310,31 +314,80 @@ public class CmsStaticExport implements I_CmsConstants{
                     CmsResource resource = (CmsResource)resWithProp.elementAt(i);
                     String resName = resource.getAbsolutePath();
                     String propertyValue = m_cms.readProperty(resName, C_PROPERTY_EXPORT);
-                    if(propertyValue != null && (propertyValue.equalsIgnoreCase("dynamic")
-                                  || propertyValue.equalsIgnoreCase("https")
-                                  || propertyValue.equalsIgnoreCase("false")
-                                  || propertyValue.equalsIgnoreCase("https_enabled")
-                                  || propertyValue.equalsIgnoreCase("dynamic_https_enabled"))){
-                        // first we can create the dynamic rule for extern (it is the same for true and https)
+                    if(propertyValue != null){
+                        if(propertyValue.equalsIgnoreCase("dynamic")){
+                            m_dynamicExportRulesExtern.addElement("s#^"+resName+".*##");//1
+                            m_dynamicExportRulesOnline.addElement("s#^("+resName+")#"+ m_cms.getStaticExportProperties().getUrlPrefixArray()[1] +"$1#");//2
+                        }
+                        if(propertyValue.equalsIgnoreCase("https")){
+                            m_dynamicExportRulesExtern.addElement("s#^"+resName+".*##");//1
+                            m_dynamicExportRulesOnline.addElement("s#^("+resName+")#"+ m_cms.getStaticExportProperties().getUrlPrefixArray()[2] +"$1#");
+                        }
+                        if(propertyValue.equalsIgnoreCase("true")){
+                            m_dynamicExportRulesExtern.addElement("s#^("+resName+")#$1#");
+                            m_dynamicExportRulesOnline.addElement("s#^("+resName+")#"+ m_cms.getStaticExportProperties().getUrlPrefixArray()[0] +"$1#");
+                        }
                         if(propertyValue.equalsIgnoreCase("false")){
                             m_dynamicExportRulesExtern.addElement("s#^"+resName+".*#export value was set to false#");
-                        }else{
-                            if(!propertyValue.equalsIgnoreCase("https_enabled")){
-                                m_dynamicExportRulesExtern.addElement("s#^"+resName+".*##");
-                            }
+                            m_dynamicExportRulesOnline.addElement("s#^("+resName+")#"+ m_cms.getStaticExportProperties().getUrlPrefixArray()[1] +"$1#");//2
                         }
-                        if(propertyValue.equalsIgnoreCase("dynamic") || propertyValue.equalsIgnoreCase("false")
-                                                    || propertyValue.equalsIgnoreCase("dynamic_https_enabled")){
-                            // create the rules for dynamic pages
-                            m_dynamicExportRulesOnline.addElement("s#^("+resName+")#"+ m_cms.getUrlPrefixArray()[1] +"$1#");
-                        }else{
-                            if(!propertyValue.equalsIgnoreCase("https_enabled")){
-                                // create the rules for shtml dynamic pages
-                                m_dynamicExportRulesOnline.addElement("s#^("+resName+")#"+ m_cms.getUrlPrefixArray()[2] +"$1#");
-                            }
+                        if(propertyValue.equalsIgnoreCase("https_enabled")){
+                            m_rulesForHttpsEnabledResources.addElement("s#^"+resName+".*##");//3
                         }
-                        if(propertyValue.equalsIgnoreCase("https_enabled") || propertyValue.equalsIgnoreCase("dynamic_https_enabled")){
-                            // these resources are enabled for ssl and for the normal way
+                        if(propertyValue.equalsIgnoreCase("dynamic_https_enabled")){
+                            m_dynamicExportRulesExtern.addElement("s#^"+resName+".*##");//1
+                            m_dynamicExportRulesOnline.addElement("s#^("+resName+")#"+ m_cms.getStaticExportProperties().getUrlPrefixArray()[1] +"$1#");//2
+                            m_rulesForHttpsEnabledResources.addElement("s#^"+resName+".*##");//3
+                        }
+                    }
+                }
+            }
+        }catch(CmsException e){
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] "
+                    +"couldnt create dynamic export rules. " + e.toString() );
+            }
+        }
+    }
+    private void createDynamicRules2(){
+        // first the rules for namereplacing
+            // later!!
+
+        // now the rules for linking between static and dynamic pages
+        try{
+            // get the resources with the property "export"
+            Vector resWithProp = m_cms.getResourcesWithProperty(C_PROPERTY_EXPORT);
+            // generate the rules
+            if(resWithProp != null && resWithProp.size() != 0){
+                m_dynamicExportRulesExtern = new Vector();
+                m_dynamicExportRulesOnline = new Vector();
+                m_rulesForHttpsEnabledResources = new Vector();
+                for(int i=0; i < resWithProp.size(); i++){
+                    CmsResource resource = (CmsResource)resWithProp.elementAt(i);
+                    String resName = resource.getAbsolutePath();
+                    String propertyValue = m_cms.readProperty(resName, C_PROPERTY_EXPORT);
+                    if(propertyValue != null){
+                        if(propertyValue.equalsIgnoreCase("dynamic")){
+                            m_dynamicExportRulesExtern.addElement("s#^"+resName+".*##");
+                            m_dynamicExportRulesOnline.addElement("s#^("+resName+")#"+ m_cms.getStaticExportProperties().getUrlPrefixArray()[1] +"$1#");
+                        }
+                        if(propertyValue.equalsIgnoreCase("https")){
+                            m_dynamicExportRulesExtern.addElement("s#^"+resName+".*##");
+                            m_dynamicExportRulesOnline.addElement("s#^("+resName+")#"+ m_cms.getStaticExportProperties().getUrlPrefixArray()[2] +"$1#");
+                        }
+                        if(propertyValue.equalsIgnoreCase("true")){
+
+                        }
+                        if(propertyValue.equalsIgnoreCase("false")){
+                            m_dynamicExportRulesExtern.addElement("s#^"+resName+".*#export value was set to false#");
+                            m_dynamicExportRulesOnline.addElement("s#^("+resName+")#"+ m_cms.getStaticExportProperties().getUrlPrefixArray()[1] +"$1#");
+                        }
+                        if(propertyValue.equalsIgnoreCase("https_enabled")){
+                            m_rulesForHttpsEnabledResources.addElement("s#^"+resName+".*##");
+                        }
+                        if(propertyValue.equalsIgnoreCase("dynamic_https_enabled")){
+                            m_dynamicExportRulesExtern.addElement("s#^"+resName+".*##");
+                            m_dynamicExportRulesOnline.addElement("s#^("+resName+")#"+ m_cms.getStaticExportProperties().getUrlPrefixArray()[1] +"$1#");
                             m_rulesForHttpsEnabledResources.addElement("s#^"+resName+".*##");
                         }
                     }
@@ -526,8 +579,8 @@ public class CmsStaticExport implements I_CmsConstants{
      */
     private String getExternLinkName(String link){
 
-        String[] rules = m_cms.getLinkRules(C_MODUS_EXTERN);
-        String startRule = OpenCms.getLinkRuleStart();
+        String[] rules = m_cms.getStaticExportProperties().getLinkRules(C_MODUS_EXTERN);
+        String startRule = OpenCms.getStaticExportProperties().getStartRule();
         if(startRule != null && !"".equals(startRule)){
             try{
                 link = c_perlUtil.substitute(startRule, link);
@@ -555,10 +608,11 @@ public class CmsStaticExport implements I_CmsConstants{
                         return retValue;
                     }
                 }else{
-                    retValue = c_perlUtil.substitute(rules[i], link);
-                    if(!link.equals(retValue)){
+                    StringBuffer result = new StringBuffer();
+                    int matches = c_perlUtil.substitute(result, rules[i], link);
+                    if(matches != 0){
                         // found the match
-                        return retValue;
+                        return result.toString();
                     }
                 }
             }catch(Exception e){
@@ -664,7 +718,6 @@ public class CmsStaticExport implements I_CmsConstants{
      *          and no other rules
      */
     public static String handleDynamicRules(CmsObject cms, String link, int modus, Vector paramterOnly){
-
         // first get the ruleset
         Vector dynRules = null;
         Vector nameRules = null;
@@ -676,18 +729,44 @@ public class CmsStaticExport implements I_CmsConstants{
             nameRules = m_dynamicExportNameRules;
         }
         String retValue = link;
+        int count;
+        StringBuffer result = null;
+        boolean doTheParameter = false;
         if(dynRules != null){
             for(int i=0; i<dynRules.size(); i++){
-                retValue = c_perlUtil.substitute((String)dynRules.elementAt(i), link);
-                if(!retValue.equals(link)) {
+                result = new StringBuffer();
+                count = c_perlUtil.substitute(result, (String)dynRules.elementAt(i), link);
+                if(count != 0){
                     paramterOnly.add(new Boolean(false));
-                    return retValue;
+                    retValue = result.toString();
+                    if(cms.getStaticExportProperties().isExportDefault()){
+                        return retValue;
+                    }else{
+                        // default is dynamic
+                        if(modus == C_MODUS_EXTERN){
+                            if(!link.equals(retValue)){
+                                return retValue;
+                            }
+                        }else{
+                            if(!retValue.startsWith(cms.getStaticExportProperties().getUrlPrefixArray()[0])){
+                                return retValue;
+                            }
+                            link = retValue;
+                        }
+                    }
                 }
             }
         }
-        // here we can start the parameters
-        link = substituteLinkParameter(cms, link);
-        retValue = link;
+        // here we can start the parameters if it will be exported
+        if(cms.getStaticExportProperties().isExportDefault() || modus == C_MODUS_EXTERN){
+            link = substituteLinkParameter(cms, link);
+            retValue = link;
+        }else if( link.startsWith(cms.getStaticExportProperties().getUrlPrefixArray()[0])){
+            link = link.substring(cms.getStaticExportProperties().getUrlPrefixArray()[0].length());
+            link = substituteLinkParameter(cms, link);
+            link = cms.getStaticExportProperties().getUrlPrefixArray()[0] + link;
+            retValue = link;
+        }
 
         // now for the name replacement rules
         if(nameRules != null){
@@ -737,7 +816,7 @@ public class CmsStaticExport implements I_CmsConstants{
             return link;
         }
         // is the export activ? (there is a new parameter false_ssl for staticexport.enabled)
-        if(!cms.isStaticExportEnabled()){
+        if(!cms.getStaticExportProperties().isStaticExportEnabled()){
             return link;
         }
         // cut the parameters
