@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/09/24 14:17:05 $
-* Version: $Revision: 1.216 $
+* Date   : $Date: 2001/10/02 13:04:25 $
+* Version: $Revision: 1.217 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.216 $ $Date: 2001/09/24 14:17:05 $ *
+ * @version $Revision: 1.217 $ $Date: 2001/10/02 13:04:25 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -822,10 +822,14 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
         }
         int state=0;
+        int modifiedBy = userId;
+        long dateModified = System.currentTimeMillis();
         if (project.equals(onlineProject)) {
             state= file.getState();
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
+            modifiedBy = file.getResourceLastModifiedBy();
+            dateModified = file.getDateLastModified();
         } else {
             state=C_STATE_NEW;
             usedPool = m_poolName;
@@ -891,10 +895,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement.setInt(13, file.getLauncherType());
             statement.setString(14, file.getLauncherClassname());
             statement.setTimestamp(15, new Timestamp(file.getDateCreated()));
-            statement.setTimestamp(16, new Timestamp(file.getDateLastModified()));
-            //statement.setTimestamp(16, new Timestamp(System.currentTimeMillis()));
+            statement.setTimestamp(16, new Timestamp(dateModified));
             statement.setInt(17, file.getLength());
-            statement.setInt(18, userId);
+            statement.setInt(18, modifiedBy);
             statement.executeUpdate();
             statement.close();
          } catch (SQLException e){
@@ -1181,10 +1184,14 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
         CmsFolder oldFolder = null;
         int state = 0;
+        int modifiedBy = user.getId();
+        long dateModified = System.currentTimeMillis();
         if (project.equals(onlineProject)) {
             state = folder.getState();
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
+            modifiedBy = folder.getResourceLastModifiedBy();
+            dateModified = folder.getDateLastModified();
         } else {
             state = C_STATE_NEW;
             usedPool = m_poolName;
@@ -1211,7 +1218,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             }
         }
         int resourceId = nextId(m_cq.get("C_TABLE_RESOURCES"+usedStatement));
-        int fileId = nextId(m_cq.get("C_TABLE_FILES"+usedStatement));
+        //int fileId = nextId(m_cq.get("C_TABLE_FILES"+usedStatement));
         Connection con = null;
         PreparedStatement statement = null;
         try {
@@ -1226,16 +1233,17 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement.setInt(6, folder.getOwnerId());
             statement.setInt(7, folder.getGroupId());
             statement.setInt(8, project.getId());
-            statement.setInt(9, fileId);
+            statement.setInt(9, C_UNKNOWN_ID);
+            //statement.setInt(9, fileId);
             statement.setInt(10, folder.getAccessFlags());
             statement.setInt(11, state);
             statement.setInt(12, folder.isLockedBy());
             statement.setInt(13, folder.getLauncherType());
             statement.setString(14, folder.getLauncherClassname());
             statement.setTimestamp(15, new Timestamp(folder.getDateCreated()));
-            statement.setTimestamp(16, new Timestamp(System.currentTimeMillis()));
+            statement.setTimestamp(16, new Timestamp(dateModified));
             statement.setInt(17, 0);
-            statement.setInt(18, user.getId());
+            statement.setInt(18, modifiedBy);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
@@ -1255,7 +1263,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 }
             }
         }
-        //return readFolder(project,folder.getAbsolutePath());
         // if this is the rootfolder or if the parentfolder is the rootfolder
         // try to create the projectresource
         if (parentId == C_UNKNOWN_ID || folder.getParent().equals(C_ROOT)){
@@ -1527,78 +1534,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             }
           }
          return(readPropertydefinition(name, resourcetype));
-    }
-
-    /**
-     * Creates a new resource from an given CmsResource object.
-     *
-     * @param project The project in which the resource will be used.
-     * @param onlineProject The online project of the OpenCms.
-     * @param resource The resource to be written to the Cms.
-     *
-     *
-     * @exception CmsException Throws CmsException if operation was not succesful
-     */
-     public void createResource(CmsProject project,
-                                CmsProject onlineProject,
-                                CmsResource resource)
-        throws CmsException {
-        String usedPool = null;
-        String usedStatement = null;
-        if ((resource.getAbsolutePath()).length() > C_MAX_LENGTH_RESOURCE_NAME){
-            throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
-        }
-        Connection con = null;
-        PreparedStatement statement = null;
-        if (project.equals(onlineProject)){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            statement=con.prepareStatement(m_cq.get("C_RESOURCES_WRITE")+usedStatement);
-            int id=nextId(C_TABLE_RESOURCES);
-            // write new resource to the database
-            statement.setInt(1,id);
-            statement.setInt(2,resource.getParentId());
-            statement.setString(3,resource.getAbsolutePath());
-            statement.setInt(4,resource.getType());
-            statement.setInt(5,resource.getFlags());
-            statement.setInt(6,resource.getOwnerId());
-            statement.setInt(7,resource.getGroupId());
-            statement.setInt(8,project.getId());
-            statement.setInt(9,resource.getFileId());
-            statement.setInt(10,resource.getAccessFlags());
-            statement.setInt(11,resource.getState());
-            statement.setInt(12,resource.isLockedBy());
-            statement.setInt(13,resource.getLauncherType());
-            statement.setString(14,resource.getLauncherClassname());
-            statement.setTimestamp(15,new Timestamp(resource.getDateCreated()));
-            statement.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
-            statement.setInt(17,resource.getLength());
-            statement.setInt(18,resource.getResourceLastModifiedBy());
-            statement.executeUpdate();
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
     }
 
    /**
@@ -2369,7 +2304,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         throws CmsException {
         String usedPool = null;
         String usedStatement = null;
-        //int onlineProject = getOnlineProject(resource.getProjectId()).getId();
         int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (resource.getProjectId() == onlineProject){
             usedPool = m_poolNameOnline;
@@ -2381,10 +2315,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Connection con = null;
         PreparedStatement statement = null;
         try {
-            // read resource data from database
+            // delete resource data from database
             con = DriverManager.getConnection(usedPool);
             statement = con.prepareStatement(m_cq.get("C_RESOURCES_DELETEBYID"+usedStatement));
             statement.setInt(1, resource.getResourceId());
+            statement.executeUpdate();
+            statement.close();
+            // delete the file content
+            statement = con.prepareStatement(m_cq.get("C_FILE_DELETE"+usedStatement));
+            statement.setInt(1, resource.getFileId());
             statement.executeUpdate();
         } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
@@ -4803,6 +4742,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
             if (currentFile.isLocked()){
                 //in this case do nothing
             } else if (currentFile.getName().startsWith(C_TEMP_PREFIX)){
+                deleteAllProperties(projectId, currentFile);
                 removeFile(projectId, currentFile.getAbsolutePath());
                 // C_STATE_DELETE
             } else if (currentFile.getState() == C_STATE_DELETED){
@@ -5034,7 +4974,9 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                 // backup the offline resource
                 backupResource(projectId, currentFolder, new byte[0], props, versionId, publishDate);
             }
+            CmsResource delOnlineFolder = readFolder(onlineProject.getId(),currentFolder.getAbsolutePath());
             try{
+                deleteAllProperties(onlineProject.getId(), delOnlineFolder);
                 deleteAllProperties(projectId, currentFolder);
             }catch (CmsException exc){
                 if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ){
@@ -8434,7 +8376,6 @@ public CmsTask readTask(int id) throws CmsException {
         CmsUser user = null;
         Connection con = null;
 
-
         try {
             con = DriverManager.getConnection(m_poolName);
             statement = con.prepareStatement(m_cq.get("C_USERS_READID"));
@@ -8527,7 +8468,6 @@ public CmsTask readTask(int id) throws CmsException {
         ResultSet res = null;
         CmsUser user = null;
         Connection con = null;
-
         try {
             con = DriverManager.getConnection(m_poolName);
             statement = con.prepareStatement(m_cq.get("C_USERS_READ"));
@@ -8624,7 +8564,6 @@ public CmsTask readTask(int id) throws CmsException {
         ResultSet res = null;
         CmsUser user = null;
         Connection con = null;
-
         try {
             con = DriverManager.getConnection(m_poolName);
             statement = con.prepareStatement(m_cq.get("C_USERS_READPW"));
@@ -8771,7 +8710,7 @@ public CmsTask readTask(int id) throws CmsException {
         Connection con = null;
         String usedPool;
         String usedStatement;
-        //int onlineProject = getOnlineProject(projectId).getId();
+        CmsResource resource = readFileHeader(projectId, filename, true);
         int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
@@ -8785,10 +8724,12 @@ public CmsTask readTask(int id) throws CmsException {
             // delete the file header
             statement = con.prepareStatement(m_cq.get("C_RESOURCES_DELETE"+usedStatement));
             statement.setString(1, filename);
-            //statement.setInt(2,projectId);
             statement.executeUpdate();
+            statement.close();
             // delete the file content
-            // clearFilesTable();
+            statement = con.prepareStatement(m_cq.get("C_FILE_DELETE"+usedStatement));
+            statement.setInt(1, resource.getFileId());
+            statement.executeUpdate();
         } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         } finally {
@@ -8891,7 +8832,6 @@ public CmsTask readTask(int id) throws CmsException {
         Connection con = null;
         String usedPool;
         String usedStatement;
-        //int onlineProject = getOnlineProject(projectId).getId();
         int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if(projectId == onlineProject){
             usedPool = m_poolNameOnline;
@@ -8905,7 +8845,6 @@ public CmsTask readTask(int id) throws CmsException {
             // delete the folder
             statement = con.prepareStatement(m_cq.get("C_RESOURCES_DELETE"+usedStatement));
             statement.setString(1, foldername);
-            //statement.setInt(2,project.getId());
             statement.executeUpdate();
         } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
@@ -9598,15 +9537,35 @@ public CmsTask readTask(int id) throws CmsException {
      */
     public void writeFile(CmsProject project,
                            CmsProject onlineProject,
-                           CmsFile file,boolean changed)
+                           CmsFile file, boolean changed)
+        throws CmsException {
+        writeFile(project, onlineProject, file, changed, file.getResourceLastModifiedBy());
+    }
+
+    /**
+     * Writes a file to the Cms.<BR/>
+     *
+     * @param project The project in which the resource will be used.
+     * @param onlineProject The online project of the OpenCms.
+     * @param file The new file.
+     * @param changed Flag indicating if the file state must be set to changed.
+     * @param userId The id of the user who has changed the resource.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful.
+     */
+    public void writeFile(CmsProject project,
+                           CmsProject onlineProject,
+                           CmsFile file, boolean changed, int userId)
         throws CmsException {
         Connection con = null;
         PreparedStatement statement = null;
         String usedPool;
         String usedStatement;
+        int modifiedBy = userId;
         if (project.getId() == onlineProject.getId()){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
+            modifiedBy = file.getResourceLastModifiedBy();
         } else {
             usedPool = m_poolName;
             usedStatement = "";
@@ -9614,7 +9573,7 @@ public CmsTask readTask(int id) throws CmsException {
         try {
             con = DriverManager.getConnection(usedPool);
             // update the file header in the RESOURCE database.
-            writeFileHeader(project,file,changed);
+            writeFileHeader(project, file, changed, userId);
             // update the file content in the FILES database.
             statement = con.prepareStatement(m_cq.get("C_FILES_UPDATE"+usedStatement));
             statement.setBytes(1,file.getContents());
@@ -9651,18 +9610,36 @@ public CmsTask readTask(int id) throws CmsException {
      *
      * @exception CmsException Throws CmsException if operation was not succesful.
      */
-     public void writeFileHeader(CmsProject project, CmsFile file,boolean changed)
+     public void writeFileHeader(CmsProject project, CmsFile file, boolean changed)
+         throws CmsException {
+         writeFileHeader(project, file, changed, file.getResourceLastModifiedBy());
+     }
+
+     /**
+     * Writes the fileheader to the Cms.
+     *
+     * @param project The project in which the resource will be used.
+     * @param onlineProject The online project of the OpenCms.
+     * @param file The new file.
+     * @param changed Flag indicating if the file state must be set to changed.
+     * @param userId The id of the user who has changed the resource.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful.
+     */
+     public void writeFileHeader(CmsProject project, CmsFile file, boolean changed, int userId)
          throws CmsException {
         ResultSet res = null;
         PreparedStatement statementResourceUpdate = null;
         Connection con = null;
         String usedPool;
         String usedStatement;
+        int modifiedBy = userId;
         //int onlineProject = getOnlineProject(project.getId()).getId();
         int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (project.getId() == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
+            modifiedBy = file.getResourceLastModifiedBy();
         } else {
             usedPool = m_poolName;
             usedStatement = "";
@@ -9692,7 +9669,7 @@ public CmsTask readTask(int id) throws CmsException {
             statementResourceUpdate.setInt(9,file.getLauncherType());
             statementResourceUpdate.setString(10,file.getLauncherClassname());
             statementResourceUpdate.setTimestamp(11,new Timestamp(System.currentTimeMillis()));
-            statementResourceUpdate.setInt(12,file.getResourceLastModifiedBy());
+            statementResourceUpdate.setInt(12,modifiedBy);
             statementResourceUpdate.setInt(13,file.getLength());
             statementResourceUpdate.setInt(14,file.getFileId());
             statementResourceUpdate.setInt(15,file.getResourceId());
@@ -9736,16 +9713,33 @@ public CmsTask readTask(int id) throws CmsException {
      */
     public void writeFolder(CmsProject project, CmsFolder folder, boolean changed)
         throws CmsException {
+        writeFolder(project, folder, changed, folder.getResourceLastModifiedBy());
+    }
+
+     /**
+     * Writes a folder to the Cms.<BR/>
+     *
+     * @param project The project in which the resource will be used.
+     * @param folder The folder to be written.
+     * @param changed Flag indicating if the file state must be set to changed.
+     * @param userId The user who has changed the resource
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful.
+     */
+    public void writeFolder(CmsProject project, CmsFolder folder, boolean changed, int userId)
+        throws CmsException {
 
         PreparedStatement statement = null;
         Connection con = null;
         String usedPool;
         String usedStatement;
+        int modifiedBy = userId;
         //int onlineProject = getOnlineProject(project.getId()).getId();
         int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (project.getId() == onlineProject) {
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
+            modifiedBy = folder.getResourceLastModifiedBy();
         } else {
             usedPool = m_poolName;
             usedStatement = "";
@@ -9774,7 +9768,7 @@ public CmsTask readTask(int id) throws CmsException {
             statement.setInt(9,folder.getLauncherType());
             statement.setString(10,folder.getLauncherClassname());
             statement.setTimestamp(11,new Timestamp(System.currentTimeMillis()));
-            statement.setInt(12,folder.getResourceLastModifiedBy());
+            statement.setInt(12,modifiedBy);
             statement.setInt(13,0);
             statement.setInt(14,C_UNKNOWN_ID);
             statement.setInt(15,folder.getResourceId());
