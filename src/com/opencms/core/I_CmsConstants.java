@@ -6,7 +6,7 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @uathor Michael Emmerich
- * @version $Revision: 1.28 $ $Date: 2000/02/03 15:23:30 $
+ * @version $Revision: 1.29 $ $Date: 2000/02/08 09:51:35 $
  */
 public interface I_CmsConstants
 {
@@ -200,7 +200,7 @@ public interface I_CmsConstants
 	 * This constant defines the onlineproject. This is the project which
 	 * is used to show the resources for guestusers
 	 */
-	 static final String C_PROJECT_ONLINE	= "Live";
+	 static final String C_PROJECT_ONLINE	= "Online";
 	
 	/**
 	 * This constant defines a unlocked project. 
