@@ -8,6 +8,7 @@
 <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 <SCRIPT LANGUAGE="JavaScript">
     var pfad="]]><METHOD name="resourcesUri"/><![CDATA[";
+    var encoding="]]><METHOD name="getEncoding"/><![CDATA["
     function loadBody() {
         var link = document.viewchange.view.options[document.viewchange.view.selectedIndex].value;
         window.top.body.location.href="]]><METHOD name="getServletPath"/><![CDATA["+link.substring(1);

@@ -1,56 +1,40 @@
 /*
-* File   : $Source: /usr/local/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/explorer.js,v $
-* Date   : $Date: 2002/08/23 08:56:50 $
-* Version: $Revision: 1.53 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2001  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
-
- /**
-  *  contains information about the actual help page.
-  *  instead of the function show_help every template displayed in the explorer view
-  *  must set this variable with top.help_url="..."
-  */
- var help_url="ExplorerAnsicht/index.html";
-
-/**
- * The flaturl to use for changing folders in filelist-only mode.
+ * File   : $Source: /usr/local/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/explorer.js,v $
+ * Date   : $Date: 2002/08/23 08:56:50 $
+ * Version: $Revision: 1.53 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2001 - 2003  The OpenCms Group
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about OpenCms, please see the
+ * OpenCms Website: http://www.opencms.org 
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- var flaturl="";
- var showKon=true;
 
- /**
-  * If we are in project-view mode this is set to true
-  */
- var projectView = false;
- 
-  /**
-   *  contains information about the actual help page.
-   *  instead of the function show_help every template displayed in the explorer view
-   *  must set this variable with top.help_url="..."
-   */
-  var openfolderMethod="openthisfolder";
+// contains information about the current help page [must be revised for new online help].
+var help_url="ExplorerAnsicht/index.html";
+// The flaturl to use for changing folders in filelist-only mode.
+var flaturl="";
+// If we are in project-view mode this is set to true
+var projectView = false;
+
+var openfolderMethod="openthisfolder";
+var showKon=true;
 
  /**
   *  returns the actual help page
@@ -163,8 +147,7 @@
      this.uploadable = uploadable;
  }
 
-
- var windowed=0;
+var windowed=0;
 var ns,ie,gecko;
 
  /**
@@ -426,7 +409,9 @@ whichBrowser();
 
 function openurl(){
 	top.window.frames[1].frames[1].frames[1].document.open();
-	top.window.frames[1].frames[1].frames[1].document.writeln("<html><body><center><br><br><br><br><font face=Helvetica size=2>"+vr.langloading+"</center></body></html>");
+	top.window.frames[1].frames[1].frames[1].document.writeln("<html>");
+	top.window.frames[1].frames[1].frames[1].document.writeln("<HEAD><META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=" + top.frames.head.encoding + "\"></HEAD>");
+	top.window.frames[1].frames[1].frames[1].document.writeln("<body><center><br><br><br><br><font face=Helvetica size=2>"+vr.langloading+"</center></body></html>");
 	top.window.frames[1].frames[1].frames[1].document.close();
     folder=top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value;
     selectedpage="";
@@ -631,7 +616,11 @@ function closeTreeWin(){
  */
 function showTree(doc,windowed) {
 
-    var showTreeHead="<html><head><title>opencms explorer tree</title><style type='text/css'> a { text-decoration: none; color: #000000; font-family:arial; font-size:8pt;} a.ig { text-decoration: none; color: silver; font-family:arial; font-size:8pt;} a.tf { text-decoration: none; color: #000000; font-family:MS Sans Serif, Arial, helvetica, sans-serif; font-size:8px;} var a:hover { text-decoration: none; color: #FFFFFF; background:#000066 font-family:arial; font-size:8pt;} body { margin-left:3px; margin-right:0px; margin-top:4px; margin-bottom:0px; margin-height:0px; marginspace:0; margin-top:3px;} </style></head><body><font face='arial' size=2><table border=0 cellpadding=0 cellspacing=0><tr><td valign=bottom align=left nowrap>";
+    var showTreeHead="<html><head>" + 
+        "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=" + top.frames.head.encoding + "\">" +
+        "<title>opencms explorer tree</title>" +
+        "<style type='text/css'> a { text-decoration: none; color: #000000; font-family:arial; font-size:8pt;} a.ig { text-decoration: none; color: silver; font-family:arial; font-size:8pt;} a.tf { text-decoration: none; color: #000000; font-family:MS Sans Serif, Arial, helvetica, sans-serif; font-size:8px;} var a:hover { text-decoration: none; color: #FFFFFF; background:#000066 font-family:arial; font-size:8pt;} body { margin-left:3px; margin-right:0px; margin-top:4px; margin-bottom:0px; margin-height:0px; marginspace:0; margin-top:3px;} </style>" + 
+        "</head><body><font face='arial' size=2><table border=0 cellpadding=0 cellspacing=0><tr><td valign=bottom align=left nowrap>";
 
     var showTreeFoot="</font></TD></TR></table></body></html>";
 
@@ -734,7 +723,9 @@ if(pages>1){
     pageSelect+="</select></p></td>";
 }
 
-    var headHead="<html><head><title>opencms</title>"+
+    var headHead="<html><head>"+
+            "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=" + top.frames.head.encoding + "\">"+
+            "<title>opencms</title>"+
             "<style type='text/css'>"+
             "<!"+"--"+
             "body { margin-left:3px; margin-right:0px; margin-top:3px; margin-bottom:0px; marginspace=0;}"+
@@ -940,6 +931,7 @@ showKontext(doc, welche, id,x,y);
      var lockedBystring;
      var ssclass;
      var temp="<html><head>"+
+             "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=" + top.frames.head.encoding + "\">" +
              "<style type='text/css'>"+
              "<!"+"--"+
              "h1 { font-size:48pt; color:#FF0000; font-style:italic; } "+
