@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/01/24 09:41:40 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2001/01/30 14:50:10 $
+* Version: $Revision: 1.45 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -51,7 +51,7 @@ import com.opencms.launcher.*;
  *  
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.44 $ $Date: 2001/01/24 09:41:40 $  
+ * @version $Revision: 1.45 $ $Date: 2001/01/30 14:50:10 $  
  * 
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -363,4 +363,15 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             c_rb.storeSession(sessionId, sessionData);
         }
     }
+	
+	/**
+	 * Returns the registry to read values from it. You don't have the right to write
+	 * values. This is useful for modules, to read module-parameters. 
+	 * 
+	 * @return the registry to READ values from it.
+	 * @exception Throws CmsException, if the registry can not be returned.
+	 */
+	public static I_CmsRegistry getRegistry() throws CmsException {
+		return c_rb.getRegistry(null, null, null);
+	}
 }
