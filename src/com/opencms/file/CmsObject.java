@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/03/15 09:46:12 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2000/03/15 14:32:14 $
+ * Version: $Revision: 1.55 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.54 $ $Date: 2000/03/15 09:46:12 $ 
+ * @version $Revision: 1.55 $ $Date: 2000/03/15 14:32:14 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -2022,5 +2022,18 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 public void reaktivateTask(int taskId)
 		 throws CmsException {
 		 c_rb.reaktivateTask(m_context.currentUser(), m_context.currentProject(), taskId);
+	 }
+
+	 /**
+	  * Set a new name for a task
+	  * 
+	  * @param taskid The Id of the task to set the percentage.
+	  * @param name The new name value
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void setName(int taskId, String name)
+		 throws CmsException {
+		 c_rb.setName(m_context.currentUser(), m_context.currentProject(), taskId, name);
 	 }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/03/15 09:46:12 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2000/03/15 14:32:14 $
+ * Version: $Revision: 1.54 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.53 $ $Date: 2000/03/15 09:46:12 $ 
+ * @version $Revision: 1.54 $ $Date: 2000/03/15 14:32:14 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1620,5 +1620,16 @@ public abstract class A_CmsObject {
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 abstract public void reaktivateTask(int taskId)
+		 throws CmsException;
+
+	 /**
+	  * Set a new name for a task
+	  * 
+	  * @param taskid The Id of the task to set the percentage.
+	  * @param name The new name value
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 abstract public void setName(int taskId, String name)
 		 throws CmsException;
 }

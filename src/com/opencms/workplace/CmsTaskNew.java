@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
- * Date   : $Date: 2000/03/15 09:46:13 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/03/15 14:32:15 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2000/03/15 09:46:13 $
+ * @version $Revision: 1.13 $ $Date: 2000/03/15 14:32:15 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -134,44 +134,20 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 		
 		// create task, if ok was pressed
 		if(parameters.get("ok") != null) {
-			// get the parameters
-			String agentName = (String)parameters.get("USER");
-			String roleName = (String)parameters.get("TEAM");
-			if( roleName.equals(C_ALL_ROLES) ) {
-				roleName = cms.readUser(agentName).getDefaultGroup().getName();
-			}
-			String taskName = (String)parameters.get("TASKNAME");
-			String taskcomment = (String)parameters.get("DESCRIPTION");
-			String timeoutString = (String)parameters.get("DATE");
-			String priorityString = (String)parameters.get("PRIO");
-			String paraAcceptation = (String)parameters.get("MSG_ACCEPTATION");
-			String paraAll = (String)parameters.get("MSG_ALL");
-			String paraCompletion = (String)parameters.get("MSG_COMPLETION");
-			String paraDelivery = (String)parameters.get("MSG_DELIVERY");
 			
 			// try to create the task
 			try {
-				int priority = Integer.parseInt(priorityString);
-				// create a long from the overgiven date.
-				String splittetDate[] = Utils.split(timeoutString, ".");
-				GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]),
-															  Integer.parseInt(splittetDate[1]) - 1,
-															  Integer.parseInt(splittetDate[0]), 0, 0, 0);
-				long timeout = cal.getTime().getTime();
-                		
-				A_CmsTask task = cms.createTask(agentName, roleName, taskName, 
-												taskcomment, timeout, priority);
-				cms.setTaskPar(task.getId(),C_TASKPARA_ACCEPTATION, paraAcceptation);
-				cms.setTaskPar(task.getId(),C_TASKPARA_ALL, paraAll);
-				cms.setTaskPar(task.getId(),C_TASKPARA_COMPLETION, paraCompletion);
-				cms.setTaskPar(task.getId(),C_TASKPARA_DELIVERY, paraDelivery);
-				cms.setTaskPar(task.getId(),C_TASKPARA_COMMENT, taskcomment);
-				CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
-				String comment = lang.getLanguageValue("task.label.forrole") + ": " + roleName + "\n";
-				comment += lang.getLanguageValue("task.label.editor") + ": " +  Utils.getFullName(cms.readUser(agentName)) + "\n";
-				comment += taskcomment;
-				cms.writeTaskLog(task.getId(), comment, C_TASKLOGTYPE_CREATED);
-
+				CmsTaskAction.create(cms, 
+									 (String)parameters.get("USER"), 
+									 (String)parameters.get("TEAM"),
+									 (String)parameters.get("TASKNAME"),
+									 (String)parameters.get("DESCRIPTION"),
+									 (String)parameters.get("DATE"),
+									 (String)parameters.get("PRIO"),
+									 (String)parameters.get("MSG_ACCEPTATION"),
+									 (String)parameters.get("MSG_ALL"),
+									 (String)parameters.get("MSG_COMPLETION"),
+									 (String)parameters.get("MSG_DELIVERY"));
 				templateSelector = "done";
 			} catch( Exception exc ) {
 				A_OpenCms.log(C_MODULE_INFO, "Could not create task. " + exc.getMessage());

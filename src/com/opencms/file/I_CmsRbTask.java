@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRbTask.java,v $
- * Date   : $Date: 2000/03/15 09:46:13 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/03/15 14:32:14 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Rüdiger Gutfleisch
- * @version $Revision: 1.15 $ $Date: 2000/03/15 09:46:13 $
+ * @version $Revision: 1.16 $ $Date: 2000/03/15 14:32:14 $
  */
 interface I_CmsRbTask { 	
 
@@ -207,6 +207,18 @@ interface I_CmsRbTask {
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 public void setPercentage(A_CmsUser currentUser, int taskid, int percentage)
+		 throws CmsException;
+	 
+	 /**
+	  * Set a new name for a task
+	  * 
+	  * @param currentUser The user who wants to set the percentage.	 
+	  * @param taskid The Id of the task to set the percentage.
+	  * @param name The new name value
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void setName(A_CmsUser currentUser, int taskId, String name)
 		 throws CmsException;
 	 
 	 /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/03/15 09:46:13 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2000/03/15 14:32:14 $
+ * Version: $Revision: 1.49 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.48 $ $Date: 2000/03/15 09:46:13 $
+ * @version $Revision: 1.49 $ $Date: 2000/03/15 14:32:14 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -2245,5 +2245,22 @@ interface I_CmsResourceBroker {
 	  */
 	 public void reaktivateTask(A_CmsUser currentUser, A_CmsProject currentProject,
 								int taskId)
+		 throws CmsException;
+
+	 /**
+	  * Set a new name for a task
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The Id of the task to set the percentage.
+	  * @param name The new name value
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void setName(A_CmsUser currentUser, A_CmsProject currentProject, 
+						 int taskId, String name)
 		 throws CmsException;
 }

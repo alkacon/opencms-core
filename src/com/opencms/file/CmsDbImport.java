@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbImport.java,v $
- * Date   : $Date: 2000/02/29 16:44:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/03/15 14:32:14 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.template.*;
  * imports an generated (with db export) XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.5 $ $Date: 2000/02/29 16:44:46 $
+ * @version $Revision: 1.6 $ $Date: 2000/03/15 14:32:14 $
  */
 class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 	
@@ -189,8 +189,10 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 					m_errMsg=cmsImport.xmlImport();
 					m_files_exported = C_FILES_IMPORTED;
 				}
+				System.out.print(".");
+				System.out.flush();
 			}
-				
+			System.out.println("done");
 			//colse the input file
 			m_fXmlStream.close();
 			return m_errMsg;

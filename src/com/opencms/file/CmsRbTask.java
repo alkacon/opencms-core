@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbTask.java,v $
- * Date   : $Date: 2000/03/15 09:46:12 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/03/15 14:32:14 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Rüdiger Gutfleisch
- * @version $Revision: 1.8 $ $Date: 2000/03/15 09:46:12 $
+ * @version $Revision: 1.9 $ $Date: 2000/03/15 14:32:14 $
  */
  class CmsRbTask implements I_CmsRbTask, I_CmsConstants {
 	 
@@ -297,6 +297,7 @@ import com.opencms.core.*;
 		 
 		 A_CmsTask task = readTask(taskId);
 		 task.setState(C_TASK_STATE_STARTED);
+		 task.setPercentage(0);		 
 		 task = m_accessTask.writeTask(task);
 		 m_accessTask.writeSytemTaskLog(taskId, 
 										"Task was reactivated from " + 					
@@ -341,6 +342,31 @@ import com.opencms.core.*;
 		 task = m_accessTask.writeTask(task);
 		 m_accessTask.writeSytemTaskLog(taskId, 
 										"Percentage was set to " + percentage + "% from " + 
+										currentUser.getFirstname() + " " + 
+										currentUser.getLastname() + ".");
+	 }
+	 
+	 /**
+	  * Set a new name for a task
+	  * 
+	  * @param currentUser The user who wants to set the percentage.	 
+	  * @param taskid The Id of the task to set the percentage.
+	  * @param name The new name value
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void setName(A_CmsUser currentUser, int taskId, String name)
+		 throws CmsException {
+		 
+		 if( (name == null) || name.length() == 0) {
+            throw new CmsException("[" + this.getClass().getName() + "] " + 
+			   name, CmsException.C_BAD_NAME); 
+		 }		 
+		 A_CmsTask task = readTask(taskId);
+		 task.setName(name);
+		 task = m_accessTask.writeTask(task);
+		 m_accessTask.writeSytemTaskLog(taskId, 
+										"Name was set to " + name + "% from " + 
 										currentUser.getFirstname() + " " + 
 										currentUser.getLastname() + ".");
 	 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskDocu.java,v $
- * Date   : $Date: 2000/03/13 15:40:30 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/03/15 14:32:15 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;TASKDOCU&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/03/13 15:40:30 $
+ * @version $Revision: 1.5 $ $Date: 2000/03/15 14:32:15 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants, I_CmsConstants {
@@ -110,7 +110,7 @@ public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                 template.setXmlData("DATE", Utils.getNiceDate(time.getTime()));
                 // add the user
                 A_CmsUser user=cms.readOwner(tasklog);
-                template.setXmlData("USER", user.getFirstname()+" "+user.getLastname()+ "("+user.getName()+")");
+                template.setXmlData("USER", Utils.getFullName(user) );
                 // set the message
                 template.setXmlData("MESSAGE", addBrTags(tasklog.getComment()));
                 // set the image

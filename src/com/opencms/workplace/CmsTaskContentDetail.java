@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
- * Date   : $Date: 2000/03/15 09:46:13 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/03/15 14:32:15 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/03/15 09:46:13 $
+ * @version $Revision: 1.10 $ $Date: 2000/03/15 14:32:15 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -84,7 +84,6 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 		
-		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
 		A_CmsRequestContext context = cms.getRequestContext();
 		CmsXmlWpTemplateFile xmlTemplateDocument = 
 			(CmsXmlWpTemplateFile) getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
@@ -109,9 +108,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 			
 			if("acceptok".equals((String)parameters.get("action"))){
 				// accept the task
-				cms.acceptTask(taskid);
-				String comment = "";
-				cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_ACCEPTED);
+				CmsTaskAction.accept(cms, taskid);
 			} else if("accept".equals((String)parameters.get("action"))){
 				// show dialog
 				templateSelector = "accept";
@@ -120,106 +117,36 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 				templateSelector = "take";
 			} else if("takeok".equals((String)parameters.get("action"))){
 				// take the task
-				A_CmsUser newEditor = context.currentUser();
-				A_CmsGroup oldRole = cms.readGroup(task);
-				// has the user the correct role?
-				if(cms.userInGroup(newEditor.getName(), oldRole.getName())) {
-					cms.forwardTask(taskid, oldRole.getName(), newEditor.getName());
-					String comment = lang.getLanguageValue("task.dialog.take.logmessage");
-					comment += " " + Utils.getFullName(newEditor);
-					cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_TAKE);
-				}				
+				CmsTaskAction.take(cms, taskid);
 			} else if("forwardok".equals((String)parameters.get("action"))){
-				// take the task
-				String newEditorName = (String)parameters.get("USER");
-				String newRoleName = (String)parameters.get("TEAM");
-				A_CmsUser newEditor = cms.readUser(newEditorName);
-				A_CmsGroup oldRole = cms.readGroup(newRoleName);
-
-				cms.forwardTask(taskid, oldRole.getName(), newEditor.getName());
-
-				String comment = lang.getLanguageValue("task.dialog.forward.logmessage");
-				comment += " " + Utils.getFullName(newEditor);
-				cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_FORWARDED);
+				// forward the task
+				CmsTaskAction.forward(cms, taskid, (String)parameters.get("USER"),
+									  (String)parameters.get("TEAM"));
 			} else if("due".equals((String)parameters.get("action"))){
 				// show dialog
 				templateSelector = "due";
 			} else if("dueok".equals((String)parameters.get("action"))){
 				// change the due-date of the task
-				String timeoutString = (String)parameters.get("DATE");
-				String splittetDate[] = Utils.split(timeoutString, ".");
-				GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]),
-															  Integer.parseInt(splittetDate[1]) - 1,
-															  Integer.parseInt(splittetDate[0]), 0, 0, 0);
-				long timeout = cal.getTime().getTime();
-				cms.setTimeout(taskid, timeout);
-				// add comment
-				String comment = "";
-				comment += lang.getLanguageValue("task.dialog.due.logmessage1") + " ";
-				comment += Utils.getNiceShortDate(task.getTimeOut().getTime()) + " ";
-				comment += lang.getLanguageValue("task.dialog.due.logmessage2") + " ";
-				comment += Utils.getNiceShortDate(timeout);
-				cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_DUECHANGED);
+				CmsTaskAction.due(cms, taskid, (String)parameters.get("DATE"));
 			} else if("priorityok".equals((String)parameters.get("action"))){
 				// change the priority of the task
-				String priorityString = (String)parameters.get("PRIORITY");
-				int priority = Integer.parseInt(priorityString);
-				cms.setPriority(taskid, priority);
-
-				// add comment
-				String comment = "";
-				comment += lang.getLanguageValue("task.dialog.priority.logmessage1") + " ";
-				comment += lang.getLanguageValue("task.dialog.priority.logmessageprio" + task.getPriority() ) + " ";
-				comment += lang.getLanguageValue("task.dialog.priority.logmessage2") + " ";
-				comment += lang.getLanguageValue("task.dialog.priority.logmessageprio" + priority ) + " ";
-				cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_PRIORITYCHANGED);
+				CmsTaskAction.priority(cms, taskid, 
+									   (String)parameters.get("PRIORITY"));
 			} else if("reaktok".equals((String)parameters.get("action"))){
 				// reaktivate the task
-				// get the parameters
-				String agentName = (String)parameters.get("USER");
-				String roleName = (String)parameters.get("TEAM");
-				if( roleName.equals(C_ALL_ROLES) ) {
-					roleName = cms.readUser(agentName).getDefaultGroup().getName();
-				}
-				String taskName = (String)parameters.get("TASKNAME");
-				// TODO: set the new name
-				String taskcomment = (String)parameters.get("DESCRIPTION");
-				String timeoutString = (String)parameters.get("DATE");
-				String priorityString = (String)parameters.get("PRIORITY");
-				String paraAcceptation = (String)parameters.get("MSG_ACCEPTATION");
-				String paraAll = (String)parameters.get("MSG_ALL");
-				String paraCompletion = (String)parameters.get("MSG_COMPLETION");
-				String paraDelivery = (String)parameters.get("MSG_DELIVERY");
-				
-				// try to reaktivate the task
-				cms.reaktivateTask(taskid);
-				int priority = Integer.parseInt(priorityString);
-				cms.setPriority(taskid, priority);
-				// create a long from the overgiven date.
-				String splittetDate[] = Utils.split(timeoutString, ".");
-				GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]),
-															  Integer.parseInt(splittetDate[1]) - 1,
-															  Integer.parseInt(splittetDate[0]), 0, 0, 0);
-				long timeout = cal.getTime().getTime();
-				cms.setTimeout(taskid, timeout);
-				    		
-				cms.setTaskPar(taskid,C_TASKPARA_ACCEPTATION, paraAcceptation);
-				cms.setTaskPar(taskid,C_TASKPARA_ALL, paraAll);
-				cms.setTaskPar(taskid,C_TASKPARA_COMPLETION, paraCompletion);
-				cms.setTaskPar(taskid,C_TASKPARA_DELIVERY, paraDelivery);
-				cms.setTaskPar(taskid,C_TASKPARA_COMMENT, taskcomment);
-				
-				cms.forwardTask(taskid, roleName, agentName);
-				
-				String comment = lang.getLanguageValue("task.label.forrole") + ": " + roleName + "\n";
-				comment += lang.getLanguageValue("task.label.editor") + ": " +  Utils.getFullName(cms.readUser(agentName)) + "\n";
-				comment += taskcomment;
-				cms.writeTaskLog(task.getId(), comment, C_TASKLOGTYPE_REACTIVATED);
+				CmsTaskAction.reakt(cms, taskid, (String)parameters.get("USER"),
+									(String)parameters.get("TEAM"), 
+									(String)parameters.get("TASK"), 
+									(String)parameters.get("DESCRIPTION"),
+									(String)parameters.get("DATE"),
+									(String)parameters.get("PRIORITY"),
+									(String)parameters.get("MSG_ACCEPTATION"),
+									(String)parameters.get("MSG_ALL"),
+									(String)parameters.get("MSG_COMPLETION"),
+									(String)parameters.get("MSG_DELIVERY"));
 			} else if("okok".equals((String)parameters.get("action"))){
 				// ok the task
-				cms.endTask(taskid);
-				String comment = "";
-				cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_OK);
+				CmsTaskAction.end(cms, taskid);
 			} else if("ok".equals((String)parameters.get("action"))) {
 				// show dialog
 				templateSelector = "ok";
@@ -231,20 +158,10 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 				}
 			} else if("messageok".equals((String)parameters.get("action"))) {
 				// add message
-				String comment = lang.getLanguageValue("task.dialog.message.head") + " ";
-				if( (comment != null) && (comment.length() != 0)) {
-					comment += Utils.getFullName(cms.readAgent(task)) + "\n";
-					comment += (String)parameters.get("DESCRIPTION");
-					cms.writeTaskLog(taskid, comment, this.C_TASKLOGTYPE_CALL);
-				}
+				CmsTaskAction.message(cms, taskid, (String)parameters.get("DESCRIPTION"));
 			} else if("queryok".equals((String)parameters.get("action"))) {
 				// add message
-				String comment = lang.getLanguageValue("task.dialog.query.head") + " ";
-				if( (comment != null) && (comment.length() != 0)) {
-					comment += Utils.getFullName(cms.readOwner(task)) + "\n";
-					comment += (String)parameters.get("DESCRIPTION");
-					cms.writeTaskLog(taskid, comment, this.C_TASKLOGTYPE_CALL);
-				}
+				CmsTaskAction.query(cms, taskid, (String)parameters.get("DESCRIPTION"));
 			}
 			
 			// update the task-data
