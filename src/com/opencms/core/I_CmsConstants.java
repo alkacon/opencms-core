@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2001/01/04 15:30:31 $
- * Version: $Revision: 1.120 $
+ * Date   : $Date: 2001/01/05 12:42:32 $
+ * Version: $Revision: 1.121 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.120 $ $Date: 2001/01/04 15:30:31 $
+ * @version $Revision: 1.121 $ $Date: 2001/01/05 12:42:32 $
  */
 public interface I_CmsConstants
 {
@@ -62,6 +62,11 @@ public interface I_CmsConstants
 	 */
 	static final int C_PASSWORD_MINIMUMSIZE = 4;
 	 
+	/**
+	 * The maximum length of a resource name (incl. path).
+	 */
+	static final int C_MAX_LENGTH_RESOURCE_NAME =240;
+
 	/**
 	 * This flag is set for enabled entrys in the database.
 	 * (GROUP_FLAGS for example)

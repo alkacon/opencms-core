@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/01/04 13:53:31 $
- * Version: $Revision: 1.180 $
+ * Date   : $Date: 2001/01/05 12:43:43 $
+ * Version: $Revision: 1.181 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.180 $ $Date: 2001/01/04 13:53:31 $ * 
+ * @version $Revision: 1.181 $ $Date: 2001/01/05 12:43:43 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -748,6 +748,9 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 
 		 throws CmsException {
 		 
+		  if (filename.length() > C_MAX_LENGTH_RESOURCE_NAME){
+			   throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
+		  }
 	 
 		 
 		  int state=0;         
@@ -851,6 +854,10 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
  */
 public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlineProject, String filename, int flags, int parentId, byte[] contents, CmsResourceType resourceType) throws CmsException {
 
+	if (filename.length() > C_MAX_LENGTH_RESOURCE_NAME){
+		throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
+	}
+
 	// it is not allowed, that there is no content in the file
 	// TODO: check if this can be done in another way:
 	if (contents.length == 0) {
@@ -930,6 +937,10 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
  */
 public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, int fileId, String foldername, int flags) throws CmsException {
 	
+	if (foldername.length() > C_MAX_LENGTH_RESOURCE_NAME){
+		throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
+	}
+
 	CmsFolder oldFolder = null;
 	int state = C_STATE_NEW;  
 	// Test if the folder is already there and marked as deleted.
@@ -999,6 +1010,11 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, in
  * @exception CmsException Throws CmsException if operation was not succesful.
  */
 public CmsFolder createFolder(CmsUser user, CmsProject project, CmsProject onlineProject, CmsFolder folder, int parentId, String foldername) throws CmsException {
+
+	if (foldername.length() > C_MAX_LENGTH_RESOURCE_NAME){
+		throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
+	}
+	
 	CmsFolder oldFolder = null;
 	int state = 0;
 	if (project.equals(onlineProject)) {
@@ -1218,6 +1234,9 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, CmsProject onlin
 									   CmsProject onlineProject,
 									   CmsResource resource)
 		 throws CmsException {
+			if ((resource.getAbsolutePath()).length() > C_MAX_LENGTH_RESOURCE_NAME){
+				throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
+			}
 			PreparedStatement statement = null;
 			try {   
 				statement=m_pool.getPreparedStatement(m_cq.C_RESOURCES_WRITE_KEY);

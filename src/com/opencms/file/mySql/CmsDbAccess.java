@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/12/14 08:17:41 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2001/01/05 12:44:22 $
+ * Version: $Revision: 1.45 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.44 $ $Date: 2000/12/14 08:17:41 $ * 
+ * @version $Revision: 1.45 $ $Date: 2001/01/05 12:44:22 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -222,6 +222,9 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 							
 		 throws CmsException {
 		 
+		  if (filename.length() > C_MAX_LENGTH_RESOURCE_NAME){
+			throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
+		  }
 		
 
 		  int state= C_STATE_NEW;
