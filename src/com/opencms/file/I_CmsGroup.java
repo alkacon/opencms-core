@@ -6,7 +6,7 @@ import java.util.*;
  * This interface describes a group in the Cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/03 11:57:10 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/06 09:39:22 $
  */
 public interface I_CmsGroup extends I_CmsFlags { 
 	
@@ -38,7 +38,7 @@ public interface I_CmsGroup extends I_CmsFlags {
 	 * 
 	 * @return id The id of this group.
 	 */
-	int getID();
+	long getID();
 	
 	/**
 	 * Returns the description of this group.

@@ -2,7 +2,6 @@ package com.opencms.file;
 
 import java.util.*;
 
-import com.opencms.rb.*;
 import com.opencms.core.*;
 
 /**
@@ -15,40 +14,251 @@ import com.opencms.core.*;
  * I_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/03 11:57:10 $ 
+ * @version $Revision: 1.2 $ $Date: 1999/12/06 09:39:22 $ 
  * 
  */
 interface I_CmsObjectBase {	
 	
-	// OK
-	// initialising the rb - only at start time of the CmsServlet
-	public void init(I_CmsRessourceBroker ressourceBroker);
-	// initialising the CmsObject - for each request
-	public void init(I_CmsUser user, String host, String url, String uri);
+	/**
+	 * Initialises the CmsObject with the resourceBroker. This only done ones!
+	 * If the ressource broker was set before - it will not be overitten. This is
+	 * for security reasons.
+	 * 
+	 * @param ressourceBroker the resourcebroker to access all resources.
+	 * 
+	 * @exception CmsException is thrown, when the resourceBroker was set before.
+	 */
+	void init(I_CmsResourceBroker resourceBroker) throws CmsException;
 	
-	// OK
-	// information about the request
-	public String getUri();	
+	/**
+	 * Initialises the CmsObject for each request.
+	 * 
+	 * @param user The current user for this request.
+	 * @param host The host of this request.
+	 * @param url The url of this request.
+	 * @param uri Teh uri of this request.
+	 */
+	void init(I_CmsUser user, String host, String url, String uri);
+	
+	/**
+	 * Returns the uri for this CmsObject.
+	 * 
+	 * @return the uri for this CmsObject.
+	 */
+	public String getUri();
+	
+	/**
+	 * Returns the url for this CmsObject.
+	 * 
+	 * @return the url for this CmsObject.
+	 */
 	public String getUrl();
-	public String getHost();	
-	public I_CmsFolder currentFolder();	
-	public I_CmsFolder rootFolder();
-	public I_CmsUser currentUser();	
-	public I_CmsGroup userDefaultGroup();
-	public I_CmsGroup userCurrentGroup();
-	public I_CmsUser anonymousUser();
-	public Vector getAllFileTypes();
-	public  boolean isAdmin();
 	
-	// OK
-	// file creating, reading, writing...
-	// all is done widthin the online-project
-	public I_CmsFile createFile(String filename, byte[] contents, I_CmsResourceType type);
-	public I_CmsFile createFile(I_CmsFile folder, String filename, byte[] contents, I_CmsResourceType type);
-	public I_CmsFile readFile(String filename);
-	public I_CmsFile readFileHeader(String filename);
+	/**
+	 * Returns the host for this CmsObject.
+	 * 
+	 * @return the host for this CmsObject.
+	 */
+	public String getHost();
+	
+	/**
+	 * Returns the current folder object.
+	 * 
+	 * @return the current folder object.
+	 */
+	public I_CmsFolder currentFolder();	
+
+	/**
+	 * Returns the root-folder object.
+	 * 
+	 * @return the root-folder object.
+	 */
+	public I_CmsFolder rootFolder();
+	
+	/**
+	 * Returns the current user object.
+	 * 
+	 * @return the current user object.
+	 */
+	public I_CmsUser currentUser();
+	
+	/**
+	 * Returns the default group of the current user.
+	 * 
+	 * @return the default group of the current user.
+	 */
+	public I_CmsGroup userDefaultGroup();
+	
+	/**
+	 * Returns the current group of the current user.
+	 * 
+	 * @return the current group of the current user.
+	 */
+	public I_CmsGroup userCurrentGroup();
+	
+	/**
+	 * Returns the anonymous user object.
+	 * 
+	 * @return the anonymous user object.
+	 */
+	public I_CmsUser anonymousUser();
+	
+	/**
+	 * Returns the onlineproject. This is the default project. All anonymous 
+	 * (or guest) user will see the rersources of this project.
+	 * 
+	 * @return the onlineproject object.
+	 */
+	public I_CmsProject onlineProject();
+
+	/**
+	 * Returns a Vector with all I_CmsResourceTypes.
+	 * 
+	 * Returns a Vector with all I_CmsResourceTypes.
+	 */
+	public Vector getAllResourceTypes();
+	
+	/**
+	 * Determines, if the users current group is the admin-group.
+	 * 
+	 * @return true, if the users current group is the admin-group, 
+	 * else it returns false.
+	 */	
+	public  boolean isAdmin();
+
+	/**
+	 * Determines, if the users current group is the projectleader-group.<BR>
+	 * All projectleaders can create new projects, or close their own projects.
+	 * 
+	 * @return true, if the users current group is the projectleader-group, 
+	 * else it returns false.
+	 */	
+	public  boolean isProjectLeader();
+
+	/**
+	 * Creates a new file with the overgiven content and resourcetype.
+	 * The onlineproject will be used for this resource<BR>
+	 * If there are some mandatory metadefinitions for the resourcetype, a 
+	 * CmsException will be thrown, because the file cannot be created without
+	 * the mandatory metainformations.<BR>
+	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR>
+	 * If there is already a file with this filename, a CmsDuplicateKey exception will
+	 * be thrown.
+	 * 
+	 * @param folder The folder in which the file will be created.
+	 * @param filename The name of the new file (No pathinformation allowed).
+	 * @param contents The contents of the new file.
+	 * @param type The resourcetype of the new file.
+	 * 
+	 * @return file The created file.
+	 * 
+	 * @exception CmsException will be thrown for missing metainfos or if 
+	 * resourcetype is set to folder. The CmsException is also thrown, if the 
+	 * filename is not valid. The CmsException will also be thrown, if the user
+	 * has not the rights for this resource.
+	 * @exception CmsDuplikateKeyException if there is already a resource with 
+	 * this name.
+	 */
+	public I_CmsFile createFile(I_CmsFolder folder, String filename, 
+								byte[] contents, I_CmsResourceType type)
+		throws CmsException, CmsDuplicateKeyException;
+	
+	/**
+	 * Creates a new file with the overgiven content and resourcetype.
+	 * The onlineproject will be used for this resource<BR>
+	 * If some mandatory metadefinitions for the resourcetype are missing, a 
+	 * CmsException will be thrown, because the file cannot be created without
+	 * the mandatory metainformations.<BR>
+	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR>
+	 * If there is already a file with this filename, a CmsDuplicateKey exception will
+	 * be thrown.
+	 * 
+	 * @param folder The folder in which the file will be created.
+	 * @param filename The name of the new file (No pathinformation allowed).
+	 * @param contents The contents of the new file.
+	 * @param type The resourcetype of the new file.
+	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
+	 * The keys for this Hashtable are the names for metadefinitions, the values are
+	 * the values for the metainfos.
+	 * 
+	 * @return file The created file.
+	 * 
+	 * @exception CmsException will be thrown for missing metainfos, for worng metadefs
+	 * or if resourcetype is set to folder. The CmsException is also thrown, if the 
+	 * filename is not valid. The CmsException will also be thrown, if the user
+	 * has not the rights for this resource.
+	 * @exception CmsDuplikateKeyException if there is already a resource with 
+	 * this name.
+	 */
+	public I_CmsFile createFile(I_CmsFolder folder, String filename, 
+								byte[] contents, I_CmsResourceType type, 
+								Hashtable metainfos)
+		throws CmsException, CmsDuplicateKeyException;
+	
+	/**
+	 * Reads a file from the Cms.
+	 * The onlineproject will be used for this resource<BR>
+	 * 
+	 * @param folder The folder from which the file will be read.
+	 * @param filename The name of the file to be read.
+	 * 
+	 * @return file The read file.
+	 * 
+	 * @exception CmsException will be thrown, if the file couldn't be read. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */
+	public I_CmsFile readFile(I_CmsFolder folder, String filename);
+	
+	/**
+	 * Reads a file header from the Cms.
+	 * The onlineproject will be used for this resource<BR>
+	 * 
+	 * @param folder The folder from which the file will be read.
+	 * @param filename The name of the file to be read.
+	 * 
+	 * @return file The read file.
+	 * 
+	 * @exception CmsException will be thrown, if the file couldn't be read. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */
+	public I_CmsResource readFileHeader(I_CmsFolder folder, String filename);
+	
+	/**
+	 * Writes a file to the Cms.<BR>
+	 * The onlineproject will be used for this resource.<BR>
+	 * 
+	 * @param file The file to write.
+	 * 
+	 * @exception CmsException will be thrown for missing metainfos, for worng metadefs
+	 * or if resourcetype is set to folder. The CmsException will also be thrown, 
+	 * if the user has not the rights for this resource.
+	 */	
 	public void writeFile(I_CmsFile file);
+	
+	/**
+	 * Writes the fileheader to the Cms.
+	 * The onlineproject will be used for this resource<BR>
+	 * 
+	 * @param file The file to write the header of.
+	 * 
+	 * @exception CmsException will be thrown, if the file couldn't be wrote. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */	
 	public void writeFileHeader(I_CmsFile file);
+	
+	/**
+	 * renames the file to the new name.
+	 * The onlineproject will be used for this resource<BR>
+	 * 
+	 * @param file The file to rename.
+	 * 
+	 * @exception CmsException will be thrown, if the file couldn't be wrote. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */		
 	public void renameFile(I_CmsFile file, String newname);
 	public void deleteFile(I_CmsFile file);	
 	public void deleteFile(String filename);	

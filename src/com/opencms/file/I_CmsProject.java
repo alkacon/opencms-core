@@ -5,7 +5,7 @@ package com.opencms.file;
  * resource.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/03 11:57:10 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/06 09:39:22 $
  */
 public interface I_CmsProject
 {
@@ -19,20 +19,20 @@ public interface I_CmsProject
 	 * This constant defines a unlocked project. 
 	 * Resources may be changed in this project.
 	 */
-	public static long C_STATE_UNLOCKED			= 0;
+	public static int C_STATE_UNLOCKED			= 0;
 
 	/**
 	 * This constant defines a locked project.
 	 * Resources can't be changed in this project.
 	 */
-	public static long C_STATE_LOCKED			= 1;
+	public static int C_STATE_LOCKED			= 1;
 
 	/**
 	 * This constant defines a project in a archive.
 	 * Resources can't be changed in this project. Its state will never
 	 * go back to the previos one.
 	 */
-	public static long C_STATE_ARCHIVE			= 2;
+	public static int C_STATE_ARCHIVE			= 2;
 
 	/**
 	 * Returns the name of this project.
@@ -54,7 +54,7 @@ public interface I_CmsProject
 	 * 
 	 * @return the state of this project.
 	 */
-	public long getState();
+	public int getState();
 
 	/**
 	 * Returns the id of this project.

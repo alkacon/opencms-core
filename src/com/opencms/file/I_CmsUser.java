@@ -6,7 +6,7 @@ import java.util.*;
  * This interface describes a user.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/03 11:57:10 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/06 09:39:22 $
  */
 public interface I_CmsUser extends I_CmsFlags{
 	
@@ -47,7 +47,7 @@ public interface I_CmsUser extends I_CmsFlags{
 	 * 
 	 * @return the id of this user.
 	 */
-	int getID();
+	long getID();
 	
 	/**
 	 * Gets the description of this user.

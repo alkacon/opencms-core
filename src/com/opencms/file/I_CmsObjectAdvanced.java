@@ -2,7 +2,6 @@ package com.opencms.file;
 
 import java.util.*;
 
-import com.opencms.rb.*;
 import com.opencms.core.*;
 
 /**
@@ -15,7 +14,7 @@ import com.opencms.core.*;
  * I_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/03 11:57:10 $ 
+ * @version $Revision: 1.2 $ $Date: 1999/12/06 09:39:22 $ 
  * 
  */
 interface I_CmsObjectAdvanced extends I_CmsObjectBase {	
