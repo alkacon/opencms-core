@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2002/07/10 15:01:55 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2002/07/25 07:15:25 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  *
  * @author Michael Emmerich
- * @version $Revision: 1.34 $ $Date: 2002/07/10 15:01:55 $
+ * @version $Revision: 1.35 $ $Date: 2002/07/25 07:15:25 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -639,16 +639,13 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         I_CmsSession session = cms.getRequestContext().getSession(true);
         startSettings = (Hashtable)session.getValue("STARTSETTINGS");
 
-        // if this fails, get the settings from the user obeject
-        if(startSettings == null) {
-            startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
-        }
         if(startSettings != null) {
             langName = (String)startSettings.get(C_START_LANGUAGE);
         }
-        else {
-            langName = C_DEFAULT_LANGUAGE;
+        if((langName == null) || ("".equals(langName))){
+            langName = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
         }
+        
         int select = 0;
 
         // now go through all language files and add their name and reference to the
