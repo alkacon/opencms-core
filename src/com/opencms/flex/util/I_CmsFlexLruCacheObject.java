@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/I_FlexLruObject.java,v $
- * Date   : $Date: 2002/09/04 15:40:23 $
- * Version: $Revision: 1.1 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/I_CmsFlexLruCacheObject.java,v $
+ * Date   : $Date: 2002/09/16 12:38:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,27 +29,27 @@
 package com.opencms.flex.util;
 
 /**
- * This interface defines the methods which an object being cached by FlexLruCache has to implement.
- * FlexLruCache is organized as a double linked list, that's why objects implementing this interface
+ * This interface defines the methods which an object being cached by CmsFlexLruCache has to implement.
+ * CmsFlexLruCache is organized as a double linked list, that's why objects implementing this interface
  * need getters/setter for the next/previous nodes in the list of all cached objects.
  *
- * @see com.opencms.flex.util.FlexLruCache
- * @author Thomas Weckert (<a href="mailto:t.weckert@alkacon.com">t.weckert@alkacon.com</a>)
- * @version $Revision: 1.1 $
+ * @see com.opencms.flex.util.CmsFlexLruCache
+ * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @version $Revision: 1.3 $
  */
-public interface I_FlexLruObject {
+public interface I_CmsFlexLruCacheObject {
     
     /** Set the next object in the double linked list of all cached objects. */
-    public void setNextLruObject( I_FlexLruObject theNextObject );
+    public void setNextLruObject( I_CmsFlexLruCacheObject theNextObject );
     
     /** Get the next object in the double linked list of all cached objects. */
-    public I_FlexLruObject getNextLruObject();
+    public I_CmsFlexLruCacheObject getNextLruObject();
     
     /** Set the previous object in the double linked list of all cached objects. */
-    public void setPreviousLruObject( I_FlexLruObject thePreviousObject );
+    public void setPreviousLruObject( I_CmsFlexLruCacheObject thePreviousObject );
      
     /** Get the previous object in the double linked list of all cached objects. */
-    public I_FlexLruObject getPreviousLruObject();
+    public I_CmsFlexLruCacheObject getPreviousLruObject();
     
     /** This method is invoked after the object was added to the cache. */
     public void addToLruCache();

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/FlexLruCache.java,v $
- * Date   : $Date: 2002/09/04 15:40:23 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsFlexLruCache.java,v $
+ * Date   : $Date: 2002/09/05 12:48:02 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -32,30 +32,30 @@ import java.util.*;
 
 /**
  * The idea of this cache is, to separate the caching policy from the data structure
- * where the cached objects are stored. The advantage of doing so is, that the FlexLruCache
+ * where the cached objects are stored. The advantage of doing so is, that the CmsFlexLruCache
  * can identify the last-recently-used object in O(1), whereas you would need at least
  * O(n) to traverse the data structure that stores the cached objects. Second, you can
- * easily use the FlexLruCache to get an LRU cache, no matter what data structure is used to
+ * easily use the CmsFlexLruCache to get an LRU cache, no matter what data structure is used to
  * store your objects.
  * <p>
  * The cache policy is affected by the "costs" of the objects being cached. Valuable cache costs
  * might be the byte size of the cached objects for example.
  * <p>
  * To add/remove cached objects from the data structure that stores them, the objects have to
- * implement the methods defined in the interface I_FlexLruObject to be notified when they
- * are added/removed from the FlexLruCache.
+ * implement the methods defined in the interface I_CmsFlexLruCacheObject to be notified when they
+ * are added/removed from the CmsFlexLruCache.
  *
- * @see com.opencms.flex.util.I_FlexLruObject
- * @author Thomas Weckert (<a href="mailto:t.weckert@alkacon.com">t.weckert@alkacon.com</a>)
+ * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
+ * @author Thomas Weckert (t.weckert@alkacon.com)
  * @version $Revision: 1.1 $
  */
-public class FlexLruCache extends java.lang.Object {
+public class CmsFlexLruCache extends java.lang.Object {
     
     /** The head of the list of double linked LRU cache objects. */
-    private I_FlexLruObject m_LruCacheHead;
+    private I_CmsFlexLruCacheObject m_LruCacheHead;
     
     /** The tail of the list of double linked LRU cache objects. */
-    private I_FlexLruObject m_LruCacheTail;
+    private I_CmsFlexLruCacheObject m_LruCacheTail;
     
     /** Force a finalization after down-sizing the cache? */
     private boolean m_ForceFinalization;
@@ -83,7 +83,7 @@ public class FlexLruCache extends java.lang.Object {
      *
      * @param theOpenCms the OpenCms instance
      */
-    public FlexLruCache( com.opencms.core.A_OpenCms theOpenCms ) {
+    public CmsFlexLruCache( com.opencms.core.A_OpenCms theOpenCms ) {
         source.org.apache.java.util.Configurations opencmsProperties = theOpenCms.getConfiguration();
         
         this.m_ForceFinalization = opencmsProperties.getBoolean( "flex.cache.lru.forceGC", true );
@@ -106,7 +106,7 @@ public class FlexLruCache extends java.lang.Object {
      * @param theMaxCacheObjectCosts the max. allowed cache costs per object
      * @param forceFinalization should be true if a system wide garbage collection/finalization is forced after objects were removed from the cache
      */
-    public FlexLruCache( int theMaxCacheCosts, int theAvgCacheCosts, int theMaxCacheObjectCosts, boolean forceFinalization ) {
+    public CmsFlexLruCache( int theMaxCacheCosts, int theAvgCacheCosts, int theMaxCacheObjectCosts, boolean forceFinalization ) {
         this.m_MaxCacheCosts = theMaxCacheCosts;
         this.m_AvgCacheCosts = theAvgCacheCosts;
         this.m_MaxCacheObjectCosts = theMaxCacheObjectCosts;
@@ -127,7 +127,7 @@ public class FlexLruCache extends java.lang.Object {
      * @param theAvgCacheCosts the avg. cache costs of all cached objects
      * @param theMaxCacheObjectCosts the max. allowed cache costs per object
      */
-    public FlexLruCache( int theMaxCacheCosts, int theAvgCacheCosts, int theMaxCacheObjectCosts ) {
+    public CmsFlexLruCache( int theMaxCacheCosts, int theAvgCacheCosts, int theMaxCacheObjectCosts ) {
         this( theMaxCacheCosts, theAvgCacheCosts, theMaxCacheObjectCosts, true );
     }
     
@@ -138,7 +138,7 @@ public class FlexLruCache extends java.lang.Object {
      * @param theMaxCacheCosts the max. cache costs of all cached objects
      * @param theAvgCacheCosts the avg. cache costs of all cached objects
      */
-    public FlexLruCache( int theMaxCacheCosts, int theAvgCacheCosts ) {
+    public CmsFlexLruCache( int theMaxCacheCosts, int theAvgCacheCosts ) {
         this( theMaxCacheCosts, theAvgCacheCosts, theMaxCacheCosts/4, true );
     }
     
@@ -149,7 +149,7 @@ public class FlexLruCache extends java.lang.Object {
      * @param theAvgCacheCosts the avg. cache costs of all cached objects
      * @param forceFinalization should be true if a system wide garbage collection/finalization is forced after objects were removed from the cache
      */
-    public FlexLruCache( int theMaxCacheCosts, int theAvgCacheCosts, boolean forceFinalization ) {
+    public CmsFlexLruCache( int theMaxCacheCosts, int theAvgCacheCosts, boolean forceFinalization ) {
         this( theMaxCacheCosts, theAvgCacheCosts, theMaxCacheCosts/4, forceFinalization );
     }
     
@@ -179,7 +179,7 @@ public class FlexLruCache extends java.lang.Object {
      * @param theCacheObject the object being added to the cache
      * @return true if the object was added to the cache, false if the object was denied because its cache costs were higher than the allowed max. cache costs per object
      */
-    public boolean add( I_FlexLruObject theCacheObject ) {
+    public boolean add( I_CmsFlexLruCacheObject theCacheObject ) {
         // only objects with cache costs < the max. allowed object cache costs can be cached!
         if (theCacheObject.getLruCacheCosts()>=this.m_MaxCacheObjectCosts) {
             this.log( "error: you are trying to cache objects with cache costs bigger than " + this.m_MaxCacheObjectCosts );
@@ -203,15 +203,22 @@ public class FlexLruCache extends java.lang.Object {
      *
      * @param theCacheObject the object being touched
      */
-    public void touch( I_FlexLruObject theCacheObject ) {
+    public boolean touch( I_CmsFlexLruCacheObject theCacheObject ) {
+        // only objects with cache costs < the max. allowed object cache costs can be cached!
+        if (theCacheObject.getLruCacheCosts()>=this.m_MaxCacheObjectCosts) {
+            this.log( "error: you are trying to cache objects with cache costs bigger than " + this.m_MaxCacheObjectCosts );
+            this.remove( theCacheObject );
+            return false;
+        }
+                
         // set the list pointers correct
         if (theCacheObject.getNextLruObject()==null) {
             // case 1: the object is already at the head pos.
-            return;
+            return true;
         }
         else if (theCacheObject.getPreviousLruObject()==null) {
             // case 2: the object at the tail pos., remove it from the tail to put it to the front as the new head
-            I_FlexLruObject newTail = theCacheObject.getNextLruObject();
+            I_CmsFlexLruCacheObject newTail = theCacheObject.getNextLruObject();
             newTail.setPreviousLruObject( null );
             this.m_LruCacheTail = newTail;
         }
@@ -222,11 +229,13 @@ public class FlexLruCache extends java.lang.Object {
         }
         
         // set the touched object as the new head in the linked list:
-        I_FlexLruObject oldHead = this.m_LruCacheHead;
+        I_CmsFlexLruCacheObject oldHead = this.m_LruCacheHead;
         oldHead.setNextLruObject( theCacheObject );
         theCacheObject.setNextLruObject( null );
         theCacheObject.setPreviousLruObject( oldHead );
         this.m_LruCacheHead = theCacheObject;
+        
+        return true;
     }
     
     /**
@@ -234,11 +243,11 @@ public class FlexLruCache extends java.lang.Object {
      *
      * @param theCacheObject the object being added as the new head to the list of all cached objects
      */
-    private void addHead( I_FlexLruObject theCacheObject ) {
+    private void addHead( I_CmsFlexLruCacheObject theCacheObject ) {
         // set the list pointers correct
         if (this.m_CurrentCachedObjectCount>0) {
             // there is at least 1 object already in the list
-            I_FlexLruObject oldHead = this.m_LruCacheHead;
+            I_CmsFlexLruCacheObject oldHead = this.m_LruCacheHead;
             oldHead.setNextLruObject( theCacheObject );
             theCacheObject.setPreviousLruObject( oldHead );
             this.m_LruCacheHead = theCacheObject;
@@ -261,17 +270,17 @@ public class FlexLruCache extends java.lang.Object {
      * @param theCacheObject the object being removed from the list of all cached objects
      * @return a reference to the object that was removed
      */
-    public synchronized I_FlexLruObject remove( I_FlexLruObject theCacheObject ) {
+    public synchronized I_CmsFlexLruCacheObject remove( I_CmsFlexLruCacheObject theCacheObject ) {
         // set the list pointers correct
         if (theCacheObject.getNextLruObject()==null) {
             // remove the object from the head pos.
-            I_FlexLruObject newHead = theCacheObject.getPreviousLruObject();
+            I_CmsFlexLruCacheObject newHead = theCacheObject.getPreviousLruObject();
             newHead.setNextLruObject( null );
             this.m_LruCacheHead = newHead;
         }
         else if (theCacheObject.getPreviousLruObject()==null) {
             // remove the object from the tail pos.
-            I_FlexLruObject newTail = theCacheObject.getNextLruObject();
+            I_CmsFlexLruCacheObject newTail = theCacheObject.getNextLruObject();
             newTail.setPreviousLruObject( null );
             this.m_LruCacheTail = newTail;
         }
@@ -291,8 +300,8 @@ public class FlexLruCache extends java.lang.Object {
      * Removes the tailing object from the list of all cached objects.
      */
     private synchronized void removeTail() {
-        I_FlexLruObject oldTail = this.m_LruCacheTail;
-        I_FlexLruObject newTail = oldTail.getNextLruObject();
+        I_CmsFlexLruCacheObject oldTail = this.m_LruCacheTail;
+        I_CmsFlexLruCacheObject newTail = oldTail.getNextLruObject();
         
         // set the list pointers correct
         if (newTail!=null) {
@@ -314,7 +323,7 @@ public class FlexLruCache extends java.lang.Object {
      *
      * @param theCacheObject the object being notified that it was removed from the cache
      */
-    private void decreaseCache( I_FlexLruObject theCacheObject ) {
+    private void decreaseCache( I_CmsFlexLruCacheObject theCacheObject ) {
         // notify the object that it was now removed from the cache
         //theCacheObject.notify();
         theCacheObject.removeFromLruCache();
@@ -333,7 +342,7 @@ public class FlexLruCache extends java.lang.Object {
      *
      * @param theCacheObject the object being notified that it was added to the cache
      */
-    private void increaseCache( I_FlexLruObject theCacheObject ) {
+    private void increaseCache( I_CmsFlexLruCacheObject theCacheObject ) {
         // notify the object that it was now added to the cache
         //theCacheObject.notify();
         theCacheObject.addToLruCache();
@@ -351,7 +360,7 @@ public class FlexLruCache extends java.lang.Object {
         this.log( this.toString() );
         this.log( "free memory before garbage collection:\t" + Runtime.getRuntime().freeMemory() );
         
-        I_FlexLruObject currentObject = this.m_LruCacheTail;
+        I_CmsFlexLruCacheObject currentObject = this.m_LruCacheTail;
         while (currentObject!=null) {
             if (this.m_CurrentCachedObjectCosts<this.m_AvgCacheCosts) break;
             currentObject = currentObject.getNextLruObject();
@@ -400,7 +409,7 @@ public class FlexLruCache extends java.lang.Object {
      */
     public void clear() {
         // remove all objects from the linked list from the tail to the head:
-        I_FlexLruObject currentObject = this.m_LruCacheTail;
+        I_CmsFlexLruCacheObject currentObject = this.m_LruCacheTail;
         while (currentObject!=null) {
             currentObject = currentObject.getNextLruObject();
             this.removeTail();

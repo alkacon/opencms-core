@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
-* Date   : $Date: 2002/09/04 15:46:47 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/09/05 12:50:48 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.flex.jsp.*;
  * to the OpenCms Template mechanism.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConstants, I_CmsJspConstants, I_CmsResourceLoader {
 
@@ -162,8 +162,8 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
         m_jspRepository += m_jspWebAppRepository.replace('/', File.separatorChar);
         if (! m_jspRepository.endsWith(File.separator)) m_jspRepository += File.separator;
         if (DEBUG > 0) System.err.println("JspLoader: Setting jsp repository to " + m_jspRepository);
-        m_cache = (CmsFlexCache)openCms.getRuntimeProperty(this.C_LOADER_CACHENAME);
         m_context = (javax.servlet.ServletContext)openCms.getRuntimeProperty("context");
+        m_cache = (CmsFlexCache)openCms.getRuntimeProperty(this.C_LOADER_CACHENAME);
         if (m_cache == null) {
             m_cache = new CmsFlexCache( openCms );
             openCms.setRuntimeProperty(this.C_LOADER_CACHENAME, m_cache);

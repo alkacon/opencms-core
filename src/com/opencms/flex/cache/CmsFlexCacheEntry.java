@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2002/09/04 15:44:33 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2002/09/05 12:47:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package com.opencms.flex.cache;
 
 import java.util.*;
-import com.opencms.flex.util.I_FlexLruObject;
+import com.opencms.flex.util.I_CmsFlexLruCacheObject;
 
 /**
  * A CmsFlexCacheEntry describes a cached resource.
@@ -52,9 +52,9 @@ import com.opencms.flex.util.I_FlexLruObject;
  * that his entry will become invalid and should thus be cleared from the cache.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
-public class CmsFlexCacheEntry implements I_FlexLruObject {
+public class CmsFlexCacheEntry implements I_CmsFlexLruCacheObject {
     
     /** Initial size for lists */
     public static final int C_INITIAL_CAPACITY_LISTS = 7;
@@ -82,10 +82,10 @@ public class CmsFlexCacheEntry implements I_FlexLruObject {
     private int m_ByteSize;
     
     /** Pointer to the next cache entry in the LRU cache */
-    private I_FlexLruObject m_Next;
+    private I_CmsFlexLruCacheObject m_Next;
     
     /** Pointer to the previous cache entry in the LRU cache. */
-    private I_FlexLruObject m_Previous;
+    private I_CmsFlexLruCacheObject m_Previous;
     
     /** The variation map where this cache entry is stored. */
     private Map m_VariationMap;
@@ -320,33 +320,33 @@ public class CmsFlexCacheEntry implements I_FlexLruObject {
         this.m_VariationMap = theVariationMap;
     }
     
-    // implementation of the com.opencms.flex.util.I_FlexLruObject interface methods
+    // implementation of the com.opencms.flex.util.I_CmsFlexLruCacheObject interface methods
     
     /** 
      * Set the next object in the double linked list of all cached objects. 
      */
-    public void setNextLruObject( I_FlexLruObject theNextEntry ) {
+    public void setNextLruObject( I_CmsFlexLruCacheObject theNextEntry ) {
         this.m_Next = theNextEntry;
     }
     
     /** 
      * Get the next object in the double linked list of all cached objects. 
      */
-    public I_FlexLruObject getNextLruObject() {
+    public I_CmsFlexLruCacheObject getNextLruObject() {
         return this.m_Next;
     }
     
     /** 
      * Set the previous object in the double linked list of all cached objects. 
      */
-    public void setPreviousLruObject( I_FlexLruObject thePreviousEntry ) {
+    public void setPreviousLruObject( I_CmsFlexLruCacheObject thePreviousEntry ) {
         this.m_Previous = thePreviousEntry;
     }
     
     /** 
      * Get the previous object in the double linked list of all cached objects. 
      */
-    public I_FlexLruObject getPreviousLruObject() {
+    public I_CmsFlexLruCacheObject getPreviousLruObject() {
         return this.m_Previous;
     }  
     
@@ -355,7 +355,7 @@ public class CmsFlexCacheEntry implements I_FlexLruObject {
      */
     public void addToLruCache() {
         // do nothing here...
-        if (DEBUG>0) System.out.println( "Added cache entry with ID: " + this.ID + " to FlexLruCache" );
+        if (DEBUG>0) System.out.println( "Added cache entry with ID: " + this.ID + " to CmsFlexLruCache" );
     }
     
     /** 
@@ -364,7 +364,7 @@ public class CmsFlexCacheEntry implements I_FlexLruObject {
     public void removeFromLruCache() {
         if (m_VariationMap!=null && this.m_VariationKey!=null) {
             this.m_VariationMap.remove( this.m_VariationKey );
-            if (DEBUG>0) System.err.println( "Removed cache entry with ID: " + this.ID + " from FlexLruCache" );
+            if (DEBUG>0) System.err.println( "Removed cache entry with ID: " + this.ID + " from CmsFlexLruCache" );
         }
     }
     

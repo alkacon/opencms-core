@@ -1,7 +1,7 @@
 /*
- * File   : $Source $
- * Date   : $Date $
- * Version: $Revision $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsPropertyLookup.java,v $
+ * Date   : $Date: 2002/09/16 12:38:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.flex.cache.CmsFlexRequest;
  * is not repeated to often.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision $
+ * @version $Revision: 1.4 $
  */
 public class CmsPropertyLookup {
     
