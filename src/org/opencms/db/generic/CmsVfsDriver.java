@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/20 16:01:55 $
- * Version: $Revision: 1.96 $
+ * Date   : $Date: 2003/08/20 16:51:16 $
+ * Version: $Revision: 1.97 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
  
 package org.opencms.db.generic;
 
-import org.opencms.db.*;
 import org.opencms.db.CmsAdjacencyTree;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
@@ -75,13 +74,13 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.96 $ $Date: 2003/08/20 16:01:55 $
+ * @version $Revision: 1.97 $ $Date: 2003/08/20 16:51:16 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
     
     protected CmsDriverManager m_driverManager;
-    protected I_CmsSqlManager m_sqlManager;
+    protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
     
     /**
      * Changes the project-id of a resource to the new project
@@ -1540,11 +1539,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
-        /*
         if (m_sqlManager!=null) {
             m_sqlManager.finalize();
         }
-        */
         
         m_sqlManager = null;      
         m_driverManager = null;        
@@ -1936,25 +1933,41 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         }
         return undeletedResources;
     }
-/*
-	public void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) {
-		m_sqlManager = this.initQueries(dbPoolUrl);
-        m_driverManager = driverManager;
 
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". VFS driver init      : ok");
-        }
-	}
-*/  
-    public void init(Configurations config, List successiveDrivers, CmsDriverManager driverManager) {
-
-        String poolUrl = config.getString("db.vfs.pool");
+    /**
+     * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
+     */
+    public void init(Configurations config, List successiveDrivers, CmsDriverManager driverManager) {        
+        String offlinePoolUrl = null;
+        String onlinePoolUrl = null;
+        String backupPoolUrl = null;
+        boolean hasDistinctPoolUrls = false;
         
-        m_sqlManager = this.initQueries(poolUrl);
+        if ((offlinePoolUrl = config.getString("db.vfs.pool")) == null) {
+            hasDistinctPoolUrls = true;
+            offlinePoolUrl = config.getString("db.vfs.offline.pool");
+            onlinePoolUrl = config.getString("db.vfs.online.pool");
+            backupPoolUrl = config.getString("db.vfs.backup.pool");
+        } else {
+            hasDistinctPoolUrls = false;
+            onlinePoolUrl = backupPoolUrl = offlinePoolUrl;
+        }
+ 
+        m_sqlManager = this.initQueries();
+        m_sqlManager.setOfflinePoolUrl(offlinePoolUrl);
+        m_sqlManager.setOnlinePoolUrl(onlinePoolUrl);
+        m_sqlManager.setBackupPoolUrl(backupPoolUrl);        
+        
         m_driverManager = driverManager;        
 
         if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Assigned pool        : " + poolUrl);
+            if (hasDistinctPoolUrls) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Assign. offline pool : " + offlinePoolUrl);
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Assign. online pool  : " + onlinePoolUrl);
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Assign. backup pool  : " + backupPoolUrl);
+            } else {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Assigned pool        : " + offlinePoolUrl);
+            }
         }
         
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
@@ -1967,9 +1980,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#initQueries(java.lang.String)
      */
-    public I_CmsSqlManager initQueries(String dbPoolUrl) {
-        //return new org.opencms.db.generic.CmsSqlManager(dbPoolUrl);
-        return org.opencms.db.generic.CmsSqlManager.getInstance(dbPoolUrl);
+    public org.opencms.db.generic.CmsSqlManager initQueries() {
+        return new org.opencms.db.generic.CmsSqlManager();
     }
 
     /**

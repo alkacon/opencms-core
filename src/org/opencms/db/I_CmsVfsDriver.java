@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/20 13:16:17 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2003/08/20 16:51:16 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.db;
 
-
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
@@ -54,7 +53,7 @@ import java.util.Vector;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.39 $ $Date: 2003/08/20 13:16:17 $
+ * @version $Revision: 1.40 $ $Date: 2003/08/20 16:51:16 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -222,12 +221,18 @@ public interface I_CmsVfsDriver {
     //void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager);
     
     /**
-     * Initializes the SQL manager for this package.<p>
+     * Initializes the SQL manager for this driver.<p>
      * 
-     * @param dbPoolUrl the URL of the connection pool
-     * @return the SQL manager for this package
+     * To obtain JDBC connections from different pools, further 
+     * {online|offline|backup} pool Urls have to be specified.
+     * 
+     * @param poolUrl the default connection pool URL
+     * @return the SQL manager for this driver
+     * @see org.opencms.db.generic.CmsSqlManager#setOfflinePoolUrl(String)
+     * @see org.opencms.db.generic.CmsSqlManager#setOnlinePoolUrl(String)
+     * @see org.opencms.db.generic.CmsSqlManager#setBackupPoolUrl(String)
      */
-    I_CmsSqlManager initQueries(String dbPoolUrl);
+    org.opencms.db.generic.CmsSqlManager initQueries();
     
     Vector readAllPropertydefinitions(int projectId, I_CmsResourceType resourcetype) throws CmsException;
     Vector readAllPropertydefinitions(int projectId, int resourcetype) throws CmsException;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/I_CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/08/20 13:16:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/20 16:51:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.db;
 
-
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsProject;
@@ -46,7 +45,7 @@ import java.util.Vector;
  * Definitions of all required workflow driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/08/20 13:16:17 $
+ * @version $Revision: 1.6 $ $Date: 2003/08/20 16:51:16 $
  * @since 5.1
  */
 public interface I_CmsWorkflowDriver {
@@ -120,12 +119,18 @@ public interface I_CmsWorkflowDriver {
     // void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager);
     
     /**
-     * Initializes the SQL manager for this package.<p>
+     * Initializes the SQL manager for this driver.<p>
+     *  
+     * To obtain JDBC connections from different pools, further 
+     * {online|offline|backup} pool Urls have to be specified.
      * 
-     * @param dbPoolUrl the URL of the connection pool
-     * @return the SQL manager for this package
-     */     
-    I_CmsSqlManager initQueries(String dbPoolUrl);
+     * @param poolUrl the default connection pool URL
+     * @return the SQL manager for this driver
+     * @see org.opencms.db.generic.CmsSqlManager#setOfflinePoolUrl(String)
+     * @see org.opencms.db.generic.CmsSqlManager#setOnlinePoolUrl(String)
+     * @see org.opencms.db.generic.CmsSqlManager#setBackupPoolUrl(String)
+     */    
+    org.opencms.db.generic.CmsSqlManager initQueries();
     
     
     /**

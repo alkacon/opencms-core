@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/20 16:01:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/08/20 16:51:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,6 @@ package org.opencms.db.oracle;
 
 import oracle.jdbc.driver.OracleResultSet;
 
-import org.opencms.db.I_CmsSqlManager;
-
 import com.opencms.core.CmsException;
 
 import java.io.ByteArrayInputStream;
@@ -52,7 +50,7 @@ import java.util.Hashtable;
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.4 $ $Date: 2003/08/20 16:01:55 $
+ * @version $Revision: 1.5 $ $Date: 2003/08/20 16:51:16 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -210,9 +208,8 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#initQueries(java.lang.String)
      */
-    public I_CmsSqlManager initQueries(String dbPoolUrl) {
-        //return new org.opencms.db.oracle.CmsSqlManager(dbPoolUrl);
-        return org.opencms.db.oracle.CmsSqlManager.getInstance(dbPoolUrl);
+    public org.opencms.db.generic.CmsSqlManager initQueries() {
+        return new org.opencms.db.oracle.CmsSqlManager();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/08/20 16:01:55 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/08/20 16:51:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,6 @@ package org.opencms.db.oracle;
 
 import oracle.jdbc.driver.OracleResultSet;
 
-import org.opencms.db.I_CmsSqlManager;
-
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsBackupProject;
 import com.opencms.flex.util.CmsUUID;
@@ -53,7 +51,7 @@ import java.util.Vector;
  * Oracle/OCI implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/08/20 16:01:55 $
+ * @version $Revision: 1.8 $ $Date: 2003/08/20 16:51:16 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {   
@@ -107,9 +105,8 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
     /**
      * @see org.opencms.db.I_CmsBackupDriver#initQueries(java.lang.String)
      */
-    public I_CmsSqlManager initQueries(String dbPoolUrl) {
-        //return new org.opencms.db.oracle.CmsSqlManager(dbPoolUrl);
-        return org.opencms.db.oracle.CmsSqlManager.getInstance(dbPoolUrl);
+    public org.opencms.db.generic.CmsSqlManager initQueries() {
+        return new org.opencms.db.oracle.CmsSqlManager();
     }
 
     /**

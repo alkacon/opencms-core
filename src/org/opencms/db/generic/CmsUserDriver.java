@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/08/20 16:01:55 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/08/20 16:51:16 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
  
 package org.opencms.db.generic;
 
-import org.opencms.db.*;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsUserDriver;
@@ -70,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.18 $ $Date: 2003/08/20 16:01:55 $
+ * @version $Revision: 1.19 $ $Date: 2003/08/20 16:51:16 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -87,7 +86,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      */
     protected String m_digestFileEncoding = null;
 
-    protected I_CmsSqlManager m_sqlManager;
+    protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
     protected CmsDriverManager m_driverManager;
 
     /**
@@ -851,11 +850,9 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
-        /*
         if (m_sqlManager!=null) {
             m_sqlManager.finalize();
         }
-        */
         
         m_sqlManager = null;      
         m_driverManager = null;        
@@ -873,44 +870,16 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }   
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#init(source.org.apache.java.util.Configurations, java.lang.String, org.opencms.db.CmsDriverManager)
-     *//*
-    public void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) {
-        m_sqlManager = this.initQueries(dbPoolUrl);        
-        m_driverManager = driverManager;
-    
-        String digest = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.type", "MD5");
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Digest configured    : " + digest);
-        }
-    
-        m_digestFileEncoding = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.encoding", "UTF-8");
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Digest file encoding : " + m_digestFileEncoding);
-        }
-    
-        // create the digest
-        try {
-            m_digest = MessageDigest.getInstance(digest);
-            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Using digest encoding: " + m_digest.getAlgorithm() + " from " + m_digest.getProvider().getName() + " version " + m_digest.getProvider().getVersion());
-            }
-        } catch (NoSuchAlgorithmException e) {
-            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Error setting digest : using clear passwords - " + e.getMessage());
-            }
-        }
-        
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". User driver init     : ok");
-        }
-    }*/
-
+     * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
+     */
     public void init(Configurations config, List successiveDrivers, CmsDriverManager driverManager) {
-
         String poolUrl = config.getString("db.user.pool");
 
-        m_sqlManager = this.initQueries(poolUrl);        
+        m_sqlManager = this.initQueries();
+        m_sqlManager.setOfflinePoolUrl(poolUrl);
+        m_sqlManager.setOnlinePoolUrl(poolUrl);
+        m_sqlManager.setBackupPoolUrl(poolUrl);        
+        
         m_driverManager = driverManager;
 
         if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
@@ -949,9 +918,8 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     /**
      * @see org.opencms.db.I_CmsUserDriver#initQueries(java.lang.String)
      */   
-    public I_CmsSqlManager initQueries(String dbPoolUrl) {
-        //return new org.opencms.db.generic.CmsSqlManager(dbPoolUrl);
-        return org.opencms.db.generic.CmsSqlManager.getInstance(dbPoolUrl);
+    public org.opencms.db.generic.CmsSqlManager initQueries() {
+        return new org.opencms.db.generic.CmsSqlManager();
     }
 
     /**

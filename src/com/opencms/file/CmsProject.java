@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
-* Date   : $Date: 2003/08/20 13:16:17 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/08/20 16:51:16 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,6 @@
 
 package com.opencms.file;
 
-import org.opencms.db.I_CmsSqlManager;
-
 import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.util.SqlHelper;
@@ -48,7 +46,7 @@ import java.util.List;
  * @author Michael Emmerich
  * @author Anders Fugmann
  * @author Jan Krag
- * @version $Revision: 1.43 $ $Date: 2003/08/20 13:16:17 $
+ * @version $Revision: 1.44 $ $Date: 2003/08/20 16:51:16 $
  */
 public class CmsProject implements Cloneable{
 
@@ -145,7 +143,7 @@ public class CmsProject implements Cloneable{
  * Creation date: (10/02/00)
  * @param rs java.sql.ResultSet
  */
-public CmsProject(ResultSet res, I_CmsSqlManager m_cq) throws SQLException {
+public CmsProject(ResultSet res, org.opencms.db.generic.CmsSqlManager m_cq) throws SQLException {
                  this(res.getInt(m_cq.get("C_PROJECTS_PROJECT_ID")),
                             res.getString(m_cq.get("C_PROJECTS_PROJECT_NAME")),
                             res.getString(m_cq.get("C_PROJECTS_PROJECT_DESCRIPTION")),

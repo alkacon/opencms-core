@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/08/20 16:01:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/08/20 16:51:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,6 @@
 
 package org.opencms.db.mysql;
 
-import org.opencms.db.I_CmsSqlManager;
-
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsProject;
@@ -46,7 +44,7 @@ import java.util.Vector;
  * MySQL implementation of the workflow driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/08/20 16:01:55 $
+ * @version $Revision: 1.5 $ $Date: 2003/08/20 16:51:16 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends org.opencms.db.generic.CmsWorkflowDriver {   
@@ -54,9 +52,8 @@ public class CmsWorkflowDriver extends org.opencms.db.generic.CmsWorkflowDriver 
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#initQueries(java.lang.String)
      */
-    public I_CmsSqlManager initQueries(String dbPoolUrl) {
-        //return new org.opencms.db.mysql.CmsSqlManager(dbPoolUrl);
-        return org.opencms.db.mysql.CmsSqlManager.getInstance(dbPoolUrl);
+    public org.opencms.db.generic.CmsSqlManager initQueries() {
+        return new org.opencms.db.mysql.CmsSqlManager();
     }
 
     /**

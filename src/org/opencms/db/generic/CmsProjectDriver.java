@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/20 16:01:55 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2003/08/20 16:51:16 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.db.generic;
 
-import org.opencms.db.*;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
@@ -75,7 +74,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.61 $ $Date: 2003/08/20 16:01:55 $
+ * @version $Revision: 1.62 $ $Date: 2003/08/20 16:51:16 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -137,7 +136,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      */
     protected int[] m_maxIds;
 
-    protected I_CmsSqlManager m_sqlManager;
+    protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**
      * Creates a serializable object in the systempropertys.
@@ -683,11 +682,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 	 * @see java.lang.Object#finalize()
 	 */
     protected void finalize() throws Throwable {
-        /*
         if (m_sqlManager!=null) {
             m_sqlManager.finalize();
         }
-        */
         
         m_sqlManager = null;      
         m_driverManager = null;        
@@ -1005,22 +1002,16 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-	 * @see org.opencms.db.I_CmsProjectDriver#init(source.org.apache.java.util.Configurations, java.lang.String, org.opencms.db.CmsDriverManager)
-	 *//*
-    public void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) throws CmsException {
-        m_sqlManager = this.initQueries(dbPoolUrl);      
-        m_driverManager = driverManager;  
-
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Project driver init  : ok");
-        }
-    }*/
-    
+     * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
+     */    
     public void init(Configurations config, List successiveDrivers, CmsDriverManager driverManager) {
-
         String poolUrl = config.getString("db.project.pool");
 
-        m_sqlManager = this.initQueries(poolUrl);      
+        m_sqlManager = this.initQueries();
+        m_sqlManager.setOfflinePoolUrl(poolUrl);
+        m_sqlManager.setOnlinePoolUrl(poolUrl);
+        m_sqlManager.setBackupPoolUrl(poolUrl);        
+      
         m_driverManager = driverManager;  
 
         if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
@@ -1037,9 +1028,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#initQueries(java.lang.String)
      */
-    public I_CmsSqlManager initQueries(String dbPoolUrl) {
-        //return new org.opencms.db.generic.CmsSqlManager(dbPoolUrl);
-        return org.opencms.db.generic.CmsSqlManager.getInstance(dbPoolUrl);
+    public org.opencms.db.generic.CmsSqlManager initQueries() {
+        return new org.opencms.db.generic.CmsSqlManager();
     }
 
     /**

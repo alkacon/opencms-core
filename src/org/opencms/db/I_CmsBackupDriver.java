@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/08/20 13:16:17 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/08/20 16:51:16 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.db;
 
-
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsBackupProject;
 import com.opencms.file.CmsBackupResource;
@@ -55,7 +54,7 @@ import java.util.Vector;
  * of resource that were saved during one backup process.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2003/08/20 13:16:17 $
+ * @version $Revision: 1.11 $ $Date: 2003/08/20 16:51:16 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -104,12 +103,18 @@ public interface I_CmsBackupDriver {
     //void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager);
 
     /**
-     * Initializes the SQL manager for this package.<p>
+     * Initializes the SQL manager for this driver.<p>
      * 
-     * @param dbPoolUrl the URL of the connection pool
-     * @return the SQL manager for this package
+     * To obtain JDBC connections from different pools, further 
+     * {online|offline|backup} pool Urls have to be specified.
+     * 
+     * @param poolUrl the default connection pool URL
+     * @return the SQL manager for this driver
+     * @see org.opencms.db.generic.CmsSqlManager#setOfflinePoolUrl(String)
+     * @see org.opencms.db.generic.CmsSqlManager#setOnlinePoolUrl(String)
+     * @see org.opencms.db.generic.CmsSqlManager#setBackupPoolUrl(String)
      */
-    I_CmsSqlManager initQueries(String dbPoolUrl);
+    org.opencms.db.generic.CmsSqlManager initQueries();
 
     /**
      * Gets the next available backup version ID for a resource.<p>

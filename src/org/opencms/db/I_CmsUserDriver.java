@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/08/20 13:16:17 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/08/20 16:51:16 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * Definitions of all required user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2003/08/20 13:16:17 $
+ * @version $Revision: 1.13 $ $Date: 2003/08/20 16:51:16 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -262,12 +262,18 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     // void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) throws CmsException;
     
     /**
-     * Initializes the SQL manager for this package.<p>
+     * Initializes the SQL manager for this driver.<p>
      * 
-     * @param dbPoolUrl the URL of the connection pool
-     * @return the SQL manager for this package
-     */     
-    I_CmsSqlManager initQueries(String dbPoolUrl);
+     * To obtain JDBC connections from different pools, further 
+     * {online|offline|backup} pool Urls have to be specified.
+     * 
+     * @param poolUrl the default connection pool URL
+     * @return the SQL manager for this driver
+     * @see org.opencms.db.generic.CmsSqlManager#setOfflinePoolUrl(String)
+     * @see org.opencms.db.generic.CmsSqlManager#setOnlinePoolUrl(String)
+     * @see org.opencms.db.generic.CmsSqlManager#setBackupPoolUrl(String)
+     */    
+    org.opencms.db.generic.CmsSqlManager initQueries();
 
     /**
      * Checks if a user is member of a group.<P/>
