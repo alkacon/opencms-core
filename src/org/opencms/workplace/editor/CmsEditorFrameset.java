@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorFrameset.java,v $
- * Date   : $Date: 2004/01/26 16:34:08 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/02/04 11:23:59 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,6 @@
 package org.opencms.workplace.editor;
 
 import com.opencms.core.CmsException;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsResourceTypeJsp;
-import com.opencms.file.CmsResourceTypeNewPage;
-import com.opencms.file.CmsResourceTypePlain;
-import com.opencms.file.CmsResourceTypeXMLTemplate;
-import com.opencms.file.CmsResourceTypeXmlPage;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Encoder;
 
@@ -55,18 +49,11 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1.12
  */
-public class CmsEditorFrameset extends CmsEditor implements I_CmsEditorHandler {
-    
-    /**
-     * Default constructor needed for editor handler implementation.<p>
-     */
-    public CmsEditorFrameset() {
-        super(null);
-    }
+public class CmsEditorFrameset extends CmsEditor {
     
     /**
      * Public constructor.<p>
@@ -83,53 +70,6 @@ public class CmsEditorFrameset extends CmsEditor implements I_CmsEditorHandler {
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
         // fill the parameter values in the get/set methods
         fillParamValues(request);
-    }
-    
-    /**
-     * @see org.opencms.workplace.editor.I_CmsEditorHandler#getEditorUri(java.lang.String, com.opencms.flex.jsp.CmsJspActionElement)
-     */
-    public String getEditorUri(String resource, CmsJspActionElement jsp) {
-        // first try to get the "edit as text" and "noactivex" parameters from the request
-        setParamEditastext(jsp.getRequest().getParameter("editastext"));
-        setParamNoactivex(jsp.getRequest().getParameter("noactivex"));
-        // initialize resource type with -1 (unknown resource type)
-        int resTypeId = -1;
-        if ("true".equals(getParamEditastext())) {
-            // the resource should be treated as text, set the id
-            resTypeId = CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
-        } else {
-            try {
-                // get the type of the edited resource
-                CmsResource res = jsp.getCmsObject().readFileHeader(resource);
-                resTypeId = res.getType();
-            } catch (CmsException e) {
-                // do nothing here
-            }
-        }
-        
-        switch (resTypeId) {
-            
-        case CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID:
-        case CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID:
-            // resource is of type "xml page", show the dhtml control or simple page editor
-            if (BROWSER_NS.equals(getBrowserType(jsp.getCmsObject()))) {
-                return C_PATH_EDITORS + "simplehtml/editor.html";
-            } else {
-                return C_PATH_EDITORS + "msdhtml/editor.html";
-            }    
-            
-        case CmsResourceTypeJsp.C_RESOURCE_TYPE_ID:
-        case CmsResourceTypePlain.C_RESOURCE_TYPE_ID:
-        case CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID:
-        default:
-            // resource is text or xml type, return ledit editor or simple text editor
-            if (BROWSER_IE.equals(getBrowserType(jsp.getCmsObject())) && !"true".equals(getParamNoactivex())) {
-                return C_PATH_EDITORS + "ledit/editor.html";
-            } else {
-                return C_PATH_EDITORS + "simple/editor.html";
-            }
-            
-        }
     }
     
     /**
@@ -193,6 +133,7 @@ public class CmsEditorFrameset extends CmsEditor implements I_CmsEditorHandler {
      * @see org.opencms.workplace.editor.CmsEditor#getEditorResourceUri()
      */
     public final String getEditorResourceUri() {
+        // return emtpy String, has to be implemented
         return "";
     }
     
@@ -200,7 +141,7 @@ public class CmsEditorFrameset extends CmsEditor implements I_CmsEditorHandler {
      * @see org.opencms.workplace.editor.CmsEditor#initContent()
      */
     protected final void initContent() {
-        //do nothing, has to be implemented
+        // do nothing, has to be implemented
     }
     
 }

@@ -35,7 +35,7 @@
    	    <class>org.opencms.workplace.CmsProperty</class>
        </dialoghandler>
        <editorhandler>
-            <class>org.opencms.workplace.editor.CmsEditorFrameset</class>
+            <class>org.opencms.workplace.editor.CmsEditorHandler</class>
         </editorhandler>
         <editoraction>
             <class>org.opencms.workplace.editor.CmsEditorActionDefault</class>

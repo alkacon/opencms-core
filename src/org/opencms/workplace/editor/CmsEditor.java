@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/01/23 09:38:48 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/02/04 11:23:59 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.1.12
  */
@@ -439,7 +439,10 @@ public abstract class CmsEditor extends CmsDialog {
      * @return the brwoser type
      */
     public String getBrowserType() {
-        return getBrowserType(getCms()); 
+        if (m_browserType == null) {
+            m_browserType = getBrowserType(getCms());
+        }
+        return m_browserType; 
     }
     
     /**
@@ -448,17 +451,14 @@ public abstract class CmsEditor extends CmsDialog {
      * @param cms the CmsObject
      * @return the brwoser type
      */
-    public String getBrowserType(CmsObject cms) {
-        if (m_browserType == null) {
-            HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
-            String browser = orgReq.getHeader("user-agent");
-            if (browser.indexOf("MSIE") > -1) {
-                m_browserType = BROWSER_IE;
-            } else {
-                m_browserType = BROWSER_NS;
-            }
+    public static String getBrowserType(CmsObject cms) {
+        HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
+        String browser = orgReq.getHeader("user-agent");
+        if (browser.indexOf("MSIE") > -1) {
+            return BROWSER_IE;
+        } else {
+            return BROWSER_NS;
         }
-        return m_browserType; 
     }
     
     /**
