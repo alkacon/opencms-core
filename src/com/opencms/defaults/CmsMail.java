@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsMail.java,v $
-* Date   : $Date: 2003/02/15 11:14:57 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/07/14 14:22:54 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -72,40 +72,94 @@ import java.util.*;
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  *
- * @version $Name:  $ $Revision: 1.14 $ $Date: 2003/02/15 11:14:57 $
+ * @version $Name:  $ $Revision: 1.15 $ $Date: 2003/07/14 14:22:54 $
  * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
 
     // constants
-    private String c_FROM = "";
-    private String[] c_TO = null;
-    private String[] c_BCC = null;
-    private String[] c_CC = null;
-    private String c_MAILSERVER = "";
-    private String c_ALTERNATIVE_MAILSERVER = "";
-    private String c_SUBJECT = "";
-    private String c_CONTENT = "";
-    private String c_TYPE = "";
-    private CmsObject c_CMS = null;
-    private Vector attachContent = new Vector();
-    private Vector attachType = new Vector();
+    private String m_from = "";
+    private String[] m_to = null;
+    private String[] m_bcc = null;
+    private String[] m_cc = null;
+    private String m_mailserver = "";
+    private String m_alternativeMailserver = "";
+    private String m_subject = "";
+    private String m_content = "";
+    private String m_type = "";
+    private CmsObject m_cms = null;
+    private Vector m_attachContent = new Vector();
+    private Vector m_attachType = new Vector();
  
     /**
-     * The constuctors without CmsObject
+     * Constructor to create a new CmsMail instance.<p>
+     * 
+     * @param from sender address
+     * @param to receiver address
+     * @param subject mail subject
+     * @param content mail content body
+     * @param type mail type
+     * @throws CmsException if something goes wrong
      */
     public CmsMail(String from, String[] to, String subject, String content, String type) throws CmsException {
         this(null, from, to, subject, content, type);
     }
+    
+    /**
+     * Constructor to create a new CmsMail instance.<p>
+     * 
+     * @param from sender address
+     * @param to receiver address
+     * @param subject mail subject
+     * @param content mail content body
+     * @param type mail type
+     * @throws CmsException if something goes wrong
+     */
     public CmsMail(CmsUser from, CmsUser[] to, String subject, String content, String type) throws CmsException {
         this(null, from, to, subject, content, type);
     }
+    
+    /**
+     * Constructor to create a new CmsMail instance.<p>
+     * 
+     * @param from sender address
+     * @param to receiver address
+     * @param subject mail subject
+     * @param content mail content body
+     * @param type mail type
+     * @throws CmsException if something goes wrong
+     */
     public CmsMail(CmsUser from, CmsGroup to, String subject, String content, String type) throws CmsException {
         this(null, from, to, subject, content, type);
     }
+    
+    /**
+     * Constructor to create a new CmsMail instance.<p>
+     * 
+     * @param from sender address
+     * @param to receiver address
+     * @param cc copy address
+     * @param bcc blind copy address
+     * @param subject mail subject
+     * @param content mail content body
+     * @param type mail type
+     * @throws CmsException if something goes wrong
+     */
     public CmsMail(String from, String[] to, String[] cc, String[] bcc, String subject, String content, String type) throws com.opencms.core.CmsException {
         this(null, from, to, cc, bcc, subject, content, type);
     }
+    
+    /**
+     * Constructor to create a new CmsMail instance.<p>
+     * 
+     * @param from sender address
+     * @param to receiver address
+     * @param bcc blind copy address
+     * @param subject mail subject
+     * @param content mail content body
+     * @param type mail type
+     * @throws CmsException if something goes wrong
+     */
     public CmsMail(String from, String[] to, String[] bcc, String subject, String content, String type) throws CmsException {
         this(null, from, to, bcc, subject, content, type);
     }
@@ -116,11 +170,12 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
      * the CmsUser properties.
      *
      * @param cms Cms object
-     * @param from User object that contains the address of sender.
-     * @param to User object that contains the address of recipient.
-     * @param subject Subject of email.
-     * @param content Content of email.
-     * @param type ContentType of email.
+     * @param from User object that contains the address of sender
+     * @param to User object that contains the address of recipient
+     * @param subject Subject of email
+     * @param content Content of email
+     * @param type ContentType of email
+     * @throws CmsException if something goes wrong
      */
     public CmsMail(CmsObject cms, CmsUser from, CmsUser[] to, String subject, String content, String type) throws CmsException {
 
@@ -129,59 +184,60 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 
         // check sender email address
         String fromAddress = from.getEmail();
-        if(fromAddress == null || fromAddress.equals("")) {
+        if (fromAddress == null || fromAddress.equals("")) {
             fromAddress = reg.getSystemValue("defaultmailsender");
         }
-        if(fromAddress == null || fromAddress.equals("")) {
+        if (fromAddress == null || fromAddress.equals("")) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown sender email address.", CmsException.C_BAD_NAME);
         }
-        if(fromAddress.indexOf("@") == -1 || fromAddress.indexOf(".") == -1) {
+        if (fromAddress.indexOf("@") == -1 || fromAddress.indexOf(".") == -1) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown sender email address: " + fromAddress, CmsException.C_BAD_NAME);
         }
 
         // check recipient email address
         Vector v = new Vector(to.length);
-        for(int i = 0;i < to.length;i++) {
-            if(to[i].getEmail() == null) {
+        for (int i = 0; i < to.length; i++) {
+            if (to[i].getEmail() == null) {
                 continue;
             }
-            if(to[i].getEmail().equals("")) {
+            if (to[i].getEmail().equals("")) {
                 continue;
             }
-            if(to[i].getEmail().indexOf("@") == -1 || to[i].getEmail().indexOf(".") == -1) {
+            if (to[i].getEmail().indexOf("@") == -1 || to[i].getEmail().indexOf(".") == -1) {
                 throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email, Invalid recipient email address: " + to[i].getEmail(), CmsException.C_BAD_NAME);
             }
             v.addElement(to[i].getEmail());
         }
         String users[] = new String[v.size()];
-        for(int i = 0;i < v.size();i++) {
+        for (int i = 0; i < v.size(); i++) {
             users[i] = (String)v.elementAt(i);
         }
-        if(users.length == 0) {
+        if (users.length == 0) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
         }
-        c_TO = users;
-        c_FROM = fromAddress;
-        c_SUBJECT = (subject == null ? "" : subject);
-        c_CONTENT = (content == null ? "" : content);
-        c_MAILSERVER = reg.getSystemValue("smtpserver");
-        c_ALTERNATIVE_MAILSERVER = reg.getSystemValue("smtpserver2");
-        c_TYPE = type;
-        c_CMS = cms;
+        m_to = users;
+        m_from = fromAddress;
+        m_subject = (subject == null ? "" : subject);
+        m_content = (content == null ? "" : content);
+        m_mailserver = reg.getSystemValue("smtpserver");
+        m_alternativeMailserver = reg.getSystemValue("smtpserver2");
+        m_type = type;
+        m_cms = cms;
     }
 
     /**
      * Create a new email object with a <code>CmsUser</code> as sender and a
      * <code>CmsGroup</code> as recipient(s). The sender's address will be taken from
      * the CmsUser properties, the recipient's addresses from all CmsUsers
-     * belonging to the given group.
+     * belonging to the given group.<p>
      *
-     * @param cms Cms object.
-     * @param from User object that contains the address of sender.
-     * @param to Group object that contains the address of recipient.
-     * @param subject Subject of email.
-     * @param content Content of email.
-     * @param type ContentType of email.
+     * @param cms Cms object
+     * @param from User object that contains the address of sender
+     * @param to Group object that contains the address of recipient
+     * @param subject Subject of email
+     * @param content Content of email
+     * @param type ContentType of email
+     * @throws CmsException if something goes wrong
      */
     public CmsMail(CmsObject cms, CmsUser from, CmsGroup to, String subject, String content, String type) throws CmsException {
 
@@ -190,221 +246,225 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 
         // check sender email address
         String fromAddress = from.getEmail();
-        if(fromAddress == null || fromAddress.equals("")) {
+        if (fromAddress == null || fromAddress.equals("")) {
             fromAddress = reg.getSystemValue("defaultmailsender");
         }
-        if(fromAddress == null || fromAddress.equals("")) {
+        if (fromAddress == null || fromAddress.equals("")) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown sender email address.", CmsException.C_BAD_NAME);
         }
-        if(fromAddress.indexOf("@") == -1 || fromAddress.indexOf(".") == -1) {
+        if (fromAddress.indexOf("@") == -1 || fromAddress.indexOf(".") == -1) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown sender email address: " + fromAddress, CmsException.C_BAD_NAME);
         }
 
         // check recipient email address
         Vector vu = cms.getUsersOfGroup(to.getName());
         Vector v = new Vector(vu.size());
-        for(int i = 0;i < vu.size();i++) {
+        for (int i = 0; i < vu.size(); i++) {
             String address = ((CmsUser)vu.elementAt(i)).getEmail();
-            if(address == null) {
+            if (address == null) {
                 continue;
             }
-            if(address.equals("")) {
+            if (address.equals("")) {
                 continue;
             }
-            if(address.indexOf("@") == -1 || address.indexOf(".") == -1) {
+            if (address.indexOf("@") == -1 || address.indexOf(".") == -1) {
                 throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email, Invalid recipient email address: " + address, CmsException.C_BAD_NAME);
             }
             v.addElement(address);
         }
         String users[] = new String[v.size()];
-        for(int i = 0;i < v.size();i++) {
+        for (int i = 0; i < v.size(); i++) {
             users[i] = (String)v.elementAt(i);
         }
-        if(users.length == 0) {
+        if (users.length == 0) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
         }
-        c_TO = users;
-        c_FROM = fromAddress;
-        c_SUBJECT = (subject == null ? "" : subject);
-        c_CONTENT = (content == null ? "" : content);
-        c_MAILSERVER = reg.getSystemValue("smtpserver");
-        c_ALTERNATIVE_MAILSERVER = reg.getSystemValue("smtpserver2");
-        c_TYPE = type;
-        c_CMS = cms;
+        m_to = users;
+        m_from = fromAddress;
+        m_subject = (subject == null ? "" : subject);
+        m_content = (content == null ? "" : content);
+        m_mailserver = reg.getSystemValue("smtpserver");
+        m_alternativeMailserver = reg.getSystemValue("smtpserver2");
+        m_type = type;
+        m_cms = cms;
     }
 
     /**
-     * Create a new email object with given FROM, TO, CC and BCC addresses.
+     * Create a new email object with given FROM, TO, CC and BCC addresses.<p>
      *
      * @see #CmsMail(CmsObject,String, String[], String[], String, String, String)
      *
-     * @param cms Cms object.
-     * @param from Address of sender.
-     * @param to Address of recipient.
-     * @param cc Address of copy recipient.
-     * @param bcc Address of blank copy recipient.
-     * @param subject Subject of email.
-     * @param content Content of email.
-     * @param type ContentType of email.
+     * @param cms Cms object
+     * @param from Address of sender
+     * @param to Address of recipient
+     * @param cc Address of copy recipient
+     * @param bcc Address of blank copy recipient
+     * @param subject Subject of email
+     * @param content Content of email
+     * @param type ContentType of email
+     * @throws CmsException if something goes wrong
      */
-    public CmsMail(CmsObject cms, String from, String[] to, String[] cc, String[] bcc, String subject, String content, String type) throws com.opencms.core.CmsException {
+    public CmsMail(CmsObject cms, String from, String[] to, String[] cc, String[] bcc, String subject, String content, String type) throws CmsException {
         this(cms, from, to, bcc, subject, content, type);
         Vector v = new Vector();
-        for(int i = 0;i < cc.length;i++) {
-            if(cc[i] == null) {
+        for (int i = 0; i < cc.length; i++) {
+            if (cc[i] == null) {
                 continue;
             }
-            if(cc[i].equals("")) {
+            if (cc[i].equals("")) {
                 continue;
             }
-            if(cc[i].indexOf("@") == -1 || cc[i].indexOf(".") == -1) {
+            if (cc[i].indexOf("@") == -1 || cc[i].indexOf(".") == -1) {
                 continue;
             }
             v.addElement(cc[i]);
         }
         String users[] = new String[v.size()];
-        for(int i = 0;i < v.size();i++) {
+        for (int i = 0; i < v.size(); i++) {
             users[i] = (String)v.elementAt(i);
         }
-        if(users.length == 0) {
+        if (users.length == 0) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
         }
-        c_CC = users;
+        m_cc = users;
     }
 
     /**
-     * Create a new email object with given FROM, TO and BCC addresses.
+     * Create a new email object with given FROM, TO and BCC addresses.<p>
      *
      * @see #CmsMail(CmsObject,String, String[], String, String, String)
      *
-     * @param cms Cms object.
-     * @param from Address of sender.
-     * @param to Address of recipient.
-     * @param bcc Address of blank copy recipient.
-     * @param subject Subject of email.
-     * @param content Content of email.
-     * @param type ContentType of email.
+     * @param cms Cms object
+     * @param from Address of sender
+     * @param to Address of recipient
+     * @param bcc Address of blank copy recipient
+     * @param subject Subject of email
+     * @param content Content of email
+     * @param type ContentType of email
+     * @throws CmsException if something goes wrong
      */
     public CmsMail(CmsObject cms, String from, String[] to, String[] bcc, String subject, String content, String type) throws CmsException {
         this(cms, from, to, subject, content, type);
         Vector v = new Vector();
-        for(int i = 0;i < bcc.length;i++) {
-            if(bcc[i] == null) {
+        for (int i = 0; i < bcc.length; i++) {
+            if (bcc[i] == null) {
                 continue;
             }
-            if(bcc[i].equals("")) {
+            if (bcc[i].equals("")) {
                 continue;
             }
-            if(bcc[i].indexOf("@") == -1 || bcc[i].indexOf(".") == -1) {
+            if (bcc[i].indexOf("@") == -1 || bcc[i].indexOf(".") == -1) {
                 continue;
             }
             v.addElement(bcc[i]);
         }
         String users[] = new String[v.size()];
-        for(int i = 0;i < v.size();i++) {
+        for (int i = 0; i < v.size(); i++) {
             users[i] = (String)v.elementAt(i);
         }
-        if(users.length == 0) {
+        if (users.length == 0) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
         }
-        c_BCC = users;
+        m_bcc = users;
     }
 
     /**
-     * Create a new email object with given FROM, TO and BCC addresses.
+     * Create a new email object with given FROM, TO and BCC addresses.<p>
      *
      * @see #CmsMail(CmsObject,String, String[], String, String, String)
      *
-     * @param cms Cms object.
-     * @param from Address of sender.
-     * @param to Address of recipient.
-     * @param cc Address of copy recipient.
-     * @param isBcc dedined wheather the type of cc is a bcc or not.
-     * @param subject Subject of email.
-     * @param content Content of email.
-     * @param type ContentType of email.
+     * @param cms Cms object
+     * @param from Address of sender
+     * @param to Address of recipient
+     * @param cc Address of copy recipient
+     * @param isBcc dedined wheather the type of cc is a bcc or not
+     * @param subject Subject of email
+     * @param content Content of email
+     * @param type ContentType of email
+     * @throws CmsException if something goes wrong
      */
     public CmsMail(CmsObject cms, String from, String[] to, String[] cc, boolean isBcc, String subject, String content, String type) throws CmsException {
         this(cms, from, to, subject, content, type);
         Vector v = new Vector();
-        for(int i = 0;i < cc.length;i++) {
-            if(cc[i] == null) {
+        for (int i = 0; i < cc.length; i++) {
+            if (cc[i] == null) {
                 continue;
             }
-            if(cc[i].equals("")) {
+            if (cc[i].equals("")) {
                 continue;
             }
-            if(cc[i].indexOf("@") == -1 || cc[i].indexOf(".") == -1) {
+            if (cc[i].indexOf("@") == -1 || cc[i].indexOf(".") == -1) {
                 continue;
             }
             v.addElement(cc[i]);
         }
         String users[] = new String[v.size()];
-        for(int i = 0;i < v.size();i++) {
+        for (int i = 0; i < v.size(); i++) {
             users[i] = (String)v.elementAt(i);
         }
-        if(users.length == 0) {
+        if (users.length == 0) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
         }
         if (isBcc)
-            c_BCC = users;
+            m_bcc = users;
         else
-            c_CC=users;
+            m_cc=users;
     }
 
     /**
      * Create a new email object with given FROM and TO addresses.
      *
-     * @param cms Cms object.
-     * @param from Address of sender.
-     * @param to Array with address(es) of recipient(s).
-     * @param subject Subject of email.
-     * @param content Content of email.
-     * @param type ContentType of email.
+     * @param cms Cms object
+     * @param from Address of sender
+     * @param to Array with address(es) of recipient(s)
+     * @param subject Subject of email
+     * @param content Content of email
+     * @param type ContentType of email
+     * @throws CmsException if something goes wrong
      */
     public CmsMail(CmsObject cms, String from, String[] to, String subject, String content, String type) throws CmsException {
 
         // check sender email address
-        if(from == null) {
+        if (from == null) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown sender email address.", CmsException.C_BAD_NAME);
         }
-        if(from.equals("")) {
+        if (from.equals("")) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown sender email address.", CmsException.C_BAD_NAME);
         }
-        if(from.indexOf("@") == -1 || from.indexOf(".") == -1) {
+        if (from.indexOf("@") == -1 || from.indexOf(".") == -1) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown sender email address: " + from, CmsException.C_BAD_NAME);
         }
 
         // check recipient email address
         Vector v = new Vector(to.length);
-        for(int i = 0;i < to.length;i++) {
-            if(to[i] == null) {
+        for (int i = 0; i < to.length; i++) {
+            if (to[i] == null) {
                 continue;
             }
-            if(to[i].equals("")) {
+            if (to[i].equals("")) {
                 continue;
             }
-            if(to[i].indexOf("@") == -1 || to[i].indexOf(".") == -1) {
+            if (to[i].indexOf("@") == -1 || to[i].indexOf(".") == -1) {
                 throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email, Invalid recipient email address: " + to[i], CmsException.C_BAD_NAME);
             }
             v.addElement(to[i]);
         }
         String users[] = new String[v.size()];
-        for(int i = 0;i < v.size();i++) {
+        for (int i = 0; i < v.size(); i++) {
             users[i] = (String)v.elementAt(i);
         }
-        if(users.length == 0) {
+        if (users.length == 0) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
         }
-        c_FROM = from;
-        c_TO = users;
-        c_SUBJECT = (subject == null ? "" : subject);
-        c_CONTENT = (content == null ? "" : content);
+        m_from = from;
+        m_to = users;
+        m_subject = (subject == null ? "" : subject);
+        m_content = (content == null ? "" : content);
         I_CmsRegistry reg = com.opencms.core.OpenCms.getRegistry();
-        c_MAILSERVER = reg.getSystemValue("smtpserver");
-        c_ALTERNATIVE_MAILSERVER = reg.getSystemValue("smtpserver2");
-        c_TYPE = type;
-        c_CMS = cms;
+        m_mailserver = reg.getSystemValue("smtpserver");
+        m_alternativeMailserver = reg.getSystemValue("smtpserver2");
+        m_type = type;
+        m_cms = cms;
     }
 
     /**
@@ -415,19 +475,20 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
      * @param type Content type of the attachment.
      */
     public void addAttachment(String content, String type) {
-        attachContent.addElement(content);
-        attachType.addElement(type);
+        m_attachContent.addElement(content);
+        m_attachType.addElement(type);
     }
 
     /**
      * Internal method for building a new <code>MimeMessage</code> object
      * with the given content, attachments, SMTP host properties, FROM, TO,
-     * CC and BCC addresses.
+     * CC and BCC addresses.<p>
+     * 
      * Will be called from the thread connecting to the SMTP server
-     * and sending the mail.
-     * @param smtpHost Name of the SMTP host that should be connected.
-     * @return <code>Message</code> object that can be used as argument for the <code>Transport</code> class.
-     * @throws No exceptions occuring while building the mail will be caught.
+     * and sending the mail
+     * @param smtpHost Name of the SMTP host that should be connected
+     * @return <code>Message</code> object that can be used as argument for the <code>Transport</code> class
+     * @throws Exception no exceptions occuring while building the mail will be caught
      */
     private Message buildMessage(String smtpHost) throws Exception {
 
@@ -435,7 +496,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
         String mail_encoding = "ISO-8859-1";
         
         // First check the smtpHost parameter
-        if(smtpHost == null || "".equals(smtpHost)) {
+        if (smtpHost == null || "".equals(smtpHost)) {
             throw new CmsException("No SMTP server given.");
         }
 
@@ -448,88 +509,84 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
         MimeMessage msg = new MimeMessage(session);
 
         // Check and set all addresses.
-        InternetAddress[] to = new InternetAddress[c_TO.length];
-        for(int i = 0;i < c_TO.length;i++) {
-            to[i] = new InternetAddress(c_TO[i]);
+        InternetAddress[] to = new InternetAddress[m_to.length];
+        for (int i = 0; i < m_to.length; i++) {
+            to[i] = new InternetAddress(m_to[i]);
         }
-        msg.setFrom(new InternetAddress(c_FROM));
+        msg.setFrom(new InternetAddress(m_from));
         msg.setRecipients(Message.RecipientType.TO, to);
         InternetAddress[] cc = null;
-        if(c_CC != null) {
-            cc = new InternetAddress[c_CC.length];
-            for(int i = 0;i < c_CC.length;i++) {
-                cc[i] = new InternetAddress(c_CC[i]);
+        if (m_cc != null) {
+            cc = new InternetAddress[m_cc.length];
+            for (int i = 0; i < m_cc.length; i++) {
+                cc[i] = new InternetAddress(m_cc[i]);
             }
             msg.setRecipients(Message.RecipientType.CC, cc);
         }
         InternetAddress[] bcc = null;
-        if(c_BCC != null) {
-            bcc = new InternetAddress[c_BCC.length];
-            for(int i = 0;i < c_BCC.length;i++) {
-                bcc[i] = new InternetAddress(c_BCC[i]);
+        if (m_bcc != null) {
+            bcc = new InternetAddress[m_bcc.length];
+            for (int i = 0; i < m_bcc.length; i++) {
+                bcc[i] = new InternetAddress(m_bcc[i]);
             }
             msg.setRecipients(Message.RecipientType.BCC, bcc);
         }
 
         // Set subject
-        msg.setSubject(c_SUBJECT, mail_encoding);
+        msg.setSubject(m_subject, mail_encoding);
 
         // Set content and attachments
         Vector v = new Vector();
-        if (c_CMS != null){
-            Enumeration enum = c_CMS.getRequestContext().getRequest().getFileNames();
-            while(enum.hasMoreElements()) {
+        if (m_cms != null) {
+            Enumeration enum = m_cms.getRequestContext().getRequest().getFileNames();
+            while (enum.hasMoreElements()) {
                 v.addElement(enum.nextElement());
             }
         }
         int size = v.size();
-        int numAttach = attachContent.size();
-        if(size != 0 || numAttach != 0) {
+        int numAttach = m_attachContent.size();
+        if (size != 0 || numAttach != 0) {
 
             // create and fill the first message part
             MimeBodyPart mbp1 = new MimeBodyPart();
             Multipart mp = new MimeMultipart();
-            if(c_TYPE.equals("text/html")) {
-                mbp1.setDataHandler(new DataHandler(new CmsByteArrayDataSource(c_CONTENT, c_TYPE, mail_encoding)));
-            }
-            else {
-                mbp1.setText(c_CONTENT, mail_encoding);
+            if (m_type.equals("text/html")) {
+                mbp1.setDataHandler(new DataHandler(new CmsByteArrayDataSource(m_content, m_type, mail_encoding)));
+            } else {
+                mbp1.setText(m_content, mail_encoding);
             }
             mp.addBodyPart(mbp1);
 
             // Check, if there are any attachments
-            for(int i = 0;i < numAttach;i++) {
+            for (int i = 0; i < numAttach; i++) {
 
                 // create another message part
                 // attach the file to the message
                 MimeBodyPart mbpAttach = new MimeBodyPart();
-                if("text/html".equals((String)attachType.elementAt(i))) {
-                    mbpAttach.setDataHandler(new DataHandler(new CmsByteArrayDataSource((String)attachContent.elementAt(i), "text/html", mail_encoding)));
-                }
-                else {
-                    mbpAttach.setText((String)attachContent.elementAt(i), mail_encoding);
+                if ("text/html".equals((String)m_attachType.elementAt(i))) {
+                    mbpAttach.setDataHandler(new DataHandler(new CmsByteArrayDataSource((String)m_attachContent.elementAt(i), "text/html", mail_encoding)));
+                } else {
+                    mbpAttach.setText((String)m_attachContent.elementAt(i), mail_encoding);
                 }
                 mp.addBodyPart(mbpAttach);
             }
-            for(int i = 0;i < size;i++) {
+            for (int i = 0; i < size; i++) {
                 String filename = (String)v.elementAt(i);
                 if (!"unknown".equalsIgnoreCase(filename)) {
                     MimetypesFileTypeMap mimeTypeMap = new MimetypesFileTypeMap();
                     String mimeType = mimeTypeMap.getContentType(filename);
                     MimeBodyPart mbp = new MimeBodyPart();
-                    mbp.setDataHandler(new DataHandler(new CmsByteArrayDataSource(c_CMS.getRequestContext().getRequest().getFile(filename), mimeType)));
+                    mbp.setDataHandler(new DataHandler(new CmsByteArrayDataSource(m_cms.getRequestContext().getRequest().getFile(filename), mimeType)));
                     mbp.setFileName(filename);
                     mp.addBodyPart(mbp);
                 }
             }
             msg.setContent(mp);
-        }
-        else {
-            if(c_TYPE.equals("text/html")) {
-                msg.setDataHandler(new DataHandler(new CmsByteArrayDataSource(c_CONTENT, c_TYPE, mail_encoding)));
-            }
-            else {
-                msg.setContent(c_CONTENT, c_TYPE);
+        } else {
+            if (m_type.equals("text/html")) {
+                msg.setDataHandler(new DataHandler(new CmsByteArrayDataSource(m_content, m_type, mail_encoding)));
+            } else {
+                msg.setContent(m_content, m_type);
             }
         }
         msg.setSentDate(new Date());
@@ -557,62 +614,56 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
         // Build the message
         Message msg = null;
         try {
-            msg = buildMessage(c_MAILSERVER);
-        }
-        catch(Exception e) {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            msg = buildMessage(m_mailserver);
+        } catch (Exception e) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while building Email object: " + Utils.getStackTrace(e));
             }
 
             // Do not continue here. We don't have a Message object we can send.
-            return ;
+            return;
         }
 
         // Now the message is ready.
         // Try to send it...
         try {
             Transport.send(msg);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
 
             // Emergency! An error occured while connecting to the SMTP server
             // We cannot inform the user at this point since this code runs
             // in a thread and the initiating request is completed for a long time.
             // Get nested Exception used for pretty printed error message in logfile
-            for(;e instanceof MessagingException;e = ((MessagingException)e).getNextException()) {
-                ;
+            for (; e instanceof MessagingException; e = ((MessagingException)e).getNextException()) {
             }
 
             // First print out an error message...
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while transmitting mail to SMTP server: " + e);
             }
 
             // ... and now try an alternative server (if given)
-            if(c_ALTERNATIVE_MAILSERVER != null && !"".equals(c_ALTERNATIVE_MAILSERVER)) {
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (m_alternativeMailserver != null && !"".equals(m_alternativeMailserver)) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Trying alternative server...");
                 }
                 try {
-                    msg = buildMessage(c_ALTERNATIVE_MAILSERVER);
+                    msg = buildMessage(m_alternativeMailserver);
                     Transport.send(msg);
-                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "...OK. Mail sent.");
                     }
-                }
-                catch(Exception e2) {
+                } catch (Exception e2) {
 
                     // Get nested Exception used for pretty printed error message in logfile
-                    for(;e2 instanceof MessagingException;e2 = ((MessagingException)e2).getNextException()) {
-                        ;
+                    for (; e2 instanceof MessagingException; e2 = ((MessagingException)e2).getNextException()) {
                     }
-                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "PANIC! Could not send Email. Even alternative server failed! " + e2);
                     }
                 }
-            }
-            else {
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            } else {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "PANIC! No alternative SMTP server given! Could not send Email!");
                 }
             }
