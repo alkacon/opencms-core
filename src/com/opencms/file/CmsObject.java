@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/06 13:21:01 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2000/06/08 08:11:04 $
+ * Version: $Revision: 1.79 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.78 $ $Date: 2000/06/06 13:21:01 $ 
+ * @version $Revision: 1.79 $ $Date: 2000/06/08 08:11:04 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -1763,81 +1763,6 @@ public class CmsObject implements I_CmsConstants {
 	public String readExportPath()
 		throws CmsException {
 		return c_rb.readExportPath(m_context.currentUser(), m_context.currentProject());
-	}
-	
-    /**
-	 * Adds a new CmsMountPoint. 
-	 * A new mountpoint for a mysql filesystem is added.
-	 * 
-	 * @param mountpoint The mount point in the Cms filesystem.
-	 * @param driver The driver for the db-system. 
-	 * @param connect The connectstring to access the db-system.
-	 * @param name A name to describe the mountpoint.
-	 */
-	public void addMountPoint(String mountpoint, String driver, String connect,
-							  String name)
-		throws CmsException {
-		c_rb.addMountPoint(m_context.currentUser(), m_context.currentProject(),
-						   mountpoint, driver, connect, name);
-	}
-
-    /**
-	 * Adds a new CmsMountPoint. 
-	 * A new mountpoint for a disc filesystem is added.
-	 * 
-	 * @param mountpoint The mount point in the Cms filesystem.
-	 * @param mountpath The physical location this mount point directs to. 
-	 * @param name The name of this mountpoint.
-	 * @param user The default user for this mountpoint.
-	 * @param group The default group for this mountpoint.
-	 * @param type The default resourcetype for this mountpoint.
-	 * @param accessFLags The access-flags for this mountpoint.
-	 */
-	synchronized public void addMountPoint(String mountpoint, String mountpath, 
-										   String name, String user, String group,
-										   String type, int accessFlags)
-		throws CmsException {
-		c_rb.addMountPoint(m_context.currentUser(), m_context.currentProject(),
-						   mountpoint, mountpath, name, user, group, type, accessFlags);
-	}
-	
-	/**
-	 * Gets a CmsMountPoint. 
-	 * A mountpoint will be returned.
-	 * 
-	 * @param mountpoint The mount point in the Cms filesystem.
-	 * 
-	 * @return the mountpoint - or null if it doesen't exists.
-	 */
-	public CmsMountPoint readMountPoint(String mountpoint )
-		throws CmsException {
-		return( c_rb.readMountPoint(m_context.currentUser(), 
-									m_context.currentProject(),
-									mountpoint) );
-	}
-	
-    /**
-	 * Deletes a CmsMountPoint. 
-	 * A mountpoint will be deleted.
-	 * 
-	 * @param mountpoint The mount point in the Cms filesystem.
-	 */
-	public void deleteMountPoint(String mountpoint )
-		throws CmsException {
-		c_rb.deleteMountPoint(m_context.currentUser(), m_context.currentProject(),
-							  mountpoint);
-	}
-
-	/**
-	 * Gets all CmsMountPoints. 
-	 * All mountpoints will be returned.
-	 * 
-	 * @return the mountpoints - or null if they doesen't exists.
-	 */
-	public Hashtable getAllMountPoints()
-		throws CmsException {
-		return( c_rb.getAllMountPoints(m_context.currentUser(), 
-									   m_context.currentProject()) );
 	}
 
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/06 13:21:01 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2000/06/08 08:11:04 $
+ * Version: $Revision: 1.76 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.75 $ $Date: 2000/06/06 13:21:01 $
+ * @version $Revision: 1.76 $ $Date: 2000/06/08 08:11:04 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -643,109 +643,7 @@ public interface I_CmsResourceBroker {
 	public void addFileExtension(CmsUser currentUser, CmsProject currentProject,
 								 String extension, String resTypeName)
 		throws CmsException;
-	
-	
-    /**
-	 * Adds a new CmsMountPoint. 
-	 * A new mountpoint for a mysql filesystem is added.
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param mountpoint The mount point in the Cms filesystem.
-	 * @param driver The driver for the db-system. 
-	 * @param connect The connectstring to access the db-system.
-	 * @param name A name to describe the mountpoint.
-	 */
-	public void addMountPoint(CmsUser currentUser, CmsProject currentProject, 
-							  String mountpoint, String driver, String connect,
-							  String name)
-		throws CmsException ;
-
-    /**
-	 * Adds a new CmsMountPoint. 
-	 * A new mountpoint for a disc filesystem is added.
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param mountpoint The mount point in the Cms filesystem.
-	 * @param mountpath The physical location this mount point directs to. 
-	 * @param name The name of this mountpoint.
-	 * @param user The default user for this mountpoint.
-	 * @param group The default group for this mountpoint.
-	 * @param type The default resourcetype for this mountpoint.
-	 * @param accessFLags The access-flags for this mountpoint.
-	 */
-	public void addMountPoint(CmsUser currentUser, CmsProject currentProject,
-							  String mountpoint, String mountpath, String name, 
-							  String user, String group, String type, int accessFlags)
-		throws CmsException;
-	
-	/**
-	 * Gets a CmsMountPoint. 
-	 * A mountpoint will be returned.
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param mountpoint The mount point in the Cms filesystem.
-	 * 
-	 * @return the mountpoint - or null if it doesen't exists.
-	 */
-	public CmsMountPoint readMountPoint(CmsUser currentUser, 
-										  CmsProject currentProject, 
-										  String mountpoint )
-		throws CmsException;
-	
-    /**
-	 * Deletes a CmsMountPoint. 
-	 * A mountpoint will be deleted.
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param mountpoint The mount point in the Cms filesystem.
-	 */
-	public void deleteMountPoint(CmsUser currentUser, CmsProject currentProject, 
-								 String mountpoint )
-		throws CmsException;
-
-	/**
-	 * Gets all CmsMountPoints. 
-	 * All mountpoints will be returned.
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * 
-	 * @return the mountpoints - or null if they doesen't exists.
-	 */
-	public Hashtable getAllMountPoints(CmsUser currentUser, CmsProject currentProject)
-		throws CmsException ;
-
-
-    /**
-     * Gets all mountpoint mappings, i.e. system mountpoints and their mounted paths.
-     * 
-     * @param currentUser user who requestd themethod
-	 * @param currentProject current project of the user
-	 * 
-	 * @exception Throws CmsException if something goes wrong.
-     */
-    public Hashtable getMountPointMappings(CmsUser currentUser,  CmsProject currentProject)
-        throws CmsException;
-    
+	   
 
 	//  Methods working with user and groups
 	
