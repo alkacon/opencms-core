@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsAdmin.java,v $
- * Date   : $Date: 2000/06/05 13:37:51 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/06/07 15:49:47 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import org.apache.xml.serialize.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2000/06/05 13:37:51 $
+ * @version $Revision: 1.15 $ $Date: 2000/06/07 15:49:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsNewsConstants, I_CmsFileListUsers {
@@ -342,7 +342,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         values.addElement(C_NEWS_STATE_INACTIVE);
         descriptions.addElement(lang.getLanguageValue(C_LANG_LABEL + "." + C_NEWS_STATE_ACTIVE));
         descriptions.addElement(lang.getLanguageValue(C_LANG_LABEL + "." + C_NEWS_STATE_INACTIVE)); 
-        if(state != null && state.equals(Boolean.TRUE)) {
+        if(state == null || state.equals(Boolean.TRUE)) {
             return new Integer(0);
         } else {
             return new Integer(1);
@@ -363,7 +363,10 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         
         Vector newsFolders = cms.getSubFolders(C_NEWS_FOLDER_PAGE); 
         int numNewsFolders = newsFolders.size();
-        for(int i=0; i<numNewsFolders; i++) {
+         // Walk through the news folders backwards since we
+         // want to see the newest article first.
+         //for(int i=0; i<numNewsFolders; i++) {
+         for(int i=numNewsFolders-1; i>=0; i--) {
             CmsResource currFolder = (CmsResource)newsFolders.elementAt(i);
             CmsFile newsPageFile = null;
             try {
