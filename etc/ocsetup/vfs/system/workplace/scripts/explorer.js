@@ -171,7 +171,7 @@ var ns,ie,gecko;
          brcfg.showKontext = "<a style=\"cursor:hand;\" onClick=\"javascript:top.showKontext(document,'";
          brcfg.showKontextEnd = ",window.event.x,window.event.y);\">";
 
-        if (navigator.userAgent.indexOf('MSIE 5')>0){
+        if ((navigator.userAgent.indexOf('MSIE 5')>0) || (navigator.userAgent.indexOf('MSIE 6')>0)) {
             brcfg.xOffset = '+3+doc.body.scrollLeft';
             brcfg.yOffset = '+3+doc.body.scrollTop';
         }else{
