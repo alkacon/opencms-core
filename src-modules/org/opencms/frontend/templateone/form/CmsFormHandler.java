@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2005/02/01 14:28:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/02/16 11:59:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * output formats of a submitted form.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsFormHandler extends CmsJspActionElement {
     
@@ -120,7 +120,7 @@ public class CmsFormHandler extends CmsJspActionElement {
     }
     
     /**
-     * Replaces line breaks and blanks with html &lt;br&gt; and &amp;nbsp;.<p>
+     * Replaces line breaks with html &lt;br&gt;.<p>
      * 
      * @param value the value to substitute
      * @return the substituted value
@@ -130,7 +130,7 @@ public class CmsFormHandler extends CmsJspActionElement {
     }
     
     /**
-     * Replaces html &lt;br&gt; and &amp;nbsp; with line breaks and blanks.<p>
+     * Replaces html &lt;br&gt; with line breaks.<p>
      * 
      * @param value the value to substitute
      * @return the substituted value
@@ -144,8 +144,8 @@ public class CmsFormHandler extends CmsJspActionElement {
      * 
      * The following output formats are possible:
      * <ul>
-     * <li>"html" meaning that &lt;br&gt; tags and &amp;nbsp; are added</li>
-     * <li>"plain"  or any other String value meaning that &lt;br&gt; tags and &amp;nbsp; are removed</li>
+     * <li>"html" meaning that &lt;br&gt; tags are added</li>
+     * <li>"plain"  or any other String value meaning that &lt;br&gt; tags are removed</li>
      * </ul>
      *  
      * @param value the String value to convert
@@ -156,11 +156,9 @@ public class CmsFormHandler extends CmsJspActionElement {
         if ("html".equalsIgnoreCase(outputType)) {
             // output should be html, add line break tags and characters
             value = CmsStringUtil.substitute(value, "\n", "<br>");
-            value = CmsStringUtil.substitute(value, " ", "&nbsp;");
         } else {
             // output should be plain, remove html line break tags and characters
             value = CmsStringUtil.substitute(value, "<br>", "\n");
-            value = CmsStringUtil.substitute(value, "&nbsp;", " ");
         }
         return value;
     }
@@ -275,6 +273,16 @@ public class CmsFormHandler extends CmsJspActionElement {
     public CmsMessages getMessages() {
 
         return m_messages;
+    }
+    
+    /**
+     * Returns if the submitted values contain validation errors.<p>
+     * 
+     * @return true if the submitted values contain validation errors, otherwise false
+     */
+    public boolean hasValidationErrors() {
+        
+        return (! isInitial() && getErrors().size() > 0);
     }
     
     /**

@@ -1,6 +1,6 @@
 <%@page buffer="none" session="false" import="org.opencms.i18n.*,org.opencms.frontend.templateone.form.*, java.util.*" %><%
 
-// Initialize the form handler
+// initialize the form handler
 CmsFormHandler cms = new CmsFormHandler(pageContext, request, response);
 
 // get the localized messages to create the form
@@ -46,6 +46,15 @@ if (! showForm) {
 	
 	// show form text
 	out.print(formConfiguration.getFormText());
+	
+	// show global error message if validation failed
+	if (cms.hasValidationErrors()) {
+		out.print("<p>");
+		out.print(messages.key("form.html.label.error.start"));
+		out.print(messages.key("form.error.message"));
+		out.print(messages.key("form.html.label.error.start"));
+		out.println("</p>");
+	}
 
 	// create the form head 
 	%>	<form name="emailform" action="<%= cms.link(cms.getRequestContext().getUri()) %>" method="post" style="margin-top: 14px; margin-bottom: 0; padding: 0;">

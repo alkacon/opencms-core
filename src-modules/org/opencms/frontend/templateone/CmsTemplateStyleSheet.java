@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateStyleSheet.java,v $
- * Date   : $Date: 2004/10/28 14:04:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/02/16 11:59:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to build the dynamic CSS style sheet of template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsTemplateStyleSheet extends CmsJspActionElement {
     
@@ -171,7 +171,7 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
             if ("".equals(propertyFile)) {
                 // property not set, try to get default configuration file
                 String pageUri = req.getParameter(CmsTemplateBean.C_PARAM_URI);
-                String path = getCmsObject().readPropertyObject(pageUri, CmsTemplateBean.C_PROPERTY_CONFIGPATH, true).getValue();
+                String path = getCmsObject().readPropertyObject(pageUri, CmsTemplateBean.C_PROPERTY_CONFIGPATH, true).getValue("/");
                 propertyFile = path + C_FILENAME_CONFIGFILE;
             }
             m_configuration = CmsTemplateBean.getConfigurationFile(propertyFile, getCmsObject());
