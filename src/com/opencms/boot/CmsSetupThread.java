@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupThread.java,v $
-* Date   : $Date: 2003/07/23 09:59:09 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/07/28 15:03:24 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ public class CmsSetupThread extends Thread {
         m_lt.start();
 
         /* start importing the workplace */
-        CmsMain.startSetup(m_basePath + "WEB-INF/ocsetup/cmssetup.txt", m_basePath + "WEB-INF/");
+        CmsMain.startSetup(m_basePath + CmsSetupDb.C_SETUP_DATA_FOLDER + "cmssetup.txt", m_basePath + "WEB-INF/");
 
         /* stop the logging thread */
         try {

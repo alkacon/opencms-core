@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
-* Date   : $Date: 2003/07/22 00:29:23 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/07/28 15:03:24 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -259,7 +259,7 @@ public class CmsSetupUtils {
     public static void writeVersionInfo(String thisEngine, String usedJDK, String basePath){
         FileWriter fOut = null;
         PrintWriter dOut = null;
-        String filename = basePath+"ocsetup/versions.txt";
+        String filename = basePath + CmsSetupDb.C_SETUP_FOLDER + "versions.txt";
         try {
             File file = new File(filename);
             if(file.exists()){

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/23 10:25:55 $
-* Version: $Revision: 1.123 $
+* Date   : $Date: 2003/07/28 15:03:24 $
+* Version: $Revision: 1.124 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,6 @@
 
 package com.opencms.file;
 
-import org.opencms.security.CmsAccessControlEntry;
-
 import com.opencms.boot.CmsBase;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
@@ -50,6 +48,8 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.opencms.loader.CmsPageLoader;
+import org.opencms.security.CmsAccessControlEntry;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -65,7 +65,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.123 $ $Date: 2003/07/23 10:25:55 $
+ * @version $Revision: 1.124 $ $Date: 2003/07/28 15:03:24 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
@@ -1323,6 +1323,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     pagefile.setContents(bodyfile.getContents());
                     //new set the type to new page                               
                     pagefile.setType(CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
+                    pagefile.setLoaderId(CmsPageLoader.C_RESOURCE_LOADER_ID);
+                    
                     // write all changes                     
                     m_cms.writeFile(pagefile);
                     // add the template property to the controlfile

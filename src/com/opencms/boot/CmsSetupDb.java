@@ -13,11 +13,12 @@ import java.util.Vector;
 
 /**
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/07/02 15:12:07 $
+ * @version $Revision: 1.6 $ $Date: 2003/07/28 15:03:24 $
  */
 public class CmsSetupDb extends Object {
 
-	static String C_OCSETUP_FOLDER = "WEB-INF/ocsetup/";
+	public static String C_SETUP_DATA_FOLDER = "WEB-INF/setupdata/";
+    public static String C_SETUP_FOLDER = "setup/";
 	
     private Connection m_con = null;
     private Vector m_errors = null;
@@ -139,7 +140,7 @@ public class CmsSetupDb extends Object {
 
         /* get and parse the setup script */
         try {
-            LineNumberReader reader = new LineNumberReader(new FileReader(m_basePath + C_OCSETUP_FOLDER + file));
+            LineNumberReader reader = new LineNumberReader(new FileReader(m_basePath + C_SETUP_DATA_FOLDER + file));
             String line = null;
             while (true) {
                 line = reader.readLine();
@@ -280,7 +281,7 @@ public class CmsSetupDb extends Object {
 
         /* read and return everything */
         try {
-            LineNumberReader reader = new LineNumberReader(new FileReader(m_basePath + C_OCSETUP_FOLDER + file));
+            LineNumberReader reader = new LineNumberReader(new FileReader(m_basePath + C_SETUP_DATA_FOLDER + file));
             String stat = "";
             String line = null;
 

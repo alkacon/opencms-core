@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/28 13:56:37 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2003/07/28 15:03:23 $
+ * Version: $Revision: 1.89 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.88 $ $Date: 2003/07/28 13:56:37 $
+ * @version $Revision: 1.89 $ $Date: 2003/07/28 15:03:23 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -916,9 +916,9 @@ public class CmsDriverManager extends Object {
         // TODO: extend the check to restrict to owner/admin -> CONTROL RIGHT
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
-        // write-acces  was granted - write the file.
+        // write-access  was granted - write the file.
         resource.setType(type.getResourceType());
-        resource.setLauncherType(type.getLoaderId());
+        resource.setLoaderId(type.getLoaderId());
         m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) resource, C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
         if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             resource.setState(I_CmsConstants.C_STATE_CHANGED);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsMain.java,v $
- * Date   : $Date: 2003/06/13 10:04:21 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/07/28 15:03:24 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.lang.reflect.Method;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.13 $ $Date: 2003/06/13 10:04:21 $
+ * @version $Revision: 1.14 $ $Date: 2003/07/28 15:03:24 $
  */
 public class CmsMain extends Object {
 
@@ -252,8 +252,7 @@ public class CmsMain extends Object {
     private static boolean isBaseFolder(File currentDir) {
         if(currentDir.exists() && currentDir.isDirectory()) {
             File f1 = new File(currentDir.getAbsolutePath() + File.separator + CmsBase.getPropertiesPath(false));
-            File f2 = new File(currentDir, "ocsetup");
-            return (f1.exists() && f1.isFile() && f2.exists() && f2.isDirectory());
+            return f1.exists() && f1.isFile();
         }
         return false;
     }
