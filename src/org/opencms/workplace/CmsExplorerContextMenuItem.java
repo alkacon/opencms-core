@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorerContextMenuItem.java,v $
- * Date   : $Date: 2004/03/10 11:22:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,15 +37,15 @@ package org.opencms.workplace;
  * An item can be a context menu entry or a separator line.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.3
  */
 public class CmsExplorerContextMenuItem implements Comparable {
     
-    /** The name for an entry type */
+    /** The name for an entry type. */
     public static final String C_TYPE_ENTRY = "entry";
-    /** The name for a separator type */
+    /** The name for a separator type. */
     public static final String C_TYPE_SEPARATOR = "separator";
     
     private boolean m_isXml;

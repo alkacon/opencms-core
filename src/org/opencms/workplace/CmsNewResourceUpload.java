@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2004/06/13 23:41:52 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,22 +66,22 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.3.3
  */
 public class CmsNewResourceUpload extends CmsNewResource {
     
-    /** The value for the resource upload applet action */
+    /** The value for the resource upload applet action. */
     public static final int ACTION_APPLET = 140;       
-    /** The value for the resource name form action */
+    /** The value for the resource name form action. */
     public static final int ACTION_NEWFORM2 = 120;
-    /** The value for the resource upload applet action: error occured */
+    /** The value for the resource upload applet action: error occured. */
     public static final int ACTION_SHOWERROR = 150;
-    /** The value for the resource name form submission action */
+    /** The value for the resource name form submission action. */
     public static final int ACTION_SUBMITFORM2 = 130;  
     
-    /** All allowed resource types for upload, used in form "suggested file type" */
+    /** All allowed resource types for upload, used in form "suggested file type". */
     private static String[] ALLOWED_RESOURCETYPES = new String[] {
             CmsResourceTypeBinary.C_RESOURCE_TYPE_NAME, 
             CmsResourceTypePlain.C_RESOURCE_TYPE_NAME, 
@@ -89,20 +89,20 @@ public class CmsNewResourceUpload extends CmsNewResource {
             CmsResourceTypeJsp.C_RESOURCE_TYPE_NAME
     };
     
-    /** The name for the resource form submission action */
+    /** The name for the resource form submission action. */
     public static final String DIALOG_SHOWERROR = "showerror";   
-    /** The name for the resource form submission action */
+    /** The name for the resource form submission action. */
     public static final String DIALOG_SUBMITFORM2 = "submitform2";  
     
-    /** Request parameter name for the new resource file name */
+    /** Request parameter name for the new resource file name. */
     public static final String PARAM_NEWRESOURCENAME = "newresourcename";
-    /** Request parameter name for the upload file unzip flag */
+    /** Request parameter name for the upload file unzip flag. */
     public static final String PARAM_UNZIPFILE = "unzipfile";
-    /** Request parameter name for the upload file name */
+    /** Request parameter name for the upload file name. */
     public static final String PARAM_UPLOADERROR = "uploaderror";
-    /** Request parameter name for the upload file name */
+    /** Request parameter name for the upload file name. */
     public static final String PARAM_UPLOADFILE = "uploadfile";
-    /** Request parameter name for the upload folder name */
+    /** Request parameter name for the upload folder name. */
     public static final String PARAM_UPLOADFOLDER = "uploadfolder";
     
     private String m_paramNewResourceName;

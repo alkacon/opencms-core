@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsWorkplaceEditorConfiguration.java,v $
- * Date   : $Date: 2004/06/13 23:42:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,40 +56,40 @@ import org.dom4j.Element;
  * Provides methods to get the editor information for the editor manager.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.1
  */
 public class CmsWorkplaceEditorConfiguration {
     
-    /** Name of the root document node */
+    /** Name of the root document node. */
     public static final String C_DOCUMENT_NODE = "editor";
     
-    /** Name of the editor label node */
+    /** Name of the editor label node. */
     protected static final String C_NODE_EDITORLABEL = "label";
     
-    /** Name of the resourcetypes node */
+    /** Name of the resourcetypes node. */
     protected static final String C_NODE_RESOURCETYPES = "resourcetypes";   
     
-    /** Name of the resource type node */
+    /** Name of the resource type node. */
     protected static final String C_NODE_TYPE = "type";
     
-    /** Name of the resource type subnode name */
+    /** Name of the resource type subnode name. */
     protected static final String C_NODE_NAME = "name";
     
-    /** Name of the resource type subnode ranking */
+    /** Name of the resource type subnode ranking. */
     protected static final String C_NODE_RANKING = "ranking";
     
-    /** Name of the resource type subnode mapto */
+    /** Name of the resource type subnode mapto. */
     protected static final String C_NODE_MAPTO = "mapto";
     
-    /** Name of the useragents node */
+    /** Name of the useragents node. */
     protected static final String C_NODE_USERAGENTS = "useragents";
     
-    /** Name of the single user agent node */
+    /** Name of the single user agent node. */
     protected static final String C_NODE_AGENT = "agent";
     
-    /** Debug flag */
+    /** Debug flag. */
     public static final boolean C_DEBUG = false;
     
     private List m_browserPattern;

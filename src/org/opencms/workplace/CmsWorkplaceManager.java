@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/06/13 23:41:52 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,77 +65,77 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.3.1
  */
 public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEventListener {
     
-    /** The default encoding for the workplace (UTF-8) */
+    /** The default encoding for the workplace (UTF-8). */
     // TODO: Encoding feature of the workplace is not active 
     public static final String C_DEFAULT_WORKPLACE_ENCODING = "UTF-8";
     
-    /** The description of the temp file project */
+    /** The description of the temp file project. */
     public static final String C_TEMP_FILE_PROJECT_DESCRIPTION = "The project for temporary Workplace files";
     
-    /** The name of the temp file project */
+    /** The name of the temp file project. */
     public static final String C_TEMP_FILE_PROJECT_NAME = "tempFileProject";
     
-    /** Indicates if auto-locking of resources is enabled or disabled */
+    /** Indicates if auto-locking of resources is enabled or disabled. */
     private boolean m_autoLockResources;
     
-    /** The configured default encoding of the workplace */
+    /** The configured default encoding of the workplace. */
     private String m_defaultEncoding;
     
-    /** The configured default locale of the workplace */
+    /** The configured default locale of the workplace. */
     private Locale m_defaultLocale;
     
-    /** The default property setting for setting new property values */
+    /** The default property setting for setting new property values. */
     private boolean m_defaultPropertiesOnStructure;
     
-    /** The configured dialog handlers */
+    /** The configured dialog handlers. */
     private Map m_dialogHandler;
     
-    /** The edit action handler */
+    /** The edit action handler. */
     private I_CmsEditorActionHandler m_editorAction;
     
-    /** The editor handler */
+    /** The editor handler. */
     private I_CmsEditorHandler m_editorHandler;
     
-    /** The editor manager */
+    /** The editor manager. */
     private CmsWorkplaceEditorManager m_editorManager;
     
-    /** The flag if switching tabs in the advanced property dialog is enabled */
+    /** The flag if switching tabs in the advanced property dialog is enabled. */
     private boolean m_enableAdvancedPropertyTabs;
     
-    /** The explorer type settings */
+    /** The explorer type settings. */
     private List m_explorerTypeSettings;
     
-    /** The explorer type settings as Map with resource type name as key */
+    /** The explorer type settings as Map with resource type name as key. */
     private Map m_explorerTypeSettingsMap;
     
-    /** The workplace export points */
+    /** The workplace export points. */
     private Set m_exportPoints;
     
-    /** Maximum size of an upload file */
+    /** Maximum size of an upload file. */
     private int m_fileMaxUploadSize;
     
-    /** Contains all folders that should be labled if siblings exist */
+    /** Contains all folders that should be labled if siblings exist. */
     private List m_labelSiteFolders;
     
-    /** Set of installed workplace locales */
+    /** Set of installed workplace locales. */
     private Set m_locales;
     
-    /** Indicates if the user managemet icon should be displayed in the workplace */
+    /** Indicates if the user managemet icon should be displayed in the workplace. */
     private boolean m_showUserGroupIcon;
         
-    /** The temporary file project used by the editors */
+    /** The temporary file project used by the editors. */
     private CmsProject m_tempFileProject;    
     
-    /** The configured workplace views */
+    /** The configured workplace views. */
     private List m_views;
     
-    /** The default user seetings */
+    /** The default user seetings. */
     private CmsDefaultUserSettings m_defaultUserSettings;
     
     /**

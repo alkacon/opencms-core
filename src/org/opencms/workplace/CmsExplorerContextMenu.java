@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2004/04/30 01:51:05 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,15 +52,15 @@ import java.util.Locale;
  * in the OpenCms configuration.<p> 
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.3
  */
 public class CmsExplorerContextMenu {
 
-    /** All context menu entries */
+    /** All context menu entries. */
     private List m_allEntries;
-    /** Stores already generated javascript menu outputs with a Locale object as key */
+    /** Stores already generated javascript menu outputs with a Locale object as key. */
     private HashMap m_generatedScripts;
     
     /**

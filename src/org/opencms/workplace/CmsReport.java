@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2004/03/16 11:19:16 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,40 +44,40 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1.10
  */
 public class CmsReport extends CmsDialog {       
     
-    /** Request parameter key for the type of the report */
+    /** Request parameter key for the type of the report. */
     public static final String PARAM_REPORT_TYPE = "reporttype";
     
-    /** Request parameter value that this report should create a "simple" output */
+    /** Request parameter value that this report should create a "simple" output. */
     public static final String REPORT_TYPE_SIMPLE = "simple";   
     
-    /** Request parameter value that this report should create an "extended" output */
+    /** Request parameter value that this report should create an "extended" output. */
     public static final String REPORT_TYPE_EXTENDED = "extended";   
     
-    /** Request parameter key for the type of the report */
+    /** Request parameter key for the type of the report. */
     public static final String PARAM_REPORT_CONTINUEKEY = "reportcontinuekey";
     
-    /** The key name which contains the localized message for the continue checkbox */
+    /** The key name which contains the localized message for the continue checkbox. */
     private String m_paramReportContinueKey;
     
-    /** The type of this report */
+    /** The type of this report. */
     private String m_paramReportType;
     
-    /** Max. byte size of report output on client */
+    /** Max. byte size of report output on client. */
     public static final int REPORT_UPDATE_SIZE = 512000;
     
-    /** Update time for report reloading */
+    /** Update time for report reloading. */
     public static final int REPORT_UPDATE_TIME = 2000;
     
-    /** The thread to display in this report */
+    /** The thread to display in this report. */
     private CmsUUID m_paramThread;
     
-    /** The next thread to display after this report */
+    /** The next thread to display after this report. */
     private String m_paramThreadHasNext;
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2004/06/07 12:44:06 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,23 +59,23 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 5.1.12
  */
 public class CmsPublishProject extends CmsReport {
     
-    /** The dialog type */
+    /** The dialog type. */
     public static final String DIALOG_TYPE = "publishproject";
     
-    /** Value for the action: show unlock confirmation */
+    /** Value for the action: show unlock confirmation. */
     public static final int ACTION_UNLOCK_CONFIRMATION = 200;
-    /** Value for the action: unlock confirmed */
+    /** Value for the action: unlock confirmed. */
     public static final int ACTION_UNLOCK_CONFIRMED = 210;
     
-    /** Request parameter value for the action: show unlock confirmation */
+    /** Request parameter value for the action: show unlock confirmation. */
     public static final String DIALOG_UNLOCK_CONFIRMATION = "unlockconfirmation";
-    /** Request parameter value for the action: unlock confirmed */
+    /** Request parameter value for the action: unlock confirmed. */
     public static final String DIALOG_UNLOCK_CONFIRMED = "unlockconfirmed";
 
     // member variables for publishing a project

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/CmsTask.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/14 15:50:10 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,71 +39,71 @@ import org.opencms.util.CmsUUID;
  * Describes an OpenCms task.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsTask {
 
-    /** The id of the user who is the agent of this task */
+    /** The id of the user who is the agent of this task. */
     private CmsUUID m_agentUserId;
 
-    /** The auto finish value of this task */
+    /** The auto finish value of this task. */
     private int m_autoFinish;
 
-    /** Timestamp when the task has been ended */
+    /** Timestamp when the task has been ended. */
     private java.sql.Timestamp m_endTime;
 
-    /** Escalation type of this task */
+    /** Escalation type of this task. */
     private int m_escalationType;
 
-    /** Link to the html page which handles this task */
+    /** Link to the html page which handles this task. */
     private String m_htmlLink;
 
-    /** The id of this task */
+    /** The id of this task. */
     private int m_id;
 
-    /** The id of the user who initiated this task */
+    /** The id of the user who initiated this task. */
     private CmsUUID m_initiatorUserId;
 
-    /** The id of the milstone to which this task belongs */
+    /** The id of the milestone to which this task belongs. */
     private int m_milestone;
 
-    /** The name of this task */
+    /** The name of this task. */
     private String m_name;
 
-    /** The id of the user who was the original agent */
+    /** The id of the user who was the original agent. */
     private CmsUUID m_originalUserId;
 
-    /** The id of the task which is the parent of this task */
+    /** The id of the task which is the parent of this task. */
     private int m_parent;
 
-    /** Percentage value of this task */
+    /** Percentage value of this task. */
     private int m_percentage;
 
-    /** Permission flag of this task */
+    /** Permission flag of this task. */
     private String m_permission;
 
-    /** Priority of this task */
+    /** Priority of this task. */
     private int m_priority;
 
-    /** The id of the role which is set for this task */
+    /** The id of the role which is set for this task. */
     private CmsUUID m_roleId;
 
-    /** The id of the task which is the root task of this task */
+    /** The id of the task which is the root task of this task. */
     private int m_root;
 
-    /** Timestamp when this task has been started */
+    /** Timestamp when this task has been started. */
     private java.sql.Timestamp m_startTime;
 
-    /** State of this task */
+    /** State of this task. */
     private int m_state;
 
-    /** Type of this task */
+    /** Type of this task. */
     private int m_taskType;
 
-    /** Timestamp when this task has to be completed */
+    /** Timestamp when this task has to be completed. */
     private java.sql.Timestamp m_timeOut;
 
-    /** Timestamp when this task has to be activated */
+    /** Timestamp when this task has to be activated. */
     private java.sql.Timestamp m_wakeupTime;
 
     /**

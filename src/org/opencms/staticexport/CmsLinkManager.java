@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/04/28 22:24:42 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,11 +51,11 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  */
 public class CmsLinkManager {
     
-    /** Base URL to calculate absolute links */
+    /** Base URL to calculate absolute links. */
     private static URL m_baseUrl;
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHighlightExtractor.java,v $
- * Date   : $Date: 2004/06/13 23:39:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,19 +43,19 @@ import org.apache.lucene.util.PriorityQueue;
  */
 class DocumentFragment {
     
-    /** The fragment number */
+    /** The fragment number. */
     protected int m_fragNum;
         
-    /** The score */
+    /** The score. */
     protected int m_score;
     
-    /** The text end position */
+    /** The text end position .*/
     protected int m_textEndPos; 
     
-    /** The test start position*/
+    /** The test start position. */
     protected int m_textStartPos;
     
-    /** All unique terms found */
+    /** All unique terms found. */
     protected HashSet m_uniqueTerms = new HashSet();
 
     /**
@@ -125,16 +125,16 @@ class FragmentQueue extends PriorityQueue {
  */
 public final class CmsHighlightExtractor {
     
-    /** The analyzer */
+    /** The analyzer. */
     private Analyzer m_analyzer;
     
-    /** The term highlighter */
+    /** The term highlighter. */
     private I_TermHighlighter m_highlighter;
 
-    /** The query */
+    /** The query. */
     private Query m_query;
     
-    /** A set of all terms */
+    /** A set of all terms. */
     private HashSet m_terms = new HashSet();
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/02/26 07:14:15 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -108,57 +108,57 @@ import org.apache.lucene.search.Searcher;
  * 
  * <p>Certainly, you can specify more than one folder or channel to index.</p>
  *   
- * @version $Revision: 1.12 $ $Date: 2004/02/26 07:14:15 $
+ * @version $Revision: 1.13 $ $Date: 2004/06/14 15:50:09 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
 public class CmsSearchIndex {
   
-    /** Manual rebuild as default value */
+    /** Manual rebuild as default value. */
     private static String C_DEFAULT_REBUILD = "manual";
 
-    /** The cms object */
+    /** The cms object. */
     private CmsObject m_cms;
 
-    /** The incremental mode for this index */
+    /** The incremental mode for this index. */
     private boolean m_incremental;
 
-    /** The index manager */
+    /** The index manager. */
     private CmsSearchManager m_indexManager;
     
-    /** The language filter of this index */
+    /** The language filter of this index. */
     private String m_language;
     
-    /** The name of this index */
+    /** The name of this index. */
     private String m_name;
                 
-    /** Path to index data */
+    /** Path to index data. */
     private String m_path;
     
-    /** The project of this index */
+    /** The project of this index. */
     private String m_project;
 
-    /** The rebuild mode for this index */
+    /** The rebuild mode for this index. */
     private String m_rebuild;
 
-    /** Documenttypes of folders/channels */
+    /** Documenttypes of folders/channels. */
     private Map m_documenttypes;
     
-    /** The site of this index */    
+    /** The site of this index. */    
     private String m_site;
       
     int warning = 0;
 
-    /** The list of vfs paths to index */
+    /** The list of vfs paths to index. */
     private List m_vfsSources;
     
-    /** The list of cos channels to index */
+    /** The list of cos channels to index. */
     private List m_cosSources;
     
-    /** Displayuri of channel content */
+    /** Displayuri of channel content. */
     private Map m_cosDisplayuri;
     
-    /** Displayparam of channel content */
+    /** Displayparam of channel content. */
     private Map m_cosDisplayparam;
     
     /**

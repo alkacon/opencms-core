@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChnav.java,v $
- * Date   : $Date: 2004/06/06 10:46:43 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,24 +58,24 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.1
  */
 public class CmsChnav extends CmsDialog {
     
-    /** The dialog type */
+    /** The dialog type. */
     public static final String DIALOG_TYPE = "chnav";
     
-    /** The debug flag */
+    /** The debug flag. */
     public static final int C_DEBUG = 1;
     
-    /** Value for the action: change the navigation */
+    /** Value for the action: change the navigation. */
     public static final int ACTION_CHNAV = 100;
     
-    /** Request parameter name for the navigation text */
+    /** Request parameter name for the navigation text. */
     public static final String PARAM_NAVTEXT = "navtext";   
-    /** Request parameter name for the navigation position */
+    /** Request parameter name for the navigation position. */
     public static final String PARAM_NAVPOS = "navpos"; 
 
     private String m_paramNavtext;

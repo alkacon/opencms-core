@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/06/13 23:40:15 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,83 +70,83 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
-    /** Cache value to indicate a true 404 error */
+    /** Cache value to indicate a true 404 error. */
     private static final String C_CACHEVALUE_404 = "?404";
 
-    /** Marker for error message attribute */
+    /** Marker for error message attribute. */
     public static final String C_EXPORT_ATTRIBUTE_ERROR_MESSAGE = "javax.servlet.error.message";
 
-    /** Marker for error request uri attribute */
+    /** Marker for error request uri attribute. */
     public static final String C_EXPORT_ATTRIBUTE_ERROR_REQUEST_URI = "javax.servlet.error.request_uri";
 
-    /** Marker for error servlet name attribute */
+    /** Marker for error servlet name attribute. */
     public static final String C_EXPORT_ATTRIBUTE_ERROR_SERVLET_NAME = "javax.servlet.error.servlet_name";
 
-    /** Marker for error status code attribute */
+    /** Marker for error status code attribute. */
     public static final String C_EXPORT_ATTRIBUTE_ERROR_STATUS_CODE = "javax.servlet.error.status_code";
 
-    /** Name for the folder default index file */
+    /** Name for the folder default index file. */
     public static final String C_EXPORT_DEFAULT_FILE = "index_export.html";
 
-    /** Flag value for links without paramerters */
+    /** Flag value for links without paramerters. */
     public static final int C_EXPORT_LINK_WITH_PARAMETER = 2;
 
-    /** Flag value for links without paramerters */
+    /** Flag value for links without paramerters. */
     public static final int C_EXPORT_LINK_WITHOUT_PARAMETER = 1;
 
-    /** Marker for externally redirected 404 uri's */
+    /** Marker for externally redirected 404 uri's. */
     public static final String C_EXPORT_MARKER = "exporturi";
 
-    /** Matcher for  selecting those resources which should be part of the staic export*/
+    /** Matcher for  selecting those resources which should be part of the staic export. */
     private static CmsExportFolderMatcher m_exportFolderMatcher;
 
-    /** Cache for the export uris */
+    /** Cache for the export uris. */
     private Map m_cacheExportUris;
 
-    /** Cache for the online links */
+    /** Cache for the online links. */
     private Map m_cacheOnlineLinks;
 
-    /** The additional http headers for the static export */
+    /** The additional http headers for the static export. */
     private String[] m_exportHeaders;
 
-    /** List of all resources that have the "exportname" property set */
+    /** List of all resources that have the "exportname" property set. */
     private Map m_exportnameResources;
 
-    /** Indicates if <code>true</code> is the default value for the property "export" */
+    /** Indicates if <code>true</code> is the default value for the property "export". */
     private boolean m_exportPropertyDefault;
 
-    /** Indicates if links in the static export should be relative */
+    /** Indicates if links in the static export should be relative. */
     private boolean m_exportRelativeLinks;
 
-    /** List of export suffixes where the "export" property default is always "true" */
+    /** List of export suffixes where the "export" property default is always "true". */
     private String[] m_exportSuffixes;
 
-    /** Export url to send internal requests to */
+    /** Export url to send internal requests to. */
     private String m_exportUrl;
 
-    /** Indicates if the quick static export for plain resources is enabled */
+    /** Indicates if the quick static export for plain resources is enabled. */
     private boolean m_quickPlainExport;
 
-    /** Prefix to use for exported files */
+    /** Prefix to use for exported files. */
     private String m_rfsPrefix;
 
-    /** Indicates if the static export is enabled or diabled */
+    /** Indicates if the static export is enabled or diabled. */
     private boolean m_staticExportEnabled;
 
-    /** Indicates if the static export is switched to export "on demand" or "after publish" mode  */
+    /** Indicates if the static export is switched to export "on demand" or "after publish" mode.  */
     private boolean m_staticExportOnDemand;
 
-    /** The path to where the static export will be written */
+    /** The path to where the static export will be written. */
     private String m_staticExportPath;
 
-    /** Vfs Name of a resource used to do a "static export required" test */
+    /** Vfs Name of a resource used to do a "static export required" test. */
     private String m_testResource;
 
-    /** Prefix to use for internal OpenCms files */
+    /** Prefix to use for internal OpenCms files. */
     private String m_vfsPrefix;
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2004/04/05 16:13:08 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,21 +58,21 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
     
-    /** The default site root */
+    /** The default site root. */
     private CmsSite m_defaultSite;
     
-    /** The set of all configured site root paths (as String) */
+    /** The set of all configured site root paths (as String). */
     private Set m_siteRoots;
     
-    /** The map of configured sites */
+    /** The map of configured sites. */
     private HashMap m_sites;
     
-    /** The site matcher that matches the workplace site */
+    /** The site matcher that matches the workplace site. */
     private CmsSiteMatcher m_workplaceSiteMatcher;
     
     /**

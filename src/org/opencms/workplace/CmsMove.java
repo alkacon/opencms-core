@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,16 +55,16 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.1
  */
 public class CmsMove extends CmsDialog {
 
-    /** Value for the action: move resource */
+    /** Value for the action: move resource. */
     public static final int ACTION_MOVE = 100;
     
-    /** The dialog type */
+    /** The dialog type. */
     public static final String DIALOG_TYPE = "move";
 
     private String m_paramTarget;

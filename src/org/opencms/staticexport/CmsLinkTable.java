@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkTable.java,v $
- * Date   : $Date: 2004/06/01 15:28:51 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,15 +38,15 @@ import java.util.Iterator;
  *  
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.3
  */
 public class CmsLinkTable {
 
-    /** Prefix to identify a link in the content */
+    /** Prefix to identify a link in the content. */
     private static final String C_LINK_PREFIX = "link";
     
-    /** The map to store the link table in */
+    /** The map to store the link table in. */
     private HashMap m_linkTable;
         
     /**

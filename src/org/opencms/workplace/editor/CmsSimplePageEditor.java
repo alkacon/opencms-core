@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2004/06/10 19:36:45 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,13 +51,13 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.3.0
  */
 public class CmsSimplePageEditor extends CmsDefaultPageEditor {
     
-    /** Constant for the editor type, must be the same as the editors subfolder name in the VFS */
+    /** Constant for the editor type, must be the same as the editors subfolder name in the VFS. */
     private static String EDITOR_TYPE = "simplehtml";
 
     /**

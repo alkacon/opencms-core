@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsUndoChanges.java,v $
- * Date   : $Date: 2004/05/19 16:20:53 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,16 +50,16 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1
  */
 public class CmsUndoChanges extends CmsDialog {
 
-    /** Value for the action: undo changes */
+    /** Value for the action: undo changes. */
     public static final int ACTION_UNDOCHANGES = 100;
     
-    /** The dialog type */
+    /** The dialog type. */
     public static final String DIALOG_TYPE = "undochanges";
     
     /** Request parameter name for the recursive flag.<p> */

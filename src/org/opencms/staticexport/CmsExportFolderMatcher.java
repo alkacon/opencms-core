@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsExportFolderMatcher.java,v $
- * Date   : $Date: 2004/03/31 08:11:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,11 +41,11 @@ import java.util.regex.Pattern;
  * a static export.<p> 
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsExportFolderMatcher {
 
-    /** Internal array containing the vfs folders that should be exported*/
+    /** Internal array containing the vfs folders that should be exported. */
     private List m_vfsFolders;
     
     /**

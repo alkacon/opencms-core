@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLinkVisitor.java,v $
- * Date   : $Date: 2004/03/22 16:27:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,15 +45,15 @@ import org.htmlparser.visitors.NodeVisitor;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3
  */
 public class CmsLinkVisitor extends NodeVisitor {
     
-    /** The link processor */
+    /** The link processor. */
     private CmsLinkProcessor m_linkProcessor;
     
-    /** The processed content */
+    /** The processed content. */
     private StringBuffer m_result;      
     
     /**

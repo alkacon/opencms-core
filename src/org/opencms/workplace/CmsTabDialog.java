@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsTabDialog.java,v $
- * Date   : $Date: 2004/04/28 22:28:16 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,29 +54,29 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1.12
  */
 public abstract class CmsTabDialog extends CmsDialog {
 
-    /** Name of the request parameter for the set button pressed flag */
+    /** Name of the request parameter for the set button pressed flag. */
     public static final String PARAM_SETPRESSED = "setpressed";
-    /** Name of the request parameter for the current tab */
+    /** Name of the request parameter for the current tab. */
     public static final String PARAM_TAB = "tab";
     
-    /** Value for the action: switch the tab */
+    /** Value for the action: switch the tab. */
     public static final int ACTION_SWITCHTAB = 100; 
     
-    /** Request parameter value for the action: switch the tab */
+    /** Request parameter value for the action: switch the tab. */
     public static final String DIALOG_SWITCHTAB = "switchtab"; 
     
-    /** Stores the current tab */
+    /** Stores the current tab. */
     private String m_paramTab;
-    /** Determines if the "set" button was pressed */
+    /** Determines if the "set" button was pressed. */
     private String m_paramSetPressed;
     
-    /** Stores the currently active tab */
+    /** Stores the currently active tab. */
     private int m_activeTab = -1;
     
     /**

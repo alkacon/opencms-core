@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsVfsDocument.java,v $
- * Date   : $Date: 2004/04/05 16:13:08 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,18 +46,18 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a vfs resource 
  * of any type derived from <code>CmsResource</code>.<p>
  * 
- * @version $Revision: 1.5 $ $Date: 2004/04/05 16:13:08 $
+ * @version $Revision: 1.6 $ $Date: 2004/06/14 15:50:09 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsVfsDocument implements I_CmsDocumentFactory {
 
     /**
-     * The cms object
+     * The cms object.
      */
     protected CmsObject m_cms;
     
     /**
-     * Name of the documenttype
+     * Name of the documenttype.
      */
     protected String m_name;
     

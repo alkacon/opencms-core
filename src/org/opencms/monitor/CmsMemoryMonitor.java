@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2004/06/13 23:39:09 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/06/14 15:50:10 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.map.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.28 $ $Date: 2004/06/13 23:39:09 $
+ * @version $Revision: 1.29 $ $Date: 2004/06/14 15:50:10 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -77,54 +77,55 @@ import org.apache.commons.collections.map.LRUMap;
  */
 public class CmsMemoryMonitor implements I_CmsCronJob {
     
-    /** set interval for clearing the caches to 10 minutes */
+    /** Set interval for clearing the caches to 10 minutes. */
     private static final int C_INTERVAL_CLEAR = 1000 * 60 * 10;
     
-    /** max depth for object size recursion */
+    /** Maximum depth for object size recursion. */
     private static final int C_MAX_DEPTH = 5;
 
+    /** Flag indicating if monitor is currently running. */
     private static boolean m_currentlyRunning;
     
-    /** receivers fro status emails */
+    /** Receivers for status emails. */
     private String[] m_emailReceiver;
 
-    /** sender for status emails */
+    /** Sender for status emails. */
     private String m_emailSender;
 
-    /** the interval to use for sending emails */
+    /** The interval to use for sending emails. */
     private int m_intervalEmail;
 
-    /** the interval to use for the logging */
+    /** The interval to use for the logging. */
     private int m_intervalLog;
 
-    /** the interval to use for warnings if status is disabled */
+    /** The interval to use for warnings if status is disabled. */
     private int m_intervalWarning;
     
-    /** the time the caches where last cleared */
+    /** The time the caches were last cleared. */
     private long m_lastClearCache;    
     
-    /** the time the last status email was send */
+    /** The time the last status email was send. */
     private long m_lastEmailStatus;
 
-    /** the time the last warning email was send */
+    /** The time the last warning email was send. */
     private long m_lastEmailWarning;
     
-    /** the time the last status log was written */
+    /** The time the last status log was written. */
     private long m_lastLogStatus;
     
-    /** the time the last warning log was written */
+    /** The time the last warning log was written. */
     private long m_lastLogWarning;    
 
-    /** memory limit that triggers a warning */
+    /** Memory limit that triggers a warning. */
     private int m_maxUsagePercent;
 
-    /** contains the object to be monitored */
+    /** Contains the object to be monitored. */
     private Map m_monitoredObjects;
 
-    /** flag for memory warning mail send */
+    /** Flag for memory warning mail send. */
     private boolean m_warningSendSinceLastStatus;
     
-    /** flag for memory warning mail send */
+    /** Flag for memory warning mail send. */
     private boolean m_warningLoggedSinceLastStatus;
     
     /**

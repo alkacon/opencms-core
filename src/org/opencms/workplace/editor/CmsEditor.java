@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/06/13 23:42:47 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,82 +55,82 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 5.1.12
  */
 public abstract class CmsEditor extends CmsDialog {
 
-    /** Value for the action: change the body */
+    /** Value for the action: change the body. */
     public static final int ACTION_CHANGE_BODY = 124;
 
-    /** Value for the action: exit */
+    /** Value for the action: exit. */
     public static final int ACTION_EXIT = 122;
 
-    /** Value for the action: show a preview */
+    /** Value for the action: show a preview. */
     public static final int ACTION_PREVIEW = 126;
     
-    /** Value for the action: save */
+    /** Value for the action: save. */
     public static final int ACTION_SAVE = 121;
 
-    /** Value for the action: save and exit */
+    /** Value for the action: save and exit. */
     public static final int ACTION_SAVEEXIT = 123;
 
-    /** Value for the action: show the editor */
+    /** Value for the action: show the editor. */
     public static final int ACTION_SHOW = 125;
 
-    /** Value for the action: an error occured */
+    /** Value for the action: an error occured. */
     public static final int ACTION_SHOW_ERRORMESSAGE = 127;
     
-    /** Stores the VFS editor path */
+    /** Stores the VFS editor path. */
     public static final String C_PATH_EDITORS = C_PATH_WORKPLACE + "editors/";
     
-    /** Constant for the Editor special "save error" confirmation dialog */
+    /** Constant for the Editor special "save error" confirmation dialog. */
     public static final String C_FILE_DIALOG_EDITOR_CONFIRM = C_PATH_EDITORS + "dialogs/confirm.html";
     
-    /** Value for the action parameter: change the element */
+    /** Value for the action parameter: change the element. */
     public static final String EDITOR_CHANGE_ELEMENT = "changeelement";
 
-    /** Value for the action parameter: exit editor */
+    /** Value for the action parameter: exit editor. */
     public static final String EDITOR_EXIT = "exit";
 
-    /** Value for the action parameter: show a preview */
+    /** Value for the action parameter: show a preview. */
     public static final String EDITOR_PREVIEW = "preview";
     
-    /** Value for the action parameter: save content */
+    /** Value for the action parameter: save content. */
     public static final String EDITOR_SAVE = "save";
 
-    /** Value for the action parameter: save and exit */
+    /** Value for the action parameter: save and exit. */
     public static final String EDITOR_SAVEEXIT = "saveexit";
 
-    /** Value for the action parameter: show the editor */
+    /** Value for the action parameter: show the editor. */
     public static final String EDITOR_SHOW = "show";
 
-    /** Value for the action parameter: an error occured */
+    /** Value for the action parameter: an error occured. */
     public static final String EDITOR_SHOW_ERRORMESSAGE = "error";
     
-    /** Parameter name for the request parameter "backlink" */
+    /** Parameter name for the request parameter "backlink". */
     public static final String PARAM_BACKLINK = "backlink";
     
-    /** Parameter name for the request parameter "content" */
+    /** Parameter name for the request parameter "content". */
     public static final String PARAM_CONTENT = "content";
     
-    /** Parameter name for the request parameter "directedit" */
+    /** Parameter name for the request parameter "directedit". */
     public static final String PARAM_DIRECTEDIT = "directedit";
     
-    /** Parameter name for the request parameter "editastext" */
+    /** Parameter name for the request parameter "editastext". */
     public static final String PARAM_EDITASTEXT = "editastext";
     
-    /** Parameter name for the request parameter "editormode" */
+    /** Parameter name for the request parameter "editormode". */
     public static final String PARAM_EDITORMODE = "editormode";
     
-    /** Parameter name for the request parameter "loaddefault" */
+    /** Parameter name for the request parameter "loaddefault". */
     public static final String PARAM_LOADDEFAULT = "loaddefault";
     
-    /** Parameter name for the request parameter "tempfile" */
+    /** Parameter name for the request parameter "tempfile". */
     public static final String PARAM_TEMPFILE = "tempfile";
 
-    /** The encoding to use (will be read from the file property) */
+    /** The encoding to use (will be read from the file property). */
     private String m_fileEncoding;
     
     // some private members for parameter storage
@@ -142,7 +142,7 @@ public abstract class CmsEditor extends CmsDialog {
     private String m_paramLoadDefault;
     private String m_paramTempFile;
     
-    /** Helper variable to store the uri to the editors pictures */
+    /** Helper variable to store the uri to the editors pictures. */
     private String m_picsUri;
     
     /**

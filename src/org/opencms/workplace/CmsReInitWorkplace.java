@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsReInitWorkplace.java,v $
- * Date   : $Date: 2004/06/13 23:41:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,13 +47,13 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for re-initialization of the OpenCms Workplace.<p> 
  *
  * @author  Michael Emmerich(m.emmerich@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.10
  */
 public class CmsReInitWorkplace extends CmsReport {
     
-    /** The dialog type */
+    /** The dialog type. */
     public static final String DIALOG_TYPE = "reinit";
 
     /**

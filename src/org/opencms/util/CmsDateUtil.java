@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsDateUtil.java,v $
- * Date   : $Date: 2004/06/13 23:40:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.opencms.main.OpenCms;
  * Utilities to get and set formated dates in OpenCms.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public final class CmsDateUtil {
    
@@ -57,7 +57,7 @@ public final class CmsDateUtil {
         // noop
     }   
 
-    /** The default format to use when formatting headers */
+    /** The default format to use when formatting headers. */
     public static final SimpleDateFormat C_HEADER_DEFAULT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
     
     /**

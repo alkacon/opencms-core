@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosDocument.java,v $
- * Date   : $Date: 2004/02/20 13:35:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/14 15:54:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cos resource 
  * of any type derived from <code>CmsMasterDataSet</code>.<p>
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/20 13:35:45 $
+ * @version $Revision: 1.2 $ $Date: 2004/06/14 15:54:43 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsCosDocument implements I_CmsDocumentFactory {
@@ -58,10 +58,10 @@ public class CmsCosDocument implements I_CmsDocumentFactory {
     /* Matches anything that is not a number, hex-number, uuid or whitespace */
     private static final Pattern C_NON_NUM_UUID_WS = Pattern.compile("[^a-fA-F0-9\\-_\\s]");
     
-    /** The cms object */
+    /** The cms object. */
     protected CmsObject m_cms;
     
-    /** Name of the documenttype*/
+    /** Name of the document type. */
     protected String m_name;
     
     /**

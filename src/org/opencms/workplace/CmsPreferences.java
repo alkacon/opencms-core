@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/06/08 13:24:46 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,148 +60,148 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.1.12
  */
 public class CmsPreferences extends CmsTabDialog {
     
-    /** Value for the action: change the password */
+    /** Value for the action: change the password. */
     public static final int ACTION_CHPWD = 202;
     
-    /** Value for the action: show error screen */
+    /** Value for the action: show error screen. */
     public static final int ACTION_ERROR = 203;
     
-    /** Value for the action: reload the workplace */
+    /** Value for the action: reload the workplace. */
     public static final int ACTION_RELOAD = 201;
     
-    /** Constant for filter */
+    /** Constant for filter. */
     private static final String C_SPACER = "------------------------------------------------";
     
-    /** Request parameter value for the action: change the password */
+    /** Request parameter value for the action: change the password. */
     public static final String DIALOG_CHPWD = "chpwd";
 
-    /** Request parameter value for the action: reload the workplace */
+    /** Request parameter value for the action: reload the workplace. */
     public static final String DIALOG_RELOAD = "reload";
 
-    /** The dialog type */
+    /** The dialog type. */
     public static final String DIALOG_TYPE = "preferences";
     
-    /** Request parameter name prefix for the preferred editors */
+    /** Request parameter name prefix for the preferred editors. */
     public static final String INPUT_DEFAULT = "default";
     
-    /** Request parameter name for the direct edit button style */
+    /** Request parameter name for the direct edit button style. */
     public static final String PARAM_DIRECTEDIT_BUTTONSTYLE = "tabeddirecteditbuttonstyle";
     
-    /** Request parameter name for the editor button style */
+    /** Request parameter name for the editor button style. */
     public static final String PARAM_EDITOR_BUTTONSTYLE = "tabedbuttonstyle";
     
-    /** Request parameter name for the explorer button style */
+    /** Request parameter name for the explorer button style. */
     public static final String PARAM_EXPLORER_BUTTONSTYLE = "tabexbuttonstyle";
     
-    /** Request parameter name for the explorer file date created */
+    /** Request parameter name for the explorer file date created. */
     public static final String PARAM_EXPLORER_FILEDATECREATED = "tabexfiledatecreated";
     
-    /** Request parameter name for the explorer file date last modified */
+    /** Request parameter name for the explorer file date last modified. */
     public static final String PARAM_EXPLORER_FILEDATELASTMODIFIED = "tabexfiledatelastmodified";
     
-    /** Request parameter name for the explorer file entry number */
+    /** Request parameter name for the explorer file entry number. */
     public static final String PARAM_EXPLORER_FILEENTRIES = "tabexfileentries";
     
-    /** Request parameter name for the explorer file locked by */
+    /** Request parameter name for the explorer file locked by. */
     public static final String PARAM_EXPLORER_FILELOCKEDBY = "tabexfilelockedby";
     
-    /** Request parameter name for the explorer file permissions */
+    /** Request parameter name for the explorer file permissions. */
     public static final String PARAM_EXPLORER_FILEPERMISSIONS = "tabexfilepermissions";
     
-    /** Request parameter name for the explorer file size */
+    /** Request parameter name for the explorer file size. */
     public static final String PARAM_EXPLORER_FILESIZE = "tabexfilesize";
     
-    /** Request parameter name for the explorer file state */
+    /** Request parameter name for the explorer file state. */
     public static final String PARAM_EXPLORER_FILESTATE = "tabexfilestate";
     
-    /** Request parameter name for the explorer file title */
+    /** Request parameter name for the explorer file title. */
     public static final String PARAM_EXPLORER_FILETITLE = "tabexfiletitle";
     
-    /** Request parameter name for the explorer file type */
+    /** Request parameter name for the explorer file type. */
     public static final String PARAM_EXPLORER_FILETYPE = "tabexfiletype";
     
-    /** Request parameter name for the explorer file user created */
+    /** Request parameter name for the explorer file user created. */
     public static final String PARAM_EXPLORER_FILEUSERCREATED = "tabexfileusercreated";
     
-    /** Request parameter name for the explorer file user last modified */
+    /** Request parameter name for the explorer file user last modified. */
     public static final String PARAM_EXPLORER_FILEUSERLASTMODIFIED = "tabexfileuserlastmodified";
  
-    /** Request parameter name for the explorer file date released */
+    /** Request parameter name for the explorer file date released. */
     public static final String PARAM_EXPLORER_FILEDATERELEASED = "tabexfiledatereleased";
  
-    /** Request parameter name for the explorer file date expired */
+    /** Request parameter name for the explorer file date expired. */
     public static final String PARAM_EXPLORER_FILEDATEEXPIRED = "tabexfiledateexpired"; 
     
-    /** Request parameter name for the new password */
+    /** Request parameter name for the new password. */
     public static final String PARAM_NEWPASSWORD = "newpassword";
     
-    /** Request parameter name for the old password */
+    /** Request parameter name for the old password. */
     public static final String PARAM_OLDPASSWORD = "oldpassword";
     
-    /** Request parameter name prefix for the preferred editors */
+    /** Request parameter name prefix for the preferred editors. */
     public static final String PARAM_PREFERREDEDITOR_PREFIX = "tabedprefed_";
     
-    /** Request parameter name for the workflow filter */
+    /** Request parameter name for the workflow filter. */
     public static final String PARAM_WORKFLOW_FILTER = "tabwffilter";
     
-    /** Request parameter name for the workflow message accepted */
+    /** Request parameter name for the workflow message accepted. */
     public static final String PARAM_WORKFLOW_MESSAGEACCEPTED = "tabwfmessageaccepted";
     
-    /** Request parameter name for the workflow message completed */
+    /** Request parameter name for the workflow message completed. */
     public static final String PARAM_WORKFLOW_MESSAGECOMPLETED = "tabwfmessagecompleted";
     
-    /** Request parameter name for the workflow message forwarded */
+    /** Request parameter name for the workflow message forwarded. */
     public static final String PARAM_WORKFLOW_MESSAGEFORWARDED = "tabwfmessageforwarded";
     
-    /** Request parameter name for the workflow message members */
+    /** Request parameter name for the workflow message members. */
     public static final String PARAM_WORKFLOW_MESSAGEMEMBERS = "tabwfmessagemembers";
     
-    /** Request parameter name for the workflow show all projects */
+    /** Request parameter name for the workflow show all projects. */
     public static final String PARAM_WORKFLOW_SHOWALLPROJECTS = "tabwfshowallprojects";
     
-    /** Request parameter name for the workplace button style */
+    /** Request parameter name for the workplace button style. */
     public static final String PARAM_WORKPLACE_BUTTONSTYLE = "tabwpbuttonstyle";
     
-    /** Request parameter name for the dialog copy file siblings default setting */
+    /** Request parameter name for the dialog copy file siblings default setting. */
     public static final String PARAM_DIALOGS_COPYFILEMODE = "tabdicopyfilemode";
     
-    /** Request parameter name for the dialog copy folder siblings default setting */
+    /** Request parameter name for the dialog copy folder siblings default setting. */
     public static final String PARAM_DIALOGS_COPYFOLDERMODE = "tabdicopyfoldermode";
     
-    /** Request parameter name for the dialog delete file siblings default setting */
+    /** Request parameter name for the dialog delete file siblings default setting. */
     public static final String PARAM_DIALOGS_DELETEFILEMODE = "tabdideletefilemode";
     
-    /** Request parameter name for the workplace language */
+    /** Request parameter name for the workplace language. */
     public static final String PARAM_WORKPLACE_LANGUAGE = "tabwplanguage";
     
-    /** Request parameter name for the workplace project */
+    /** Request parameter name for the workplace project. */
     public static final String PARAM_WORKPLACE_PROJECT = "tabwpproject";
     
-    /** Request parameter name for the dialog publish file siblings default setting */
+    /** Request parameter name for the dialog publish file siblings default setting. */
     public static final String PARAM_DIALOGS_PUBLISHFILEMODE = "tabdipublishfilemode";
     
-    /** Request parameter name for the workplace report type */
+    /** Request parameter name for the workplace report type. */
     public static final String PARAM_WORKPLACE_REPORTTYPE = "tabwpreporttype";
     
-    /** Request parameter name for the dialog show lock */
+    /** Request parameter name for the dialog show lock. */
     public static final String PARAM_DIALOGS_SHOWLOCK = "tabdishowlock";
     
-    /** Request parameter name for the workplace use upload applet */
+    /** Request parameter name for the workplace use upload applet. */
     public static final String PARAM_WORKPLACE_USEUPLOADAPPLET = "tabwpuseuploadapplet";
     
-    /** Request parameter name for the workplace view */
+    /** Request parameter name for the workplace view. */
     public static final String PARAM_WORKPLACE_VIEW = "tabwpview";
     
     private String m_paramNewPassword;
     private String m_paramOldPassword;
 
-    /** User settings object used to store the dialog field values **/
+    /** User settings object used to store the dialog field values. */
     private CmsUserSettings m_userSettings;
     
     /**

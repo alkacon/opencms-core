@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2004/06/04 15:42:06 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,34 +62,34 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 5.1
  */
 public class CmsTree extends CmsWorkplace {
     
-    /** Indicates if only folders or files and folders should be included in the tree */
+    /** Indicates if only folders or files and folders should be included in the tree. */
     private boolean m_includeFiles;
 
-    /** Indicates if a complete new tree should be created */
+    /** Indicates if a complete new tree should be created. */
     private boolean m_newTree;
 
-    /** The name of the start folder (or "last known" folder) to be loaded */
+    /** The name of the start folder (or "last known" folder) to be loaded. */
     private String m_startFolder;
     
-    /** The name of the target folder to be loaded */
+    /** The name of the target folder to be loaded. */
     private String m_targetFolder;
     
-    /** The type of the tree (e.g. "copy", "project" etc.) */
+    /** The type of the tree (e.g. "copy", "project" etc.). */
     private String m_treeType;
     
-    /** type name for showing the tree when creating links */
+    /** type name for showing the tree when creating links. */
     private static final String C_TYPE_VFSLINK = "vfslink"; 
     
-    /** type name for showing the tree when copying resources */
+    /** type name for showing the tree when copying resources. */
     private static final String C_TYPE_COPY = "copy";
     
-    /** type name for showing the tree when creating page links in the editor */
+    /** type name for showing the tree when creating page links in the editor. */
     private static final String C_TYPE_PAGELINK = "pagelink";
 
     /**

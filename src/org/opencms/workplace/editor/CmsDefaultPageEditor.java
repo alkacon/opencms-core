@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/06/10 19:36:45 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,37 +58,37 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.59 $
+ * @version $Revision: 1.60 $
  * 
  * @since 5.1.12
  */
 public abstract class CmsDefaultPageEditor extends CmsEditor {
     
-    /** Constant value for the customizable action button */
+    /** Constant value for the customizable action button. */
     public static final int ACTION_SAVEACTION = 200;
     
-    /** Constant for the customizable action button */
+    /** Constant for the customizable action button. */
     public static final String EDITOR_SAVEACTION = "saveaction";
     
-    /** The element locale */
+    /** The element locale. */
     private Locale m_elementLocale;
     
-    /** File object used to read and write contents */
+    /** File object used to read and write contents. */
     protected CmsFile m_file;
 
-    /** Page object used from the action and init methods, be sure to initialize this e.g. in the initWorkplaceRequestValues method */
+    /** Page object used from the action and init methods, be sure to initialize this e.g. in the initWorkplaceRequestValues method. */
     protected CmsXmlPage m_page;
     
-    /** Parameter name for the request parameter "element language" */
+    /** Parameter name for the request parameter "element language". */
     public static final String PARAM_ELEMENTLANGUAGE = "elementlanguage";
     
-    /** Parameter name for the request parameter "element name" */
+    /** Parameter name for the request parameter "element name". */
     public static final String PARAM_ELEMENTNAME = "elementname";
     
-    /** Parameter name for the request parameter "old element language" */
+    /** Parameter name for the request parameter "old element language". */
     public static final String PARAM_OLDELEMENTLANGUAGE = "oldelementlanguage";
     
-    /** Parameter name for the request parameter "old element name" */
+    /** Parameter name for the request parameter "old element name". */
     public static final String PARAM_OLDELEMENTNAME = "oldelementname";
     
     private String m_paramElementlanguage;

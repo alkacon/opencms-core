@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportVersion1.java,v $
- * Date   : $Date: 2004/06/13 23:31:05 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/14 15:54:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,10 +73,10 @@ import org.w3c.dom.NodeList;
  */
 public class CmsImportVersion1 extends CmsImportVersion2 {
     
-    /** The version number of this import implementation.<p> */
+    /** The version number of this import implementation. */
     private static final int C_IMPORT_VERSION = 1;
 
-    /** The path to the bodies in OpenCms 4.x */
+    /** The path to the bodies in OpenCms 4.x. */
     private static final String C_VFS_PATH_OLD_BODIES = "/content/bodys/";
     
     /**

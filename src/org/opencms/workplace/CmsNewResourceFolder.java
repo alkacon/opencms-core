@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2004/05/13 13:58:10 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,13 +57,13 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.3
  */
 public class CmsNewResourceFolder extends CmsNewResource {
     
-    /** Request parameter name for the create index file flag */
+    /** Request parameter name for the create index file flag. */
     public static final String PARAM_CREATEINDEX = "createindex";
     
     private String m_paramCreateIndex;

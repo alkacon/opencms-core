@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsVersion.java,v $
- * Date   : $Date: 2004/06/13 23:41:52 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,25 +53,25 @@ import org.opencms.main.OpenCms;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
 public class CmsVersion {
     
-    /** the name of the request parameter which stores the resource information */
+    /** The name of the request parameter which stores the resource information. */
     private static String PARAM_VERSION = "_version";
     
-    /** the HTTP servlet response */
+    /** The HTTP servlet response. */
     private HttpServletResponse m_response;
     
-    /** the CmsObject needed to read the resource and set the encoding */
+    /** The CmsObject needed to read the resource and set the encoding. */
     private CmsObject m_cms;
     
-    /** the name of the backup resource */
+    /** The name of the backup resource. */
     private String m_resourceName;
     
-    /** the tag id of the backup resource */
+    /** The tag id of the backup resource. */
     private int m_version = -1;
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2004/06/13 23:39:26 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,55 +57,55 @@ import java.util.TreeMap;
  * <li>contentdefinition - the name of the content definition class of a cos resource</li>
  * </ul>
  * 
- * @version $Revision: 1.5 $ $Date: 2004/06/13 23:39:26 $
+ * @version $Revision: 1.6 $ $Date: 2004/06/14 15:50:09 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
 public class CmsSearch {
 
-    /** The cms object */
+    /** The cms object. */
     CmsObject m_cms;
 
-    /** The list of fields to search */    
+    /** The list of fields to search. */    
     String m_fields;
     
-    /** The index to search */
+    /** The index to search. */
     CmsSearchIndex m_index;
     
-    /** The name of the search index */
+    /** The name of the search index. */
     String m_indexName;
     
-    /** The current query */
+    /** The current query. */
     String m_query;
     
-    /** The minimum length of the search query  */
+    /** The minimum length of the search query. */
     int m_queryLength = -1;
     
-    /** The current search result */
+    /** The current search result. */
     List m_result;
 
-    /** The latest exception */
+    /** The latest exception. */
     Exception m_exc;
     
-    /** The current result page */
+    /** The current result page. */
     int m_page;
     
-    /** The number of matches per page  */
+    /** The number of matches per page. */
     int m_matchesPerPage = -1;
     
-    /** The number of pages for the result list */
+    /** The number of pages for the result list. */
     int m_pageCount;
     
-    /** The number of displayed pages returned by getPageLinks() */
+    /** The number of displayed pages returned by getPageLinks(). */
     int m_displayPages = -1;
     
-    /** The URL which leads to the previous result page */
+    /** The URL which leads to the previous result page. */
     String m_prevUrl;
     
-    /** The URL which leads to the next result page */    
+    /** The URL which leads to the next result page. */    
     String m_nextUrl;
     
-    /** The search parameter String */
+    /** The search parameter String. */
     String m_searchParameters;
         
     /**

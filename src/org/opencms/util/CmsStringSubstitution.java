@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2004/06/13 23:40:50 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,42 +47,42 @@ import org.apache.oro.text.perl.Perl5Util;
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.0
  */
 public final class CmsStringSubstitution {
     
-    /** Regex that matches an end body tag */
+    /** Regex that matches an end body tag. */
     private static final Pattern C_BODY_END_REGEX = Pattern.compile("<\\s*/\\s*body[^>]*>", Pattern.CASE_INSENSITIVE);
 
-    /** Regex that matches a start body tag */
+    /** Regex that matches a start body tag. */
     private static final Pattern C_BODY_START_REGEX = Pattern.compile("<\\s*body[^>]*>", Pattern.CASE_INSENSITIVE);
 
-    /** Day constant */
+    /** Day constant. */
     private static final long C_DAYS = 1000 * 60 * 60 * 24;    
     
-    /** Hour constant */
+    /** Hour constant. */
     private static final long C_HOURS = 1000 * 60 * 60;        
     
-    /** Minute constant */
+    /** Minute constant. */
     private static final long C_MINUTES = 1000 * 60;
         
-    /** Second constant */
+    /** Second constant. */
     private static final long C_SECONDS = 1000;
 
-    /** Regex that matches an encoding String in an xml head */
+    /** Regex that matches an encoding String in an xml head. */
     private static final Pattern C_XML_ENCODING_REGEX = Pattern.compile("encoding\\s*=\\s*[\"'].+[\"']", Pattern.CASE_INSENSITIVE);
 
-    /** Regex that matches an xml head */
+    /** Regex that matches an xml head. */
     private static final Pattern C_XML_HEAD_REGEX = Pattern.compile("<\\s*\\?.*\\?\\s*>", Pattern.CASE_INSENSITIVE);
 
-    /** DEBUG flag */
+    /** DEBUG flag. */
     private static final int DEBUG = 0;
     
-    /** OpenCms context replace String, static for performance reasons */    
+    /** OpenCms context replace String, static for performance reasons. */    
     private static String m_contextReplace;
     
-    /** OpenCms context search String, static for performance reasons */    
+    /** OpenCms context search String, static for performance reasons. */    
     private static String m_contextSearch;
         
     /** 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElement.java,v $
- * Date   : $Date: 2004/06/08 14:13:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,25 +37,25 @@ import org.opencms.util.CmsStringSubstitution;
  * Contains the setup information about a single dialog element.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.0
  */
 public class CmsDialogElement implements Comparable {
 
-    /** The (system) name of the element */
+    /** The (system) name of the element. */
     private String m_name;
 
-    /** The nice "display" name of the element */
+    /** The nice "display" name of the element. */
     private String m_niceName;
 
-    /** Indicates if the element is mandantory or not */
+    /** Indicates if the element is mandantory or not. */
     private boolean m_mandantory;
 
-    /** Indicates if the element is declared as template-element or not */
+    /** Indicates if the element is declared as template-element or not. */
     private boolean m_templateElement;
 
-    /** Indicates if the element is existing on the page or not */
+    /** Indicates if the element is existing on the page or not. */
     private boolean m_existing;
 
     /**

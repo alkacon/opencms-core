@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResource.java,v $
- * Date   : $Date: 2004/05/13 11:09:35 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,37 +58,37 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.3.3
  */
 public class CmsNewResource extends CmsDialog {
     
-    /** The dialog type */
+    /** The dialog type. */
     public static final String DIALOG_TYPE = "newresource";
     
-    /** The name for the resource form action */
+    /** The name for the resource form action. */
     public static final String DIALOG_NEWFORM = "newform";
     
-    /** The name for the resource form submission action */
+    /** The name for the resource form submission action. */
     public static final String DIALOG_SUBMITFORM = "submitform";
     
-    /** The value for the resource name form action */
+    /** The value for the resource name form action. */
     public static final int ACTION_NEWFORM = 100;
     
-    /** The value for the resource name form submission action */
+    /** The value for the resource name form submission action. */
     public static final int ACTION_SUBMITFORM = 110;
 
-    /** Constant for the "Next" button in the build button methods */
+    /** Constant for the "Next" button in the build button methods. */
     public static final int BUTTON_NEXT = 20;
     
-    /** Request parameter name for the new resource uri */
+    /** Request parameter name for the new resource uri. */
     public static final String PARAM_NEWRESOURCEURI = "newresourceuri";
     
-    /** Request parameter name for the new resource type */
+    /** Request parameter name for the new resource type. */
     public static final String PARAM_NEWRESOURCETYPE = "newresourcetype";
     
-    /** Request parameter name for the new resource edit properties flag */
+    /** Request parameter name for the new resource edit properties flag. */
     public static final String PARAM_NEWRESOURCEEDITPROPS = "newresourceeditprops";
     
     private String m_paramNewResourceUri;

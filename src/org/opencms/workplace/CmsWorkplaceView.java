@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceView.java,v $
- * Date   : $Date: 2004/03/07 19:21:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,18 +35,18 @@ package org.opencms.workplace;
  *  
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3
  */
 public class CmsWorkplaceView implements Comparable {
     
-    /** The loaclization key of this view */
+    /** The loaclization key of this view. */
     private String m_key;
     
-    /** The sort order of the view */
+    /** The sort order of the view. */
     private Integer m_order;
 
-    /** The URI of the OpenCms VFS resource (folder) of the view */
+    /** The URI of the OpenCms VFS resource (folder) of the view. */
     private String m_uri;
     
     /**

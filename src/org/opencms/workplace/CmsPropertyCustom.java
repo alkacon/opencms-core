@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyCustom.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,13 +58,13 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.3.3
  */
 public class CmsPropertyCustom extends CmsPropertyAdvanced {
     
-    /** Value for the action: edit the properties */
+    /** Value for the action: edit the properties. */
     public static final int ACTION_EDIT = 500;
     
     private boolean m_showNavigation;

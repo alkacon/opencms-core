@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/06/13 23:39:26 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -135,46 +135,46 @@ import org.apache.lucene.index.IndexWriter;
  * <p>The <code>GermanAnalyzer</code> will be used for analyzing the contents of resources
  * when building an index with "de" as specified language.</p>
  * 
- * @version $Revision: 1.14 $ $Date: 2004/06/13 23:39:26 $
+ * @version $Revision: 1.15 $ $Date: 2004/06/14 15:50:09 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
 public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
 
-    /** Configured analyzers for languages using <analyzer> */
+    /** Configured analyzers for languages using &lt;analyzer&gt;. */
     private HashMap m_analyzer;
 
-    /** The cms object */
+    /** The cms object. */
     private CmsObject m_cms;
     
-    /** Configuration of the index manager */
+    /** Configuration of the index manager. */
     private Map m_config;
     
-    /** Configured documenttypes for indexing using <documenttype> */
+    /** Configured documenttypes for indexing using &lt;documenttype&gt;. */
     private Map m_documenttypes;
     
-    /** Configured resourcetype lists per documenttype */
+    /** Configured resourcetype lists per documenttype. */
     private Map m_resourcetypes;
     
-    /** Configured mimetype lists per documenttype */
+    /** Configured mimetype lists per documenttype. */
     private Map m_mimetypes;
            
-    /** Configured indexes using <index> */
+    /** Configured indexes using &lt;index&gt;. */
     private List m_indexes;
 
-    /** Path to index files */
+    /** Path to index files. */
     private String m_path;
 
-    /** Timeout for abandoning indexing thread */
+    /** Timeout for abandoning indexing thread. */
     private String m_timeout;
 
-    /** The cache for storing search results */
+    /** The cache for storing search results. */
     private static Map m_resultCache;
 
-    /** The vfs indexer */
+    /** The vfs indexer. */
     private I_CmsIndexer m_vfsIndexer;
     
-    /** The cos indexer */
+    /** The cos indexer. */
     private I_CmsIndexer m_cosIndexer;
     
     /*

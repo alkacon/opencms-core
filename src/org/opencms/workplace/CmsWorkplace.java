@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/06/11 19:19:28 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.78 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,64 +78,64 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.77 $
+ * @version $Revision: 1.78 $
  * 
  * @since 5.1
  */
 public abstract class CmsWorkplace {
 
-    /** Constant for the JSP workplace path */
+    /** Constant for the JSP workplace path. */
     protected static final String C_PATH_WORKPLACE = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "jsp/";
 
-    /** Constant for the JSP dialogs path */
+    /** Constant for the JSP dialogs path. */
     protected static final String C_PATH_DIALOGS = C_PATH_WORKPLACE + "dialogs/";
 
-    /** Constant for the JSP common files (e.g. error page) path */
+    /** Constant for the JSP common files (e.g. error page) path. */
     protected static final String C_PATH_DIALOG_COMMON = C_PATH_DIALOGS + "common/";    
     
-    /** Constant for the JSP common close dialog page */
+    /** Constant for the JSP common close dialog page. */
     protected static final String C_FILE_DIALOG_CLOSE = C_PATH_DIALOG_COMMON + "closedialog.html";
     
-    /** Constant for the JSP common confirmation dialog */
+    /** Constant for the JSP common confirmation dialog. */
     protected static final String C_FILE_DIALOG_SCREEN_CONFIRM = C_PATH_DIALOG_COMMON + "confirmation.html";
     
-    /** Constant for the JSP common error dialog */
+    /** Constant for the JSP common error dialog. */
     protected static final String C_FILE_DIALOG_SCREEN_ERROR = C_PATH_DIALOG_COMMON + "error.html";
     
-    /** Constant for the JSP common wait screen */
+    /** Constant for the JSP common wait screen. */
     protected static final String C_FILE_DIALOG_SCREEN_WAIT = C_PATH_DIALOG_COMMON + "wait.html";
     
-    /** Constant for the JSP explorer filelist file */
+    /** Constant for the JSP explorer filelist file. */
     protected static final String C_FILE_EXPLORER_FILELIST = C_PATH_WORKPLACE + "explorer_files.html";
     
-    /** Constant for the JSP common report page */
+    /** Constant for the JSP common report page. */
     protected static final String C_FILE_REPORT_OUTPUT = C_PATH_DIALOG_COMMON + "report.html";
         
-    /** Key name for the request attribute to reload the folder tree view */
+    /** Key name for the request attribute to reload the folder tree view. */
     protected static final String C_REQUEST_ATTRIBUTE_RELOADTREE = "__CmsWorkplace.RELOADTREE";
     
-    /** Key name for the session workplace class */
+    /** Key name for the session workplace class. */
     protected static final String C_SESSION_WORKPLACE_CLASS    = "__CmsWorkplace.WORKPLACE_CLASS";
     
-    /** Key name for the session workplace settings */
+    /** Key name for the session workplace settings. */
     public static final String C_SESSION_WORKPLACE_SETTINGS = "__CmsWorkplace.WORKPLACE_SETTINGS";
     
-    /** The debug flag */
+    /** The debug flag. */
     public static final boolean DEBUG = false;
 
-    /** Helper variable to deliver the html end part */
+    /** Helper variable to deliver the html end part. */
     public static final int HTML_END = 1;
     
-    /** Helper variable to deliver the html start part */
+    /** Helper variable to deliver the html start part. */
     public static final int HTML_START = 0;
 
-    /** The link to the explorer file list (cached for performance reasons) */
+    /** The link to the explorer file list (cached for performance reasons). */
     private static String m_file_explorer_filelist;     
        
-    /** The URI to the skin resources (cached for performance reasons) */
+    /** The URI to the skin resources (cached for performance reasons). */
     private static String m_skinUri;  
     
-    /** Helper variable to store the id of the current project */
+    /** Helper variable to store the id of the current project. */
     private int m_currentProjectId = -1;
     
     private CmsObject m_cms;    

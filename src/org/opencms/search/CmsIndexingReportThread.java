@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsIndexingReportThread.java,v $
- * Date   : $Date: 2004/02/17 12:09:57 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.5 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -57,15 +57,15 @@ import org.opencms.file.CmsObject;
  * Implements methods to utilize a report thread for <code>CmsIndexingReport</code>.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.3.1
  */
 public class CmsIndexingReportThread extends A_CmsReportThread {
 
-    /** The name of the index to refresh or null for all indexes */
+    /** The name of the index to refresh or null for all indexes. */
     private String m_indexName;
     
-    /** The last error occured */
+    /** The last error occured. */
     private Throwable m_error;
 
     /**

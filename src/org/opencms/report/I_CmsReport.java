@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2004/02/14 22:56:49 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,29 +40,29 @@ import java.util.Locale;
  * like publish, import, export etc.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public interface I_CmsReport {
         
-    /** The name of the property file */
+    /** The name of the property file. */
     String C_BUNDLE_NAME = "org.opencms.workplace.workplace";
 
-    /** Indicates default formatting */
+    /** Indicates default formatting. */
     int C_FORMAT_DEFAULT = 0;
     
-    /** Indicates headline formatting */
+    /** Indicates headline formatting. */
     int C_FORMAT_HEADLINE = 2;
     
-    /** Indicates note formatting */
+    /** Indicates note formatting. */
     int C_FORMAT_NOTE = 3;  
     
-    /** Indicates OK formatting */
+    /** Indicates OK formatting. */
     int C_FORMAT_OK = 4;      
     
-    /** Indicates warning formatting */
+    /** Indicates warning formatting. */
     int C_FORMAT_WARNING = 1;
     
-    /** Indicates error formatting */
+    /** Indicates error formatting. */
     int C_FORMAT_ERROR = 5;
     
     /**

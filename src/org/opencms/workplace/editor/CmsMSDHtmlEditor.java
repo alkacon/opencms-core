@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2004/06/13 23:42:47 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,16 +51,16 @@ import java.util.regex.Pattern;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 5.1.12
  */
 public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
     
-    /** regex pattern to find all src attribs in img tags, plus all href attribs in anchor tags */
+    /** regex pattern to find all src attribs in img tags, plus all href attribs in anchor tags. */
     private static final Pattern C_REGEX_LINKS = Pattern.compile("<(img|a)(\\s+)(.*?)(src|href)=(\"|\')(.*?)(\"|\')(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
     
-    /** Constant for the editor type, must be the same as the editors subfolder name in the VFS */
+    /** Constant for the editor type, must be the same as the editors subfolder name in the VFS. */
     public static final String EDITOR_TYPE = "msdhtml";
 
     /**

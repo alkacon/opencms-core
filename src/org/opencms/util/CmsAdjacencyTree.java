@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsAdjacencyTree.java,v $
- * Date   : $Date: 2004/05/24 17:03:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,15 +50,15 @@ import java.util.Vector;
  * ArrayLists of CmsUUID child ID's.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2004/05/24 17:03:18 $
+ * @version $Revision: 1.4 $ $Date: 2004/06/14 15:50:09 $
  * @since 5.1.3
  */
 public class CmsAdjacencyTree extends Object implements Serializable, Cloneable {
 
-    /** The number of resources in the tree */
+    /** The number of resources in the tree. */
     private int m_size;
 
-    /** The map representing the adjacency list tree */
+    /** The map representing the adjacency list tree. */
     private Map m_treeMap;
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/06/06 08:49:05 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/06/14 15:54:43 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,32 +105,32 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderIncludeExtension {
     
-    /** Magic elemet replace name */
+    /** Magic element replace name. */
     public static final String C_ELEMENT_REPLACE = "_CMS_ELEMENTREPLACE";
     
-    /** URI of the bodyloader XML file in the OpenCms VFS*/    
+    /** URI of the bodyloader XML file in the OpenCms VFS. */    
     public static final String C_BODYLOADER_URI = I_CmsWpConstants.C_VFS_PATH_SYSTEM + "shared/bodyloader.html";
             
-    /** The id of this loader */
+    /** The id of this loader. */
     public static final int C_RESOURCE_LOADER_ID = 3;
 
     /** Flag for debugging output. Set to 9 for maximum verbosity. */ 
     private static final int DEBUG = 0;
 
-    /** The element cache used for the online project */
+    /** The element cache used for the online project. */
     private static CmsElementCache m_elementCache;
 
-    /** The template cache that holds all cached templates */
+    /** The template cache that holds all cached templates. */
     private static I_CmsTemplateCache m_templateCache;
     
-    /** The variant dependencies for the element cache */
+    /** The variant dependencies for the element cache. */
     private static Hashtable m_variantDeps;
     
-    /** The resource loader configuration */
+    /** The resource loader configuration. */
     private ExtendedProperties m_configuration;
         
     /**

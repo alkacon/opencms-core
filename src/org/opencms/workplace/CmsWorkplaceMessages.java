@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2004/06/13 23:41:52 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,38 +51,38 @@ import java.util.Set;
  * Provides access to the localized lables for the workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 5.1
  */
 public class CmsWorkplaceMessages { 
 
-    /** The name of the property file */
+    /** The name of the property file. */
     public static final String C_BUNDLE_NAME = "org.opencms.workplace.workplace";
     
-    /** Localized message access object for the default workplace */
+    /** Localized message access object for the default workplace. */
     private CmsMessages m_messages;
     
-    /** CmsObject provided with the constructror */
+    /** CmsObject provided with the constructor. */
     private CmsObject m_cms;
     
-    /** Locale for the selected language */
+    /** Locale for the selected language. */
     private Locale m_locale;
 
     // static data storages to prevent multiple lookups    
-    /** The workplace default encoding */
+    /** The workplace default encoding. */
     private static String m_workplaceDefaultEncoding;
     
-    /** Map of locales from the installed modules */
+    /** Map of locales from the installed modules. */
     private static Map m_allModuleMessages;     
     
-    /** Set of locales from the installed modules */
+    /** Set of locales from the installed modules. */
     private static Set m_moduleMessages;  
     
-    /** Map of encodings from the installed languages */
+    /** Map of encodings from the installed languages. */
     private static Map m_allEncodings;
 
-    /** DEBUG flag */
+    /** DEBUG flag. */
     private static final int DEBUG = 0; 
 
     /**

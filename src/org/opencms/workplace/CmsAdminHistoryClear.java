@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2004/03/16 11:19:16 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,19 +53,19 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1
  */
 public class CmsAdminHistoryClear extends CmsReport {
     
-    /** The dialog type */
+    /** The dialog type. */
     public static final String DIALOG_TYPE = "historyclear";
     
-    /** Value for the action: clear history */
+    /** Value for the action: clear history. */
     public static final int ACTION_SAVE_EDIT = 300;
     
-    /** Request parameter value for the action: clear history */
+    /** Request parameter value for the action: clear history. */
     public static final String DIALOG_SAVE_EDIT = "saveedit";
 
     /**

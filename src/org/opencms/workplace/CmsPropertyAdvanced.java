@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/06/13 23:41:52 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,86 +66,86 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1
  */
 public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHandler {
     
-    /** The dialog type */
+    /** The dialog type. */
     public static final String DIALOG_TYPE = "property";
     
-    /** Value for the action: show edit properties form */
+    /** Value for the action: show edit properties form. */
     public static final int ACTION_SHOW_EDIT = 100;
-    /** Value for the action: show define property form */
+    /** Value for the action: show define property form. */
     public static final int ACTION_SHOW_DEFINE = 200;
-    /** Value for the action: save edited properties */
+    /** Value for the action: save edited properties. */
     public static final int ACTION_SAVE_EDIT = 300;
-    /** Value for the action: save defined property */
+    /** Value for the action: save defined property. */
     public static final int ACTION_SAVE_DEFINE = 400;
     
-    /** Constant for the "Define" button in the build button method */
+    /** Constant for the "Define" button in the build button method. */
     public static final int BUTTON_DEFINE = 201;
-    /** Constant for the "Finish" button in the build button method */
+    /** Constant for the "Finish" button in the build button method. */
     public static final int BUTTON_FINISH = 202;
     
-    /** Request parameter value for the action: show edit properties form */
+    /** Request parameter value for the action: show edit properties form. */
     public static final String DIALOG_SHOW_EDIT = "edit";
-    /** Request parameter value for the action: show define property form */
+    /** Request parameter value for the action: show define property form. */
     public static final String DIALOG_SHOW_DEFINE = "define";
-    /** Request parameter value for the action: show information form */
+    /** Request parameter value for the action: show information form. */
     public static final String DIALOG_SHOW_DEFAULT = "default";
     
-    /** Request parameter value for the action: save edited properties */
+    /** Request parameter value for the action: save edited properties. */
     public static final String DIALOG_SAVE_EDIT = "saveedit";
-    /** Request parameter value for the action: save defined property */
+    /** Request parameter value for the action: save defined property. */
     public static final String DIALOG_SAVE_DEFINE = "savedefine";
     
-    /** Value for the dialog mode: new resource wizard */
+    /** Value for the dialog mode: new resource wizard. */
     public static final String MODE_WIZARD = "wizard";
-    /** Value for the dialog mode: new resource wizard with creation of index page for new folder */
+    /** Value for the dialog mode: new resource wizard with creation of index page for new folder. */
     public static final String MODE_WIZARD_CREATEINDEX = "wizardcreateindex";
-    /** Value for the dialog mode: new resource wizard with index page created in new folder */
+    /** Value for the dialog mode: new resource wizard with index page created in new folder. */
     public static final String MODE_WIZARD_INDEXCREATED = "wizardindexcreated";
     
-    /** Key name for the structure panel */
+    /** Key name for the structure panel. */
     public static final String PANEL_STRUCTURE = "panel.properties.structure";
-    /** Key name for the resource panel */
+    /** Key name for the resource panel. */
     public static final String PANEL_RESOURCE = "panel.properties.resource";
     
-    /** Prefix for the input values */
+    /** Prefix for the input values. */
     public static final String PREFIX_VALUE = "value-";
-    /** Prefix for the hidden fields */
+    /** Prefix for the hidden fields. */
     public static final String PREFIX_HIDDEN = "hidden-";
-    /** Prefix for the hidden structure value */
+    /** Prefix for the hidden structure value. */
     public static final String PREFIX_STRUCTURE = "structure-";
-    /** Prefix for the hidden resource value */
+    /** Prefix for the hidden resource value. */
     public static final String PREFIX_RESOURCE = "resource-";
-    /** Prefix for the use property checkboxes */
+    /** Prefix for the use property checkboxes. */
     public static final String PREFIX_USEPROPERTY = "use-";
     
-    /** Request parameter name for the new property definition */
+    /** Request parameter name for the new property definition. */
     public static final String PARAM_DIALOGMODE = "dialogmode";
-    /** Request parameter name for the new property definition */
+    /** Request parameter name for the new property definition. */
     public static final String PARAM_NEWPROPERTY = "newproperty";   
     
-    /** The URI to the standard property dialog */
+    /** The URI to the standard property dialog. */
     public static final String URI_PROPERTY_DIALOG = C_PATH_DIALOGS + "property_advanced.html";
-    /** The URI to the customized property dialog */
+    /** The URI to the customized property dialog. */
     public static final String URI_PROPERTY_CUSTOM_DIALOG = C_PATH_DIALOGS + "property_custom.html"; 
 
-    /** Request parameter members */
+    /** Request parameter members. */
     private String m_paramNewproperty;
     private String m_paramUseTempfileProject;
     private String m_paramDialogMode;
     
-    /** Helper object storing the current editable state of the resource */
+    /** Helper object storing the current editable state of the resource. */
     private Boolean m_isEditable;
     
-    /** Helper to determine if the user switched the tab views of the dialog */
+    /** Helper to determine if the user switched the tab views of the dialog. */
     private boolean m_tabSwitched;
     
-    /** Helper to determine if the edited resource is a folder */
+    /** Helper to determine if the edited resource is a folder. */
     private boolean m_isFolder;
     
     /**

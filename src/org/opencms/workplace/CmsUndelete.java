@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsUndelete.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,16 +50,16 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1
  */
 public class CmsUndelete extends CmsDialog {
 
-    /** Value for the action: undelete resource */
+    /** Value for the action: undelete resource. */
     public static final int ACTION_UNDELETE = 100;
     
-    /** The dialog type */
+    /** The dialog type. */
     public static final String DIALOG_TYPE = "undelete";
 
     

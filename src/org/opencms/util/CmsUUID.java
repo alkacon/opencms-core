@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2004/06/13 23:40:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,22 +56,22 @@ import org.doomdark.uuid.UUIDGenerator;
  * This class is just a facade wrapper for the "real" UUID implementation.<p> 
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.0.0
  */
 public final class CmsUUID extends Object implements Serializable, Cloneable, Comparable {  
    
-    /** Ethernet addess of the server machine */
+    /** Ethernet addess of the server machine. */
     private static EthernetAddress m_ethernetAddress;
     
-    /** OpenCms UUID (name based uuid of "www.opencms.org" in the dns name space) */
+    /** OpenCms UUID (name based uuid of "www.opencms.org" in the dns name space). */
     private static UUID m_opencmsUUID = UUIDGenerator.getInstance().generateNameBasedUUID(new UUID(UUID.NAMESPACE_DNS), "www.opencms.org");
     
-    /** Flag to indicate if the ethernet addess has been initialized */
+    /** Flag to indicate if the ethernet address has been initialized. */
     private static boolean m_isNotInitialized = true;
 
-    /** Internal UUID implementation */
+    /** Internal UUID implementation. */
     private UUID m_uuid;        
            
     /**

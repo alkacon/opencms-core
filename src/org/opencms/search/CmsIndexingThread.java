@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2004/06/13 23:39:26 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,31 +44,31 @@ import org.apache.lucene.index.IndexWriter;
  * The indexing of a single resource was wrapped into a single thread
  * in order to prevent the indexer from hanging.
  *  
- * @version $Revision: 1.6 $ $Date: 2004/06/13 23:39:26 $
+ * @version $Revision: 1.7 $ $Date: 2004/06/14 15:50:09 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
 public class CmsIndexingThread extends Thread {
 
-    /** Internal debug flag */
+    /** Internal debug flag. */
     private static final boolean DEBUG = false;
     
-    /** the search manager */
+    /** The search manager. */
     CmsSearchManager m_manager;
     
-    /** the index writer */
+    /** The index writer. */
     IndexWriter m_writer; 
     
-    /** the resource to index */
+    /** The resource to index. */
     CmsIndexResource m_res; 
     
-    /** the  current index */
+    /** The current index. */
     CmsSearchIndex m_index;
     
-    /** the current report */
+    /** The current report. */
     I_CmsReport m_report;
     
-    /** the thread manager */
+    /** The thread manager. */
     CmsIndexingThreadManager m_threadManager;
     
     /**

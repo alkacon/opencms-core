@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2004/06/11 19:18:51 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,14 +78,14 @@ import org.dom4j.Element;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
-    /** Contains HTML fragments for the output in the JSP pages of the setup wizard */
+    /** Contains HTML fragments for the output in the JSP pages of the setup wizard. */
     private static Properties m_htmlProps;
 
-    /** Required files per database server setup */
+    /** Required files per database server setup. */
     public static final String[] requiredDbSetupFiles = {
             "step_4_database_setup.jsp",
             "database.properties",
@@ -95,13 +95,13 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
             "drop_tables.sql"
     };    
     
-    /** A map with all available modules */
+    /** A map with all available modules. */
     private Map m_availableModules;
     
-    /** A CmsObject to execute shell commands */
+    /** A CmsObject to execute shell commands. */
     private CmsObject m_cms;
 
-    /** The absolute path to the config sub directory of the OpenCms web application */
+    /** The absolute path to the config sub directory of the OpenCms web application. */
     private String m_configRfsPath;
 
     /** Key of the selected database server (e.g. "mysql", "generic" or "oracle") */
@@ -110,28 +110,28 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     /** List of keys of all available database server setups (e.g. "mysql", "generic" or "oracle") */
     private List m_databaseKeys;
     
-    /** Map of database setup properties of all available database server setups keyed by their database keys */
+    /** Map of database setup properties of all available database server setups keyed by their database keys. */
     private Map m_databaseProperties;
     
-    /** Password used for the JDBC connection when the OpenCms database is created */
+    /** Password used for the JDBC connection when the OpenCms database is created. */
     private String m_dbCreatePwd;
 
-    /** Contains the error messages to be displayed in the setup wizard.<p> */
+    /** Contains the error messages to be displayed in the setup wizard. */
     private Vector m_errors;
     
-    /** Contains the properties of "opencms.properties" */
+    /** Contains the properties of "opencms.properties". */
     private ExtendedProperties m_extProperties;
     
-    /** A list with the package names of the modules to be installed */
+    /** A list with the package names of the modules to be installed .*/
     private List m_installModules;
     
-    /** A map with lists of dependent module package names keyed by module package names */
+    /** A map with lists of dependent module package names keyed by module package names. */
     private Map m_moduleDependencies;
     
-    /** The new logging offset in the workplace import thread */
+    /** The new logging offset in the workplace import thread. */
     private int m_newLoggingOffset;
 
-    /** The lod logging offset in the workplace import thread */
+    /** The lod logging offset in the workplace import thread. */
     private int m_oldLoggingOffset;
     
     /** A map with tokens ${...} to be replaced in SQL scripts. */
@@ -140,10 +140,10 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     /** List of sorted keys by ranking of all available database server setups (e.g. "mysql", "generic" or "oracle") */
     private List m_sortedDatabaseKeys;
 
-    /** The absolute path to the home directory of the OpenCms webapp */
+    /** The absolute path to the home directory of the OpenCms webapp. */
     private String m_webAppRfsPath;
     
-    /** The workplace import thread */
+    /** The workplace import thread. */
     private CmsSetupWorkplaceImportThread m_workplaceImportThread;
     
     /** 
@@ -209,7 +209,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
 
     /** 
-     * Returns the webapp name
+     * Returns the webapp name.<p>
      * 
      * @return the webapp name
      */
@@ -484,9 +484,9 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
 
     /** 
      * Returns the database driver belonging to the database
-     * from the default configuration 
+     * from the default configuration.<p>
      *
-     * @return name of the opencms driver 
+     * @return name of the database driver 
      */
     public String getDbDriver() {
         return getDbProperty(m_databaseKey + ".driver");
@@ -510,7 +510,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
 
     /** 
      * Returns the validation query belonging to the database
-     * from the default configuration 
+     * from the default configuration .<p>
      *
      * @return query used to validate connections 
      */
@@ -519,7 +519,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
 
     /** 
-     * Returns a connection string 
+     * Returns a connection string.<p>
      *
      * @return the connection string used by the OpenCms core  
      */
@@ -529,7 +529,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
 
     /** 
-     * Returns the password of the database from the properties 
+     * Returns the password of the database from the properties .<p>
      *
      * @return the password for the OpenCms database user 
      */
@@ -538,7 +538,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
 
     /** 
-     * Returns the user of the database from the properties 
+     * Returns the user of the database from the properties.<p>
      * 
      * @return the database user used by the opencms core  
      */
@@ -547,7 +547,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
 
     /** 
-     * Returns the defaultContentEncoding.
+     * Returns the default content encoding.<p>
      * @return String
      */
     public String getDefaultContentEncoding() {
@@ -555,7 +555,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
 
     /** 
-     * Returns the error messages 
+     * Returns the error messages.<p>
      * 
      * @return a vector of error messages 
      */
@@ -564,7 +564,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
 
     /** 
-     * Return the mac ethernet address
+     * Returns the mac ethernet address.<p>
      * 
      * @return the mac ethernet addess
      */
@@ -626,7 +626,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
 
     /**
-     * Gets the default pool
+     * Gets the default pool.<p>
      * 
      * @return name of the default pool 
      */
@@ -637,7 +637,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
 
     /**
-     * Returns the extended properties 
+     * Returns the extended properties.<p>
      * 
      * @return the extended properties  
      */
@@ -655,7 +655,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
 
     /**
-     * Return the OpenCms server name
+     * Return the OpenCms server name.<p>
      * 
      * @return the OpenCms server name
      */
@@ -699,7 +699,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
 
     /** 
-     * Returns the absolute path to the OpenCms home directory
+     * Returns the absolute path to the OpenCms home directory.<p>
      * 
      * @return the path to the OpenCms home directory 
      */
@@ -726,7 +726,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
 
     /**
-     * Return the OpenCms workplace site
+     * Return the OpenCms workplace site.<p>
      *
      * @return the OpenCms workplace site
      */
@@ -865,8 +865,9 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
     
     /**
-     * Returns true if this setup bean is correctly initialied.<p>
-     * @return
+     * Returns true if this setup bean is correctly initialized.<p>
+     * 
+     * @return true if this setup bean is correctly initialized
      */
     public boolean isInitialized() {
         return m_extProperties != null;        
@@ -1017,7 +1018,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
 
     /**
-     * Sets the webapp name
+     * Sets the webapp name.<p>
      * 
      * @param value the new webapp name
      */
@@ -1026,7 +1027,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
     
     /**
-     * Sets the database drivers to the given value 
+     * Sets the database drivers to the given value.<p>
      * 
      * @param databaseKey the key of the selected database server (e.g. "mysql", "generic" or "oracle")
      */
@@ -1096,7 +1097,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
 
     /** 
-     * Sets the database driver belonging to the database 
+     * Sets the database driver belonging to the database.<p>
      * 
      * @param driver name of the opencms driver 
      */
@@ -1105,7 +1106,8 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
                                 }
                                 
     /** 
-     * This method sets the value for a given key in the database properties.
+     * This method sets the value for a given key in the database properties.<p>
+     * 
      * @param key The key of the property
      * @param value The value of the property
      */
@@ -1117,7 +1119,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
                             }
                             
     /** 
-     * Sets the connection string to the database to the given value 
+     * Sets the connection string to the database to the given value.<p>
      *
      * @param dbWorkConStr the connection string used by the OpenCms core 
      */
@@ -1132,7 +1134,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
     
     /**
-     * Sets the password of the database to the given value 
+     * Sets the password of the database to the given value.<p>
      * 
      * @param dbWorkPwd the password for the OpenCms database user  
      */
@@ -1142,7 +1144,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }    
                 
     /** 
-     * Sets the user of the database to the given value 
+     * Sets the user of the database to the given value.<p> 
      *
      * @param dbWorkUser the database user used by the opencms core 
      */
@@ -1190,7 +1192,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
     
     /**
-     * Set the OpenCms server name
+     * Sets the OpenCms server name.<p>
      * 
      * @param name the OpenCms server name
      */
@@ -1199,7 +1201,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
             }
     
     /**
-     * Set the OpenCms workplace site
+     * Sets the OpenCms workplace site.<p>
      *
      * @param newSite the OpenCms workplace site
      */
@@ -1446,7 +1448,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
 
     /**
-     * Sets the path to the OpenCms home directory 
+     * Sets the path to the OpenCms home directory.<p>
      * 
      * @param webInfRfsPath path to OpenCms home directory
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsWorkplaceEditorManager.java,v $
- * Date   : $Date: 2004/06/08 15:15:45 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,15 +59,15 @@ import java.util.TreeMap;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.3.1
  */
 public class CmsWorkplaceEditorManager {
     
-    /** The filename of the editor configuration XML file */
+    /** The filename of the editor configuration XML file. */
     public static final String C_EDITOR_CONFIGURATION_FILENAME = "editor_configuration.xml";
-    /** The filename of the editor JSP */
+    /** The filename of the editor JSP. */
     public static final String C_EDITOR_FILENAME = "editor.html";
     
     private List m_editorConfigurations;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupWorkplaceImportThread.java,v $
- * Date   : $Date: 2004/04/09 15:59:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,26 +42,26 @@ import java.io.PrintStream;
  * Used for the workplace setup in the OpenCms setup wizard.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsSetupWorkplaceImportThread extends Thread {
 
-    /** Gets the System.err stream so it can be restored */
+    /** Gets the System.err stream so it can be restored. */
     public static PrintStream m_tempErr;
     
-    /** Logging Thread */
+    /** Logging thread. */
     private CmsSetupLoggingThread m_loggingThread;
 
-    /** System.out and System.err are redirected to this stream */
+    /** System.out and System.err are redirected to this stream. */
     private PipedOutputStream m_pipedOut;
     
-    /** The additional shell commands, i.e. the setup bean*/
+    /** The additional shell commands, i.e. the setup bean. */
     private CmsSetupBean m_setupBean;          
 
-    /** The cms shell to import the workplace with */
+    /** The cms shell to import the workplace with. */
     private CmsShell m_shell;
 
-    /** Gets the System.out stream so it can be restored */
+    /** Gets the System.out stream so it can be restored. */
     private PrintStream m_tempOut;
     
     /** 

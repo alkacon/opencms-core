@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsLock.java,v $
- * Date   : $Date: 2004/05/19 16:20:53 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,38 +53,38 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1.12
  */
 public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
     
-    /** The dialog type: lock a resource */
+    /** The dialog type: lock a resource. */
     public static final String DIALOG_TYPE_LOCK = "lock";
-    /** The dialog type: Steal a lock */
+    /** The dialog type: Steal a lock. */
     public static final String DIALOG_TYPE_LOCKCHANGE = "lockchange";
-    /** The dialog type: unlock a resource */
+    /** The dialog type: unlock a resource. */
     public static final String DIALOG_TYPE_UNLOCK = "unlock";
     
     
-    /** The lock dialog URI */
+    /** The lock dialog URI. */
     public static final String URI_LOCK_DIALOG = C_PATH_DIALOGS + "lock_standard.html";
-    /** The steal lock dialog URI */
+    /** The steal lock dialog URI. */
     public static final String URI_LOCKCHANGE_DIALOG = C_PATH_DIALOGS + "lockchange_standard.html";
-    /** The unlock dialog URI */
+    /** The unlock dialog URI. */
     public static final String URI_UNLOCK_DIALOG = C_PATH_DIALOGS + "unlock_standard.html";
     
-    /** Type of the operation which is performed: lock resource */
+    /** Type of the operation which is performed: lock resource. */
     public static final int TYPE_LOCK = 1;
-    /** Type of the operation which is performed: steal a lock */
+    /** Type of the operation which is performed: steal a lock. */
     public static final int TYPE_LOCKCHANGE = 2;
-    /** Type of the operation which is performed: unlock resource */
+    /** Type of the operation which is performed: unlock resource. */
     public static final int TYPE_UNLOCK = 3;
     
-    /** Request parameter value for the action: submit form withou user interaction */
+    /** Request parameter value for the action: submit form without user interaction. */
     public static final String DIALOG_SUBMIT_NOCONFIRMATION = "submitnoconfirmation";
     
-    /** Value for the action: confirmed */
+    /** Value for the action: confirmed. */
     public static final int ACTION_SUBMIT_NOCONFIRMATION = 200;
     
     /**

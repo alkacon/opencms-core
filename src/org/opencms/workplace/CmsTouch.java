@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2004/06/08 13:24:46 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,28 +51,28 @@ import org.opencms.main.CmsException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1
  */
 public class CmsTouch extends CmsDialog {
     
-    /** Value for the action: touch */
+    /** Value for the action: touch. */
     public static final int ACTION_TOUCH = 100;
     
-    /** The dialog type */
+    /** The dialog type. */
     public static final String DIALOG_TYPE = "touch";
     
-    /** Request parameter name for timestamp.<p> */
+    /** Request parameter name for timestamp. */
     public static final String PARAM_NEWTIMESTAMP = "newtimestamp";
-    /** Request parameter name for the recursive flag.<p> */
+    /** Request parameter name for the recursive flag. */
     public static final String PARAM_RECURSIVE = "recursive";
-    /** Request parameter name for the releasedate.<p> */
+    /** Request parameter name for the releasedate. */
     public static final String PARAM_RELEASEDATE = "releasedate";
-    /** Request parameter name for the expiredate.<p> */
+    /** Request parameter name for the expiredate. */
     public static final String PARAM_EXPIREDATE  = "expiredate";
     
-    /** default value for release or expire date */
+    /** default value for release or expire date. */
     public static final String C_RELEASE_EXPIRE_DEFAULT ="-";
     
     private String m_paramRecursive;

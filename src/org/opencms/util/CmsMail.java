@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsMail.java,v $
- * Date   : $Date: 2004/06/13 23:40:50 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import javax.mail.internet.MimeMessage;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsMail extends Thread {
 
@@ -194,7 +194,7 @@ public class CmsMail extends Thread {
      */
     private class CmsMailPasswordAuth extends Authenticator {
         
-        /** The password authentication */
+        /** The password authentication. */
         private PasswordAuthentication m_auth;
 
         /**

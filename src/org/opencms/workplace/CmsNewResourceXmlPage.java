@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2004/06/09 15:41:34 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,15 +62,15 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.3.3
  */
 public class CmsNewResourceXmlPage extends CmsNewResource {
     
-    /** Request parameter name for the selected template */
+    /** Request parameter name for the selected template. */
     public static final String PARAM_TEMPLATE = "template";
-    /** Request parameter name for the selected body */
+    /** Request parameter name for the selected body. */
     public static final String PARAM_BODYFILE = "bodyfile";
     
     private String m_paramTemplate;

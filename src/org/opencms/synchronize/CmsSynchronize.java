@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2004/06/13 23:40:25 $
- * Version: $Revision: 1.32 $
- * Date   : $Date: 2004/06/13 23:40:25 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,47 +63,47 @@ import java.util.StringTokenizer;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.32 $ $Date: 2004/06/13 23:40:25 $
+ * @version $Revision: 1.33 $ $Date: 2004/06/14 15:50:09 $
  */
 public class CmsSynchronize {
 
-    /** Flag to export a resource form the VFS to the FS */
+    /** Flag to export a resource from the VFS to the FS. */
     static final int C_EXPORT_VFS = 1;
 
-    /** Flag to import a resource form the FS to the VFS */
+    /** Flag to import a resource from the FS to the VFS. */
     static final int C_UPDATE_VFS = 2;
 
-    /** Flag to import a delete a resource in the VFS */
+    /** Flag to import a deleted resource in the VFS. */
     static final int C_DELETE_VFS = 3;
 
-    /** Filname of the synclist file on the server FS */
+    /** Filname of the synclist file on the server FS. */
     static final String C_SYNCLIST_FILENAME = "#synclist.txt";
 
-    /** The path in the "real" file system where the resources have to be synchronized to */
+    /** The path in the "real" file system where the resources have to be synchronized to. */
     private String m_destinationPathInRfs;
 
-    /** The source path in the OpenCms VFS where the resources have to be synchronized from */
+    /** The source path in the OpenCms VFS where the resources have to be synchronized from. */
     private String m_sourcePathInVfs;
 
-    /** The CmsObject */
+    /** The CmsObject. */
     private CmsObject m_cms;
     
-    /** The rport to write the output to */
+    /** The report to write the output to. */
     private I_CmsReport m_report;
 
-    /** Hashmap for the synchroisation list of the last sync process */
+    /** Hashmap for the synchronisation list of the last sync process. */
     private HashMap m_syncList;
 
-    /** Hashmap for the new synchroisation list of the current sync process */
+    /** Hashmap for the new synchronisation list of the current sync process. */
     private HashMap m_newSyncList;
 
-    /** Hashmap for the error listcurrent sync process */
+    /** Hashmap for the error listcurrent sync process. */
     private HashMap m_errorList;
 
-    /** List to store all file modifiaction interface implementations */
+    /** List to store all file modification interface implementations. */
     private static List m_synchronizeModifications;
     
-    /** Counter for logging */
+    /** Counter for logging. */
     private int m_count;
 
     /**

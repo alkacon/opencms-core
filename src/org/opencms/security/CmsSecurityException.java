@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsSecurityException.java,v $
- * Date   : $Date: 2004/06/13 23:39:45 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,32 +37,32 @@ import org.opencms.main.CmsException;
  * Signals that a particular action was invoked on resource with an insufficient lock state.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.1.4
  */
 public class CmsSecurityException extends CmsException {
     
     // the allowed type range for this exception is >=300 and <400    
     
-    /** Administrator privileges required */
+    /** Administrator privileges required. */
     public static final int C_SECURITY_ADMIN_PRIVILEGES_REQUIRED = 300;
     
-    /** Project manager (or Administrator) priviledges required */
+    /** Project manager (or Administrator) privileges required. */
     public static final int C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED = 301;
     
-    /** No read / write access allowed in online project */
+    /** No read / write access allowed in online project. */
     public static final int C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT = 302;
     
-    /** No permissions to perform operation */
+    /** No permissions to perform operation. */
     public static final int C_SECURITY_NO_PERMISSIONS = 303;
     
-    /** No permissions to change registry values */    
+    /** No permissions to change registry values. */    
     public static final int C_SECURITY_NO_REGISTRY_PERMISSIONS = 304;
        
-    /** Invalid password (only for password change and validation of password) */    
+    /** Invalid password (only for password change and validation of password). */    
     public static final int C_SECURITY_INVALID_PASSWORD = 305;
     
-    /** Login failed */
+    /** Login failed. */
     public static final int C_SECURITY_LOGIN_FAILED = 306;
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteMatcher.java,v $
- * Date   : $Date: 2004/06/13 23:40:05 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/14 15:50:10 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,27 +36,27 @@ package org.opencms.site;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.1
  */
 public final class CmsSiteMatcher implements Cloneable {   
 
-    /** Wildcard for string matching */
+    /** Wildcard for string matching. */
     private static final String C_WILDCARD = "*";
     
-    /** Default matcher that always matches all other Site matchers */
+    /** Default matcher that always matches all other Site matchers. */
     public static final CmsSiteMatcher C_DEFAULT_MATCHER = new CmsSiteMatcher(C_WILDCARD, C_WILDCARD, 0);
    
-    /** Hashcode buffer to save multiple calculations*/
+    /** Hashcode buffer to save multiple calculations. */
     private Integer m_hashCode;
     
-    /** The hostname (e.g. localhost) which is required to access this site */
+    /** The hostname (e.g. localhost) which is required to access this site. */
     private String m_serverName;
     
-    /** The port (e.g. 80) which is required to access this site */
+    /** The port (e.g. 80) which is required to access this site. */
     private int m_serverPort;
     
-    /** The protocol (e.g. "http", "https") which is required to access this site */
+    /** The protocol (e.g. "http", "https") which is required to access this site. */
     private String m_serverProtocol;
     
     /**

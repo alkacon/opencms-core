@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2004/06/13 23:39:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,39 +39,39 @@ import org.apache.lucene.document.Document;
 /**
  * Implementation interface for lucene document factories used in OpenCms.<p>
  * 
- * @version $Revision: 1.6 $ $Date: 2004/06/13 23:39:35 $
+ * @version $Revision: 1.7 $ $Date: 2004/06/14 15:50:09 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public interface I_CmsDocumentFactory {
 
-    /** Channel of cos document */
+    /** Channel of cos document. */
     String DOC_CHANNEL = "channel";
 
-    /** Search field for document content */
+    /** Search field for document content. */
     String DOC_CONTENT = "content";
     
-    /** Content definition of cos document */
+    /** Content definition of cos document. */
     String DOC_CONTENT_DEFINITION = "contentdefinition";
     
-    /** Content id of cos document */
+    /** Content id of cos document. */
     String DOC_CONTENT_ID = "contentid";
 
-    /** Search field for document creation date */
+    /** Search field for document creation date. */
     String DOC_DATE_CREATED = "created";
 
-    /** Search field for document last update */
+    /** Search field for document last update. */
     String DOC_DATE_LASTMODIFIED = "lastmodified";
     
-    /** Search field for document description */
+    /** Search field for document description. */
     String DOC_DESCRIPTION = "description";
     
-    /** Search field for document keywords */
+    /** Search field for document keywords. */
     String DOC_KEYWORDS = "keywords";
     
-    /** Search field for document path within a site */
+    /** Search field for document path within a site. */
     String DOC_PATH = "path";
 
-    /** Search field for document title */
+    /** Search field for document title. */
     String DOC_TITLE = "title";
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionSet.java,v $
- * Date   : $Date: 2004/06/13 23:39:45 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,12 +47,12 @@ import java.util.StringTokenizer;
  * <code>C_PERMISSION_CONTROL</code> (c) the right to set permissions of a resource<br>
  * <code>C_PERMISSION_DIRECT_PUBLISH</code> (d) the right direct publish a resource even without publish project permissions<br>
  * 
- * @version $Revision: 1.14 $ $Date: 2004/06/13 23:39:45 $
+ * @version $Revision: 1.15 $ $Date: 2004/06/14 15:50:09 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPermissionSet {
 
-    /**  Hashtable of all available permissions */
+    /**  HashMap of all available permissions. */
     static HashMap m_permissions;
 
     /**
@@ -95,10 +95,10 @@ public class CmsPermissionSet {
         return m_permissions;
     }
 
-    /** The set of allowed permissions */
+    /** The set of allowed permissions. */
     int m_allowed;
 
-    /** The set of denied permissions */
+    /** The set of denied permissions. */
     int m_denied;
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceSibling.java,v $
- * Date   : $Date: 2004/04/28 22:30:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,13 +54,13 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.3
  */
 public class CmsNewResourceSibling extends CmsNewResourcePointer {
     
-    /** Request parameter name for the link target */
+    /** Request parameter name for the keep properties flag. */
     public static final String PARAM_KEEPPROPERTIES = "keepproperties";
     
     private String m_paramKeepProperties;

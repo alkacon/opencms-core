@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosIndexer.java,v $
- * Date   : $Date: 2004/06/13 23:31:05 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/14 15:54:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,31 +56,31 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the indexing of cos data.<p>
  * 
- * @version $Revision: 1.4 $ $Date: 2004/06/13 23:31:05 $
+ * @version $Revision: 1.5 $ $Date: 2004/06/14 15:54:43 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
 public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
     
-    /** cms object */
+    /** The cms object. */
     private CmsObject m_cms;
     
-    /** index writer */
+    /** The index writer. */
     private IndexWriter m_writer;
     
-    /** current index */
+    /** The current index. */
     private CmsSearchIndex m_index;
     
-    /** report */
+    /** The report. */
     private I_CmsReport m_report;
     
-    /** the thrad manager */
+    /** The thread manager. */
     private CmsIndexingThreadManager m_threadManager;
     
-    /** id for identifying module content */
+    /** The id for identifying module content. */
     private int m_subId;
     
-    /** general class to handle module content */
+    /** General class to handle module content. */
     private CmsMasterContent m_contentDefinition;
     
     /**

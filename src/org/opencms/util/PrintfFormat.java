@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/PrintfFormat.java,v $
- * Date   : $Date: 2004/06/13 23:40:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -523,13 +523,13 @@ public class PrintfFormat {
          */
         private boolean m_alternateForm;
 
-        /** Internal variable */
+        /** Internal variable. */
         private int m_argumentPosition;
 
-        /** Internal variable */
+        /** Internal variable. */
         private int m_argumentPositionForFieldWidth;
 
-        /** Internal variable */
+        /** Internal variable. */
         private int m_argumentPositionForPrecision;
 
         /** Control string type. */
@@ -602,13 +602,13 @@ public class PrintfFormat {
          */
         private int m_pos;
 
-        /** Internal variable */
+        /** Internal variable. */
         private boolean m_positionalFieldWidth;
 
-        /** Internal variable */
+        /** Internal variable. */
         private boolean m_positionalPrecision;
 
-        /** Internal variable */
+        /** Internal variable. */
         private boolean m_positionalSpecification;
 
         /**

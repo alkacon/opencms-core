@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorSelector.java,v $
- * Date   : $Date: 2004/05/04 09:27:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.opencms.workplace.I_CmsWpConstants;
  * @see org.opencms.workplace.editor.I_CmsEditorHandler
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1.14
  */
@@ -58,7 +58,7 @@ public class CmsEditorSelector {
     private CmsJspActionElement m_jsp;
     private String m_paramResource;
        
-    /** Debug flag */
+    /** Debug flag. */
     public static final boolean C_DEBUG = false;      
     
     /**

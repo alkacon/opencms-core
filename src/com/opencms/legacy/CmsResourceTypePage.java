@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2004/06/06 08:49:05 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/14 15:54:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,15 +43,15 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.1
  */
 public class CmsResourceTypePage extends A_CmsResourceType {
 
-    /** The type id of this resource */
+    /** The type id of this resource. */
     public static final int C_RESOURCE_TYPE_ID = A_CmsImport.C_RESOURCE_TYPE_PAGE_ID;
     
-    /** The name of this resource */
+    /** The name of this resource. */
     public static final String C_RESOURCE_TYPE_NAME = A_CmsImport.C_RESOURCE_TYPE_PAGE_NAME;
 
     /**

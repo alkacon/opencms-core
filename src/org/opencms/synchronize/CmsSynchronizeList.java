@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeList.java,v $
- * Date   : $Date: 2004/06/09 08:08:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,12 +41,12 @@ import java.io.Serializable;
  *
  * @author Edna Falkenhan
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2004/06/09 08:08:42 $
+ * @version $Revision: 1.6 $ $Date: 2004/06/14 15:50:09 $
  */
 public class CmsSynchronizeList implements Serializable {
 
     /**
-     * Name of the resource stored in the sync list
+     * Name of the resource stored in the sync list.
      */
     private String m_resName;
 
@@ -59,12 +59,12 @@ public class CmsSynchronizeList implements Serializable {
     private String m_transResName;
 
     /**
-     * Last modification date of this resouce in the VFS
+     * Last modification date of this resouce in the VFS.
      */
     private long m_modifiedVfs;
 
     /**
-     * Last modification data of this resource in the FS
+     * Last modification data of this resource in the FS.
      */
     private long m_modifiedFs;
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2004/06/07 12:59:51 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,14 +49,14 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2004/06/07 12:59:51 $
+ * @version $Revision: 1.7 $ $Date: 2004/06/14 15:50:09 $
  */
 public class CmsSetupDb extends Object {
     
-    /** The folder where to read the setup data from */
+    /** The folder where to read the setup data from. */
     public static String C_SETUP_DATA_FOLDER = "WEB-INF/setupdata/";
     
-    /** The folder where the setup wizard is located */
+    /** The folder where the setup wizard is located. */
     public static String C_SETUP_FOLDER = "setup/";
 
     private Connection m_con;

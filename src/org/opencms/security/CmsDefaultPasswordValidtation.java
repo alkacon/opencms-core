@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Attic/CmsDefaultPasswordValidtation.java,v $
- * Date   : $Date: 2003/11/03 09:05:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,12 +37,12 @@ package org.opencms.security;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1.11 
  */
 public class CmsDefaultPasswordValidtation implements I_CmsPasswordValidation {
 
-    /**  The minimum length of a password */
+    /**  The minimum length of a password. */
     public static final int C_PASSWORD_MINLENGTH = 4;
     
     /**

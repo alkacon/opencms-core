@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2004/06/07 15:50:23 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,21 +56,21 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 5.1
  */
 public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
     
-    /** The dialog type */
+    /** The dialog type. */
     public static final String DIALOG_TYPE = "delete";
     
-    /** Value for the action: delete the resource */
+    /** Value for the action: delete the resource. */
     public static final int ACTION_DELETE = 100;
     
     private String m_deleteVfsLinks;
     
-    /** The delete dialog URI */
+    /** The delete dialog URI. */
     public static final String URI_DELETE_DIALOG = C_PATH_DIALOGS + "delete_standard.html";
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2004/06/08 15:14:39 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,36 +51,36 @@ import org.htmlparser.util.ParserException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.3
  */
 public class CmsLinkProcessor {
     
-    /** HTML end */
+    /** HTML end. */
     private static final String C_HTML_END = "</body></html>";
     
-    /** HTML start */
+    /** HTML start. */
     private static final String C_HTML_START = "<html><body>";
     
-    /** Processing mode "process links" */
+    /** Processing mode "process links". */
     private static final int C_PROCESS_LINKS = 1;
   
-    /** Processing mode "replace links" */
+    /** Processing mode "replace links". */
     private static final int C_REPLACE_LINKS = 0;
 
-    /** The current cms instance */
+    /** The current cms instance. */
     private CmsObject m_cms;
     
-    /** The link table used for link macro replacements */
+    /** The link table used for link macro replacements. */
     private CmsLinkTable m_linkTable;
     
-    /** Current processing mode */
+    /** Current processing mode. */
     private int m_mode;
     
-    /** Indicates if links should be generated for editing purposes */
+    /** Indicates if links should be generated for editing purposes. */
     private boolean m_processEditorLinks;
     
-    /** The relative path for relative links, if not set, relative links are treated as external links */
+    /** The relative path for relative links, if not set, relative links are treated as external links. */
     private String m_relativePath;   
     
     /**

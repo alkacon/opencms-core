@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/I_CmsEditorActionHandler.java,v $
- * Date   : $Date: 2004/03/22 16:34:53 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,46 +46,46 @@ import javax.servlet.jsp.JspException;
  * The class you enter must implement this interface to perform the editor action.<p>  
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.3.0
  */
 public interface I_CmsEditorActionHandler {
     
-    /** Prefix for direct edit end elements, used on JPS pages that supply the direct edit html */
+    /** Prefix for direct edit end elements, used on JPS pages that supply the direct edit html. */
     String C_DIRECT_EDIT_AREA_END = "end_directedit";
     
-    /** Prefix for direct edit start elements, used on JPS pages that supply the direct edit html */
+    /** Prefix for direct edit start elements, used on JPS pages that supply the direct edit html. */
     String C_DIRECT_EDIT_AREA_START = "start_directedit";
     
-    /** Key to identify the direct edit configuration file */
+    /** Key to identify the direct edit configuration file. */
     String C_DIRECT_EDIT_INCLUDE_FILE_URI = "__directEditIncludeFileUri";
 
-    /** Default direct edit include file URI */
+    /** Default direct edit include file URI. */
     String C_DIRECT_EDIT_INCLUDE_FILE_URI_DEFAULT = "/system/workplace/jsp/editors/direct_edit.jsp";
 
-    /** Element name for direct edit includes */
+    /** Element name for direct edit includes. */
     String C_DIRECT_EDIT_INCLUDES = "directedit_includes";
     
-    /** Constant for: direct edit mode disabled */
+    /** Constant for: direct edit mode disabled. */
     String C_DIRECT_EDIT_MODE_DISABLED = "disabled";
     
-    /** Constant for: direct edit mode enabled */
+    /** Constant for: direct edit mode enabled. */
     String C_DIRECT_EDIT_MODE_ENABLED = "enabled";
     
-    /** Constant for: direct edit mode inactive */
+    /** Constant for: direct edit mode inactive. */
     String C_DIRECT_EDIT_MODE_INACTIVE = "inactive";
     
-    /** Key to identify the edit button style, used on JPS pages that supply the direct edit html */  
+    /** Key to identify the edit button style, used on JPS pages that supply the direct edit html. */  
     String C_DIRECT_EDIT_PARAM_BUTTONSTYLE = "__directEditButtonStyle";
     
-    /** Key to identify the edit element, used on JPS pages that supply the direct edit html */  
+    /** Key to identify the edit element, used on JPS pages that supply the direct edit html. */  
     String C_DIRECT_EDIT_PARAM_ELEMENT = "__directEditElement";
     
-    /** Key to identify the edit language, used on JPS pages that supply the direct edit html */  
+    /** Key to identify the edit language, used on JPS pages that supply the direct edit html. */  
     String C_DIRECT_EDIT_PARAM_LOCALE = "__directEditLocale";
     
-    /** Key to identify the edit target, used on JPS pages that supply the direct edit html */
+    /** Key to identify the edit target, used on JPS pages that supply the direct edit html. */
     String C_DIRECT_EDIT_PARAM_TARGET = "__directEditTarget";
     
     /**

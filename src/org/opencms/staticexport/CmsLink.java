@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLink.java,v $
- * Date   : $Date: 2004/06/13 23:40:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,32 +43,32 @@ import java.util.Set;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  */
 public class CmsLink {
     
-    /** The anchor of the uri, if any */
+    /** The anchor of the uri, if any. */
     private String m_anchor;
     
-    /** Indicates if the link is an internal link within the OpenCms VFS */
+    /** Indicates if the link is an internal link within the OpenCms VFS. */
     private boolean m_internal;
 
-    /** The internal name of the link */
+    /** The internal name of the link. */
     private String m_name;
     
-    /** The parameters of the query , if any */
+    /** The parameters of the query , if any. */
     private Map m_parameters;
     
-    /** The query, if any */
+    /** The query, if any. */
     private String m_query;
     
-    /** The link target (destination) */
+    /** The link target (destination). */
     private String m_target;
 
-    /** The type of the link */
+    /** The type of the link. */
     private String m_type;
     
-    /** The raw uri */
+    /** The raw uri. */
     private String m_uri;
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2004/06/13 23:41:52 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,60 +64,60 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 5.1
  */
 public class CmsChacc extends CmsDialog {
     
-    /** The dialog type */
+    /** The dialog type. */
     public static final String DIALOG_TYPE = "chacc";
     
-    /** Request parameter value for the action: delete the permissions */
+    /** Request parameter value for the action: delete the permissions. */
     public static final String DIALOG_DELETE = "delete";
-    /** Request parameter value for the action: add an access control entry */
+    /** Request parameter value for the action: add an access control entry. */
     public static final String DIALOG_ADDACE = "addace";
 
-    /** Request parameter value for the action: set the internaluse flag */
+    /** Request parameter value for the action: set the internal use flag. */
     public static final String DIALOG_INTERNALUSE = "internaluse";
     
-    /** Value for the action: delete the permissions */
+    /** Value for the action: delete the permissions. */
     public static final int ACTION_DELETE = 200;
-    /** Value for the action: add an access control entry */
+    /** Value for the action: add an access control entry. */
     public static final int ACTION_ADDACE = 300;
-    /** Value for the action: add an access control entry */
+    /** Value for the action: set the internal use flag. */
     public static final int ACTION_INTERNALUSE = 400;
     
     private String m_paramType;
     private String m_paramName;
     
-    /** Constant for the request parameters suffix: allow */
+    /** Constant for the request parameters suffix: allow. */
     public static final String PERMISSION_ALLOW = "allow";
-    /** Constant for the request parameters suffix: deny */
+    /** Constant for the request parameters suffix: deny. */
     public static final String PERMISSION_DENY = "deny";    
     
-    /** Stores eventual error message Strings */
+    /** Stores eventual error message Strings. */
     private ArrayList m_errorMessages = new ArrayList(); 
     
-    /** The possible types of new access control entries */
+    /** The possible types of new access control entries. */
     private String[] m_types = {"group", "user"};
     
-    /** The possible localized types of new access control entries */
+    /** The possible localized types of new access control entries. */
     private String[] m_typesLocalized = new String[2];
     
-    /** The possible type values of access control entries */
+    /** The possible type values of access control entries. */
     private int[] m_typesInt = {I_CmsConstants.C_ACCESSFLAGS_GROUP, I_CmsConstants.C_ACCESSFLAGS_USER};
     
-    /** Indicates if forms are editable by current user */
+    /** Indicates if forms are editable by current user. */
     private boolean m_editable;
     
-    /** Indicates if inheritance flags are set as hidden fields for resource folders */
+    /** Indicates if inheritance flags are set as hidden fields for resource folders. */
     private boolean m_inherit;
     
-    /** PermissionSet of the current user for the resource */
+    /** PermissionSet of the current user for the resource. */
     private CmsPermissionSet m_curPermissions;
     
-    /** Stores all possible permission keys of a permission set */
+    /** Stores all possible permission keys of a permission set. */
     private Set m_permissionKeys = CmsPermissionSet.getPermissionKeys();
     
     

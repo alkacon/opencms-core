@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2004/06/13 23:41:52 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,101 +51,101 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  * 
  * @since 5.1
  */
 public class CmsDialog extends CmsWorkplace {
 
-    /** Value for the action: default (show initial dialog form) */
+    /** Value for the action: default (show initial dialog form). */
     public static final int ACTION_DEFAULT = 0;
-    /** Value for the action: confirmed */
+    /** Value for the action: confirmed. */
     public static final int ACTION_CONFIRMED = 1;
-    /** Value for the action: wait (show please wait screen) */
+    /** Value for the action: wait (show please wait screen). */
     public static final int ACTION_WAIT = 2;
-    /** Value for the action: ok */
+    /** Value for the action: ok. */
     public static final int ACTION_OK= 3;
-    /** Value for the action: cancel */
+    /** Value for the action: cancel. */
     public static final int ACTION_CANCEL = 4;
-    /** Value for the action: button "set" clicked */
+    /** Value for the action: button "set" clicked. */
     public static final int ACTION_SET = 5;
-    /** Value for the action: close popup window */
+    /** Value for the action: close popup window. */
     public static final int ACTION_CLOSEPOPUP = 6;
-    /** Value for the action: save & close popup window */
+    /** Value for the action: save & close popup window. */
     public static final int ACTION_CLOSEPOPUP_SAVE = 7;
     
     // note: action values 90 - 99 are reserved for reports
-    /** Value for the action: begin the report */
+    /** Value for the action: begin the report. */
     public static final int ACTION_REPORT_BEGIN  = 90;
-    /** Value for the action: update the report */
+    /** Value for the action: update the report. */
     public static final int ACTION_REPORT_UPDATE = 91;
-    /** Value for the action: end the report */
+    /** Value for the action: end the report. */
     public static final int ACTION_REPORT_END    = 92;
     
-    /** Request parameter value for the action: begin the report */
+    /** Request parameter value for the action: begin the report. */
     public static final String REPORT_BEGIN  = "reportbegin";
-    /** Request parameter value for the action: update the report */
+    /** Request parameter value for the action: update the report. */
     public static final String REPORT_UPDATE = "reportupdate";
-    /** Request parameter value for the action: end the report */
+    /** Request parameter value for the action: end the report. */
     public static final String REPORT_END    = "reportend";    
     
-    /** Constant for the "OK" button in the build button methods */
+    /** Constant for the "OK" button in the build button methods. */
     public static final int BUTTON_OK = 0;
-    /** Constant for the "Cancel" button in the build button methods */
+    /** Constant for the "Cancel" button in the build button methods. */
     public static final int BUTTON_CANCEL = 1;
-    /** Constant for the "Close" button in the build button methods */
+    /** Constant for the "Close" button in the build button methods. */
     public static final int BUTTON_CLOSE = 2;
-    /** Constant for the "Advanced" button in the build button methods */
+    /** Constant for the "Advanced" button in the build button methods. */
     public static final int BUTTON_ADVANCED = 3;
-    /** Constant for the "Set" button in the build button methods */
+    /** Constant for the "Set" button in the build button methods. */
     public static final int BUTTON_SET = 4;
-    /** Constant for the "Details" button in the build button methods */
+    /** Constant for the "Details" button in the build button methods. */
     public static final int BUTTON_DETAILS = 5;
-    /** Constant for the "OK" button in the build button methods (without form submission) */
+    /** Constant for the "OK" button in the build button methods (without form submission). */
     public static final int BUTTON_OK_NO_SUBMIT = 6;
-    /** Constant for the "Edit" button in the build button methods (same function as "Ok" button but different text on button */
+    /** Constant for the "Edit" button in the build button methods (same function as "Ok" button but different text on button. */
     public static final int BUTTON_EDIT = 7;
-    /** Constant for the "Discard" button in the build button methods (same function as "Cancel" button but different text on button*/
+    /** Constant for the "Discard" button in the build button methods (same function as "Cancel" button but different text on button. */
     public static final int BUTTON_DISCARD = 8;  
         
-    /** Request parameter value for the action: dialog confirmed */
+    /** Request parameter value for the action: dialog confirmed. */
     public static final String DIALOG_CONFIRMED = "confirmed";
-    /** Request parameter value for the action: show please wait screen */
+    /** Request parameter value for the action: show please wait screen. */
     public static final String DIALOG_WAIT = "wait";
-    /** Request parameter value for the action: ok */
+    /** Request parameter value for the action: ok. */
     public static final String DIALOG_OK = "ok";
-    /** Request parameter value for the action: cancel */
+    /** Request parameter value for the action: cancel. */
     public static final String DIALOG_CANCEL = "cancel";
-    /** Request parameter value for the action: set */
+    /** Request parameter value for the action: set. */
     public static final String DIALOG_SET = "set";
     
-    /** Request parameter name for the action */
+    /** Request parameter name for the action. */
     public static final String PARAM_ACTION = "action";
-    /** Request parameter name for the closelink */
+    /** Request parameter name for the closelink. */
     public static final String PARAM_CLOSELINK = "closelink";
-    /** Request parameter name for the file */
+    /** Request parameter name for the file. */
     public static final String PARAM_FILE = "file";
-    /** Request parameter name for the frame name */
+    /** Request parameter name for the frame name. */
     public static final String PARAM_FRAMENAME = "framename";
-    /** Request parameter name for the target */
+    /** Request parameter name for the target. */
     public static final String PARAM_TARGET = "target";
-    /** Request parameter name for the dialog type */
+    /** Request parameter name for the dialog type. */
     public static final String PARAM_DIALOGTYPE = "dialogtype";
-    /** Request parameter name for the error stack */
+    /** Request parameter name for the error stack. */
     public static final String PARAM_ERRORSTACK = "errorstack";
-    /** Request parameter name for the dialog title */
+    /** Request parameter name for the dialog title. */
     public static final String PARAM_TITLE = "title";
-    /** Request parameter name for the error message */
+    /** Request parameter name for the error message. */
     public static final String PARAM_MESSAGE = "message";
-    /** Request parameter name for the thread id */
+    /** Request parameter name for the thread id. */
     public static final String PARAM_THREAD = "thread";
-    /** Request parameter name for indicating if another thread is following the current one */
+    /** Request parameter name for indicating if another thread is following the current one. */
     public static final String PARAM_THREAD_HASNEXT = "threadhasnext";
-    /** Request parameter name for the lock */
+    /** Request parameter name for the lock. */
     public static final String PARAM_LOCK = "lock";
-    /** Request parameter name for the "is popup" flag */
+    /** Request parameter name for the "is popup" flag. */
     public static final String PARAM_ISPOPUP = "ispopup";
-    /** Request parameter name for the resource */
+    /** Request parameter name for the resource. */
     public static final String PARAM_RESOURCE = I_CmsWpConstants.C_PARA_RESOURCE;
 
     private String m_paramAction;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeSettings.java,v $
- * Date   : $Date: 2004/06/13 23:40:25 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,18 +41,18 @@ import java.util.List;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3
  */
 public class CmsSynchronizeSettings {
     
-    /** The destination path of the synchronization in the "real" file system */
+    /** The destination path of the synchronization in the "real" file system. */
     private String m_destinationPathInRfs;
     
-    /** The source path of the synchronization in the OpenCms VFS */
+    /** The source path of the synchronization in the OpenCms VFS. */
     private String m_sourcePathInVfs;
     
-    /** The list of instanciated synchronize modification classes */
+    /** The list of instanciated synchronize modification classes. */
     private List m_synchronizeModifications;
     
     /**

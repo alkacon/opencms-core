@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportData.java,v $
- * Date   : $Date: 2004/04/02 16:59:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,19 +39,20 @@ import org.opencms.file.CmsResource;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsStaticExportData {
     
-    /** The resource to export */
+    /** The resource to export. */
     private CmsResource m_resource;    
 
-    /** The uri to export in the rfs */
+    /** The uri to export in the rfs. */
     private String m_rfsName;      
     
-    /** The uri in the vfs */
+    /** The uri in the vfs. */
     private String m_vfsName;
     
+    /** The parameters. */
     private String m_parameters;
 
     /**

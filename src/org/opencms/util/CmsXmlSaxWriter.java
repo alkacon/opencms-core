@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsXmlSaxWriter.java,v $
- * Date   : $Date: 2003/11/03 09:05:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,29 +48,29 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $ $Date: 2003/11/03 09:05:53 $
+ * @version $Revision: 1.4 $ $Date: 2004/06/14 15:50:09 $
  */
 public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
 
-    /** The indentation to use */
+    /** The indentation to use. */
     private static final String C_INDENT_STR = "\t";
 
-    /** The file encoding to use */
+    /** The file encoding to use. */
     private String m_encoding;
 
-    /** The indentation level */
+    /** The indentation level. */
     private int m_indentLevel;
 
-    /** The last element name written to the output */
+    /** The last element name written to the output. */
     private String m_lastElementName;
     
-    /** Indicates if a CDATA node is still open */
+    /** Indicates if a CDATA node is still open. */
     private boolean m_openCdata;
     
-    /** Indicates if an element tag is still open */
+    /** Indicates if an element tag is still open. */
     private boolean m_openTag;
 
-    /** The Writer to write the output to */
+    /** The Writer to write the output to. */
     private Writer m_writer;        
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReportThread.java,v $
- * Date   : $Date: 2004/06/13 23:39:17 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,23 +43,23 @@ import java.util.Locale;
  * Provides a common Thread class for the reports.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public abstract class A_CmsReportThread extends Thread {
 
-    /** The OpenCms request context to use */
+    /** The OpenCms request context to use. */
     private CmsObject m_cms; 
     
-    /** Indicates if the Thread was already checked by the grim reaper */
+    /** Indicates if the thread was already checked by the grim reaper. */
     private boolean m_doomed;
     
-    /** The id of this report */
+    /** The id of this report. */
     private CmsUUID m_id;
     
-    /** The report that belongs to the thread */
+    /** The report that belongs to the thread. */
     private I_CmsReport m_report;
     
-    /** The time this report is running */
+    /** The time this report is running. */
     private long m_starttime;
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourcePointer.java,v $
- * Date   : $Date: 2004/03/18 16:13:59 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,13 +49,13 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.3
  */
 public class CmsNewResourcePointer extends CmsNewResource {
     
-    /** Request parameter name for the link target */
+    /** Request parameter name for the link target. */
     public static final String PARAM_LINKTARGET = "linktarget";
     
     private String m_paramLinkTarget;

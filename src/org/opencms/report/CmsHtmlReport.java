@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2004/04/02 16:19:21 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,16 +47,16 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsHtmlReport extends A_CmsReport {
     
-    /** Constant for a HTML linebreak with added "real" line break */
+    /** Constant for a HTML linebreak with added "real" line break. */
     private static final String C_LINEBREAK = "<br>";
     
     /** 
      * Constant for a HTML linebreak with added "real" line break- 
-     * traditional style for report threads that still use XML templates for their output
+     * traditional style for report threads that still use XML templates for their output.
      */
     private static final String C_LINEBREAK_TRADITIONAL = "<br>\\n";    
     
@@ -65,14 +65,14 @@ public class CmsHtmlReport extends A_CmsReport {
 
     /**
      * Counter to remember what is already shown,
-     * indicates the next index of the m_content list that has to be reported
+     * indicates the next index of the m_content list that has to be reported.
      */
     private int m_indexNext;        
     
-    /** Flag to indicate if exception should be displayed long or short */
+    /** Flag to indicate if an exception should be displayed long or short. */
     private boolean m_showExceptionStackTracke;
     
-    /** Boolean flag indicating whether this report should generate HTML or JavaScript output */
+    /** Boolean flag indicating whether this report should generate HTML or JavaScript output. */
     private boolean m_writeHtml;
         
     /**

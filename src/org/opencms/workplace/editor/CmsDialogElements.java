@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/06/13 23:42:47 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/06/14 15:50:09 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,34 +62,34 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 5.3.0
  */
 public class CmsDialogElements extends CmsDialog {
     
-    /** Value for the action: delete the content of an element */
+    /** Value for the action: delete the content of an element. */
     public static final int ACTION_DELETECONTENT = 200;
 
-    /** Value for the action: update the elements of the page */
+    /** Value for the action: update the elements of the page. */
     public static final int ACTION_UPDATE_ELEMENTS = 210;
     
-    /** Request parameter value for the action: delete the content of an element */
+    /** Request parameter value for the action: delete the content of an element. */
     public static final String DIALOG_DELETECONTENT = "deletecontent";
 
-    /** The dialog type */
+    /** The dialog type. */
     public static final String DIALOG_TYPE = "elementselector";
     
-    /** Request parameter value for the action: update the elements of the page */
+    /** Request parameter value for the action: update the elements of the page. */
     public static final String DIALOG_UPDATE_ELEMENTS = "updateelements";
     
-    /** Prefix for the html input field for the body */
+    /** Prefix for the html input field for the body. */
     public static final String PREFIX_PARAM_BODY = "element-";
     
-    /** List used to store information of all possible elements of the page */
+    /** List used to store information of all possible elements of the page. */
     private List m_elementList;
 
-    /** The element locale */
+    /** The element locale. */
     private Locale m_elementLocale;
     
     // Special parameters used by this dialog
@@ -98,7 +98,7 @@ public class CmsDialogElements extends CmsDialog {
     private String m_paramDeleteElementContent;
     private String m_paramTempFile;
     
-    /** Stores the element to change to after an element update operation */
+    /** Stores the element to change to after an element update operation. */
     private String m_changeElement;
     
     /**
