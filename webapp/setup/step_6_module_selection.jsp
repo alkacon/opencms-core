@@ -213,7 +213,9 @@ function sortAvailableModules() {
 		//alert(moduleList);
 		form.installModules.value = moduleList;
 	} else {
-		form.installModules.value = form.availableModules.value;
+		if (form.availableModules != null) {
+			form.installModules.value = form.availableModules.value;
+		}
 	}
 }
 
