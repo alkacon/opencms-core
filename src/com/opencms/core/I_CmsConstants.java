@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/05/07 11:43:26 $
-* Version: $Revision: 1.221 $
+* Date   : $Date: 2003/05/21 10:25:00 $
+* Version: $Revision: 1.222 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ package com.opencms.core;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.221 $ $Date: 2003/05/07 11:43:26 $
+ * @version $Revision: 1.222 $ $Date: 2003/05/21 10:25:00 $
  */
 public interface I_CmsConstants {
 
@@ -1156,6 +1156,11 @@ public interface I_CmsConstants {
      */    
     public static String C_CONFIGURATIONS_POOL = "pool";
 
+	/**
+	 * A string in the configuration-file.
+	 */    
+	public static String C_CONFIGURATIONS_ACCESS = "access";
+	
     /**
      * A string in the configuration-file.
      */

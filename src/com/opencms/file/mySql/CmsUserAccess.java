@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsUserAccess.java,v $
- * Date   : $Date: 2003/05/20 13:25:18 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/05/21 10:25:00 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsUser;
-import com.opencms.file.I_CmsResourceBroker;
 import com.opencms.file.genericSql.I_CmsUserAccess;
 import com.opencms.flex.util.CmsUUID;
 
@@ -46,13 +45,11 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Hashtable;
 
-import source.org.apache.java.util.Configurations;
-
 /**
  * MySQL implementation of the user access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/05/20 13:25:18 $
+ * @version $Revision: 1.8 $ $Date: 2003/05/21 10:25:00 $
  * 
  * @see com.opencms.file.genericSql.CmsUserAccess
  * @see com.opencms.file.genericSql.I_CmsUserAccess
@@ -65,8 +62,8 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
      * @param config the configurations objects (-> opencms.properties)
      * @param theResourceBroker the instance of the resource broker
      */
-    public CmsUserAccess(Configurations config, String dbPoolUrl, I_CmsResourceBroker theResourceBroker) {
-        super(config, dbPoolUrl, theResourceBroker);
+    public CmsUserAccess() {
+    	
     }
 
     /**

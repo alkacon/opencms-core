@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsVfsAccess.java,v $
- * Date   : $Date: 2003/05/20 13:25:18 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/05/21 10:25:00 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
-import com.opencms.file.I_CmsResourceBroker;
 import com.opencms.file.I_CmsResourceType;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.util.Encoder;
@@ -51,13 +50,11 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import source.org.apache.java.util.Configurations;
-
 /**
  * MySQL implementation of the VFS access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/05/20 13:25:18 $
+ * @version $Revision: 1.8 $ $Date: 2003/05/21 10:25:00 $
  */
 public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -69,8 +66,8 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
      * @param config the configurations objects (-> opencms.properties)
      * @param theResourceBroker the instance of the resource broker
      */
-    public CmsVfsAccess(Configurations config, String dbPoolUrl, I_CmsResourceBroker theResourceBroker) {
-        super(config, dbPoolUrl, theResourceBroker);
+    public CmsVfsAccess() {
+    	
     }
 
     /**

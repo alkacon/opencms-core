@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/05/20 16:36:24 $
-* Version: $Revision: 1.383 $
+* Date   : $Date: 2003/05/21 10:25:00 $
+* Version: $Revision: 1.384 $
 
 *
 * This library is part of OpenCms -
@@ -34,8 +34,6 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.dbpool.CmsDbcp;
-import com.opencms.dbpool.CmsIdGenerator;
 import com.opencms.file.*;
 import com.opencms.flex.util.CmsLruHashMap;
 import com.opencms.flex.util.CmsUUID;
@@ -71,7 +69,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.383 $ $Date: 2003/05/20 16:36:24 $
+ * @version $Revision: 1.384 $ $Date: 2003/05/21 10:25:00 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -146,11 +144,6 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
     protected int m_cachelimit = 0;
     protected String m_refresh = null;
     
-    protected String m_defaultPoolUrl;
-    protected String m_userPoolUrl;
-    protected String m_vfsPoolUrl;
-
-
 /**
  * Accept a task from the Cms.
  *
@@ -1723,21 +1716,6 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
         }
     }
     
-    /**
-     * return the correct DbAccess class.
-     * This method should be overloaded by all other Database Drivers
-     * Creation date: (09/15/00 %r)
-     * @return com.opencms.file.genericSql.CmsDbAccess
-     * @param configurations source.org.apache.java.util.Configurations
-     * @throws com.opencms.core.CmsException Thrown if CmsDbAccess class could not be instantiated.
-     */
-    public com.opencms.file.genericSql.CmsDbAccess initAccess(Configurations config) throws CmsException {
-        m_VfsAccess = new com.opencms.file.genericSql.CmsVfsAccess(config, m_vfsPoolUrl, this);
-        m_UserAccess = (I_CmsUserAccess) new com.opencms.file.genericSql.CmsUserAccess(config, m_userPoolUrl, this);
-        m_dbAccess = new com.opencms.file.genericSql.CmsDbAccess(config, m_defaultPoolUrl, this);
-        
-        return m_dbAccess;
-    }
     /**
      * Creates a new file with the given content and resourcetype. <br>
      *
@@ -4155,46 +4133,23 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @param config The OpenCms configuration.
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public void init(Configurations config) throws CmsException, Exception {
-
-        // Store the configuration.
-        m_configuration = config;
+	public void init(Configurations config, CmsVfsAccess vfsAccess, CmsUserAccess userAccess, CmsDbAccess dbAccess) throws CmsException, Exception {
 
         // store the limited workplace port
         m_limitedWorkplacePort = config.getInteger("workplace.limited.port", -1);
-
+		
         // initialize the access-module.
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Resource broker init : phase 3 ok - creating db access module" );            
         }
+                       
+        // store the access objects
+		m_VfsAccess = vfsAccess;
+		m_UserAccess = userAccess;
+		m_dbAccess = dbAccess;
+		m_dbAccess.fillDefaults(this);
         
-        // read the db-pool configurations to share them to the access objects
-        String defaultKey = config.getString(CmsDbcp.C_KEY_DATABASE_POOL + "." + CmsDbcp.C_KEY_DEFAULT_POOL_KEY);
-        String userKey = config.getString(CmsDbcp.C_KEY_DATABASE_POOL + "." + CmsDbcp.C_KEY_USER_POOL_KEY);
-        String vfsKey = config.getString(CmsDbcp.C_KEY_DATABASE_POOL + "." + CmsDbcp.C_KEY_VFS_POOL_KEY);
-        
-        m_defaultPoolUrl = CmsDbcp.createConnectionPool(config,defaultKey);
-        
-        // set the pool for the COS
-        A_OpenCms.setRuntimeProperty("cosPoolUrl", m_defaultPoolUrl);
-        CmsIdGenerator.setDefaultPool(m_defaultPoolUrl);
-                
-        if (userKey.equals(defaultKey)) {
-            m_userPoolUrl = m_defaultPoolUrl;
-        } else {
-            m_userPoolUrl = CmsDbcp.createConnectionPool(config,userKey);
-        }
-        
-        if (vfsKey.equals(defaultKey)) {
-            m_vfsPoolUrl = m_defaultPoolUrl;
-        } else {
-            m_vfsPoolUrl = CmsDbcp.createConnectionPool(config,vfsKey);
-        }        
-                
-        // initialize the access objects
-        initAccess(config);
-        
-        // initalize the caches
+        // initalize the caches 
         m_userCache =Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".user", 50)));
         m_groupCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".group", 50)));
         m_userGroupsCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".usergroups", 50)));

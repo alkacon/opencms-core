@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mssql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/05/20 11:30:51 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/05/21 10:25:00 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,10 +28,6 @@
 
 package com.opencms.file.mssql;
 
-import com.opencms.core.CmsException;
-
-import source.org.apache.java.util.Configurations;
-
 /**
  * This is THE resource broker. It merges all resource broker
  * into one public class. The interface is local to package. <B>All</B> methods
@@ -39,20 +35,9 @@ import source.org.apache.java.util.Configurations;
  * police.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.5 $ $Date: 2003/05/20 11:30:51 $
+ * @version $Revision: 1.6 $ $Date: 2003/05/21 10:25:00 $
  */
+// TODO: check if this class is neccessary in any way
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
-    
-    /**
-     * return the correct DbAccess class.
-     * This method should be overloaded by all other Database Drivers
-     * Creation date: (09/15/00 %r)
-     * @return com.opencms.file.genericSql.CmsDbAccess
-     * @param configurations source.org.apache.java.util.Configurations
-     * @throws com.opencms.core.CmsException Thrown if CmsDbAccess class could not be instantiated.
-     */
-    public com.opencms.file.genericSql.CmsDbAccess initAccess(Configurations configurations) throws CmsException {
-        return new com.opencms.file.mssql.CmsDbAccess(configurations, m_defaultPoolUrl, this);
-    }
     
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/20 16:36:24 $
-* Version: $Revision: 1.289 $
+* Date   : $Date: 2003/05/21 10:25:00 $
+* Version: $Revision: 1.290 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.289 $ $Date: 2003/05/20 16:36:24 $ *
+ * @version $Revision: 1.290 $ $Date: 2003/05/21 10:25:00 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
@@ -187,74 +187,19 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param config The OpenCms configuration.
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public CmsDbAccess(Configurations config, String dbPoolUrl, I_CmsResourceBroker theResourceBroker ) throws CmsException {
-        
-        m_ResourceBroker = theResourceBroker;
-
-        // set configurations for the dbpool driver
-        //com.opencms.dbpool.CmsDriver.setConfigurations(config);
+    public CmsDbAccess() {
+    	
+    }
+    
+    public void init (Configurations config, String dbPoolUrl) throws CmsException {
 
         m_SqlQueries = initQueries(dbPoolUrl);
-
-        //String rbName = null;
-        //String digest = null;
-        boolean fillDefaults = true;
+		m_dbPoolUrl = dbPoolUrl;
 
         if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database access init : ok" );
         }
-
-        // read the name of the rb from the properties
-        //String rbName = (String)config.getString(C_CONFIGURATION_RESOURCEBROKER);
-
-        // read all needed parameters from the configuration
-        // all needed pools are read in the following method
-        //getConnectionPools(config, rbName);
-        
-        m_dbPoolUrl = dbPoolUrl;
-
-        // have we to fill the default resource like root and guest?
-        try {
-            if (readProject(C_PROJECT_ONLINE_ID) != null) {
-                // online-project exists - no need of filling defaults
-                fillDefaults = false;
-            }
-        } catch(CmsException exc) {
-            // ignore the exception - the project was not readable so fill in the defaults
-        }
-        if(fillDefaults) {
-            // YES!
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database fill default: yes");
-            }
-            fillDefaults();
-        }
     }
-
-    /**
-     * Gets all necessary connection pools
-     * This method can be adjusted for each resourcebroker
-     * @param config The configuration
-     */
-//    protected void getConnectionPools(Configurations config, String rbName){
-//        // get the standard pool
-//        m_poolName = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_POOL);
-//        // set the default pool for the id generator
-//        com.opencms.dbpool.CmsIdGenerator.setDefaultPool(m_poolName);
-//        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-//            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database offline pool: " + m_poolName);
-//        }
-//        //get the pool for the online resources
-//        m_poolNameOnline = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + ".online." + C_CONFIGURATIONS_POOL);
-//        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-//            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database online pool : " +  m_poolNameOnline);
-//        }
-//        //get the pool for the backup resources
-//        m_poolNameBackup = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + ".backup." + C_CONFIGURATIONS_POOL);
-//        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-//            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database backup pool : " + m_poolNameBackup);
-//        }
-//    }
 
     /**
      * Creates a serializable object in the systempropertys.
@@ -991,10 +936,24 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
      * Private method to init all default-resources
      */
-    protected void fillDefaults() throws CmsException
+    // protected 
+    public void fillDefaults(I_CmsResourceBroker theResourceBroker) throws CmsException
     {
+    	// TODO: there is still the resourcebroker instance neccessary, remove it!!
+    	m_ResourceBroker = theResourceBroker;
+    	
+		try {
+			if (readProject(C_PROJECT_ONLINE_ID) != null) {
+				// online-project exists - no need of filling defaults
+				return;
+			}
+		} catch(CmsException exc) {
+			// ignore the exception - the project was not readable so fill in the defaults
+		}
+		
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] fillDefaults() starting NOW!");
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] Resource Broker is " + m_ResourceBroker);
         }
 
         // set the groups
@@ -1006,8 +965,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         // add the users
         CmsUser guest = m_ResourceBroker.getUserAccess().addUser(C_USER_GUEST, "", "the guest-user", " ", " ", " ", 0, 0, C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", C_USER_TYPE_SYSTEMUSER);
         CmsUser admin = m_ResourceBroker.getUserAccess().addUser(C_USER_ADMIN, "admin", "the admin-user", " ", " ", " ", 0, 0, C_FLAG_ENABLED, new Hashtable(), administrators, " ", " ", C_USER_TYPE_SYSTEMUSER);
-        m_ResourceBroker.getUserAccess().addUserToGroup(guest.getId(), guests.getId());
-        m_ResourceBroker.getUserAccess().addUserToGroup(admin.getId(), administrators.getId());
+		m_ResourceBroker.getUserAccess().addUserToGroup(guest.getId(), guests.getId());
+		m_ResourceBroker.getUserAccess().addUserToGroup(admin.getId(), administrators.getId());
         writeTaskType(1, 0, "../taskforms/adhoc.asp", "Ad-Hoc", "30308", 1, 1);
         
         // create the online project
@@ -1019,26 +978,26 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         CmsFolder rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(C_STATE_UNCHANGED);
-        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
+		m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
         
         // create the folder for the default site
         rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, rootFolder.getResourceId(), CmsUUID.getNullUUID(), C_DEFAULT_SITE+C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(C_STATE_UNCHANGED);
-        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
+		m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
         siteRootId = rootFolder.getResourceId();
         
         // create the folder for the virtual file system
         rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, siteRootId, CmsUUID.getNullUUID(), C_DEFAULT_SITE+C_ROOTNAME_VFS+C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(C_STATE_UNCHANGED);
-        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
+		m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
         
         // create the folder for the context objects system
         rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, siteRootId, CmsUUID.getNullUUID(), C_DEFAULT_SITE+C_ROOTNAME_COS+C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(C_STATE_UNCHANGED);
-        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
+		m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
         
         // create the task for the setup project
         task = createTask(0, 0, 1, admin.getId(), admin.getId(), administrators.getId(), "_setupProject", new java.sql.Timestamp(new java.util.Date().getTime()), new java.sql.Timestamp(new java.util.Date().getTime()), C_TASK_PRIORITY_NORMAL);
@@ -1048,26 +1007,26 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(C_STATE_UNCHANGED);
-        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
+		m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
         
         // create the folder for the default site
         rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, rootFolder.getResourceId(), CmsUUID.getNullUUID(), C_DEFAULT_SITE+C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(C_STATE_UNCHANGED);
-        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
+		m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
         siteRootId = rootFolder.getResourceId();
         
         // create the folder for the virtual file system
         rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, siteRootId, CmsUUID.getNullUUID(), C_DEFAULT_SITE+C_ROOTNAME_VFS+C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(C_STATE_UNCHANGED);
-        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
+		m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
         
         // create the folder for the context objects system
         rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, siteRootId, CmsUUID.getNullUUID(), C_DEFAULT_SITE+C_ROOTNAME_COS+C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(C_STATE_UNCHANGED);
-        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
+		m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/20 15:19:38 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/05/21 10:25:00 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.14 $ $Date: 2003/05/20 15:19:38 $ *
+ * @version $Revision: 1.15 $ $Date: 2003/05/21 10:25:00 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -71,10 +71,8 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      * @param config The OpenCms configuration.
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public CmsDbAccess(Configurations config, String dbPoolUrl, I_CmsResourceBroker theResourceBroker)
-        throws CmsException {
-
-        super(config,dbPoolUrl, theResourceBroker);
+    public CmsDbAccess() {
+    	
     }
 
     /**

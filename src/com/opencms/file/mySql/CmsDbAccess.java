@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/20 15:19:38 $
-* Version: $Revision: 1.93 $
+* Date   : $Date: 2003/05/21 10:25:00 $
+* Version: $Revision: 1.94 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import com.opencms.file.CmsResource;
 import com.opencms.file.CmsTask;
 import com.opencms.file.CmsTaskLog;
 import com.opencms.file.CmsUser;
-import com.opencms.file.I_CmsResourceBroker;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.util.Encoder;
 import com.opencms.util.SqlHelper;
@@ -51,10 +50,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
-import source.org.apache.java.util.Configurations;
-
-
-
 /**
  * This is the generic access module to load and store resources from and into
  * the database.
@@ -63,7 +58,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.93 $ $Date: 2003/05/20 15:19:38 $ *
+ * @version $Revision: 1.94 $ $Date: 2003/05/21 10:25:00 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
@@ -72,10 +67,8 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      * @param config The OpenCms configuration.
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public CmsDbAccess(Configurations config, String dbPoolUrl, I_CmsResourceBroker theResourceBroker)
-        throws CmsException {
-
-        super(config,dbPoolUrl, theResourceBroker);
+    public CmsDbAccess() {
+    	
     }
 
     /**

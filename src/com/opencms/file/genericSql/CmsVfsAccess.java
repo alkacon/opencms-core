@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsVfsAccess.java,v $
- * Date   : $Date: 2003/05/20 15:19:38 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/05/21 10:25:00 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import com.opencms.file.CmsProject;
 import com.opencms.file.CmsPropertydefinition;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
-import com.opencms.file.I_CmsResourceBroker;
 import com.opencms.file.I_CmsResourceType;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.util.SqlHelper;
@@ -64,28 +63,32 @@ import source.org.apache.java.util.Configurations;
  * Generic, database server independent, implementation of the VFS access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2003/05/20 15:19:38 $
+ * @version $Revision: 1.12 $ $Date: 2003/05/21 10:25:00 $
  */
 public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChannels {
 
     protected String m_dbPoolUrl;
 
-    protected I_CmsResourceBroker m_ResourceBroker;
-
     protected com.opencms.file.genericSql.CmsQueries m_SqlQueries;
 
-    /**
-     * Default constructor.
-     * 
-     * @param config the configurations objects (-> opencms.properties)
-     * @param theResourceBroker the instance of the resource broker
-     */
-    public CmsVfsAccess(Configurations config, String dbPoolUrl, I_CmsResourceBroker theResourceBroker) {
-        m_SqlQueries = initQueries(dbPoolUrl);
-        m_ResourceBroker = theResourceBroker;
-        m_dbPoolUrl = dbPoolUrl;
-    }
+	/**
+	 * 
+	 * @param config
+	 * @param dbPoolUrl
+	 * @param theResourceBroker
+	 */
+	public CmsVfsAccess() {
+	}
 
+	/**
+	 * 
+	 * 
+	 */
+	public void init(Configurations config, String dbPoolUrl) {
+		m_SqlQueries = initQueries(dbPoolUrl);
+		m_dbPoolUrl = dbPoolUrl;		
+	}
+	
     /**
      * Deletes all files in CMS_FILES without fileHeader in CMS_RESOURCES
      */

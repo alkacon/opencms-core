@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2003/05/20 11:30:51 $
-* Version: $Revision: 1.204 $
+* Date   : $Date: 2003/05/21 10:25:00 $
+* Version: $Revision: 1.205 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,18 +28,20 @@
 
 package com.opencms.file;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.genericSql.CmsVfsAccess;
-import com.opencms.file.genericSql.I_CmsUserAccess;
-import com.opencms.flex.util.CmsUUID;
-import com.opencms.report.I_CmsReport;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
+
+import com.opencms.core.CmsException;
+import com.opencms.file.genericSql.CmsDbAccess;
+import com.opencms.file.genericSql.CmsUserAccess;
+import com.opencms.file.genericSql.CmsVfsAccess;
+import com.opencms.file.genericSql.I_CmsUserAccess;
+import com.opencms.flex.util.CmsUUID;
+import com.opencms.report.I_CmsReport;
 
 /**
  * This interface describes THE resource broker. All DB-specific access modules must
@@ -49,7 +51,7 @@ import source.org.apache.java.util.Configurations;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.204 $ $Date: 2003/05/20 11:30:51 $
+ * @version $Revision: 1.205 $ $Date: 2003/05/21 10:25:00 $
  *
  */
 
@@ -1761,7 +1763,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      * @param config The OpenCms configuration.
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public void init(Configurations config)
+    public void init(Configurations config, CmsVfsAccess vfsAccess, CmsUserAccess userAccess, CmsDbAccess dbAccess)
         throws CmsException, Exception;
     /**
      * Determines, if the users current group is the admin-group.

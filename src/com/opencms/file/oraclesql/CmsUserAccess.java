@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsUserAccess.java,v $
- * Date   : $Date: 2003/05/20 15:19:38 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/05/21 10:25:00 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  * Oracle/OCI implementation of the user access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2003/05/20 15:19:38 $
+ * @version $Revision: 1.11 $ $Date: 2003/05/21 10:25:00 $
  * 
  * @see com.opencms.file.genericSql.CmsUserAccess
  * @see com.opencms.file.genericSql.I_CmsUserAccess
@@ -69,8 +69,8 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
      * @param config the configurations objects (-> opencms.properties)
      * @param theResourceBroker the instance of the resource broker
      */
-    public CmsUserAccess(Configurations config, String dbPoolUrl, I_CmsResourceBroker theResourceBroker) {
-        super(config, dbPoolUrl, theResourceBroker);
+    public CmsUserAccess() {
+    	
     }
 
     /**
