@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/03 14:55:01 $
- * Version: $Revision: 1.189 $
+ * Date   : $Date: 2000/11/03 17:30:28 $
+ * Version: $Revision: 1.190 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,10 +51,21 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.189 $ $Date: 2000/11/03 14:55:01 $
+ * @version $Revision: 1.190 $ $Date: 2000/11/03 17:30:28 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
+
+	//create a compare class to be used in the vector.
+	class Resource {
+		private String path = null;
+		public Resource(String path) {
+			this.path = path;
+		}
+		public boolean equals(Object obj) {
+			return ( (obj instanceof CmsResource) && path.equals( ((CmsResource) obj).getAbsolutePath() ));
+		}
+	}
 
 	/**
 	 * Constant to count the file-system changes.
@@ -3557,16 +3568,6 @@ public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, String
 	 */
 	protected Vector mergeResources(Vector offline, Vector online) {
 
-		//create a compare class to be used in the vector.
-		class Resource {
-			private String path = null;
-			public Resource(String path) {
-				this.path = path;
-			}
-			public boolean equals(Object obj) {
-				return ( (obj instanceof CmsResource) && path.equals( ((CmsResource) obj).getAbsolutePath() ));
-			}
-		}
 
 		//dont do anything if any of the given vectors are empty or null.
 		if ((offline == null) || (offline.size() == 0)) return (online!=null)?online:new Vector();
