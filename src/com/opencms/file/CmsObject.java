@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.17 $ $Date: 2000/01/12 12:33:33 $ 
+ * @version $Revision: 1.18 $ $Date: 2000/01/12 15:27:58 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -324,6 +324,22 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	}
 	
 	/**
+	 * Reads a file from the Cms.<BR/>
+	 * 
+	 * @param filename The complete path to the file
+	 * 
+	 * @return file The read file.
+	 * 
+	 * @exception CmsException will be thrown, if the file couldn't be read. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */
+	public CmsFile readFile(String filename)
+		throws CmsException { 
+		return null; // TODO: implement this! 
+	}
+	
+	/**
 	 * Reads a file header from the Cms.<BR/>
 	 * The reading excludes the filecontent.
 	 * 
@@ -597,6 +613,22 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		throws CmsException { 
 		return( c_rb.readFolder(m_context.currentUser(), 
 								m_context.getCurrentProject(), folder, folderName ) );
+	}
+	
+	/**
+	 * Reads a folder from the Cms.<BR/>
+	 * 
+	 * @param folder The complete path to the folder to be read.
+	 * 
+	 * @return folder The read folder.
+	 * 
+	 * @exception CmsException will be thrown, if the folder couldn't be read. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */
+	public CmsFolder readFolder(String folder)
+		throws CmsException {
+		return(null); // TODO: implement this!
 	}
 	
 	/**

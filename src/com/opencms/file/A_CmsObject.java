@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.21 $ $Date: 2000/01/12 12:33:33 $ 
+ * @version $Revision: 1.22 $ $Date: 2000/01/12 15:27:58 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -265,6 +265,20 @@ public abstract class A_CmsObject {
 		throws CmsException;
 	
 	/**
+	 * Reads a file from the Cms.<BR/>
+	 * 
+	 * @param filename The complete path to the file
+	 * 
+	 * @return file The read file.
+	 * 
+	 * @exception CmsException will be thrown, if the file couldn't be read. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */
+	abstract public CmsFile readFile(String filename)
+		throws CmsException;
+	
+	/**
 	 * Reads a file header from the Cms.<BR/>
 	 * The reading excludes the filecontent.
 	 * 
@@ -507,6 +521,20 @@ public abstract class A_CmsObject {
 	 * for this resource.
 	 */
 	abstract public CmsFolder readFolder(String folder, String folderName)
+		throws CmsException;
+	
+	/**
+	 * Reads a folder from the Cms.<BR/>
+	 * 
+	 * @param folder The complete path to the folder to be read.
+	 * 
+	 * @return folder The read folder.
+	 * 
+	 * @exception CmsException will be thrown, if the folder couldn't be read. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */
+	abstract public CmsFolder readFolder(String folder)
 		throws CmsException;
 	
 	/**
