@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/08/10 15:47:01 $
- * Version: $Revision: 1.560 $
+ * Date   : $Date: 2004/08/18 11:54:39 $
+ * Version: $Revision: 1.561 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -26,10 +26,15 @@ OpenCms 5.5.0 Ix - August xx, 2004
   setting "Check for new version of a page" of "Auto"
 ! Removed "CmsObject" member from CmsEvent
 ! Added first implementation of XmlContent packages 
-! Refacored XmlPage to use the same code as XmlContent objects do where possible
+! Refacored XmlPage to use the same code as XmlContent objects where possible
 ! Changed validation for XmlPage from DTD to W3C XML schema
 ! Changed DB schema: "FILES" tables are now named "CONTENT"
 ! Changed DB schema: Content now points to resource record instead of vice-versa
+! Changed DB schema: Full resource name is saved in structure record
+! Improved/cleaned up folder layout for the OpenCms workplace
+! Improved/cleaned up package structure for the OpenCms workplace
+! Used Base64 encoder/decoder from org.apache.commons.codec package
+! Removed dependencies from sun.* packages so OpenCms runs better in other vendors VMs
 
 OpenCms 5.3.6 Ix - August 2, 2004
 ! Improved core search configuration by adding configurable "input sources" for the indexers
