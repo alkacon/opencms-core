@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/06 16:36:23 $
- * Version: $Revision: 1.142 $
+ * Date   : $Date: 2003/08/07 09:18:16 $
+ * Version: $Revision: 1.143 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.142 $ $Date: 2003/08/06 16:36:23 $
+ * @version $Revision: 1.143 $ $Date: 2003/08/07 09:18:16 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -2213,6 +2213,8 @@ public class CmsDriverManager extends Object {
 
         // read the metadefinition
         I_CmsResourceType resType = getResourceType(res.getType());
+        
+        // get the property definition
         CmsPropertydefinition metadef = readPropertydefinition(context, property, resType.getResourceType());
 
         if ((metadef != null)) {

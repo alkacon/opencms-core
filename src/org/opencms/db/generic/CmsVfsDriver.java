@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/04 15:59:09 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2003/08/07 09:18:16 $
+ * Version: $Revision: 1.86 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.85 $ $Date: 2003/08/04 15:59:09 $
+ * @version $Revision: 1.86 $ $Date: 2003/08/07 09:18:16 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -1293,6 +1293,12 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      */
     public void deleteProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException {
         CmsPropertydefinition propdef = readPropertydefinition(meta, 0, resourceType);
+        String resourceName = resource.getFullResourceName();
+        
+        // add folder separator to folder name if it is not present
+        if (resourceType == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID  && !resourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+            resourceName += I_CmsConstants.C_FOLDER_SEPARATOR;
+        }
         
         if (propdef == null) {
             // there is no propdefinition with the overgiven name for the resource
@@ -1308,7 +1314,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_DELETE");
                 stmt.setInt(1, propdef.getId());
                 stmt.setString(2, resource.getResourceId().toString());
-                stmt.setString(3, resource.getFullResourceName());
+                stmt.setString(3, resourceName);
                 stmt.executeUpdate();
             } catch (SQLException exc) {
                 throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
