@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/05/21 09:32:20 $
-  * Version: $Revision: 1.24 $
+  * Date   : $Date: 2001/06/27 18:04:47 $
+  * Version: $Revision: 1.25 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -37,7 +37,7 @@
   *  returns the actual help page
   */
  function show_help(){
-	return help_url;
+    return help_url;
  }
 
  /**
@@ -127,8 +127,8 @@
      this.docu;
      this.distanceLeft;
      this.distanceTop;
- 	this.xOffset;
- 	this.yOffset;
+    this.xOffset;
+    this.yOffset;
  }
  
  /**
@@ -164,12 +164,12 @@
          brcfg.showKontext = "<a style=\"cursor:hand;\" onClick=\"javascript:top.showKontext(document,'";
          brcfg.showKontextEnd = ",window.event.x,window.event.y);\">";
  
-     	if (navigator.userAgent.indexOf('MSIE 5')>0){
-     		brcfg.xOffset = '+3+doc.body.scrollLeft';
-     		brcfg.yOffset = '+3+doc.body.scrollTop';
-     	}else{
-         	brcfg.xOffset ='+3'; 
-         	brcfg.yOffset ='+3'; 
+        if (navigator.userAgent.indexOf('MSIE 5')>0){
+            brcfg.xOffset = '+3+doc.body.scrollLeft';
+            brcfg.yOffset = '+3+doc.body.scrollTop';
+        }else{
+            brcfg.xOffset ='+3'; 
+            brcfg.yOffset ='+3'; 
          }
      }
      if(ns){
@@ -181,8 +181,8 @@
          brcfg.distanceLeft = '.left=';
          brcfg.distanceTop = '.top=';
  
-     	brcfg.xOffset = '+3';
-        	brcfg.yOffset = '+3';
+        brcfg.xOffset = '+3';
+            brcfg.yOffset = '+3';
          brcfg.bodyString="<body background='/pics/system/bg_weiss.gif' "+
                  "onLoad='captureEvents(Event.CLICK);top.whichdoc(document); "+
                  "onClick = top.mouseClickedNs;' "+
@@ -194,24 +194,24 @@
  }
  
  function simpleEscape(text) {
- 	return text.replace(/\//g, "%2F");
+    return text.replace(/\//g, "%2F");
  }
  
  function openwinfull(url) 
  {
- 	if (url != '#') {
- 		w=screen.availWidth-50;
- 		h=screen.availHeight-200;
- 		workplace = window.open(url,'preview', 'toolbar=yes,location=yes,directories=no,status=yes,menubar=1,scrollbars=yes,resizable=yes,width='+w+',height='+h);
- 		if(workplace != null) {
+    if (url != '#') {
+        w=screen.availWidth-50;
+        h=screen.availHeight-200;
+        workplace = window.open(url,'preview', 'toolbar=yes,location=yes,directories=no,status=yes,menubar=1,scrollbars=yes,resizable=yes,width='+w+',height='+h);
+        if(workplace != null) {
              if (workplace.opener == null){
- 	         	workplace.opener = self;
- 	      	} else {
- 				workplace.moveTo(0,0);
- 			}
- 		}
- 		workplace.focus();
- 	}	
+                workplace.opener = self;
+            } else {
+                workplace.moveTo(0,0);
+            }
+        }
+        workplace.focus();
+    }   
  }
  
  /**
@@ -250,7 +250,7 @@
          g_histLoc--;
      }
  //    window.frames[1].frames[1].frames[0].document.forms[0].document.location.href=window.frames[1].frames[1].frames[0].document.forms[0].url.value;
- 	openurl();
+    openurl();
  }
  
  /**
@@ -271,9 +271,9 @@
   *  fills 'text' into document 'doc'
   */
  function framefill(doc, text){ /*  fuellt frame 'doc' mit 'text' */
- 	doc.open();
- 	doc.write(text);
- 	doc.close();
+    doc.open();
+    doc.write(text);
+    doc.close();
  }
  
  /**
@@ -283,7 +283,7 @@
  
      var frameStr1 = 
          '<html>' +
-   		 "<head><script language=JavaScript> <!-- function show_help() {	return explorer_content.show_help(); } //--> </script> </head>"+
+         "<head><script language=JavaScript> <!-- function show_help() {    return explorer_content.show_help(); } //--> </script> </head>"+
          '<frameset border=2 frameborder=yes framespacing=2 cols=20%,80%>' +
          '<frame name=explorer_tree id=explorer_tree src="about:blank">' +
          '<frame name=explorer_content id=explorer_content src="about:blank">' +
@@ -302,14 +302,14 @@
      var framehead= '<html><body><font face="helvetica" size=2></body></html>'
      var framebody = '<html><body><font face="helvetica" size=2>body</body></html>'
  
- 	explorer = window.body.document;
- 	framefill(explorer, frameStr1);
+    explorer = window.body.document;
+    framefill(explorer, frameStr1);
  
      explorer_content = window.body.explorer_content.document;
- 	framefill(explorer_content, frameStr2);
+    framefill(explorer_content, frameStr2);
  
      explorer_tree = window.body.explorer_tree.document;
- 	framefill(explorer_tree, frametree);
+    framefill(explorer_tree, frametree);
  
      explorer_head = window.body.explorer_content.explorer_head.document;
      framefill(explorer_head, framehead);
@@ -354,7 +354,7 @@
      var parentName = '_n'+parent;
      var theParent = tree.nodes[parentName];
  
- 	tree.nodes[nodeName] = new node(id, name, 0, theParent, false, isGrey);
+    tree.nodes[nodeName] = new node(id, name, 0, theParent, false, isGrey);
  
      if ((tree.oldNodes != null) && tree.oldNodes[nodeName] != null) {
          tree.nodes[nodeName].open = tree.oldNodes[nodeName].open;
@@ -383,16 +383,16 @@
      var pfad="";
      addHist(window.frames[1].frames[1].frames[0].document.forms[0].url.value);
      top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value="";
- 	if (id!=tree.root.id){
- 		do{
- 			var nodeName='_n'+id;
- 			pfad="/"+tree.nodes[nodeName].name;
- 			top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value = pfad +top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value ;
- 			id   = tree.nodes[nodeName].parent.id;
- 			test = tree.nodes[nodeName].parent.id;
+    if (id!=tree.root.id){
+        do{
+            var nodeName='_n'+id;
+            pfad="/"+tree.nodes[nodeName].name;
+            top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value = pfad +top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value ;
+            id   = tree.nodes[nodeName].parent.id;
+            test = tree.nodes[nodeName].parent.id;
  
- 		}while(id!=tree.root.id);
- 	}	
+        }while(id!=tree.root.id);
+    }   
      top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value +='/';
      openurl();
  }
@@ -404,12 +404,12 @@
  
          while(id!=tree.root.id){
          var nodeName='_n'+id;
- 		if(tree.nodes[nodeName]){
- 				if(tree.nodes[nodeName].childs.length>0)tree.nodes[nodeName].open=true;
- 				
- 				id = tree.nodes[nodeName].parent.id;
- 			}else return;
- 		}
+        if(tree.nodes[nodeName]){
+                if(tree.nodes[nodeName].childs.length>0)tree.nodes[nodeName].open=true;
+                
+                id = tree.nodes[nodeName].parent.id;
+            }else return;
+        }
  
  }
  
@@ -436,39 +436,39 @@
  function node(id, name, type, parent, open, isGrey){
      this.id=id;
      this.name=name;
- 	this.type=type;
- 	this.parent=parent;
- 	this.open=open;
- 	this.childs=new Array();
- 	this.isGrey=isGrey;
+    this.type=type;
+    this.parent=parent;
+    this.open=open;
+    this.childs=new Array();
+    this.isGrey=isGrey;
  }
  
  function dfsToggle(id, node) {
- 	if (id == node.id) {
- 		node.open = !node.open;
- 		tree.dfsToggleFound = true;
- 		return;
- 	}
+    if (id == node.id) {
+        node.open = !node.open;
+        tree.dfsToggleFound = true;
+        return;
+    }
  
- 	for (var loop1=0; loop1<node.childs.length; loop1++) {
+    for (var loop1=0; loop1<node.childs.length; loop1++) {
  
- 		dfsToggle(id, node.childs[loop1]);
- 		if (tree.dfsToggleFound) return;
- 	}
+        dfsToggle(id, node.childs[loop1]);
+        if (tree.dfsToggleFound) return;
+    }
  }
  
 function toggleNode(doc, id, windowed) {
     
-	tree.dfsToggleFound = false;
-	dfsToggle(id, tree.root);
-	showTree(doc,windowed);
+    tree.dfsToggleFound = false;
+    dfsToggle(id, tree.root);
+    showTree(doc,windowed);
 }
  
 /**
  *  write <img> tag
  */
 function showPic(doc, pic) {
-	doc.write("<img src='" + pic + "' height=16 width=16 border=0 vspace=0 hspace=0 align=left>");
+    doc.write("<img src='" + pic + "' height=16 width=16 border=0 vspace=0 hspace=0 align=left>");
 }
  
 /**
@@ -484,51 +484,51 @@ function showPicLink(doc, pic, id,windowed) {
 function dfsTree(doc, node, depth, last, shape,windowed) {
     var loop1;
  
-	if (node.parent==null) {
-		showPic(doc, tree.icon[9].src); // rootdir
-	} else {
-		for (loop1=0; loop1<depth-1; loop1++) {
-			if (shape[loop1+1] == 1) {
-				showPic(doc, tree.icon[10].src); //vert.line
-			} else {
-				showPic(doc, tree.icon[0].src); //nothing
-			}
-		}
+    if (node.parent==null) {
+        showPic(doc, tree.icon[9].src); // rootdir
+    } else {
+        for (loop1=0; loop1<depth-1; loop1++) {
+            if (shape[loop1+1] == 1) {
+                showPic(doc, tree.icon[10].src); //vert.line
+            } else {
+                showPic(doc, tree.icon[0].src); //nothing
+            }
+        }
 
-		if (last) {
-			if (node.childs.length > 0) {
-		    	if (node.open) {
-        	    	//wenn actdir ein child vom knopf ist
-					showPicLink(doc, tree.icon[5].src, node.id,windowed); //corner to close
-				} else {
-					showPicLink(doc, tree.icon[7].src, node.id,windowed); //corner to open 
-				}
-			} else {
-				showPic(doc, tree.icon[1].src); //corner
-			}
- 			shape[depth] = 0;
- 		} else {
- 			if (node.childs.length > 0) {
- 				if (node.open) {
-					showPicLink(doc, tree.icon[6].src, node.id,windowed); //cross to close
- 				} else {
- 					showPicLink(doc, tree.icon[8].src, node.id,windowed); //cross to open
- 				}
- 			} else {
- 				showPic(doc, tree.icon[4].src); //cross
- 			}
- 			shape[depth] = 1;
- 		}
- 		//if (node.open) {
- 		if(node.id==vr.actDirId){
- 			showPic(doc, tree.icon[3].src); //folderopen
- 		} else {
- 			showPic(doc, tree.icon[2].src); //foldernormal
- 		}
- 	}
+        if (last) {
+            if (node.childs.length > 0) {
+                if (node.open) {
+                    //wenn actdir ein child vom knopf ist
+                    showPicLink(doc, tree.icon[5].src, node.id,windowed); //corner to close
+                } else {
+                    showPicLink(doc, tree.icon[7].src, node.id,windowed); //corner to open 
+                }
+            } else {
+                showPic(doc, tree.icon[1].src); //corner
+            }
+            shape[depth] = 0;
+        } else {
+            if (node.childs.length > 0) {
+                if (node.open) {
+                    showPicLink(doc, tree.icon[6].src, node.id,windowed); //cross to close
+                } else {
+                    showPicLink(doc, tree.icon[8].src, node.id,windowed); //cross to open
+                }
+            } else {
+                showPic(doc, tree.icon[4].src); //cross
+            }
+            shape[depth] = 1;
+        }
+        //if (node.open) {
+        if(node.id==vr.actDirId){
+            showPic(doc, tree.icon[3].src); //folderopen
+        } else {
+            showPic(doc, tree.icon[2].src); //foldernormal
+        }
+    }
  
- //	if (node.parent==null) doc.writeln("&nbsp;<a href='javascript:top.openFolder(&quot;"+ node.id +"&quot;,"+node+");' target='explorer_files' class='tf' ;> &nbsp;"+ node.name + "</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
- //    	else 
+ // if (node.parent==null) doc.writeln("&nbsp;<a href='javascript:top.openFolder(&quot;"+ node.id +"&quot;,"+node+");' target='explorer_files' class='tf' ;> &nbsp;"+ node.name + "</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
+ //     else 
  
  //  doc.writeln("&nbsp;<a href='javascript:top.openFolder(&quot;"+ node.id +"&quot;);' target='explorer_files'  class='tf' ;> &nbsp;"+ node.name + "</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
  
@@ -540,11 +540,11 @@ function dfsTree(doc, node, depth, last, shape,windowed) {
 
      //javascript:window.opener.frames[1].document.COPY.folder.value =node.name '>&nbsp;"+ node.name + "&nbsp;</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
 
- 	if (node.open || node == tree.root) {
- 		for (var loop1=0; loop1<node.childs.length; loop1++) {
- 			dfsTree(doc, node.childs[loop1], depth+1, (loop1==(node.childs.length-1)), shape,windowed);	
- 		}
- 	}
+    if (node.open || node == tree.root) {
+        for (var loop1=0; loop1<node.childs.length; loop1++) {
+            dfsTree(doc, node.childs[loop1], depth+1, (loop1==(node.childs.length-1)), shape,windowed); 
+        }
+    }
  }
 
 function addDir(nodid){
@@ -552,21 +552,21 @@ function addDir(nodid){
     
     var pfad="";
 
- 	if (nodid!=tree.root.id){
- 		do{
- 			var nodeName='_n'+nodid;
- 			pfad=tree.nodes[nodeName].name+"/"+pfad;
- 			//top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value = pfad +top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value ;
- 			nodid   = tree.nodes[nodeName].parent.id;
- 			test = tree.nodes[nodeName].parent.id;
+    if (nodid!=tree.root.id){
+        do{
+            var nodeName='_n'+nodid;
+            pfad=tree.nodes[nodeName].name+"/"+pfad;
+            //top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value = pfad +top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value ;
+            nodid   = tree.nodes[nodeName].parent.id;
+            test = tree.nodes[nodeName].parent.id;
 
- 		}while(nodid!=tree.root.id);
- 	}
+        }while(nodid!=tree.root.id);
+    }
     pfad='/'+pfad;
 
-	//window.frames[1].frames[1].PROJECTNEW.tempFolder.value=pfad;
-	if(window.frames[1].frames[1].frames[1])window.frames[1].frames[1].frames[1].document.forms[0].folder.value=pfad;
-	else window.frames[1].frames[1].document.forms[0].folder.value=pfad;
+    //window.frames[1].frames[1].PROJECTNEW.tempFolder.value=pfad;
+    if(window.frames[1].frames[1].frames[1])window.frames[1].frames[1].frames[1].document.forms[0].folder.value=pfad;
+    else window.frames[1].frames[1].document.forms[0].folder.value=pfad;
 
 }
  
@@ -574,73 +574,73 @@ function addProjectDir(nodid){
 
     var pfad="";
 
- 	if (nodid!=tree.root.id){
- 		do{
- 			var nodeName='_n'+nodid;
- 			pfad=tree.nodes[nodeName].name+"/"+pfad;
- 			//top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value = pfad +top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value ;
- 			nodid   = tree.nodes[nodeName].parent.id;
- 			test = tree.nodes[nodeName].parent.id;
+    if (nodid!=tree.root.id){
+        do{
+            var nodeName='_n'+nodid;
+            pfad=tree.nodes[nodeName].name+"/"+pfad;
+            //top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value = pfad +top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value ;
+            nodid   = tree.nodes[nodeName].parent.id;
+            test = tree.nodes[nodeName].parent.id;
 
- 		}while(nodid!=tree.root.id);
- 	}
+        }while(nodid!=tree.root.id);
+    }
     pfad='/'+pfad;
 
-	//window.frames[1].frames[1].PROJECTNEW.tempFolder.value=pfad;
-	window.frames[1].frames[1].document.forms[0].tempFolder.value=pfad;
+    //window.frames[1].frames[1].PROJECTNEW.tempFolder.value=pfad;
+    window.frames[1].frames[1].document.forms[0].tempFolder.value=pfad;
 
-	if (window.frames[1].frames[1].copySelection) { 
-		window.frames[1].frames[1].copySelection();
-	}
+    if (window.frames[1].frames[1].copySelection) { 
+        window.frames[1].frames[1].copySelection();
+    }
 }
 
 
 function opensmallwin(url, name, w, h) //opens a new window with parameter URL, Windowname (free choosable), width and height
 {
-	smallwindow = window.open(url, name, 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width='+w+',height='+h);
-	if(smallwindow != null)
-	   {
-	      if (smallwindow.opener == null)
-	      {
-	         smallwindow.opener = self;
-	      }
-   		}
-	smallwindow.focus();
-	return smallwindow;
+    smallwindow = window.open(url, name, 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width='+w+',height='+h);
+    if(smallwindow != null)
+       {
+          if (smallwindow.opener == null)
+          {
+             smallwindow.opener = self;
+          }
+        }
+    smallwindow.focus();
+    return smallwindow;
 }
 
  
 function showWinCopyTree(doc){
 
-	showTree(doc,2);
+    showTree(doc,2);
 
-	//toggleNode(doc,tree.root.id,1);
-	//showTree(doc,1);
+    //toggleNode(doc,tree.root.id,1);
+    //showTree(doc,1);
 }
 
 function showWinTree(doc){
 
-	showTree(doc,1);
-	//toggleNode(doc,tree.root.id,1);
-	//showTree(doc,1);
+    showTree(doc,1);
+    //toggleNode(doc,tree.root.id,1);
+    //showTree(doc,1);
 }
 
 var treewindowexists=false;
  
 function openTreeCopyWin(){
     treewin=opensmallwin('treewindowcopy.html', 'opencms', 170, 300);
-   	treewindowexists=true;
+    treewindowexists=true;
 }
  
 function openTreeWin(){
-	treewin=opensmallwin('../../../action/treewindow.html', 'opencms', 170, 300);
-	treewindowexists=true;
+    treewin=opensmallwin('../../../action/treewindow.html', 'opencms', 170, 300);
+    treewindowexists=true;
 }
  
 function closeTreeWin(){
-    if(	treewindowexists==true){
-    	window.treewin.close();
-	    treewindowexists=false;
+    if( treewindowexists==true){
+        window.treewin.close();
+        treewindowexists=false;
     }
 }
 
@@ -663,7 +663,7 @@ function showTree(doc,windowed) {
 }
 
  function updateFrame(which, frameurl){
- 	eval('window.top.'+which+'.location.href="'+frameurl+'"');
+    eval('window.top.'+which+'.location.href="'+frameurl+'"');
  }
  
  /**
@@ -694,8 +694,8 @@ function showTree(doc,windowed) {
      var zaehler=0;
      addHist(window.frames[1].frames[1].frames[0].document.forms[0].url.value);
  
- 	var newDir = directory.substring(0, directory.length -1);
- 	window.frames[1].frames[1].frames[0].document.forms[0].url.value=newDir.substring(0, newDir.lastIndexOf("/")+1);
+    var newDir = directory.substring(0, directory.length -1);
+    window.frames[1].frames[1].frames[0].document.forms[0].url.value=newDir.substring(0, newDir.lastIndexOf("/")+1);
  
  /*    for(i=directory.length;i>=0;i--){
  
@@ -711,7 +711,7 @@ function showTree(doc,windowed) {
      }
      window.frames[1].frames[1].frames[0].document.forms[0].url.value=window.frames[1].frames[1].frames[0].document.forms[0].url.value+"/";
  */
- 	if(window.frames[1].frames[1].frames[0].document.forms[0].url.value.length<3)window.frames[1].frames[1].frames[0].document.forms[0].url.value="/";
+    if(window.frames[1].frames[1].frames[0].document.forms[0].url.value.length<3)window.frames[1].frames[1].frames[0].document.forms[0].url.value="/";
      
      openurl();
  }
@@ -765,7 +765,7 @@ else dirup="<a href=javascript:top.dirUp(); onmouseover=\"top.chon(document,'bt_
             "<a href=javascript:top.histGoBack(); onmouseover=\"top.chon(document,'bt_back');\" onmouseout=\"top.choff(document,'bt_back');\" >"+
             "<img alt='"+vr.langback+"' src='"+vi.iconPath+"bt_back_off.gif' width=32 height=32  border=0 name='bt_back'></a></td>"+ 
             "<td class=menu nowrap width=32px>"+
-			dirup+
+            dirup+
             "<img alt='"+vr.langup+"' name='bt_up' src='"+vi.iconPath+"bt_up_off.gif' width=32 height=32 border=0 name=bt_up ></a></td>";
 
     var headFoot="<td class=menu width=30px nowrap align=right>&nbsp;</td>"+
@@ -847,7 +847,7 @@ function setProject(setto){
  *  sets the directory the user is in...
  */
 function setDirectory(id, setto){
-	vr.actDirId=id;
+    vr.actDirId=id;
     vr.actDirectory=setto; 
 }
  
@@ -910,7 +910,7 @@ function enableNewButton(showit){
   *  add a file to filelist
   */
  function aF(name, path, title, type, dateolc, whoChanged, date, size, status, project, owner, group, permission, lockedBy){
- 	vi.liste[vi.liste.length] = new file( name, path, title, type, dateolc, whoChanged, date, size, status, project, owner, group, permission, lockedBy);
+    vi.liste[vi.liste.length] = new file( name, path, title, type, dateolc, whoChanged, date, size, status, project, owner, group, permission, lockedBy);
  }
  
  
@@ -932,59 +932,59 @@ function enableNewButton(showit){
      var lockedBystring;
      var ssclass;
      var temp="<html><head>"+
-	   		 "<script language=JavaScript> <!-- function show_help() {	return '2_1_2_2.html'; } //--> </script>"+
+             "<script language=JavaScript> <!-- function show_help() {  return '2_1_2_2.html'; } //--> </script>"+
              "<style type='text/css'>"+
              "<!"+"--"+
              "h1 { font-size:48pt; color:#FF0000; font-style:italic; } "+
-			 // t: topic
+             // t: topic
              "td.t { background:#c0c0c0; font-size:8pt} "+
              "a { text-decoration: none; } "+
              "td{ font-family: arial, helvetica; font-size: 9pt; }; "+
  
- 			// file changed
+            // file changed
              "td.fc{ color: #B40000; } "+
              "a.fc{  color: #B40000; font-family: arial, helvetica; font-size: 9pt; } "+
              "a:visited.fc{ color: #B40000; }"+
              "a:hover.fc { background:#000088; color:#FFFFFF; text-decoration: none; } "+
  
- 			// file new
+            // file new
              "td.fn{ color: #0000aa; } "+
              "a.fn{  color: #0000aa; } "+
              "a:visited.fn{ color: #0000aa; } "+
              "a:hover.fn{ background:#000066 ; color:#FFFFFF; text-decoration: none; } "+
      
-	 		// file deleted
-	 		"td.fd{ color: #000000; text-decoration: line-through;} "+
+            // file deleted
+            "td.fd{ color: #000000; text-decoration: line-through;} "+
              "a.fd{ color: #000000; font-family: arial, helvetica; font-size: 9pt; text-decoration: line-through;} "+
              "a:visited.fd{ color: #000000; text-decoration: line-through;} "+
              "a:hover.fd{ background:#000066; color:#FFFFFF; text-decoration: line-through; } "+
  
- 			// file not in project
+            // file not in project
              "td.fp{ color: silver;} "+
              "a.fp{ color: #888888; } "+
              "a:visited.fp{ color: #888888;} "+
              "a:hover.fp { background:#000066; color:#FFFFFF; text-decoration: none; } "+
  
- 			// normal file
+            // normal file
              "td.nf{ color:#000000; } "+
              "a.nf{ color: #000000; } "+
              "a:visited.nf{ color: #000000; } "+
              "a:hover.nf { background:#000066; color:#FFFFFF; text-decoration: none; } "+
  
- 			// km: km
+            // km: km
              "div.km{ position: absolute; top: 0px; left: 0px; width: 150px; text-indent: 2px; background-color: #c0c0c0; visibility: hidden; z-index: 100;} "+
-			// fk: fk
+            // fk: fk
              "table.fk{ width: 150px; background-color: #c0c0c0; } "+
-			// kl: kl
+            // kl: kl
              "a.kl { background-color:#c0c0c0; color: black; text-decoration: none;} "+
              "a:hover.kl { color:#FFFFFF; } "+
              "td.inactive{ color:#8c8c8c; } "+
              "/"+"/"+"--></style></head>";
- 	var returnplace=window.frames[1].frames[1].frames[1].document.location.href;
- 	returnplace=returnplace.substring(0, returnplace.lastIndexOf("/")) + "/explorer_files.html";
- 	returnplace=simpleEscape(returnplace);
+    var returnplace=window.frames[1].frames[1].frames[1].document.location.href;
+    returnplace=returnplace.substring(0, returnplace.lastIndexOf("/")) + "/explorer_files.html";
+    returnplace=simpleEscape(returnplace);
  
- 	wo.open();
+    wo.open();
      wo.writeln(temp);
      wo.writeln(brcfg.bodyString);
  
@@ -1026,34 +1026,34 @@ function enableNewButton(showit){
          wo.write("<img src='"+vi.resource[vi.liste[i].type].icon+"' border=0 width=16 height=16></a>");
          wo.writeln("</td>");
  
- 		wo.write("<td nowrap align=center>");
-		
-		var lockIcon;
-		
+        wo.write("<td nowrap align=center>");
+        
+        var lockIcon;
+        
          if(vi.liste[i].lockedBy!=""){
             if(vr.userName == vi.liste[i].lockedBy){
                  lockIcon=vi.iconPath+'ic_lockuser.gif';
             }else{
-			 	lockIcon=vi.iconPath+'ic_lock.gif';
-			}
+                lockIcon=vi.iconPath+'ic_lock.gif';
+            }
              lockedBystring="alt=\""+vr.altlockedby+" "+vi.liste[i].lockedBy+"\"";
-			wo.write("<img src='"+lockIcon+"' "+lockedBystring+" border=0 width=16 height=16></a>");
+            wo.write("<img src='"+lockIcon+"' "+lockedBystring+" border=0 width=16 height=16></a>");
          }
- 		wo.write("</td>");
+        wo.write("</td>");
  
          if(vi.check_name){
              if(vi.liste[i].type==0)wo.writeln("<td class="+ssclass+"><a href=javascript:top.openthisfolder('"+vi.liste[i].name+"'); class="+ssclass+">&nbsp;"+vi.liste[i].name+"&nbsp;</a></td>");
                  else wo.writeln("<td class="+ssclass+"><a href=javascript:top.openwinfull('"+vr.servpath+vr.actDirectory+vi.liste[i].name+"'); class="+ssclass+">&nbsp;"+vi.liste[i].name+"&nbsp;</a></td>"); 
- 			}
+            }
          if(vi.check_title)wo.writeln("<td nowrap class="+ssclass+">&nbsp;"+vi.liste[i].title+"&nbsp;</td>");
-         if(vi.check_type)wo.writeln("<td class="+ssclass+">&nbsp;"+vi.resource[vi.liste[i].type].text+"</td>");
+         if(vi.check_type)wo.writeln("<td nowrap class="+ssclass+">&nbsp;"+vi.resource[vi.liste[i].type].text+"</td>");
          if(vi.check_date)wo.writeln("<td nowrap class="+ssclass+">&nbsp;"+vi.liste[i].date+"</td>");
-         if(vi.check_size)wo.writeln("<td class="+ssclass+">&nbsp;"+vi.liste[i].size+"</td>");
-         if(vi.check_status)wo.writeln("<td class="+ssclass+">&nbsp;"+vr.stati[vi.liste[i].status]+"</td>");
-         if(vi.check_owner)wo.writeln("<td class="+ssclass+">&nbsp;"+vi.liste[i].owner+"</td>");
-         if(vi.check_group)wo.writeln("<td class="+ssclass+">&nbsp;"+vi.liste[i].group+"</td>");
-         if(vi.check_perm)wo.write("<td class="+ssclass+">&nbsp;"+permShow(vi.liste[i].permission,wo)+"</td>");
-         if(vi.check_lockedBy)wo.writeln("<td class="+ssclass+">&nbsp;"+vi.liste[i].lockedBy+"</td>");
+         if(vi.check_size)wo.writeln("<td nowrap class="+ssclass+">&nbsp;"+vi.liste[i].size+"</td>");
+         if(vi.check_status)wo.writeln("<td nowrap class="+ssclass+">&nbsp;"+vr.stati[vi.liste[i].status]+"</td>");
+         if(vi.check_owner)wo.writeln("<td nowrap class="+ssclass+">&nbsp;"+vi.liste[i].owner+"</td>");
+         if(vi.check_group)wo.writeln("<td nowrap class="+ssclass+">&nbsp;"+vi.liste[i].group+"</td>");
+         if(vi.check_perm)wo.write("<td nowrap class="+ssclass+">&nbsp;"+permShow(vi.liste[i].permission,wo)+"</td>");
+         if(vi.check_lockedBy)wo.writeln("<td nowrap class="+ssclass+">&nbsp;"+vi.liste[i].lockedBy+"</td>");
          wo.writeln("</td></tr>");
      }
      wo.writeln("</tr></table>");
@@ -1071,29 +1071,29 @@ function enableNewButton(showit){
                 if(vi.liste[i].project==vr.onlineProject){ /* online project? */
                      if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='0'){
                      }else{
- 						if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='1'){
- 							if(vi.menus[vi.liste[i].type].items[a].name=="-")wo.writeln("<tr><td><hr size=1></td></tr>");
- 							else wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
- 						}else{
- 							if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='2'){
- 								if(vi.menus[vi.liste[i].type].items[a].name=="-"){
- 									wo.writeln("<tr><td><hr size=1></td></tr>");
- 								} else {
- 								if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
- 								 else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
- 								}
- 							}
- 						}
-						if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='3'){
-							if(vr.actProject==vr.onlineProject){
- 								if(vi.menus[vi.liste[i].type].items[a].name=="-"){
- 									wo.writeln("<tr><td><hr size=1></td></tr>");
- 								} else {
-									if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-									 else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-								}
-							}
-						}
+                        if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='1'){
+                            if(vi.menus[vi.liste[i].type].items[a].name=="-")wo.writeln("<tr><td><hr size=1></td></tr>");
+                            else wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
+                        }else{
+                            if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='2'){
+                                if(vi.menus[vi.liste[i].type].items[a].name=="-"){
+                                    wo.writeln("<tr><td><hr size=1></td></tr>");
+                                } else {
+                                if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                                 else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                                }
+                            }
+                        }
+                        if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='3'){
+                            if(vr.actProject==vr.onlineProject){
+                                if(vi.menus[vi.liste[i].type].items[a].name=="-"){
+                                    wo.writeln("<tr><td><hr size=1></td></tr>");
+                                } else {
+                                    if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                                     else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                                }
+                            }
+                        }
                      }
                  }else{
                      /* if not locked */
@@ -1107,21 +1107,21 @@ function enableNewButton(showit){
                      }
                      if(display == 0){
                      }else{
- 						if(display == 1){
- 							if(vi.menus[vi.liste[i].type].items[a].name=="-") wo.writeln("<tr><td><hr size=1></td></tr>");
- 							else wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
- 						}else{
- 							if(display == 2){
- 								if(vi.menus[vi.liste[i].type].items[a].name=="-"){
- 									wo.writeln("<tr><td><hr size=1></td></tr>");
- 								}else{
- 									if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/' >"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-										else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-								}
-							}
-						}
-					}
-				}
+                        if(display == 1){
+                            if(vi.menus[vi.liste[i].type].items[a].name=="-") wo.writeln("<tr><td><hr size=1></td></tr>");
+                            else wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
+                        }else{
+                            if(display == 2){
+                                if(vi.menus[vi.liste[i].type].items[a].name=="-"){
+                                    wo.writeln("<tr><td><hr size=1></td></tr>");
+                                }else{
+                                    if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/' >"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                                        else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                                }
+                            }
+                        }
+                    }
+                }
             }
         wo.writeln("</table></td></tr></table></div>");
     }
@@ -1198,20 +1198,20 @@ function showKontext(doc, welche, id,x,y){
 
     if (!vi.shown || id!=vi.oldId){
         if(y >= (screen.availHeight/2)){
-        	eval(brcfg.docu+"men"+welche+brcfg.distanceTop+'y'+brcfg.yOffset);
-       	}
-		eval(brcfg.docu+"men"+welche+brcfg.distanceTop+'y'+brcfg.yOffset);
+            eval(brcfg.docu+"men"+welche+brcfg.distanceTop+'y'+brcfg.yOffset);
+        }
+        eval(brcfg.docu+"men"+welche+brcfg.distanceTop+'y'+brcfg.yOffset);
         eval(brcfg.docu+"men"+welche+brcfg.distanceLeft+'x'+brcfg.xOffset);
 
-		hideMenu(doc, vi.lastLayer);
-		eval(brcfg.allLayers+"men"+welche+brcfg.showLayer);
-		vi.shown = true;
-   	} else {
-		hideMenu(doc, vi.lastLayer);
-		vi.shown = false;
-   	}
-	vi.lastLayer=welche;
-	vi.oldId=id;
+        hideMenu(doc, vi.lastLayer);
+        eval(brcfg.allLayers+"men"+welche+brcfg.showLayer);
+        vi.shown = true;
+    } else {
+        hideMenu(doc, vi.lastLayer);
+        vi.shown = false;
+    }
+    vi.lastLayer=welche;
+    vi.oldId=id;
     vi.dokument=doc;
 }
 
@@ -1219,11 +1219,11 @@ function showKontext(doc, welche, id,x,y){
  *  hides the context (layer)
  */
 function hideMenu(doc, welche){
-	if(welche!=null){
-		eval(brcfg.allLayers+"men"+welche+brcfg.hideLayer);
-		vi.shown=false;
-	}
-	else return;
+    if(welche!=null){
+        eval(brcfg.allLayers+"men"+welche+brcfg.hideLayer);
+        vi.shown=false;
+    }
+    else return;
 }
 
 /**

@@ -12,6 +12,7 @@ OpenCms 4.3.21 Bela Tegeuse - 28 June 2001
 * General Bugfixing
 * When creating or changing a resource in a folder all subfolders only need read access
   (like UNIX)
+- The workplace-title now shows the actual server-name.
 
 OpenCms 4.3.20 Bela Tegeuse - 25 June 2001
 ! Advanced Projectmechanism
