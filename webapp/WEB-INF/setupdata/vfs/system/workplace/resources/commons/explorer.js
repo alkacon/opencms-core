@@ -509,7 +509,8 @@ function printList(wo) {
 					projectIcon = vi.skinPath + 'explorer/project_this.gif';
 					projectAltText = vr.altbelongto + vi.liste[i].lockedInProjectName;
 				} else {
-					projectIcon = vi.skinPath + 'explorer/project_other.gif ';projectAltText = vr.altbelongto + vi.liste[i].lockedInProjectName;
+					projectIcon = vi.skinPath + 'explorer/project_other.gif ';
+					projectAltText = vr.altbelongto + vi.liste[i].lockedInProjectName;
 				}
 			} else {
 				projectIcon = vi.skinPath + 'explorer/project_none.gif';
