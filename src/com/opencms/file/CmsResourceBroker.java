@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.49 $ $Date: 2000/02/10 17:13:41 $
+ * @version $Revision: 1.50 $ $Date: 2000/02/11 09:06:14 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -283,6 +283,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				}
 			}
 		}
+		// remove the online-project, it is not manageable!
+		projects.removeElement(onlineProject(currentUser, currentProject));
 		// return the vector of projects
 		return(projects);
 	 }	
@@ -2676,7 +2678,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				
 			// write-acces  was granted - rename the file.
 			m_fileRb.renameFile(currentProject, 
-								onlineProject(currentUser, currentProject), oldname, newname );
+								onlineProject(currentUser, currentProject), 
+								oldname, file.getPath() + newname );
 			// inform about the file-system-change
 			fileSystemChanged(currentProject.getName(), oldname);
 		} else {
