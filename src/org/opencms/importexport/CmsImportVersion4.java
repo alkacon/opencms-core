@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/11/12 11:34:48 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2004/11/12 18:42:25 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -462,19 +462,13 @@ public class CmsImportVersion4 extends A_CmsImport {
                 // <flags>              
                 flags = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
 
-                // apply name translation and import path
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("Original import resource name is: " + destination);
-                }                
+                // apply name translation and import path         
                 String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);                
                 if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(type)) {
                     // ensure folders end with a "/"
                     if (! CmsResource.isFolder(translatedName)) {
                         translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
                     }
-                }
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("Translated import resource name is: " + translatedName);
                 }
                 
                 // check if this resource is immutable
