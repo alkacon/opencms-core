@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetup.java,v $
- * Date   : $Date: 2004/02/20 16:29:29 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/02/21 13:10:01 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.dom4j.io.SAXReader;
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  */
 public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsShellCommands {
 
@@ -1170,7 +1170,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         // build the complete filename
         String exportPath = null;
         exportPath = m_cms.readPackagePath();
-        String fileName = OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(exportPath + CmsRegistry.C_MODULE_PATH + importFile);
+        String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(exportPath + CmsRegistry.C_MODULE_PATH + importFile);
         // import the module
         System.out.println("Importing module: " + fileName);
         // create a temporary project for the import

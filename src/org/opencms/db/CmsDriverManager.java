@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/02/16 09:47:44 $
- * Version: $Revision: 1.325 $
+ * Date   : $Date: 2004/02/21 13:10:01 $
+ * Version: $Revision: 1.326 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.dom4j.io.SAXReader;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.325 $ $Date: 2004/02/16 09:47:44 $
+ * @version $Revision: 1.326 $ $Date: 2004/02/21 13:10:01 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -3421,7 +3421,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         try {
             // read the import file resource
-            importResource = new File(OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(importFile));
+            importResource = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(importFile));
 
             if (importResource.isFile()) {
                 // a ZIP file
@@ -4597,7 +4597,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Initializing registry: starting");
         }
         try {
-            m_registry = new CmsRegistry(OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(config.getString(I_CmsConstants.C_CONFIGURATION_REGISTRY)));
+            m_registry = new CmsRegistry(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(config.getString(I_CmsConstants.C_CONFIGURATION_REGISTRY)));
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception ex) {

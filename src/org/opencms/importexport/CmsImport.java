@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
-* Date   : $Date: 2004/02/17 11:40:29 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2004/02/21 13:10:01 $
+* Version: $Revision: 1.15 $
 *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.dom4j.io.SAXReader;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.14 $ $Date: 2004/02/17 11:40:29 $
+ * @version $Revision: 1.15 $ $Date: 2004/02/21 13:10:01 $
  */
 public class CmsImport implements Serializable {
 
@@ -371,7 +371,7 @@ public class CmsImport implements Serializable {
     protected void getImportResource() throws CmsException {
         try {
             // get the import resource
-            m_importResource = new File(OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(m_importFile));
+            m_importResource = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(m_importFile));
 
             // if it is a file it must be a zip-file
             if (m_importResource.isFile()) {

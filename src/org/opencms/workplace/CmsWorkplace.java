@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/02/18 15:26:17 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2004/02/21 13:10:01 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.59 $
+ * @version $Revision: 1.60 $
  * 
  * @since 5.1
  */
@@ -383,9 +383,9 @@ public abstract class CmsWorkplace {
         synchronized (this) {
             boolean useVfs = (new Boolean(OpenCms.getRegistry().getSystemValue("UseWpPicturesFromVFS"))).booleanValue();
             if (useVfs) {
-                m_resourceUri = m_cms.getRequestContext().getRequest().getServletUrl() + I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS;
+                m_resourceUri = OpenCms.getSystemInfo().getOpenCmsContext() + I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS;
             } else {
-                m_resourceUri = m_cms.getRequestContext().getRequest().getWebAppUrl() + I_CmsWpConstants.C_SYSTEM_PICS_EXPORT_PATH;
+                m_resourceUri = OpenCms.getSystemInfo().getContextPath() + I_CmsWpConstants.C_SYSTEM_PICS_EXPORT_PATH;
             }            
         }
         return m_resourceUri;

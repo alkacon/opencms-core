@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/02/20 12:45:54 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/02/21 13:10:01 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -305,7 +305,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      * @param configuration the OpenCms configuration 
      */
     public void init(ExtendedProperties configuration) {
-        m_jspRepository = OpenCms.getSystemInfo().getWebInfPath();
+        m_jspRepository = OpenCms.getSystemInfo().getWebInfRfsPath();
         if (m_jspRepository.indexOf("WEB-INF") >= 0) {
             // Should always be true, just make sure we don't generate an exception in untested environments
             m_jspRepository = m_jspRepository.substring(0, m_jspRepository.indexOf("WEB-INF")-1);

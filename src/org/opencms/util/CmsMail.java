@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsMail.java,v $
- * Date   : $Date: 2004/02/20 07:21:06 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/21 13:10:01 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import javax.mail.internet.MimeMultipart;
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  *
- * @version $Name:  $ $Revision: 1.3 $ $Date: 2004/02/20 07:21:06 $
+ * @version $Name:  $ $Revision: 1.4 $ $Date: 2004/02/21 13:10:01 $
  * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
  */
 public class CmsMail extends Thread {
@@ -514,9 +514,10 @@ public class CmsMail extends Thread {
      * CC and BCC addresses.<p>
      * 
      * Will be called from the thread connecting to the SMTP server
-     * and sending the mail
+     * and sending the mail.<p>
+     * 
      * @param smtpHost Name of the SMTP host that should be connected
-     * @return <code>Message</code> object that can be used as argument for the <code>Transport</code> class
+     * @return object that can be used as argument for the <code>Transport</code> class
      * @throws Exception no exceptions occuring while building the mail will be caught
      */
     private Message buildMessage(String smtpHost) throws Exception {
@@ -724,7 +725,7 @@ public class CmsMail extends Thread {
      * 
      * @author  Alexander Kandzior (a.kandzior@alkacon.com)
      * 
-     * @version $Revision: 1.3 $ $Date: 2004/02/20 07:21:06 $
+     * @version $Revision: 1.4 $ $Date: 2004/02/21 13:10:01 $
      * @see org.opencms.util.CmsMail
      */
     class CmsByteArrayDataSource implements DataSource {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/02/19 11:46:11 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/02/21 13:10:01 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -180,14 +180,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         exportManager.setExportSuffixes(exportSuffixes);
         
         // set the path for the export
-        exportManager.setExportPath(CmsLinkManager.getAbsoluteUri(configuration.getString("staticexport.export_path", "export"), OpenCms.getSystemInfo().getWebApplicationName()));
+        exportManager.setExportPath(CmsLinkManager.getAbsoluteUri(configuration.getString("staticexport.export_path", "export"), OpenCms.getSystemInfo().getContextPath()));
 
         // replace the "magic" names                 
-        String servletName = "/" + OpenCms.getSystemInfo().getServletPath(); 
-        String contextName = "/" + OpenCms.getSystemInfo().getWebApplicationName(); 
-        if (OpenCms.getSystemInfo().getDefaultWebApplicationName().equals(contextName)) {
-            contextName = "";
-        }
+        String servletName = OpenCms.getSystemInfo().getServletPath(); 
+        String contextName = OpenCms.getSystemInfo().getContextPath();
         
         // set the "magic" names in the extended properties
         configuration.setProperty("CONTEXT_NAME", contextName);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2004/02/21 13:10:01 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.54 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault {
@@ -90,7 +90,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         }
         filecontent = (byte[])session.getValue(C_PARA_FILECONTENT);
         // first create the folder if it doesnt exists
-        File discFolder = new File(OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(cms.readPackagePath() + File.separator));
+        File discFolder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + File.separator));
         if(!discFolder.exists()) {
             boolean success = discFolder.mkdir();
             if(OpenCms.getLog(this).isWarnEnabled() && (!success)) {
@@ -99,7 +99,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         }
 
         // now write the file into the modules dierectory in the exportpaht
-        File discFile = new File(OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(cms.readPackagePath() + File.separator + filename));
+        File discFile = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + File.separator + filename));
         try {
 
             // write the new file to disk
@@ -240,7 +240,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 }
                 // start the thread for: export
                 A_CmsReportThread doExport = new CmsDatabaseExportThread(cms, 
-                    OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(cms.readPackagePath() + File.separator + fileName),                        
+                    OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + File.separator + fileName),                        
                     exportPaths, excludeSystem, excludeUnchanged, exportUserdata, contentAge);
                     
                 doExport.start();
@@ -272,7 +272,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 
                 // start the thread for: exportmodules
                 A_CmsReportThread doExport = new CmsDatabaseExportThread(cms, 
-                    OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(cms.readPackagePath() + File.separator + fileName),
+                    OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + File.separator + fileName),
                     exportChannels, exportModules);
                             
                 doExport.start();
@@ -293,7 +293,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 if ("go".equals(step) ){
                     // start the thread for: import
                     A_CmsReportThread doImport = new CmsDatabaseImportThread(cms,
-                        OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(cms.readPackagePath() + File.separator + existingFile));                   
+                        OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(cms.readPackagePath() + File.separator + existingFile));                   
                     doImport.start();
                     session.putValue(C_DATABASE_THREAD, doImport);
                     xmlTemplateDocument.setData("time", "10");
@@ -337,7 +337,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
     ) throws CmsException {
         // get the systems-exportpath
         String exportpath = cms.readPackagePath();
-        exportpath = OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(exportpath);
+        exportpath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(exportpath);
         File folder = new File(exportpath);
         if (!folder.exists()) {
             folder.mkdirs();

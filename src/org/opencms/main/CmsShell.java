@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2004/02/19 14:54:15 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/02/21 13:10:01 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * in more then one of the command objects, the method is only executed on the first matching object.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @see org.opencms.main.CmsShellCommands
  * @see org.opencms.file.CmsRequestContext
  * @see org.opencms.file.CmsObject
@@ -436,7 +436,7 @@ public class CmsShell {
             m_opencms.getSystemInfo().setWebInfPath(webInfPath);
             
             // now read the configuration properties
-            String propertyPath = m_opencms.getSystemInfo().getConfigurationFilePath();
+            String propertyPath = m_opencms.getSystemInfo().getConfigurationFileRfsPath();
             System.out.println("OpenCms property file: " + propertyPath);
             System.out.println();            
             ExtendedProperties configuration = CmsSetupUtils.loadProperties(propertyPath);
