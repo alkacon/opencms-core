@@ -7,7 +7,7 @@
 <!-- Created by Alexander Kandzior (a.kandzior@alkacon.com) on 6. April 2002, 17:28 -->
 
 <taglib>
-    <tlib-version>0.9.2</tlib-version>
+    <tlib-version>0.9.5</tlib-version>
     <jsp-version>1.2</jsp-version>
     <short-name>cms</short-name>
     <uri>http://www.opencms.org/taglib/cms</uri>
