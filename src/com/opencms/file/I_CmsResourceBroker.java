@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/13 18:03:11 $
- * Version: $Revision: 1.135 $
+ * Date   : $Date: 2000/12/21 08:52:47 $
+ * Version: $Revision: 1.136 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.135 $ $Date: 2000/12/13 18:03:11 $
+ * @version $Revision: 1.136 $ $Date: 2000/12/21 08:52:47 $
  * 
  */
 
@@ -2340,6 +2340,22 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
 	 */		
 	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
 							  String username, String password)
+		throws CmsException;
+	/**
+	 * Returns a user object if the password for the user is correct.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The username of the user that is to be read.
+	 * @return User
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful
+	 */		
+	public CmsUser readWebUser(CmsUser currentUser, CmsProject currentProject, 
+							  String username)
 		throws CmsException;
 	/**
 	 * Returns a user object if the password for the user is correct.<P/>
