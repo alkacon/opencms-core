@@ -84,11 +84,15 @@ var DO_TMESSAGE=8;
 var DO_TREAKT=9;
 var DO_TTAKE=10;
 
+
+gecko = (navigator.userAgent.toLowerCase().indexOf('gecko') != -1);
+
 // mouse coordinates on click
 function mouseClicked(e)
 {
         if (ie) {x=event.x; y=event.y;}
         if (ns) {x=e.x; y=e.y;}
+        if(gecko){x=e.pageX;      y=e.pageY;}
         hidemenu(letztelyr);
 }
 
@@ -102,61 +106,76 @@ function mouseClicked(e)
 //----------------------------------------
 function showkontext(welche, parameter, id)
 {
-    if(disableKontext == false) {
-        // set the kontextparameter
-        kontextparam = parameter.replace(/\//g, "%2F");
-        kontextid = id; 
-        if(welche!='')
-        {
 
-        if (!shown || id!=altid)
-        {
+    if(gecko){
 
-            if(y >= (screen.availHeight/2))
+        document.getElementById(welche).style.visibility = "visible";
+        document.getElementById(welche).style.left = x;
+        document.getElementById(welche).style.top =  y;
+
+    }else{
+
+        if(disableKontext == false) {
+            // set the kontextparameter
+            kontextparam = parameter.replace(/\//g, "%2F");
+            kontextid = id; 
+            if(welche!='')
             {
-
-                if(ie)lyrheight=checklyrheight(welche);
-
-                if(ns)lyrheight=document.layers[welche].clip.height;
-
-                lyrheight='-'+lyrheight;
+    
+            if (!shown || id!=altid)
+            {
+    
+                if(y >= (screen.availHeight/2))
+                {
+    
+                    if(ie)lyrheight=checklyrheight(welche);
+    
+                    if(ns)lyrheight=document.layers[welche].clip.height;
+    
+                    lyrheight='-'+lyrheight;
+                    eval(ypos_01+welche+ypos_02+'y'+yoffset+lyrheight);
+                }
+                else
+                {
+                    lyrheight='-0';
+                }
+                eval(xpos_01+welche+xpos_02+'x'+xoffset);
                 eval(ypos_01+welche+ypos_02+'y'+yoffset+lyrheight);
+    
+                hidemenu(letztelyr);
+                eval(layerzeigen_01+welche+layerzeigen_02);
+    
+                shown = true;
             }
             else
             {
-                lyrheight='-0';
+                hidemenu(letztelyr);
+                shown = false;
             }
-            eval(xpos_01+welche+xpos_02+'x'+xoffset);
-            eval(ypos_01+welche+ypos_02+'y'+yoffset+lyrheight);
-
-            hidemenu(letztelyr);
-            eval(layerzeigen_01+welche+layerzeigen_02);
-
-            shown = true;
-        }
-        else
-        {
-            hidemenu(letztelyr);
-            shown = false;
-        }
-        letztelyr=welche;
-        altid=id;
+            
+            altid=id;
+            }
         }
     }
+    letztelyr=welche;
 }
 
 
 // hides the file context (layer)
 function hidemenu(welche)
 {
-    if(welche!='null')
-    {
-        eval(layerverstecken_01+welche+layerverstecken_02);
-        //shown=false;
-    }
-    else
-    {
-        return;
+    if(gecko){
+        if(welche!='null')document.getElementById(welche).style.visibility = "hidden";
+    }else{
+        if(welche!='null')
+        {
+            eval(layerverstecken_01+welche+layerverstecken_02);
+            //shown=false;
+        }
+        else
+        {
+            return;
+        }
     }
 }
 
