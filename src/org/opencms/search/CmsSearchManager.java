@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/02/16 17:07:51 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/17 12:09:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,9 +64,80 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 
 /**
- * Implements the general management of the search and indexing facilities in OpenCms.<p>
+ * Implements the general management and configuration of the search and 
+ * indexing facilities in OpenCms.<p>
  * 
- * @version $Revision: 1.4 $ $Date: 2004/02/16 17:07:51 $
+ * <p>The configuration is specified in the cms registry <code>registry.xml</code>
+ * using the following tags:</p>
+ * 
+ * <pre>
+ * &lt;search&gt;
+ *     &lt;directory&gt;index&lt;/directory&gt;
+ *     &lt;timeout&gt;60000&lt;/timeout&gt;
+ *     &lt;documenttype&gt;
+ *         (see below)
+ *     &lt;/documenttype&gt;
+ *     ...
+ *     &lt;analyzer&gt;
+ *         (see below)
+ *     &lt;/analyzer&gt;
+ *     ...
+ *     &lt;index&gt;
+ *         (see CmsSearchIndex)
+ *     &lt;/index&gt;
+ *     ...
+ * &lt;/search&gt;
+ * </pre>
+ *
+ * <p>The general search configuration specifies the folder in the server filesystem used to store
+ * the lucene index files below the <code>WEB-INF</code> folder. The timeout value is used to abort
+ * the indexing of a single resource if it exceeds the specified value.</p>
+ *
+ * <p>The documenttype entries are used to specify which document factory for lucene index documents
+ * will be used for which OpenCms resource type and/or mimetype:</p>
+ *
+ * <pre>
+ * &lt;documenttype&gt;
+ *     &lt;name&gt;pdf&lt;/name&gt;
+ *     &lt;class&gt;org.opencms.search.documents.CmsPdfDocument&lt;/class&gt;
+ *     &lt;resourcetype&gt;org.opencms.file.CmsResourceTypeBinary&lt;/resourcetype&gt;
+ *     &lt;resourcetype&gt;org.opencms.file.CmsResourceTypePlain&lt;/resourcetype&gt;
+ *     &lt;mimetype&gt;application/pdf&lt;/mimetype&gt;
+ * &lt;/documenttype&gt;
+ * </pre>
+ *
+ * <p>In this example, the factory class <code>org.opencms.search.documents.CmsPdfDocument</code>
+ * is used for cms resources of resourcetype <code>CmsResourceTypeBinary</code> or
+ * <code>CmsResourceTypePlain</code>, both with the mime type <code>application/pdf</code>
+ * (derived from the extension <code>.pdf</code> in the name of the resource).</p>
+ * 
+ * <p>For cos resources, the following form is used:</p>
+ * 
+ * <pre>
+ * &lt;documenttype&gt;
+ *     &lt;name&gt;jobs&lt;/name&gt;
+ *     &lt;class&gt;org.opencms.search.documents.CmsCosDocument&lt;/class&gt;
+ *     &lt;resourcetype&gt;de.alkacon.opencms.modules.lgt.jobs.CmsJobsContent&lt;/resourcetype&gt;
+ * &lt;/documenttype&gt;
+ * </pre>
+ *
+ * <p>In this case, the resourcetype specifies the content definition class 
+ * (here: <code>CmsJobsContent</code>) used to access the cos data within a channel.</p>
+ * 
+ * <p>The analyzer entries are used to specify which lucene analyzer will be used for the language
+ * specfied in the index configuration:</p>
+ * 
+ * <pre>
+ * &lt;analyzer&gt;
+ *     &lt;class&gt;org.apache.lucene.analysis.de.GermanAnalyzer&lt;/class&gt;
+ *     &lt;lang&gt;de&lt;/lang&gt;
+ * &lt;/analyzer&gt;
+ * </pre>
+ *
+ * <p>The <code>GermanAnalyzer</code> will be used for analyzing the contents of resources
+ * when building an index with "de" as specified language.</p>
+ * 
+ * @version $Revision: 1.5 $ $Date: 2004/02/17 12:09:57 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -125,7 +196,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
     }
 
     /**
-     * Default constructer when called for cron job.<p>
+     * Default constructer when called as cron job.<p>
      */
     public CmsSearchManager() {
         // must be initialized with cms object        
@@ -133,7 +204,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
     
     /**
      * Constructor to create a new instance of CmsSearchManager.<p>
-     * The new manager is initialized based on the registry configuration.
+     * The new manager instance is initialized based on the registry configuration.
      * 
      * @param cms the cms object
      */
@@ -291,7 +362,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
     protected I_CmsDocumentFactory getDocumentFactory (CmsIndexResource resource) {
 
         String documentTypeKey;
-        if (resource.getObject() instanceof CmsMasterDataSet) {
+        if (resource.getData() instanceof CmsMasterDataSet) {
             documentTypeKey = "COS" + resource.getType(); 
         } else {
             documentTypeKey = "VFS" + resource.getType() + ":" + resource.getMimetype();
@@ -613,6 +684,8 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
     }
 
     /**
+     * Implements the event listener of this class.<p>
+     * 
      * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
      */
     public void cmsEvent(CmsEvent event) {        

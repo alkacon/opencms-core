@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2004/02/16 17:07:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/17 12:09:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,29 +38,29 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the management of indexing threads.<p>
  * 
- * @version $Revision: 1.3 $ $Date: 2004/02/16 17:07:51 $
+ * @version $Revision: 1.4 $ $Date: 2004/02/17 12:09:57 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
 public class CmsIndexingThreadManager extends Thread {
 
-    // the index manager
-    CmsSearchManager m_manager;
+    /** the index manager */
+    private CmsSearchManager m_manager;
     
-    // the report
-    I_CmsReport m_report;
+    /** the report */
+    private I_CmsReport m_report;
     
-    // timeout for abandoning threads
-    long m_timeout;
+    /** timeout for abandoning threads */
+    private long m_timeout;
     
-    // overall number of threads started
-    int m_fileCounter;
+    /** overall number of threads started */
+    private int m_fileCounter;
     
-    // number of threads abandoned
-    int m_abandonedCounter;
+    /** number of threads abandoned */
+    private int m_abandonedCounter;
     
-    // number of thread returned
-    int m_returnedCounter;
+    /** number of thread returned */
+    private int m_returnedCounter;
     
     /**
      * Creates and starts a thread manager for indexing threads<p>
@@ -82,7 +82,12 @@ public class CmsIndexingThreadManager extends Thread {
     }
     
     /**
-     * Creates and starts a new indexing thread for a resource<p>
+     * Creates and starts a new indexing thread for a resource.<p>
+     * 
+     * After an indexing thread was started, the manager suspends itself 
+     * and waits for an amount of time specified by the <code>timeout</code>
+     * value. If the timeout value is reached, the indexing thread is
+     * aborted by an interrupt signal.
      * 
      * @param writer the write to write the index
      * @param res the resource
@@ -116,7 +121,12 @@ public class CmsIndexingThreadManager extends Thread {
     }
     
     /**
-     * Writes statistical information to the report<p>
+     * Writes statistical information to the report.<p>
+     * 
+     * The method reports the total number of threads started
+     * (equals to the number of indexed files), the number of returned
+     * threads (equals to the number of successfully indexed files),
+     * and the number of abandoned threads (hanging threads reaching the timeout). 
      */
     public void reportStatistics() {
 

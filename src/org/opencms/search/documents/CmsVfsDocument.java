@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsVfsDocument.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/17 12:10:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,10 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2004/02/13 13:41:45 $
+ * Lucene document factory class to extract index data from a vfs resource 
+ * of any type derived from <code>CmsResource</code>.<p>
+ * 
+ * @version $Revision: 1.3 $ $Date: 2004/02/17 12:10:52 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsVfsDocument implements I_CmsDocumentFactory {
@@ -59,7 +62,7 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
     protected String m_name;
     
     /**
-     * Creates a new instance of a lucene document for CmsResources.<p>
+     * Creates a new instance of this lucene document factory.<p>
      * 
      * @param cms the cms object
      * @param name name of the documenttype
@@ -70,7 +73,8 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
     }
 
     /**
-     * Returns the raw text content of a given resource.<p>
+     * Returns the raw text content of a vfs resource.<p>
+     * NOT IMPLEMENTED.
      * 
      * @param resource the resource
      * @param language the language requested
@@ -85,12 +89,14 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
     }
     
     /**
+     * Generates a new lucene document instance from contents of the given resource.<p>
+     * 
      * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.search.CmsIndexResource, java.lang.String)
      */
     public Document newInstance (CmsIndexResource resource, String language) throws CmsException {
         
         Document document = new Document();
-        CmsResource res = (CmsResource)resource.getObject();
+        CmsResource res = (CmsResource)resource.getData();
         String path = m_cms.getRequestContext().removeSiteRoot(resource.getRootPath());
         String value;
 
@@ -109,7 +115,7 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
         document.add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, 
             DateField.timeToString(res.getDateLastModified())));
     
-        document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_PATH, path));
+        document.add(Field.Keyword(I_CmsDocumentFactory.DOC_PATH, path));
 
         return document;
     }

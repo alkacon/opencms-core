@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHighlightExtractor.java,v $
- * Date   : $Date: 2004/02/11 15:58:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/17 12:10:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.apache.lucene.search.*;
 import org.apache.lucene.util.PriorityQueue;
 
 /**
- *
+ * This class describes a fragment within a document.<p>
  */
 class DocumentFragment {
     int m_fragNum;
@@ -73,7 +73,7 @@ class DocumentFragment {
 }
 
 /**
- *
+ * This class implements a priority queue for document fragments.<p>
  */
 class FragmentQueue extends PriorityQueue {
     

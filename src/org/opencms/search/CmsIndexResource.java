@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsIndexResource.java,v $
- * Date   : $Date: 2004/02/16 17:07:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/17 12:09:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,59 +41,43 @@ import org.opencms.file.CmsResource;
  * The type is either <code>CmsResource</code> while indexing vfs data,
  * or <code>CmsMasterDataSet</code> while indexing cos data.
  * 
- * @version $Revision: 1.3 $ $Date: 2004/02/16 17:07:51 $
+ * @version $Revision: 1.4 $ $Date: 2004/02/17 12:09:57 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
 public class CmsIndexResource {
 
-    /**
-     * Concrete data object
-     */
-    private Object m_obj;
+    /** Concrete data object */
+    private Object m_data;
 
-    /**
-     * Id of the object
-     */
+    /** Id of the object */
     private CmsUUID m_id;
     
-    /**
-     * Name of the object
-     */
+    /** Name of the object */
     private String m_name;
     
-    /**
-     * Path to access the object
-     */
+    /** Path to access the object */
     private String m_path;
     
-    /**
-     * Type of the object
-     */
+    /** Type of the object */
     private int m_type;
     
-    /**
-     * Mimetype of the object, <code>null</code> if the object is a <code>CmsMasterDataSet</code>
-     */
+    /** Mimetype of the object, <code>null</code> if the object is a <code>CmsMasterDataSet</code> */
     private String m_mimeType;
 
-    /**
-     * Channel of the object, <code>null</code> if the object is a <code>CmsResource</code>
-     */
+    /** Channel of the object, <code>null</code> if the object is a <code>CmsResource</code> */
     private String m_channel;
     
-    /**
-     * Content definition of the object, <code>null</code> if the object is a <code>CmsResource</code>
-     */
+    /** Content definition of the object, <code>null</code> if the object is a <code>CmsResource</code> */
     private String m_contentDefinition;
     
-    /**
-     * Creates a new instance to wrap the given data object.<p>
+    /** 
+     * Creates a new instance to wrap the given <code>CmsResource</code>.<p>
      * 
      * @param res the data object
      */
     public CmsIndexResource(CmsResource res) {
-        m_obj = res;
+        m_data = res;
         m_id = res.getResourceId();
         m_name = res.getName();
         m_type = res.getType();
@@ -104,7 +88,7 @@ public class CmsIndexResource {
     }
 
     /**
-     * Creates a new instance to wrap the given data object.<p>
+     * Creates a new instance to wrap the given <code>CmsMasterDataSet</code>.<p>
      * 
      * @param ds the data object
      * @param path access path of the data object
@@ -112,7 +96,7 @@ public class CmsIndexResource {
      * @param contentDefinition content definition of the data object
      */
     public CmsIndexResource(CmsMasterDataSet ds, String path, String channel, String contentDefinition) {
-        m_obj = ds;
+        m_data = ds;
         m_id = ds.m_masterId;
         m_name = ds.m_title;
         m_type = ds.m_subId;
@@ -123,16 +107,22 @@ public class CmsIndexResource {
     }
     
     /**
-     * Returns the wrapped object.<p>
+     * Returns the wrapped data object.<p>
      * 
-     * @return the wrapped object
+     * The concrete type of the data object is either <code>CmsResource</code>
+     * or <code>CmsMasterDataSet</code>
+     * 
+     * @return the wrapped data object
      */
-    public Object getObject() {
-        return m_obj;
+    public Object getData() {
+        return m_data;
     }
     
     /**
      * Returns the type of the wrapped object.<p>
+     * 
+     * The type is either the type of the wrapped <code>CmsResource</code> 
+     * or the SubId of the <code>CmsMasterDataSet</code>.
      * 
      * @return the type of the wrapped object
      */

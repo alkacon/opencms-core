@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/02/16 17:07:51 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/17 12:09:57 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -66,8 +66,47 @@ import org.apache.lucene.search.Searcher;
 
 /**
  * Implements the search within an index and the management of the index configuration.<p>
- *  
- * @version $Revision: 1.7 $ $Date: 2004/02/16 17:07:51 $
+ * 
+ * A search index is configured in the registry using the following tags:
+ * <pre>
+ * &lt;index&gt;
+ *     &lt;name&gt;Default (Online)&lt;/name&gt;
+ *     &lt;rebuild&gt;auto&lt;/rebuild&gt;
+ *     &lt;project&gt;online&lt;/project&gt;
+ *     &lt;site&gt;/sites/default/&lt;/site&gt;
+ *     &lt;lang&gt;en&lt;/lang&gt;
+ *     &lt;folder&gt;
+ *         &lt;source&gt;/&lt;/source&gt;
+ *         &lt;documenttype&gt;xmlpage&lt;/documenttype&gt;
+ *         ...
+ *     &lt;/folder&gt;
+ *     &lt;channel&gt;
+ *         &lt;source&gt;/jobs/&lt;/source&gt;
+ *         &lt;documenttype&gt;jobs&lt;/documenttype&gt;
+ *         &lt;displayuri&gt;/showjob.html&lt;/displayuri&gt;
+ *         &lt;displayparam&gt;id&lt;/displayparam&gt;
+ *     &lt;/channel&gt;
+ * &lt;/index&gt;
+ * </pre>
+ * <p>In this example, an index with display name "Default (Online)" is configured.
+ * The index is automatically updated when the CmsSearchManager is started as cron job
+ * (<code>manual</code> here means that the index is not automatically updated).</p>
+ * 
+ * <p>The index contains published resources within the site with the root <code>/sites/default</code>.
+ * Only resource data for the language "en" will be indexed using the appropriate analyzer.</p>
+ * 
+ * <p>Within the site, only resource data below the folder "/" will be indexed and only if
+ * the resource has the document type "xmlpage" (Typically you will have to specify more 
+ * documenttypes here or to leave it out completely in order to index all available documenttypes).</p>
+ * 
+ * <p>Additionally, the cos data of type "jobs" of the channel "jobs" will be indexed.
+ * Note: For a channel specification, only one documenttype is allowed.
+ * To access a cos data item in a search result, a uri will be formed using the
+ * displayuri and displayid, i.e. <code>/showjob.html?id=....</code></p>
+ * 
+ * <p>Certainly, you can specify more than one folder or channel to index.</p>
+ *   
+ * @version $Revision: 1.8 $ $Date: 2004/02/17 12:09:57 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */

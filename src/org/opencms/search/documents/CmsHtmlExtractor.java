@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHtmlExtractor.java,v $
- * Date   : $Date: 2004/02/11 15:58:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/17 12:10:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,8 @@
 //
 // $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHtmlExtractor.java,v $
 // $Author: c.weinholz $
-// $Date: 2004/02/11 15:58:55 $
-// $Revision: 1.1 $
+// $Date: 2004/02/17 12:10:52 $
+// $Revision: 1.2 $
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -65,7 +65,9 @@ import org.htmlparser.util.Translate;
 import org.htmlparser.visitors.NodeVisitor;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2004/02/11 15:58:55 $
+ * Extracts plain text from HTML.<p>
+ * 
+ * @version $Revision: 1.2 $ $Date: 2004/02/17 12:10:52 $
  * @author  Carsten Weinholz (c.weinholz@alkacon.com)
  *
  * @author Derrick Oswald

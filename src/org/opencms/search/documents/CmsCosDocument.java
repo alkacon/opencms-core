@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsCosDocument.java,v $
- * Date   : $Date: 2004/02/16 17:07:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/17 12:10:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,10 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2004/02/16 17:07:51 $
+ * Lucene document factory class to extract index data from a cos resource 
+ * of any type derived from <code>CmsMasterDataSet</code>.<p>
+ * 
+ * @version $Revision: 1.4 $ $Date: 2004/02/17 12:10:52 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsCosDocument implements I_CmsDocumentFactory {
@@ -59,7 +62,7 @@ public class CmsCosDocument implements I_CmsDocumentFactory {
     protected String m_name;
     
     /**
-     * Creates a new instance of a lucene document for CmsResources.<p>
+     * Creates a new instance of this lucene document factory.<p>
      * 
      * @param cms the cms object
      * @param name name of the documenttype
@@ -70,7 +73,7 @@ public class CmsCosDocument implements I_CmsDocumentFactory {
     }
 
     /**
-     * Returns the raw text content of a given resource.<p>
+     * Returns the raw text content of a given cos resource.<p>
      * The contents of a cos object are accessed using the class <code>CmsMasterDataSet</code>.
      * For indexing purposes, the contents of the arrays <code>m_dataSmall</code>, <code>m_dataMedium</code> 
      * and <code>m_dataBig</code> are collected in a string.
@@ -82,7 +85,7 @@ public class CmsCosDocument implements I_CmsDocumentFactory {
      */
     public String getRawContent(CmsIndexResource indexResource, String language) throws CmsException {        
         
-        CmsMasterDataSet resource = (CmsMasterDataSet)indexResource.getObject();
+        CmsMasterDataSet resource = (CmsMasterDataSet)indexResource.getData();
         String rawContent = null;
         
         try {
@@ -123,12 +126,14 @@ public class CmsCosDocument implements I_CmsDocumentFactory {
     }
     
     /**
+     * Generates a new lucene document instance from contents of the given resource.<p>
+     * 
      * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.search.CmsIndexResource, java.lang.String)
      */
     public Document newInstance (CmsIndexResource resource, String language) throws CmsException {
         
         Document document = new Document();
-        CmsMasterDataSet content = (CmsMasterDataSet)resource.getObject();
+        CmsMasterDataSet content = (CmsMasterDataSet)resource.getData();
         String path = m_cms.getRequestContext().removeSiteRoot(resource.getRootPath());
         String value;
 

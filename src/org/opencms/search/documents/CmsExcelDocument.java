@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsExcelDocument.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/17 12:10:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,13 +46,16 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2004/02/13 13:41:45 $
+ * Lucene document factory class to extract index data from a cms resource 
+ * containing MS Excel data.<p>
+ * 
+ * @version $Revision: 1.5 $ $Date: 2004/02/17 12:10:52 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsExcelDocument extends CmsVfsDocument {
 
     /**
-     * Creates a new instance of a lucene document for Excel files.<p>
+     * Creates a new instance of this lucene document factory.<p>
      * 
      * @param cms the cms object
      * @param name name of the documenttype
@@ -62,11 +65,13 @@ public class CmsExcelDocument extends CmsVfsDocument {
     }
     
     /**
+     * Returns the raw text content of a given vfs resource containing MS Excel data.<p>
+     * 
      * @see org.opencms.search.documents.CmsVfsDocument#getRawContent(org.opencms.search.CmsIndexResource, java.lang.String)
      */
     public String getRawContent(CmsIndexResource indexResource, String language) throws CmsException {
         
-        CmsResource resource = (CmsResource)indexResource.getObject();
+        CmsResource resource = (CmsResource)indexResource.getData();
         String rawContent = null;
         
         try {
@@ -92,6 +97,8 @@ public class CmsExcelDocument extends CmsVfsDocument {
     }
     
     /**
+     * Generates a new lucene document instance from contents of the given resource.<p>
+     * 
      * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.search.CmsIndexResource, java.lang.String)
      */
     public Document newInstance (CmsIndexResource resource, String language) throws CmsException {

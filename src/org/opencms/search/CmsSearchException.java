@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchException.java,v $
- * Date   : $Date: 2004/02/16 17:07:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/17 12:09:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,7 +39,7 @@ import org.opencms.main.CmsException;
  * <code>org.opencms.search</code> package.
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2004/02/16 17:07:51 $
+ * @version $Revision: 1.4 $ $Date: 2004/02/17 12:09:57 $
  * @since 5.3.1
  */
 public class CmsSearchException extends CmsException {

@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2004/02/16 17:07:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/17 12:09:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,89 +44,72 @@ import java.util.TreeMap;
 /**
  * Helper class to access the search facility within a jsp.<p>
  * 
- * @version $Revision: 1.3 $ $Date: 2004/02/16 17:07:51 $
+ * Typically, the following fields are available for searching:
+ * <ul>
+ * <li>title - the title of a resource</li>
+ * <li>keywords - the keywords of a resource</li>
+ * <li>description - the description of a resource</li>
+ * <li>content - the aggregated content of a resource</li>
+ * <li>created - the creation date of a resource</li>
+ * <li>lastmodified - the date of the last modification of a resource</li>
+ * <li>path - the path to display the resource</li>
+ * <li>channel - the channel of a cos resource</li>
+ * <li>contentdefinition - the name of the content definition class of a cos resource</li>
+ * </ul>
+ * 
+ * @version $Revision: 1.4 $ $Date: 2004/02/17 12:09:57 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
 public class CmsSearch {
 
-    /*
-     * The cms object
-     */
+    /** The cms object */
     CmsObject m_cms;
 
-    /*
-     * The list of fields to search
-     */    
+    /** The list of fields to search */    
     String m_fields;
     
-    /*
-     * The index to search
-     */
+    /** The index to search */
     CmsSearchIndex m_index;
     
-    /*
-     * The name of the search index
-     */
+    /** The name of the search index */
     String m_indexName;
     
-    /*
-     * The current query
-     */
+    /** The current query */
     String m_query;
     
-    /*
-     * The minimum length of the search query 
-     */
+    /** The minimum length of the search query  */
     int m_queryLength = -1;
     
-    /*
-     * The current search result
-     */
+    /** The current search result */
     List m_result;
 
-    /* 
-     * The latest exception
-     */
+    /** The latest exception */
     Exception m_exc;
     
-    /*
-     * The current result page
-     */
+    /** The current result page */
     int m_page = 0;
     
-    /*
-     * The number of matches per page 
-     */
+    /** The number of matches per page  */
     int m_matchesPerPage = -1;
     
-    /*
-     * The number of pages for the result list
-     */
+    /** The number of pages for the result list */
     int m_pageCount;
     
-    /*
-     * The number of displayed pages returned by getPageLinks()
-     */
+    /** The number of displayed pages returned by getPageLinks() */
     int m_displayPages = -1;
     
-    /*
-     * The URL which leads to the previous result page
-     */
+    /** The URL which leads to the previous result page */
     String m_prevUrl;
     
-    /*
-     * The URL which leads to the next result page
-     */    
+    /** The URL which leads to the next result page */    
     String m_nextUrl;
     
-    /*
-     * The search parameter String
-     */
+    /** The search parameter String */
     String m_searchParameters;
         
     /**
-     * Default constructor.<p>
+     * Default constructor, used to instanciate the search facility as a bean.<p>
      */
     public CmsSearch () {
         super();
