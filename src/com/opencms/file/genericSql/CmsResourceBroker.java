@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/05 13:02:18 $
- * Version: $Revision: 1.203 $
+ * Date   : $Date: 2000/12/05 16:52:03 $
+ * Version: $Revision: 1.204 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.203 $ $Date: 2000/12/05 13:02:18 $
+ * @version $Revision: 1.204 $ $Date: 2000/12/05 16:52:03 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3868,6 +3868,8 @@ public void publishProject(CmsUser currentUser, CmsProject currentProject, int i
 				throw new CmsException(0, ex);
 			}
 		}
+		// HACK: now currently we can delete the project to decrease the amount of data in the db
+		deleteProject(currentUser, currentProject, id);
 	} else {
 		throw new CmsException("[" + this.getClass().getName() + "] could not publish project " + id, CmsException.C_NO_ACCESS);
 	}

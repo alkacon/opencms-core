@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/05 13:02:18 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/12/05 16:52:05 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.12 $ $Date: 2000/12/05 13:02:18 $
+ * @version $Revision: 1.13 $ $Date: 2000/12/05 16:52:05 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 	
@@ -888,6 +888,8 @@ public void publishProject(CmsUser currentUser, CmsProject currentProject, int i
 				throw new CmsException(0, ex);
 			}
 		}
+		// HACK: now currently we can delete the project to decrease the amount of data in the db
+		deleteProject(currentUser, currentProject, id);
 	} else {
 		throw new CmsException("[" + this.getClass().getName() + "] could not publish project " + id, CmsException.C_NO_ACCESS);
 	}

@@ -3,8 +3,8 @@ package com.opencms.file.genericSql;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2000/11/17 11:31:25 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/12/05 16:52:03 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -219,8 +219,7 @@ public Connection getConnectionOfStatement(PreparedStatement statement) throws C
 					if(A_OpenCms.isLogging()) {
 						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbPool] no connections available - have to wait. marker:" + marker + " key:" + key + " cycle:" + cycle );
 					}
-					int waittime = (int)(java.lang.Math.random()*1000) + 100;
-					m_prepStatements.wait(waittime);
+					m_prepStatements.wait();
 				} catch(InterruptedException exc) {
 				}
 			}
@@ -245,7 +244,7 @@ public Connection getConnectionOfStatement(PreparedStatement statement) throws C
 					if(A_OpenCms.isLogging()) {
 						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbPool] no connections available - have to wait.");
 					}
-					m_prepStatements.wait(100);					
+					m_prepStatements.wait();
 				} catch(InterruptedException exc) {
 				}
 			}
