@@ -1,8 +1,7 @@
- 
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/explorer.js,v $
- * Date   : $Date: 2000/11/21 16:18:16 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/11/21 16:53:49 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -177,16 +176,10 @@ function whichBrowser(){
     }
 }
 
-
-//------------------------------------------------------------------------------------
-// simple encoding of a given string.
-// Any "/" character will be replaced by "%2F". This can be used for avoiding slashes 
-// in request parameters since some servlet environments have problems with such URLs.
-// a.lucas    13.04.2000
-//------------------------------------------------------------------------------------
 function simpleEscape(text) {
 	return text.replace(/\//g, "%2F");
 }
+
 
 /**
  *  initializes history array
@@ -933,23 +926,24 @@ function printList(wo){
         for(a=0;a<vi.menus[vi.liste[i].type].items.length;a++){
 
             /* 0:unchanged",1:changed",2:new",3:deleted" */
-
+            if(vi.menus[vi.liste[i].type].items[a].name=="-"){
+                wo.writeln("<tr><td><hr size=1></td></tr>");
+            }else{
                 //if(vr.actProject==1){ /* online project? */
-                if(vr.actProject==vr.onlineProject){ /* online project? */
+                if(vr.actProject!=vr.onlineProject){ /* online project? */
                     if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='0'){
                         wo.writeln("");
                     }
                     if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='1'){
-                        if(vi.menus[vi.liste[i].type].items[a].name=="-") wo.writeln("<tr><td><hr size=1></td></tr>");
-                        else wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
+                        wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
                     }
                     if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='2'){
                         //wo.writeln("<TR><TD><A class=kontextlink href='"+vi.menus[vi.liste[i].type].items[a].link+"'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-                        if(vi.menus[vi.liste[i].type].items[a].name=="-") wo.writeln("<tr><td><hr size=1></td></tr>");
-                            else{
-                                if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kontextlink href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+simpleEscape(window.frames[1].frames[1].frames[1].document.location.href)+"&file="+vr.actDirectory+vi.liste[i].name+"'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-                                                   else wo.writeln("<TR><TD><A class=kontextlink href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+simpleEscape(window.frames[1].frames[1].frames[1].document.location.href)+"&file="+vr.actDirectory+vi.liste[i].name+"'>"+vi.menus[vi.liste[i].type].items[a].name+"/</a></td></tr>");
-                            }
+						
+						
+						
+						if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kontextlink href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+simpleEscape(window.frames[1].frames[1].frames[1].document.location.href)+"&file="+vr.actDirectory+vi.liste[i].name+"'>"+vi.menus[vi.liste[i].type].items[a].name+"/</a></td></tr>");
+						 	wo.writeln("<TR><TD><A class=kontextlink href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+simpleEscape(window.frames[1].frames[1].frames[1].document.location.href)+"&file="+vr.actDirectory+vi.liste[i].name+"'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
                     }
                 }else{
                     /* if not locked */
@@ -968,7 +962,8 @@ function printList(wo){
                         wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
                     }
                     if(display == 2){
-                        wo.writeln("<TR><TD><A class=kontextlink href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl=/workplace/sysrem/action/new_explorer_files.html&file="+vr.actDirectory+vi.liste[i].name+"'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                        if(vi.liste[i].type==0)wo.writeln("<TR><TD><A class=kontextlink href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+simpleEscape(window.frames[1].frames[1].frames[1].document.location.href)+"&file="+vr.actDirectory+vi.liste[i].name+"'>"+vi.menus[vi.liste[i].type].items[a].name+"/</a></td></tr>");
+						else wo.writeln("<TR><TD><A class=kontextlink href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+simpleEscape(window.frames[1].frames[1].frames[1].document.location.href)+"&file="+vr.actDirectory+vi.liste[i].name+"'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
                     }
                 }
             }
