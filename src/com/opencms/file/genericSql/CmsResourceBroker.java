@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/07 08:12:06 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/06/07 09:08:07 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/06/07 08:12:06 $
+ * @version $Revision: 1.12 $ $Date: 2000/06/07 09:08:07 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -238,10 +238,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @return the onlineproject object.
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public CmsProject onlineProject(CmsUser currentUser, 
-									CmsProject currentProject)
+	public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject)
         throws CmsException {
-     return null;
+		return readProject(currentUser, currentProject, C_PROJECT_ONLINE_ID);
     }
 
 	/**
@@ -278,7 +277,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, 
 								   int id)
          throws CmsException {
-      return null;
+		 // TODO: remove this dummy-project
+		 return new CmsProject(-1, "Dummy-Project", "Dummy-Project", -1, -1, new CmsGroup(-1, -1, "", "", 1), new CmsGroup(-1, -1, "", "", 1), 1, new java.sql.Timestamp(1), new java.sql.Timestamp(1), -1, 0, 0 );
      }
      
      /**
@@ -296,7 +296,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, 
 								   CmsResource res)
          throws CmsException {
-      return null;
+		 		 // TODO: remove this dummy-project
+		 return new CmsProject(-1, "Dummy-Project", "Dummy-Project", -1, -1, new CmsGroup(-1, -1, "", "", 1), new CmsGroup(-1, -1, "", "", 1), 1, new java.sql.Timestamp(1), new java.sql.Timestamp(1), -1, 0, 0 );
      }
 	
     /**
@@ -314,7 +315,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, 
 									 CmsTask task)
          throws CmsException {
-      return null;
+ 		 // TODO: remove this dummy-project
+		 return new CmsProject(-1, "Dummy-Project", "Dummy-Project", -1, -1, new CmsGroup(-1, -1, "", "", 1), new CmsGroup(-1, -1, "", "", 1), 1, new java.sql.Timestamp(1), new java.sql.Timestamp(1), -1, 0, 0 );
      }
 	 
 
@@ -1122,7 +1124,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
 							  String username)
         throws CmsException {
-     return null;
+		// TODO: return the correct user
+		return new CmsUser(-1, "DummyUser", "", "", "", "", "", 0, 0, 1, new Hashtable(), new CmsGroup(-1, -1, "dummy", "", 1), "", "", 1);
     }
 	
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
- * Date   : $Date: 2000/06/06 16:55:17 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/06/07 09:08:07 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import java.sql.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/06/06 16:55:17 $
+ * @version $Revision: 1.16 $ $Date: 2000/06/07 09:08:07 $
  */
 public class CmsProject implements I_CmsConstants,
                                                         Cloneable{
@@ -118,9 +118,11 @@ public class CmsProject implements I_CmsConstants,
 	private int m_type = C_UNKNOWN_ID;
 	
 
-	CmsProject(int projectId, String name, String description, int taskId, 
-			   int ownerId, CmsGroup group, CmsGroup managerGroup, int flags, Timestamp createdate, 
-			   Timestamp publishingdate, int publishedBy, int countLockedResources, int type) {
+	public CmsProject(int projectId, String name, String description, int taskId, 
+					  int ownerId, CmsGroup group, CmsGroup managerGroup, int flags, 
+					  Timestamp createdate, Timestamp publishingdate, int publishedBy, 
+					  int countLockedResources, int type) {
+		
 		m_id = projectId;
 		m_name = name;
 		m_description = description;
