@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/02/08 13:51:21 $
-* Version: $Revision: 1.308 $
+* Date   : $Date: 2002/02/14 14:30:48 $
+* Version: $Revision: 1.309 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,8 @@ import com.opencms.core.*;
 import com.opencms.file.*;
 import com.opencms.template.*;
 import java.sql.SQLException;
-
+import java.util.zip.*;
+import org.w3c.dom.*;
 
 
 /**
@@ -53,7 +54,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.308 $ $Date: 2002/02/08 13:51:21 $
+ * @version $Revision: 1.309 $ $Date: 2002/02/14 14:30:48 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2696,6 +2697,31 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                  CmsException.C_NO_ACCESS);
         }
     }
+
+    /**
+     * Exports channels and moduledata to zip.
+     *
+     * <B>Security:</B>
+     * only Administrators can do this;
+     *
+     * @param currentUser user who requestd themethod
+     * @param currentProject current project of the user
+     * @param exportFile the name (absolute Path) of the export resource (zip)
+     * @param exportChannels the names (absolute Path) of channels from which should be exported
+     * @param exportModules the names of modules from which should be exported
+     * @param cms the cms-object to use for the export.
+     *
+     * @exception Throws CmsException if something goes wrong.
+     */
+    public void exportModuledata(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportChannels, String[] exportModules, CmsObject cms)
+        throws CmsException {
+        if(isAdmin(currentUser, currentProject)) {
+            new CmsExportModuledata(exportFile, exportChannels, exportModules, cms);
+        } else {
+             throw new CmsException("[" + this.getClass().getName() + "] exportModuledata",
+                 CmsException.C_NO_ACCESS);
+        }
+    }
     // now private stuff
 
     /**
@@ -3884,8 +3910,16 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
     public void importResources(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath, CmsObject cms)
         throws CmsException {
         if(isAdmin(currentUser, currentProject)) {
-            CmsImport imp = new CmsImport(importFile, importPath, cms);
-            imp.importResources();
+            // get the first node of the manifest to check if its an import of resources
+            // or moduledata
+            String firstTag = this.getFirstTagFromManifest(importFile);
+            if(I_CmsConstants.C_EXPORT_TAG_MODULEXPORT.equals(firstTag)){
+                CmsImportModuledata imp = new CmsImportModuledata(importFile, importPath, cms);
+                imp.importModuledata();
+            } else {
+                CmsImport imp = new CmsImport(importFile, importPath, cms);
+                imp.importResources();
+            }
         } else {
              throw new CmsException("[" + this.getClass().getName() + "] importResources",
                  CmsException.C_NO_ACCESS);
@@ -7507,28 +7541,24 @@ protected void validName(String name, boolean blank) throws CmsException {
      * @param group The group to be checked
      * @return boolean If the group does not belong to Users, Administrators or Projectmanagers return true
      */
-    protected boolean isWebgroup(CmsGroup group){
+    protected boolean isWebgroup(CmsGroup group) throws CmsException{
+        boolean result = true;
         try{
             int user = m_dbAccess.readGroup(C_GROUP_USERS).getId();
             int admin = m_dbAccess.readGroup(C_GROUP_ADMIN).getId();
             int manager = m_dbAccess.readGroup(C_GROUP_PROJECTLEADER).getId();
-            if(group.getId() == user || group.getId() == admin || group.getId() == manager){
+            if((group.getId() == user) || (group.getId() == admin) || (group.getId() == manager)){
                 return false;
             } else {
                 int parentId = group.getParentId();
                 // check if the group belongs to Users, Administrators or Projectmanager
                 if (parentId != C_UNKNOWN_ID){
-                    if(parentId == user || parentId == admin || parentId == manager){
-                        // the parent
-                        return false;
-                    } else {
-                        // check is the parentgroup is a webgroup
-                        isWebgroup(m_dbAccess.readGroup(parentId));
-                    }
+                    // check is the parentgroup is a webgroup
+                    return isWebgroup(m_dbAccess.readGroup(parentId));
                 }
             }
-        } catch (Exception e){
-            return false;
+        } catch (CmsException e){
+            throw e;
         }
         return true;
     }
@@ -7606,5 +7636,47 @@ protected void validName(String name, boolean blank) throws CmsException {
      */
     public String digest(String value) {
         return m_dbAccess.digest(value);
+    }
+
+    /**
+     *
+     */
+    private String getFirstTagFromManifest(String importFile) throws CmsException{
+        String firstTag = "";
+        ZipFile importZip = null;
+		Document docXml = null;
+		BufferedReader xmlReader = null;
+		// get the import resource
+        File importResource = new File(CmsBase.getAbsolutePath(importFile));
+        try {
+            // if it is a file it must be a zip-file
+            if(importResource.isFile()) {
+                importZip = new ZipFile(importResource);
+            }
+            // is this a zip-file?
+            if(importZip != null) {
+                // yes
+                ZipEntry entry = importZip.getEntry(C_EXPORT_XMLFILENAME);
+                InputStream stream = importZip.getInputStream(entry);
+                xmlReader =  new BufferedReader( new InputStreamReader(stream));
+            } else {
+                // no - use directory
+                File xmlFile = new File(importResource, C_EXPORT_XMLFILENAME);
+                xmlReader =  new BufferedReader(new FileReader(xmlFile));
+            }
+            docXml = A_CmsXmlContent.getXmlParser().parse(xmlReader);
+		    xmlReader.close();
+            firstTag = docXml.getDocumentElement().getNodeName();
+		} catch(Exception exc) {
+		     throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+        }
+        if (importZip != null){
+            try{
+                importZip.close();
+            } catch (IOException exc) {
+                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+            }
+        }
+        return firstTag;
     }
 }
