@@ -46,6 +46,10 @@
 			<resourceinithandler class="org.opencms.configuration.CmsTestDummyResourceInit" />
 		</resourceinit>
 		<requesthandlers/>
+		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">
+			<encoding>UTF-8</encoding>
+			<digest-type>MD5</digest-type>
+		</passwordhandler>
 		<sites>
 			<workplace-server>http://localhost:8080</workplace-server>
 			<default-uri>/sites/default/</default-uri>
