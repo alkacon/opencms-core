@@ -12,15 +12,19 @@
 // ===============================================
 
 
-
 function updateSelection()
 {
 	if(document.form1.galerie.options[document.form1.galerie.selectedIndex].value)
 	{
+		top.selectedGallery = document.form1.galerie.selectedIndex;
 		parent.frames[1].location.href=document.form1.galerie.options[document.form1.galerie.selectedIndex].value;
 	}
 }
 
+function getSelection()
+{
+	document.form1.galerie.selectedIndex = top.selectedGallery;
+}
 
 
 var page=parseInt(1);  // the actual page
@@ -54,7 +58,7 @@ function doEdit(para)
      {
       page++; // increase page number
       filter=document.form1.FilterInput.value;
-      alert("Servlet: Nächste Seite laden");
+      alert("Servlet: Nächste Seite der Galerie laden");
       //parent.frames[1].location.href = "#"+page+"&FILTER="+filter; //reload complete picture browser
      }
     break;
@@ -64,7 +68,7 @@ function doEdit(para)
     if (parent.frames[1].document.BOL !=true)
      {
       filter=document.form1.FilterInput.value;
-      alert("Servlet: Vorhergehende Seite laden");
+      alert("Servlet: Vorhergehende Seite der Galerie laden");
       //parent.frames[1].location.href = "#"+page+"&FILTER="+filter; //reload complete picture browser
      }
     break;
@@ -79,7 +83,6 @@ function doEdit(para)
    case 4: // upload image, open the upload dialog.
    {
      filter=document.form1.FilterInput.value;
-     alert("Servlet: Datei-Upload durchführen");
      parent.frames[1].location.href = "edit_html_piclist_upload.html";
      //openwin("/servlets/mht/system/def/action/upload?FOLDER=/pics/&BROWSER=1&FILTER="+filter);
      break;

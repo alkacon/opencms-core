@@ -17,21 +17,20 @@
 
 
 </head>
-<body bgcolor="#C0C0C0" background="pics/bg_grau.gif" onLoad="" bgproperties=fixed  bgproperties=fixed>
+<body bgcolor="#C0C0C0" background="pics/bg_grau.gif" onLoad="getSelection();" bgproperties=fixed  bgproperties=fixed>
 <form action="" method=post id=form1 name=form1>
 <table WIDTH=100% cellspacing=0 cellpadding=0 border=0>
 <TR>
-<td class=dialogtxt><IMG SRC="pics/bt_back_in.gif" alt="Zurück" name="bt_back" border=0 width=32 height=32></td>
+<td class=dialogtxt><IMG SRC="pics/bt_back_in.gif" alt="" name="bt_back" border=0 width=32 height=32></td>
 <td class=dialogtxt><a href="javascript:doEdit(DO_NEXT)" onMouseDown="ChPush('bt_forward')" onMouseUp="ChOn('bt_forward')" onMouseOver="ChOn('bt_forward')" onMouseOut="ChOff('bt_forward')"><IMG SRC="pics/bt_forward_off.gif" alt="Vor" name="bt_forward" border=0 width=32 height=32></a></td>
 <td class=dialogtxt><a href="javascript:doEdit(DO_UPLOAD)" onMouseDown="ChPush('bt_upload')" onMouseUp="ChOn('bt_upload')" onMouseOver="ChOn('bt_upload')" onMouseOut="ChOff('bt_upload')"><IMG SRC="pics/bt_upload_off.gif" alt="Hochladen" name="bt_upload" border=0 width=32 height=32></a></td>
 <td class=menubold><p class=einzug>Galerie:&nbsp;</p></td>
 		<td class=menu>
 			<p class=einzug>
 			<select name="galerie" width=200 style="width:200px" onchange="updateSelection();">
-				<option selected>Bitte Galerie ausw&auml;hlen ...
-				<option value="edit_html_piclist_content1.html">Presse
+				<option value="edit_html_piclist_content.html">Presse
 				<option value="edit_html_piclist_content2.html">Zahlen und Fakten
-				<option value="edit_html_piclist_content.html">allgemeine Grafiken
+				<option value="edit_html_piclist_content1.html">allgemeine Grafiken
 			</select>
 			</p>
 		</td>

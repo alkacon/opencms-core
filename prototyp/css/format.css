@@ -301,6 +301,14 @@ TD.taskviewheadalert
     FONT-SIZE: 10pt;
     FONT-WEIGHT: bold
 }
+TD.taskviewheadok
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    COLOR: #000000;
+    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-SIZE: 10pt;
+    FONT-WEIGHT: bold;
+}
 TD.taskviewbold
 {
     BACKGROUND-COLOR: #c0c0c0;
@@ -328,6 +336,14 @@ TD.taskviewtxtred
 TD.taskviewbackblue
 {
     BACKGROUND-COLOR: blue;
+    COLOR: #ffffff;
+    FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal
+}
+TD.taskviewbackblack
+{
+    BACKGROUND-COLOR: black;
     COLOR: #ffffff;
     FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
     FONT-SIZE: 8pt;

@@ -17,7 +17,7 @@
 
 
 </head>
-<body bgcolor="#C0C0C0" background="pics/bg_grau.gif" onLoad="" bgproperties=fixed  bgproperties=fixed>
+<body bgcolor="#C0C0C0" background="pics/bg_grau.gif" onLoad="getSelection();" bgproperties=fixed  bgproperties=fixed>
 <form action="" method=post id=form1 name=form1>
 <table WIDTH=100% cellspacing=0 cellpadding=0 border=0>
 <TR>
@@ -28,10 +28,9 @@
 		<td class=menu>
 			<p class=einzug>
 			<select name="galerie" width=200 style="width:200px" onchange="updateSelection();">
-				<option selected>Bitte Galerie ausw&auml;hlen ...
-				<option value="edit_html_piclist_content1.html">Presse
+				<option value="edit_html_piclist_content.html">Presse
 				<option value="edit_html_piclist_content2.html">Zahlen und Fakten
-				<option value="edit_html_piclist_content.html">allgemeine Grafiken
+				<option value="edit_html_piclist_content1.html">allgemeine Grafiken
 			</select>
 			</p>
 		</td>
