@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/04/07 07:40:28 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2004/04/07 14:41:58 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @since 5.1.12
  */
@@ -167,7 +167,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             getJsp().include(C_FILE_DIALOG_CLOSE);
         } else {
             // redirect to the workplace explorer view 
-            getJsp().getResponse().sendRedirect(getJsp().link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI));
+            sendCmsRedirect(CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
         }
     }
     
