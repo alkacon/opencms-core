@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2001/02/19 16:23:10 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2001/02/21 10:06:56 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,9 +42,9 @@ import com.opencms.util.*;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.15 $ $Date: 2001/02/19 16:23:10 $
+ * @version $Revision: 1.16 $ $Date: 2001/02/21 10:06:56 $
  */
-public class CmsExport implements I_CmsConstants {
+public class CmsExport implements I_CmsConstants, Serializable {
 
 	/**
 	 * The export-zipfile to store resources to
@@ -680,9 +680,12 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
 		throws CmsException {
         String name, password, recoveryPassword, description, firstname;
         String lastname, email, flags, defaultGroup, address, section, type;
-        Hashtable info = null;
-        Vector userGroups = null;
+        String datfileName = new String();
+        String infostr = new String();
+        Hashtable info = new Hashtable();
+        Vector userGroups = new Vector();
         sun.misc.BASE64Encoder enc;
+        ObjectOutputStream oout;
 
         // get all needed information from the group
         name = user.getName();
@@ -722,23 +725,24 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
         addCdataElement(userdata, C_EXPORT_TAG_ADDRESS, address);
         addElement(userdata, C_EXPORT_TAG_SECTION, section);
         addElement(userdata, C_EXPORT_TAG_TYPE, type);
-
-        // append the node for user info
-        Element userinfos = m_docXml.createElement(C_EXPORT_TAG_USERINFOS);
-        userdata.appendChild(userinfos);
-        Enumeration keys = info.keys();
-        while (keys.hasMoreElements()){
-            Element userinfo = m_docXml.createElement(C_EXPORT_TAG_INFO);
-            userinfos.appendChild(userinfo);
-            String key = (String) keys.nextElement();
-            String value = (String) info.get(key);
-
-            addElement(userinfo, C_EXPORT_TAG_NAME, key);
-            // Encode the info value, using any base 64 decoder
-            enc = new sun.misc.BASE64Encoder();
-            String infostr = new String(enc.encodeBuffer(value.getBytes()));
-            addCdataElement(userinfo, C_EXPORT_TAG_VALUE, infostr);
+        // serialize the hashtable and write the info into a file
+        try{
+            datfileName = "/~"+C_EXPORT_TAG_USERINFO+"/"+name+".dat";
+		    ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		    oout = new ObjectOutputStream(bout);
+		    oout.writeObject(info);
+		    oout.close();
+		    byte[] serializedInfo = bout.toByteArray();
+            // store the userinfo in zip-file
+            ZipEntry entry = new ZipEntry(datfileName);
+            m_exportZipStream.putNextEntry(entry);
+            m_exportZipStream.write(serializedInfo);
+            m_exportZipStream.closeEntry();
+        } catch (IOException ioex){
+            System.out.println("IOException: "+ioex.getMessage());
         }
+        // create tag for userinfo
+        addCdataElement(userdata, C_EXPORT_TAG_USERINFO, datfileName);
 
         // append the node for groups of user
         Element usergroup = m_docXml.createElement(C_EXPORT_TAG_USERGROUPS);

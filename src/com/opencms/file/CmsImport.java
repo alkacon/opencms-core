@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2001/02/19 16:23:11 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2001/02/21 10:06:56 $
+ * Version: $Revision: 1.39 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -43,9 +43,9 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.38 $ $Date: 2001/02/19 16:23:11 $
+ * @version $Revision: 1.39 $ $Date: 2001/02/21 10:06:56 $
  */
-public class CmsImport implements I_CmsConstants {
+public class CmsImport implements I_CmsConstants, Serializable {
 
 	/**
 	 * The algorithm for the message digest
@@ -606,16 +606,15 @@ private boolean inExcludeList(Vector excludeList, String path) {
     private void importUsers() throws CmsException{
         NodeList userNodes;
         NodeList groupNodes;
-        NodeList infoNodes;
         Element currentElement, currentGroup, currentInfo;
         Vector userGroups;
-        Hashtable userInfo;
+        Hashtable userInfo = new Hashtable();
         sun.misc.BASE64Decoder dec;
         String name, description, flags, password, recoveryPassword, firstname,
-                lastname, email, address, section, defaultGroup, type, pwd;
-
+                lastname, email, address, section, defaultGroup, type, pwd, infoNode;
+        // try to get the import resource
+        getImportResource();
         try{
-            //dec = new sun.misc.BASE64Decoder();
             // getAll user nodes
             userNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_USERDATA);
             // walk threw all groups in manifest
@@ -640,18 +639,18 @@ private boolean inExcludeList(Vector excludeList, String path) {
                 defaultGroup = getTextNodeValue(currentElement, C_EXPORT_TAG_DEFAULTGROUP);
                 type = getTextNodeValue(currentElement, C_EXPORT_TAG_TYPE);
                 // get the userinfo and put it into the hashtable
-                infoNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_INFO);
-                userInfo = new Hashtable();
-                for(int j=0; j < infoNodes.getLength(); j++){
-                    currentInfo = (Element) infoNodes.item(j);
-                    String infoName = getTextNodeValue(currentInfo, C_EXPORT_TAG_NAME);
-                    String value = getTextNodeValue(currentInfo, C_EXPORT_TAG_VALUE);
-                    dec = new sun.misc.BASE64Decoder();
-                    String decstr = new String(dec.decodeBuffer(value.trim()));
-                    if (infoName != null){
-                        userInfo.put(infoName, decstr);
-                    }
+                infoNode = getTextNodeValue(currentElement,C_EXPORT_TAG_USERINFO);
+                try{
+                    // read the userinfo from the dat-file
+                    byte[] value = getFileBytes(infoNode);
+				    // deserialize the object
+				    ByteArrayInputStream bin= new ByteArrayInputStream(value);
+				    ObjectInputStream oin = new ObjectInputStream(bin);
+                    userInfo = (Hashtable)oin.readObject();
+                } catch (IOException ioex){
+                    System.out.println(ioex.getMessage());
                 }
+
                 // get the groups of the user and put them into the vector
                 groupNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_GROUPNAME);
                 userGroups = new Vector();
@@ -666,6 +665,13 @@ private boolean inExcludeList(Vector excludeList, String path) {
         } catch (Exception exc){
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
+	    if (m_importZip != null){
+            try{
+		        m_importZip.close();
+	        } catch (IOException exc) {
+		        throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+	        }
+	    }
     }
 
     /**
