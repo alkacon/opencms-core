@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+
+<html>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '4_4_1.html';
+}
+//-->
+</script>
+
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="../css/format.css">
+<!-- Ende Style -->
+
+</head>
+
+<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" topmargin=2 onLoad="window.top.body.tasks_head.location.href='tasks_head_2.html';" bgproperties=fixed>
+
+<center>
+<form id=TASKVIEW name=TASKVIEW>
+
+<!-- Tabellenaufbau Dokumentation Aufgabe-->
+<table width=90% cellspacing=1 cellpadding=4 border=0>
+	<!-- Beginn Überschrift Task-->
+	<tr><td colspan=3 class=taskviewheadnew>&Uuml;berarbeitung des Bereiches Kontakt</td></tr>
+	<!-- Ende Überschrift -->
+	
+	<!-- Beginn Inhalt -->
+	<tr>
+		<td class=taskviewbold width=190 nowrap>Projekt:</td>
+		<td class=taskviewtxt width=190 nowrap>Relaunch Sozial</td>
+		<td class=taskviewtxt width=100% align=right><INPUT class=taskviewbutton width = 100 type="button" value="R&uuml;ckfragen" id=QUESTION name=QUESTION onClick="location='tasks_content_dialogquestion.html';"></td>
+	</tr>
+	<tr>
+		<td class=taskviewbold nowrap>Aufgabensteller:</td>
+		<td class=taskviewtxt>Andreas Spee (a.spee)</td>
+		<td class=taskviewtxt align=right><INPUT class=taskviewbutton width = 100 type="button" value="Annehmen" id=TAKE name=TAKE onClick="location='tasks_content_dialogaccept.html';"></td>
+	</tr>
+	<tr>
+		<td class=taskviewbold nowrap>Bearbeiter:</td>
+		<td class=taskviewtxt>Michaela Schleich (m.schleich)</td>
+		<td class=taskviewtxt nowrap>&nbsp;</td>
+	</tr>
+	<tr>
+		<td class=taskviewbold nowrap>F&auml;llig am:</td>
+		<td class=taskviewtxt>21.02.2000</td>
+		<td class=taskviewtxt align=right><INPUT disabled class=taskviewbutton width = 100 type="button" value="F&auml;lligkeit" id=DATE name=DATE></td>
+	</tr>
+	<tr>
+		<td class=taskviewbold nowrap>Priorit&auml;t:</td>
+		<td class=taskviewtxt><IMG border=0 width=16 height=16 src="pics/ic_task_priohigh.gif">&nbsp;hoch</td>
+		<td class=taskviewtxt align=right><INPUT disabled class=taskviewbutton width = 100 type="button" value="Priorit&auml;t" id=PRIO name=PRIO></td>
+	</tr>
+	<tr>
+		<td class=taskviewbold>&nbsp;</td>
+		<td class=taskviewtxt>&nbsp;</td>
+		<td class=taskviewtxt align=right><INPUT class=taskviewbutton width=100 type ="button" value="Neuer Kommentar" id=COMMENT name=COMMENT onClick="location='tasks_content_dialogcomment.html';"></td>
+	</tr>
+	<tr>
+		<td class=taskviewbold>&nbsp;</td>
+		<td class=taskviewtxt>&nbsp;</td>
+		<td class=taskviewtxt align=right><INPUT disabled class=taskviewbutton width = 100 type="button" value="Abhaken" id=OK name=OK></td>
+	</tr>	
+	<!-- Ende Inhalt -->
+	
+	<tr><td colspan=3 class=taskviewheadnew>&nbsp</td></tr>
+	</table>
+
+<!--Beginn Doku -->
+<br><br>
+<table cellspacing=1 cellpadding=3 border=0 width="90%">
+<tr>
+	<td width=3%><img src="pics/empty.gif" border=0 width=16 height=2></td>
+	<td width=94%>&nbsp;</td>
+	<td width=3%><img src="pics/empty.gif" border=0 width=16 height=2></td>
+</tr>
+<!--Beginn Doku Kopf -->
+<tr>
+	<td valign=bottom colspan=3 class=taskviewhead2>Dokumentation:</td>
+</tr>
+<!--Ende Doku Kopf-->
+<!--Beginn Trennlinie -->
+<tr>
+	<td colspan=3>
+	<table cellspacing=0 cellpadding=0 border=0 width="100%">
+	<tr>
+	<td height="2" class="taskviewbackblue"><img src="pics/empty.gif" width="20" height="2" alt="" border="0"></td>
+	</tr>
+	</table>
+</tr>
+<!--Ende Trennlinie -->
+
+<!--Beginn automatischer Eintrag -->
+
+<!--Ende Eintrag -->
+</table>
+<!--Ende Doku -->
+</FORM>
+<!-- Ende Zentrierung -->
+</body>
+</html>
+
+]]>
+
+</TEMPLATE>
+</WORKPLACE>

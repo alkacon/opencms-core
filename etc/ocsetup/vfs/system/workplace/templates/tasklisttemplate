@@ -5,7 +5,7 @@
 	<tr>
 		<td nowrap>]]><PROCESS>stateicon</PROCESS><![CDATA[</td>
 		<td nowrap>]]><PROCESS>priority</PROCESS><![CDATA[</td>
-		<td nowrap class=]]><PROCESS>style</PROCESS><![CDATA[ ><p class=einzug > ]]><PROCESS>task</PROCESS><![CDATA[</p></td>
+		<td nowrap class=]]><PROCESS>style</PROCESS><![CDATA[ ><p class=einzug > <a href="tasks_content_detail.html?taskid=]]><PROCESS>taskid</PROCESS><![CDATA[" class=task> ]]><PROCESS>task</PROCESS><![CDATA[ </a></p></td>
 		<td nowrap class=]]><PROCESS>style</PROCESS><![CDATA[ ><p class=einzug > ]]><PROCESS>foruser</PROCESS><![CDATA[</p></td>
 		<td nowrap class=]]><PROCESS>style</PROCESS><![CDATA[ ><p class=einzug > ]]><PROCESS>forrole</PROCESS><![CDATA[</p></td>
 		<td nowrap class=]]><PROCESS>style</PROCESS><![CDATA[ ><p class=einzug > ]]><PROCESS>actuator</PROCESS><![CDATA[</p></td>

@@ -16,7 +16,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;tasklist&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/02/19 10:32:16 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/20 10:14:00 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants, I_CmsConstants {
@@ -80,11 +80,16 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 		long startTime;
 		long timeout;
 		long now = new Date().getTime();
-		
+
 		for(int i = 0; i < list.size(); i++) {
 			// get the actual project
 			A_CmsTask task = (A_CmsTask) list.elementAt(i);
-			projectname = cms.readTask(task.getRoot()).getName();
+			projectname = "?";
+			try {
+				projectname = cms.readTask(task.getRoot()).getName();
+			} catch(Exception exc) {
+				// no root?!
+			}
 			priority = listdef.getProcessedXmlDataValue("priority" + task.getPriority(), callingObject);
 			startTime = task.getStartTime().getTime();
 			timeout = task.getTimeOut().getTime();
@@ -120,6 +125,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 			listdef.setXmlData("stateicon", stateIcon);
 			listdef.setXmlData("style", style);
 			listdef.setXmlData("priority", priority);
+			listdef.setXmlData("taskid", task.getId() + "");
 			listdef.setXmlData("task", task.getName());
 			listdef.setXmlData("foruser", cms.readAgent(task).getName());
 			listdef.setXmlData("forrole", cms.readGroup(task).getName());

@@ -16,25 +16,6 @@
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 <!-- Beginn JavaScript -->
 <script language="JavaScript">
-function setItem()
-{
-	window.top.head.selectedTask=document.form1.filter.selectedIndex;
-}
-
-function updateSelection()
-{
-	if(document.form1.filter.options[document.form1.filter.selectedIndex].value!='-')
-	{
-		window.top.body.tasks_body.location.href=document.form1.filter.options[document.form1.filter.selectedIndex].value;
-		window.top.head.lastVisited=document.form1.filter.options[document.form1.filter.selectedIndex].value;
-		setItem();
-	}
-}
-
-function getItem() {
-	//if(window.top.head.document.selectedTask)
-		document.form1.filter.selectedIndex = window.top.head.selectedTask;	
-}
 
 <!-- URL for pictures -->
 var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
@@ -46,7 +27,7 @@ var help="]]><METHOD name="helpUrl"/><![CDATA[";
 </head>
 
 <!-- Beginn Navigation Task -->
-<body bgcolor="#E0E0E0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA["  onLoad="getItem();" bgproperties=fixed  bgproperties=fixed>
+<body bgcolor="#E0E0E0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed  bgproperties=fixed>
 
 <table cellspacing=0 cellpadding=0 border=0>
 <form action="" method=post id=form1 name=form1>
@@ -55,26 +36,11 @@ var help="]]><METHOD name="helpUrl"/><![CDATA[";
 		<td class=menubold><p class=einzug>Filter:&nbsp;&nbsp;&nbsp;</p></td>
 		<td class=menu>
 			<p class=einzug>
-			<select name="filter" width=210 style="width:210px" onchange="updateSelection();">
-				<option value="tasks_content_nafm.html" selected>Neue Aufgaben für mich 
-				<option value="tasks_content_nafr.html">Neue Aufgaben für meine Rollen 
-				<option value="tasks_content_ana.html">Alle neuen Aufgaben
-				<option value="-">------------------------------------------------
-				<option value="tasks_content_maa.html">Meine aktiven Aufgaben 
-				<option value="tasks_content_aamr.html">Aktive Aufgaben für meine Rollen 
-				<option value="tasks_content_aaa.html">Alle aktiven Aufgaben
-				<option value="-">------------------------------------------------
-				<option value="tasks_content_vmea.html">Von mir erledigte Aufgaben 
-				<option value="tasks_content_eavmr.html">Erledigte Aufgaben von meinen Rollen 
-				<option value="tasks_content_aea.html">Alle erledigten Aufgaben
-				<option value="-">------------------------------------------------
-				<option value="tasks_content_vmgna.html">Von mir gestellten neue Aufgaben
-				<option value="tasks_content_vmgaa.html">Von mir gestellte aktive Aufgaben
-				<option value="tasks_content_vmgea.html">Von mir gestellte erledigte Aufgaben 
-			</select>
+			
+			]]><SELECT class="textfeld" name="filter" width="210" method="getFilters" onchange="document.form1.submit();updateFrame('body.tasks_body', 'tasks_content.html');"/><![CDATA[
 			</p>
 		</td>
-		<td class=menu><p class=einzug><input type="checkbox" name=ALL id=ALL ]]><METHOD name="checked"></METHOD><![CDATA[ onclick="document.form1.submit();" value="OK"></td>
+		<td class=menu><p class=einzug><input type="checkbox" name=ALL id=ALL ]]><METHOD name="checked"></METHOD><![CDATA[ onclick="document.form1.submit();updateFrame('body.tasks_body', 'tasks_content.html');" value="OK"></td>
 		<td class=menubold><p class=einzug>alle Projekte anzeigen</td>
 		<td class=menu><p class=einzug>&nbsp;</td>
 		<td class=menu>]]><BUTTON href="javascript:updateFrame('body.tasks_body', 'tasks_content_new.html');" name="bt_task" action="" alt="newtask"/><![CDATA[</td>

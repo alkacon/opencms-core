@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRbTask.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/02/20 10:14:00 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Rüdiger Gutfleisch
- * @version $Revision: 1.10 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.11 $ $Date: 2000/02/20 10:14:00 $
  */
 interface I_CmsRbTask { 	
 
@@ -197,6 +197,20 @@ interface I_CmsRbTask {
 	  */
 	 public Vector readTasks(A_CmsProject project, int tasktype, 
 							 String orderBy, String sort)
+		 throws CmsException;
+	 
+	 /**
+	  * Reads all tasks for a role in a project.
+	  * 
+	  * @param project The Project in which the tasks are defined.
+	  * @param user The user who has to process the task.
+	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+	  * @param orderBy Chooses, how to order the tasks.
+	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public Vector readTasks(A_CmsProject project, A_CmsGroup role, int tasktype, 
+							 String orderBy, String sort) 
 		 throws CmsException;
 	 
 	 /**

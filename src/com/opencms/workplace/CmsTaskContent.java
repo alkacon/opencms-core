@@ -14,7 +14,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/02/19 10:32:16 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/20 10:14:00 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -67,11 +67,68 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
      */
     public Vector taskList(A_CmsObject cms, CmsXmlLanguageFile lang)
 		throws CmsException {
+		String orderBy = "";
+		String groupBy = "";
 		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
-		// get the tasks...
-		String projectName = cms.getRequestContext().currentProject().getName();
+		String project = (String)session.getValue(C_SESSION_TASK_PROJECTNAME);
+		String filter = (String)session.getValue(C_SESSION_TASK_FILTER);
+		Vector retValue;
+		if(filter == null) {
+			filter = "a1";
+		}
+		int filterNum = Integer.parseInt(filter, 16);
 		String userName = cms.getRequestContext().currentUser().getName();
+		String roleName = cms.getRequestContext().currentGroup().getName();
+		
+		switch(filterNum) {
+			case 0xa1:
+				retValue = cms.readTasksForUser(project, userName, C_TASKS_NEW, orderBy, groupBy);
+				break;
+			case 0xa2:
+				retValue = cms.readTasksForUser(project, userName, C_TASKS_ACTIVE, orderBy, groupBy);
+				break;
+			case 0xa3:
+				retValue = cms.readTasksForUser(project, userName, C_TASKS_DONE, orderBy, groupBy);
+				break;
 
-		return cms.readTasks((String)session.getValue(C_SESSION_TASK_PROJECTNAME), userName, C_TASKS_ALL, "", "");
+			case 0xb1:
+				retValue = cms.readTasksForRole(project, roleName, C_TASKS_NEW, orderBy, groupBy);
+				break;
+			case 0xb2:
+				retValue = cms.readTasksForRole(project, roleName, C_TASKS_ACTIVE, orderBy, groupBy);
+				break;
+			case 0xb3:
+				retValue = cms.readTasksForRole(project, roleName, C_TASKS_DONE, orderBy, groupBy);
+				break;
+
+			case 0xc1:
+				retValue = cms.readTasksForProject(project, C_TASKS_NEW, orderBy, groupBy);
+				break;
+			case 0xc2:
+				retValue = cms.readTasksForProject(project, C_TASKS_ACTIVE, orderBy, groupBy);
+				break;
+			case 0xc3:
+				retValue = cms.readTasksForProject(project, C_TASKS_DONE, orderBy, groupBy);
+				break;
+
+			case 0xd1:
+				retValue = cms.readGivenTasks(project, userName, C_TASKS_NEW, orderBy, groupBy);
+				break;
+			case 0xd2:
+				retValue = cms.readGivenTasks(project, userName, C_TASKS_ACTIVE, orderBy, groupBy);
+				break;
+			case 0xd3:
+				retValue = cms.readGivenTasks(project, userName, C_TASKS_DONE, orderBy, groupBy);
+				break;
+
+			default:
+				retValue = cms.readTasksForUser(project, userName, C_TASKS_ALL, orderBy, groupBy);
+				break;
+		}
+		if(retValue == null) {
+			return new Vector();
+		} else {
+			return retValue;
+		}
     }
 }

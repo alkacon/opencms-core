@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/17 15:51:01 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2000/02/20 10:14:00 $
+ * Version: $Revision: 1.42 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michaela Schleich
- * @version $Revision: 1.41 $ $Date: 2000/02/17 15:51:01 $
+ * @version $Revision: 1.42 $ $Date: 2000/02/20 10:14:00 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -1895,11 +1895,71 @@ interface I_CmsResourceBroker {
 	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readTasks(A_CmsUser currentUser, A_CmsProject currentProject,
-							 String projectName, String userName, int tasktype, 
-							 String orderBy, String sort) 
+	 public Vector readTasksForUser(A_CmsUser currentUser, A_CmsProject currentProject,
+									String projectName, String userName, int tasktype, 
+									String orderBy, String sort) 
 		 throws CmsException;
 
+	 /**
+	  * Reads all tasks for a project.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param project The Project in which the tasks are defined. Can be null for all tasks
+	  * @tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
+	  * @param orderBy Chooses, how to order the tasks. 
+	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public Vector readTasksForProject(A_CmsUser currentUser, A_CmsProject currentProject,
+									   String projectName, int tasktype, 
+									   String orderBy, String sort)
+		 throws CmsException;
+	 
+	 /**
+	  * Reads all tasks for a role in a project.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param project The Project in which the tasks are defined.
+	  * @param user The user who has to process the task.
+	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+	  * @param orderBy Chooses, how to order the tasks.
+	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public Vector readTasksForRole(A_CmsUser currentUser, A_CmsProject currentProject,
+									String projectName, String roleName, int tasktype, 
+									String orderBy, String sort) 
+		 throws CmsException;
+	 
+	 /**
+	  * Reads all given tasks from a user for a project.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param project The Project in which the tasks are defined.
+	  * @param owner Owner of the task.
+	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+	  * @param orderBy Chooses, how to order the tasks.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public Vector readGivenTasks(A_CmsUser currentUser, A_CmsProject currentProject,
+								  String projectName, String ownerName, int taskType, 
+								  String orderBy, String sort) 
+		 throws CmsException;
+	 
 	 /**
 	  * Read a task by id.
 	  * 
