@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2001/08/03 10:29:40 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -372,7 +372,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                             if(resolveDebug) System.err.println("= Element object found for \"" + lookupName +"\". Calling getContent on this object. ");
                             byte[] buffer = null;
                             try {
-                                buffer = subEl.getContent(elementCache, cms, elDefs, elementName, parameters, null);
+                                buffer = subEl.getContent(elementCache, cms, elDefs, lookupName, parameters, null);
                             } catch(Exception e) {
                                 // An error occured while getting the element's content.
                                 // Do some error handling here.

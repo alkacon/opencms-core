@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDefinition.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/08/03 10:29:40 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -165,6 +165,14 @@ public class CmsElementDefinition implements Cloneable {
      */
     public String getName() {
         return m_name;
+    }
+
+    /**
+     * Get the templateSelector of the element defined.
+     * @return templateSelector of the element.
+     */
+    public String getTemplateSelector() {
+        return m_templateSelector;
     }
 
     /**

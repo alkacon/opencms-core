@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/08/03 10:29:40 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -140,8 +140,13 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
                 // hashtable. For compatibility reasons we are not allowed to change
                 // the interface of getContent() or startProcessing()
                 parameters.put("_ELDEFS_", mergedElDefs);
+                String templateSelector = null;
+                try{
+                    templateSelector = mergedElDefs.get(elementName).getTemplateSelector();
+                }catch(Exception e){
+                }
                 try {
-                    result = templateClass.getContent(cms, m_templateName, elementName, parameters);
+                    result = templateClass.getContent(cms, m_templateName, elementName, parameters, templateSelector);
                 } catch(Exception e) {
                     if(e instanceof CmsException) {
                         CmsException ce = (CmsException)e;
