@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/Attic/CmsShellTest.java,v $
- * Date   : $Date: 2004/05/25 13:30:12 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/05/26 08:01:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.main;
 
 import org.opencms.file.CmsObject;
-import org.opencms.report.CmsShellReport;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.test.OpenCmsTestCase;
 
@@ -43,7 +42,7 @@ import java.io.FileInputStream;
  * Test cases for the OpenCms shell.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.0
  */
@@ -57,18 +56,6 @@ public class CmsShellTest extends OpenCmsTestCase {
     public CmsShellTest(String arg0) {
         super(arg0);
     }
-    
-    /**
-     * Imports a resource into the Cms.<p>
-     * 
-     * @param cms an initialized CmsObject
-     * @param importFile the name (absolute Path) of the import resource (zip or folder)
-     * @param targetPath the name (absolute Path) of the target folder in the VFS
-     * @throws Exception if something goes wrong
-     */
-    public void importResources(CmsObject cms, String importFile, String targetPath) throws Exception {
-        OpenCms.getImportExportManager().importData(cms, getTestDataPath() + File.separator + "imports" + File.separator + importFile, targetPath, new CmsShellReport());
-    }    
     
     /**
      * Tests the CmsShell.<p>
@@ -114,7 +101,7 @@ public class CmsShellTest extends OpenCmsTestCase {
         shell.start(stream);                
         
         // get the name of the folder for the backup configuration files
-        File configBackupDir = OpenCmsCore.getInstance().getConfigurationManager().getBackupFolder();
+        File configBackupDir = new File(getTestDataPath() + "WEB-INF/config/backup/");
         
         // exit the shell
         shell.exit();
@@ -124,5 +111,23 @@ public class CmsShellTest extends OpenCmsTestCase {
         
         // remove the backup configuration files
         CmsStaticExportManager.purgeDirectory(configBackupDir);
+    }
+
+    /**
+     * Tests the CmsShell setup using the "base" test class.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testCmsSetup() throws Throwable {
+        // setup OpenCms
+        CmsObject cms = setupOpenCms("simpletest", "/sites/default/");
+        
+        // check the returned CmsObject
+        assertEquals(cms.getRequestContext().currentUser(), cms.readUser("Admin"));
+        assertEquals(cms.getRequestContext().currentProject(), cms.readProject("Offline"));
+        assertEquals(cms.getRequestContext().getSiteRoot(), "/sites/default");
+        
+        // remove OpenCms
+        removeOpenCms();
     }
 }

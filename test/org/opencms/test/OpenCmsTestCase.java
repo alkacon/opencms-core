@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/05/25 09:44:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/26 08:01:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,18 @@
  
 package org.opencms.test;
 import org.opencms.db.CmsDbPool;
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsShell;
+import org.opencms.main.OpenCms;
+import org.opencms.report.CmsShellReport;
 import org.opencms.setup.CmsSetupDb;
+import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.util.CmsPropertyUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -57,7 +65,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.5
  */
@@ -301,4 +309,103 @@ public class OpenCmsTestCase extends TestCase {
         setupDb = dropDatabase();
         checkErrors(setupDb);
     }    
+    
+    /**
+     * Imports a resource into the Cms.<p>
+     * 
+     * @param cms an initialized CmsObject
+     * @param importFile the name (absolute Path) of the import resource (zip or folder)
+     * @param targetPath the name (absolute Path) of the target folder in the VFS
+     * @throws CmsException if something goes wrong
+     */
+    public void importResources(CmsObject cms, String importFile, String targetPath) throws CmsException {
+        OpenCms.getImportExportManager().importData(cms, getTestDataPath() + File.separator + "imports" + File.separator + importFile, targetPath, new CmsShellReport());
+    }    
+    
+    /** The initialized OpenCms shell instance */
+    private CmsShell m_shell;    
+    
+    /**
+     * Sets up a complete OpenCms instance, creating the usual projects,
+     * and importing a default database.<p>
+     * 
+     * @param importFolder the folder to import in the "real" FS
+     * @param targetFolder the target folder of the import in the VFS
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
+     * @throws FileNotFoundException in case of file access errors
+     * @throws CmsException in case of OpenCms access errors
+     */
+    protected CmsObject setupOpenCms(String importFolder, String targetFolder) throws FileNotFoundException, CmsException {
+        // create a new database first
+        setupDatabase();
+        
+        // kill any old shell that might have remained from a previous test 
+        if (m_shell != null) {
+            try {
+                m_shell.exit();
+                m_shell = null;
+            } catch (Throwable t) {
+                // ignore
+            }
+        }
+        
+        // create a shell instance
+        m_shell = new CmsShell(
+            getTestDataPath() + "WEB-INF" + File.separator,
+            "${user}@${project}>", 
+            null);
+        
+        // open the test script 
+        File script;
+        FileInputStream stream = null;
+        
+        // start the shell with the base script
+        script = new File(getTestDataPath() + "scripts/script_base.txt");
+        stream = new FileInputStream(script);
+        m_shell.start(stream);
+        
+        // add the default folders by script
+        script = new File(getTestDataPath() + "scripts/script_default_folders.txt");
+        stream = new FileInputStream(script);        
+        m_shell.start(stream); 
+        
+        // log in the Admin user and switch to the setup project
+        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+        cms.loginUser("Admin", "admin");
+        cms.getRequestContext().setCurrentProject(cms.readProject("_setupProject"));
+        
+        // import the "simpletest" files
+        importResources(cms, importFolder, targetFolder);  
+        
+        // publish the current project by script
+        script = new File(getTestDataPath() + "scripts/script_publish.txt");
+        stream = new FileInputStream(script);        
+        m_shell.start(stream);      
+        
+        // switch to the "Offline" project
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        cms.getRequestContext().setSiteRoot("/sites/default/");               
+                
+        // return the initialized cms context Object
+        return cms;
+    }
+    
+    /**
+     * Removes the initialized OpenCms database and all 
+     * temporary files created during the test run.<p>
+     */
+    protected void removeOpenCms() {
+        
+        // exit the shell
+        m_shell.exit();
+        
+        // remove the database
+        removeDatabase();
+
+        // get the name of the folder for the backup configuration files
+        File configBackupDir = new File(getTestDataPath() + "WEB-INF/config/backup/");
+        
+        // remove the backup configuration files
+        CmsStaticExportManager.purgeDirectory(configBackupDir);        
+    }
 }
