@@ -550,6 +550,7 @@
             <newpwd>New Password</newpwd>       
             <newpwdrepeat>Confirm Password</newpwdrepeat>   
             <next>next</next>
+			<nochange>No change</nochange>
             <none>-- none --</none>
             <oldpwd>Current Password</oldpwd>
             <owner>Owner</owner>

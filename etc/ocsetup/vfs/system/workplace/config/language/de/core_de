@@ -548,6 +548,7 @@
             <newpwd>Neues Kennwort</newpwd>     
             <newpwdrepeat>Kennwort bestätigen</newpwdrepeat>    
             <next>nach</next>
+			<nochange>Wert beibehalten</nochange>
             <none>-- keine --</none>
             <oldpwd>Aktuelles Kennwort</oldpwd>
             <owner>Eigentümer</owner>

@@ -539,7 +539,8 @@
             <newpwd>Nuova Password</newpwd>
             <newpwdrepeat>Conferma Password</newpwdrepeat>
             <next>successivo</next>
-            <nolinkvalue>Per favore inserisci il collegamento!</nolinkvalue>
+            <nochange>No change</nochange>
+			<nolinkvalue>Per favore inserisci il collegamento!</nolinkvalue>
             <none>-- nessuno --</none>
             <oldpwd>Password Attuale</oldpwd>
             <owner>Proprietario</owner>
