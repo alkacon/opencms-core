@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/02/26 15:47:29 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/04/14 06:35:59 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,8 +50,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.27 $
- * $Date: 2003/02/26 15:47:29 $
+ * $Revision: 1.28 $
+ * $Date: 2003/04/14 06:35:59 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -293,7 +293,7 @@ public abstract class CmsMasterContent
      * to write the current content of the content definition to the database.
      * @param cms the CmsObject to use.
      */
-    public void write(CmsObject cms) throws Exception {
+    public void write(CmsObject cms) throws CmsException {
         // add or delete channels according to current selection
         updateChannels();
         // is this a new row or an existing row?
