@@ -37,8 +37,7 @@
 	else	{
 		offset = 0;
 	}
-	//debugging
-	//out.println("Offset : "+offset);
+
 	session.setAttribute("offset",""+(size));
 
 %>

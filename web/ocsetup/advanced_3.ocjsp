@@ -19,7 +19,7 @@
 	boolean setupOk = (Bean.getProperties()!=null);
 	
 	/* next page to be accessed */
-	String nextPage = "create_database.ocjsp";
+	String nextPage = "save_properties.ocjsp";
 %>
 <!-- ------------------------------------------------------------------------------------------------------------------- -->
 

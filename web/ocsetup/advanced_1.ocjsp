@@ -9,25 +9,6 @@
 	/* true if properties are initialized */
 	boolean setupOk = (Bean.getProperties()!=null);
 
-	if(setupOk)	{
-		/* Set user and passwords manually. This is necessary because
-		   ocjsp:setProperty does not set empty strings ("") :( */
-		String dbCreateUser = 	request.getParameter("dbCreateUser");
-		String dbSetupUser = 	request.getParameter("dbSetupUser");
-		String dbWorkUser =		request.getParameter("dbWorkUser");
-
-		String dbCreatePwd = 	request.getParameter("dbCreatePwd");
-		String dbSetupPwd = 	request.getParameter("dbSetupPwd");
-		String dbWorkPwd =		request.getParameter("dbWorkPwd");
-
-		Bean.setDbCreateUser(dbCreateUser);
-		Bean.setDbSetupUser(dbSetupUser);
-		Bean.setDbWorkUser(dbWorkUser);
-
-		Bean.setDbCreatePwd(dbCreatePwd);
-		Bean.setDbSetupPwd(dbSetupPwd);
-		Bean.setDbWorkPwd(dbWorkPwd);
-	}
 %>
 
 <%	/* next page to be accessed */

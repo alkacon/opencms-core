@@ -108,8 +108,8 @@
 			<% if(setupOk)	{ %>
 			<tr>
 				<td height="375" align="center" valign="top">
-						<b>Status:</b><br><input type="text" style="width:650px" size="60" name="info" readonly><br>
-						<textarea style="width:650px;height:325px;" cols="60" rows="16" readonly wrap="off" name="output"></textarea>
+						<b>Status:</b><br><input type="text" style="width:650px" size="60" name="info"><br>
+						<textarea style="width:650px;height:325px;" cols="60" rows="16"  wrap="off" name="output"></textarea>
 				</td>
 			</tr>
 			<tr>
