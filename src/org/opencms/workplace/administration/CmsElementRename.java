@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsElementRename.java,v $
- * Date   : $Date: 2004/12/20 17:01:12 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/12/22 09:54:36 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.5.3
  */
@@ -514,28 +514,26 @@ public class CmsElementRename extends CmsReport {
 
         StringBuffer validationErrors = new StringBuffer();
         if (CmsStringUtil.isEmpty(getParamResource())) {
-            validationErrors.append(key("error.renameelement.resourcefolder"));
+            validationErrors.append("- Please select a resource folder.<br>");
         }
         if (CmsStringUtil.isEmpty(getParamTemplate())) {
-            validationErrors.append(key("error.renameelement.template"));
+            validationErrors.append("- Please select a template.<br>");
         }
         if (CmsStringUtil.isEmpty(getParamLocale())) {
-            validationErrors.append(key("error.renameelement.language"));
+            validationErrors.append("- Please select a language.<br>");
         }
         if (CmsStringUtil.isEmpty(getParamOldElement())) {
-            validationErrors.append(key("error.renameelement.oldelement"));
+            validationErrors.append("- Please enter the old element name.<br>");
         }
         if (CmsStringUtil.isEmpty(getParamNewElement())) {
-            validationErrors.append(key("error.renameelement.newelement"));
+            validationErrors.append("- Please enter the new element name.<br>");
         }
         if (!isValidElement(getParamNewElement())) {
-            validationErrors.append("- ");
-            validationErrors.append(key("error.renameelement.invalidnewelement1"));
-            validationErrors.append(" '");
+            validationErrors.append("- The specified new element '");
             validationErrors.append(getParamNewElement());
-            validationErrors.append("' ");
-            validationErrors.append(key("error.renameelement.invalidnewelement2"));
-            validationErrors.append("<br>");
+            validationErrors.append("' is not valid for the selected template '");
+            validationErrors.append(getParamTemplate());
+            validationErrors.append("'<br>");
         }
 
         setErrorMessage(validationErrors.toString());
@@ -729,7 +727,7 @@ public class CmsElementRename extends CmsReport {
      * @param page the xml page
      * @param element the element name
      * 
-     * @return true if ALL selected or the element is valid for the selected template; otherwise false
+     * @return true if ALL_TEMPLATES selected or the element is valid for the selected template; otherwise false
      */
     private boolean isValidElement(CmsXmlPage page, String element) {
 
@@ -797,7 +795,7 @@ public class CmsElementRename extends CmsReport {
 
         // the list including at least one resource
         if (xmlPages != null && xmlPages.size() > 0) {
-            m_report.println(key("report.renameelement.processing.headline") + " ("+locale.getDisplayLanguage()+")", I_CmsReport.C_FORMAT_HEADLINE);            
+            m_report.println("processing rename element for language ("+locale.getLanguage()+")", I_CmsReport.C_FORMAT_HEADLINE);            
             // if user has not selected ALL templates, then retain pages with specified template
             if (!C_ALL.equals(getParamTemplate())) {
                 xmlPages = getRetainedPagesWithTemplate(xmlPages);
@@ -813,7 +811,7 @@ public class CmsElementRename extends CmsReport {
                     // next file from the list
                     CmsResource res = (CmsResource)i.next();
                     CmsFile file;
-                    m_report.print("( " + m + " / " + n + " ) " + key("report.renameelement.processing.page") + " " + getCms().getSitePath(res), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print("( " + m + " / " + n + " ) " + "processing page " + getCms().getSitePath(res), I_CmsReport.C_FORMAT_NOTE);
                     m_report.println(m_report.key("report.dots"));
                     try {
                         file = getCms().readFile(getCms().getSitePath(res), CmsResourceFilter.IGNORE_EXPIRATION);
@@ -835,18 +833,19 @@ public class CmsElementRename extends CmsReport {
                     // check if the source element exists in the page
                     if (!page.hasValue(getParamOldElement(), locale)) {
                         m_report.println(m_report.key("report.dots")
-                            + key("report.renameelement.element")
-                            + " "
+                            + "element "
                             + getParamOldElement()
-                            + " "
-                            + key("report.renameelement.element.notexist"), I_CmsReport.C_FORMAT_NOTE);
+                            + " does not exist.", I_CmsReport.C_FORMAT_NOTE);
                         continue;
                     }
                     
-                    // check if the target element already exist in the page
+                    // check if the target element already exists in the page
                     if (page.hasValue(getParamNewElement(), locale)) {
+                        // the page contains already the new element with speicific content. 
+                        // renaming the old will invalid the xml page
                         m_report.println(
-                            m_report.key("report.dots") + key("report.renameelement.element.alreadyexist"),
+                            m_report.key("report.dots")
+                                + "the page contains already the new element that includes content",
                             I_CmsReport.C_FORMAT_NOTE);
                         continue;
                     }
@@ -855,11 +854,9 @@ public class CmsElementRename extends CmsReport {
                         // check if the target element is valid for the template
                         if (!isValidElement(page, getParamNewElement())) {
                             m_report.println(m_report.key("report.dots")
-                                + key("error.renameelement.invalidnewelement1")
-                                + " "
+                                + "the new element "
                                 + getParamNewElement()
-                                + " "
-                                + key("error.renameelement.invalidnewelement2"), I_CmsReport.C_FORMAT_NOTE);
+                                + " is not valid", I_CmsReport.C_FORMAT_NOTE);
                             continue;
                         }
                     }                  
@@ -916,13 +913,7 @@ public class CmsElementRename extends CmsReport {
                     page.removeValue(currElement, locale);
                     try {
                         writePageAndReport(page, false);
-                        m_report.println(" "
-                            + m_report.key("report.dots")
-                            + key("report.renameelement.invalidemptyremoved1")
-                            + " "
-                            + currElement
-                            + " "
-                            + key("report.renameelement.invalidemptyremoved2"), I_CmsReport.C_FORMAT_NOTE);
+                        m_report.println(" " + m_report.key("report.dots") + "invalid empty element "+currElement+" removed", I_CmsReport.C_FORMAT_NOTE);
                     } catch (CmsException e) {
                         // ignore
                     }
@@ -953,15 +944,8 @@ public class CmsElementRename extends CmsReport {
             // unlock the page
             getCms().unlockResource(getCms().getSitePath(file));
             if (report) {
-                m_report.print(" " + m_report.key("report.dots") + m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-                m_report.println(" "
-                    + key("report.renameelement.element")
-                    + " "
-                    + getParamOldElement()
-                    + " "
-                    + key("report.renameelement.renamedsuccessfully")
-                    + " "
-                    + getParamNewElement(), I_CmsReport.C_FORMAT_OK);
+                m_report.print("" + m_report.key("report.dots") + m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                m_report.println(" element "+getParamOldElement()+" renamed to "+getParamNewElement()+" successfully", I_CmsReport.C_FORMAT_OK);
             }
         }
     }
