@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2004/01/22 11:50:01 $
-* Version: $Revision: 1.443 $
+* Date   : $Date: 2004/01/22 15:23:30 $
+* Version: $Revision: 1.444 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.443 $
+ * @version $Revision: 1.444 $
  */
 public class CmsObject {
 
@@ -2738,7 +2738,7 @@ public class CmsObject {
             try {
                 
                 List offlineFiles = m_driverManager.filterOfflineFiles(getRequestContext(), directPublishResource, directPublishSiblings, report);
-                m_driverManager.getHtmlLinkValidator().validateResources(this, offlineFiles, report);                
+                // m_driverManager.getHtmlLinkValidator().validateResources(this, offlineFiles, report);                
                                 
                 m_driverManager.publishProject(this, m_context, report, publishHistoryId, directPublishResource, directPublishSiblings);
 

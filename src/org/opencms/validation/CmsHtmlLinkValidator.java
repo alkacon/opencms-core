@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsHtmlLinkValidator.java,v $
- * Date   : $Date: 2004/01/22 14:12:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/01/22 15:23:30 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Map;
  * Objects using the CmsHtmlLinkValidator are responsible to handle detected broken links.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2004/01/22 14:12:02 $
+ * @version $Revision: 1.3 $ $Date: 2004/01/22 15:23:30 $
  * @since 5.3.0
  */
 public class CmsHtmlLinkValidator extends Object {
@@ -142,25 +142,25 @@ public class CmsHtmlLinkValidator extends Object {
 
             try {
                 if ((resourceType = cms.getResourceType(resource.getType())) instanceof I_CmsHtmlLinkValidatable) {
-                    report.print(report.key("report.linkvalidation.file"), I_CmsReport.C_FORMAT_NOTE);
-                    report.print(resourceName);
-                    report.print(report.key("report.dots"));
+            report.print(report.key("report.linkvalidation.file"), I_CmsReport.C_FORMAT_NOTE);
+            report.print(resourceName);
+            report.print(report.key("report.dots"));
 
                     links = ((I_CmsHtmlLinkValidatable) resourceType).findLinks(cms, resource);
 
-                    if (links.size() > 0) {
-                        brokenLinks = validateLinks(links, offlineFilesLookup);
-                    }
+            if (links.size() > 0) {
+                brokenLinks = validateLinks(links, offlineFilesLookup);
+            }
 
-                    if (brokenLinks != null && brokenLinks.size() > 0) {
-                        // the resource contains broken links
-                        invalidResources.put(resourceName, brokenLinks);
-                        report.println(report.key("report.linkvalidation.file.has_broken_links"), I_CmsReport.C_FORMAT_WARNING);
-                    } else {
-                        // the resource contains *NO* broken links
-                        report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-                    }
-                }
+            if (brokenLinks != null && brokenLinks.size() > 0) {
+                // the resource contains broken links
+                invalidResources.put(resourceName, brokenLinks);
+                report.println(report.key("report.linkvalidation.file.has_broken_links"), I_CmsReport.C_FORMAT_ERROR);
+            } else {
+                // the resource contains *NO* broken links
+                report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            }
+        }
             } catch (CmsException e) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
                     OpenCms.getLog(this).error("Error retrieving resource type of " + resourceName, e);
@@ -191,7 +191,7 @@ public class CmsHtmlLinkValidator extends Object {
         while (i.hasNext()) {
             link = ((String) i.next()).trim();
             isValidLink = true;
-
+            
             if (validatedLinks.contains(link)) {
                 // skip links that are already validated
                 continue;
@@ -221,11 +221,12 @@ public class CmsHtmlLinkValidator extends Object {
             if (!isValidLink) {
                 brokenLinks.add(link);
             }
-
+            
             validatedLinks.add(link);
         }
 
         return brokenLinks;
     }
 
-}
+            }
+

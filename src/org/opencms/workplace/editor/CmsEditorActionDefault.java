@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/01/22 14:14:09 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/01/22 15:23:30 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.3.0
  */
@@ -79,7 +79,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         String publishLink = jsp.link(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "jsp/dialogs/publishresource.html");
         // define the parameters which are necessary for publishing the resource 
         String params = "?resource=" + editor.getParamResource() + "&action=" + CmsDialog.DIALOG_CONFIRMED;
-        params += "&reporttype=simple";
+        params += "&reporttype=simple" + "&directpublish=true";
         params += "&title=" + Encoder.escapeWBlanks(editor.key("messagebox.title.publishresource") + ": " + editor.getParamResource(), Encoder.C_UTF8_ENCODING) + "&okfunctions=";
         if ("true".equals(editor.getParamDirectedit())) {
             String linkTarget;
