@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/03/16 20:47:47 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/03/27 13:00:26 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.12 $ $Date: 2000/03/16 20:47:47 $
+ * @version $Revision: 1.13 $ $Date: 2000/03/27 13:00:26 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -195,10 +195,11 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
      * This method is directly called by the content definiton.
      * @param Cms The CmsObject.
      * @param lang The language file.
+     * @param parameters User parameters.
      * @return Value that is pre-set into the copy field.
      * @exception CmsExeption if something goes wrong.
      */
-    public String setValue(A_CmsObject cms, CmsXmlLanguageFile lang)
+    public String setValue(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
         throws CmsException {
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
         String name=(String)session.getValue(C_PARA_NAME);
