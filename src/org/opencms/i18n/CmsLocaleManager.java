@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/04/10 12:56:15 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/05/04 15:16:47 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,19 +31,23 @@
 package org.opencms.i18n;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringSubstitution;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.apache.commons.collections.map.LRUMap;
 
 /**
  * Manages the locales configured for this OpenCms installation.<p>
@@ -53,9 +57,9 @@ import java.util.Map;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
-public class CmsLocaleManager {
+public class CmsLocaleManager implements I_CmsEventListener {
     
     /** Runtime property name for locale handler */
     public static final String C_LOCALE_HANDLER = "class_locale_handler";
@@ -73,7 +77,7 @@ public class CmsLocaleManager {
     private I_CmsLocaleHandler m_localeHandler;
     
     /** A cache for accelerated locale lookup, this should never get so large to require a "real" cache */
-    private static Map m_localeCache = new HashMap();
+    private static Map m_localeCache;
     
     /**
      * Initializes a new CmsLocaleManager, called from the configuration.<p>
@@ -84,7 +88,19 @@ public class CmsLocaleManager {
         m_localeHandler = new CmsDefaultLocaleHandler();
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". i18n configuration   : starting");
-        }         
+        }     
+        
+        LRUMap lruMap = new LRUMap(2048);
+        m_localeCache = Collections.synchronizedMap(lruMap);
+        if (OpenCms.getMemoryMonitor().enabled()) {
+            // map must be of type "LRUMap" so that memory monitor can acecss all information
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_localeCache", lruMap);
+        }
+        
+        // register this object as event listener
+        OpenCms.addCmsEventListener(this, new int[] {
+                I_CmsEventListener.EVENT_CLEAR_CACHES,
+         });
     }
     
     /**
@@ -134,6 +150,40 @@ public class CmsLocaleManager {
         }
     }
 
+    /**
+     * Implements the CmsEvent interface,
+     * the locale manager the events to clear 
+     * the list of cached keys .<p>
+     *
+     * @param event CmsEvent that has occurred
+     */
+    public synchronized void cmsEvent(CmsEvent event) {
+
+        switch (event.getType()) {
+            case I_CmsEventListener.EVENT_CLEAR_CACHES:
+                clearCaches();
+                break;
+            default:
+        // no operation
+        }
+    }
+    
+    /**
+     * Clears the caches in the locale manager.<p>
+     */
+    private void clearCaches() {
+
+        // flush all caches   
+        m_localeCache.clear();
+
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            String eventType = "EVENT_CLEAR_CACHES";
+            OpenCms.getLog(this).debug("Locale manager flushed caches after recieving event " + eventType);
+        }
+    }
+
+    
+    
     /**
      * Returns a locale created from the given full name.<p>
      * 
