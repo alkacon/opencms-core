@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/10/15 12:22:00 $
- * Version: $Revision: 1.422 $
+ * Date   : $Date: 2004/10/15 15:08:05 $
+ * Version: $Revision: 1.423 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.422 $ $Date: 2004/10/15 12:22:00 $
+ * @version $Revision: 1.423 $ $Date: 2004/10/15 15:08:05 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2919,7 +2919,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 addUserToGroup(context, newUser.getName(), defaultGroup.getName());
                 return newUser;
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_INVALID_PASSWORD);
+                throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
             }
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] addUser() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
@@ -3020,7 +3020,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
             return newUser;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_INVALID_PASSWORD);
+            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
         }
 
     }
@@ -3085,7 +3085,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             }
             return newUser;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_INVALID_PASSWORD);
+            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
         }
     }
 
