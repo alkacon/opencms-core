@@ -9,13 +9,11 @@ import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
 import com.opencms.template.*;
-
 import java.util.*;
 import java.io.*;
-
 import javax.servlet.http.*;
-
-public class CmsAdminSiteNew extends CmsWorkplaceDefault implements com.opencms.core.I_CmsConstants {
+public class CmsAdminSiteNew extends CmsWorkplaceDefault implements com.opencms.core.I_CmsConstants
+{
 /**
  * Gets all available categories
  * <P>
@@ -54,20 +52,78 @@ public Integer getCategories(CmsObject cms, CmsXmlLanguageFile lang, Vector name
  */
 public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws com.opencms.core.CmsException
 {
+	if (C_DEBUG && A_OpenCms.isLogging())
+	{
+		A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName == null) ? "<root>" : elementName));
+		A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
+		A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
+	}
+	
+	I_CmsSession session = cms.getRequestContext().getSession(true);
+	
+	String action = (String) parameters.get("action");
+
+	String name = (String) parameters.get("NAME");
+	if (name == null) name = (String) session.getValue("SITE_NAME");
+	if (name == null) name = "";
+	
+	String domainname = (String) parameters.get("DOMAINNAME");
+	if (domainname  == null) domainname = (String) session.getValue("SITE_DOMAINNAME");
+	if (domainname  == null) domainname = "";
+	
+	String description = (String) parameters.get("DESCRIPTION");
+	if (description  == null) description = (String) session.getValue("SITE_DESCRIPTION");
+	if (description  == null) description = "";
+	
 	CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+	
 	if (parameters.get("submitform") != null)
 	{
-		//System.err.println("***********************************************");
-		if (((String) parameters.get("NAME")).equals("") || ((String) parameters.get("DOMAINNAME")).equals("") || ((String) parameters.get("DESCRIPTION")).equals(""))
+		session.putValue("SITE_NAME", name); 
+		session.putValue("SITE_DOMAINNAME", domainname); 
+		session.putValue("SITE_DESCRIPTION", description);  
+
+		if (name.equals("") || domainname.equals(""))
 		{
 			templateSelector = "datamissing";
 		}
 		else
 		{
-			cms.newSite((String) parameters.get("NAME"), (String) parameters.get("DESCRIPTION"), Integer.parseInt((String) parameters.get("CATEGORY")), Integer.parseInt((String) parameters.get("LANGUAGE")), Integer.parseInt((String) parameters.get("DOMAIN")), (String) parameters.get("DOMAINNAME"), (String) parameters.get("MANAGERGROUP"), (String) parameters.get("GROUP"));
+			session.putValue("SITE_CATEGORY", parameters.get("CATEGORY"));
+			session.putValue("SITE_LANGUAGE", parameters.get("LANGUAGE"));
+			session.putValue("SITE_DOMAIN", parameters.get("DOMAIN"));
+			session.putValue("SITE_MANAGERGROUP", parameters.get("MANAGERGROUP"));
+			session.putValue("SITE_GROUP", parameters.get("GROUP"));
 			templateSelector = "wait";
 		}
 	}
+
+	if( "start".equals(action)) 
+	{
+		try 
+		{			
+			cms.newSite(name, description, Integer.parseInt((String) session.getValue("SITE_CATEGORY")), Integer.parseInt((String) session.getValue("SITE_LANGUAGE")), Integer.parseInt((String) session.getValue("SITE_DOMAIN")), domainname, (String) session.getValue("SITE_MANAGERGROUP"), (String) session.getValue("SITE_GROUP"));
+			templateSelector = "done"; 
+			session.removeValue("SITE_NAME");
+			session.removeValue("SITE_DOMAINNAME");
+			session.removeValue("SITE_DESCRIPTION");
+			session.removeValue("SITE_CATEGORY");
+			session.removeValue("SITE_LANGUAGE"); 
+			session.removeValue("SITE_DOMAIN"); 
+			session.removeValue("SITE_MANAGERGROUP"); 
+			session.removeValue("SITE_GROUP"); 
+		} 
+		catch(CmsException exc) 
+		{ 
+				xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
+	   			templateSelector = "errornewsite";
+		}
+	}
+
+	xmlTemplateDocument.setData("new_site_name", name);
+	xmlTemplateDocument.setData("new_site_domainname", domainname);
+	xmlTemplateDocument.setData("new_site_description", description);
+			
 	return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
 }
 /**
