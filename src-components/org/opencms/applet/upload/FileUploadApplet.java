@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2003/12/11 15:21:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/03/31 13:52:11 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -523,7 +523,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
     private void addFolderToZip(ZipOutputStream zipStream, File file, String prefix) throws Exception {
         String foldername=file.getName();
        
-        prefix += "/"+foldername;
+        prefix += "/" + foldername;
         // get all subresources
         File[] subresources=file.listFiles();
         // loop through the results                        
@@ -550,30 +550,33 @@ public class FileUploadApplet extends JApplet implements Runnable {
          m_action=m_actionOutputUpload;
          repaint();
         
-         MultipartPostMethod filePost = new MultipartPostMethod(m_targetUrl);       
+         MultipartPostMethod filePost = new MultipartPostMethod(m_targetUrl); 
   
          try {           
             filePost.addParameter(uploadFile.getName(), uploadFile);
+            // add parameters for the upload zipfile JSP dialog
+            filePost.addParameter("action", "submitform");
+            filePost.addParameter("unzipfile", "true");
+            filePost.addParameter("uploadfolder", m_uploadFolder);
              
-            filePost.setQueryString("?"+getParameter("browserCookie")+"&STEP=1&unzip=true&filelist="+m_uploadFolder);
+            filePost.setQueryString(getParameter("browserCookie"));
            
+            
             filePost.addRequestHeader("Cookie", getParameter("browserCookie"));
             
             HttpClient client = new HttpClient();
              
             client.setConnectionTimeout(5000);
-           
             int status = client.executeMethod(filePost);
            
-            if (status == HttpStatus.SC_OK) {                                             
+            if (status == HttpStatus.SC_OK) { 
                 //return to the workplace
                 getAppletContext().showDocument(new URL(m_redirectUrl), "explorer_files");
-            } else {
-                // System.err.println("ERROR " +status);      
+            } else {     
                 // create the error text
-                String error=m_errorLine1+"\n"+filePost.getStatusLine();
-                //JOptionPane.showMessageDialog(this, error, m_errorTitle, JOptionPane.ERROR_MESSAGE);
-                getAppletContext().showDocument(new URL(m_errorUrl+"?error="+error), "explorer_files");                        
+                String error = m_errorLine1 + "\n" + filePost.getStatusLine();
+                //JOptionPane.showMessageDialog(this, error, "Error!", JOptionPane.ERROR_MESSAGE);
+                getAppletContext().showDocument(new URL(m_errorUrl + "?action=showerror&uploaderror="+error), "explorer_files");                        
             }
         } catch (Exception ex) {            
             ex.printStackTrace();
