@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsPdfDocument.java,v $
- * Date   : $Date: 2004/07/05 11:58:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/10/23 03:35:36 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.pdfbox.util.PDFTextStripper;
  * Lucene document factory class to extract index data from a cms resource 
  * containing Adobe pdf data.<p>
  * 
- * @version $Revision: 1.6 $ $Date: 2004/07/05 11:58:21 $
+ * @version $Revision: 1.7 $ $Date: 2004/10/23 03:35:36 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPdfDocument extends CmsVfsDocument {
@@ -96,18 +96,15 @@ public class CmsPdfDocument extends CmsVfsDocument {
 
             if (pdfDocument.isEncrypted()) {
                 DecryptDocument decryptor = new DecryptDocument(pdfDocument);
-                //Just try using the default password and move on
+                // try using the default password
                 decryptor.decryptDocument("");
             }
 
-            //create a tmp output stream with the size of the content.
-            // ByteArrayOutputStream out = new ByteArrayOutputStream();
-            // OutputStreamWriter writer = new OutputStreamWriter(out);
+            // write content of PDF to String writer
             StringWriter writer = new StringWriter();
             PDFTextStripper stripper = new PDFTextStripper();
             stripper.writeText(pdfDocument, writer);
-            // stripper.writeText(pdfDocument.getDocument(), writer);
-            
+
             rawContent = writer.toString();
             writer.close(); 
                        
@@ -122,7 +119,7 @@ public class CmsPdfDocument extends CmsVfsDocument {
             try {
                 pdfDocument.close();
             } catch (Exception exc) {
-                //
+                // ignore
             }
         }
         
