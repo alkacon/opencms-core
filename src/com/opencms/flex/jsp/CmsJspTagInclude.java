@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
-* Date   : $Date: 2003/02/09 17:01:48 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/02/10 15:50:26 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * This Tag is used to include another OpenCms managed resource in a JSP.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -68,7 +68,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     private static final boolean DEBUG = false;
     
     /** URI of the bodyloader XML file in the OpenCms VFS*/    
-    public final static String C_BODYLOADER_URI = "/system/opt/bodyloader.html";
+    public final static String C_BODYLOADER_URI = "/system/shared/bodyloader.html";
         
     /**
      * Sets the include page/file target.

@@ -159,6 +159,38 @@
             <properties/>
         </file>
         <file>
+            <destination>system/shared</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>95</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/shared/bodyloader</source>
+            <destination>system/shared/bodyloader</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>607</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/shared/bodyloader.html</source>
+            <destination>system/shared/bodyloader.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>607</access>
+            <properties>
+                <property>
+                    <name>cache</name>
+                    <type>4</type>
+                    <value><![CDATA[uri;params=(cmsframe,_CMS_ELEMENTREPLACE);]]></value>
+                </property>
+            </properties>
+        </file>        
+        <file>
             <destination>system/workplace</destination>
             <type>folder</type>
             <user>Admin</user>
@@ -5709,15 +5741,6 @@
             <source>system/workplace/resources/gr_rr_inaktiv.gif</source>
             <destination>system/workplace/resources/gr_rr_inaktiv.gif</destination>
             <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>15</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/resources/help.css</source>
-            <destination>system/workplace/resources/help.css</destination>
-            <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
             <access>15</access>
