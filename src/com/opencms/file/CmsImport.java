@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/12/12 11:32:41 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2000/12/13 08:47:42 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.33 $ $Date: 2000/12/12 11:32:41 $
+ * @version $Revision: 1.34 $ $Date: 2000/12/13 08:47:42 $
  */
 public class CmsImport implements I_CmsConstants {
 
@@ -280,14 +280,13 @@ public Vector getResourcesForProject() throws CmsException {
 	try {
 		// get all file-nodes
 		fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
-
 		// walk through all files in manifest
 		for (int i = 0; i < fileNodes.getLength(); i++) {
 			currentElement = (Element) fileNodes.item(i);
 			source = getTextNodeValue(currentElement, C_EXPORT_TAG_SOURCE);
 			destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
 			path = m_importPath + destination;
-
+			
 			// get the resources for a project
 			try {
 				String resource = destination.substring(0, destination.indexOf("/",1) + 1);

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2000/12/12 11:11:39 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/12/13 08:47:42 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2000/12/12 11:11:39 $
+ * @version $Revision: 1.13 $ $Date: 2000/12/13 08:47:42 $
  */
 public class CmsExport implements I_CmsConstants {
 	
@@ -452,6 +452,11 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
 			if(moduleNode != null) {
 				// this is a module export - import module informations here
 				exportNode.appendChild(A_CmsXmlContent.getXmlParser().importNode(m_docXml, moduleNode));
+				// now remove the unused file informations
+				NodeList files = ((Element)exportNode).getElementsByTagName("files");
+				if(files.getLength() == 1) {
+					files.item(0).getParentNode().removeChild(files.item(0));
+				}
 			}
 			
 			m_filesElement = m_docXml.createElement(C_EXPORT_TAG_FILES);

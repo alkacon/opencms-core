@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/11/27 10:48:01 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/12/13 08:47:43 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.23 $ $Date: 2000/11/27 10:48:01 $
+ * @version $Revision: 1.24 $ $Date: 2000/12/13 08:47:43 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -511,7 +511,7 @@ public void exportModule(String moduleName, String[] resources, String fileName)
 	if (!hasAccess()) {
 		throw new CmsException("No access to perform the action 'exportModule'", CmsException.C_REGISTRY_ERROR);
 	}
-
+	
 	CmsExport exp = new CmsExport(fileName, resources, m_cms, getModuleElement(moduleName));
 }
 	/**
