@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/02/17 12:09:57 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/20 13:35:45 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,18 +34,15 @@ import org.opencms.cron.I_CmsCronJob;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRegistry;
 import org.opencms.file.CmsRequestContext;
-import org.opencms.file.I_CmsResourceType;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.search.documents.CmsCosDocument;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 
-import com.opencms.defaults.master.CmsMasterContent;
-import com.opencms.defaults.master.CmsMasterDataSet;
+import com.opencms.legacy.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -137,7 +134,7 @@ import org.apache.lucene.index.IndexWriter;
  * <p>The <code>GermanAnalyzer</code> will be used for analyzing the contents of resources
  * when building an index with "de" as specified language.</p>
  * 
- * @version $Revision: 1.5 $ $Date: 2004/02/17 12:09:57 $
+ * @version $Revision: 1.6 $ $Date: 2004/02/20 13:35:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -361,12 +358,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
      */
     protected I_CmsDocumentFactory getDocumentFactory (CmsIndexResource resource) {
 
-        String documentTypeKey;
-        if (resource.getData() instanceof CmsMasterDataSet) {
-            documentTypeKey = "COS" + resource.getType(); 
-        } else {
-            documentTypeKey = "VFS" + resource.getType() + ":" + resource.getMimetype();
-        }
+        String documentTypeKey = resource.getDocumentKey();
         
         I_CmsDocumentFactory factory = (I_CmsDocumentFactory)m_documenttypes.get(documentTypeKey);                           
         if (factory == null) {
@@ -530,11 +522,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
                     String resourceTypeId;
                     
                     try {
-                        if (documentFactory instanceof CmsCosDocument) {
-                            resourceTypeId = "COS" + ((CmsMasterContent)Class.forName(resourceType).newInstance()).getSubId();
-                        } else {
-                            resourceTypeId = "VFS" + ((I_CmsResourceType)Class.forName(resourceType).newInstance()).getResourceType();
-                        }
+                        resourceTypeId = documentFactory.getDocumentKey(resourceType);
                     } catch (Exception exc) {
                         throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Instanciation of resource type" + resourceType + " failed", exc);    
                     }

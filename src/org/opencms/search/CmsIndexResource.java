@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsIndexResource.java,v $
- * Date   : $Date: 2004/02/17 12:09:57 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/20 13:35:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,81 +30,43 @@
  */
 package org.opencms.search;
 
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.defaults.master.CmsMasterDataSet;
-import org.opencms.file.CmsResource;
 
 /**
  * Wrapper class to hide the concrete type of a data object.<p>
  * The type is either <code>CmsResource</code> while indexing vfs data,
  * or <code>CmsMasterDataSet</code> while indexing cos data.
  * 
- * @version $Revision: 1.4 $ $Date: 2004/02/17 12:09:57 $
+ * @version $Revision: 1.5 $ $Date: 2004/02/20 13:35:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
-public class CmsIndexResource {
-
+public abstract class CmsIndexResource {
+    
     /** Concrete data object */
-    private Object m_data;
+    protected Object m_data;
 
     /** Id of the object */
-    private CmsUUID m_id;
+    protected CmsUUID m_id;
     
     /** Name of the object */
-    private String m_name;
+    protected String m_name;
     
     /** Path to access the object */
-    private String m_path;
+    protected String m_path;
     
     /** Type of the object */
-    private int m_type;
+    protected int m_type;
     
     /** Mimetype of the object, <code>null</code> if the object is a <code>CmsMasterDataSet</code> */
-    private String m_mimeType;
+    protected String m_mimeType;
 
     /** Channel of the object, <code>null</code> if the object is a <code>CmsResource</code> */
-    private String m_channel;
+    protected String m_channel;
     
     /** Content definition of the object, <code>null</code> if the object is a <code>CmsResource</code> */
-    private String m_contentDefinition;
-    
-    /** 
-     * Creates a new instance to wrap the given <code>CmsResource</code>.<p>
-     * 
-     * @param res the data object
-     */
-    public CmsIndexResource(CmsResource res) {
-        m_data = res;
-        m_id = res.getResourceId();
-        m_name = res.getName();
-        m_type = res.getType();
-        m_mimeType = OpenCms.getMimeType(res.getName(), null);
-        m_path = res.getRootPath();
-        m_channel = null;
-        m_contentDefinition = null;
-    }
-
-    /**
-     * Creates a new instance to wrap the given <code>CmsMasterDataSet</code>.<p>
-     * 
-     * @param ds the data object
-     * @param path access path of the data object
-     * @param channel channel of the data object
-     * @param contentDefinition content definition of the data object
-     */
-    public CmsIndexResource(CmsMasterDataSet ds, String path, String channel, String contentDefinition) {
-        m_data = ds;
-        m_id = ds.m_masterId;
-        m_name = ds.m_title;
-        m_type = ds.m_subId;
-        m_mimeType = null;
-        m_path = path;
-        m_channel = channel;
-        m_contentDefinition = contentDefinition;
-    }
+    protected String m_contentDefinition;
     
     /**
      * Returns the wrapped data object.<p>
@@ -183,4 +145,11 @@ public class CmsIndexResource {
     public CmsUUID getId() {
         return m_id;
     }
+    
+    /**
+     * Returns the document key for the search manager.<p> 
+     * 
+     * @return the document key for the search manager
+     */
+    public abstract String getDocumentKey();     
 }

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsCosIndexer.java,v $
- * Date   : $Date: 2004/02/17 12:09:57 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosIndexer.java,v $
+ * Date   : $Date: 2004/02/20 13:35:45 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,11 +28,15 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.opencms.search;
+package com.opencms.legacy;
 
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
+import org.opencms.search.CmsIndexException;
+import org.opencms.search.CmsIndexResource;
+import org.opencms.search.CmsIndexingThreadManager;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.util.CmsUUID;
 
@@ -51,7 +55,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the indexing of cos data.<p>
  * 
- * @version $Revision: 1.4 $ $Date: 2004/02/17 12:09:57 $
+ * @version $Revision: 1.1 $ $Date: 2004/02/20 13:35:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -171,7 +175,7 @@ public class CmsCosIndexer extends CmsMasterContent {
                     + "?" + m_index.getChannelDisplayparam(root)
                     + "=" + ds.m_masterId;
                 
-                CmsIndexResource ires = new CmsIndexResource(ds, path, channel, m_contentDefinition.getClass().getName());
+                CmsIndexResource ires = new CmsCosIndexResource(ds, path, channel, m_contentDefinition.getClass().getName());
                 m_threadManager.createIndexingThread(m_writer, ires, m_index);
             }
         } catch (Exception exc) {
@@ -234,7 +238,7 @@ public class CmsCosIndexer extends CmsMasterContent {
             CmsMasterContent.getDbAccessObject(contentDefinition.getSubId()).read(cms, contentDefinition, ds, new CmsUUID(contentId));
             
             if (ds != null) {
-                return new CmsIndexResource(ds, path, channel, cdClass);
+                return new CmsCosIndexResource(ds, path, channel, cdClass);
             }
             
             return null;

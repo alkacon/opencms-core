@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsVfsDocument.java,v $
- * Date   : $Date: 2004/02/17 12:10:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/20 13:35:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,13 +30,13 @@
  */
 package org.opencms.search.documents;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsIndexResource;
-
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 
 import org.apache.lucene.document.DateField;
 import org.apache.lucene.document.Document;
@@ -46,7 +46,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a vfs resource 
  * of any type derived from <code>CmsResource</code>.<p>
  * 
- * @version $Revision: 1.3 $ $Date: 2004/02/17 12:10:52 $
+ * @version $Revision: 1.4 $ $Date: 2004/02/20 13:35:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsVfsDocument implements I_CmsDocumentFactory {
@@ -125,5 +125,12 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
      */
     public String getName() {
         return m_name;
+    }
+
+    /**
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#getDocumentKey(java.lang.String)
+     */
+    public String getDocumentKey(String resourceType) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+        return "VFS" + ((I_CmsResourceType)Class.forName(resourceType).newInstance()).getResourceType();
     }
 }

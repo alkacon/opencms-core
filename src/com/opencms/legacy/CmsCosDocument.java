@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsCosDocument.java,v $
- * Date   : $Date: 2004/02/17 12:10:52 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosDocument.java,v $
+ * Date   : $Date: 2004/02/20 13:35:45 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,14 +28,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.opencms.search.documents;
+package com.opencms.legacy;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsIndexResource;
+import org.opencms.search.documents.CmsHtmlExtractor;
+import org.opencms.search.documents.I_CmsDocumentFactory;
 
+import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
-import org.opencms.file.CmsObject;
 
 import java.util.regex.Pattern;
 
@@ -47,7 +50,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cos resource 
  * of any type derived from <code>CmsMasterDataSet</code>.<p>
  * 
- * @version $Revision: 1.4 $ $Date: 2004/02/17 12:10:52 $
+ * @version $Revision: 1.1 $ $Date: 2004/02/20 13:35:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsCosDocument implements I_CmsDocumentFactory {
@@ -161,5 +164,12 @@ public class CmsCosDocument implements I_CmsDocumentFactory {
      */
     public String getName() {
         return m_name;
+    }
+
+    /**
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#getDocumentKey(java.lang.String)
+     */
+    public String getDocumentKey(String resourceType) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+        return "COS" + ((CmsMasterContent)Class.forName(resourceType).newInstance()).getSubId();
     }
 }
