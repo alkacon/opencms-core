@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResentFiles.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2004/05/06 11:55:21 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Hashtable;
  * editing news.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.25 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.26 $ $Date: 2004/05/06 11:55:21 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -61,6 +61,8 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault {
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
+     * @throws CmsException if something goes wrong
+     * @return byte array with the processed content
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
@@ -70,7 +72,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault {
         // load the template file
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);
-        String filter = (String)parameters.get("filter");
+        String filter = (String)parameters.get("projectfilter");
         String projectId = (String)parameters.get("projectid");
         if (projectId == null || "".equalsIgnoreCase(projectId)) {
             projectId = (String)session.getValue("projectid");
@@ -81,7 +83,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault {
         xmlTemplateDocument.setData("projectid", projectId);
         String action = (String)parameters.get("action");
         if (filter == null || "".equalsIgnoreCase(filter)) {
-            filter=(String)session.getValue("filter");
+            filter=(String)session.getValue("projectfilter");
             if (filter == null || "".equalsIgnoreCase(filter)) {
                 filter = "all";
             }
@@ -93,17 +95,17 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault {
         }
 
         // store the chosen filter and projectid into the session
-        session.putValue("filter", filter);
+        session.putValue("projectfilter", filter);
         session.putValue("projectid", projectId);
 
-        if(action != null && "restoreproject".equalsIgnoreCase(action)){
+        if (action != null && "restoreproject".equalsIgnoreCase(action)) {
             session.removeValue("projectid");
-            session.removeValue("filter");
+            session.removeValue("projectfilter");
             //redirect to the needed headfile
-            try{
+            try {
                 CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
                     +"empty.html");
-            } catch (IOException exc){
+            } catch (IOException exc) {
                 throw new CmsException("Could not redirect to empty.html", exc);
             }
         }
