@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInfo.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/12/09 16:09:08 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package org.opencms.jsp;
 
+import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.main.OpenCms;
 
@@ -77,7 +78,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * error message.<p>
  *  
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsJspTagInfo extends TagSupport {
     
@@ -95,7 +96,8 @@ public class CmsJspTagInfo extends TagSupport {
             "opencms.request.uri", // 5
             "opencms.request.element.uri", // 6
             "opencms.request.folder", // 7      
-            "opencms.request.encoding" // 8      
+            "opencms.request.encoding", // 8
+            "opencms.request.locale" // 9   
         };                
             
     /** Array list of allowed property values for more convenient lookup. */
@@ -192,11 +194,14 @@ public class CmsJspTagInfo extends TagSupport {
                 result = controller.getCurrentRequest().getElementUri();
                 break;
             case 7 : // opencms.request.folder
-                result = org.opencms.file.CmsResource.getParentFolder(controller.getCmsObject().getRequestContext().getUri());
+                result = CmsResource.getParentFolder(controller.getCmsObject().getRequestContext().getUri());
                 break;
             case 8 : // opencms.request.encoding
                 result = controller.getCmsObject().getRequestContext().getEncoding();
                 break;
+            case 9 : // opencms.request.locale
+                result = controller.getCmsObject().getRequestContext().getLocale().toString();
+                break;                
             default :
                 result = System.getProperty(property);
                 if (result == null) {
