@@ -44,23 +44,36 @@
 							<td align="center" class="bold">
 								<p>Exportpoint parameters</p>
 								<table border="0">
+								<%
+									int expPointNr = 0;
+									while (Bean.getExportPoint(expPointNr)!=null)	{
+								%>
 									<tr>
 										<td width="150">
-											Exportpoint 0
+											Exportpoint <%= ""+expPointNr %>
 										</td>
 										<td>
-											<input type="text" size="55" name="exportPoint0" value="<%= Bean.getExportPoint0() %>">
+											<input type="text" size="55" name="exportPoint<%= ""+expPointNr %>" value="<%= Bean.getExportPoint(expPointNr) %>">
 										</td>
 									</tr>
+								<%
+									if(Bean.getExportPointPath(expPointNr) != null)	{
+								%>
 									<tr>
 										<td>
-											Exportpoint path 0
+											Exportpoint path <%= ""+expPointNr %>
 										</td>
 										<td>
-											<input type="text" size="55" name="exportPointPath0" value="<%= Bean.getExportPointPath0() %>">
+											<input type="text" size="55" name="exportPointPath<%= ""+expPointNr %>" value="<%= Bean.getExportPointPath(expPointNr) %>">
 										</td>
 									</tr>
-									<tr><td colspan="2"><hr></td></tr>
+								<%
+									}
+									out.println("<tr><td colspan='2'><hr></td></tr>");
+									expPointNr++;
+									}
+								%>
+									<!-- <tr><td colspan="2"><hr></td></tr>
 									<tr>
 										<td>
 											Exportpoint 1
@@ -93,7 +106,7 @@
 										<td>
 											<input type="text" size="55" name="exportPointPath2" value="<%= Bean.getExportPointPath2() %>">
 										</td>
-									</tr>														
+									</tr>														 -->
 								</table>
 								<p>
 							</td>

@@ -5,12 +5,17 @@
 <% /* Set the base path to the opencms home folder */ %>
 <jsp:setProperty name="Bean" property="basePath" value='<%= config.getServletContext().getRealPath("/") %>' />
 
-<% /* Set all given Properties */%>
-<jsp:setProperty name="Bean" property="*" />
 
-<%
+<%	
 	/* Initialize the properties */
 	Bean.initProperties("opencms.properties");
+	
+	/* check wizards accessability */
+	boolean wizardEnabled = Bean.getWizardEnabled();
+	
+	if(!wizardEnabled)	{
+		request.getSession().invalidate();
+	}
 	
 	/* next page to be accessed */
 	String nextPage = "database_connection.jsp";
@@ -39,7 +44,7 @@
 			<tr>
 				<td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0"></td>
 			</tr>
-
+			<% if(wizardEnabled)	{ %>
 			<tr>
 				<td align="center" valign="top" height="375">					
 					<table border="0" width="600" cellpadding="5">
@@ -80,6 +85,15 @@
 					</table>
 				</td>
 			</tr>
+			<% } else	{ %>			
+			<tr>
+				<td align="center" valign="top">
+					<p><b>Sorry, wizard not available.</b></p>
+					The OpenCms setup wizard has been locked!<br>
+					To use the wizard again, unlock it in "opencms.properties".
+				</td>
+			</tr>			
+			<% } %>
 		</form>
 		</table>
 	</td>

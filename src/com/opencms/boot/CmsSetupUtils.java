@@ -54,11 +54,18 @@ public class CmsSetupUtils {
 
     }
 
-    public void saveProperties(ExtendedProperties extProp, String originalFile)  {
+    public void saveProperties(ExtendedProperties extProp, String originalFile, boolean backup)  {
         if (new File(m_configFolder + originalFile).isFile()) {
             String backupFile = originalFile.substring(0,originalFile.lastIndexOf('.')) + ".ori";
-            backup(originalFile, backupFile);
-            save(extProp, backupFile, originalFile);
+            String tempFile = originalFile.substring(0,originalFile.lastIndexOf('.')) + ".tmp";
+            if(backup)  {
+               backup(originalFile, backupFile);
+            }
+            backup(originalFile, tempFile);
+            save(extProp, tempFile, originalFile);
+            // delete temp file
+            File temp = new File(m_configFolder + tempFile);
+            temp.delete();
         }
         else  {
             CmsSetup.setErrors("No valid file: " + originalFile);

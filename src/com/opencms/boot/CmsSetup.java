@@ -601,100 +601,38 @@ public class CmsSetup {
   }
 
   /** Sets the value for exportpoint 0 to the given value */
-  public void setExportPoint0(String exportPoint0)  {
-    setProperties("exportpoint.0",exportPoint0);
+  public void setExportPoint(String exportPoint, int nr)  {
+    setProperties("exportpoint."+nr,exportPoint);
   }
 
   /** Returns the value for exportpoint 0 */
-  public String getExportPoint0()  {
-    Object temp =  m_extProp.get("exportpoint.0");
+  public String getExportPoint(int nr)  {
+    Object temp =  m_extProp.get("exportpoint."+nr);
     if(temp != null)  {
       return temp.toString();
     }
     else  {
-      return "";
+      return null;
     }
   }
 
   /** Sets the value for exportpoint path 0 to the given value */
-  public void setExportPointPath0(String exportPointPath0)  {
-    setProperties("exportpoint.path.0",exportPointPath0);
+  public void setExportPointPath(String exportPointPath, int nr)  {
+    setProperties("exportpoint.path."+nr,exportPointPath);
   }
 
   /** Returns the value for exportpoint path 0 */
-  public String getExportPointPath0()  {
-    Object temp =  m_extProp.get("exportpoint.path.0");
+  public String getExportPointPath(int nr)  {
+    Object temp =  m_extProp.get("exportpoint.path."+nr);
     if(temp != null)  {
       return temp.toString();
     }
     else  {
-      return "";
+      return null;
     }
   }
 
-  /** Sets the value for exportpoint 1 to the given value */
-  public void setExportPoint1(String exportPoint1)  {
-    setProperties("exportpoint.1",exportPoint1);
-  }
 
-  /** Returns the value for exportpoint 1 */
-  public String getExportPoint1()  {
-    Object temp =  m_extProp.get("exportpoint.1");
-    if(temp != null)  {
-      return temp.toString();
-    }
-    else  {
-      return "";
-    }
-  }
-
-  /** Sets the value for exportpoint path 1 to the given value */
-  public void setExportPointPath1(String exportPointPath1)  {
-    setProperties("exportpoint.path.1",exportPointPath1);
-  }
-
-  /** Returns the value for exportpoint path 1 */
-  public String getExportPointPath1()  {
-    Object temp =  m_extProp.get("exportpoint.path.1");
-    if(temp != null)  {
-      return temp.toString();
-    }
-    else  {
-      return "";
-    }
-  }
-
-  /** Sets the value for exportpoint 2 to the given value */
-  public void setExportPoint2(String exportPoint2)  {
-    setProperties("exportpoint.2",exportPoint2);
-  }
-
-  /** Returns the value for exportpoint 2 */
-  public String getExportPoint2()  {
-    Object temp =  m_extProp.get("exportpoint.2");
-    if(temp != null)  {
-      return temp.toString();
-    }
-    else  {
-      return "";
-    }
-  }
-
-  /** Sets the value for exportpoint path 2 to the given value */
-  public void setExportPointPath2(String exportPointPath2)  {
-    setProperties("exportpoint.path.2",exportPointPath2);
-  }
-
-  /** Returns the value for exportpoint path 2 */
-  public String getExportPointPath2()  {
-    Object temp =  m_extProp.get("exportpoint.path.2");
-    if(temp != null)  {
-      return temp.toString();
-    }
-    else  {
-      return "";
-    }
-  }
 
   /** Sets the value for opencms logging to the given value */
   public void setLogging(String logging)  {

@@ -37,7 +37,7 @@
 		
 		/* Save Properties to file "opencms.properties" */
 		CmsSetupUtils Utils = new CmsSetupUtils(Bean.getBasePath());
-		Utils.saveProperties(Bean.getProperties(),"opencms.properties");
+		Utils.saveProperties(Bean.getProperties(),"opencms.properties",true);
 
 	}
 	/* true if there are errors */

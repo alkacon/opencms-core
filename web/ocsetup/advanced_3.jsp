@@ -2,8 +2,17 @@
 <% /* Initialize the Bean */ %>
 <jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" />
 
-<% /* Set all given Properties */%>
-<jsp:setProperty name="Bean" property="*" />
+<% 
+	/* Set all given Properties */
+	int expPointNr = 0;	
+	while(request.getParameter("exportPoint"+expPointNr) != null)	{
+		Bean.setExportPoint(request.getParameter("exportPoint"+expPointNr),expPointNr);
+		if(request.getParameter("exportPointPath"+expPointNr) != null)	{
+			Bean.setExportPointPath(request.getParameter("exportPointPath"+expPointNr),expPointNr);
+		}
+		expPointNr++;
+	}
+%>
 
 <%	
 	/* true if properties are initialized */

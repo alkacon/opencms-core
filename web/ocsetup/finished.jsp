@@ -3,6 +3,9 @@
 <jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" />
 <jsp:useBean id="Thread" class="com.opencms.boot.CmsSetupThread" scope="session"/>
 
+<% /* Import packages */ %>
+<%@ page import="com.opencms.boot.*" %>
+
 <%
 	/* true if properties are initialized */
 	boolean setupOk = (Bean.getProperties()!=null);
@@ -11,6 +14,13 @@
 		/* stop possible running threads */
 		Thread.stopLoggingThread();		
 		Thread.stop();
+
+		/* lock the wizard for further use */
+		Bean.lockWizard();
+		
+		/* Save Properties to file "opencms.properties" */
+		CmsSetupUtils Utils = new CmsSetupUtils(Bean.getBasePath());
+		Utils.saveProperties(Bean.getProperties(),"opencms.properties",false);		
 	
 		/* invalidate the sessions */
 		request.getSession().invalidate();
