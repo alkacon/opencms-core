@@ -287,7 +287,7 @@ function show_help()
 			<tr><td class=dialogtxt colspan=2>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="location.href='../../action/administration_content_top.html?sender=/system/workplace/administration/'"></td> 
+					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="location.href='/servlets/opencms/system/workplace/administration/properties/index.html?initial=true?sender=/servlets/opencms/system/workplace/administration/properties/index.html?initial=true'"></td> 
 				</tr>
 				</table>
 			</td>
