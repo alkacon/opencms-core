@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/05/26 09:37:58 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2004/05/28 16:01:32 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.75 $ $Date: 2004/05/26 09:37:58 $
+ * @version $Revision: 1.76 $ $Date: 2004/05/28 16:01:32 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -519,12 +519,27 @@ public interface I_CmsVfsDriver {
     void writeResource(CmsProject onlineProject, CmsResource onlineResource, CmsResource offlineResource, boolean writeFileContent) throws CmsException;
     
     /**
-     * Writes either the structure or resource state.<p>
+     * Writes file state in either the structure or resource record, or both of them.<p>
+     * 
+     * This method allows to change the resource state to any state by setting the
+     * desired state value in the specified CmsResource instance.<p>
+     * 
+     * This method is frequently used while resources are published to set the file state
+     * back to "unchanged".<p>
+     * 
+     * Only file state attribs. get updated here. Use {@link #writeFileHeader(CmsProject, CmsFile, int, CmsUUID)}
+     * or {@link #writeFolder(CmsProject, CmsFolder, int, CmsUUID)} instead to write the complete file header.<p>
+     * 
+     * Please refer to the javadoc of {@link #writeFileHeader(CmsProject, CmsFile, int, CmsUUID)} to read
+     * how setting resource state values affects the file state.<p>
      * 
      * @param project the current project
-     * @param resource the resource to be modified
-     * @param changed defines which state must be modified
+     * @param resource the resource to be updated
+     * @param changed determines whether the structure or resource state, or none of them, is set to "changed"
      * @throws CmsException if somethong goes wrong
+     * @see org.opencms.db.CmsDriverManager#C_UPDATE_RESOURCE_STATE
+     * @see org.opencms.db.CmsDriverManager#C_UPDATE_STRUCTURE_STATE
+     * @see org.opencms.db.CmsDriverManager#C_UPDATE_ALL
      */
     void writeResourceState(CmsProject project, CmsResource resource, int changed) throws CmsException;
     
@@ -540,24 +555,58 @@ public interface I_CmsVfsDriver {
     void writeFileContent(CmsUUID fileId, byte[] fileContent, int projectId, boolean writeBackup) throws CmsException;
 
     /**
-     * Writes the complete structure and resource records of an existing file.<p>
+     * Writes the complete file header of an existing file.<p>
+     * 
+     * Common usages of writeFileHeader are saving the file header
+     * information after creating, importing or restoring complete files
+     * where all file header attribs. in both the structure and resource 
+     * records get written. Thus, using writeFileHeader affects all siblings of
+     * a resource! Use {@link #writeResourceState(CmsProject, CmsResource, int)}
+     * instead if you just want to update the file state, e.g. of a single sibling.<p>
+     * 
+     * The file state is set to "changed", unless the current state is "new"
+     * or "deleted". The "changed" argument allows to choose whether the structure 
+     * or resource state, or none of them, is set to "changed".<p>
+     * 
+     * The rating of the file state values is as follows:<br>
+     * unchanged < changed < new < deleted<p>
+     * 
+     * Second, the "state" of the resource is the structure state, if the structure state
+     * has a higher file state value than the resource state. Otherwise the file state is
+     * the resource state.<p>
      * 
      * @param project the current project
-     * @param file the file to update
-     * @param changed defines which state must be modified
-     * @param userId the user who writes the file
+     * @param file the file to be updated
+     * @param changed determines whether the structure or resource state, or none of them, is set to "changed"
+     * @param userId the ID of the current user
      * @throws CmsException if something goes wrong
+     * @see org.opencms.db.CmsDriverManager#C_UPDATE_RESOURCE_STATE
+     * @see org.opencms.db.CmsDriverManager#C_UPDATE_STRUCTURE_STATE
+     * @see org.opencms.db.CmsDriverManager#C_NOTHING_CHANGED
+     * @see #writeResourceState(CmsProject, CmsResource, int)
      */
     void writeFileHeader(CmsProject project, CmsFile file, int changed, CmsUUID userId) throws CmsException;
     
     /**
-     * Writes the complete structure and resource records of an existing folder.<p>
+     * Writes the complete file header of an existing folder.<p>
+     * 
+     * Common usages of writeFolder are saving the file header
+     * information after creating, importing or restoring complete folder
+     * where all folder header attribs. in both the structure and resource 
+     * records get written.
+     * 
+     * Please refer to the javadoc of {@link #writeFileHeader(CmsProject, CmsFile, int, CmsUUID)} to read
+     * how setting resource state values affects the file state.<p>
      * 
      * @param project the current project
      * @param folder the folder to update
-     * @param changed defines which state must be modified
-     * @param userId the user who writes the folder
+     * @param changed determines whether the structure or resource state, or none of them, is set to "changed"
+     * @param userId the ID of the current user
      * @throws CmsException if something goes wrong
+     * @see org.opencms.db.CmsDriverManager#C_UPDATE_RESOURCE_STATE
+     * @see org.opencms.db.CmsDriverManager#C_UPDATE_STRUCTURE_STATE
+     * @see org.opencms.db.CmsDriverManager#C_NOTHING_CHANGED
+     * @see #writeResourceState(CmsProject, CmsResource, int)
      */
     void writeFolder(CmsProject project, CmsFolder folder, int changed, CmsUUID userId) throws CmsException;
     
