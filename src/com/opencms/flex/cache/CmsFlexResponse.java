@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexResponse.java,v $
-* Date   : $Date: 2002/09/12 18:48:19 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/09/16 10:31:34 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.PrintWriter;
  * A wrapper class for a HttpServletRequest that controls the Flex cache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapper {
     
@@ -68,6 +68,9 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
     
     /** A list of include calls that origin from this page, i.e. these are sub elements of this element */
     private java.util.List m_includeList = null;
+    
+    /** A list of parameters that belong to the include calls */
+    private java.util.List m_includeListParameters = null;
     
     /** A list of results from the inclusions, needed because of JSP buffering */
     private java.util.List m_includeResults = null;
@@ -256,10 +259,12 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
      *
      * @param target The include target name to add
      */
-    public void addToIncludeList(String target) {
+    public void addToIncludeList(String target, Map parameterMap) {
         if (m_includeList == null) {
             m_includeList = new ArrayList(10);
-        }
+            m_includeListParameters = new ArrayList(10);
+        }        
+        m_includeListParameters.add(parameterMap);
         m_includeList.add(target);
     }
     
@@ -309,6 +314,7 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
             int count = 0;
             // Work through result and split this with include list calls
             java.util.Iterator i = m_includeList.iterator();
+            java.util.Iterator j = m_includeListParameters.iterator();
             while (i.hasNext() && (pos<max)) {
                 // Look for the first C_FLEX_CACHE_DELIMITER char
                 while ((pos<max) && (result[pos] != C_FLEX_CACHE_DELIMITER)) {
@@ -328,7 +334,7 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
                     }
                     last = ++pos;
                     // Add an include call to the cache entry
-                    m_cachedEntry.add((String)i.next());
+                    m_cachedEntry.add((String)i.next(), (java.util.HashMap)j.next());
                 }
             } 
             // Is there something behind the last include call?
@@ -342,9 +348,11 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
             if (! i.hasNext()) {
                 // Delete the include list if all include calls are handled
                 m_includeList = null;
+                m_includeListParameters = null;
             } else {
                 // If something is left, remove the processed entries
                 m_includeList = m_includeList.subList(count, m_includeList.size());
+                m_includeListParameters = m_includeListParameters.subList(count, m_includeListParameters.size());
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2002/09/12 08:57:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2002/09/16 10:30:39 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import com.opencms.flex.util.I_CmsFlexLruCacheObject;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject {
     
@@ -81,7 +81,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
     private boolean m_completed = false;      
     
     /** The CacheEntry's size in kBytes */
-    private int m_ByteSize;
+    private int m_byteSize;
     
     /** Pointer to the next cache entry in the LRU cache */
     private I_CmsFlexLruCacheObject m_Next;
@@ -110,7 +110,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
         m_elements = new java.util.ArrayList(C_INITIAL_CAPACITY_LISTS);
         m_redirectTarget = null;
         m_headers = null;
-        m_ByteSize = 0;
+        m_byteSize = 0;
         
         this.setNextLruObject( null );
         this.setPreviousLruObject( null );
@@ -129,7 +129,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
         if (m_redirectTarget == null) {
             // Add only if not already redirected
             m_elements.add(bytes);
-            m_ByteSize += bytes.length;
+            m_byteSize += bytes.length;
         }
     }
     
@@ -137,13 +137,15 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
      * Add an include - call target resource to the cache entry.
      *
      * @param resource A name of a resource in the OpenCms VFS.
+     * @param parameters A map of parameters specific to this include call.
      */    
-    public void add(String resource) {
+    public void add(String resource, java.util.HashMap paramters) {
         if (m_completed) return;
         if (m_redirectTarget == null) {
             // Add only if not already redirected
             m_elements.add(resource);
-            m_ByteSize += resource.getBytes().length;
+            m_elements.add(paramters);
+            m_byteSize += resource.getBytes().length;
         }
     }
     
@@ -158,7 +160,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
         
         Iterator allHeaders = m_headers.keySet().iterator();
         while (allHeaders.hasNext()) {
-            this.m_ByteSize += ((String)allHeaders.next()).getBytes().length;
+            this.m_byteSize += ((String)allHeaders.next()).getBytes().length;
         }
     }
     
@@ -176,7 +178,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
     public void setRedirect(String target) {
         if (m_completed) return;
         m_redirectTarget = target;
-        this.m_ByteSize = target.getBytes().length;
+        this.m_byteSize = target.getBytes().length;
         // If we have a redirect we don't need any other output or headers
         m_elements = null;
         m_headers = null;
@@ -224,7 +226,14 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
             while (i.hasNext()) {
                 Object o = i.next();
                 if (o instanceof String) {
+                    java.util.HashMap map = (java.util.HashMap)i.next();
+                    java.util.Map oldMap = null;
+                    if (map != null) {
+                        oldMap = req.getParameterMap();
+                        req.addParameterMap(map);
+                    }
                     req.getCmsRequestDispatcher((String)o).include(req, res);
+                    if (oldMap != null) req.setParameterMap(oldMap);
                 } else {
                     try {
                         res.writeToOutputStream((byte[])o, hasNoSubElements);
@@ -374,7 +383,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
      * Returns the byte size as the cache costs of this object. 
      */
     public int getLruCacheCosts() {
-        return m_ByteSize;
+        return m_byteSize;
     }
     
     // methods to clean-up/finalize the object instance
@@ -396,7 +405,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
         this.setNextLruObject( null );
         this.setPreviousLruObject( null );
         
-        this.m_ByteSize = 0;  
+        this.m_byteSize = 0;  
         
         super.finalize();      
     }

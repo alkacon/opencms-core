@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequest.java,v $
-* Date   : $Date: 2002/09/03 19:41:51 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/09/16 10:31:07 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,11 @@ package com.opencms.flex.cache;
 import com.opencms.flex.CmsEvent;
 import com.opencms.flex.I_CmsEventListener;
 import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import com.opencms.core.A_OpenCms;
 
 /**
@@ -41,7 +46,7 @@ import com.opencms.core.A_OpenCms;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper {
     
@@ -78,6 +83,9 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
     /** Set of all include calls (to prevent an endless inclusion loop) */
     private java.util.Set m_includeCalls;    
     
+    /** Map of parameters from the original request */
+    private Map m_parameters = null;
+    
     public static String C_ATTR_PROCESSED = "com.opencms.flex.cache.CmsFlexRequest.PROCESSED";
         
     /**
@@ -98,6 +106,7 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
         m_file = file;
         m_resource = file.getAbsolutePath();
         m_includeCalls = java.util.Collections.synchronizedSet(new java.util.HashSet(23));
+        m_parameters = req.getParameterMap();
         try {
             m_isOnline = (m_cms.onlineProject().equals(m_cms.getRequestContext().currentProject()));
         } catch (Exception e) {}        
@@ -161,6 +170,7 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
         m_canCache = req.isCacheable();
         m_doRecompile = req.isDoRecompile();
         m_includeCalls = req.getCmsIncludeCalls();        
+        m_parameters = req.getParameterMap();
         if (DEBUG) System.err.println("[FlexRequest] Re-using Flex request for resource: " + m_resource);
     }
     
@@ -341,6 +351,124 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
         buf.append(getCmsResource());
         return buf.toString();
     } 
+    
+    /**
+     * Return the value of the specified request parameter, if any; otherwise,
+     * return <code>null</code>.  If there is more than one value defined,
+     * return only the first one.
+     *
+     * @param name Name of the desired request parameter
+     */
+    public String getParameter(String name) {
+
+        String values[] = (String[]) m_parameters.get(name);
+        if (values != null)
+            return (values[0]);
+        else
+            return (null);
+    }
+
+
+    /**
+     * Returns a <code>Map</code> of the parameters of this request.
+     * Request parameters are extra information sent with the request.
+     * For HTTP servlets, parameters are contained in the query string
+     * or posted form data.
+     *
+     * @return A <code>Map</code> containing parameter names as keys
+     *  and parameter values as map values.
+     */
+    public Map getParameterMap() {
+        return (this.m_parameters);
+    }
+
+    /**
+     * Return the names of all defined request parameters for this request.
+     */
+    public Enumeration getParameterNames() {
+        java.util.Vector v = new java.util.Vector();
+        v.addAll(m_parameters.keySet());
+        return (v.elements());
+    }
+
+    /**
+     * Return the defined values for the specified request parameter, if any;
+     * otherwise, return <code>null</code>.
+     *
+     * @param name Name of the desired request parameter
+     */
+    public String[] getParameterValues(String name) {
+
+        String values[] = (String[]) m_parameters.get(name);
+        if (values != null)
+            return (values);
+        else
+            return (null);
+    }
+    
+    /**
+     * Adds the specified Map to the paramters of the request.<p>
+     * 
+     * Added parametes will not overwrite existing parameters in the 
+     * request. Remember that the value for a parameter name in
+     * a HttpRequest is a String array. If a parameter name already
+     * exists in the HttpRequest, the values will be added to the existing
+     * value array. Multiple occurences of the same value for one 
+     * paramter are also possible.
+     * 
+     * @param map The map to add
+     * @return The merged map of parameters
+     */
+	public Map addParameterMap(Map map) {
+		if (map == null)
+			return m_parameters;
+		if ((m_parameters == null) || (m_parameters.size() == 0)) {
+            m_parameters = Collections.unmodifiableMap(map);
+		} else {
+            HashMap parameters = new HashMap();
+            parameters.putAll(m_parameters);
+            
+            Iterator it = map.keySet().iterator();
+            while (it.hasNext()) {
+                String key = (String) it.next();
+                // Check if the parameter name (key) exists
+                if (parameters.containsKey(key)) {
+                                
+                    String[] oldValues = (String[]) parameters.get(key);
+                    String[] newValues = (String[]) map.get(key);     
+                               
+                    String[] mergeValues = new String[oldValues.length + newValues.length];
+                    System.arraycopy(oldValues, 0, mergeValues, 0, oldValues.length);
+                    System.arraycopy(newValues, 0, mergeValues, oldValues.length, newValues.length);
+                    
+                    parameters.put(key, mergeValues);
+                } else {
+                    // No: Add new value array
+                    parameters.put(key, map.get(key));
+                }                                     
+			}
+            m_parameters = Collections.unmodifiableMap(parameters);
+		}
+
+		return m_parameters;
+	}
+    
+    /**
+     * Sets the specified Map as paramter map of the request.<p>
+     * 
+     * The map set should be immutable. 
+     * This will completly replace the parameter map. 
+     * Use this in combination with getParameterMap() and
+     * addParameterMap() in case you want to set the old status
+     * of the parameter map after you have modified it for
+     * a specific operation. 
+     * 
+     * @param map The map to set
+     */    
+    public void setParameterMap(Map map) {
+        m_parameters = map;
+    }
+  
     
     /** 
      * Makes sure that the target information is really used

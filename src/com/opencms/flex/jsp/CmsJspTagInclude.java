@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
-* Date   : $Date: 2002/09/04 11:54:36 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/09/16 10:31:58 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,9 @@ package com.opencms.flex.jsp;
 
 import com.opencms.flex.util.CmsPropertyLookup;
 
+import java.util.HashMap;
+import java.util.Iterator;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
@@ -38,9 +41,9 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * This Tag is used to include another OpenCms managed resource in a JSP.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
-public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspConstants { 
+public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspConstants, I_CmsJspParamParent { 
     
     private String m_target = null;
     private String m_page = null;
@@ -150,12 +153,13 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspConstant
         m_suffix = null;
         m_property = null;           
         m_body = null; 
-    }
+        m_parameterMap = null;
+    }    
     
     public int doStartTag() throws JspException {
         if (m_body == null) return SKIP_BODY;
         return EVAL_BODY_BUFFERED;
-    }
+    }    
 
     public int doEndTag() throws JspException {
         
@@ -170,6 +174,15 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspConstant
             com.opencms.flex.cache.CmsFlexResponse c_res = (com.opencms.flex.cache.CmsFlexResponse)res;    
 
             String target = null;
+            
+            java.util.Map oldParamterMap = null;
+            
+            // Check parameters and update if required
+            if (m_parameterMap != null) {
+                oldParamterMap = c_req.getParameterMap();
+                Iterator i = m_parameterMap.keySet().iterator();
+                c_req.addParameterMap(m_parameterMap);                
+            }
             
             // Try to find out what to do
             if (m_target != null) {
@@ -203,7 +216,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspConstant
                 out.print((char)com.opencms.flex.cache.CmsFlexResponse.C_FLEX_CACHE_DELIMITER);
                 
                 // Add an element to the include list (will be initialized if empty)
-                c_res.addToIncludeList(target);
+                c_res.addToIncludeList(target, m_parameterMap);
                 
                 // CmsResponse w_res = new CmsResponse(c_res, target, true);
                 c_req.getCmsRequestDispatcher(target).include(c_req, c_res);    
@@ -216,9 +229,54 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspConstant
                 if (DEBUG) System.err.println("JspTagInclude: IOException in Jsp 'include' tag processing: " + e);
                 if (DEBUG) System.err.println(com.opencms.util.Utils.getStackTrace(e));                
                 throw new JspException(e);
-            }            
+            } finally {
+                if (oldParamterMap != null) c_req.setParameterMap(oldParamterMap);
+            }        
         }
         
         return EVAL_PAGE;
     }
+    
+    private HashMap m_parameterMap = null;
+    
+	/**
+     * This methods adds parameters to the FlexRequest. 
+     * Parameters added here will be treated like parameters from the 
+     * HttpRequest on included pages.<p>
+     * 
+     * Remember that the value for a parameter in a HttpRequest is a 
+     * String array, not just a simple String. If a parameter added here does
+     * not already exist in the HttpRequest, it will be added. If a parameter 
+     * exists, another value will be added to the array of values. If the 
+     * value already exists for the parameter, nothing will be added, since a 
+     * value can appear only once per parameter.<p>
+     * 
+	 * @see com.opencms.flex.jsp.I_CmsJspParamParent#addParameter(String, String)
+	 */
+	public void addParameter(String name, String value) {
+        // No null values allowed in parameters
+        if ((name == null) || (value == null)) return;
+
+        if (DEBUG) System.err.println("CmsJspIncludeTag.addParameter: param=" + name + " value=" + value);
+        
+        // Check if internal map exists, create new one if not
+        if (m_parameterMap == null) {
+            m_parameterMap = new HashMap();
+        }
+        
+        // Check if the parameter name (key) exists
+        if (m_parameterMap.containsKey(name)) {
+            // Yes: Check name values if value exists, if so no nothing, else add new value
+            String[] values = (String[]) m_parameterMap.get(name);
+            String[] newValues = new String[values.length+1];
+            System.arraycopy(values, 0, newValues, 0, values.length);
+            newValues[values.length] = value;
+            m_parameterMap.put(name, newValues);
+        } else {
+            // No: Add new parameter name / value pair
+            String[] values = new String[] { value };
+            m_parameterMap.put(name, values);
+        } 
+    }
+
 }

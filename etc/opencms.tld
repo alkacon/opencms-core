@@ -7,7 +7,7 @@
 <!-- Created by Alexander Kandzior (a.kandzior@alkacon.com) on 6. April 2002, 17:28 -->
 
 <taglib>
-    <tlib-version>0.9</tlib-version>
+    <tlib-version>0.9.1</tlib-version>
     <jsp-version>1.2</jsp-version>
     <short-name>cms</short-name>
     <uri>http://www.opencms.org/taglib/cms</uri>
@@ -92,6 +92,25 @@
         <attribute>
             <name>body</name>
         </attribute>        
-    </tag>          
+    </tag>        
+    
+    <tag>
+        <name>param</name>
+        <tag-class>com.opencms.flex.jsp.CmsJspParamSupport</tag-class>
+        <body-content>JSP</body-content>
+        <description>
+            Adds a parameter to a containing 'import' tag's URL.
+        </description>
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>value</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>      
         
 </taglib>
