@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/MailUtils.java,v $
-* Date   : $Date: 2003/01/20 23:59:20 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/07/21 11:05:04 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,19 +34,26 @@ package com.opencms.util;
  *
  * @author Stefan Marx (Stefan.Marx@framfab.de)
  */
-public class MailUtils {
+public final class MailUtils {
+    
+    /**
+     * Hides the public constructor.<p>
+     */
+    private MailUtils() {
+    }
 
     /**
      * Check a given email address for conformness with
-     * RFC822 rules, see http://www.rfc-editor.org/rfc.html
+     * RFC822 rules, see http://www.rfc-editor.org/rfc.html.<p>
+     * 
      * @param address EMail address to be checked
-     * @return <code>true</code> if the address is syntactically correct, <code>false</code> otherwise.
+     * @return <code>true</code> if the address is syntactically correct, <code>false</code> otherwise
     */
     public static boolean checkEmail(String address) {
         boolean result = true;
         try {
             new javax.mail.internet.InternetAddress(address);
-        } catch(javax.mail.internet.AddressException e) {
+        } catch (javax.mail.internet.AddressException e) {
             result = false;
         }
         return result;

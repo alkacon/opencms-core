@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/SqlHelper.java,v $
-* Date   : $Date: 2003/01/20 23:59:20 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/07/21 11:05:04 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,11 +40,15 @@ import java.sql.Timestamp;
  * This is a helper class for sql queries.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.15 $ $Date: 2003/01/20 23:59:20 $
+ * @version $Revision: 1.16 $ $Date: 2003/07/21 11:05:04 $
  */
+public final class SqlHelper {
 
-public class SqlHelper {
-
+    /**
+     * Hides the public constructor.<p>
+     */
+    private SqlHelper() {
+    }
 
     /**
      * The number of maximum retries to read the timestamp
@@ -53,28 +57,25 @@ public class SqlHelper {
 
     /**
      * This method tries to get the timestamp several times, because there
-     * is a timing-problem in the actual mysql-driver.
+     * is a timing-problem in the mysql driver.<p>
      *
-     * @param result The resultset to get the stamp from.
-     * @param column The column to read the timestamp from.
-     * @return the Timestamp.
-     * @throws Throws Exception, if something goes wrong.
+     * @param result the resultset to get the stamp from
+     * @param column the column to read the timestamp from
+     * @return the timestamp
+     * @throws SQLException if something goes wrong
      */
-
     public static final Timestamp getTimestamp(ResultSet result, String column)
             throws SQLException {
         int i = 0;
-        for(;;) {
+        for (;;) {
             try {
                 return (result.getTimestamp(column));
-            }
-            catch(SQLException exc) {
+            } catch (SQLException exc) {
                 i++;
-                if(i >= C_MAX_RETRIES) {
+                if (i >= C_MAX_RETRIES) {
                     throw exc;
-                }
-                else {
-                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                } else {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(I_CmsLogChannels.C_MODULE_INFO, "Trying to get timestamp "
                                 + column + " #" + i);
                     }
