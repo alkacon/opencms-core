@@ -54,8 +54,8 @@ String editId = "directedit_".concat(String.valueOf(rnd.nextInt()));
 
 --%><cms:template element="start_directedit_enabled">
 <!-- EDIT BLOCK START -->
-<div id="<%= editId %>" class="directedit_norm">
-<form name="form_<%= editId %>" id="form_<%= editId %>" method="post" action="<%= editLink %>" class="nomargin">
+<div id="<%= editId %>" class="ocms_de_norm">
+<form name="form_<%= editId %>" id="form_<%= editId %>" method="post" action="<%= editLink %>" class="ocms_nomargin">
 <input type="hidden" name="resource" value="<%= editTarget %>">
 <input type="hidden" name="directedit" value="true">
 <input type="hidden" name="elementlanguage" value="<%= editLocale %>">
@@ -65,44 +65,44 @@ String editId = "directedit_".concat(String.valueOf(rnd.nextInt()));
 <input type="hidden" name="closelink">
 <input type="hidden" name="editortitle">
 </form>
-<span class="directedit_button" onmouseover="activate('<%= editId %>');" onmouseout="deactivate('<%= editId %>');">
+<span class="ocms_de_bt" onmouseover="activateOcms('<%= editId %>');" onmouseout="deactivateOcms('<%= editId %>');">
 <table border="0" cellpadding="0" cellspacing="0">
 <tr>
 <% 
 if (showEdit) { 
 %>
-	<td class="directedit"><a href="#" onclick="javascript:doSubmit('<%= editId %>', '<%= editAction %>');" class="button"><span unselectable="on" class="over" onmouseover="className='over'" onmouseout="className='over'" onmousedown="className='push'" onmouseup="className='over'"><%
+	<td class="ocms_de"><a href="#" onclick="javascript:submitOcms('<%= editId %>', '<%= editAction %>');" class="ocms_button"><span unselectable="on" class="ocms_over" onmouseover="className='ocms_over'" onmouseout="className='ocms_over'" onmousedown="className='ocms_push'" onmouseup="className='ocms_over'"><%
    if (editButtonStyle == 1) { 
-	%><span id="bt_<%= editId %>" unselectable="on" class="combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.gif');">&nbsp;<%= wp.key("editor.frontend.button.edit") %></span><%
+	%><span id="bt_<%= editId %>" unselectable="on" class="ocms_combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.gif');">&nbsp;<%= wp.key("editor.frontend.button.edit") %></span><%
    } else if (editButtonStyle == 2) { 
-	%><span unselectable="on" class="combobutton" style="padding-left: 4px;"><%= wp.key("editor.frontend.button.edit") %></span><%
+	%><span unselectable="on" class="ocms_combobutton" style="padding-left: 4px;"><%= wp.key("editor.frontend.button.edit") %></span><%
    } else { 
-	%><span id="bt_<%= editId %>" unselectable="on" class="combobutton" style="padding-left: 15px; padding-right: 1px; background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.gif'); background-position: 0px 0px;">&nbsp;</span><%
+	%><span id="bt_<%= editId %>" unselectable="on" class="ocms_combobutton" style="padding-left: 15px; padding-right: 1px; background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.gif'); background-position: 0px 0px;" title="<%= wp.key("editor.frontend.button.edit") %>">&nbsp;</span><%
    } %></span></a></td>
 <% 
 }
 if (showDelete) {
 %>
 
-	<td class="directedit"><a href="#" onclick="javascript:doSubmit('<%= editId %>', '<%= deleteAction %>');" class="button"><span unselectable="on" class="over" onmouseover="className='over'" onmouseout="className='over'" onmousedown="className='push'" onmouseup="className='over'"><%
+	<td class="ocms_de"><a href="#" onclick="javascript:submitOcms('<%= editId %>', '<%= deleteAction %>');" class="ocms_button"><span unselectable="on" class="ocms_over" onmouseover="className='ocms_over'" onmouseout="className='ocms_over'" onmousedown="className='ocms_push'" onmouseup="className='ocms_over'"><%
    if (editButtonStyle == 1) { 
-	%><span id="del_<%= editId %>" unselectable="on" class="combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/deletecontent.gif');">&nbsp;<%= wp.key("button.delete") %></span><%
+	%><span id="del_<%= editId %>" unselectable="on" class="ocms_combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/deletecontent.gif');">&nbsp;<%= wp.key("button.delete") %></span><%
    } else if (editButtonStyle == 2) { 
-	%><span unselectable="on" class="combobutton" style="padding-left: 4px;"><%= wp.key("button.delete") %></span><%
+	%><span unselectable="on" class="ocms_combobutton" style="padding-left: 4px;"><%= wp.key("button.delete") %></span><%
    } else { 
-	%><img class="button" border="0" src="<%= wp.getSkinUri() %>buttons/deletecontent.gif"><%
+	%><img border="0" src="<%= wp.getSkinUri() %>buttons/deletecontent.gif" title="<%= wp.key("button.delete") %>" alt=""><%
    } %></span></a></td>   
 <%
 }
 if (showNew) {
 %>   
-	<td class="directedit"><a href="#" onclick="javascript:doSubmit('<%= editId %>', '<%= newAction %>', '<%= editNewLink %>');" class="button"><span unselectable="on" class="over" onmouseover="className='over'" onmouseout="className='over'" onmousedown="className='push'" onmouseup="className='over'"><%
+	<td class="ocms_de"><a href="#" onclick="javascript:submitOcms('<%= editId %>', '<%= newAction %>', '<%= editNewLink %>');" class="ocms_button"><span unselectable="on" class="ocms_over" onmouseover="className='ocms_over'" onmouseout="className='ocms_over'" onmousedown="className='ocms_push'" onmouseup="className='ocms_over'"><%
    if (editButtonStyle == 1) { 
-	%><span id="new_<%= editId %>" unselectable="on" class="combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/wizard.gif');">&nbsp;<%= wp.key("button.new") %></span><%
+	%><span id="new_<%= editId %>" unselectable="on" class="ocms_combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/wizard.gif');">&nbsp;<%= wp.key("button.new") %></span><%
    } else if (editButtonStyle == 2) { 
-	%><span unselectable="on" class="combobutton" style="padding-left: 4px;"><%= wp.key("button.new") %></span><%
+	%><span unselectable="on" class="ocms_combobutton" style="padding-left: 4px;"><%= wp.key("button.new") %></span><%
    } else { 
-	%><img class="button" border="0" src="<%= wp.getSkinUri() %>buttons/wizard.gif"><%
+	%><img border="0" src="<%= wp.getSkinUri() %>buttons/wizard.gif" title="<%= wp.key("button.new") %>" alt=""><%
    } %></span></a></td>     
 <%
 }
@@ -119,11 +119,18 @@ if (showNew) {
 
 --%><cms:template element="start_directedit_disabled">
 <!-- EDIT BLOCK START -->
-<div id="<%= editId %>" class="directedit_norm">
-<span class="directedit_button" onmouseover="activate('<%=editId%>');" onmouseout="deactivate('<%=editId%>');">
+<div id="<%= editId %>" class="ocms_de_norm">
+<span class="ocms_de_bt" onmouseover="activateOcms('<%=editId%>');" onmouseout="deactivateOcms('<%=editId%>');">
 <table border="0" cellpadding="1" cellspacing="0">
 <tr>
-	<%=wp.button(null, null, "directedit", "editor.frontend.button.locked", 1)%></tr>
+	<td style="vertical-align: top;"><span unselectable="on" class="ocms_disabled"><%
+   if (editButtonStyle == 1) { 
+	%><span unselectable="on" class="ocms_combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/directedit_in.gif');">&nbsp;<%= wp.key("editor.frontend.button.locked") %></span><%
+   } else if (editButtonStyle == 2) { 
+	%><span unselectable="on" class="ocms_combobutton" style="padding-left: 4px;"><%= wp.key("editor.frontend.button.locked") %></span><%
+   } else { 
+	%><img border="0" src="<%= wp.getSkinUri() %>buttons/directedit_in.gif" title="<%= wp.key("editor.frontend.button.locked") %>" alt=""><%
+   } %></span></td>
 </table>
 </span>
 </cms:template><%--
@@ -144,24 +151,12 @@ if (showNew) {
 --%><cms:template element="directedit_includes">
 <style type="text/css">
 <!--
-a.button {
+a.ocms_button,a.ocms_button:active,a.ocms_button:hover,a.ocms_button:visited {
 	color: ButtonText;
 	text-decoration: none;
 	cursor: pointer;
 }
-a.button:active {
-	color: ButtonText;
-	text-decoration: none;
-}
-a.button:hover {
-	color: ButtonText;
-	text-decoration: none;
-}
-a.button:visited {
-	color: ButtonText;
-	text-decoration: none;
-}
-span.combobutton {
+span.ocms_combobutton {
 	display: block;
 	font-family: Verdana, sans-serif;
 	font-size: 11px;
@@ -174,35 +169,35 @@ span.combobutton {
 	background-color: ButtonFace;
 	background-position: 4px 0px;
 }
-span.norm {
+span.ocms_norm {
 	display: block;
 	border: 1px solid ButtonFace;
 }
-span.over {
+span.ocms_over {
 	display: block;
 	border-top: 1px solid ButtonHighlight;
 	border-left: 1px solid ButtonHighlight;
 	border-bottom: 1px solid ButtonShadow;
 	border-right: 1px solid ButtonShadow;
 }
-span.push {
+span.ocms_push {
 	display: block;
 	border-top: 1px solid ButtonShadow;
 	border-left: 1px solid ButtonShadow;
 	border-bottom: 1px solid ButtonHighlight;
 	border-right: 1px solid ButtonHighlight;
 }
-span.disabled {
+span.ocms_disabled {
 	display: block;
 	border: 1px solid ButtonFace;
 	color: ButtonShadow;
 }
-div.directedit_norm {
+div.ocms_de_norm {
 	width: 100%;
 	padding-top: 1px;
 	padding-bottom: 1px;
 }
-div.directedit_over {
+div.ocms_de_over {
 	width: 100%;
 	padding-top: 0;
 	padding-bottom: 0;
@@ -210,14 +205,14 @@ div.directedit_over {
 	border-top: 1px dotted ThreedDarkShadow;
 	border-bottom: 1px dotted ThreedDarkShadow;
 }
-span.directedit_button {
+span.ocms_de_bt {
 	position: absolute;
 	background-color: ButtonFace;
 }
-td.directedit {
+td.ocms_de {
 	line-height: 12px;
 }
-form.nomargin {
+form.ocms_nomargin {
 	display: none;
 }
 //-->
@@ -225,10 +220,10 @@ form.nomargin {
 
 <script type="text/javascript">
 <!--
-function activate(id) {
+function activateOcms(id) {
 	var el = document.getElementById(id);
-	if (el.className == "directedit_norm") {
-		el.className = "directedit_over";
+	if (el.className == "ocms_de_norm") {
+		el.className = "ocms_de_over";
 	}
 	var bt = document.getElementById("bt_" + id);
 	if (bt != null) {
@@ -236,17 +231,17 @@ function activate(id) {
 	}
 
 }
-function deactivate(id) {
+function deactivateOcms(id) {
 	var el = document.getElementById(id);
-	if (el.className == "directedit_over") {
-		el.className = "directedit_norm";
+	if (el.className == "ocms_de_over") {
+		el.className = "ocms_de_norm";
 	}
 	var bt = document.getElementById("bt_" + id);
 	if (bt != null) {
 		bt.style.backgroundImage = "url(<%= wp.getSkinUri() %>buttons/directedit_cl.gif)";
 	}
 }
-function doSubmit(id, action, link) {
+function submitOcms(id, action, link) {
 	var form = document.getElementById("form_" + id);
 	if (form != null) {
 		if (action == "<%= editAction %>") {
