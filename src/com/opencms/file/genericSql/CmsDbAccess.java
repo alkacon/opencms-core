@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/10/31 17:07:35 $
- * Version: $Revision: 1.165 $
+ * Date   : $Date: 2000/11/16 10:05:13 $
+ * Version: $Revision: 1.166 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.165 $ $Date: 2000/10/31 17:07:35 $ * 
+ * @version $Revision: 1.166 $ $Date: 2000/11/16 10:05:13 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -226,6 +226,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	 * 'Constants' file.
 	 */
    protected com.opencms.file.genericSql.CmsQueries m_cq;
+
 	/**
 	 * Instanciates the access-module and sets up all required modules and connections.
 	 * @param config The OpenCms configuration.
@@ -927,8 +928,6 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 			 }	
 		 return readFile(project.getId(),onlineProject.getId(),filename);
 	 }
-
-	 
 /**
  * Creates a new folder 
  * 
@@ -1065,7 +1064,6 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, in
 		 //return readFolder(project,folder.getAbsolutePath());
 		 return readFolder(project.getId(),foldername);
 	 }
-	 
 	/**
 	 * Add a new group to the Cms.<BR/>
 	 * 
@@ -1176,7 +1174,6 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, in
 		}
 		return readProject(id);
 	}
-
 	/**
 	 * Creates the propertydefinitions for the resource type.<BR/>
 	 * 
@@ -2231,6 +2228,72 @@ public Vector getFilesWithProperty(int projectId, String propertyDefinition, Str
 	}
 	return names;
 }
+/**
+ * Reads the complete folder-tree for this project.<BR>
+ * 
+ * @param project The project in which the folders are.
+ * 
+ * @return A Vecor of folders.
+ * 
+ * @exception CmsException Throws CmsException if operation was not succesful
+ */
+public Vector getFolderTree(int projectId) throws CmsException {
+	Vector folders = new Vector();
+	CmsFolder folder;
+	String lastfile = null;
+	ResultSet res = null;
+	PreparedStatement statement = null;
+	try {
+		// read file data from database
+		statement = m_pool.getPreparedStatement(m_cq.C_RESOURCES_GET_FOLDERTREE_KEY);
+		statement.setInt(1, projectId);
+		res = statement.executeQuery();
+
+		// create new file
+		while (res.next()) {
+			int resId = res.getInt(m_cq.C_RESOURCES_RESOURCE_ID);
+			int parentId = res.getInt(m_cq.C_RESOURCES_PARENT_ID);
+			String resName = res.getString(m_cq.C_RESOURCES_RESOURCE_NAME);
+
+			// only add this folder, if it was not in the last offline-project already
+			if (!resName.equals(lastfile)) {
+				int resType = res.getInt(m_cq.C_RESOURCES_RESOURCE_TYPE);
+				int resFlags = res.getInt(m_cq.C_RESOURCES_RESOURCE_FLAGS);
+				int userId = res.getInt(m_cq.C_RESOURCES_USER_ID);
+				int groupId = res.getInt(m_cq.C_RESOURCES_GROUP_ID);
+				int projectID = res.getInt(m_cq.C_RESOURCES_PROJECT_ID);
+				int fileId = res.getInt(m_cq.C_RESOURCES_FILE_ID);
+				int accessFlags = res.getInt(m_cq.C_RESOURCES_ACCESS_FLAGS);
+				int state = res.getInt(m_cq.C_RESOURCES_STATE);
+				int lockedBy = res.getInt(m_cq.C_RESOURCES_LOCKED_BY);
+				int launcherType = res.getInt(m_cq.C_RESOURCES_LAUNCHER_TYPE);
+				String launcherClass = res.getString(m_cq.C_RESOURCES_LAUNCHER_CLASSNAME);
+				long created = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_CREATED).getTime();
+				long modified = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_LASTMODIFIED).getTime();
+				int resSize = res.getInt(m_cq.C_RESOURCES_SIZE);
+				int modifiedBy = res.getInt(m_cq.C_RESOURCES_LASTMODIFIED_BY);
+				folder = new CmsFolder(resId, parentId, fileId, resName, resType, resFlags, userId, groupId, projectID, accessFlags, state, lockedBy, created, modified, modifiedBy);
+				folders.addElement(folder);
+			}
+			lastfile = resName;
+		}
+	} catch (SQLException e) {
+		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	} catch (Exception ex) {
+		throw new CmsException("[" + this.getClass().getName() + "]", ex);
+	} finally {
+		if (res != null) {
+			try {
+				res.close();
+			} catch (SQLException se) {
+			}
+		}
+		if (statement != null) {
+			m_pool.putPreparedStatement(m_cq.C_RESOURCES_GET_FOLDERTREE_KEY, statement);
+		}
+	}
+	return folders;
+}
 	 /**
 	 * Returns all groups<P/>
 	 * 
@@ -2269,7 +2332,6 @@ public Vector getFilesWithProperty(int projectId, String propertyDefinition, Str
 		 }
 	  return groups;
 	 }
-	
 	/**
 	 * Returns a list of groups of a user.<P/>
 	 * 
@@ -2330,6 +2392,74 @@ public CmsProject getOnlineProject(int projectId) throws CmsException
 protected com.opencms.file.genericSql.CmsQueries getQueries()
 {
 	return new com.opencms.file.genericSql.CmsQueries();
+}
+/**
+ * Reads all resources (including the folders) residing in a folder<BR>
+ * 
+ * @param onlineResource the parent resource id of the online resoure.
+ * @param offlineResource the parent resource id of the offline resoure.
+ * 
+ * @return A Vecor of resources.
+ * 
+ * @exception CmsException Throws CmsException if operation was not succesful
+ */
+public Vector getResourcesInFolder(int onlineResource, int offlineResource) throws CmsException {
+	Vector resources = new Vector();
+	CmsResource resource;
+	String lastfile = null;
+	ResultSet res = null;
+	PreparedStatement statement = null;
+	try {
+		// read file data from database
+		statement = m_pool.getPreparedStatement(m_cq.C_RESOURCES_GET_RESOURCES_IN_FOLDER_KEY);
+		statement.setInt(1, onlineResource);
+		statement.setInt(2, offlineResource);
+		res = statement.executeQuery();
+
+		// create new file
+		while (res.next()) {
+			int resId = res.getInt(m_cq.C_RESOURCES_RESOURCE_ID);
+			int parentId = res.getInt(m_cq.C_RESOURCES_PARENT_ID);
+			String resName = res.getString(m_cq.C_RESOURCES_RESOURCE_NAME);
+
+			// only add this folder, if it was not in the last offline-project already
+			if (!resName.equals(lastfile)) {
+				int resType = res.getInt(m_cq.C_RESOURCES_RESOURCE_TYPE);
+				int resFlags = res.getInt(m_cq.C_RESOURCES_RESOURCE_FLAGS);
+				int userId = res.getInt(m_cq.C_RESOURCES_USER_ID);
+				int groupId = res.getInt(m_cq.C_RESOURCES_GROUP_ID);
+				int projectID = res.getInt(m_cq.C_RESOURCES_PROJECT_ID);
+				int fileId = res.getInt(m_cq.C_RESOURCES_FILE_ID);
+				int accessFlags = res.getInt(m_cq.C_RESOURCES_ACCESS_FLAGS);
+				int state = res.getInt(m_cq.C_RESOURCES_STATE);
+				int lockedBy = res.getInt(m_cq.C_RESOURCES_LOCKED_BY);
+				int launcherType = res.getInt(m_cq.C_RESOURCES_LAUNCHER_TYPE);
+				String launcherClass = res.getString(m_cq.C_RESOURCES_LAUNCHER_CLASSNAME);
+				long created = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_CREATED).getTime();
+				long modified = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_LASTMODIFIED).getTime();
+				int resSize = res.getInt(m_cq.C_RESOURCES_SIZE);
+				int modifiedBy = res.getInt(m_cq.C_RESOURCES_LASTMODIFIED_BY);
+				resource = new CmsResource(resId, parentId, fileId, resName, resType, resFlags, userId, groupId, projectID, accessFlags, state, lockedBy, launcherType, launcherClass, created, modified, modifiedBy, resSize);
+				resources.addElement(resource);
+			}
+			lastfile = resName;
+		}
+	} catch (SQLException e) {
+		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	} catch (Exception ex) {
+		throw new CmsException("[" + this.getClass().getName() + "]", ex);
+	} finally {
+		if (res != null) {
+			try {
+				res.close();
+			} catch (SQLException se) {
+			}
+		}
+		if (statement != null) {
+			m_pool.putPreparedStatement(m_cq.C_RESOURCES_GET_RESOURCES_IN_FOLDER_KEY, statement);
+		}
+	}
+	return resources;
 }
    	/**
 	 * Returns a Vector with all subfolders.<BR/>
@@ -2896,6 +3026,8 @@ protected void initIdStatements() throws com.opencms.core.CmsException {
 		m_pool.initPreparedStatement(m_cq.C_RESOURCES_READ_ALL_KEY,m_cq.C_RESOURCES_READ_ALL);
 		m_pool.initPreparedStatement(m_cq.C_RESOURCES_UPDATE_LOCK_KEY,m_cq.C_RESOURCES_UPDATE_LOCK);
 		m_pool.initPreparedStatement(m_cq.C_RESOURCES_GET_FILES_WITH_PROPERTY_KEY ,m_cq.C_RESOURCES_GET_FILES_WITH_PROPERTY);
+		m_pool.initPreparedStatement(m_cq.C_RESOURCES_GET_FOLDERTREE_KEY ,m_cq.C_RESOURCES_GET_FOLDERTREE);
+		m_pool.initPreparedStatement(m_cq.C_RESOURCES_GET_RESOURCES_IN_FOLDER_KEY,m_cq.C_RESOURCES_GET_RESOURCES_IN_FOLDER);
 
 		// init statements for groups
 		m_pool.initPreparedStatement(m_cq.C_GROUPS_MAXID_KEY,m_cq.C_GROUPS_MAXID);
@@ -3485,7 +3617,6 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 	} // end of for
 	//clearFilesTable();
 }
-
 	 /**
 	 * Reads all file headers of a file in the OpenCms.<BR>
 	 * The reading excludes the filecontent.
@@ -3943,7 +4074,6 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 
 		return file;
 	   }
-	 
 	/**
 	 * Reads a file header from the Cms.<BR/>
 	 * The reading excludes the filecontent.
@@ -4022,7 +4152,6 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 	  
 		return file;
 	   }
-
 	/**
 	 * Reads all files from the Cms, that are in one project.<BR/>
 	 * 
@@ -4151,7 +4280,6 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 		 } 
 		return folder;
 	}
-
 	/**
 	 * Reads all folders from the Cms, that are in one project.<BR/>
 	 * 
@@ -4346,7 +4474,6 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 		}
 		return project;
 	}
-
 	/**
 	 * Reads a project by task-id.
 	 * 

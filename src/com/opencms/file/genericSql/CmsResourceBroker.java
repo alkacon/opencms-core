@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/03 17:30:28 $
- * Version: $Revision: 1.190 $
+ * Date   : $Date: 2000/11/16 10:05:15 $
+ * Version: $Revision: 1.191 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.190 $ $Date: 2000/11/03 17:30:28 $
+ * @version $Revision: 1.191 $ $Date: 2000/11/16 10:05:15 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2644,6 +2644,47 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	public long getFileSystemChanges(CmsUser currentUser, CmsProject currentProject) {
 		return m_fileSystemChanges;
 	}
+/**
+ * Returns a Vector with the complete folder-tree for this project.<br>
+ * 
+ * Subfolders can be read from an offline project and the online project. <br>
+ * 
+ * <B>Security:</B>
+ * Access is granted, if:
+ * <ul>
+ * <li>the user has access to the project</li>
+ * <li>the user can read this resource</li>
+ * </ul>
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * 
+ * @return subfolders A Vector with the complete folder-tree for this project.
+ * 
+ * @exception CmsException  Throws CmsException if operation was not succesful.
+ */
+public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject) throws CmsException {
+	Vector resources = m_dbAccess.getFolderTree(currentProject.getId());
+	Vector retValue = new Vector(resources.size());
+	String lastcheck = "#"; // just a char that is not valid in a filename
+
+	//make sure that we have access to all these.	 			 			
+	for (Enumeration e = resources.elements(); e.hasMoreElements();) {
+		CmsResource res = (CmsResource) e.nextElement();
+		if (!res.getAbsolutePath().startsWith(lastcheck)) {
+			if (accessOther(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) || 
+				accessOwner(currentUser, currentProject, res, C_ACCESS_OWNER_READ + C_ACCESS_OWNER_VISIBLE) || 
+				accessGroup(currentUser, currentProject, res, C_ACCESS_GROUP_READ + C_ACCESS_GROUP_VISIBLE)) {
+					
+				retValue.addElement(res);
+				
+			} else {
+				lastcheck = res.getAbsolutePath();
+			}
+		}
+	}
+	return retValue;
+}
 	/**
 	 * Returns all groups<P/>
 	 * 
@@ -2779,6 +2820,75 @@ public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, String
 	 	throws CmsException {
 		return m_registry.clone(cms);
 	 }
+/**
+ * Returns a Vector with the subresources for a folder.<br>
+ * 
+ * <B>Security:</B>
+ * Access is granted, if:
+ * <ul>
+ * <li>the user has access to the project</li>
+ * <li>the user can read and view this resource</li>
+ * </ul>
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param folder The name of the folder to get the subresources from.
+ * 
+ * @return subfolders A Vector with resources.
+ * 
+ * @exception CmsException  Throws CmsException if operation was not succesful.
+ */
+public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProject, String folder) throws CmsException {
+	CmsFolder onlineFolder = null;
+	CmsFolder offlineFolder = null;
+	Vector resources = new Vector();
+	int resId1, resId2;
+	try {
+		onlineFolder = readFolder(currentUser, onlineProject(currentUser, currentProject), folder);
+		if (onlineFolder.getState() == C_STATE_DELETED) {
+			onlineFolder = null;
+		}
+	} catch (CmsException exc) {
+		// ignore the exception - folder was not found in this project
+	}
+	try {
+		offlineFolder = readFolder(currentUser, currentProject, folder);
+		if (offlineFolder.getState() == C_STATE_DELETED) {
+			offlineFolder = null;
+		}
+	} catch (CmsException exc) {
+		// ignore the exception - folder was not found in this project
+	}
+	if ((offlineFolder == null) && (onlineFolder == null)) {
+		// the folder is not existent
+		throw new CmsException("[" + this.getClass().getName() + "] " + folder, CmsException.C_NOT_FOUND);
+	} else
+		if (onlineFolder == null) {
+			resId1 = offlineFolder.getResourceId();
+			resId2 = offlineFolder.getResourceId();
+		} else
+			if (offlineFolder == null) {
+				resId1 = onlineFolder.getResourceId();
+				resId2 = onlineFolder.getResourceId();
+			} else {
+				resId1 = onlineFolder.getResourceId();
+				resId2 = offlineFolder.getResourceId();
+			}
+	resources = m_dbAccess.getResourcesInFolder(resId1, resId2);
+	Vector retValue = new Vector(resources.size());
+
+	//make sure that we have access to all these.	 			 			
+	for (Enumeration e = resources.elements(); e.hasMoreElements();) {
+		CmsResource res = (CmsResource) e.nextElement();
+		if (accessOther(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) ||
+			accessOwner(currentUser, currentProject, res, C_ACCESS_OWNER_READ + C_ACCESS_OWNER_VISIBLE) || 
+			accessGroup(currentUser, currentProject, res, C_ACCESS_GROUP_READ + C_ACCESS_GROUP_VISIBLE)) {
+				
+			retValue.addElement(res);
+		}
+	}
+	return retValue;
+}
 	/**
 	 * Returns a CmsResourceTypes.
 	 * 

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/10/31 13:11:26 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/11/16 10:05:15 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.31 $ $Date: 2000/10/31 13:11:26 $
+ * @version $Revision: 1.32 $ $Date: 2000/11/16 10:05:15 $
  */
 public class CmsQueries
 {
@@ -121,7 +121,10 @@ public class CmsQueries
 	public String C_RESOURCES_UPDATE_LOCK = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET " + "LOCKED_BY = ? " + "WHERE RESOURCE_ID = ?";
 	public Integer C_RESOURCES_GET_FILES_WITH_PROPERTY_KEY = new Integer(142);
 	public String C_RESOURCES_GET_FILES_WITH_PROPERTY = "select res.RESOURCE_NAME from " + C_DATABASE_PREFIX + "RESOURCES res, " + C_DATABASE_PREFIX + "PROPERTYDEF propdef, " + C_DATABASE_PREFIX + "PROPERTIES prop where res.PROJECT_ID = ? and prop.PROPERTY_VALUE = ? and propdef.PROPERTYDEF_NAME = ? and res.RESOURCE_ID = prop.RESOURCE_ID and prop.PROPERTYDEF_ID = propdef.PROPERTYDEF_ID";
-
+	public Integer C_RESOURCES_GET_FOLDERTREE_KEY = new Integer(143);
+	public String C_RESOURCES_GET_FOLDERTREE = "select * from " + C_DATABASE_PREFIX + "RESOURCES where RESOURCE_TYPE = " + I_CmsConstants.C_TYPE_FOLDER + " and (PROJECT_ID = " + I_CmsConstants.C_PROJECT_ONLINE_ID + " or PROJECT_ID = ?) order by RESOURCE_NAME, PROJECT_ID desc";
+	public Integer C_RESOURCES_GET_RESOURCES_IN_FOLDER_KEY = new Integer(144);
+	public String C_RESOURCES_GET_RESOURCES_IN_FOLDER = "select * from " + C_DATABASE_PREFIX + "RESOURCES where PARENT_ID = ? or PARENT_ID = ? order by RESOURCE_TYPE, RESOURCE_NAME, PROJECT_ID desc";
 
 	// Constants for files table
 	public String C_FILE_ID = "FILE_ID";

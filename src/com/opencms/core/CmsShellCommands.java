@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2000/11/07 15:01:52 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/11/16 10:05:12 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.17 $ $Date: 2000/11/07 15:01:52 $
+ * @version $Revision: 1.18 $ $Date: 2000/11/16 10:05:12 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -984,6 +984,21 @@ public void getFilesWithProperty(String propertyDefinition, String propertyValue
 		System.out.println( m_cms.getFileSystemChanges() );
 	 }
 	/**
+	 * Returns a Vector with the complete folder-tree for this project.<br>
+	 * 
+	 * Subfolders can be read from an offline project and the online project. <br>
+	 */
+	public void getFolderTree() {
+		try {
+			Vector folders = m_cms.getFolderTree();
+			for( int i = 0; i < folders.size(); i++ ) {
+				System.out.println( (CmsFolder)folders.elementAt(i) );
+			}
+		} catch( Exception exc ) {
+			CmsShell.printException(exc);
+		}
+	}
+	/**
 	 * Returns all users of the cms.
 	 */
 	public void getGroups() {
@@ -1128,6 +1143,21 @@ public void getParent(String groupname) {
 	}
 }
 	/**
+	 * Returns a Vector with the subresources for a folder.<br>
+	 * 
+	 * @param folder The name of the folder to get the subresources from.
+	 */
+	public void getResourcesInFolder(String folder) {
+		try {
+			Vector res = m_cms.getResourcesInFolder(folder);
+			for (int i = 0; i < res.size(); i++) {
+				System.out.println((CmsResource) res.elementAt(i));
+			}
+		} catch (Exception exc) {
+			CmsShell.printException(exc);
+		}
+	}
+	/**
 	 * Returns a CmsResourceTypes.
 	 * 
 	 * @param resourceType the name of the resource to get.
@@ -1144,8 +1174,7 @@ public void getParent(String groupname) {
 	 * 
 	 * @param foldername the complete path to the folder.
 	 */
-	public void getSubFolders(String foldername)
-		throws CmsException { 
+	public void getSubFolders(String foldername) { 
 		try {
 			Vector folders = m_cms.getSubFolders(foldername);
 			for( int i = 0; i < folders.size(); i++ ) {

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/11/03 14:55:00 $
- * Version: $Revision: 1.140 $
+ * Date   : $Date: 2000/11/16 10:05:12 $
+ * Version: $Revision: 1.141 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.launcher.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.140 $ $Date: 2000/11/03 14:55:00 $ 
+ * @version $Revision: 1.141 $ $Date: 2000/11/16 10:05:12 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -73,6 +73,7 @@ public class CmsObject implements I_CmsConstants {
 	 * Is needed to clear the template caches.
 	 */
 	private CmsLauncherManager m_launcherManager = null;
+
 	/**
 	 * The default constructor.
 	 */
@@ -919,6 +920,18 @@ public Vector getFilesWithProperty(String propertyDefinition, String propertyVal
 public long getFileSystemChanges() {
 	return (m_rb.getFileSystemChanges(m_context.currentUser(), m_context.currentProject()));
 }
+	/**
+	 * Returns a Vector with the complete folder-tree for this project.<br>
+	 * 
+	 * Subfolders can be read from an offline project and the online project. <br>
+	 * 
+	 * @return subfolders A Vector with the complete folder-tree for this project.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public Vector getFolderTree() throws CmsException {
+		return (m_rb.getFolderTree(m_context.currentUser(), m_context.currentProject()));
+	}
 /**
  * Returns all groups in the Cms.
  *  
@@ -976,6 +989,18 @@ public I_CmsRegistry getRegistry() throws CmsException {
  */
 public CmsRequestContext getRequestContext() {
 	return (m_context);
+}
+/**
+ * Returns a Vector with the subresources for a folder.<br>
+ * 
+ * @param folder The name of the folder to get the subresources from.
+ * 
+ * @return subfolders A Vector with resources.
+ * 
+ * @exception CmsException  Throws CmsException if operation was not succesful.
+ */
+public Vector getResourcesInFolder(String folder) throws CmsException {
+	return m_rb.getResourcesInFolder(m_context.currentUser(), m_context.currentProject(), folder);
 }
 /**
  * Returns a I_CmsResourceType.

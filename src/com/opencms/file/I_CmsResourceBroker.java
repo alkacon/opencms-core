@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/03 14:55:01 $
- * Version: $Revision: 1.130 $
+ * Date   : $Date: 2000/11/16 10:05:13 $
+ * Version: $Revision: 1.131 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.130 $ $Date: 2000/11/03 14:55:01 $
+ * @version $Revision: 1.131 $ $Date: 2000/11/16 10:05:13 $
  * 
  */
 
@@ -1078,6 +1078,27 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	 * @return the number of file-system-changes.
 	 */
 	public long getFileSystemChanges(CmsUser currentUser, CmsProject currentProject);
+   	/**
+	 * Returns a Vector with the complete folder-tree for this project.<br>
+	 * 
+	 * Subfolders can be read from an offline project and the online project. <br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read this resource</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * 
+	 * @return subfolders A Vector with the complete folder-tree for this project.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject)
+		throws CmsException;
 	/**
 	 * Returns all groups<P/>
 	 * 
@@ -1150,6 +1171,26 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 
 	 public I_CmsRegistry getRegistry(CmsUser currentUser, CmsProject currentProject, CmsObject cms)
 	 	throws CmsException;
+	/**
+	 * Returns a Vector with the subresources for a folder.<br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read this resource</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param folder The name of the folder to get the subresources from.
+	 * 
+	 * @return subfolders A Vector with resources.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProject, String folder)
+		throws CmsException;
 	/**
 	 * Returns a CmsResourceTypes.
 	 * 
