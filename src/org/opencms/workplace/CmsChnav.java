@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChnav.java,v $
- * Date   : $Date: 2004/04/10 23:12:14 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/04/28 22:29:50 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,15 +30,16 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
-
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
+import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
 
@@ -56,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1
  */
@@ -201,7 +202,25 @@ public class CmsChnav extends CmsDialog {
             checkLock(getParamResource());
             // save the new NavText if not null
             if (newText != null) {
-                getCms().writeProperty(filename, I_CmsConstants.C_PROPERTY_NAVTEXT, newText);
+                CmsProperty newNavText = new CmsProperty();
+                newNavText.setKey(I_CmsConstants.C_PROPERTY_NAVTEXT);
+                CmsProperty oldNavText = getCms().readPropertyObject(filename, I_CmsConstants.C_PROPERTY_NAVTEXT, false);
+                if (oldNavText.isNullProperty()) {
+                    // property value was not already set
+                    if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
+                        newNavText.setStructureValue(newText);
+                    } else {
+                        newNavText.setResourceValue(newText);
+                    }                                         
+                } else {
+                    if (oldNavText.getStructureValue() != null) {
+                        newNavText.setStructureValue(newText);
+                        newNavText.setResourceValue(oldNavText.getResourceValue());
+                    } else {
+                        newNavText.setResourceValue(newText);
+                    }
+                }
+                getCms().writePropertyObject(filename, newNavText);
             }
             
             // determine the selected position
@@ -214,7 +233,25 @@ public class CmsChnav extends CmsDialog {
             
             // only update the position if a change is requested
             if (selectedPos != -1) {
-                getCms().writeProperty(filename, I_CmsConstants.C_PROPERTY_NAVPOS, selectedPosString);            
+                CmsProperty newNavPos = new CmsProperty();
+                newNavPos.setKey(I_CmsConstants.C_PROPERTY_NAVPOS);
+                CmsProperty oldNavPos = getCms().readPropertyObject(filename, I_CmsConstants.C_PROPERTY_NAVPOS, false);
+                if (oldNavPos.isNullProperty()) {
+                    // property value was not already set
+                    if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
+                        newNavPos.setStructureValue(selectedPosString);
+                    } else {
+                        newNavPos.setResourceValue(selectedPosString);
+                    }                                         
+                } else {
+                    if (oldNavPos.getStructureValue() != null) {
+                        newNavPos.setStructureValue(selectedPosString);
+                        newNavPos.setResourceValue(oldNavPos.getResourceValue());
+                    } else {
+                        newNavPos.setResourceValue(selectedPosString);
+                    }
+                }
+                getCms().writePropertyObject(filename, newNavPos);
             }
         } catch (CmsException e) {
             // error during chnav, show error dialog
