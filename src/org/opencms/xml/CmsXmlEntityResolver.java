@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2004/08/03 07:19:03 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/09/20 10:29:21 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.xml.sax.InputSource;
  * Resolves XML entities (e.g. external DTDs) in the OpenCms VFS.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  */
 public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener {
 
@@ -83,7 +83,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     private static Map m_cacheTemporary;
     
     /** The static default entity resolver for reading / writing xml content. */
-    private static CmsXmlEntityResolver m_resolver;        
+    private static CmsXmlEntityResolver m_resolver;
 
     /** The cms object to use for VFS access (will be initialized with "Guest" permissions). */
     private CmsObject m_cms;
@@ -99,7 +99,10 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
      */
     public CmsXmlEntityResolver(CmsObject cms) {
         
-        if (m_resolver == null) {
+        initCaches();
+        
+        if ((cms != null) && (m_resolver == null)) {
+            // initialize singleton only if cms Object creation is surley possible
             m_resolver = new CmsXmlEntityResolver();
         }
         
@@ -107,15 +110,33 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     }
     
     /**
+     * Initializes the internal caches for permanent and temporary system IDs.<p>
+     */
+    private static void initCaches() {
+
+        if (m_cacheTemporary == null) {
+
+            LRUMap lruMap = new LRUMap(128);
+            m_cacheTemporary = Collections.synchronizedMap(lruMap);
+            
+            HashMap hashMap = new HashMap(32);
+            m_cachePermanent = Collections.synchronizedMap(hashMap);
+            
+            if (OpenCms.getRunLevel() > 1) {
+                if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
+                    // map must be of type "LRUMap" so that memory monitor can acecss all information
+                    OpenCms.getMemoryMonitor().register(CmsXmlEntityResolver.class.getName() + "." + "m_cacheTemporary", lruMap);
+                    // map must be of type "HashMap" so that memory monitor can acecss all information
+                    OpenCms.getMemoryMonitor().register(CmsXmlEntityResolver.class.getName() + "." + "m_cachePermanent", hashMap);
+                }            
+            }
+        }
+    }
+    
+    /**
      * Initializes the caches and registers the event handler.<p>
      */
     private CmsXmlEntityResolver() {
-
-        LRUMap lruMap = new LRUMap(128);
-        m_cacheTemporary = Collections.synchronizedMap(lruMap);
-        
-        HashMap hashMap = new HashMap(32);
-        m_cachePermanent = Collections.synchronizedMap(hashMap);
         
         // required for unit tests where no OpenCms is available
         if (OpenCms.getRunLevel() > 1) {
@@ -127,12 +148,6 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 OpenCms.getLog(this).error("Unable to initialize default guest user");
             }
             
-            if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
-                // map must be of type "LRUMap" so that memory monitor can acecss all information
-                OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_cacheTemporary", lruMap);
-                // map must be of type "HashMap" so that memory monitor can acecss all information
-                OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_cachePermanent", hashMap);
-            }
             // register this object as event listener
             OpenCms.addCmsEventListener(this, new int[] {
                 I_CmsEventListener.EVENT_CLEAR_CACHES,
@@ -152,11 +167,8 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
      * @param content the content of the system id
      */    
     public static void cacheSystemId(String systemId, byte[] content) {
-        
-        if (m_resolver == null) {
-            m_resolver = new CmsXmlEntityResolver();
-        }
-        
+                  
+        initCaches();
         m_cachePermanent.put(systemId, content);
     }
     
