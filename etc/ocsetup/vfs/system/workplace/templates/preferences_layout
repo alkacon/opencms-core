@@ -14,8 +14,8 @@ function show_help()
 
 
 function selectPanel(value){
-	document.all.PREFERENCES.panel.value=value;
-	document.all.PREFERENCES.submit();
+	document.PREFERENCES.panel.value=value;
+	document.PREFERENCES.submit();
 }
 
 function doSubmit(){

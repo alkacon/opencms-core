@@ -58,7 +58,7 @@ function show_help()
 			<tr>
 				<td class=formular width=40%>
 					]]><LABEL value="input.name" /><![CDATA[:</td>
-				<td class=dialogtxt  colspan=2>]]><INPUTFIELD name="file" class="textfeld" size="50" length="50" method="setValue" /><![CDATA[</td>								
+				<td class=dialogtxt  colspan=2>]]><INPUTFIELD name="file" class="textfeld" size="31" length="50" method="setValue" /><![CDATA[</td>								
 			</tr>
 			<!-- End textfield -->
 			<!-- Begin dropdown-->
