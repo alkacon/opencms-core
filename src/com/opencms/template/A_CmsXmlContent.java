@@ -44,7 +44,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/01/25 14:02:39 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/26 17:45:45 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -249,9 +249,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         }
         return completeFilename;
     }
-    
-    
-    
+            
     /**
      * Initialize the XML content class.
      * Load and parse the content of the given CmsFile object.
@@ -266,7 +264,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         if(parsedContent == null) {            
             m_filename = filename;            
             parsedContent = parse(file);                
-            m_filecache.put(filename, parsedContent);
+            m_filecache.put(filename, parsedContent.cloneNode(true));
         }    
         init(cms, parsedContent, filename);
     }                               
@@ -1133,7 +1131,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
     private Document parse(CmsFile file) throws CmsException {
         Document parsedDoc = null;
         String cont = new String(file.getContents());
-        m_filename = file.getName();
+        m_filename = file.getAbsolutePath();
         StringReader reader = new StringReader(cont);
         
         A_CmsXmlContent include;
@@ -1146,7 +1144,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             // Error while parsing the document.
             // there ist nothing to do, we cannot go on.
             // throws exception.
-            String errorMessage = "Cannot parse XML file " + getAbsoluteFilename() + ". " + e;
+            String errorMessage = "Cannot parse XML file \"" + getAbsoluteFilename() + "\". " + e;
             throwException(errorMessage, CmsException.C_XML_PARSING_ERROR);
         }
         if(parsedDoc == null) {
