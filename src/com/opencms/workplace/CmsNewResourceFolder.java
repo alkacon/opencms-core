@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2001/04/02 12:52:51 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2001/04/06 16:28:43 $
+* Version: $Revision: 1.22 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2001/04/02 12:52:51 $
+ * @version $Revision: 1.22 $ $Date: 2001/04/06 16:28:43 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -144,7 +144,9 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                     if (cms.rootFolder().getAbsolutePath().equals(currentFilelist)){
                         //display it
                         xmlTemplateDocument.setData("displaySektLogo", xmlTemplateDocument.getProcessedDataValue("SektLogo", this));
+                        xmlTemplateDocument.setData("displayFolderLogo", "");
                     }else{
+                        xmlTemplateDocument.setData("displayFolderLogo", xmlTemplateDocument.getProcessedDataValue("folderLogo", this));
                         xmlTemplateDocument.setData("displaySektLogo", "");
                     }
                     template = "extendedNav";

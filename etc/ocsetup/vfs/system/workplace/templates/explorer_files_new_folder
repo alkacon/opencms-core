@@ -265,24 +265,8 @@ function closeAllWindows(){
 							<tr>
 								<td class="formular">
 									<table width="100%" border="0" cellpadding="0" cellspacing="0">
-										<tr>
-											<td height="40" class="formular" width="140" valign="middle">
-		]]><LABEL value="label.ebfolderlogo" /><![CDATA[
-											</td>
-											<td align="right" class="dialogtxt" width="30" valign="middle">
-												<a href="javascript:goPictureSet(document.NAVPROP.flogopic);"><img src="]]><METHOD name="picsUrl">bt_imagelist_off_small.gif</METHOD><![CDATA[" border="0" ></a>
-											</td>
-											<td align="right" class="dialogtxt" width="135" valign="middle">												
-												<input type="text" class="textfeld" size="15" style="width:150px" name="flogopic" id="flogopic" value ="]]><PROCESS>flogopic</PROCESS><![CDATA[">
-											</td>
-											<td width="30">&nbsp;</td>
-											<td class="dialogtxt" width="135" valign="middle">
-												<input type="text" class="textfeld" size="15" style="width:150px" name="flogolink" id="flogolink" value ="]]><PROCESS>flogolink</PROCESS><![CDATA[">											
-											</td>
-											<td class="dialogtxt" width="30" valign="middle">
-												<a href="javascript:goLinkSet('flogolink');"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" height="16" width="16"></a>
-											</td>
-										</tr>
+									
+										]]><PROCESS>displayFolderLogo</PROCESS><![CDATA[
 										<tr>
 											<td height="40" class="formular" width="140" valign="middle">
 		]]><LABEL value="label.eblogo" /><![CDATA[
@@ -422,6 +406,27 @@ function closeAllWindows(){
 </html>
 ]]>
 </TEMPLATE>
+
+<folderLogo><![CDATA[
+										<tr>
+											<td height="40" class="formular" width="140" valign="middle">
+		]]><LABEL value="label.ebfolderlogo" /><![CDATA[
+											</td>
+											<td align="right" class="dialogtxt" width="30" valign="middle">
+												<a href="javascript:goPictureSet(document.NAVPROP.flogopic);"><img src="]]><METHOD name="picsUrl">bt_imagelist_off_small.gif</METHOD><![CDATA[" border="0" ></a>
+											</td>
+											<td align="right" class="dialogtxt" width="135" valign="middle">												
+												<input type="text" class="textfeld" size="15" style="width:150px" name="flogopic" id="flogopic" value ="]]><PROCESS>flogopic</PROCESS><![CDATA[">
+											</td>
+											<td width="30">&nbsp;</td>
+											<td class="dialogtxt" width="135" valign="middle">
+												<input type="text" class="textfeld" size="15" style="width:150px" name="flogolink" id="flogolink" value ="]]><PROCESS>flogolink</PROCESS><![CDATA[">											
+											</td>
+											<td class="dialogtxt" width="30" valign="middle">
+												<a href="javascript:goLinkSet('flogolink');"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" height="16" width="16"></a>
+											</td>
+										</tr>]]>
+</folderLogo>
 
 <SektLogo><![CDATA[
 		<tr>
