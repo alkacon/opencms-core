@@ -176,7 +176,7 @@ mySQL database. Enter the following commands at the mySQL command line.
 > use mysql;
 > insert into user values ('localhost', 'ocmsuser', \
    password('XXXXX'),'N','N','N','N','N','N','N','N','N','N','N','N','N','N');
-> insert into db values ('localhost', 'opencms', \
+> insert into db values ('localhost', 'opencms41', \
    'ocmsuser', 'Y','Y','Y','Y','Y','Y','Y','Y','Y','Y');
 > flush privileges;
 
