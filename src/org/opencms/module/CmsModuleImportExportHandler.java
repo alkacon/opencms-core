@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2004/07/18 16:33:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/20 13:34:39 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,10 +67,13 @@ import org.xml.sax.SAXException;
  * Import/export handler implementation for Cms modules.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2004/07/18 16:33:27 $
+ * @version $Revision: 1.2 $ $Date: 2004/07/20 13:34:39 $
  * @since 5.3
  */
 public class CmsModuleImportExportHandler extends Object implements I_CmsImportExportHandler {
+
+    /** The name of the module import project. */
+    public static final String C_IMPORT_MODULE_PROJECT_NAME = "ImportModule";
 
     /** The VFS resources to be exported additionally with the module.<p> */
     private List m_additionalResources;
@@ -93,6 +96,74 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
     public CmsModuleImportExportHandler() {
         super();
         m_description = C_DEFAULT_DESCRIPTION;
+    }
+
+    /**
+     * Reads a module object from an external file source.<p>
+     * 
+     * @param importResource the name of the input source
+     * @return the imported module 
+     * @throws CmsConfigurationException if the module could not be imported
+     */
+    public static CmsModule readModuleFromImport(String importResource) throws CmsConfigurationException {
+        
+        // instantiate Digester and enable XML validation
+        Digester digester = new Digester();
+        digester.setValidating(false);
+        digester.setRuleNamespaceURI(null);   
+        digester.setErrorHandler(new CmsXmlValidationErrorHandler());
+
+        // add this class to the Digester
+        CmsModuleImportExportHandler handler = new CmsModuleImportExportHandler();
+        digester.push(handler);
+
+        CmsModuleXmlHandler.addXmlDigesterRules(digester);       
+        
+        InputStream stream = null;
+        ZipFile importZip = null;
+        
+        try {
+            
+            File file = new File(importResource);
+            if (file.isFile()) {
+                importZip = new ZipFile(importResource);
+                ZipEntry entry = importZip.getEntry("manifest.xml");
+                stream = importZip.getInputStream(entry);               
+            } else if (file.isDirectory()) {
+                file = new File(file, "manifest.xml");
+                stream = new FileInputStream(file);
+            }
+            
+            // start the parsing process        
+            digester.parse(stream);    
+            
+        } catch (IOException e) {
+            OpenCms.getLog(CmsModuleImportExportHandler.class).error("IO error reading module import", e);
+            throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_ERROR, e);
+        } catch (SAXException e) {
+            OpenCms.getLog(CmsModuleImportExportHandler.class).error("SAX error reading module import", e);
+            throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_ERROR, e);
+        } finally {
+            try {
+                if (importZip != null) {
+                    importZip.close();
+                }                
+                if (stream != null) {
+                    stream.close();
+                }
+            } catch (Exception e) {
+                // noop
+            }
+        }     
+        
+        CmsModule importedModule = handler.getModule();
+        
+        // the digester must have set the module now
+        if (importedModule == null) {
+            throw new CmsConfigurationException("Could not import module from source '" + importResource + "' is already installed", CmsConfigurationException.C_CONFIGURATION_ERROR);                    
+        }       
+
+        return importedModule;
     }
 
     /**
@@ -175,9 +246,6 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
     public List getResourcesAsList() {
         return m_additionalResources;
     }
-
-    /** The name of the module import project. */
-    public static final String C_IMPORT_MODULE_PROJECT_NAME = "ImportModule";
     
     /**
      * @see org.opencms.importexport.I_CmsImportExportHandler#importData(org.opencms.file.CmsObject, java.lang.String, java.lang.String, org.opencms.report.I_CmsReport)
@@ -289,16 +357,6 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
 
         m_importedModule = moduleHandler.getModule();
     }
-
-    /**
-     * Returns the module imported with the digester.<p>
-     * 
-     * @return the module imported with the digester
-     */
-    private CmsModule getModule() {
-        
-        return m_importedModule;
-    }
     
     /**
      * Sets the (package) name of the module to be exported.<p>
@@ -323,6 +381,16 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
         } finally {
             super.finalize();
         }
+    }
+
+    /**
+     * Returns the module imported with the digester.<p>
+     * 
+     * @return the module imported with the digester
+     */
+    private CmsModule getModule() {
+        
+        return m_importedModule;
     }
     
     /**
@@ -387,74 +455,6 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
         
         // finally add the imported module to the module manager
         OpenCms.getModuleManager().addModule(cms, importedModule);
-    }
-
-    /**
-     * Reads a module object from an external file source.<p>
-     * 
-     * @param importResource the name of the input source
-     * @return the imported module 
-     * @throws CmsConfigurationException if the module could not be imported
-     */
-    public static CmsModule readModuleFromImport(String importResource) throws CmsConfigurationException {
-        
-        // instantiate Digester and enable XML validation
-        Digester digester = new Digester();
-        digester.setValidating(false);
-        digester.setRuleNamespaceURI(null);   
-        digester.setErrorHandler(new CmsXmlValidationErrorHandler());
-
-        // add this class to the Digester
-        CmsModuleImportExportHandler handler = new CmsModuleImportExportHandler();
-        digester.push(handler);
-
-        CmsModuleXmlHandler.addXmlDigesterRules(digester);       
-        
-        InputStream stream = null;
-        ZipFile importZip = null;
-        
-        try {
-            
-            File file = new File(importResource);
-            if (file.isFile()) {
-                importZip = new ZipFile(importResource);
-                ZipEntry entry = importZip.getEntry("manifest.xml");
-                stream = importZip.getInputStream(entry);               
-            } else if (file.isDirectory()) {
-                file = new File(file, "manifest.xml");
-                stream = new FileInputStream(file);
-            }
-            
-            // start the parsing process        
-            digester.parse(stream);    
-            
-        } catch (IOException e) {
-            OpenCms.getLog(CmsModuleImportExportHandler.class).error("IO error reading module import", e);
-            throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_ERROR, e);
-        } catch (SAXException e) {
-            OpenCms.getLog(CmsModuleImportExportHandler.class).error("SAX error reading module import", e);
-            throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_ERROR, e);
-        } finally {
-            try {
-                if (importZip != null) {
-                    importZip.close();
-                }                
-                if (stream != null) {
-                    stream.close();
-                }
-            } catch (Exception e) {
-                // noop
-            }
-        }     
-        
-        CmsModule importedModule = handler.getModule();
-        
-        // the digester must have set the module now
-        if (importedModule == null) {
-            throw new CmsConfigurationException("Could not import module from source '" + importResource + "' is already installed", CmsConfigurationException.C_CONFIGURATION_ERROR);                    
-        }       
-
-        return importedModule;
     }
     
 }
