@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2004/10/19 18:05:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/04 16:37:28 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.0
  */
 public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagContentContainer {
@@ -234,6 +234,10 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
         try {
             // execute the collector
             m_collectorResult = collector.getResults(m_cms, collectorName, param);
+            if ((m_collectorResult == null) || (m_collectorResult.size() == 0)) {
+                // the collector returned an empty list, there's no content to iterate
+                return SKIP_BODY;
+            }
             if (collector.getCreateLink(m_cms, collectorName, param) != null) {
                 // use "create link" only if collector supports it
                 m_directEditCreateLink = CmsEncoder.encode(collectorName + "|" + createParam);
