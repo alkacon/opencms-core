@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsAdminArticleNew.java,v $
- * Date   : $Date: 2000/03/22 10:40:05 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/03/24 13:28:30 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/03/22 10:40:05 $
+ * @version $Revision: 1.5 $ $Date: 2000/03/24 13:28:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminArticleNew extends CmsWorkplaceDefault implements I_CmsNewsConstants, I_CmsConstants {
@@ -292,7 +292,7 @@ public class CmsAdminArticleNew extends CmsWorkplaceDefault implements I_CmsNews
         CmsXmlControlFile pageFile = new CmsXmlControlFile();
         pageFile.createNewFile(cms, fullFilename, "page");
         pageFile.setTemplateClass("com.opencms.template.CmsXmlTemplate");
-        pageFile.setMasterTemplate("/content/templates/mfNewsTeaser");
+        pageFile.setMasterTemplate("/content/templates/xDemoTemplate1");
         pageFile.setElementClass("body", "com.opencms.examples.news.CmsNewsTemplate");
         pageFile.setElementTemplate("body", C_PATH_INTERNAL_TEMPLATES + "newsTemplate");
         pageFile.setElementParameter("body", "newsfolder", C_NEWS_FOLDER_CONTENT);
