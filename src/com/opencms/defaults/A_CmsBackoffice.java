@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/08/01 07:24:06 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/08/06 08:32:31 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1720,6 +1720,10 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
       try {
         // first check if all plausibilization was ok
         cd.check(true);
+        // unlock resource if save&exit was selected
+        if (action.equals("saveexit")) {
+          cd.setLockstate(-1);
+        }
         // write the data to the database
         cd.write(cms);
       } catch (CmsPlausibilizationException plex) {
