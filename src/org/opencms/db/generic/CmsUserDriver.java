@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/17 16:25:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/06/18 11:13:32 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.4 $ $Date: 2003/06/17 16:25:36 $
+ * @version $Revision: 1.5 $ $Date: 2003/06/18 11:13:32 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1580,7 +1580,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 				if (inheritedOnly && ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_INHERIT) == 0))
 					continue;
 				
-				if ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_INHERIT) > 0)
+				if (inheritedOnly && ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_INHERIT) > 0))
 					ace.setFlags(I_CmsConstants.C_ACCESSFLAGS_INHERITED);
 						
 				aceList.add(ace);
