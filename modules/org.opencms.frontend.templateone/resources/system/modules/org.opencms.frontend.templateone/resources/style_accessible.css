@@ -85,22 +85,21 @@ body { background-color: <%= mainSidesBg %>; margin: 10px; font-size: 100% }
 body,ul,ol,li,td,p,div,span,input,textarea,select {	font-family: <%= mainFontFamily %>; color: <%= contentFont %>; }
 
 /* headlines */
-h1 { font-size: 1.4em; font-weight: bold; }
-h2 { font-size: 1.2em; font-weight: bold; }
-h3 { font-size: 1.1em; font-weight: bold; }
-h4 { font-size: 1.0em; font-weight: bold; }
-h5,h6 { font-size: 1.0em; font-weight: normal; }
+h1 { font-size: 1.4em; color: <%= cms.getOptionalConfigValue("h1.color", contentFont) %>; <%= cms.getFontWeight("h1.bold", "true") %> }
+h2 { font-size: 1.2em; color: <%= cms.getOptionalConfigValue("h2.color", contentFont) %>; <%= cms.getFontWeight("h2.bold", "true") %> }
+h3 { font-size: 1.1em; color: <%= cms.getOptionalConfigValue("h3.color", contentFont) %>; <%= cms.getFontWeight("h3.bold", "true") %> }
+h4 { font-size: 1.0em; color: <%= cms.getOptionalConfigValue("h4.color", contentFont) %>; <%= cms.getFontWeight("h4.bold", "true") %> }
+h5 { font-size: 1.0em; color: <%= cms.getOptionalConfigValue("h5.color", contentFont) %>; <%= cms.getFontWeight("h5.bold", "true") %> }
+h6 { font-size: 1.0em; color: <%= cms.getOptionalConfigValue("h6.color", contentFont) %>; <%= cms.getFontWeight("h6.bold", "true") %> }
 
 /* common links */
-a			{	color: <%= contentLink %>; text-decoration: none; }
-a:link		{	color: <%= contentLink %>; text-decoration: none; }
-a:visited	{	color: <%= contentLinkVisited %>; text-decoration: none; }
-a:hover		{	color: <%= contentLinkHover %>; text-decoration: none; }
-a:active	{	color: <%= contentLinkActive %>; text-decoration: none; }
+a,a:link	{	color: <%= contentLink %>; <%= cms.getFontWeight("content.link.bold", "false") %> <%= cms.getFontUnderline("content.link.underline", "false") %> }
+a:visited	{	color: <%= contentLinkVisited %>; <%= cms.getFontUnderline("content.link.underline", "false") %> }
+a:hover		{	color: <%= contentLinkHover %>; <%= cms.getFontUnderline("content.link.underline", "false") %> }
+a:active	{	color: <%= contentLinkActive %>; <%= cms.getFontUnderline("content.link.underline", "false") %> }
 
 /* head and foot row links */
-a.linksheadfoot			{ font-family: <%= navFontFamily %>; color: <%= footLinksFont %>; text-decoration: none; }
-a.linksheadfoot:link	{ color: <%= footLinksFont %>; text-decoration: none; }
+a.linksheadfoot,a.linksheadfoot:link { font-family: <%= navFontFamily %>; color: <%= footLinksFont %>; font-weight: normal; text-decoration: none; }
 a.linksheadfoot:visited	{ color: <%= footLinksFontVisited %>; text-decoration: none; }
 a.linksheadfoot:hover	{ color: <%= footLinksFontHover %>; text-decoration: none; }
 a.linksheadfoot:active	{ color: <%= footLinksFontActive %>; text-decoration: none; }
@@ -108,9 +107,7 @@ a.linksheadfoot:active	{ color: <%= footLinksFontActive %>; text-decoration: non
 /* bread crumb navigation */
 div.breadcrumb			{ margin: 4px 8px; text-align: left; }
 span.breadcrumb			{ font-family: <%= navFontFamily %>; font-size: 0.85em; color: <%= contentFont %>; text-decoration: none; white-space: nowrap; }
-a.breadcrumb			{ font-family: <%= navFontFamily %>; font-size: 0.85em; color: <%= contentFont %>; text-decoration: none; white-space: nowrap; }
-a.breadcrumb:visited	{ color: <%= contentFont %>; text-decoration: none; }
-a.breadcrumb:hover		{ color: <%= contentFont %>; text-decoration: none; }
+a.breadcrumb,a.breadcrumb:visited,a.breadcrumb:hover { font-family: <%= navFontFamily %>; font-size: 0.85em; color: <%= contentFont %>; font-weight: normal; text-decoration: none; white-space: nowrap; }
 
 /* head search input form */
 .search { border: 1px solid <%= footLinksFont %>; color: <%= footLinksFont %>; font-family: <%= mainFontFamily %>; background-color: <%= headLinksBg %>; font-size: 0.9em; }
@@ -256,17 +253,11 @@ li.navleft {
     list-style-image: url(<%= cms.getResourcePath() %>nav_i.gif);
 }
 
-a.navleft { font-family: <%= navFontFamily %>; font-size: 0.8em; color: <%= navLeftFont %>; text-decoration:none; }
-a.navleft:link { color: <%= navLeftFont %>; text-decoration: none; }
-a.navleft:visited { color: <%= navLeftFont %>; text-decoration: none; }
+a.navleft,a.navleft:link,a.navleft:visited,a.navleft:active { font-family: <%= navFontFamily %>; font-size: 0.8em; color: <%= navLeftFont %>; font-weight: normal; text-decoration:none; }
 a.navleft:hover { color: <%= navLeftFont %>; text-decoration: underline; }
-a.navleft:active { color: <%= navLeftFont %>; text-decoration: none; }
 
-a.navleftactive { font-family: <%= navFontFamily %>; font-size: 0.8em; color: <%= navLeftFont %>; font-weight: bold; text-decoration:none; }
-a.navleftactive:link { color: <%= navLeftFont %>; text-decoration: none; }
-a.navleftactive:visited { color: <%= navLeftFont %>; text-decoration: none; }
+a.navleftactive,a.navleftactive:link,a.navleftactive:visited,a.navleftactive:active { font-family: <%= navFontFamily %>; font-size: 0.8em; color: <%= navLeftFont %>; font-weight: bold; text-decoration:none; }
 a.navleftactive:hover { color: <%= navLeftFont %>; text-decoration: underline; }
-a.navleftactive:active { color: <%= navLeftFont %>; text-decoration: none; }
 
 /* popup window border */
 div.popup { <% 

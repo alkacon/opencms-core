@@ -1577,6 +1577,24 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone/schemas/styleoptional.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone/schemas/styleoptional.xsd</destination>
+			<type>plain</type>
+			<uuidresource>fc3d5696-921f-11d9-b1ae-eb1fdbd690a5</uuidresource>
+			<datelastmodified>Fri, 11 Mar 2005 15:46:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 11 Mar 2005 11:23:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Optional CSS configuration]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file> 
+		<file>
 			<source>system/modules/org.opencms.frontend.templateone/schemas/stylesheet.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone/schemas/stylesheet.xsd</destination>
 			<type>plain</type>

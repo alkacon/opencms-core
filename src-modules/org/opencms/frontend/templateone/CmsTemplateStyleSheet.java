@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateStyleSheet.java,v $
- * Date   : $Date: 2005/03/11 10:44:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/03/11 16:37:24 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,11 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.types.I_CmsXmlContentValue;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,12 +49,15 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to build the dynamic CSS style sheet of template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsTemplateStyleSheet extends CmsJspActionElement {
     
     /** Default file name of the CSS configuration file. */
     public static final String C_FILENAME_CONFIGFILE = "configuration_css";
+    
+    /** Node name of the optional configuration nodes. */
+    public static final String C_NODE_OPTIONALCONFIG = "StyleOptional";
     
     /** Request parameter name providing the configuration file URI. */
     public static final String C_PARAM_CONFIGFILE = "config";
@@ -59,6 +67,9 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
     
     /** Stores the style sheet configuration. */
     private CmsXmlContent m_configuration;
+    
+    /** Stores the sizes of the headlines. */
+    private List m_headlineSizes;
     
     /** Stores the substituted path to the modules resources. */
     private String m_resPath;
@@ -133,6 +144,75 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
     }
     
     /**
+     * Returns the CSS formatting String for underlining an element.<p>
+     * 
+     * Checks the value in the configuration file, if the value is "true",
+     * the text decoration will be underlined, otherwise none.<p>
+     * 
+     * @param key the key name to look up in the optional configuration
+     * @param defaultValue the default value used when no value was found for the key
+     * @return the CSS formatting String for underlining an element
+     */
+    public String getFontUnderline(String key, String defaultValue) {
+        
+        String value = getOptionalConfigValue(key, defaultValue);
+        if ("true".equals(value)) {
+            value = "underline;";
+        } else {
+            value = "none;";
+        }
+        return "text-decoration: " + value;
+    }
+    
+    /**
+     * Returns the CSS formatting String for bold output of an element.<p>
+     * 
+     * Checks the value in the configuration file, if the value is "true",
+     * the font weight will be bold, otherwise normal.<p>
+     * 
+     * @param key the key name to look up in the optional configuration
+     * @param defaultValue the default value used when no value was found for the key
+     * @return the CSS formatting String for bold output of an element
+     */
+    public String getFontWeight(String key, String defaultValue) {
+        
+        String value = getOptionalConfigValue(key, defaultValue);
+        if ("true".equals(value)) {
+            value = "bold;";
+        } else {
+            value = "normal;";
+        }
+        return "font-weight: " + value;
+    }
+    
+    /**
+     * Returns the size of the headline with the given number.<p>
+     * 
+     * @param headline the number of the heading element (1 to 6)
+     * @return the size of the headline with the given number
+     */
+    public String getHeadlineSize(int headline) {
+        
+        String size = (String)getHeadlineSizes().get(headline - 1);
+        if (CmsStringUtil.isEmpty(size)) {
+            size = "13";
+        }
+        return size;
+    }    
+    
+    /**
+     * Returns an optional configuration value for the specified key from the configuration.<p>
+     * 
+     * @param key the key name to look up
+     * @param defaultValue the default value used when no value was found for the key
+     * @return the optional configuration value for the specified key
+     */
+    public String getOptionalConfigValue(String key, String defaultValue) {
+        
+        return getConfigValue(C_NODE_OPTIONALCONFIG + "/" + key, defaultValue);
+    }
+    
+    /**
      * Returns the substituted path to the modules resource folder.<p>
      * 
      * @return the substituted path to the modules resource folder
@@ -192,5 +272,46 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
                 OpenCms.getLog(this).debug(e);
             }
         }
+    }
+    
+    /**
+     * Calculates the size of the heading elements from the configuration.<p>
+     * 
+     * The list holds the sizes of the heading elements and contains 6 String objects.<p>
+     * 
+     * @return the size of the heading elements from the configuration
+     */
+    private List getHeadlineSizes() {
+        
+        if (m_headlineSizes == null) {
+            List sizes = new ArrayList(6);
+            // get values from configuration file
+            String selectedValues = getOptionalConfigValue("headlines.set", "");
+            if (CmsStringUtil.isEmpty(selectedValues)) {
+                // sizes are not configured, determine default values
+                try {
+                    CmsXmlContent conf = m_configuration;
+                    // create optional configuration node
+                    conf.addValue(getCmsObject(), C_NODE_OPTIONALCONFIG, getRequestContext().getLocale(), 0);
+                    I_CmsXmlContentValue value = conf.getValue(C_NODE_OPTIONALCONFIG + "/headlines.set", getRequestContext().getLocale());
+                    // get default value String from XSD
+                    selectedValues = value.getContentDefinition().getContentHandler().getDefault(getCmsObject(), value, getRequestContext().getLocale());
+                    // get default size sequence from beginning of String
+                    selectedValues = selectedValues.substring(0, selectedValues.indexOf('*'));
+                } catch (Exception e) {
+                    // error parsing the default String
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error in default value for node 'headlines.set' in XSD 'styleoptional.xsd'");
+                    }
+                }
+            }
+            // split values in parts to get individual size values
+            StringTokenizer T = new StringTokenizer(selectedValues, "-");
+            while (T.hasMoreTokens()) {
+                sizes.add(T.nextToken());
+            }
+            m_headlineSizes = sizes;
+        }
+        return m_headlineSizes;
     }
 }

@@ -2,7 +2,9 @@
 
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	
-	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone/schemas/styleoptional.xsd"/>
+
 	<xsd:element name="styles" type="OpenCmsStyles" />
 	
 	<xsd:complexType name="OpenCmsStyles">
@@ -45,7 +47,8 @@
 			<xsd:element name="foot.links.font" type="OpenCmsColor" />
 			<xsd:element name="foot.links.font.hover" type="OpenCmsColor" />
 			<xsd:element name="foot.links.font.active" type="OpenCmsColor" />
-			<xsd:element name="foot.links.font.visited" type="OpenCmsColor" />			
+			<xsd:element name="foot.links.font.visited" type="OpenCmsColor" />
+			<xsd:element name="StyleOptional" type="OpenCmsStyleOptional" minOccurs="0" /> 			
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required" />
 	</xsd:complexType>

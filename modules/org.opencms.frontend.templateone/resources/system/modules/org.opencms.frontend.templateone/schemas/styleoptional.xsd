@@ -1,0 +1,49 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+		
+	<xsd:element name="StyleOptionals" type="OpenCmsStyleOptionals"/>
+	
+	<xsd:complexType name="OpenCmsStyleOptionals">
+		<xsd:sequence>
+			<xsd:element name="StyleOptional" type="OpenCmsStyleOptional" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsStyleOptional">
+		<xsd:sequence>
+			<xsd:element name="headlines.set" type="OpenCmsString" />
+			<xsd:element name="h1.color" type="OpenCmsColor" />
+			<xsd:element name="h1.bold" type="OpenCmsBoolean" default="true" />
+			<xsd:element name="h2.color" type="OpenCmsColor" />
+			<xsd:element name="h2.bold" type="OpenCmsBoolean" default="true" />
+			<xsd:element name="h3.color" type="OpenCmsColor" />
+			<xsd:element name="h3.bold" type="OpenCmsBoolean" default="true" />
+			<xsd:element name="h4.color" type="OpenCmsColor" />
+			<xsd:element name="h4.bold" type="OpenCmsBoolean" default="true" />
+			<xsd:element name="h5.color" type="OpenCmsColor" />
+			<xsd:element name="h5.bold" type="OpenCmsBoolean" default="true" />
+			<xsd:element name="h6.color" type="OpenCmsColor" />
+			<xsd:element name="h6.bold" type="OpenCmsBoolean" default="true" />
+			<xsd:element name="content.link.underline" type="OpenCmsBoolean" />
+			<xsd:element name="content.link.bold" type="OpenCmsBoolean" />
+			<xsd:element name="navleft.font.size" type="OpenCmsString" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+	
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templateone.workplace"/>
+			<layouts>
+				<layout element="headlines.set" widget="SelectorWidget" />
+				<layout element="navleft.font.size" widget="SelectorWidget" />
+			</layouts>
+			<defaults>
+				<default element="headlines.set" value="13-12-11-10-9-9*:${key.headline.set} 1|14-13-12-11-10-10:${key.headline.set} 2|15-14-13-12-11-11:${key.headline.set} 3|16-15-14-13-12-12:${key.headline.set} 4|17-16-15-14-13-13:${key.headline.set} 5"/>
+				<default element="navleft.font.size" value="9|10|11|12*|13"/>
+			</defaults>
+		</xsd:appinfo>
+	</xsd:annotation>  
+ 
+</xsd:schema>
