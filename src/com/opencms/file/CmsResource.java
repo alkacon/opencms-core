@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2002/12/12 19:03:51 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/01/24 20:39:54 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import java.io.Serializable;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.41 $ $Date: 2002/12/12 19:03:51 $
+ * @version $Revision: 1.42 $ $Date: 2003/01/24 20:39:54 $
  */
  public class CmsResource implements I_CmsConstants,
                                                            Cloneable,
@@ -403,7 +403,7 @@ import java.io.Serializable;
       }
       
     /**
-     * Return the absolute parent folder name of this resource.<p>
+     * Returns the absolute parent folder name of this resource.<p>
      * 
      * The parent resource of a file is the folder of the file.
      * The parent resource of a folder is the parent folder.
@@ -418,7 +418,7 @@ import java.io.Serializable;
      }
      
     /**
-     * Return the absolute parent folder name of a resource.<p>
+     * Returns the absolute parent folder name of a resource.<p>
      * 
      * The parent resource of a file is the folder of the file.
      * The parent resource of a folder is the parent folder.
@@ -437,33 +437,62 @@ import java.io.Serializable;
         return parent.substring(0, parent.lastIndexOf("/") + 1);
     }
     
-     /**
+    /**
      * Gets the Parent database id for this resource.
      *
      * @return the Parent database id of this resource.
      */
-    public int getParentId(){
+    public int getParentId() {
         return m_parentId;
     }
+    
     /**
-     * Returns the path for this resource.<BR/>
-     * Example: retuns /system/def/ for the
-     * resource /system/def/language.cms
+     * Returns the folder path of this resource,
+     * if the resource is a folder, the complete path of the folder is returned 
+     * (not the parent folder path).<p>
+     * 
+     * Example: Returns <code>/system/def/</code> for the
+     * resource <code>/system/def/file.html</code> and 
+     * <code>/system/def/</code> for the (folder) resource <code>/system/def/</code>.
+     * 
+     * Does not append the repository information to the result, 
+     * i.e. <code>/system/def/</code> will be returned, not <code>/default/vfs/system/def/</code>.
      *
-     * @return the path for this resource.
+     * @return the folder of this resource
      */
-     public String getPath() {
-        int rootIndex = m_resourceName.indexOf("/", m_resourceName.indexOf("/",1)+1);
-        return m_resourceName.substring(rootIndex, m_resourceName.lastIndexOf("/")+1);
-     }
+    public String getPath() {
+        return getPath(getAbsolutePath());
+    }
+    
+    /**
+     * Returns the folder path of the resource with the given name,
+     * if the resource is a folder (i.e. ends with a "/"), the complete path of the folder 
+     * is returned (not the parent folder path).<p>
+     * 
+     * This is achived by just cutting of everthing behind the last occurence of a "/" character
+     * in the String, no check if performed if the resource exists or not in the VFS, 
+     * only resources that end with a "/" are considered to be folders.
+     * 
+     * Example: Returns <code>/system/def/</code> for the
+     * resource <code>/system/def/file.html</code> and 
+     * <code>/system/def/</code> for the (folder) resource <code>/system/def/</code>..
+     *
+     * @param resource the name of a resource
+     * @return the folder of the given resource
+     */
+    public static String getPath(String resource) {
+        return resource.substring(0, resource.lastIndexOf("/") + 1);
+    }
+          
     /**
      * Returns the project id for this resource.
      *
      * @return the project id for this resource.
      */
-      public int getProjectId() {
-          return m_projectId;
-      }
+    public int getProjectId() {
+        return m_projectId;
+    }
+      
     /**
      * Gets the database id for this resource.
      *
