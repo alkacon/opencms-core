@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/09/21 16:21:30 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/09/22 12:08:53 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,10 @@ import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -167,6 +170,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The "target" attribute. */
     protected static final String A_TARGET = "target";
+
     
     /** The "value" attribute. */
     protected static final String A_VALUE = "value";    
@@ -233,7 +237,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The name of the entry node. */
     protected static final String N_ENTRY = "entry";
-   
+
     /** The node name of the explorer preferences node. */
     protected static final String N_EXPLORERPREFERENCES = "explorer-preferences";
     
@@ -242,7 +246,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The name of the explorer types node. */
     protected static final String N_EXPLORERTYPES = "explorertypes";
-    
+
     /** The name of the "labeled folders" node. */
     protected static final String N_LABELEDFOLDERS = "labeledfolders";    
     
@@ -266,7 +270,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The node name of the size column node. */
     protected static final String N_SIZE = "show-size";
-    
+   
     /** The node name of the state column node. */
     protected static final String N_STATE = "show-state";
 
@@ -284,16 +288,16 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The node name of the user lastmodified node. */
     protected static final String N_USERLASTMODIFIED = "show-userlastmodified";
-    
+
     /** The node name of the workflow preferences node. */
     protected static final String N_WORKFLOWPREFERENCES = "workflow-preferences";
     
     /** The node name of the master workplace node. */       
     protected static final String N_WORKPLACE = "workplace";
-
+    
     /** The node name of the workplace preferences node. */
     protected static final String N_WORKPLACEPREFERENCES = "workplace-preferences";
-    
+
     /** The name of the DTD for this configuration. */
     private static final String C_CONFIGURATION_DTD_NAME = "opencms-workplace.dtd";
     
@@ -521,6 +525,14 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         workplaceElement.addElement(N_DEFAULTLOCALE)
             .setText(m_workplaceManager.getDefaultLocale().toString());   
         
+        // add <localizedfolders> subnode
+        Element localizedElement = workplaceElement.addElement(N_LOCALIZEDFOLDERS);
+        Iterator localizedIterator = m_workplaceManager.getLocalizedFolders().iterator();
+        while (localizedIterator.hasNext()) {
+            // add <resource uri=""/> element(s)
+            localizedElement.addElement(N_RESOURCE).addAttribute(A_URI, (String)localizedIterator.next());
+        }
+        
         // add <dialoghandlers> subnode
         Element dialogElement = workplaceElement.addElement(N_DIALOGHANDLERS);
         Map dialogs = m_workplaceManager.getDialogHandler();
@@ -550,9 +562,13 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
         // add miscellaneous configuration nodes
         workplaceElement.addElement(N_AUTOLOCK)
-            .setText(new Boolean(m_workplaceManager.autoLockResources()).toString());        
+            .setText(new Boolean(m_workplaceManager.autoLockResources()).toString());  
         workplaceElement.addElement(N_ENABLEUSERMGMT)
             .setText(new Boolean(m_workplaceManager.showUserGroupIcon()).toString());   
+        workplaceElement.addElement(N_DEFAULTPROPERTIESONSTRUCTURE)
+            .setText(new Boolean(m_workplaceManager.isDefaultPropertiesOnStructure()).toString());
+        workplaceElement.addElement(N_ENABLEADVANCEDPROPERTYTABS)
+            .setText(new Boolean(m_workplaceManager.isEnableAdvancedPropertyTabs()).toString());    
         workplaceElement.addElement(N_MAXUPLOADSIZE)
             .setText(new Integer(m_workplaceManager.getFileMaxUploadSize()).toString());         
         
@@ -579,7 +595,15 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             newResElement.addAttribute(A_ORDER, settings.getNewResourceOrder());
             // create subnode <accesscontrol>
             Element accessControlElement = explorerTypeElement.addElement(N_ACCESSCONTROL);
-            Iterator k = settings.getAccessEntries().keySet().iterator();
+            // sort accessEntries
+            List accessEntries = new ArrayList();
+            Iterator iter = settings.getAccessEntries().keySet().iterator();
+            while (iter.hasNext()) {
+                accessEntries.add(iter.next());                 
+            }
+            Collections.sort(accessEntries);
+            
+            Iterator k = accessEntries.iterator();
             while (k.hasNext()) {
                 String key = (String)k.next();
                 String value = (String)settings.getAccessEntries().get(key);
@@ -653,7 +677,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add the <explorer-preferences> node
         Element explorerPreferences = defaultPreferences.addElement(N_EXPLORERPREFERENCES);
         // add the <explorer-generaloptions> node
-        Element explorerGeneraloptions = explorerPreferences.addElement(N_EXPLORERPREFERENCES);
+        Element explorerGeneraloptions = explorerPreferences.addElement(N_EXPLORERGENERALOPTIONS);
         //  add the <buttonstyle> node
         explorerGeneraloptions.addElement(N_BUTTONSTYLE).setText(m_workplaceManager.getDefaultUserSettings().getExplorerButtonStyleString());
         // add the <reporttype> node
@@ -733,9 +757,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add the <message-accepted> node
         workflowDefaultsettings.addElement(N_MESSAGEACCEPTED).setText(m_workplaceManager.getDefaultUserSettings().getTaskMessageAcceptedString()); 
         // add the <message-forwarded> node
-        workflowDefaultsettings.addElement(N_MESSAGECOMPLETED).setText(m_workplaceManager.getDefaultUserSettings().getTaskMessageCompletedString()); 
-        // add the <message-completed> node
         workflowDefaultsettings.addElement(N_MESSAGEFORWARDED).setText(m_workplaceManager.getDefaultUserSettings().getTaskMessageForwardedString()); 
+        // add the <message-completed> node
+        workflowDefaultsettings.addElement(N_MESSAGECOMPLETED).setText(m_workplaceManager.getDefaultUserSettings().getTaskMessageCompletedString()); 
         // add the <informrolemembers> node
         workflowDefaultsettings.addElement(N_INFORMROLEMEMBERS).setText(m_workplaceManager.getDefaultUserSettings().getTaskMessageMembersString()); 
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/07/07 18:01:09 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/09/22 12:08:53 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,30 +62,44 @@ import org.apache.lucene.index.IndexWriter;
  * Implements the general management and configuration of the search and 
  * indexing facilities in OpenCms.<p>
  * 
- * @version $Revision: 1.23 $ $Date: 2004/07/07 18:01:09 $
+ * @version $Revision: 1.24 $ $Date: 2004/09/22 12:08:53 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
  */
 public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
-
     /** Configured analyzers for languages using &lt;analyzer&gt;. */
     private HashMap m_analyzers;
 
     /** The Admin cms object to index Cms resources. */
     private transient CmsObject m_cms;
 
-    /** A map of document factories keyed by their matching Cms resource types and/or mimetypes. */
-    private Map m_documentTypes;
-
     /** A map of document factory configurations. */
     private Map m_documentTypeConfigs;
+
+    /** A map of document factories keyed by their matching Cms resource types and/or mimetypes. */
+    private Map m_documentTypes;
+    
+    /** 
+     * The package/class name of the class to highlight the search terms in the excerpt of a search result.
+     * A highlighter is a class implementing org.opencms.search.documents.I_TermHighlighter.
+     */
+    private String m_highlighter;
 
     /** A list of search indexes. */
     private List m_indexes;
 
+    /** Configured index sources. */
+    private Map m_indexSources;
+    
+    /** The max. char. length of the excerpt in the search result. */
+    private int m_maxExcerptLength;
+
     /** Path to index files below WEB-INF/. */
     private String m_path;
+
+    /** The cache for storing search results. */
+    private Map m_resultCache;
 
     /** The result cache size. */
     private String m_resultCacheSize;
@@ -93,20 +107,241 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /** Timeout for abandoning indexing thread. */
     private String m_timeout;
 
-    /** The cache for storing search results. */
-    private Map m_resultCache;
-
-    /** Configured index sources. */
-    private Map m_indexSources;
-    
-    /** The max. char. length of the excerpt in the search result. */
-    private int m_maxExcerptLength;
-    
-    /** 
-     * The package/class name of the class to highlight the search terms in the excerpt of a search result.
-     * A highlighter is a class implementing org.opencms.search.documents.I_TermHighlighter.
+    /**
+     * Default constructer when called as cron job.<p>
      */
-    private String m_highlighter;
+    public CmsSearchManager() {
+
+        m_documentTypes = new HashMap();
+        m_documentTypeConfigs = new HashMap();
+        m_analyzers = new HashMap();
+        m_indexes = new ArrayList();
+        m_indexSources = new HashMap();
+
+        // register this object as event listener
+        OpenCms.addCmsEventListener(this, new int[] {I_CmsEventListener.EVENT_CLEAR_CACHES});
+    }
+
+    /**
+     * Adds an analyzer.<p>
+     * 
+     * @param analyzer an analyzer
+     */
+    public void addAnalyzer(CmsSearchAnalyzer analyzer) {
+
+        m_analyzers.put(analyzer.getLocale(), analyzer);
+    }
+
+    /**
+     * Adds a document type.<p>
+     * 
+     * @param documentType a document type
+     */
+    public void addDocumentTypeConfig(CmsSearchDocumentType documentType) {
+
+        m_documentTypeConfigs.put(documentType.getName(), documentType);
+    }
+
+    /**
+     * Adds a search index configuration.<p>
+     * 
+     * @param searchIndex a search index configuration
+     */
+    public void addSearchIndex(CmsSearchIndex searchIndex) {
+
+        m_indexes.add(searchIndex);
+    }
+
+    /**
+     * Adds a search index source configuration.<p>
+     * 
+     * @param searchIndexSource a search index source configuration
+     */
+    public void addSearchIndexSource(CmsSearchIndexSource searchIndexSource) {
+
+        m_indexSources.put(searchIndexSource.getName(), searchIndexSource);
+    }
+
+    /**
+     * Implements the event listener of this class.<p>
+     * 
+     * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
+     */
+    public void cmsEvent(CmsEvent event) {
+
+        switch (event.getType()) {
+            case I_CmsEventListener.EVENT_CLEAR_CACHES:
+                if (m_resultCache != null) {
+                    m_resultCache.clear();
+                }
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug("Lucene index manager catched event EVENT_CLEAR_CACHES");
+                }
+                break;
+
+            default:
+                // no operation
+        }
+    }  
+    
+    /**
+     * Returns the CmsSearchAnalyzer Object.<p>
+     * @param locale unique locale key to specify the CmsSearchAnalyzer in HashMap
+     * @return the CmsSearchAnalyzer Object
+     */
+    public CmsSearchAnalyzer getCmsSearchAnalyzer(String locale) {
+
+        return (CmsSearchAnalyzer)m_analyzers.get(locale);
+    }
+    
+    /**
+     * Returns an unmodifiable view (read-only) of the Analyzers Map.<p>
+     *
+     * @return an unmodifiable view (read-only) of the Analyzers Map
+     */
+    public Map getAnalyzers() {
+
+        return Collections.unmodifiableMap(m_analyzers);
+    }
+
+    /**
+     * Returns the name of the directory below WEB-INF/ where the search indexes are stored.<p>
+     * 
+     * @return the name of the directory below WEB-INF/ where the search indexes are stored
+     */
+    public String getDirectory() {
+
+        return m_path;
+    }
+
+    /**
+     * Returns a document type config.<p>
+     * 
+     * @param name the name of the document type config
+     * @return the document type config.
+     */
+    public CmsSearchDocumentType getDocumentTypeConfig(String name) {
+
+        return (CmsSearchDocumentType)m_documentTypeConfigs.get(name);
+    }
+    
+    /**
+     * Returns an unmodifiable view (read-only) of the DocumentTypeConfigs Map.<p>
+     *
+     * @return an unmodifiable view (read-only) of the DocumentTypeConfigs Map
+     */
+    public Map getDocumentTypeConfigs() {
+        
+        return Collections.unmodifiableMap(m_documentTypeConfigs);
+    }
+    
+    /**
+     * Returns the package/class name of the highlighter.<p>
+     * 
+     * A highlighter is a class implementing org.opencms.search.documents.I_TermHighlighter.<p>
+     * 
+     * @return the package/class name of the highlighter
+     */
+    public String getHighlighter() {
+
+        return m_highlighter;
+    }
+
+    /**
+     * Returns the index belonging to the passed name.<p>
+     * The index must exist already.
+     * 
+     * @param indexName then name of the index
+     * @return an object representing the desired index
+     */
+    public CmsSearchIndex getIndex(String indexName) {
+
+        for (int i = 0, n = m_indexes.size(); i < n; i++) {
+            CmsSearchIndex searchIndex = (CmsSearchIndex)m_indexes.get(i);
+
+            if (indexName.equalsIgnoreCase(searchIndex.getName())) {
+                return searchIndex;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the names of all configured indexes.<p>
+     * 
+     * @return list of names
+     */
+    public List getIndexNames() {
+
+        List indexNames = new ArrayList();
+        for (int i = 0, n = m_indexes.size(); i < n; i++) {
+            indexNames.add(((CmsSearchIndex)m_indexes.get(i)).getName());
+        }
+
+        return indexNames;
+    }
+
+    /**
+     * Returns a search index source for a specified source name.<p>
+     * 
+     * @param sourceName the name of the index source
+     * @return a search index source
+     */
+    public CmsSearchIndexSource getIndexSource(String sourceName) {
+
+        return (CmsSearchIndexSource)m_indexSources.get(sourceName);
+    }
+    
+    /**
+     * Returns the max. excerpt length.<p>
+     *
+     * @return the max excerpt length
+     */
+    public int getMaxExcerptLength() {
+
+        return m_maxExcerptLength;
+    }
+
+    /**
+     * Returns the result cache size.<p>
+     *
+     * @return the result cache size
+     */
+    public String getResultCacheSize() {
+
+        return m_resultCacheSize;
+    }
+    
+    /**
+     * Returns an unmodifiable list of all configured indexes.<p>
+     * 
+     * @return unmodifiable list of configured indexes
+     */
+    public List getSearchIndexs() {
+
+        return Collections.unmodifiableList(m_indexes);
+    }
+    
+    /**
+     * Returns an unmodifiable view (read-only) of the SearchIndexSources Map.<p>
+     * 
+     * @return an unmodifiable view (read-only) of the SearchIndexSources Map
+     */
+    public Map getSearchIndexSources() {
+        
+        return Collections.unmodifiableMap(m_indexSources);
+    }
+    
+    /**
+     * Returns the timeout to abandon threads indexing a resource.<p>
+     *
+     * @return the timeout to abandon threads indexing a resource
+     */
+    public String getTimeout() {
+
+        return m_timeout;
+    }
 
     /**
      * Initializes the search manager.<p>
@@ -128,160 +363,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         initAvailableDocumentTypes();
         initSearchIndexes();
-    }
-
-    /**
-     * Initializes the configured search indexes.<p>
-     * 
-     * This initializes also the list of Cms resources types
-     * to be indexed by an index source.<p>
-     */
-    protected void initSearchIndexes() {
-
-        CmsSearchIndex index = null;
-
-        for (int i = 0, n = m_indexes.size(); i < n; i++) {
-            index = (CmsSearchIndex)m_indexes.get(i);
-            index.initialize();
-        }
-    }
-
-    /**
-     * Initializes the available Cms resource types to be indexed.<p>
-     * 
-     * A map stores document factories keyed by a string representing
-     * a colon separated list of Cms resource types and/or mimetypes.<p>
-     * 
-     * The keys of this map are used to trigger a document factory to convert 
-     * a Cms resource into a Lucene index document.<p>
-     * 
-     * A document factory is a class implementing the interface
-     * {@link org.opencms.search.documents.I_CmsDocumentFactory}.<p>
-     */
-    protected void initAvailableDocumentTypes() {
-
-        CmsSearchDocumentType documenttype = null;
-        String className = null;
-        String name = null;
-        I_CmsDocumentFactory documentFactory = null;
-        List resourceTypes = null;
-        List mimeTypes = null;
-        Class c = null;
-        String resourceType = null;
-        String resourceTypeId = null;
-
-        m_documentTypes = new HashMap();
-
-        List keys = new ArrayList(m_documentTypeConfigs.keySet());
-        for (int i = 0, n = keys.size(); i < n; i++) {
-
-            documenttype = (CmsSearchDocumentType)(m_documentTypeConfigs.get(keys.get(i)));
-            name = documenttype.getName();
-
-            try {
-                className = documenttype.getClassName();
-                resourceTypes = documenttype.getResourceTypes();
-                mimeTypes = documenttype.getMimeTypes();
-
-                if (name == null) {
-                    throw new CmsIndexException("["
-                        + this.getClass().getName()
-                        + "] "
-                        + "No name defined for documenttype");
-                }
-                if (className == null) {
-                    throw new CmsIndexException("["
-                        + this.getClass().getName()
-                        + "] "
-                        + "No class defined for documenttype");
-                }
-
-                if (resourceTypes.size() == 0) {
-                    throw new CmsIndexException("["
-                        + this.getClass().getName()
-                        + "] "
-                        + "No resourcetype/moduletype defined for documenttype");
-                }
-
-                try {
-                    c = Class.forName(className);
-                    documentFactory = (I_CmsDocumentFactory)c.getConstructor(
-                        new Class[] {m_cms.getClass(), String.class}).newInstance(new Object[] {m_cms, name});
-                } catch (ClassNotFoundException exc) {
-                    throw new CmsIndexException("["
-                        + this.getClass().getName()
-                        + "] "
-                        + "Documentclass "
-                        + className
-                        + " not found", exc);
-                } catch (Exception exc) {
-                    throw new CmsIndexException("["
-                        + this.getClass().getName()
-                        + "] "
-                        + "Instanciation of documentclass "
-                        + className
-                        + " failed", exc);
-                }
-
-                for (int j = 0, m = resourceTypes.size(); j < m; j++) {
-
-                    resourceType = (String)resourceTypes.get(j);
-                    resourceTypeId = null;
-
-                    try {
-                        resourceTypeId = documentFactory.getDocumentKey(resourceType);
-                    } catch (Exception exc) {
-                        throw new CmsIndexException("["
-                            + this.getClass().getName()
-                            + "] "
-                            + "Instanciation of resource type '"
-                            + resourceType
-                            + "' failed", exc);
-                    }
-
-                    if (mimeTypes.size() > 0) {
-                        for (int k = 0, l = mimeTypes.size(); k < l; k++) {
-
-                            String mimeType = (String)mimeTypes.get(k);
-
-                            if (OpenCms.getLog(this).isDebugEnabled()) {
-                                OpenCms.getLog(this)
-                                    .debug(
-                                        "Configured document class: "
-                                            + className
-                                            + " for "
-                                            + resourceType
-                                            + ":"
-                                            + mimeType);
-                            }
-
-                            m_documentTypes.put(resourceTypeId + ":" + mimeType, documentFactory);
-                        }
-                    } else {
-                        m_documentTypes.put(resourceTypeId + "", documentFactory);
-                    }
-                }
-            } catch (CmsException e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Configuration of documenttype " + name + " failed", e);
-                }
-            }
-        }
-    }
-
-    /**
-     * Default constructer when called as cron job.<p>
-     */
-    public CmsSearchManager() {
-
-        m_documentTypes = new HashMap();
-        m_documentTypeConfigs = new HashMap();
-        m_analyzers = new HashMap();
-        m_indexes = new ArrayList();
-        m_indexSources = new HashMap();
-
-        // register this object as event listener
-        OpenCms.addCmsEventListener(this, new int[] {I_CmsEventListener.EVENT_CLEAR_CACHES});
     }
 
     /**
@@ -315,133 +396,63 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Returns an analyzer for the given language.<p>
-     * The analyzer is selected according to the analyzer configuration.
+     * Sets the name of the directory below WEB-INF/ where the search indexes are stored.<p>
      * 
-     * @param locale a language id, i.e. de, en, it
-     * @return the appropriate lucene analyzer
-     * @throws CmsIndexException if something goes wrong
+     * @param value the name of the directory below WEB-INF/ where the search indexes are stored
      */
-    protected Analyzer getAnalyzer(String locale) throws CmsIndexException {
+    public void setDirectory(String value) {
 
-        Analyzer analyzer = null;
-        String className = null;
+        m_path = value;
+    }
+    
+    /**
+     * Sets the package/class name of the highlighter.<p>
+     *
+     * A highlighter is a class implementing org.opencms.search.documents.I_TermHighlighter.<p>
+     *
+     * @param highlighter the package/class name of the highlighter
+     */
+    public void setHighlighter(String highlighter) {
 
-        CmsSearchAnalyzer analyzerConf = (CmsSearchAnalyzer)m_analyzers.get(locale);
-        if (analyzerConf == null) {
-            throw new CmsIndexException("No analyzer found for language " + locale);
-        }
+        m_highlighter = highlighter;
+    }
+    
+    /**
+     * Sets the max. excerpt length.<p>
+     *
+     * @param maxExcerptLength the max. excerpt length to set
+     */
+    public void setMaxExcerptLength(String maxExcerptLength) {
 
         try {
-            className = analyzerConf.getClassName();
-            Class analyzerClass = Class.forName(className);
-
-            // added param for snowball analyzer
-            String stemmerAlgorithm = analyzerConf.getStemmerAlgorithm();
-            if (stemmerAlgorithm != null) {
-                analyzer = (Analyzer)analyzerClass.getDeclaredConstructor(new Class[] {String.class}).newInstance(
-                    new Object[] {stemmerAlgorithm});
-            } else {
-                analyzer = (Analyzer)analyzerClass.newInstance();
-            }
-
+            m_maxExcerptLength = Integer.parseInt(maxExcerptLength);
         } catch (Exception e) {
-            throw new CmsIndexException("Can't load analyzer " + className, e);
-        }
-
-        return analyzer;
-    }
-
-    /**
-     * Returns a lucene document factory for given resource.<p>
-     * The type of the document factory is selected by the type of the resource
-     * and the mimetype of the resource content according to the documenttype configuration.
-     * 
-     * @param resource a cms resource
-     * @return a lucene document factory or null
-     */
-    protected I_CmsDocumentFactory getDocumentFactory(A_CmsIndexResource resource) {
-
-        String documentTypeKey = resource.getDocumentKey();
-
-        I_CmsDocumentFactory factory = (I_CmsDocumentFactory)m_documentTypes.get(documentTypeKey);
-        if (factory == null) {
-            factory = (I_CmsDocumentFactory)m_documentTypes.get(resource.getType() + "");
-        }
-
-        return factory;
-    }
-
-    /**
-     * Returns the set of names of all configured documenttypes.<p>
-     * 
-     * @return the set of names of all configured documenttypes
-     */
-    protected Set getDocumentTypes() {
-
-        Set names = new HashSet();
-        for (Iterator i = m_documentTypes.values().iterator(); i.hasNext();) {
-            I_CmsDocumentFactory factory = (I_CmsDocumentFactory)i.next();
-            names.add(factory.getName());
-        }
-
-        return names;
-    }
-
-    /**
-     * Returns the common cache for buffering search results.<p>
-     * 
-     * @return the cache
-     */
-    protected Map getResultCache() {
-
-        return m_resultCache;
-    }
-
-    /**
-     * Returns the index belonging to the passed name.<p>
-     * The index must exist already.
-     * 
-     * @param indexName then name of the index
-     * @return an object representing the desired index
-     */
-    public CmsSearchIndex getIndex(String indexName) {
-
-        for (int i = 0, n = m_indexes.size(); i < n; i++) {
-            CmsSearchIndex searchIndex = (CmsSearchIndex)m_indexes.get(i);
-
-            if (indexName.equalsIgnoreCase(searchIndex.getName())) {
-                return searchIndex;
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error parsing max. excerpt length " + maxExcerptLength, e);
             }
+            
+            m_maxExcerptLength = 1024;
         }
-
-        return null;
     }
 
     /**
-     * Returns a search index source for a specified source name.<p>
+     * Sets the result cache size.<p>
      * 
-     * @param sourceName the name of the index source
-     * @return a search index source
+     * @param value the result cache size
      */
-    public CmsSearchIndexSource getIndexSource(String sourceName) {
+    public void setResultCacheSize(String value) {
 
-        return (CmsSearchIndexSource)m_indexSources.get(sourceName);
+        m_resultCacheSize = value;
     }
 
     /**
-     * Returns the names of all configured indexes.<p>
+     * Sets the timeout to abandon threads indexing a resource.<p>
      * 
-     * @return list of names
+     * @param value the timeout in milliseconds
      */
-    public List getIndexNames() {
+    public void setTimeout(String value) {
 
-        List indexNames = new ArrayList();
-        for (int i = 0, n = m_indexes.size(); i < n; i++) {
-            indexNames.add(((CmsSearchIndex)m_indexes.get(i)).getName());
-        }
-
-        return indexNames;
+        m_timeout = value;
     }
 
     /**
@@ -622,168 +633,225 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Implements the event listener of this class.<p>
+     * Returns an analyzer for the given language.<p>
+     * The analyzer is selected according to the analyzer configuration.
      * 
-     * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
+     * @param locale a language id, i.e. de, en, it
+     * @return the appropriate lucene analyzer
+     * @throws CmsIndexException if something goes wrong
      */
-    public void cmsEvent(CmsEvent event) {
+    protected Analyzer getAnalyzer(String locale) throws CmsIndexException {
 
-        switch (event.getType()) {
-            case I_CmsEventListener.EVENT_CLEAR_CACHES:
-                if (m_resultCache != null) {
-                    m_resultCache.clear();
-                }
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("Lucene index manager catched event EVENT_CLEAR_CACHES");
-                }
-                break;
+        Analyzer analyzer = null;
+        String className = null;
 
-            default:
-                // no operation
+        CmsSearchAnalyzer analyzerConf = (CmsSearchAnalyzer)m_analyzers.get(locale);
+        if (analyzerConf == null) {
+            throw new CmsIndexException("No analyzer found for language " + locale);
         }
-    }
-
-    /**
-     * Sets the result cache size.<p>
-     * 
-     * @param value the result cache size
-     */
-    public void setResultCacheSize(String value) {
-
-        m_resultCacheSize = value;
-    }
-
-    /**
-     * Sets the name of the directory below WEB-INF/ where the search indexes are stored.<p>
-     * 
-     * @param value the name of the directory below WEB-INF/ where the search indexes are stored
-     */
-    public void setDirectory(String value) {
-
-        m_path = value;
-    }
-
-    /**
-     * Returns the name of the directory below WEB-INF/ where the search indexes are stored.<p>
-     * 
-     * @return the name of the directory below WEB-INF/ where the search indexes are stored
-     */
-    protected String getDirectory() {
-
-        return m_path;
-    }
-
-    /**
-     * Sets the timeout to abandon threads indexing a resource.<p>
-     * 
-     * @param value the timeout in milliseconds
-     */
-    public void setTimeout(String value) {
-
-        m_timeout = value;
-    }
-
-    /**
-     * Adds a document type.<p>
-     * 
-     * @param documentType a document type
-     */
-    public void addDocumentTypeConfig(CmsSearchDocumentType documentType) {
-
-        m_documentTypeConfigs.put(documentType.getName(), documentType);
-    }
-
-    /**
-     * Adds an analyzer.<p>
-     * 
-     * @param analyzer an analyzer
-     */
-    public void addAnalyzer(CmsSearchAnalyzer analyzer) {
-
-        m_analyzers.put(analyzer.getLocale(), analyzer);
-    }
-
-    /**
-     * Adds a search index configuration.<p>
-     * 
-     * @param searchIndex a search index configuration
-     */
-    public void addSearchIndex(CmsSearchIndex searchIndex) {
-
-        m_indexes.add(searchIndex);
-    }
-
-    /**
-     * Adds a search index source configuration.<p>
-     * 
-     * @param searchIndexSource a search index source configuration
-     */
-    public void addSearchIndexSource(CmsSearchIndexSource searchIndexSource) {
-
-        m_indexSources.put(searchIndexSource.getName(), searchIndexSource);
-    }
-
-    /**
-     * Returns a document type config.<p>
-     * 
-     * @param name the name of the document type config
-     * @return the document type config.
-     */
-    public CmsSearchDocumentType getDocumentTypeConfig(String name) {
-
-        return (CmsSearchDocumentType)m_documentTypeConfigs.get(name);
-    }
-    
-    /**
-     * Returns the package/class name of the highlighter.<p>
-     * 
-     * A highlighter is a class implementing org.opencms.search.documents.I_TermHighlighter.<p>
-     * 
-     * @return the package/class name of the highlighter
-     */
-    public String getHighlighter() {
-
-        return m_highlighter;
-    }
-    
-    /**
-     * Returns the max. excerpt length.<p>
-     *
-     * @return the max excerpt length
-     */
-    public int getMaxExcerptLength() {
-
-        return m_maxExcerptLength;
-    }
-    
-    /**
-     * Sets the package/class name of the highlighter.<p>
-     *
-     * A highlighter is a class implementing org.opencms.search.documents.I_TermHighlighter.<p>
-     *
-     * @param highlighter the package/class name of the highlighter
-     */
-    public void setHighlighter(String highlighter) {
-
-        m_highlighter = highlighter;
-    }
-    
-    /**
-     * Sets the max. excerpt length.<p>
-     *
-     * @param maxExcerptLength the max. excerpt length to set
-     */
-    public void setMaxExcerptLength(String maxExcerptLength) {
 
         try {
-            m_maxExcerptLength = Integer.parseInt(maxExcerptLength);
-        } catch (Exception e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error parsing max. excerpt length " + maxExcerptLength, e);
+            className = analyzerConf.getClassName();
+            Class analyzerClass = Class.forName(className);
+
+            // added param for snowball analyzer
+            String stemmerAlgorithm = analyzerConf.getStemmerAlgorithm();
+            if (stemmerAlgorithm != null) {
+                analyzer = (Analyzer)analyzerClass.getDeclaredConstructor(new Class[] {String.class}).newInstance(
+                    new Object[] {stemmerAlgorithm});
+            } else {
+                analyzer = (Analyzer)analyzerClass.newInstance();
             }
-            
-            m_maxExcerptLength = 1024;
+
+        } catch (Exception e) {
+            throw new CmsIndexException("Can't load analyzer " + className, e);
+        }
+
+        return analyzer;
+    }
+
+    /**
+     * Returns a lucene document factory for given resource.<p>
+     * The type of the document factory is selected by the type of the resource
+     * and the mimetype of the resource content according to the documenttype configuration.
+     * 
+     * @param resource a cms resource
+     * @return a lucene document factory or null
+     */
+    protected I_CmsDocumentFactory getDocumentFactory(A_CmsIndexResource resource) {
+
+        String documentTypeKey = resource.getDocumentKey();
+
+        I_CmsDocumentFactory factory = (I_CmsDocumentFactory)m_documentTypes.get(documentTypeKey);
+        if (factory == null) {
+            factory = (I_CmsDocumentFactory)m_documentTypes.get(resource.getType() + "");
+        }
+
+        return factory;
+    }
+
+    /**
+     * Returns the set of names of all configured documenttypes.<p>
+     * 
+     * @return the set of names of all configured documenttypes
+     */
+    protected Set getDocumentTypes() {
+
+        Set names = new HashSet();
+        for (Iterator i = m_documentTypes.values().iterator(); i.hasNext();) {
+            I_CmsDocumentFactory factory = (I_CmsDocumentFactory)i.next();
+            names.add(factory.getName());
+        }
+
+        return names;
+    }
+
+    /**
+     * Returns the common cache for buffering search results.<p>
+     * 
+     * @return the cache
+     */
+    protected Map getResultCache() {
+
+        return m_resultCache;
+    }
+
+    /**
+     * Initializes the available Cms resource types to be indexed.<p>
+     * 
+     * A map stores document factories keyed by a string representing
+     * a colon separated list of Cms resource types and/or mimetypes.<p>
+     * 
+     * The keys of this map are used to trigger a document factory to convert 
+     * a Cms resource into a Lucene index document.<p>
+     * 
+     * A document factory is a class implementing the interface
+     * {@link org.opencms.search.documents.I_CmsDocumentFactory}.<p>
+     */
+    protected void initAvailableDocumentTypes() {
+
+        CmsSearchDocumentType documenttype = null;
+        String className = null;
+        String name = null;
+        I_CmsDocumentFactory documentFactory = null;
+        List resourceTypes = null;
+        List mimeTypes = null;
+        Class c = null;
+        String resourceType = null;
+        String resourceTypeId = null;
+
+        m_documentTypes = new HashMap();
+
+        List keys = new ArrayList(m_documentTypeConfigs.keySet());
+        for (int i = 0, n = keys.size(); i < n; i++) {
+
+            documenttype = (CmsSearchDocumentType)(m_documentTypeConfigs.get(keys.get(i)));
+            name = documenttype.getName();
+
+            try {
+                className = documenttype.getClassName();
+                resourceTypes = documenttype.getResourceTypes();
+                mimeTypes = documenttype.getMimeTypes();
+
+                if (name == null) {
+                    throw new CmsIndexException("["
+                        + this.getClass().getName()
+                        + "] "
+                        + "No name defined for documenttype");
+                }
+                if (className == null) {
+                    throw new CmsIndexException("["
+                        + this.getClass().getName()
+                        + "] "
+                        + "No class defined for documenttype");
+                }
+
+                if (resourceTypes.size() == 0) {
+                    throw new CmsIndexException("["
+                        + this.getClass().getName()
+                        + "] "
+                        + "No resourcetype/moduletype defined for documenttype");
+                }
+
+                try {
+                    c = Class.forName(className);
+                    documentFactory = (I_CmsDocumentFactory)c.getConstructor(
+                        new Class[] {m_cms.getClass(), String.class}).newInstance(new Object[] {m_cms, name});
+                } catch (ClassNotFoundException exc) {
+                    throw new CmsIndexException("["
+                        + this.getClass().getName()
+                        + "] "
+                        + "Documentclass "
+                        + className
+                        + " not found", exc);
+                } catch (Exception exc) {
+                    throw new CmsIndexException("["
+                        + this.getClass().getName()
+                        + "] "
+                        + "Instanciation of documentclass "
+                        + className
+                        + " failed", exc);
+                }
+
+                for (int j = 0, m = resourceTypes.size(); j < m; j++) {
+
+                    resourceType = (String)resourceTypes.get(j);
+                    resourceTypeId = null;
+
+                    try {
+                        resourceTypeId = documentFactory.getDocumentKey(resourceType);
+                    } catch (Exception exc) {
+                        throw new CmsIndexException("["
+                            + this.getClass().getName()
+                            + "] "
+                            + "Instanciation of resource type '"
+                            + resourceType
+                            + "' failed", exc);
+                    }
+
+                    if (mimeTypes.size() > 0) {
+                        for (int k = 0, l = mimeTypes.size(); k < l; k++) {
+
+                            String mimeType = (String)mimeTypes.get(k);
+
+                            if (OpenCms.getLog(this).isDebugEnabled()) {
+                                OpenCms.getLog(this)
+                                    .debug(
+                                        "Configured document class: "
+                                            + className
+                                            + " for "
+                                            + resourceType
+                                            + ":"
+                                            + mimeType);
+                            }
+
+                            m_documentTypes.put(resourceTypeId + ":" + mimeType, documentFactory);
+                        }
+                    } else {
+                        m_documentTypes.put(resourceTypeId + "", documentFactory);
+                    }
+                }
+            } catch (CmsException e) {
+                if (OpenCms.getLog(this).isWarnEnabled()) {
+                    OpenCms.getLog(this).warn("Configuration of documenttype " + name + " failed", e);
+                }
+            }
         }
     }
-    
+
+    /**
+     * Initializes the configured search indexes.<p>
+     * 
+     * This initializes also the list of Cms resources types
+     * to be indexed by an index source.<p>
+     */
+    protected void initSearchIndexes() {
+
+        CmsSearchIndex index = null;
+
+        for (int i = 0, n = m_indexes.size(); i < n; i++) {
+            index = (CmsSearchIndex)m_indexes.get(i);
+            index.initialize();
+        }
+    }         
 }

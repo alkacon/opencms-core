@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2004/09/21 08:09:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/09/22 12:08:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.workplace.I_CmsWpConstants;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -227,7 +228,8 @@ public class CmsModuleXmlHandler {
             moduleElement.addElement(N_DATECREATED).setText(CmsDateUtil.getHeaderDate(module.getDateCreated()));
         } else {
             moduleElement.addElement(N_DATECREATED);
-        }
+        }     
+        
         if (CmsStringUtil.isNotEmpty(module.getUserInstalled())) {
             moduleElement.addElement(N_USERINSTALLED).setText(module.getUserInstalled());
         } else {
@@ -264,7 +266,9 @@ public class CmsModuleXmlHandler {
         Element parametersElement = moduleElement.addElement(N_PARAMETERS);
         Map parameters = module.getParameters();
         if (parameters != null) {
-            Iterator it = parameters.keySet().iterator();
+            List parameterList = new ArrayList(parameters.keySet());                        
+            Collections.sort(parameterList);        
+            Iterator it = parameterList.iterator();
             while (it.hasNext()) {
                 String name = (String)it.next();
                 String value = parameters.get(name).toString();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2004/07/07 14:12:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/09/22 12:08:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,12 @@ import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.CmsSearchManager;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.digester.Digester;
 
 import org.dom4j.Element;
@@ -48,7 +54,7 @@ import org.dom4j.Element;
  * Lucene search configuration class.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3.5
  */
 public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
@@ -183,7 +189,146 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public Element generateXml(Element parent) {
 
-        return null;
+        // add <search> node
+        Element searchElement = parent.addElement(N_SEARCH);
+        if (OpenCms.getRunLevel() > 1) {
+            // initialized OpenCms instance is available, use latest values
+            m_searchManager = OpenCms.getSearchManager();            
+        }
+        
+        // add <cache> element
+        searchElement.addElement(N_CACHE).addText(m_searchManager.getResultCacheSize());
+        // add <directory> element
+        searchElement.addElement(N_DIRECTORY).addText(m_searchManager.getDirectory());
+        // add <timeout> element
+        searchElement.addElement(N_TIMEOUT).addText(m_searchManager.getTimeout());
+        // add <exerpt> element
+        searchElement.addElement(N_EXCERPT).addText(String.valueOf(m_searchManager.getMaxExcerptLength()));
+        // add <highlighter> element
+        searchElement.addElement(N_HIGHLIGHTER).addText(m_searchManager.getHighlighter());
+        
+        // <documenttypes> 
+        Element documenttypesElement = searchElement.addElement(N_DOCUMENTTYPES);
+        List docTypeKeyList = new ArrayList(m_searchManager.getDocumentTypeConfigs().keySet());
+        Collections.sort(docTypeKeyList);
+        List sortedDocTypeList = new ArrayList();
+        Iterator i = docTypeKeyList.iterator();
+        while (i.hasNext()) {
+            CmsSearchDocumentType currDocType = m_searchManager.getDocumentTypeConfig((String)i.next());
+            sortedDocTypeList.add(currDocType);
+        }
+        Iterator docTypeIterator = sortedDocTypeList.iterator();        
+        while (docTypeIterator.hasNext()) {
+            CmsSearchDocumentType currSearchDocType = (CmsSearchDocumentType) docTypeIterator.next();
+            // add the next <documenttype> element
+            Element documenttypeElement = documenttypesElement.addElement(N_DOCUMENTTYPE);
+            // add <name> element
+            documenttypeElement.addElement(N_NAME).addText(currSearchDocType.getName());
+            // add <class> element
+            documenttypeElement.addElement(N_CLASS).addText(currSearchDocType.getClassName());
+            // add <mimetypes> element
+            Element mimetypesElement = documenttypeElement.addElement(N_MIMETYPES);
+            // get the list of mimetypes to trigger the document factory class 
+            Iterator mimeTypesIterator = currSearchDocType.getMimeTypes().iterator();
+            while (mimeTypesIterator.hasNext()) {
+                // add <mimetype> element(s)
+                mimetypesElement.addElement(N_MIMETYPE).addText((String)mimeTypesIterator.next());
+            }  
+            // add <resourcetypes> element
+            Element restypesElement = documenttypeElement.addElement(N_RESOURCETYPES);
+            // get the list of Cms resource types to trigger the document factory
+            Iterator resTypesIterator = currSearchDocType.getResourceTypes().iterator();
+            while (resTypesIterator.hasNext()) {
+                // add <resourcetype> element(s)
+                restypesElement.addElement(N_RESOURCETYPE).addText((String)resTypesIterator.next());
+            }  
+        }
+        // </documenttypes> 
+        
+        // <analyzers> 
+        Element analyzersElement = searchElement.addElement(N_ANALYZERS);
+        List analyzerList = new ArrayList(m_searchManager.getAnalyzers().keySet());
+        // sort Analyzers in ascending order
+        Collections.sort(analyzerList);        
+        Iterator analyzersIterator = analyzerList.iterator();
+        while (analyzersIterator.hasNext()) {
+            CmsSearchAnalyzer searchAnalyzer = m_searchManager.getCmsSearchAnalyzer((String)analyzersIterator.next());
+            // add the next <analyzer> element
+            Element analyzerElement = analyzersElement.addElement(N_ANALYZER);
+            // add <class> element
+            analyzerElement.addElement(N_CLASS).addText(searchAnalyzer.getClassName());
+            if (searchAnalyzer.getStemmerAlgorithm()!=null) {
+                // add <stemmer> element
+                analyzerElement.addElement(N_STEMMER).addText(searchAnalyzer.getStemmerAlgorithm());
+            }
+            // add <locale> element
+            analyzerElement.addElement(N_LOCALE).addText(searchAnalyzer.getLocale());
+        }
+        // </analyzers>
+
+        // <indexes>
+        Element indexesElement = searchElement.addElement(N_INDEXES);
+        Iterator indexIterator  = m_searchManager.getSearchIndexs().iterator();
+        while (indexIterator.hasNext()) {
+            CmsSearchIndex searchIndex = (CmsSearchIndex) indexIterator.next();
+            // add the next <index> element
+            Element indexElement = indexesElement.addElement(N_INDEX);
+            // add <name> element
+            indexElement.addElement(N_NAME).addText(searchIndex.getName());
+            // add <rebuild> element
+            indexElement.addElement(N_REBUILD).addText(searchIndex.getRebuildMode());
+            // add <project> element
+            indexElement.addElement(N_PROJECT).addText(searchIndex.getProject());
+            // add <locale> element
+            indexElement.addElement(N_LOCALE).addText(searchIndex.getLocale());
+            // add <sources> element
+            Element sourcesElement = indexElement.addElement(N_SOURCES);
+            // iterate above sourcenames
+            Iterator sourcesIterator = searchIndex.getSourceNames().iterator();
+            while (sourcesIterator.hasNext()) {
+                // add <source> element
+                sourcesElement.addElement(N_SOURCE).addText((String)sourcesIterator.next());
+            }
+        }
+        // </indexes>
+        
+        // <indexsources>
+        Element indexsourcesElement = searchElement.addElement(N_INDEXSOURCES);
+        List indexSources = new ArrayList(m_searchManager.getSearchIndexSources().values());
+        Iterator indexsourceIterator = indexSources.iterator();
+        while (indexsourceIterator.hasNext()) {
+            CmsSearchIndexSource searchIndexSource = (CmsSearchIndexSource)indexsourceIterator.next();
+            // add <indexsource> element(s)
+            Element indexsourceElement = indexsourcesElement.addElement(N_INDEXSOURCE);
+            // add <name> element
+            indexsourceElement.addElement(N_NAME).addText(searchIndexSource.getName());
+            // add <indexer class=""> element
+            Element indexerElement = indexsourceElement.addElement(N_INDEXER).addAttribute(N_CLASS, searchIndexSource.getIndexerClassName());
+            Map params = searchIndexSource.getParams();
+            Iterator paramIterator = params.entrySet().iterator();
+            while (paramIterator.hasNext()) {
+                String paramKey = (String) paramIterator.next();
+                // add <param name=""> element(s)                
+                indexerElement.addElement(I_CmsXmlConfiguration.N_PARAM).addAttribute(I_CmsXmlConfiguration.A_NAME, paramKey).addText((String)params.get(paramKey));
+            }
+            // add <resources> element
+            Element resourcesElement = indexsourceElement.addElement(N_RESOURCES);
+            Iterator resourceIterator = searchIndexSource.getResourcesNames().iterator();
+            while (resourceIterator.hasNext()) {
+                // add <resource> element(s)
+                resourcesElement.addElement(N_RESOURCE).addText((String)resourceIterator.next());                
+            }
+            // add <documenttypes-indexed> element
+            Element doctypes_indexedElement = indexsourceElement.addElement(N_DOCUMENTTYPES_INDEXED);
+            Iterator doctypesIterator = searchIndexSource.getDocumentTypes().iterator();
+            while (doctypesIterator.hasNext()) {
+                // add <name> element(s)
+                doctypes_indexedElement.addElement(N_NAME).addText((String)doctypesIterator.next());
+            }              
+        }
+        // </indexsources>
+        
+        return searchElement;
     }
 
     /**

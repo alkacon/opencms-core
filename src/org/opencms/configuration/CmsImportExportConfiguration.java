@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2004/07/09 13:44:34 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/09/22 12:08:53 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.staticexport.CmsStaticExportManager;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 
@@ -309,22 +310,22 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
         // <principaltranslations> node
         Element principalsElement = importElement.addElement(N_PRINCIPALTRANSLATIONS);
-        i = m_importExportManager.getImportGroupTranslations().keySet().iterator();
-        while (i.hasNext()) {
-            String from = (String)i.next();
-            principalsElement.addElement(N_PRINCIPALTRANSLATION)
-                .addAttribute(A_TYPE, I_CmsPrincipal.C_PRINCIPAL_GROUP)
-                .addAttribute(A_FROM, from)
-                .addAttribute(A_TO, (String)m_importExportManager.getImportGroupTranslations().get(from));                
-        }        
         i = m_importExportManager.getImportUserTranslations().keySet().iterator();
         while (i.hasNext()) {
-            String from = (String)i.next();
+            String to = (String)i.next();
             principalsElement.addElement(N_PRINCIPALTRANSLATION)
                 .addAttribute(A_TYPE, I_CmsPrincipal.C_PRINCIPAL_USER)
-                .addAttribute(A_FROM, from)
-                .addAttribute(A_TO, (String)m_importExportManager.getImportUserTranslations().get(from));                
+                .addAttribute(A_FROM, (String)m_importExportManager.getImportUserTranslations().get(to))
+                .addAttribute(A_TO, to);                
         }  
+        i = m_importExportManager.getImportGroupTranslations().keySet().iterator();
+        while (i.hasNext()) {
+            String to = (String)i.next();
+            principalsElement.addElement(N_PRINCIPALTRANSLATION)
+                .addAttribute(A_TYPE, I_CmsPrincipal.C_PRINCIPAL_GROUP)
+                .addAttribute(A_FROM, (String)m_importExportManager.getImportGroupTranslations().get(to))
+                .addAttribute(A_TO, to);                
+        }        
         
         // <ignoredproperties> node
         Element propertiesElement = importElement.addElement(N_IGNOREDPROPERTIES);
@@ -335,14 +336,19 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         }            
         
         // <staticexport> node
-        Element staticexportElement = importexportElement.addElement(N_STATICEXPORT);
+        Element staticexportElement = parent.addElement(N_STATICEXPORT);
         staticexportElement.addAttribute(A_ENABLED, m_staticExportManager.getExportEnabled());
         
         // <mode> node
         staticexportElement.addElement(N_STATICEXPORT_MODE).addText(m_staticExportManager.getMode());
         
         // <exportpath> node
-        staticexportElement.addElement(N_STATICEXPORT_EXPORTPATH).addText(m_staticExportManager.getExportPathUnmodified());
+        String exportPathUnmodified = m_staticExportManager.getExportPathUnmodified();
+        // cut path seperator        
+        if (exportPathUnmodified.endsWith(File.separator)) {
+           exportPathUnmodified = exportPathUnmodified.substring(0, exportPathUnmodified.length()-1);            
+        }
+        staticexportElement.addElement(N_STATICEXPORT_EXPORTPATH).addText(exportPathUnmodified);
         
         // <defaultpropertyvalue> node
         staticexportElement.addElement(N_STATICEXPORT_DEFAULT).addText(m_staticExportManager.getDefault());
