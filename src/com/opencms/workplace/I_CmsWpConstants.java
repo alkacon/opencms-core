@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/02/01 18:17:22 $
+ * @version $Revision: 1.17 $ $Date: 2000/02/02 10:39:13 $
  */
 public interface I_CmsWpConstants {
 
@@ -20,15 +20,25 @@ public interface I_CmsWpConstants {
     /** Parameter for view name */
     public static final String C_PARA_VIEW = "view";
     
+    /** Parameter for page number */
+    public static final String C_PARA_PAGE = "page";
+    
+    /** Parameter for filter */
+    public static final String C_PARA_FILTER = "filter";    
+    
+    /** Parameter for maximum pages */
+    public static final String C_PARA_MAXPAGE = "maxpage";    
+
     
     // Filenames of workplace files
+    
+    /** prefix for temporary files */
+    public static final String C_WP_TEMP_PREFIX = "_";
     
 	/** The filename to the icontemplate */
 	public static final String C_ICON_TEMPLATEFILE = "icontemplate";
 	
-	/**
-     * The explorer tree.
-     */
+	/** The explorer tree. */
     public static final String C_WP_EXPLORER_TREE="explorer_tree.html";
     
     
@@ -236,6 +246,9 @@ public interface I_CmsWpConstants {
     public static final String C_LANG_ICON = "icon";
 	
     // Constants for user default preferences
+    
+    /** Number of images to be shown per page in the picture browser */
+    public static final int C_PICBROWSER_MAXIMAGES = 20;
     
     /** Name of the filelist preferences */
     public static final String C_USERPREF_FILELIST ="filelist";
