@@ -29,6 +29,7 @@ import com.opencms.file.*;
 
 import java.util.*;
 import java.lang.reflect.*;
+import com.opencms.core.*;
 
 /**
  * Abstract class for the content definition
@@ -36,7 +37,23 @@ import java.lang.reflect.*;
  * author: Michael Knoll
  * version 1.0
  */
-public abstract class A_CmsContentDefinition implements I_CmsContent{
+public abstract class A_CmsContentDefinition implements I_CmsContent, I_CmsConstants {
+
+/**
+ * The owner  of this resource.
+ */
+ private int m_user;
+
+/**
+ * The group  of this resource.
+ */
+ private String m_group;
+
+/**
+ * The access flags of this resource.
+ */
+ private int m_accessFlags;
+
 
 /**
  * applies the filter method
@@ -109,7 +126,7 @@ public static Vector getFilterMethods(CmsObject cms) {
  * Gets the lockstates
  * You have to override this method in your content definition, if you have overwritten
  * the isLockable method with true.
- * @returns a String with the lockstate
+ * @returns a int with the lockstate
  */
 public int getLockstate() {
 	return -1;
@@ -150,4 +167,171 @@ public void setLockstate(int lockstate) {
  * must be overwritten in content definition
  */
 public abstract void write(CmsObject cms) throws Exception;
+
+/**
+ * returns true if the CD is readable for the current user
+ * @retruns true
+ */
+public boolean isReadable() {
+    return true;
+}
+
+/**
+ * returns true if the CD is writeable for the current user
+ * @retruns true
+ */
+public boolean isWriteable() {
+    return true;
+}
+
+/**
+ * set the owner of the CD
+ * @param id of the owner
+ */
+public void setUser(int userId) {
+    m_user = userId;
+}
+
+/**
+ * get the owner of the CD
+ * @returns id of the owner (int)
+ */
+public int getUser() {
+    return m_user;
+}
+
+/**
+ * set the group of the CD
+ * @param the group ID
+ */
+public void setGroup(String group) {
+    m_group = group;
+}
+
+/**
+ * get the group of the CD
+ * @returns the group ID
+ */
+public String getGroup() {
+    return m_group;
+}
+
+/**
+ * set the accessFlag for the CD
+ * @param the accessFlag
+ */
+public void setAccessFlags(int accessFlags) {
+    m_accessFlags = accessFlags;
+}
+
+/**
+ * get the accessFlag for the CD
+ * @returns the accessFlag
+ */
+public int getAccessFlags() {
+    return m_accessFlags;
+}
+
+/**
+ * has the current user the right to read the CD
+ * @returns a boolean
+ */
+protected boolean hasReadAccess(CmsObject cms) throws CmsException {
+    CmsUser currentUser = cms.getRequestContext().currentUser();
+
+    if ( !accessOther(C_ACCESS_PUBLIC_READ)
+        && !accessOwner(cms, currentUser, C_ACCESS_OWNER_READ)
+        && !accessGroup(cms, currentUser, C_ACCESS_GROUP_READ)) {
+        return false;
+    }
+    return true;
+}
+
+/**
+ * has the current user the right to write the CD
+ * @returns a boolean
+ */
+protected boolean hasWriteAccess(CmsObject cms) throws CmsException {
+    CmsUser currentUser = cms.getRequestContext().currentUser();
+    // check, if the resource is locked by the current user
+
+    if( isLockable() && (getLockstate() != currentUser.getId()) ) {
+        // resource is not locked by the current user, no writing allowed
+        return(false);
+    }
+
+    // check the rights for the current resource
+    if( ! ( accessOther(C_ACCESS_PUBLIC_WRITE) ||
+            accessOwner(cms, currentUser, C_ACCESS_OWNER_WRITE) ||
+            accessGroup(cms, currentUser, C_ACCESS_GROUP_WRITE) ) ) {
+        // no write access to this resource!
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Checks, if the owner may access this resource.
+ *
+ * @param cms the cmsObject
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param flags The flags to check.
+ *
+ * @return wether the user has access, or not.
+ */
+private boolean accessOwner(CmsObject cms, CmsUser currentUser,
+                                int flags) throws CmsException {
+    // The Admin has always access
+    if( cms.isAdmin() ) {
+        return(true);
+    }
+    // is the resource owned by this user?
+    if(getUser() == currentUser.getId()) {
+        if( (getAccessFlags() & flags) == flags ) {
+            return true ;
+        }
+    }
+    // the resource isn't accesible by the user.
+    return false;
+}
+
+/**
+ * Checks, if the group may access this resource.
+ *
+ * @param cms the cmsObject
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param flags The flags to check.
+ *
+ * @return wether the user has access, or not.
+ */
+private boolean accessGroup(CmsObject cms, CmsUser currentUser,
+                              int flags) throws CmsException {
+    // is the user in the group for the resource?
+    if(cms.userInGroup(currentUser.getName(), getGroup() )) {
+        if( (getAccessFlags() & flags) == flags ) {
+            return true;
+        }
+    }
+    // the resource isn't accesible by the user.
+    return false;
+}
+
+/**
+ * Checks, if others may access this resource.
+ *
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param flags The flags to check.
+ *
+ * @return wether the user has access, or not.
+ */
+private boolean accessOther( int flags ) throws CmsException {
+    if ((getAccessFlags() & flags) == flags) {
+        return true;
+    } else {
+        return false;
+    }
+}
 }
