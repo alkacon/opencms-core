@@ -23,6 +23,7 @@
             <downloadlist>Download Liste</downloadlist>
             <edit>Bearbeiten</edit>
             <endwizard>Fertig stellen</endwizard>
+            <executedelete>Jetzt löschen</executedelete>
             <exit>Abmelden</exit>
             <fileexport>Exportieren</fileexport>
             <fileexportas>Exportieren als</fileexportas>
@@ -189,6 +190,7 @@
                 <adduser> Leider konnte der Benutzer nicht angelegt werden.</adduser>
                 <addgroup>Die Gruppe konnte nicht angelegt werden.</addgroup>
                 <database>Leider konnte die Datenbank nicht exportiert oder importiert werden.</database>
+                <histproperties>Leider trat ein Fehler beim Ausführen der Aktion auf.</histproperties>
                 <htmlbrowser>Sie können den HTML-Browser noch nicht benutzen.</htmlbrowser>                
                 <linkcheckerror>Zu der angegebenen URL konnte keine Verbindung aufgebaut werden. Sie haben die Möglichkeit, die Verknüpfung trotzdem speichern oder sie zu korrigieren.</linkcheckerror>
                 <linkbrowser>Sie können den Linkbrowser noch nicht benutzen.</linkbrowser>
@@ -251,7 +253,7 @@
                 <extNav3>Die Farbauswahl ist nicht im Format #000000 bis #FFFFFF angegeben.</extNav3>
                 <foldercreate>Eventuell haben Sie nicht die Berechtigung für diese Aktion oder es existiert schon ein Ordner mit diesem Namen.</foldercreate>
                 <gallerynoright>Sie haben in diesem Projekt keine Berechtigung die Galerie anzulegen</gallerynoright>
-                 <htmlnogallery>Es existiert noch keine HTML-Galerie.</htmlnogallery>
+                <htmlnogallery>Es existiert noch keine HTML-Galerie.</htmlnogallery>
                 <htmlbrowser>Der Ordner für die Bildergalerien existiert noch nicht.</htmlbrowser>                               
                 <linknogallery>Es existiert noch keine Linkgalerie.</linknogallery>
 				<linkbrowser>Der Ordner für die Linkgalerien existiert noch nicht.</linkbrowser>
@@ -365,6 +367,7 @@
                 <downgallery>Neue Bildergalerie anlegen</downgallery>
                 <editorsave>Datei speichern</editorsave>
                 <foldercreate>Neues Verzeichnis anlegen</foldercreate>
+                <histproperties>Verwaltung Historieneigenschaften</histproperties>
                 <htmlbrowser>HTML-Galerie anlegen</htmlbrowser>                
                 <linkbrowser>Linkgalerie öffnen</linkbrowser>
 				<linkgallery>Linkgalerie anlegen</linkgallery>
@@ -422,6 +425,7 @@
             <exportmoduledata>Export Moduldaten</exportmoduledata>
             <extlinkgallery>Externe Links<![CDATA[<br>]]>verwalten</extlinkgallery>
             <groups>Gruppe</groups>
+            <histproperties>Verwaltung Historieneigenschaften</histproperties>
             <htmlgallery>HTML-Galerie</htmlgallery>            
             <imagelist>Bilderliste</imagelist>
             <import>Import</import>
@@ -547,6 +551,9 @@
             <groupsprojectmanager>Projektleiter</groupsprojectmanager>
             <groupsprojectworker>Projektmitarbeiter</groupsprojectworker>
             <height>Höhe</height>
+            <histenabled>Historie aktivieren</histenabled>
+            <histweeks1>Versionen löschen, die älter sind als</histweeks1>
+            <histweeks2>Wochen</histweeks2>
             <inpercent><![CDATA[% vom Fenster]]></inpercent>
             <inpixel>Bildschirmpunkte</inpixel>
             <insert>Einfügen nach</insert>
@@ -674,6 +681,7 @@
             <histrestoreversion>Wiederherstellen</histrestoreversion>
             <histshowversion>Inhalt anzeigen</histshowversion>
             <histdetailok>Schließen</histdetailok>
+            <histproperties>Verwaltung Historieneigenschaften</histproperties>
             <imagelist>Bilderliste</imagelist>
             <inactive>nicht aktiv</inactive>
             <linkto>Verknüpfung</linkto>

@@ -23,6 +23,7 @@
             <downloadlist>download list</downloadlist>
             <edit>Edit</edit>
             <endwizard>Finish</endwizard>
+            <executedelete>Delete now</executedelete>
             <exit>Exit</exit>
             <fileexport>Export</fileexport>
             <fileexportas>Export As...</fileexportas>
@@ -187,6 +188,7 @@
                 <editorsave>Sorry, the file could not be saved.</editorsave>
                 <foldercreate>Sorry, the new folder could not be created.</foldercreate>
                 <gallerynoright>Sorry, the new gallery could not be created.</gallerynoright>
+                <histproperties>Sorry, there was an error when executing this action.</histproperties>
                 <htmlbrowser>Sorry, you can't use the HTML browser yet.</htmlbrowser>                                
                 <changeuser>Sorry, the user data could not be changed.</changeuser>
                 <adduser> Sorry, the user could not be created.</adduser>
@@ -367,6 +369,7 @@
                 <downgallery>Creating new Download Gallery</downgallery>
                 <editorsave>Save File</editorsave>
                 <foldercreate>Create Folder</foldercreate>
+                <histproperties>Manage history properties</histproperties>
                 <htmlbrowser>Create new HTML-Galerie</htmlbrowser>                		
 				<linkbrowser>Link Browser</linkbrowser>
                 <linkgallery>Creating new Link Gallery</linkgallery>
@@ -424,6 +427,7 @@
             <exportmoduledata>Export Moduldata</exportmoduledata>
             <extlinkgallery>External links<![CDATA[<br>]]>management</extlinkgallery>
             <groups>Edit Groups</groups> 
+            <histproperties>Manage history properties</histproperties>
             <htmlgallery>HTML-Gallery</htmlgallery>                        
             <imagelist>image list</imagelist>
             <import>Import</import>
@@ -548,6 +552,9 @@
             <groupsprojectmanager>Projectmanager</groupsprojectmanager>
             <groupsprojectworker>Projectuser</groupsprojectworker>
             <height>Height</height>
+            <histenabled>Enable history</histenabled>
+            <histweeks1>Delete versions older than</histweeks1>
+            <histweeks2>weeks</histweeks2>
             <inpercent><![CDATA[% of the window]]></inpercent>
             <inpixel>Pixel</inpixel>
             <insert>Insert after</insert>
@@ -674,6 +681,7 @@
             <histrestoreversion>Restore Version</histrestoreversion>
             <histshowversion>Show Content</histshowversion>
             <histdetailok>Close</histdetailok>
+            <histproperties>Manage history properties</histproperties>
             <imagelist>Imagelist</imagelist>
             <inactive>inactive</inactive>
             <linkto>Link</linkto>

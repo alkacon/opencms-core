@@ -23,6 +23,7 @@
             <downloadlist>Lista di download</downloadlist>
             <edit>Modifica</edit>
             <endwizard>Fine</endwizard>
+            <executedelete>Delete now</executedelete>
             <exit>Esci</exit>
             <fileexport>Esporta</fileexport>
             <fileexportas>Esporta Come...</fileexportas>
@@ -194,6 +195,7 @@
                 <linkcheckerror>L'URL non ha potuto essere contattato. Puoi ora conservare il link o modificarlo.</linkcheckerror>
                 <linkbrowser>Spiacente, non puoi ancora usare il visualizzatore dei link.</linkbrowser> 
                 <linkgallery>Non hai i permessi per creare una nuova galleria in questo progetto.</linkgallery> 
+                <histproperties>Sorry, there was an error when executing this action.</histproperties>
                 <htmlbrowser>Sorry, you can't use the HTML browser yet.</htmlbrowser>                                                                
                 <lock>Spiacente, il file non ha potuto essere bloccato.</lock>
                 <lockchange>Spiacente, il blocco sul file non ha potuto essere rubato.</lockchange>
@@ -362,14 +364,16 @@
                 <deleteuser>Cancella Utente</deleteuser>
                 <deleteextension>Cancella estensione di file</deleteextension>
                 <deletegroup>Cancella Gruppo</deletegroup>
+                <deleteproject>Cancella Progetto</deleteproject>
                 <database>Importazione/Esportazione Database</database>
                 <downbrowser>Navigatore dei Download</downbrowser>
                 <downgallery>Creazione nuova Galleria di Download</downgallery>
                 <editorsave>Salva File</editorsave>
                 <foldercreate>Crea Cartella</foldercreate>
+                <histproperties>Manage history properties</histproperties>
+                <htmlbrowser>Create new HTML-Galerie</htmlbrowser> 
                 <linkbrowser>Visualizzatore Link</linkbrowser> 
-                <linkgallery>Creazione nuova Galleria di Link</linkgallery>
-                <htmlbrowser>Create new HTML-Galerie</htmlbrowser>                                        
+                <linkgallery>Creazione nuova Galleria di Link</linkgallery>                                       
                 <lock>Blocca File</lock>
                 <lockchange>Ruba Blocco</lockchange>
                 <login>Errore di Accesso</login>
@@ -385,7 +389,6 @@
                 <publishresource>Pubblica Risorsa</publishresource>
                 <rename>Rinomina Risorsa</rename>
                 <restoreresource>Ripristina Versione</restoreresource>
-                <deleteproject>Cancella Progetto</deleteproject>
                 <syncfolder>Sincronizza Cartelle</syncfolder>
                 <syncproperties>Proprietà per la Sincronizzazione</syncproperties>
                 <undelete>Recupera Risorsa</undelete>
@@ -424,6 +427,7 @@
             <exportmoduledata>Esporta dati del Modulo</exportmoduledata>
             <extlinkgallery>Gestione<![CDATA[<br>]]>links esterni</extlinkgallery>
             <groups>Modifica Gruppi</groups>
+            <histproperties>Manage history properties</histproperties>
             <htmlgallery>Gestione Gallerie<![CDATA[<BR>]]>di HTML</htmlgallery>                        
             <imagelist>lista immagini</imagelist>
             <import>Importa</import>
@@ -548,6 +552,9 @@
             <groupsprojectmanager>responsabile di progetto</groupsprojectmanager>
             <groupsprojectworker>utente del progetto</groupsprojectworker>
             <height>Altezza</height>
+            <histenabled>Enable history</histenabled>
+            <histweeks1>Delete versions older than</histweeks1>
+            <histweeks2>weeks</histweeks2>
             <inpercent><![CDATA[% della finestra]]></inpercent>
             <inpixel>Punti</inpixel>
             <insert>Inserisci dopo</insert>
@@ -674,6 +681,7 @@
             <histrestoreversion>Ripristina Versione</histrestoreversion>
             <histshowversion>Mostra Contenuto</histshowversion>
             <histdetailok>Chiudi</histdetailok>
+            <histproperties>Manage history properties</histproperties>
             <imagelist>Lista Immagini</imagelist>
             <inactive>non attivo</inactive>
             <linkto>Collegamento</linkto>
