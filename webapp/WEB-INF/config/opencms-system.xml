@@ -23,5 +23,6 @@
 		<scheduler />	
 	   	<versionhistory enabled="true" count="10"/>		   	
 		<resourceinit />
+		<requesthandlers />
 	</system>
 </opencms>
