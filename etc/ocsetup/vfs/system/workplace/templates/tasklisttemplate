@@ -22,8 +22,12 @@
 	<priority2></priority2>
 	<priority3><![CDATA[<img src="]]><METHOD name="picsUrl">ic_task_priolow.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.prioritylevel.low" /><![CDATA[">]]></priority3>
 	
+	
+	
+	
 	<!-- States -->
-	<new><![CDATA[<img src="]]><METHOD name="picsUrl">ic_task_new.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.new" /><![CDATA[">]]></new>
+	<!--<new><![CDATA[<A href="javascript:showkontext('task_new','aaa',1);"><img src="]]><METHOD name="picsUrl">ic_task_new.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.new" /><![CDATA["></a>]]></new>-->
+	<new><![CDATA["<img src="]]><METHOD name="picsUrl">ic_task_new.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.new" /><![CDATA[">]]></new>
 	<activ><![CDATA[<img src="]]><METHOD name="picsUrl">ic_task_activ.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.activ" /><![CDATA[">]]></activ>
 	<alert><![CDATA[<img src="]]><METHOD name="picsUrl">ic_task_alert.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.alert" /><![CDATA[">]]></alert>
 	<ok><![CDATA[<img src="]]><METHOD name="picsUrl">ic_task_ok.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.ok" /><![CDATA[">]]></ok>

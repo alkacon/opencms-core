@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChown.java,v $
- * Date   : $Date: 2000/04/20 08:11:54 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/04/20 09:59:32 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/04/20 08:11:54 $
+ * @version $Revision: 1.11 $ $Date: 2000/04/20 09:59:32 $
  */
 public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -133,7 +133,21 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
 				    if (hbodyPath.equals(bodyPath)){
 					    cms.chown(hbodyPath,newowner);
 				    }
-                }      
+                 } 
+                
+                 // if the resource is a folder, check if there is a corresponding 
+                 // directory in the content body folder
+                 if (file.isFolder()) {
+                     String bodyFolder=C_CONTENTBODYPATH.substring(0,C_CONTENTBODYPATH.lastIndexOf("/"))+file.getAbsolutePath();
+                     try {
+                         cms.readFolder(bodyFolder);
+                         cms.lockResource(bodyFolder);
+                         cms.chown(bodyFolder,newowner);
+                         cms.unlockResource(bodyFolder);
+                     } catch (CmsException ex) {
+                         // no folder is there, so do nothing
+                     }
+                 }
                 
                 // the resource was a folder and the rekursive flag was set                   
                 // do a recursive chown on all files and subfolders
@@ -150,6 +164,17 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
                         cms.lockResource(folder.getAbsolutePath());
                         cms.chown(folder.getAbsolutePath(),newowner);
                         cms.unlockResource(folder.getAbsolutePath());
+                        // check if there is a corresponding 
+                        // directory in the content body folder
+                        String bodyFolder=C_CONTENTBODYPATH.substring(0,C_CONTENTBODYPATH.lastIndexOf("/"))+folder.getAbsolutePath();
+                        try {
+                            cms.readFolder(bodyFolder);
+                            cms.lockResource(bodyFolder);
+                            cms.chown(bodyFolder,newowner);
+                            cms.unlockResource(bodyFolder);
+                        } catch (CmsException ex) {
+                             // no folder is there, so do nothing
+                        }
                     }
                 
                     // now modify all files in the subfolders

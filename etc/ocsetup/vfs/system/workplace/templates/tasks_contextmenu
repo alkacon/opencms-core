@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+
+<contextmenue name="task_new">
+	<contextentry name="task.button.message" href="#"/>
+    <contextentry name="task.button.forward" href="#"/>
+	<contextspacer/>
+ 	<contextentry name="task.button.due" href="#"/>
+    <contextentry name="task.button.priority" href="#"/>
+	<contextentry name="task.button.comment" href="#"/>
+	<contextdisabled name="task.button.ok" href="#"/>
+</contextmenue>
+
+<contextmenue name="task_activ">
+	<contextdisabled name="taskactiv" href="javascript:doPAction(DO_PTASK);"/>
+</contextmenue>
+
+<contextmenue name="task_alert">
+	<contextdisabled name="taskalert" href="javascript:doPAction(DO_PTASK);"/>
+</contextmenue>
+
+<contextmenue name="task_ok">
+	<contextdisabled name="taskoknew" href="javascript:doPAction(DO_PTASK);"/>
+</contextmenue>
+
+<contextmenue name="task_alertok">
+	<contextdisabled name="taskalertoknew" href="javascript:doPAction(DO_PTASK);"/>
+</contextmenue>
+</WORKPLACE>
+
+

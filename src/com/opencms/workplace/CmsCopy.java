@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/04/20 08:11:54 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/04/20 09:59:32 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.20 $ $Date: 2000/04/20 08:11:54 $
+ * @version $Revision: 1.21 $ $Date: 2000/04/20 09:59:32 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -351,7 +351,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
        * @param path The path in the CmsFilesystem where the new page should be created.
        * @exception CmsException if something goes wrong.
        */
-      private void checkFolders(A_CmsObject cms, String path) 
+     private void checkFolders(A_CmsObject cms, String path) 
           throws CmsException {
           String completePath=C_CONTENTBODYPATH;
           StringTokenizer t=new StringTokenizer(path,"/");
@@ -360,13 +360,18 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
               String foldername=t.nextToken();
                try {
                 // try to read the folder. if this fails, an exception is thrown  
-                  
                 cms.readFolder(completePath+foldername+"/");
-                
               } catch (CmsException e) {
                   // the folder could not be read, so create it.
-                 
-                  cms.createFolder(completePath,foldername);                              
+                  String orgFolder=completePath+foldername+"/";
+                  orgFolder=orgFolder.substring(C_CONTENTBODYPATH.length()-1);
+                  CmsFolder newfolder=cms.createFolder(completePath,foldername);                              
+                  CmsFolder folder=cms.readFolder(orgFolder);
+                  cms.lockResource(newfolder.getAbsolutePath());
+                  cms.chown(newfolder.getAbsolutePath(),cms.readOwner(folder).getName());
+                  cms.chgrp(newfolder.getAbsolutePath(),cms.readGroup(folder).getName());
+                  cms.chmod(newfolder.getAbsolutePath(),folder.getAccessFlags());
+                  cms.unlockResource(newfolder.getAbsolutePath());
               }
               completePath+=foldername+"/";        
           }          

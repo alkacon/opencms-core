@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/04/18 14:13:27 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/04/20 09:59:32 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2000/04/18 14:13:27 $
+ * @version $Revision: 1.23 $ $Date: 2000/04/20 09:59:32 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -282,7 +282,15 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                 cms.readFolder(completePath+foldername+"/");
               } catch (CmsException e) {
                   // the folder could not be read, so create it.
-                  cms.createFolder(completePath,foldername);                              
+                  String orgFolder=completePath+foldername+"/";
+                  orgFolder=orgFolder.substring(C_CONTENTBODYPATH.length()-1);
+                  CmsFolder newfolder=cms.createFolder(completePath,foldername);                              
+                  CmsFolder folder=cms.readFolder(orgFolder);
+                  cms.lockResource(newfolder.getAbsolutePath());
+                  cms.chown(newfolder.getAbsolutePath(),cms.readOwner(folder).getName());
+                  cms.chgrp(newfolder.getAbsolutePath(),cms.readGroup(folder).getName());
+                  cms.chmod(newfolder.getAbsolutePath(),folder.getAccessFlags());
+                  cms.unlockResource(newfolder.getAbsolutePath());
               }
               completePath+=foldername+"/";        
           }          

@@ -323,6 +323,7 @@
 			<borderinfo>in Pixels</borderinfo>
 			<center>Center</center>
 			<changed>Date changed</changed>
+			<changesubresources>Modify all subfolders /files</changesubresources>
 			<city>City</city>
 			<color>Color</color>
 			<colorcode>Choosen Color</colorcode>

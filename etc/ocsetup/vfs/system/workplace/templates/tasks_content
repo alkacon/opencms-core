@@ -14,6 +14,8 @@ function show_help()
 //-->
 </script>
 
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_choosebrowser.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_kontextmenu.js"></SCRIPT>
 
 
 <head>
@@ -52,5 +54,6 @@ function show_help()
 </html>
 
 ]]>
+<INCLUDE>/system/workplace/templates/tasks_contextmenu</INCLUDE>
 </TEMPLATE>
 </WORKPLACE>

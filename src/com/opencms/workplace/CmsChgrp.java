@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChgrp.java,v $
- * Date   : $Date: 2000/04/20 08:11:54 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/04/20 09:59:31 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/04/20 08:11:54 $
+ * @version $Revision: 1.11 $ $Date: 2000/04/20 09:59:31 $
  */
 public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -114,6 +114,7 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,
             template="folder";
         }
        
+     
         
         // a new owner was given in the request so try to change it
         if (newgroup != null) {
@@ -135,6 +136,20 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,
 				    }
                 }      
                 
+                // if the resource is a folder, check if there is a corresponding 
+                // directory in the content body folder
+                if (file.isFolder()) {
+                    String bodyFolder=C_CONTENTBODYPATH.substring(0,C_CONTENTBODYPATH.lastIndexOf("/"))+file.getAbsolutePath();
+                    try {
+                        cms.readFolder(bodyFolder);
+                        cms.lockResource(bodyFolder);
+                        cms.chgrp(bodyFolder,newgroup);
+                        cms.unlockResource(bodyFolder);
+                    } catch (CmsException ex) {
+                        // no folder is there, so do nothing
+                    }
+                }
+                
                 // the resource was a folder and the rekursive flag was set  
                 // do a recursive chown on all files and subfolders
                 if (flags.equals("true")) {
@@ -150,6 +165,17 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,
                         cms.lockResource(folder.getAbsolutePath());
                         cms.chgrp(folder.getAbsolutePath(),newgroup);
                         cms.unlockResource(folder.getAbsolutePath());
+                        // check if there is a corresponding 
+                        // directory in the content body folder
+                        String bodyFolder=C_CONTENTBODYPATH.substring(0,C_CONTENTBODYPATH.lastIndexOf("/"))+folder.getAbsolutePath();
+                        try {
+                            cms.readFolder(bodyFolder);
+                            cms.lockResource(bodyFolder);
+                            cms.chgrp(bodyFolder,newgroup);
+                            cms.unlockResource(bodyFolder);
+                        } catch (CmsException ex) {
+                             // no folder is there, so do nothing
+                        }
                     }
                 
                     // now modify all files in the subfolders
