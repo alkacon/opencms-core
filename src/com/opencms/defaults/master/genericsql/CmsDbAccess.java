@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/09/02 12:19:27 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2003/09/12 17:38:06 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -864,7 +864,7 @@ public class CmsDbAccess {
                         // ignore the exception - read the next one
                     }
                     if (resources.size() >= 1) {
-                        int resProjectId = ((CmsResource)resources.get(0)).getProjectId();
+                        int resProjectId = ((CmsResource)resources.get(0)).getProjectLastModified();
                         if (resProjectId == offlineProjectId) {
                             // yes - we have found a chanel that belongs to
                             // the current offlineproject -> we can return the

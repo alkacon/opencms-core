@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/12 14:46:21 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/09/12 17:38:06 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Map;
  * MySQL implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.21 $ $Date: 2003/09/12 14:46:21 $
+ * @version $Revision: 1.22 $ $Date: 2003/09/12 17:38:06 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {        
@@ -165,7 +165,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
                 // check if this resource is marked as deleted
                 if (file.getState() == I_CmsConstants.C_STATE_DELETED && !includeDeleted) {
-                    throw new CmsException("[" + this.getClass().getName() + ".readFile] " + file.getResourceName(), CmsException.C_RESOURCE_DELETED);
+                    throw new CmsException("[" + this.getClass().getName() + ".readFile] " + file.getName(), CmsException.C_RESOURCE_DELETED);
                 }
             } else {
                 throw new CmsException("[" + this.getClass().getName() + ".readFile] " + structureId, CmsException.C_NOT_FOUND);

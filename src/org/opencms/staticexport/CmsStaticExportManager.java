@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/09/08 18:21:28 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/09/12 17:38:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -240,7 +240,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             file = cms.readFile(vfsName);
         } else {
             file = OpenCmsCore.getInstance().initResource(cms, vfsName);
-            vfsName = vfsName + file.getResourceName();
+            vfsName = vfsName + file.getName();
             rfsName += C_EXPORT_DEFAULT_FILE;
         }
 
@@ -252,7 +252,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
 
         // make sure all required parent folder exist
-        String exportFolderName = getExportPath() + CmsResource.getPath(rfsName).substring(1);
+        String exportFolderName = getExportPath() + CmsResource.getFolderPath(rfsName).substring(1);
         File exportFolder = new File(exportFolderName);
         if (!exportFolder.exists()) {
             if (!exportFolder.mkdirs()) {
@@ -271,7 +271,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
 
         // ensure we have exactly the same setup as if called "the usual way"
-        String mimetype = OpenCms.getMimeType(file.getResourceName(), cms.getRequestContext().getEncoding());
+        String mimetype = OpenCms.getMimeType(file.getName(), cms.getRequestContext().getEncoding());
         res.setContentType(mimetype);        
         String oldUri = cms.getRequestContext().getUri();
         cms.getRequestContext().setUri(vfsName);
@@ -462,7 +462,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public String getRfsName(CmsObject cms, String vfsName) {
         try {
             // check if the resource folder (or a parent folder) has the "exportname" property set
-            String exportname = cms.readProperty(CmsResource.getPath(vfsName), I_CmsConstants.C_PROPERTY_EXPORTNAME, true);
+            String exportname = cms.readProperty(CmsResource.getFolderPath(vfsName), I_CmsConstants.C_PROPERTY_EXPORTNAME, true);
             if (exportname != null) {
                 // "exportname" property set
                 if (!exportname.endsWith("/")) {
@@ -483,7 +483,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         cont = false;
                     }
                     if (cont) {
-                        resource = CmsResource.getParent(resource);
+                        resource = CmsResource.getParentFolder(resource);
                     }
                 } while (cont);
                 vfsName = exportname + vfsName.substring(resource.length());

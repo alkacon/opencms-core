@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2003/09/11 10:32:01 $
- * Version: $Revision: 1.14 $
- * Date   : $Date: 2003/09/11 10:32:01 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/09/12 17:38:06 $
+ * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/09/12 17:38:06 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2003/09/11 10:32:01 $
+ * @version $Revision: 1.15 $ $Date: 2003/09/12 17:38:06 $
  */
 public class CmsSynchronize {
 
@@ -515,11 +515,11 @@ public class CmsSynchronize {
             // the parent folder could contain a translated names as well, so 
             // make a lookup in the sync list ot get its original 
             // non-translated name
-            String parent = CmsResource.getParent(resourcename);
+            String parent = CmsResource.getParentFolder(resourcename);
             CmsSynchronizeList parentSync = (CmsSynchronizeList)m_newSyncList.get(parent);
             // use the non-translated pathname
             if (parentSync != null) {
-                resourcename = parentSync.getResName() + res.getResourceName();
+                resourcename = parentSync.getResName() + res.getName();
             }
         }
         if ((res.isFolder()) && (!resourcename.endsWith("/"))) {
@@ -553,7 +553,7 @@ public class CmsSynchronize {
                             ((I_CmsSynchonizeModification)i.next()).modifyFs(m_cms, vfsFile, fsFile);
                         } catch (CmsSynchronizeException e) {
                             if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO))
-                                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, ". CmsSyncModification class : exportTo FS " + res.getFullResourceName() + ":" + e.toString());
+                                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, ". CmsSyncModification class : exportTo FS " + res.getRootPath() + ":" + e.toString());
                             break;
                         }
                     }
@@ -618,7 +618,7 @@ public class CmsSynchronize {
                     ((I_CmsSynchonizeModification)i.next()).modifyVfs(m_cms, vfsFile, fsFile);
                 } catch (CmsSynchronizeException e) {
                     if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO))
-                        OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, ". CmsSyncModification class : updateFrom FS " + res.getFullResourceName() + ":" + e.toString());
+                        OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, ". CmsSyncModification class : updateFrom FS " + res.getRootPath() + ":" + e.toString());
                     break;
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2003/09/05 12:22:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/09/12 17:38:06 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -462,7 +462,7 @@ public abstract class A_CmsImport implements I_CmsImport {
      */
     protected void addImportAccessControlEntry(CmsResource res, String id, String allowed, String denied, String flags) {
 
-        CmsAccessControlEntry ace = new CmsAccessControlEntry(res.getResourceAceId(), new CmsUUID(id), Integer.parseInt(allowed), Integer.parseInt(denied), Integer.parseInt(flags));
+        CmsAccessControlEntry ace = new CmsAccessControlEntry(res.getResourceId(), new CmsUUID(id), Integer.parseInt(allowed), Integer.parseInt(denied), Integer.parseInt(flags));
         m_acEntriesToCreate.add(ace);
     }
 

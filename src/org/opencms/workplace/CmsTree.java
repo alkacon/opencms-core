@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2003/08/28 16:05:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/09/12 17:38:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -158,12 +158,12 @@ public class CmsTree extends CmsWorkplace {
             title = getCms().readProperty("/", I_CmsConstants.C_PROPERTY_TITLE);
             if (title == null) {
                 getCms().readAbsolutePath(resource);
-                title = resource.getFullResourceName();
+                title = resource.getRootPath();
             }
         } catch (CmsException e) {
             // should not happen
         }
-        return getNode(title, resource.getType(), resource.getId(), resource.getParentId(), false);
+        return getNode(title, resource.getType(), resource.getStructureId(), resource.getParentStructureId(), false);
     }
     
     /**
@@ -265,7 +265,7 @@ public class CmsTree extends CmsWorkplace {
         while (i.hasNext()) {          
             CmsResource resource = (CmsResource)i.next();
             grey = !CmsProject.isInsideProject(projectResources, resource);
-            result.append(getNode(resource.getResourceName(), resource.getType(), resource.getId(), resource.getParentId(), grey));
+            result.append(getNode(resource.getName(), resource.getType(), resource.getStructureId(), resource.getParentStructureId(), grey));
         }
     
         if (includeFiles()) {
@@ -280,18 +280,18 @@ public class CmsTree extends CmsWorkplace {
         if (newTree()) {
             // new tree 
             result.append("parent.showTree(parent.tree_display.document, \"");
-            result.append(folder.getId().hashCode());
+            result.append(folder.getStructureId().hashCode());
             result.append("\");\n");
         } else {
             // update the current tree with the childs of the selected node
             if (resources.size() == 0) {
                 // the node had no childs 
                 result.append("parent.setNoChilds(\"");
-                result.append(folder.getId().hashCode());
+                result.append(folder.getStructureId().hashCode());
                 result.append("\");\n");
             } 
             result.append("parent.showLoadedNodes(parent.tree_display.document,\"");
-            result.append(folder.getId().hashCode());
+            result.append(folder.getStructureId().hashCode());
             result.append("\");\n");
         }
         
@@ -344,7 +344,7 @@ public class CmsTree extends CmsWorkplace {
         String lastknown = request.getParameter("lastknown");
         // both "resource" and "lastknown" must be folders
         if (resource != null) {
-            resource = CmsResource.getPath(resource);
+            resource = CmsResource.getFolderPath(resource);
             if (resource.startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM + "/") && (! resource.startsWith(getSettings().getSite()))) {
                 // restrict access to /system/ 
                 resource = "/";   

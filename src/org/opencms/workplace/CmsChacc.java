@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/07/31 09:22:38 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/09/12 17:38:06 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.opencms.security.I_CmsPrincipal;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.1
  */
@@ -602,7 +602,7 @@ public class CmsChacc extends CmsDialog {
             // show the short view, use an ACL to build the list
             try {
                 // get the inherited ACL of the parent folder 
-                String parentUri = com.opencms.file.CmsResource.getParent(getParamResource());
+                String parentUri = com.opencms.file.CmsResource.getParentFolder(getParamResource());
                 CmsAccessControlList acList = getCms().getAccessControlList(parentUri, true);
                 Set principalSet = acList.getPrincipals();
                 i = principalSet.iterator();
@@ -700,7 +700,7 @@ public class CmsChacc extends CmsDialog {
         
         // store all parent folder ids together with path in a map
         Map parents = new HashMap();
-        String path = CmsResource.getParent(getParamResource());
+        String path = CmsResource.getParentFolder(getParamResource());
         List parentResources = new ArrayList();
         try {
             // get all parent folders of the current file
@@ -710,7 +710,7 @@ public class CmsChacc extends CmsDialog {
         while (k.hasNext()) {
             // add the current folder to the map
             CmsResource curRes = (CmsResource)k.next();
-            parents.put(curRes.getResourceId(), curRes.getFullResourceName());
+            parents.put(curRes.getResourceId(), curRes.getRootPath());
         }        
 
         // create new ArrayLists in which inherited and non inherited entries are stored

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/09/05 16:05:23 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/09/12 17:38:06 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -1542,10 +1542,10 @@ public class OpenCmsCore {
                     // pages in the folder now
 
                     // Check if C_PROPERTY_DEFAULT_FILE is set on folder
-                    String defaultFileName = cms.readProperty(CmsResource.getPath(cms.readAbsolutePath(folder)), I_CmsConstants.C_PROPERTY_DEFAULT_FILE);
+                    String defaultFileName = cms.readProperty(CmsResource.getFolderPath(cms.readAbsolutePath(folder)), I_CmsConstants.C_PROPERTY_DEFAULT_FILE);
                     if (defaultFileName != null) {
                         // Property was set, so look up this file first
-                        String tmpResourceName = CmsResource.getPath(cms.readAbsolutePath(folder)) + defaultFileName;
+                        String tmpResourceName = CmsResource.getFolderPath(cms.readAbsolutePath(folder)) + defaultFileName;
 
                         try {
                             file = cms.readFile(tmpResourceName);
@@ -1561,7 +1561,7 @@ public class OpenCmsCore {
                     if (file == null) {
                         // No luck with the property, so check default files specified in opencms.properties (if required)         
                         for (int i = 0; i < m_defaultFilenames.length; i++) {
-                            String tmpResourceName = CmsResource.getPath(cms.readAbsolutePath(folder)) + m_defaultFilenames[i];
+                            String tmpResourceName = CmsResource.getFolderPath(cms.readAbsolutePath(folder)) + m_defaultFilenames[i];
                             try {
                                 file = cms.readFile(tmpResourceName);
                                 // No exception? So we have found the default file                         
@@ -1994,7 +1994,7 @@ public class OpenCmsCore {
      * @param file The requested document
      */
     protected void setResponse(CmsObject cms, CmsFile file) {
-        String mimetype = getMimeType(file.getResourceName(), cms.getRequestContext().getEncoding());
+        String mimetype = getMimeType(file.getName(), cms.getRequestContext().getEncoding());
         cms.getRequestContext().getResponse().setContentType(mimetype);
     }
 

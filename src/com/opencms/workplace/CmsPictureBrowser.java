@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/09/12 17:38:05 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.46 $ $Date: 2003/08/14 15:37:24 $
+ * @version $Revision: 1.47 $ $Date: 2003/09/12 17:38:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -177,7 +177,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         Vector filteredPics = new Vector();
         for(int i = 0;i < allPics.size();i++) {
             CmsFile file = (CmsFile)allPics.get(i);
-            String filename = file.getResourceName();
+            String filename = file.getName();
             String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
             boolean filenameFilter = inFilter(filename, filter);
             boolean titleFilter = ((title == null) || ("".equals(title))) ? false : inFilter(title, filter);
@@ -220,7 +220,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         int numFolders = folders.size();
         for(int i = 0;i < numFolders;i++) {
             CmsResource currFolder = (CmsResource)folders.get(i);
-            String name = currFolder.getResourceName();
+            String name = currFolder.getName();
             if(chosenFolder.equals(cms.readAbsolutePath(currFolder))) {
                 ret = i;
             }
@@ -328,7 +328,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         // Generate the picture list for all pictures on the selected page
         for(int i = from;i < to;i++) {
             CmsFile file = (CmsFile)filteredPics.elementAt(i);
-            String filename = file.getResourceName();
+            String filename = file.getName();
             String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
 
             // If no "Title" property is given, the title will be set to the filename
@@ -354,7 +354,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
 
 
             // Set all datablocks for the current picture list entry
-            xmlTemplateDocument.setData("picsource", picsUrl + file.getResourceName());
+            xmlTemplateDocument.setData("picsource", picsUrl + file.getName());
             xmlTemplateDocument.setData("filepath", cms.readAbsolutePath(file));
             xmlTemplateDocument.setData("title", Encoder.escapeXml(title));
             xmlTemplateDocument.setData("filename", filename);

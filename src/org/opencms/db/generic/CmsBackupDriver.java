@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/12 10:01:54 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2003/09/12 17:38:06 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.42 $ $Date: 2003/09/12 10:01:54 $
+ * @version $Revision: 1.43 $ $Date: 2003/09/12 17:38:06 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -319,7 +319,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             // get the max version id
             conn = m_sqlManager.getConnectionForBackup();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_BACKUP_MAXVER");
-            stmt.setString(1, resource.getId().toString());
+            stmt.setString(1, resource.getStructureId().toString());
             stmt.setString(2, resource.getResourceId().toString());
             res = stmt.executeQuery();
             if (res.next()) {
@@ -554,7 +554,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         PreparedStatement stmt = null;
         Connection conn = null;
         
-        String resourceName= resource.getFullResourceName();
+        String resourceName= resource.getRootPath();
         // hack: this never should happen, but it does.......
         if ((resource.isFolder()) && (!resourceName.endsWith("/"))) {
             resourceName += "/";
@@ -681,7 +681,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                     stmt.setInt(2, m_sqlManager.nextId(m_sqlManager.get("C_TABLE_PROPERTIES_BACKUP")));
                     stmt.setInt(3, propdef.getId());
                     stmt.setString(4, resource.getResourceId().toString());
-                    stmt.setString(5, resource.getFullResourceName());
+                    stmt.setString(5, resource.getRootPath());
                     stmt.setString(6, m_sqlManager.validateNull(value));
                     stmt.setInt(7, tagId);
                     stmt.setInt(8, versionId);
@@ -769,10 +769,10 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
 
             // write the structure
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STRUCTURE_WRITE_BACKUP");
-            stmt.setString(1, resource.getId().toString());
-            stmt.setString(2, resource.getParentId().toString());
+            stmt.setString(1, resource.getStructureId().toString());
+            stmt.setString(2, resource.getParentStructureId().toString());
             stmt.setString(3, resource.getResourceId().toString());
-            stmt.setString(4, resource.getResourceName());
+            stmt.setString(4, resource.getName());
             stmt.setInt(5, resource.getState());
             stmt.setInt(6, tagId);      
             stmt.setInt(7, versionId);
@@ -782,7 +782,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             writeBackupProperties(publishProject, resource, properties, backupPkId, tagId, versionId);
           
             // now check if there are old backup versions to delete
-            List existingBackups = readAllBackupFileHeaders(resource.getId());
+            List existingBackups = readAllBackupFileHeaders(resource.getStructureId());
             if (existingBackups.size() > maxVersions) {
                 // delete redundant backups
                 deleteBackups(existingBackups, maxVersions);
@@ -846,7 +846,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             for (int i = 0; i < count; i++) {
                 currentResource = (CmsBackupResource)existingBackups.get(i);
                 // delete the resource
-                stmt1.setString(1, currentResource.getId().toString());
+                stmt1.setString(1, currentResource.getStructureId().toString());
                 stmt1.setInt(2, currentResource.getTagId());
                 stmt1.addBatch();
                 // delete the properties

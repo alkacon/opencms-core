@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsBackupResource.java,v $
- * Date   : $Date: 2003/09/12 10:01:54 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/09/12 17:38:06 $
+ * Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.io.Serializable;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsBackupResource extends CmsFile implements Cloneable, Serializable, Comparable {
 
@@ -170,14 +170,14 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
            getBackupId(),
            getTagId(),
            getVersionId(), 
-           getId(), 
+           getStructureId(), 
            getResourceId(),
-           getParentId(), 
+           getParentStructureId(), 
            getFileId(),
-           getResourceName(), 
+           getName(), 
            getType(), 
            getFlags(),
-           getProjectId(), 
+           getProjectLastModified(), 
            getState(),
            getLoaderId(),
            getDateCreated(),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/09/11 10:04:52 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/09/12 17:38:06 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $ $Date: 2003/09/11 10:04:52 $ 
+ * @version $Revision: 1.14 $ $Date: 2003/09/12 17:38:06 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -3484,7 +3484,7 @@ class CmsShellCommands {
                 int index = random.nextInt(numResources);
                 CmsResource res = (CmsResource)testResources.get(index);
                 t = System.currentTimeMillis();
-                    vfsDriver.readFileHeader(projectId, res.getParentId(), res.getResourceName(), true);            
+                    vfsDriver.readFileHeader(projectId, res.getParentStructureId(), res.getName(), true);            
                 tt = System.currentTimeMillis() - t;
                 totalTime += tt;
                 minTime = (minTime==0 | minTime > tt) ? tt : minTime;

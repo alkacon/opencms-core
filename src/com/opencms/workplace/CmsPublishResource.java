@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2003/09/05 16:05:23 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/09/12 17:38:05 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.29 $ $Date: 2003/09/05 16:05:23 $
+ * @version $Revision: 1.30 $ $Date: 2003/09/12 17:38:05 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault {
@@ -107,7 +107,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault {
 
             xmlTemplateDocument.setData("CHANGEDATE", Utils.getNiceDate(file.getDateLastModified()));
             xmlTemplateDocument.setData("USER", cms.readUser(file.getUserLastModified()).getName());
-            xmlTemplateDocument.setData("FILENAME", file.getResourceName());
+            xmlTemplateDocument.setData("FILENAME", file.getName());
             
         } 
         

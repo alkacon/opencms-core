@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLock.java,v $
-* Date   : $Date: 2003/08/03 15:11:59 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2003/09/12 17:38:05 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.52 $ $Date: 2003/08/03 15:11:59 $
+ * @version $Revision: 1.53 $ $Date: 2003/09/12 17:38:05 $
  */
 
 public class CmsLock extends CmsWorkplaceDefault {
@@ -118,13 +118,13 @@ public class CmsLock extends CmsWorkplaceDefault {
                 } catch(CmsException e){
                     if(e instanceof CmsSecurityException) {
                         template = "erroraccessdenied";
-                        xmlTemplateDocument.setData("details", file.getResourceName());
+                        xmlTemplateDocument.setData("details", file.getName());
                     }else {
                         xmlTemplateDocument.setData("details", e.toString());
                         template = "error";
                     }
                     xmlTemplateDocument.setData("lasturl", lasturl);
-                    xmlTemplateDocument.setData("FILENAME", file.getResourceName());
+                    xmlTemplateDocument.setData("FILENAME", file.getName());
                     // process the selected template
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
                 }
@@ -147,7 +147,7 @@ public class CmsLock extends CmsWorkplaceDefault {
                 return null;
             }
         }
-        xmlTemplateDocument.setData("FILENAME", file.getResourceName());
+        xmlTemplateDocument.setData("FILENAME", file.getName());
 
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);

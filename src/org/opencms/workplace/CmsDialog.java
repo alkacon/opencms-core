@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/09/11 12:04:49 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/09/12 17:38:06 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.1
  */
@@ -363,7 +363,7 @@ public class CmsDialog extends CmsWorkplace {
      * @return the link URL to get back one folder in the administration view
      */
     protected String getAdministrationBackLink() {
-        return I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/administration_content_top.html" + "?sender=" + CmsResource.getParent(getJsp().getRequestContext().getFolderUri());
+        return I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/administration_content_top.html" + "?sender=" + CmsResource.getParentFolder(getJsp().getRequestContext().getFolderUri());
     }
 
     /**

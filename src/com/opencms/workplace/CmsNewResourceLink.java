@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2003/09/12 10:52:14 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2003/09/12 17:38:05 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.opencms.workplace.CmsWorkplaceSettings;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.51 $ $Date: 2003/09/12 10:52:14 $
+ * @version $Revision: 1.52 $ $Date: 2003/09/12 17:38:05 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault {
@@ -181,7 +181,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault {
             try{
                 CmsFile currentFile = cms.readFile(filename);
                 String content = new String(currentFile.getContents());
-                xmlTemplateDocument.setData("LINKNAME", currentFile.getResourceName());
+                xmlTemplateDocument.setData("LINKNAME", currentFile.getName());
                 xmlTemplateDocument.setData("LINK", cms.readAbsolutePath(currentFile));
                 xmlTemplateDocument.setData("LINKVALUE", content);
                 templateSelector = "change";
@@ -510,7 +510,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault {
                     if(navpos != null) {
                         nicename = cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_NAVTEXT);
                         if(nicename == null) {
-                            nicename = res.getResourceName();
+                            nicename = res.getName();
                         }
 
                         // add this file/folder to the storage.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2003/08/30 11:30:08 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2003/09/12 17:38:05 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.51 $ $Date: 2003/08/30 11:30:08 $
+ * @version $Revision: 1.52 $ $Date: 2003/09/12 17:38:05 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault {
@@ -369,7 +369,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault {
                     if (navpos != null) {
                         nicename = cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_NAVTEXT);
                         if (nicename == null) {
-                            nicename = res.getResourceName();
+                            nicename = res.getName();
                         }
 
                         // add this file/folder to the storage.

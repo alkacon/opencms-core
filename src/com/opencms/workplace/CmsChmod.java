@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChmod.java,v $
- * Date   : $Date: 2003/08/14 15:37:24 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2003/09/12 17:38:05 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * Template class for displaying the chmod screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.44 $ $Date: 2003/08/14 15:37:24 $
+ * @version $Revision: 1.45 $ $Date: 2003/09/12 17:38:05 $
  */
 
 public class CmsChmod extends CmsWorkplaceDefault {
@@ -184,7 +184,7 @@ public class CmsChmod extends CmsWorkplaceDefault {
 		xmlTemplateDocument.setData("STATE", getState(cms, file, lang));
 		xmlTemplateDocument.setData("OWNER", "" /* Utils.getFullName(owner) */);
 		xmlTemplateDocument.setData("GROUP", "" /* cms.readGroup(file).getName() */);
-		xmlTemplateDocument.setData("FILENAME", file.getResourceName());
+		xmlTemplateDocument.setData("FILENAME", file.getName());
 
 		// now set the actual access flags i the dialog
 //		int flags = file.getAccessFlags();

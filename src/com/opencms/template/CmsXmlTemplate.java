@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/09/02 12:15:38 $
-* Version: $Revision: 1.127 $
+* Date   : $Date: 2003/09/12 17:38:06 $
+* Version: $Revision: 1.128 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.127 $ $Date: 2003/09/02 12:15:38 $
+ * @version $Revision: 1.128 $ $Date: 2003/09/12 17:38:06 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -1194,9 +1194,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             // now for the vfs
             if(vfsDeps != null){
                 for(int i = 0; i < vfsDeps.size(); i++){
-                    allDeps.add(((CmsResource)vfsDeps.elementAt(i)).getResourceName());
+                    allDeps.add(((CmsResource)vfsDeps.elementAt(i)).getName());
                     if(exportmode){
-                        cms.getRequestContext().addDependency(((CmsResource)vfsDeps.elementAt(i)).getResourceName());
+                        cms.getRequestContext().addDependency(((CmsResource)vfsDeps.elementAt(i)).getName());
                     }
                 }
             }

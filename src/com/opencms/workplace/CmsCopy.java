@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2003/08/01 09:55:34 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2003/09/12 17:38:05 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.65 $ $Date: 2003/08/01 09:55:34 $
+ * @version $Revision: 1.66 $ $Date: 2003/09/12 17:38:05 $
  */
 
 public class CmsCopy extends CmsWorkplaceDefault {
@@ -110,10 +110,10 @@ public class CmsCopy extends CmsWorkplaceDefault {
                 newFolder = wholePath.substring(0, wholePath.lastIndexOf("/")+1);
                 newFile = wholePath.substring(wholePath.lastIndexOf("/")+1);
                 if (newFile == null || "".equals(newFile)){
-                    newFile = file.getResourceName();
+                    newFile = file.getName();
                 }
             } else {
-                newFolder = CmsResource.getParent(cms.readAbsolutePath(file));
+                newFolder = CmsResource.getParentFolder(cms.readAbsolutePath(file));
                 newFile = wholePath;
             }
         }
@@ -153,7 +153,7 @@ public class CmsCopy extends CmsWorkplaceDefault {
         //check if the newfile parameter was included in the request
         // if not, the copy page is shown for the first time
         if(newFile == null || "".equals(newFile)) {
-            session.putValue(C_PARA_NAME, file.getResourceName());
+            session.putValue(C_PARA_NAME, file.getName());
         }
         else {
             if(action == null) {
@@ -215,7 +215,7 @@ public class CmsCopy extends CmsWorkplaceDefault {
         xmlTemplateDocument.setData("STATE", getState(cms, file, lang));
         xmlTemplateDocument.setData("OWNER", "" /* Utils.getFullName(owner) */);
         xmlTemplateDocument.setData("GROUP", "" /* cms.readGroup(file).getName() */);
-        xmlTemplateDocument.setData("FILENAME", file.getResourceName());
+        xmlTemplateDocument.setData("FILENAME", file.getName());
 
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);

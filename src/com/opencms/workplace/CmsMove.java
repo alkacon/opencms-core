@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2003/09/12 17:38:05 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.63 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.64 $ $Date: 2003/09/12 17:38:05 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault {
@@ -109,10 +109,10 @@ public class CmsMove extends CmsWorkplaceDefault {
                 newFolder = destinationName.substring(0, destinationName.lastIndexOf("/")+1);
                 newFile = destinationName.substring(destinationName.lastIndexOf("/")+1);
                 if (newFile == null || "".equals(newFile)){
-                    newFile = source.getResourceName();
+                    newFile = source.getName();
                 }
             } else {
-                newFolder = CmsResource.getParent(cms.readAbsolutePath(source));
+                newFolder = CmsResource.getParentFolder(cms.readAbsolutePath(source));
                 newFile = destinationName;
             }
         }
@@ -271,7 +271,7 @@ public class CmsMove extends CmsWorkplaceDefault {
             xmlTemplateDocument.setData("STATE", getState(cms, source, lang));
             xmlTemplateDocument.setData("OWNER", "" /* Utils.getFullName(owner) */);
             xmlTemplateDocument.setData("GROUP", "" /* cms.readGroup(file).getName() */);
-            xmlTemplateDocument.setData("FILENAME", source.getResourceName());
+            xmlTemplateDocument.setData("FILENAME", source.getName());
         }
 
         // process the selected template

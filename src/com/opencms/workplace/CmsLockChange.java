@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLockChange.java,v $
-* Date   : $Date: 2003/08/04 15:59:09 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/09/12 17:38:05 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.46 $ $Date: 2003/08/04 15:59:09 $
+ * @version $Revision: 1.47 $ $Date: 2003/09/12 17:38:05 $
  */
 
 public class CmsLockChange extends CmsWorkplaceDefault {
@@ -118,13 +118,13 @@ public class CmsLockChange extends CmsWorkplaceDefault {
                     CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
                     if (e instanceof CmsSecurityException) {
                         template = "erroraccessdenied";
-                        xmlTemplateDocument.setData("details", file.getResourceName());
+                        xmlTemplateDocument.setData("details", file.getName());
                     } else {
                         xmlTemplateDocument.setData("details", e.toString());
                         template = "error";
                     }
                     xmlTemplateDocument.setData("lasturl", lasturl);
-                    xmlTemplateDocument.setData("FILENAME", file.getResourceName());
+                    xmlTemplateDocument.setData("FILENAME", file.getName());
                     // process the selected template
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
                 }
@@ -149,7 +149,7 @@ public class CmsLockChange extends CmsWorkplaceDefault {
         }
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,
                 templateFile);
-        xmlTemplateDocument.setData("FILENAME", file.getResourceName());
+        xmlTemplateDocument.setData("FILENAME", file.getName());
 
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);

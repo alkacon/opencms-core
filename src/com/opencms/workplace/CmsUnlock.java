@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
-* Date   : $Date: 2003/08/03 15:12:00 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/09/12 17:38:05 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.50 $ $Date: 2003/08/03 15:12:00 $
+ * @version $Revision: 1.51 $ $Date: 2003/09/12 17:38:05 $
  */
 
 public class CmsUnlock extends CmsWorkplaceDefault {
@@ -140,7 +140,7 @@ public class CmsUnlock extends CmsWorkplaceDefault {
                     CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
                     if (e instanceof CmsSecurityException) {
                         template = "erroraccessdenied";
-                        xmlTemplateDocument.setData("details", file.getResourceName());
+                        xmlTemplateDocument.setData("details", file.getName());
                     } else {
                         template = "error";
                         xmlTemplateDocument.setData("details", e.toString());
@@ -165,7 +165,7 @@ public class CmsUnlock extends CmsWorkplaceDefault {
             return null;
         }
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
-        xmlTemplateDocument.setData("FILENAME", file.getResourceName());
+        xmlTemplateDocument.setData("FILENAME", file.getName());
 
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);

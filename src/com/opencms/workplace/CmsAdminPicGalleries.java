@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2003/09/01 09:09:17 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/09/12 17:38:05 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.46 $ $Date: 2003/09/01 09:09:17 $
+ * @version $Revision: 1.47 $ $Date: 2003/09/12 17:38:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -136,7 +136,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
 
         // Check if we must redirect to head_2
         try {
-            String parent = CmsResource.getParent(cms.readAbsolutePath(thefolder));
+            String parent = CmsResource.getParentFolder(cms.readAbsolutePath(thefolder));
             if(foldername.startsWith(C_VFS_GALLERY_PICS) && (parent.equals(C_VFS_GALLERY_PICS)) && templateFile.endsWith("administration_head_picgalleries1")) {
                 // we are in the wrong head - use the second one
                 xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, C_VFS_PATH_WORKPLACE + "administration/htmlgallery/administration_head_picgalleries2", elementName, parameters, templateSelector);

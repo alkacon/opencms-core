@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2003/09/12 17:38:05 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.53 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.54 $ $Date: 2003/09/12 17:38:05 $
  */
 
 public class CmsDelete extends CmsWorkplaceDefault {
@@ -173,7 +173,7 @@ public class CmsDelete extends CmsWorkplaceDefault {
             xmlTemplateDocument.setData("STATE", getState(cms, file, lang));
             xmlTemplateDocument.setData("OWNER", "" /* Utils.getFullName(owner) */);
             xmlTemplateDocument.setData("GROUP", "" /* cms.readGroup(file).getName() */);
-            xmlTemplateDocument.setData("FILENAME", file.getResourceName());
+            xmlTemplateDocument.setData("FILENAME", file.getName());
         }
 
         // process the selected template

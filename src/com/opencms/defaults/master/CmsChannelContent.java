@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/08/14 15:37:26 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2003/09/12 17:38:06 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,8 +56,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.53 $
- * $Date: 2003/08/14 15:37:26 $
+ * $Revision: 1.54 $
+ * $Date: 2003/09/12 17:38:06 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsExtendedContentDefinition{
 
@@ -152,8 +152,8 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
 
         try {
             m_channel = m_cms.readFolder(channelId, true);            
-            m_channelname = m_channel.getResourceName();
-            m_parentchannel = CmsResource.getParent(cms.readAbsolutePath(m_channel));
+            m_channelname = m_channel.getName();
+            m_parentchannel = CmsResource.getParentFolder(cms.readAbsolutePath(m_channel));
             // m_GroupId = m_channel.getGroupId();
             // m_UserId = m_channel.getOwnerId();
             // m_accessflags = m_channel.getAccessFlags();
@@ -178,8 +178,8 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         String fullName = cms.readAbsolutePath(resource);
         m_cms = cms;
         m_channel = resource;
-        m_channelname = resource.getResourceName();
-        m_parentchannel = CmsResource.getParent(cms.readAbsolutePath(resource));
+        m_channelname = resource.getName();
+        m_parentchannel = CmsResource.getParentFolder(cms.readAbsolutePath(resource));
         // m_GroupId = resource.getGroupId();
         // m_UserId = resource.getOwnerId();
         // m_accessflags = resource.getAccessFlags();
@@ -348,18 +348,18 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
                 newChannel = cms.createResource(m_parentchannel, m_channelname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, m_properties);
                 cms.lockResource(cms.readAbsolutePath(newChannel), true);
             } else {
-                if (!"".equals(m_channel.getResourceName())) {
+                if (!"".equals(m_channel.getName())) {
                     newChannel = cms.readFolder(cms.readAbsolutePath(m_channel));
                 }
                 
                 if (newChannel!=null && !cms.readAbsolutePath(newChannel).equals(m_parentchannel+m_channelname+"/")){
                     // the parent and/or the channelname has changed,
                     // so move or rename the channel
-                    String parent = CmsResource.getParent(cms.readAbsolutePath(newChannel));
+                    String parent = CmsResource.getParentFolder(cms.readAbsolutePath(newChannel));
                     if(! parent.equals(m_parentchannel)){
                         // move the channel to the new parent channel
                         cms.moveResource(cms.readAbsolutePath(newChannel), m_parentchannel+m_channelname);
-                    } else if (!newChannel.getResourceName().equals(m_channelname)){
+                    } else if (!newChannel.getName().equals(m_channelname)){
                         // only rename the channel, the parent has not changed
                         cms.renameResource(cms.readAbsolutePath(newChannel), m_channelname);
                     }
@@ -419,7 +419,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * @return a string with the Id
      */
     public String getUniqueId(CmsObject cms) {
-        return m_channel.getId().toString();
+        return m_channel.getStructureId().toString();
     }
 
     /**
@@ -428,7 +428,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * @return int The unique id
      */
     public CmsUUID getId() {
-        return m_channel.getId();
+        return m_channel.getStructureId();
     }
 
     /**
@@ -459,7 +459,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * @return int with the projectId.
      */
     public int getProjectId() {
-        return m_channel.getProjectId();
+        return m_channel.getProjectLastModified();
     }
 
     /**

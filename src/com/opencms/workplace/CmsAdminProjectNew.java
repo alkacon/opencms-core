@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2003/08/30 11:30:08 $
-* Version: $Revision: 1.83 $
+* Date   : $Date: 2003/09/12 17:38:05 $
+* Version: $Revision: 1.84 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.83 $ $Date: 2003/08/30 11:30:08 $
+ * @version $Revision: 1.84 $ $Date: 2003/09/12 17:38:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -192,7 +192,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
             fileToGo = (String)session.getValue("newProjectCallingFrom");
         } else {
             CmsResource resource = cms.readFileHeader(fileToGo);
-            if (resource.isFolder() && !resource.getFullResourceName().endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+            if (resource.isFolder() && !resource.getRootPath().endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
                 fileToGo += I_CmsConstants.C_FOLDER_SEPARATOR;
             }
         }

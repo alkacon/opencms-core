@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/09/12 10:01:54 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2003/09/12 17:38:06 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.41 $ $Date: 2003/09/12 10:01:54 $
+ * @version $Revision: 1.42 $ $Date: 2003/09/12 17:38:06 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -226,7 +226,7 @@ public final class CmsLockDispatcher extends Object {
 
             for (int i = 0; i < siblings.size(); i++) {
                 sibling = (CmsResource) siblings.get(i);
-                siblingLock = (CmsLock) m_exclusiveLocks.get(sibling.getFullResourceName());
+                siblingLock = (CmsLock) m_exclusiveLocks.get(sibling.getRootPath());
 
                 if (siblingLock != null) {
                     // a sibling is already exclusive locked
@@ -242,7 +242,7 @@ public final class CmsLockDispatcher extends Object {
             for (int i = 0; i < siblings.size(); i++) {
                 sibling = (CmsResource) siblings.get(i);
 
-                if (m_exclusiveLocks.containsKey(sibling.getFullResourceName())) {
+                if (m_exclusiveLocks.containsKey(sibling.getRootPath())) {
                     // a sibling is already exclusive locked
                     return new CmsLock(resourcename, parentFolderLock.getUserId(), parentFolderLock.getProjectId(), CmsLock.C_TYPE_SHARED_INHERITED);
                 }
@@ -278,8 +278,8 @@ public final class CmsLockDispatcher extends Object {
         for (int i = 0; i < siblings.size(); i++) {
             sibling = (CmsResource) siblings.get(i);
             
-            if (m_exclusiveLocks.containsKey(sibling.getFullResourceName())) {
-                return (CmsLock) m_exclusiveLocks.get(sibling.getFullResourceName());
+            if (m_exclusiveLocks.containsKey(sibling.getRootPath())) {
+                return (CmsLock) m_exclusiveLocks.get(sibling.getRootPath());
             }
         }
         
@@ -413,9 +413,9 @@ public final class CmsLockDispatcher extends Object {
             for (int i = 0; i < siblings.size(); i++) {
                 sibling = (CmsResource) siblings.get(i);
 
-                if (m_exclusiveLocks.containsKey(sibling.getFullResourceName())) {
+                if (m_exclusiveLocks.containsKey(sibling.getRootPath())) {
                     // remove the exclusive locked sibling
-                    m_exclusiveLocks.remove(sibling.getFullResourceName());
+                    m_exclusiveLocks.remove(sibling.getRootPath());
                     break;
                 }
             }

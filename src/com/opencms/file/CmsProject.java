@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
- * Date   : $Date: 2003/09/12 10:01:53 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2003/09/12 17:38:06 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  */
 public class CmsProject implements Cloneable {
 
@@ -156,7 +156,7 @@ public class CmsProject implements Cloneable {
      * @return true, if the resource is "inside" the project resources
      */
     public static boolean isInsideProject(List projectResources, CmsResource resource) {
-        String resourcename = resource.getFullResourceName();        
+        String resourcename = resource.getRootPath();        
         return isInsideProject(projectResources, resourcename);
     }
     

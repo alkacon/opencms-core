@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChnav.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/09/12 17:38:05 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.19 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.20 $ $Date: 2003/09/12 17:38:05 $
  */
 
 public class CmsChnav extends CmsWorkplaceDefault {
@@ -148,7 +148,7 @@ public class CmsChnav extends CmsWorkplaceDefault {
                 session.removeValue(C_SESSIONHEADER + C_PARA_NAVTEXT);
             }
         }
-        xmlTemplateDocument.setData("frametitle", resource.getResourceName());
+        xmlTemplateDocument.setData("frametitle", resource.getName());
         xmlTemplateDocument.setData(C_PARA_NAVTEXT, Encoder.escapeXml(navtext));
 
         // process the selected template
@@ -225,7 +225,7 @@ public class CmsChnav extends CmsWorkplaceDefault {
                         if(navpos != null) {
                             nicename = Encoder.escapeHtml(cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_NAVTEXT));
                             if(nicename == null) {
-                                nicename = res.getResourceName();
+                                nicename = res.getName();
                             }
 
                             // add this file/folder to the storage.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChnav.java,v $
- * Date   : $Date: 2003/07/30 13:34:50 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/09/12 17:38:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -231,7 +231,7 @@ public class CmsChnav extends CmsDialog {
         CmsJspNavElement curNav = CmsJspNavBuilder.getNavigationForResource(getCms(), filename);
         
         // get the parent folder of the current file
-        filename = CmsResource.getParent(filename);
+        filename = CmsResource.getParentFolder(filename);
         
         // get navigation of the current folder
         navList = CmsJspNavBuilder.getNavigationForFolder(getCms(), filename);

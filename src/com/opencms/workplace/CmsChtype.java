@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChtype.java,v $
- * Date   : $Date: 2003/07/31 13:19:37 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2003/09/12 17:38:05 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Vector;
  * Template class for displaying the type screen of the OpenCms workplace.<p>
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.27 $ $Date: 2003/09/12 17:38:05 $
  */
 public class CmsChtype extends CmsWorkplaceDefault {
 
@@ -127,7 +127,7 @@ public class CmsChtype extends CmsWorkplaceDefault {
         // set all required datablocks
         xmlTemplateDocument.setData("OWNER", "" /* Utils.getFullName(cms.readOwner(file)) */ );
         xmlTemplateDocument.setData("GROUP", "" /* cms.readGroup(file).getName() */);
-        xmlTemplateDocument.setData("FILENAME", file.getResourceName());
+        xmlTemplateDocument.setData("FILENAME", file.getName());
         getResources(cms, null, null, null, null, null);
         if(m_names != null) {
             xmlTemplateDocument.setData(C_RADIOSIZE, new Integer(m_names.size()).toString());

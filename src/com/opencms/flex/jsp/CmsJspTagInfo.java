@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInfo.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/09/12 17:38:05 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * error message.<p>
  *  
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsJspTagInfo extends TagSupport {
     
@@ -193,7 +193,7 @@ public class CmsJspTagInfo extends TagSupport {
                 result = controller.getCurrentRequest().getElementUri();
                 break;
             case 7 : // opencms.request.folder
-                result = com.opencms.file.CmsResource.getParent(controller.getCmsObject().getRequestContext().getUri());
+                result = com.opencms.file.CmsResource.getParentFolder(controller.getCmsObject().getRequestContext().getUri());
                 break;
             case 8 : // opencms.request.encoding
                 result = controller.getCmsObject().getRequestContext().getEncoding();

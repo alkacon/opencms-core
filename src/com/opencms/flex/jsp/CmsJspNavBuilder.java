@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2003/07/31 19:20:09 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/09/12 17:38:05 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  * {@link com.opencms.flex.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @see com.opencms.flex.jsp.CmsJspNavElement
  * 
@@ -83,7 +83,7 @@ public class CmsJspNavBuilder {
     public void init(CmsObject cms) {
         m_cms = cms;
         m_requestUri = m_cms.getRequestContext().getUri();
-        m_requestUriFolder = CmsResource.getPath(m_requestUri);
+        m_requestUriFolder = CmsResource.getFolderPath(m_requestUri);
     }
 
     /**
@@ -156,7 +156,7 @@ public class CmsJspNavBuilder {
      * @return a sorted (ascending to nav position) ArrayList of navigation elements
      */    
     public static ArrayList getNavigationForFolder(CmsObject cms, String folder) {
-        folder = CmsResource.getPath(folder);
+        folder = CmsResource.getFolderPath(folder);
         ArrayList list = new ArrayList();
         List v = null, dir = null;
         try {
@@ -227,7 +227,7 @@ public class CmsJspNavBuilder {
      * @return a sorted (ascending to nav position) ArrayList of navigation elements
      */
     public static ArrayList getNavigationForFolder(CmsObject cms, String folder, int level) {
-        folder = CmsResource.getPath(folder);
+        folder = CmsResource.getFolderPath(folder);
         // If level is one just use root folder
         if (level == 0) return getNavigationForFolder(cms, "/");
         String navfolder = CmsResource.getPathPart(folder, level);
@@ -266,7 +266,7 @@ public class CmsJspNavBuilder {
      * @return a sorted list of nav elements with the nav tree level property set 
      */
     public static ArrayList getNavigationTreeForFolder(CmsObject cms, String folder, int startlevel, int endlevel) {
-        folder = CmsResource.getPath(folder);
+        folder = CmsResource.getFolderPath(folder);
         // Make sure start and end level make sense
         if (endlevel < startlevel) return new ArrayList(0);
         int currentlevel = CmsResource.getPathLevel(folder);

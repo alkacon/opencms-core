@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2003/09/12 15:39:04 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2003/09/12 17:38:06 $
+ * Version: $Revision: 1.88 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.87 $ 
+ * @version $Revision: 1.88 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -59,17 +59,14 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /** The flags of this resource ( not used yet; the Accessflags are stored in m_accessFlags) */
     private int m_flags;
 
-    /** The full name of a resource include it's path from the site root */
-    private String m_fullResourceName;
-
     /** Boolean flag whether the timestamp of this resource was modified by a touch command */
     private boolean m_isTouched;
 
     /** The size of the content */
     protected int m_length;
 
-    /** The number of references */
-    protected int m_linkCount;
+    /** The number of links that point to this resource */
+    private int m_linkCount;
 
     /** The id of the loader which is used to process this resource */
     private int m_loaderId;
@@ -80,11 +77,14 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /** The ID of the parent's strcuture database record */
     private CmsUUID m_parentId;
 
-    /** The project id this recouce belongs to */
-    private int m_projectId;
+    /** The project id where this resource has been last modified in */
+    private int m_projectLastModified;
 
     /** The ID of the resource database record */
     private CmsUUID m_resourceId;
+
+    /** The name of a resource with it's full path from the root folder including the current site root */
+    private String m_rootPath;
 
     /** The state of this resource */
     private int m_state;
@@ -104,22 +104,22 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * Constructor, creates a new CmsRecource object.<p>
      *
-    * @param structureId the id of this resources structure record
-    * @param resourceId the id of this resources resource record
-    * @param parentId the id of this resources parent folder
-    * @param fileId the id of this resources content record
-    * @param name the filename of this resouce
-    * @param type the type of this resource
-    * @param flags the flags of this resource
-    * @param projectId the project id this resource was last modified in
+     * @param structureId the id of this resources structure record
+     * @param resourceId the id of this resources resource record
+     * @param parentId the id of this resources parent folder
+     * @param fileId the id of this resources content record
+     * @param name the filename of this resouce
+     * @param type the type of this resource
+     * @param flags the flags of this resource
+     * @param projectId the project id this resource was last modified in
      * @param state the state of this resource
-    * @param loaderId the id for the that is used to load this recource
+     * @param loaderId the id for the that is used to load this recource
      * @param dateCreated the creation date of this resource
-    * @param userCreated the id of the user who created this resource
-    * @param dateLastModified the date of the last modification of this resource
-    * @param userLastModified the id of the user who did the last modification of this resource
-    * @param size the size of the file content of this resource
-    * @param linkCount the count of all siblings of this resource 
+     * @param userCreated the id of the user who created this resource
+     * @param dateLastModified the date of the last modification of this resource
+     * @param userLastModified the id of the user who did the last modification of this resource
+     * @param size the size of the file content of this resource
+     * @param linkCount the count of all siblings of this resource 
      */
     public CmsResource(
         CmsUUID structureId, 
@@ -146,7 +146,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_name = name;
         m_type = type;
         m_flags = flags;
-        m_projectId = projectId;
+        m_projectLastModified = projectId;
         m_loaderId = loaderId;
         m_state = state;
         m_dateCreated = dateCreated;
@@ -157,7 +157,27 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_linkCount = linkCount;
         
         m_isTouched = false;
-        m_fullResourceName = null;
+        m_rootPath = null;
+    }
+
+    /**
+     * Returns the folder path of the resource with the given name,
+     * if the resource is a folder (i.e. ends with a "/"), the complete path of the folder 
+     * is returned (not the parent folder path).<p>
+     * 
+     * This is achived by just cutting of everthing behind the last occurence of a "/" character
+     * in the String, no check if performed if the resource exists or not in the VFS, 
+     * only resources that end with a "/" are considered to be folders.
+     * 
+     * Example: Returns <code>/system/def/</code> for the
+     * resource <code>/system/def/file.html</code> and 
+     * <code>/system/def/</code> for the (folder) resource <code>/system/def/</code>..
+     *
+     * @param resource the name of a resource
+     * @return the folder of the given resource
+     */
+    public static String getFolderPath(String resource) {
+        return resource.substring(0, resource.lastIndexOf('/') + 1);
     }
 
     /**
@@ -194,7 +214,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param resource the resource to find the parent folder for
      * @return the calculated parent absolute folder path, or <code>null</code> for the root folder 
      */
-    public static String getParent(String resource) {
+    public static String getParentFolder(String resource) {
         if (I_CmsConstants.C_ROOT.equals(resource)) {
             return null;
         }
@@ -202,26 +222,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         String parent = (resource.substring(0, resource.length() - 1));
         // now as the name does not end with "/", check for the last "/" which is the parent folder name
         return parent.substring(0, parent.lastIndexOf('/') + 1);
-    }
-
-    /**
-     * Returns the folder path of the resource with the given name,
-     * if the resource is a folder (i.e. ends with a "/"), the complete path of the folder 
-     * is returned (not the parent folder path).<p>
-     * 
-     * This is achived by just cutting of everthing behind the last occurence of a "/" character
-     * in the String, no check if performed if the resource exists or not in the VFS, 
-     * only resources that end with a "/" are considered to be folders.
-     * 
-     * Example: Returns <code>/system/def/</code> for the
-     * resource <code>/system/def/file.html</code> and 
-     * <code>/system/def/</code> for the (folder) resource <code>/system/def/</code>..
-     *
-     * @param resource the name of a resource
-     * @return the folder of the given resource
-     */
-    public static String getPath(String resource) {
-        return resource.substring(0, resource.lastIndexOf('/') + 1);
     }
 
     /**
@@ -255,7 +255,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the name of a parent folder of the given resource 
      */
     public static String getPathPart(String resource, int level) {
-        resource = getPath(resource);
+        resource = getFolderPath(resource);
         String result = null;
         int pos = 0, count = 0;
         if (level >= 0) {
@@ -306,7 +306,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             m_name, 
             m_type,
             m_flags, 
-            m_projectId, 
+            m_projectLastModified, 
             m_state, 
             m_loaderId, 
             m_dateCreated, 
@@ -326,8 +326,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             return 0;
         }
 
-        String ownResourceName = getResourceName();
-        String otherResourceName = ((CmsResource)o).getResourceName();
+        String ownResourceName = getName();
+        String otherResourceName = ((CmsResource)o).getName();
 
         return ownResourceName.compareTo(otherResourceName);
     }
@@ -337,9 +337,21 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public boolean equals(Object obj) {
         if (obj instanceof CmsResource) {
-            return ((CmsResource)obj).getId().equals(getId());
+            return ((CmsResource)obj).getStructureId().equals(getStructureId());
             }
         return false;
+    }
+
+    /**
+     * Same as calling {@link #getPath()}, only for backward compatibility,
+     * deprecated, will be removed in the next version.<p>
+     * 
+     * @return same result as calling getPath()
+     * @see #getPath()
+     * @deprecated use getPath(), this method will be removed in the next version
+     */
+    public String getAbsolutePath() {
+        return getPath();
     }
 
     /**
@@ -388,29 +400,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public int getFlags() {
         return m_flags;
     }
-
-    /**
-     * Returns the full resource name of this resource including the path,
-     * also including the current site context 
-     * e.g. <code>/default/vfs/system/workplace/action/index.html</code>.<p>
-     *
-     * @return the resource name including it's path
-     */
-    public String getFullResourceName() {
-        if (m_fullResourceName == null) {
-            throw new RuntimeException("Full resource name not set for CmsResource " + getResourceName());
-        }
-        return m_fullResourceName;
-    }
-
-    /**
-     * Returns the id of the file structure database entry of this resource.<p>
-     * 
-     * @return the id of the file structure database
-     */
-    public CmsUUID getId() {
-        return m_structureId;
-    }
     
     /**
      * Gets the length of the content (i.e. the file size).<p>
@@ -454,42 +443,43 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public int getLockedInProject() {
         throw new RuntimeException("getLockedInProject() not longer supported on CmsResource");
     }
-    
+
     /**
      * Returns the name of this resource, e.g. <code>index.html</code>.<p>
      *
      * @return the name of this resource
-     * @deprecated use {@link #getResourceName()} instead
      */
     public String getName() {
-        return getResourceName();
+        return m_name;
+    }
+
+    /**
+     * Returns the structure record id of the parent of this resource.<p>
+     *
+     * @return the structure record id of the parent of this resource
+     */
+    public CmsUUID getParentStructureId() {
+        return m_parentId;
+    }
+    
+    /**
+     * Returns the name of this resource including the full path in the current site,
+     * but without the current site root.<p>
+     *
+     * @return the name of this resource including the full path in the current site
+     */
+    public String getPath() {
+        // TODO: Must be implemented
+        return null;
     }    
 
     /**
-     * Gets the ID of the parent's file tree/hierarchy database entry.
+     * Returns the id of the project where the resource has been last modified.<p>
      *
-     * @return the ID of the parent's file tree/hierarchy database entry.
+     * @return the id of the project where the resource has been last modified
      */
-    public CmsUUID getParentId() {
-        return m_parentId;
-    }
-
-    /**
-     * Returns the ID of the project where the resource has been last modified.<p>
-     *
-     * @return the ID of the project where the resource has been last modified
-     */
-    public int getProjectId() {
-        return m_projectId;
-    }
-
-    /**
-     * Encapsulates which id of this resource is used to handle ACE's for resources/files/folders.<p>
-     * 
-     * @return the resource id of this resource
-     */
-    public CmsUUID getResourceAceId() {
-        return getResourceId();
+    public int getProjectLastModified() {
+        return m_projectLastModified;
     }
 
     /**
@@ -502,12 +492,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the name of this resource, e.g. <code>index.html</code>.<p>
+     * Returns the name of a resource with it's full path from the root folder including the current site root, 
+     * e.g. <code>/default/vfs/system/workplace/action/index.html</code>.<p>
      *
-     * @return the name of this resource
+     * @return the name of a resource with it's full path from the root folder including the current site root
      */
-    public String getResourceName() {
-        return m_name;
+    public String getRootPath() {
+        if (m_rootPath == null) {
+            throw new RuntimeException("Full resource name not set for CmsResource " + getName());
+        }
+        return m_rootPath;
     }
     
     /**
@@ -519,6 +513,15 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public int getState() {
         return m_state;
+    }
+
+    /**
+     * Returns the id of the structure record of this resource.<p>
+     * 
+     * @return the id of the structure record of this resource
+     */
+    public CmsUUID getStructureId() {
+        return m_structureId;
     }
     
     /**
@@ -555,7 +558,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return true if the current state of this resource contains the full resource path
      */
     public boolean hasFullResourceName() {
-        return m_fullResourceName != null;
+        return m_rootPath != null;
     }
 
     /**
@@ -699,7 +702,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param fullResourceName the resource name including the path
      */
     public void setFullResourceName(String fullResourceName) {
-        m_fullResourceName = fullResourceName;
+        m_rootPath = fullResourceName;
     }
 
     /**
@@ -818,7 +821,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         result.append(", flags: ");
         result.append(m_flags);  
         result.append(", project: ");
-        result.append(m_projectId);
+        result.append(m_projectLastModified);
         result.append(", state: ");
         result.append(m_state);        
         result.append(", loader-ID: ");

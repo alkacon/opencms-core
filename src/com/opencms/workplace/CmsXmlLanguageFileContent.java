@@ -159,7 +159,7 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent {
         CmsFile file = null;
         for(int i = 0;i < langFiles.size();i++) {
             file = (CmsFile)langFiles.get(i);
-            if(! file.getResourceName().toLowerCase().endsWith(".txt") && file.getState() != I_CmsConstants.C_STATE_DELETED) {
+            if(! file.getName().toLowerCase().endsWith(".txt") && file.getState() != I_CmsConstants.C_STATE_DELETED) {
                 try {
                     init(cms, cms.readAbsolutePath(file));
                 } catch(Exception exc) {

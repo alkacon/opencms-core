@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2003/07/30 13:34:50 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/09/12 17:38:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */
@@ -188,7 +188,7 @@ public class CmsMove extends CmsDialog {
         // calculate the target name
         if (! target.startsWith("/")) {
             // target is not an absolute path, add the current parent folder
-            target = CmsResource.getParent(getParamResource()) + target; 
+            target = CmsResource.getParentFolder(getParamResource()) + target; 
         }
         try {
             CmsResource res = getCms().readFileHeader(target);

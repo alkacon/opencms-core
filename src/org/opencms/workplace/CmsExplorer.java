@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/09/04 15:10:41 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2003/09/12 17:38:06 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 5.1
  */
@@ -249,9 +249,9 @@ public class CmsExplorer extends CmsWorkplace {
         // get the currentFolder Id
         CmsUUID currentFolderId;
         if (currentResource.isFile()) {
-            currentFolderId = currentResource.getParentId();                    
+            currentFolderId = currentResource.getParentStructureId();                    
         } else {                
-            currentFolderId = currentResource.getId();
+            currentFolderId = currentResource.getStructureId();
         }
         
         // start creating content
@@ -297,7 +297,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("vfslink:");
             content.append(getSettings().getExplorerResource());
         } else {
-            content.append(CmsResource.getPath(getSettings().getExplorerResource()));
+            content.append(CmsResource.getFolderPath(getSettings().getExplorerResource()));
         }
         content.append("\");\n");
         content.append("top.rD();\n\n");
@@ -367,7 +367,7 @@ public class CmsExplorer extends CmsWorkplace {
             
             // position 1: name
             content.append("\"");
-            content.append(res.getResourceName());
+            content.append(res.getName());
             content.append("\",");
             
             // position 2: path
@@ -431,7 +431,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append(",");     
                    
             // position 8: project
-            int projectId = lock.isNullLock() ? res.getProjectId() : lock.getProjectId();
+            int projectId = lock.isNullLock() ? res.getProjectLastModified() : lock.getProjectId();
             content.append(projectId);
             content.append(",");      
                                    
@@ -515,7 +515,7 @@ public class CmsExplorer extends CmsWorkplace {
             int lockedInProject = I_CmsConstants.C_UNKNOWN_ID;
             if (lock.isNullLock() && res.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
                 // resource is unlocked and modified
-                lockedInProject = res.getProjectId();
+                lockedInProject = res.getProjectLastModified();
             } else {                
                 if (res.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
                     // resource is locked and modified

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/09/03 14:59:04 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/09/12 17:38:06 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -187,7 +187,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             return root.getMasterTemplate(cms, templateClass, masterTemplate, m_templateCache, parameters);
         } catch (Exception e) {
             // no document we could show...
-            handleException(cms, e, "Received error while calling canonical root for requested file " + masterTemplate.getResourceName() + ". ");
+            handleException(cms, e, "Received error while calling canonical root for requested file " + masterTemplate.getName() + ". ");
         }
         return null;
     }
@@ -641,7 +641,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
 
         // first some debugging output.
         if ((DEBUG > 0) && OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "Loader started for " + file.getResourceName());
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "Loader started for " + file.getName());
         }
 
         // check all values to be valid
