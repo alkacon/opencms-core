@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2003/09/17 08:31:29 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/09/17 16:11:16 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import source.org.apache.java.util.Configurations;
  * based pools might be added probably later.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2003/09/17 08:31:29 $
+ * @version $Revision: 1.12 $ $Date: 2003/09/17 16:11:16 $
  * @since 5.1
  */
 public final class CmsDbPool extends Object {
@@ -68,25 +68,25 @@ public final class CmsDbPool extends Object {
     public static final String C_KEY_DATABASE_NAME = C_KEY_DATABASE + "name";
     public static final String C_KEY_DATABASE_POOL = C_KEY_DATABASE + "pool";
     public static final String C_KEY_DATABASE_STATEMENTS = C_KEY_DATABASE + "statements";
-    public static final String C_KEY_POOL_DEFAULT = "default";
-    public static final String C_KEY_POOL_USER = "user";
-    public static final String C_KEY_POOL_VFS = "vfs";
 
     protected static final String C_KEY_JDBC_DRIVER = "jdbcDriver";
     protected static final String C_KEY_JDBC_URL = "jdbcUrl";
-    protected static final String C_KEY_MAX_ACTIVE = "maxActive";
-    protected static final String C_KEY_MAX_WAIT = "maxWait";
-    protected static final String C_KEY_MAX_IDLE = "maxIdle";
-    protected static final String C_KEY_TEST_QUERY = "testQuery";
-    protected static final String C_KEY_USERNAME = "user";
-    protected static final String C_KEY_PASSWORD = "password";
-    protected static final String C_KEY_POOL_URL = "poolUrl";
     protected static final String C_KEY_LOG_ABANDONED = "logAbandoned";
+    protected static final String C_KEY_MAX_ACTIVE = "maxActive";
+    protected static final String C_KEY_MAX_IDLE = "maxIdle";
+    protected static final String C_KEY_MAX_WAIT = "maxWait";
+    protected static final String C_KEY_PASSWORD = "password";
+    public static final String C_KEY_POOL_DEFAULT = "default";
+    protected static final String C_KEY_POOL_URL = "poolUrl";
+    public static final String C_KEY_POOL_USER = "user";
+    public static final String C_KEY_POOL_VFS = "vfs";
+    protected static final String C_KEY_POOLING = "pooling";
     protected static final String C_KEY_REMOVE_ABANDONED = "removeAbandoned";
     protected static final String C_KEY_REMOVE_ABANDONED_TIMEOUT = "removeAbandonedTimeout";
-    protected static final String C_KEY_WHEN_EXHAUSTED_ACTION = "whenExhaustedAction";
     protected static final String C_KEY_TEST_ON_BORROW = "testOnBorrow";
-    protected static final String C_KEY_POOLING = "pooling";
+    protected static final String C_KEY_TEST_QUERY = "testQuery";
+    protected static final String C_KEY_USERNAME = "user";
+    protected static final String C_KEY_WHEN_EXHAUSTED_ACTION = "whenExhaustedAction";
 
     /**
      * Default constructor.<p>

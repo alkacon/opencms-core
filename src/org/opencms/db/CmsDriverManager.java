@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/17 15:48:48 $
- * Version: $Revision: 1.233 $
+ * Date   : $Date: 2003/09/17 16:11:16 $
+ * Version: $Revision: 1.234 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.233 $ $Date: 2003/09/17 15:48:48 $
+ * @version $Revision: 1.234 $ $Date: 2003/09/17 16:11:16 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4361,7 +4361,8 @@ public class CmsDriverManager extends Object {
                     if (curPath.startsWith((String)markedSites.get(k))) {
                         // one link is in a marked site, so update the flags
                         int flags = resource.getFlags();
-                        resource.setFlags(flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK);
+                        flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
+                        resource.setFlags(flags);
                         markedFound = true;
                     }
                 }
@@ -4402,14 +4403,12 @@ public class CmsDriverManager extends Object {
     /**
      * Imports a import-resource (folder or zipfile) to the cms.<p>
      *
-     * <B>Security:</B>
-     * only Administrators can do this;
+     * Only Administrators can do this.
      * @param context the current request context
      * @param importFile the name (absolute Path) of the import resource (zip or folder)
      * @param importPath the name (absolute Path) of folder in which should be imported
      * @param cms the cms-object to use for the import.
-     * @param report A report object to provide the loggin messages.
-     *
+     * @param report a report object to provide the loggin messages.
      * @throws CmsException if something goes wrong.
      */
     public void importResources(CmsObject cms, CmsRequestContext context, String importFile, String importPath, I_CmsReport report) throws CmsException {
@@ -4430,10 +4429,16 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Initializes the driver and sets up all required modules and connections.
+     * Initializes the driver and sets up all required modules and connections.<p>
      * 
-     * @param config The OpenCms configuration.
-     * @throws CmsException Throws CmsException if something goes wrong.
+     * @param config the OpenCms configuration
+     * @param vfsDriver the vfsdriver
+     * @param userDriver the userdriver
+     * @param projectDriver the projectdriver
+     * @param workflowDriver the workflowdriver
+     * @param backupDriver the backupdriver
+     * @throws CmsException if something goes wrong
+     * @throws Exception if something goes wrong
      */
     public void init(Configurations config, I_CmsVfsDriver vfsDriver, I_CmsUserDriver userDriver, I_CmsProjectDriver projectDriver, I_CmsWorkflowDriver workflowDriver, I_CmsBackupDriver backupDriver) throws CmsException, Exception {
 
@@ -4493,25 +4498,23 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Determines, if the users current group is the admin-group.
+     * Determines, if the users current group is the admin-group.<p>
      *
-     * <B>Security:</B>
      * All users are granted.
      *
      * @param context the current request context
-     * @return true, if the users current group is the admin-group,
-     * else it returns false.
-     * @throws CmsException Throws CmsException if operation was not succesful.
+     * @return true, if the users current group is the admin-group, else it returns false
+     * @throws CmsException if operation was not succesful
      */
     public boolean isAdmin(CmsRequestContext context) throws CmsException {
         return userInGroup(context, context.currentUser().getName(), OpenCms.getDefaultUsers().getGroupAdministrators());
     }
 
     /**
-     * Returns true if history is enabled
+     * Returns true if history is enabled.<p>
      *
-     * @param cms The CmsObject
-     * @return boolean If true the history is enabled
+     * @param cms the CmsObject
+     * @return true if the history is enabled
      */
     public boolean isHistoryEnabled(CmsObject cms) {
         return cms.getRegistry().getBackupEnabled();
@@ -4523,7 +4526,6 @@ public class CmsDriverManager extends Object {
      * @param context the current request context
      * @param resource the specified resource
      * @return true, if the resource name of the specified resource matches any of the current project's resources
-     * @throws CmsException if something goes wrong
      */
     public boolean isInsideCurrentProject(CmsRequestContext context, CmsResource resource) {
         List projectResources = null;
@@ -4548,14 +4550,13 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Determines, if the users may manage a project.<BR/>
+     * Determines, if the users may manage a project.<p>
      * Only the manager of a project may publish it.
      *
-     * <B>Security:</B>
      * All users are granted.
      *
      * @param context the current request context
-     * @return true, if the may manage this project.
+     * @return true, if the user manage this project
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public boolean isManagerOfProject(CmsRequestContext context) throws CmsException {
@@ -4585,18 +4586,21 @@ public class CmsDriverManager extends Object {
     /**
      * Determines if the user is a member of the "Projectmanagers" group.<p>
      *
-     * <B>Security:</B>
      * All users are granted.
      *
      * @param context the current request context
-     * @return true, if the users current group is the projectleader-group,
-     * else it returns false.
-     * @throws CmsException Throws CmsException if operation was not succesful.
+     * @return true, if the users current group is the projectleader-group, else it returns false
+     * @throws CmsException if operation was not succesful
      */
     public boolean isProjectManager(CmsRequestContext context) throws CmsException {
         return userInGroup(context, context.currentUser().getName(), OpenCms.getDefaultUsers().getGroupProjectmanagers());
     }
 
+    /**
+     * Checks if a project is the tempfile project.<p>
+     * @param project the project to test
+     * @return true if the project is the tempfile project
+     */
     public boolean isTempfileProject(CmsProject project) {
         return project.getName().equals("tempFileProject");
     }
@@ -4604,23 +4608,22 @@ public class CmsDriverManager extends Object {
     /**
      * Determines if the user is a member of the default users group.<p>
      *
-     * <B>Security:</B>
      * All users are granted.
      *
      * @param context the current request context
-     * @return true, if the users current group is the projectleader-group,
-     * else it returns false.
-     * @throws CmsException Throws CmsException if operation was not succesful.
+     * @return true, if the users current group is the projectleader-group, else it returns false
+     * @throws CmsException if operation was not succesful
      */
     public boolean isUser(CmsRequestContext context) throws CmsException {
         return userInGroup(context, context.currentUser().getName(), OpenCms.getDefaultUsers().getGroupUsers());
     }
 
     /**
-     * Checks if this is a valid group for webusers
+     * Checks if this is a valid group for webusers.<p>
      *
-     * @param group The group to be checked
-     * @return boolean If the group does not belong to Users, Administrators or Projectmanagers return true
+     * @param group the group to be checked
+     * @return true if the group does not belong to users, administrators or projectmanagers
+     * @throws CmsException if operation was not succesful
      */
     protected boolean isWebgroup(CmsGroup group) throws CmsException {
         try {
@@ -4644,38 +4647,34 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Returns the user, who had locked the resource.<BR/>
+     * Returns the user, who had locked the resource.<p>
      *
      * A user can lock a resource, so he is the only one who can write this
      * resource. This methods checks, if a resource was locked.
      *
-     * @param user The user who wants to lock the file.
-     * @param project The project in which the resource will be used.
-     * @param resource The resource.
+     * @param context the current request context
+     * @param resource the resource
      *
      * @return the user, who had locked the resource.
      *
-     * @throws CmsException will be thrown, if the user has not the rights
-     * for this resource.
+     * @throws CmsException will be thrown, if the user has not the rights for this resource
      */
     public CmsUser lockedBy(CmsRequestContext context, CmsResource resource) throws CmsException {
         return lockedBy(context, resource.getRootPath());
     }
 
     /**
-     * Returns the user, who had locked the resource.<BR/>
+     * Returns the user, who had locked the resource.<p>
      *
      * A user can lock a resource, so he is the only one who can write this
      * resource. This methods checks, if a resource was locked.
      *
-     * @param user The user who wants to lock the file.
-     * @param project The project in which the resource will be used.
-     * @param resource The complete m_path to the resource.
+     * @param context the current request context
+     * @param resourcename the complete name of the resource
      *
      * @return the user, who had locked the resource.
      *
-     * @throws CmsException will be thrown, if the user has not the rights
-     * for this resource.
+     * @throws CmsException will be thrown, if the user has not the rights for this resource.
      */
     public CmsUser lockedBy(CmsRequestContext context, String resourcename) throws CmsException {
         return readUser(m_lockDispatcher.getLock(this, context, resourcename).getUserId());
@@ -4711,7 +4710,6 @@ public class CmsDriverManager extends Object {
     /**
      * Logs a user into the Cms, if the password is correct.<p>
      *
-     * <B>Security</B>
      * All users are granted.
      *
      * @param context the current request context
@@ -4720,7 +4718,7 @@ public class CmsDriverManager extends Object {
      * @param remoteAddress the ip address of the request
      * @return the logged in user
      *
-     * @throws CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not succesful
      */
     public CmsUser loginUser(CmsRequestContext context, String username, String password, String remoteAddress) throws CmsException {
 
@@ -4753,7 +4751,6 @@ public class CmsDriverManager extends Object {
     /**
      * Logs a web user into the Cms, if the password is correct.<p>
      *
-     * <B>Security</B>
      * All users are granted.
      *
      * @param context the current request context
@@ -4762,7 +4759,7 @@ public class CmsDriverManager extends Object {
      * @param remoteAddress the ip address of the request
      * @return the logged in user
      *
-     * @throws CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not succesful
      */
     public CmsUser loginWebUser(CmsRequestContext context, String username, String password, String remoteAddress) throws CmsException {
 
@@ -4786,12 +4783,11 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Lookup and read the user or group with the given UUID.
+     * Lookup and read the user or group with the given UUID.<p>
      * 
-     * @param context the current request context	
-     * @param principalId		the UUID of the principal to lookup
-     * @return					the principal (group or user) if found, otherwise null
-     * @throws CmsException		if something goeas wrong
+     * @param principalId the UUID of the principal to lookup
+     * @return the principal (group or user) if found, otherwise null
+     * @throws CmsException if something goeas wrong
      */
     public I_CmsPrincipal lookupPrincipal(CmsUUID principalId) throws CmsException {
 
@@ -4817,12 +4813,11 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Lookup and read the user or group with the given name.
+     * Lookup and read the user or group with the given name.<p>
      * 
-     * @param context the current request context	
-     * @param principalName		the name of the principal to lookup
-     * @return					the principal (group or user) if found, otherwise null
-     * @throws CmsException		if something goeas wrong	
+     * @param principalName the name of the principal to lookup
+     * @return the principal (group or user) if found, otherwise null
+     * @throws CmsException if something goeas wrong
      */
     public I_CmsPrincipal lookupPrincipal(String principalName) throws CmsException {
 
@@ -4854,8 +4849,8 @@ public class CmsDriverManager extends Object {
      * are done with their security-checks.
      *
      * @param context the current request context
-     * @param source The complete m_path of the sourcefile.
-     * @param destination The complete m_path of the destinationfile.
+     * @param sourceName the complete name of the sourcefile
+     * @param destinationName The complete m_path of the destinationfile
      *
      * @throws CmsException will be thrown, if the file couldn't be moved.
      * The CmsException will also be thrown, if the user has not the rights
@@ -4894,10 +4889,19 @@ public class CmsDriverManager extends Object {
         */
     }
 
+    /**
+     * Gets a new driver instance.<p>
+     * 
+     * @param configurations the configurations
+     * @param driverName the driver name
+     * @param successiveDrivers the list of successive drivers
+     * @return the driver object
+     * @throws CmsException if something goes wrong
+     */
     public Object newDriverInstance(Configurations configurations, String driverName, List successiveDrivers) throws CmsException {
 
-        Class initParamClasses[] = { Configurations.class, List.class, CmsDriverManager.class };
-        Object initParams[] = { configurations, successiveDrivers, this };
+        Class initParamClasses[] = {Configurations.class, List.class, CmsDriverManager.class };
+        Object initParams[] = {configurations, successiveDrivers, this };
 
         Class driverClass = null;
         Object driver = null;
@@ -4941,11 +4945,12 @@ public class CmsDriverManager extends Object {
      * @param driverName the class name of the driver
      * @param driverPoolUrl the pool url for the driver
      * @return an initialized instance of the driver
+     * @throws CmsException if something goes wrong
      */
     public Object newDriverInstance(Configurations configurations, String driverName, String driverPoolUrl) throws CmsException {
 
-        Class initParamClasses[] = { Configurations.class, String.class, CmsDriverManager.class };
-        Object initParams[] = { configurations, driverPoolUrl, this };
+        Class initParamClasses[] = {Configurations.class, String.class, CmsDriverManager.class };
+        Object initParams[] = {configurations, driverPoolUrl, this };
 
         Class driverClass = null;
         Object driver = null;
@@ -4983,10 +4988,10 @@ public class CmsDriverManager extends Object {
     /**
      * Method to create a new instance of a pool.<p>
      * 
-     * @param configurations	the configurations from the propertyfile
-     * @param poolName			the configuration name of the pool
-     * @return					the pool url
-     * @throws CmsException		if something goes wrong
+     * @param configurations the configurations from the propertyfile
+     * @param poolName the configuration name of the pool
+     * @return the pool url
+     * @throws CmsException if something goes wrong
      */
     public String newPoolInstance(Configurations configurations, String poolName) throws CmsException {
 
