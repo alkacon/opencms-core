@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/10/07 16:20:07 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/10/08 17:35:45 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -335,7 +335,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public synchronized void export(HttpServletRequest req, HttpServletResponse res, CmsObject cms, CmsStaticExportData data) 
     throws CmsException, IOException, ServletException {        
         CmsFile file;
-        String vfsName = cms.getRequestContext().removeSiteRoot(data.getVfsName());
+        // TODO: Check if setting site root to "/" still works with HTML pages that contain links
+        cms.getRequestContext().setSiteRoot("/");
+        String vfsName = data.getVfsName();
         String rfsName = data.getRfsName();
         CmsResource resource = data.getResource();
         
