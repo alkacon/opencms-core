@@ -13,7 +13,11 @@ OpenCms 4.5.36 Chusuk - xx March 2001
 ! Added menu entry for folders, pages and links: changing the navigation informations (Navigation Text and Position)
 ! Now navigation information can be inserted when creating a link. You need to add the required propertydefinitions
   NavText and NavPos to do this.
-* Bugfix for export and import moduledata
+* Bugfix for export and import of channels and moduledata
+* Bugfix in PL/SQL-Procedure: detects cycles in groups with parent groups
+* Editor: when an error occures while saving a page, the errormessage is shown and the user can return to the editor
+  to save the content to a local editor. So the content is not lost.
+- The texteditor can now be used in the IE without having installed the ActiveX Control
 
 OpenCms 4.5.35 Release Candidate Chusuk - 15 February 2001
 ! Export and Import of channels and moduledata
