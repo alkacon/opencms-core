@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/01/19 17:14:14 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/01/20 11:10:26 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Encoder;
-import com.opencms.util.Utils;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.main.OpenCms;
@@ -58,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.1.12
  */
@@ -200,13 +199,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     protected void initBodyElementLanguage() {
         Set languages = m_page.getLanguages();
         String defaultLanguage = OpenCms.getLocaleManager().getLocale(getCms(), getCms().readAbsolutePath(m_file)).toString();
-        /*
-        try {
-            defaultLanguage = getCms().getLanguage(getCms().readAbsolutePath(m_file));
-        } catch (CmsException exc) {
-            defaultLanguage = OpenCms.getDefaultLanguage();
-        }
-        */
+
         if (languages.size() == 0) {
             // no body present, create default body
             if (!m_page.hasElement(I_CmsConstants.C_XML_BODY_ELEMENT, defaultLanguage)) {
@@ -618,13 +611,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         // set the element data
         m_page.setContent(getCms(), body, language, content);
         m_page.setEnabled(body, language, enabled);
-        // check if there is already a default element for this body,
-        // if not, set this body as default if it has the default language
-        // if (!m_page.hasElement(body, null)) {
-        //    if (language.equals(getCms().getLanguage(getCms().readAbsolutePath(m_file)))) {
-        //        m_page.setDefault(body, language);
-        //    }
-        // }
+
         // write the file
         getCms().writeFile(m_page.write(m_file));
     }
