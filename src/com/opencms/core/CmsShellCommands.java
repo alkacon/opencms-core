@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2001/08/03 06:46:11 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2001/09/06 13:21:15 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.37 $ $Date: 2001/08/03 06:46:11 $
+ * @version $Revision: 1.38 $ $Date: 2001/09/06 13:21:15 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -560,7 +560,22 @@ public class CmsShellCommands implements I_CmsConstants {
      */
     public void createProject(String name, String description, String groupname, String managergroupname, String projecttype) {
         try {
-            System.out.println(m_cms.createProject(name, description, groupname, managergroupname, projecttype));
+            System.out.println(m_cms.createProject(name, description, groupname, managergroupname, Integer.parseInt(projecttype)));
+        }
+        catch(Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
+     * Creates a new project for the temporary files.
+     *
+     * @exception CmsException if operation was not successful.
+     */
+    public void createTempfileProject() throws CmsException
+    {
+        try {
+            System.out.println(m_cms.createTempfileProject());
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
