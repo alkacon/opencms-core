@@ -8,6 +8,15 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.54 Arakis - 29 January 2001
+
+- ATTENTION! This version don't supports the PL/SQL resource broker. It is
+  for testing the new database pool usage in the core. If you want to use oracle
+  and PL/SQL please switch to OpenCms 4.1.53!
+! Added new database pool. This pool is more generic and can be accessed 
+  via java.sql.Drivermanager
+* general bugfixing
+
 OpenCms 4.1.53 Arakis - 26 January 2001
 
 * general bugfixing

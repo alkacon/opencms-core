@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsLogChannels.java,v $
-* Date   : $Date: 2001/01/24 09:41:40 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2001/01/29 15:13:25 $
+* Version: $Revision: 1.8 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -35,31 +35,34 @@ package com.opencms.core;
  * Constants used for logging purposes are defined here.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2001/01/24 09:41:40 $
+ * @version $Revision: 1.8 $ $Date: 2001/01/29 15:13:25 $
  */
-public interface I_CmsLogChannels {
-    
-    /** Debugging messages */
-    public static final String C_OPENCMS_INIT = "opencms_init";
-    
-    /** Debugging messages */
-    public static final String C_OPENCMS_DEBUG = "opencms_debug";
-    
-    /** Cache messages */
-    public static final String C_OPENCMS_CACHE = "opencms_cache";
-    
-    /** Informational messages */
-    public static final String C_OPENCMS_INFO = "opencms_info";
-    
-    /** Critical messages that stop further processing */
-    public static final String C_OPENCMS_CRITICAL = "opencms_critical";
-    
-    /** Debugging messages */
-    public static final String C_MODULE_DEBUG = "module_debug";
-    
-    /** Informational messages */
-    public static final String C_MODULE_INFO = "module_info";
-    
-    /** Critical messages that stop further processing */
-    public static final String C_MODULE_CRITICAL = "module_critical";
+public interface I_CmsLogChannels { 
+	/** Debugging messages */
+	public static final String C_OPENCMS_INIT = "opencms_init";
+
+	/** Debugging messages */
+	public static final String C_OPENCMS_DEBUG = "opencms_debug";
+
+	/** Cache messages */
+	public static final String C_OPENCMS_CACHE = "opencms_cache";
+	
+	/** Informational messages */
+	public static final String C_OPENCMS_INFO = "opencms_info";    
+	
+	/** Critical messages that stop further processing */
+	public static final String C_OPENCMS_CRITICAL = "opencms_critical";    
+	
+	/** Debugging messages for the dbpool */
+	public static final String C_OPENCMS_POOL = "opencms_pool";
+
+	
+	/** Debugging messages */
+	public static final String C_MODULE_DEBUG = "module_debug";
+
+	/** Informational messages */
+	public static final String C_MODULE_INFO = "module_info";    
+	
+	/** Critical messages that stop further processing */
+	public static final String C_MODULE_CRITICAL = "module_critical";         
 }

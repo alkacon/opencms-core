@@ -111,7 +111,7 @@ create table CMS_FILES                  (FILE_ID int not null,
                                          FILE_CONTENT mediumblob not null,
                                          primary key(FILE_ID));
 
-create table CMS_SYSTEMID               (TABLE_KEY int not null,
+create table CMS_SYSTEMID               (TABLE_KEY varchar(255) not null,
                                          ID int not null,
                                          primary key(TABLE_KEY));
 										

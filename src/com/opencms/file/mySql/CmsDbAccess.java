@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/01/05 12:44:22 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2001/01/29 15:13:28 $
+ * Version: $Revision: 1.46 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,6 @@ import com.opencms.core.*;
 import com.opencms.file.*;
 import com.opencms.file.utils.*;
 import com.opencms.util.*;
-import com.opencms.file.genericSql.I_CmsDbPool;
 
 
 
@@ -51,7 +50,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.45 $ $Date: 2001/01/05 12:44:22 $ * 
+ * @version $Revision: 1.46 $ $Date: 2001/01/29 15:13:28 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -93,8 +92,10 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 		int id = nextId(C_TABLE_USERS);
 		byte[] value=null;
 		PreparedStatement statement = null;
+		Connection con = null;
 		
 		try	{			
+			con = DriverManager.getConnection(m_poolName);
 			// serialize the hashtable
 			ByteArrayOutputStream bout= new ByteArrayOutputStream();            
 			ObjectOutputStream oout=new ObjectOutputStream(bout);
@@ -103,7 +104,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 			value=bout.toByteArray();
 			
 			// write data to database     
-			statement = m_pool.getPreparedStatement(m_cq.C_USERS_ADD_KEY);
+			statement = con.prepareStatement(m_cq.C_USERS_ADD);
 			
 			statement.setInt(1,id);
 			statement.setString(2,name);
@@ -130,8 +131,20 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 		catch (IOException e){
 			throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:"+CmsException. C_SERIALIZATION, e);			
 		} finally {
-			if( statement != null) {
-				m_pool.putPreparedStatement(m_cq.C_USERS_ADD_KEY, statement);
+			// close all db-resources
+			if(statement != null) {
+				 try {
+					 statement.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
+			}
+			if(con != null) {
+				 try {
+					 con.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
 			}
 		}
 		return readUser(id);
@@ -146,11 +159,14 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 		PreparedStatement statementSearch = null;
 		PreparedStatement statementDestroy = null;
 		ResultSet res = null;
+		Connection con = null;
+
 		try{
-	  		statementSearch = m_pool.getPreparedStatement(m_cq.C_RESOURCES_GET_LOST_ID_KEY);
+			con = DriverManager.getConnection(m_poolName);
+	  		statementSearch = con.prepareStatement(m_cq.C_RESOURCES_GET_LOST_ID);
 	        res = statementSearch.executeQuery();
 			// delete the lost fileId's
-			statementDestroy = m_pool.getPreparedStatement(m_cq.C_FILE_DELETE_KEY);
+			statementDestroy = con.prepareStatement(m_cq.C_FILE_DELETE);
 			while (res.next() ){
 	   			statementDestroy.setInt(1,res.getInt(m_cq.C_FILE_ID));
 				statementDestroy.executeUpdate();
@@ -158,46 +174,39 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 			}
 		} catch (SQLException e){
 			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-		  }finally {
-				if( statementSearch != null) {
-					m_pool.putPreparedStatement(m_cq.C_RESOURCES_GET_LOST_ID_KEY, statementSearch);
-				}
-				if( statementDestroy != null) {
-					m_pool.putPreparedStatement(m_cq.C_FILE_DELETE_KEY, statementDestroy);
-				}
-				if (res != null){
-					try{
-						res.close();
-					} catch (SQLException sqlex){
-					}		
-				}	
-			 }	
+		}finally {
+			// close all db-resources
+			if(res != null) {
+				 try {
+					 res.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
+			}
+			if(statementDestroy != null) {
+				 try {
+					 statementDestroy.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
+			}
+			if(statementSearch != null) {
+				 try {
+					 statementSearch.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
+			}
+			if(con != null) {
+				 try {
+					 con.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
+			}
+		}	
 	}
-	/**
- * Create a new Connection guard.
- * This method should be overloaded if another connectionguard should be used.
- * Creation date: (06-09-2000 14:33:30)
- * @return com.opencms.file.genericSql.CmsConnectionGuard
- * @param m_pool com.opencms.file.genericSql.I_CmsDbPool
- * @param sleepTime long
- */
-public com.opencms.file.genericSql.CmsConnectionGuard createCmsConnectionGuard(I_CmsDbPool m_pool, long sleepTime) {
-	return new com.opencms.file.mySql.CmsConnectionGuard(m_pool, sleepTime);
-}
-	/**
- * Creates a CmsDbPool
- * Creation date: (06-09-2000 14:08:10)
- * @return com.opencms.file.genericSql.CmsDbPool
- * @param driver java.lang.String
- * @param url java.lang.String
- * @param user java.lang.String
- * @param passwd java.lang.String
- * @param maxConn int
- * @exception com.opencms.core.CmsException The exception description.
- */
-public I_CmsDbPool createCmsDbPool(String driver, String url, String user, String passwd, int maxConn) throws com.opencms.core.CmsException {
-	return new com.opencms.file.mySql.CmsDbPool(driver,url,user,passwd,maxConn);
-}
+
 	/**
 	 * Creates a new file with the given content and resourcetype.
 	 *
@@ -249,10 +258,12 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 		   
 		   PreparedStatement statement = null;
 		   PreparedStatement statementFileWrite = null;
+		   Connection con = null;
 	
 		   try {
+			   con = DriverManager.getConnection(m_poolName);
 	  
-				statement = m_pool.getPreparedStatement(m_cq.C_RESOURCES_WRITE_KEY);
+				statement = con.prepareStatement(m_cq.C_RESOURCES_WRITE);
 				 // write new resource to the database
 				statement.setInt(1,resourceId);
 				statement.setInt(2,parentId);
@@ -274,7 +285,7 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 				statement.setInt(18,user.getId());
 				statement.executeUpdate();
 				
-				statementFileWrite = m_pool.getPreparedStatement(m_cq.C_FILES_WRITE_KEY);
+				statementFileWrite = con.prepareStatement(m_cq.C_FILES_WRITE);
 				statementFileWrite.setInt(1,fileId);
 				statementFileWrite.setBytes(2,contents);
 				statementFileWrite.executeUpdate();
@@ -282,15 +293,32 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 		  } catch (SQLException e){                        
 			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		 }finally {
-				if( statement != null) {
-					m_pool.putPreparedStatement(m_cq.C_RESOURCES_WRITE_KEY, statement);
-				}
-				if( statementFileWrite != null) {
-					m_pool.putPreparedStatement(m_cq.C_FILES_WRITE_KEY, statementFileWrite);
-				}
-			 }	
+   			// close all db-resources
+			if(statement != null) {
+				 try {
+					 statement.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
+			}
+			if(statementFileWrite != null) {
+				 try {
+					 statementFileWrite.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
+			}
+			if(con != null) {
+				 try {
+					 con.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
+			}
+		   }	
 		 return readFile(project.getId(),onlineProject.getId(),filename);
 	 }
+	 
 	/**
 	 * Add a new group to the Cms.<BR/>
 	 * 
@@ -313,9 +341,10 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 	CmsGroup group = null;
 
 	PreparedStatement statement = null;
+	Connection con = null;
 
-	  try
-	{
+	  try {
+		  con = DriverManager.getConnection(m_poolName);
 
 	  // get the id of the parent group if nescessary
 	  if ((parent != null) && (!"".equals (parent)))
@@ -324,7 +353,7 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 	}
 
 	  // create statement
-	  statement = m_pool.getPreparedStatement (m_cq.C_GROUPS_CREATEGROUP_KEY);
+	  statement = con.prepareStatement(m_cq.C_GROUPS_CREATEGROUP);
 
 	  // write new group to the database
 	  statement.setInt (1, nextId (C_TABLE_GROUPS));
@@ -346,13 +375,26 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 	}
 	finally
 	{
-	  if (statement != null)
-	{
-	  m_pool.putPreparedStatement (m_cq.C_GROUPS_CREATEGROUP_KEY, statement);
-	}
+		// close all db-resources
+		if(statement != null) {
+			 try {
+				 statement.close();
+			 } catch(SQLException exc) {
+				 // nothing to do here
+			 }
+		}
+		if(con != null) {
+			 try {
+				 con.close();
+			 } catch(SQLException exc) {
+				 // nothing to do here
+			 }
+		}
+
 	}
 	return group;
   }  
+  
 /**
  * Deletes all properties for a project.
  * 
@@ -376,71 +418,16 @@ public void deleteProjectProperties(CmsProject project) throws CmsException {
 	 */
 	public void destroy() 
 		throws CmsException {
-
-		Vector statements;
-		Hashtable allStatements = ((com.opencms.file.mySql.CmsDbPool)m_pool).getAllPreparedStatement();
-		Enumeration keys = allStatements.keys();
-		
-		Vector connections = ((com.opencms.file.mySql.CmsDbPool)m_pool).getAllConnections();
-		
-		// stop the connection-guard
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] stop connection guard");
-		}
-		m_guard.destroy();
-		
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] closing all statements.");
-		}
-		// close all statements
-		while(keys.hasMoreElements()) {
-			Object key = keys.nextElement();
-			if (allStatements.get(key) instanceof PreparedStatement){
-				try{
-					((PreparedStatement) allStatements.get(key)).close();
-				} catch(SQLException exc) {
-					if(A_OpenCms.isLogging()) {
-							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] error closing Id-statement: " + exc.getMessage());
-						}
-				}	
-			}else{
-				statements = (Vector) allStatements.get(key);
-				for(int i = 0; i < statements.size(); i++) {
-					try {
-						((PreparedStatement) statements.elementAt(i)).close();
-					} catch(SQLException exc) {
-						if(A_OpenCms.isLogging()) {
-							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] error closing statement: " + exc.getMessage());
-						}
-					}
-				}
-			}
-		}
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] closing all connections.");
-		}
-		// close all connections
-		for(int i = 0; i < connections.size(); i++) {
-			try {
-				((Connection) connections.elementAt(i)).close();
-			} catch(SQLException exc) {
-				if(A_OpenCms.isLogging()) {
-					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] error closing connection: " + exc.getMessage());
-				}
-			}
-		}
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] destroy complete.");
 		}
 	}
+	
 /**
  * Private method to init all default-resources
  */
 protected void fillDefaults() throws CmsException
 {
-	// insert the first Id
-	initId();
-
 	// the resourceType "folder" is needed always - so adding it
 	Hashtable resourceTypes = new Hashtable(1);
 	resourceTypes.put(C_TYPE_FOLDER_NAME, new CmsResourceType(C_TYPE_FOLDER, 0, C_TYPE_FOLDER_NAME, ""));
@@ -475,6 +462,7 @@ protected void fillDefaults() throws CmsException
 	rootFolder.setGroupId(users.getId());
 	writeFolder(online, rootFolder, false);
 }
+
 	/**
 	 * Finds an agent for a given role (group).
 	 * @param roleId The Id for the role (group).
@@ -487,6 +475,7 @@ protected void fillDefaults() throws CmsException
 		throws CmsException {
 		return super.findAgent(roleid);
 	}
+	
 /**
  * retrieve the correct instance of the queries holder.
  * This method should be overloaded if other query strings should be used.
@@ -495,58 +484,8 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 {
 	return new com.opencms.file.mySql.CmsQueries();
 }
-/**
- * Insert the method's description here.
- * Creation date: (18-09-2000 17:18:11)
- * @exception com.opencms.core.CmsException The exception description.
- */
-protected void initIdStatements() throws com.opencms.core.CmsException {
-	m_pool.initPreparedStatement(m_cq.C_SYSTEMID_INIT_KEY, m_cq.C_SYSTEMID_INIT);
-	((com.opencms.file.mySql.CmsDbPool) m_pool).initIdStatement(m_cq.C_SYSTEMID_LOCK_KEY, m_cq.C_SYSTEMID_LOCK);
-	((com.opencms.file.mySql.CmsDbPool) m_pool).initIdStatement(m_cq.C_SYSTEMID_READ_KEY, m_cq.C_SYSTEMID_READ);
-	((com.opencms.file.mySql.CmsDbPool) m_pool).initIdStatement(m_cq.C_SYSTEMID_WRITE_KEY, m_cq.C_SYSTEMID_WRITE);
-	((com.opencms.file.mySql.CmsDbPool) m_pool).initIdStatement(m_cq.C_SYSTEMID_UNLOCK_KEY, m_cq.C_SYSTEMID_UNLOCK);
-}
-/**
- * Private method to get the next id for a table.
- * This method is synchronized, to generate unique id's.
- * 
- * @param key A key for the table to get the max-id from.
- * @return next-id The next possible id for this table.
- */
-protected synchronized int nextId(int key) throws CmsException {
-	int newId = C_UNKNOWN_INT;
-	PreparedStatement statement = null;
-	ResultSet res = null;
-	try {
-		statement = ((com.opencms.file.mySql.CmsDbPool) m_pool).getIdStatement(m_cq.C_SYSTEMID_LOCK_KEY);
-		statement.executeUpdate();
-		statement = ((com.opencms.file.mySql.CmsDbPool) m_pool).getIdStatement(m_cq.C_SYSTEMID_READ_KEY);
-		statement.setInt(1, key);
-		res = statement.executeQuery();
-		if (res.next()) {
-			newId = res.getInt(m_cq.C_SYSTEMID_ID);
-		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + " cant read Id! ", CmsException.C_NO_GROUP);
-		}
-		statement = ((com.opencms.file.mySql.CmsDbPool) m_pool).getIdStatement(m_cq.C_SYSTEMID_WRITE_KEY);
-		statement.setInt(1, newId + 1);
-		statement.setInt(2, key);
-		statement.executeUpdate();
-		statement = ((com.opencms.file.mySql.CmsDbPool) m_pool).getIdStatement(m_cq.C_SYSTEMID_UNLOCK_KEY);
-		statement.executeUpdate();
-	} catch (SQLException e) {
-		throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-	} finally {
-		if (res != null) {
-			try {
-				res.close();
-			} catch (SQLException sqlex) {
-			}
-		}
-	}
-	return (newId);
-}
+
+
 /**
  * Publishes a specified project to the online project. <br>
  *
@@ -613,9 +552,11 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 							throw exc;
 						} // end of catch	
 						PreparedStatement statement = null;
+						Connection con = null;
 						try {
+							con = DriverManager.getConnection(m_poolName);
 							// update the onlineFolder with data from offlineFolder
-							statement = m_pool.getPreparedStatement(m_cq.C_RESOURCES_UPDATE_KEY);
+							statement = con.prepareStatement(m_cq.C_RESOURCES_UPDATE);
 							statement.setInt(1, currentFolder.getType());
 							statement.setInt(2, currentFolder.getFlags());
 							statement.setInt(3, currentFolder.getOwnerId());
@@ -636,8 +577,19 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 						} catch (SQLException sqle) {
 							throw new CmsException("[" + this.getClass().getName() + "] " + sqle.getMessage(), CmsException.C_SQL_ERROR, sqle);
 						} finally {
-							if (statement != null) {
-								m_pool.putPreparedStatement(m_cq.C_RESOURCES_UPDATE_KEY, statement);
+							if(statement != null) {
+								 try {
+									 statement.close();
+								 } catch(SQLException exc) {
+									 // nothing to do here
+								 }
+							}
+							if(con != null) {
+								 try {
+									 con.close();
+								 } catch(SQLException exc) {
+									 // nothing to do here
+								 }
 							}
 						}
 					} else {
@@ -702,10 +654,12 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 						}
 					} // end of catch
 					PreparedStatement statement = null;
+					Connection con = null;
 					try
 					{
+						con = DriverManager.getConnection(m_poolName);
 						// update the onlineFolder with data from offlineFolder
-						statement = m_pool.getPreparedStatement(m_cq.C_RESOURCES_UPDATE_KEY);
+						statement = con.prepareStatement(m_cq.C_RESOURCES_UPDATE);
 						statement.setInt(1, currentFolder.getType());
 						statement.setInt(2, currentFolder.getFlags());
 						statement.setInt(3, currentFolder.getOwnerId());
@@ -729,9 +683,20 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 					}
 					finally
 					{
-						if (statement != null)
-						{
-							m_pool.putPreparedStatement(m_cq.C_RESOURCES_UPDATE_KEY, statement);
+						// close all db-resources
+						if(statement != null) {
+							 try {
+								 statement.close();
+							 } catch(SQLException exc) {
+								 // nothing to do here
+							 }
+						}
+						if(con != null) {
+							 try {
+								 con.close();
+							 } catch(SQLException exc) {
+								 // nothing to do here
+							 }
 						}
 					}
 					folderIdIndex.put(new Integer(currentFolder.getResourceId()), new Integer(onlineFolder.getResourceId()));
@@ -892,10 +857,12 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 						}
 					} // end of catch
 					PreparedStatement statement = null;
+					Connection con = null;
 					try
 					{
+						con = DriverManager.getConnection(m_poolName);
 						// update the onlineFile with data from offlineFile
-						statement = m_pool.getPreparedStatement(m_cq.C_RESOURCES_UPDATE_FILE_KEY);
+						statement = con.prepareStatement(m_cq.C_RESOURCES_UPDATE_FILE);
 						statement.setInt(1, currentFile.getType());
 						statement.setInt(2, currentFile.getFlags());
 						statement.setInt(3, currentFile.getOwnerId());
@@ -919,9 +886,19 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 					}
 					finally
 					{
-						if (statement != null)
-						{
-							m_pool.putPreparedStatement(m_cq.C_RESOURCES_UPDATE_FILE_KEY, statement);
+						if(statement != null) {
+							 try {
+								 statement.close();
+							 } catch(SQLException exc) {
+								 // nothing to do here
+							 }
+						}
+						if(con != null) {
+							 try {
+								 con.close();
+							 } catch(SQLException exc) {
+								 // nothing to do here
+							 }
 						}
 					}
 					// copy properties
@@ -1020,11 +997,13 @@ public CmsFile readFile(int projectId, int onlineProjectId, String filename) thr
 	PreparedStatement statement = null;
 	ResultSet res = null;
 	ResultSet res2 = null;
+	Connection con = null;
 	try {
+		con = DriverManager.getConnection(m_poolName);
 		// if the actual project is the online project read file header and content
 		// from the online project
 		if (projectId == onlineProjectId) {
-			statement = m_pool.getPreparedStatement(m_cq.C_FILE_READ_ONLINE_KEY);
+			statement = con.prepareStatement(m_cq.C_FILE_READ_ONLINE);
 			statement.setString(1, filename);
 			statement.setInt(2, onlineProjectId);
 			res = statement.executeQuery();
@@ -1066,7 +1045,7 @@ public CmsFile readFile(int projectId, int onlineProjectId, String filename) thr
 			}
 			// read the file content
 
-			statement = m_pool.getPreparedStatement(m_cq.C_FILE_READ_KEY);
+			statement = con.prepareStatement(m_cq.C_FILE_READ);
 			statement.setInt(1, file.getFileId());
 			res2 = statement.executeQuery();
 			if (res2.next()) {
@@ -1082,27 +1061,35 @@ public CmsFile readFile(int projectId, int onlineProjectId, String filename) thr
 	} catch (Exception exc) {
 		throw new CmsException("readFile " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 	} finally {
-		if (projectId == onlineProjectId) {
-			if (statement != null) {
-				m_pool.putPreparedStatement(m_cq.C_FILE_READ_ONLINE_KEY, statement);
+			// close all db-resources
+			if(res != null) {
+				 try {
+					 res.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
 			}
-		} else {
-			if (statement != null) {
-				m_pool.putPreparedStatement(m_cq.C_FILE_READ_KEY, statement);
+			if(res2 != null) {
+				 try {
+					 res2.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
 			}
-		}
-		if (res != null) {
-			try {
-				res.close();
-			} catch (SQLException sqlex) {
+			if(statement != null) {
+				 try {
+					 statement.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
 			}
-		}
-		if (res2 != null) {
-			try {
-				res2.close();
-			} catch (SQLException sqlex) {
+			if(con != null) {
+				 try {
+					 con.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
 			}
-		}
 	}
 	return file;
 }
@@ -1117,8 +1104,10 @@ public Hashtable readSession(String sessionId) throws CmsException {
 	PreparedStatement statement = null;
 	ResultSet res = null;
 	Hashtable session = null;
+	Connection con = null;
 	try {
-		statement = m_pool.getPreparedStatement(m_cq.C_SESSION_READ_KEY);
+		con = DriverManager.getConnection(m_poolName);
+		statement = con.prepareStatement(m_cq.C_SESSION_READ);
 		statement.setString(1, sessionId);
 		statement.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis() - C_SESSION_TIMEOUT));
 		res = statement.executeQuery();
@@ -1139,14 +1128,20 @@ public Hashtable readSession(String sessionId) throws CmsException {
 	} catch (Exception e) {
 		throw new CmsException("[" + this.getClass().getName() + "]", e);
 	} finally {
-		if (statement != null) {
-			m_pool.putPreparedStatement(m_cq.C_SESSION_READ_KEY, statement);
+		// close all db-resources
+		if(statement != null) {
+			 try {
+				 statement.close();
+			 } catch(SQLException exc) {
+				 // nothing to do here
+			 }
 		}
-		if (res != null) {
-			try {
-				res.close();
-			} catch (SQLException sqlex) {
-			}
+		if(con != null) {
+			 try {
+				 con.close();
+			 } catch(SQLException exc) {
+				 // nothing to do here
+			 }
 		}
 	}
 	return session;
@@ -1164,8 +1159,11 @@ public CmsTask readTask(int id) throws CmsException {
 	ResultSet res = null;
 	CmsTask task = null;
 	PreparedStatement statement = null;
+	Connection con = null;
+
 	try {
-		statement = m_pool.getPreparedStatement(m_cq.C_TASK_READ_KEY);
+		con = DriverManager.getConnection(m_poolName);
+		statement = con.prepareStatement(m_cq.C_TASK_READ);
 		statement.setInt(1, id);
 		res = statement.executeQuery();
 		if (res.next()) {
@@ -1199,14 +1197,27 @@ public CmsTask readTask(int id) throws CmsException {
 	} catch (Exception exc) {
 		throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 	} finally {
-		if (statement != null) {
-			m_pool.putPreparedStatement(m_cq.C_TASK_READ_KEY, statement);
+		// close all db-resources
+		if(res != null) {
+			 try {
+				 res.close();
+			 } catch(SQLException exc) {
+				 // nothing to do here
+			 }
 		}
-		if (res != null) {
-			try {
-				res.close();
-			} catch (SQLException sqlex) {
-			}
+		if(statement != null) {
+			 try {
+				 statement.close();
+			 } catch(SQLException exc) {
+				 // nothing to do here
+			 }
+		}
+		if(con != null) {
+			 try {
+				 con.close();
+			 } catch(SQLException exc) {
+				 // nothing to do here
+			 }
 		}
 	}
 	return task;
@@ -1230,6 +1241,9 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
 	Vector tasks = new Vector(); // vector for the return result
 	CmsTask task = null; // tmp task for adding to vector
 	ResultSet recset = null;
+	Connection con = null;
+	Statement statement = null;
+
 
 	// create the sql string depending on parameters
 	// handle the project for the SQL String
@@ -1282,7 +1296,8 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
 		}
 	}
 	try {
-		Statement statement = m_pool.getStatement();
+		con = DriverManager.getConnection(m_poolName);
+		statement = con.createStatement();
 		recset = statement.executeQuery(sqlstr);
 
 		// if resultset exists - return vector of tasks
@@ -1315,11 +1330,20 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
 	} catch (Exception exc) {
 		throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 	} finally {
-		if (recset != null) {
-			try {
-				recset.close();
-			} catch (SQLException sqlex) {
-			}
+		// close all db-resources
+		if(statement != null) {
+			 try {
+				 statement.close();
+			 } catch(SQLException exc) {
+				 // nothing to do here
+			 }
+		}
+		if(con != null) {
+			 try {
+				 con.close();
+			 } catch(SQLException exc) {
+				 // nothing to do here
+			 }
 		}
 	}
 	return tasks;
@@ -1345,12 +1369,15 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
 		} else {
 			// write the property into the db
 			PreparedStatement statement = null;
+			Connection con = null;
+
 			boolean newprop=true;
 			try {
+				con = DriverManager.getConnection(m_poolName);
 				if( readProperty(propdef.getName(), resourceId, resourceType) != null) {
 					// property exists already - use update.
 					// create statement
-					statement = m_pool.getPreparedStatement(m_cq.C_PROPERTIES_UPDATE_KEY);
+					statement = con.prepareStatement(m_cq.C_PROPERTIES_UPDATE);
 					statement.setString(1, value);
 					statement.setInt(2, resourceId);
 					statement.setInt(3, propdef.getId());
@@ -1359,7 +1386,7 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
 				} else {
 					// property dosen't exist - use create.
 					// create statement
-					statement = m_pool.getPreparedStatement(m_cq.C_PROPERTIES_CREATE_KEY);
+					statement = con.prepareStatement(m_cq.C_PROPERTIES_CREATE);
 					statement.setInt(1, nextId(C_TABLE_PROPERTIES));
 					statement.setInt(2, propdef.getId());
 					statement.setInt(3, resourceId);
@@ -1371,16 +1398,25 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
 				throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 					CmsException.C_SQL_ERROR, exc);
 			}finally {
-				if( statement != null) {
-					if (newprop) {
-						m_pool.putPreparedStatement(m_cq.C_PROPERTIES_CREATE_KEY, statement);
-					} else {
-						m_pool.putPreparedStatement(m_cq.C_PROPERTIES_UPDATE_KEY, statement);
-					}					
+				// close all db-resources
+				if(statement != null) {
+					 try {
+						 statement.close();
+					 } catch(SQLException exc) {
+						 // nothing to do here
+					 }
 				}
-			 }
+				if(con != null) {
+					 try {
+						 con.close();
+					 } catch(SQLException exc) {
+						 // nothing to do here
+					 }
+				}
+			}
 		}
 	}
+	
 	/**
 	 * Writes a user to the database.
 	 * 
@@ -1391,8 +1427,10 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
 		throws CmsException {
 		byte[] value=null;
 		PreparedStatement statement = null;
+		Connection con = null;
 		
 		try	{			
+			con = DriverManager.getConnection(m_poolName);
 			// serialize the hashtable
 			ByteArrayOutputStream bout= new ByteArrayOutputStream();            
 			ObjectOutputStream oout=new ObjectOutputStream(bout);
@@ -1401,7 +1439,7 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
 			value=bout.toByteArray();
 			
 			// write data to database     
-			statement = m_pool.getPreparedStatement(m_cq.C_USERS_WRITE_KEY);
+			statement = con.prepareStatement(m_cq.C_USERS_WRITE);
 			
 			statement.setString(1,user.getDescription());
 			statement.setString(2,user.getFirstname());
@@ -1424,8 +1462,20 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
 		catch (IOException e){
 			throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:"+CmsException. C_SERIALIZATION, e);			
 		} finally {
-			if( statement != null) {
-				m_pool.putPreparedStatement(m_cq.C_USERS_WRITE_KEY, statement);
+			// close all db-resources
+			if(statement != null) {
+				 try {
+					 statement.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
+			}
+			if(con != null) {
+				 try {
+					 con.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
 			}
 		}
 	}
