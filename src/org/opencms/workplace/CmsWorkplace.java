@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/12/08 14:30:29 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2004/12/08 15:25:07 $
+ * Version: $Revision: 1.96 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.95 $
+ * @version $Revision: 1.96 $
  * 
  * @since 5.1
  */
@@ -662,9 +662,9 @@ public abstract class CmsWorkplace {
         StringBuffer result = new StringBuffer(256);
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maxwidth\">\n");
         result.append("<tr>\n");
-        result.append("\t<td class=\"horseparator\" ><img src=\""
-            + getSkinUri()
-            + "tree/empty.gif\" border=\"0\" width=\"1\" height=\"1\" alt=\"\"></td>\n");
+        result.append("\t<td class=\"horseparator\" ><img src=\"");
+        result.append(getSkinUri());
+        result.append("tree/empty.gif\" border=\"0\" width=\"1\" height=\"1\" alt=\"\"></td>\n");
         result.append("</tr>\n");
         result.append("</table>\n");
         return result.toString();
@@ -814,18 +814,22 @@ public abstract class CmsWorkplace {
         if (style == null || "".equals(style)) {
             style = "system";
         }
-        result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
-            + calendarPath
-            + "calendar-"
-            + style
-            + ".css\">\n");
-        result.append("<script type=\"text/javascript\" src=\"" + calendarPath + "calendar.js\"></script>\n");
-        result.append("<script type=\"text/javascript\" src=\""
-            + calendarPath
-            + "lang/calendar-"
-            + getLocale().getLanguage()
-            + ".js\"></script>\n");
-        result.append("<script type=\"text/javascript\" src=\"" + calendarPath + "calendar-setup.js\"></script>\n");
+        result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+        result.append(calendarPath);
+        result.append("calendar-");
+        result.append(style);
+        result.append(".css\">\n");
+        result.append("<script type=\"text/javascript\" src=\"");
+        result.append(calendarPath);
+        result.append("calendar.js\"></script>\n");
+        result.append("<script type=\"text/javascript\" src=\"");
+        result.append(calendarPath);
+        result.append("lang/calendar-");
+        result.append(getLocale().getLanguage());
+        result.append(".js\"></script>\n");
+        result.append("<script type=\"text/javascript\" src=\"");
+        result.append(calendarPath);
+        result.append("calendar-setup.js\"></script>\n");
         return result.toString();
     }
 
@@ -895,23 +899,38 @@ public abstract class CmsWorkplace {
         result.append("<script type=\"text/javascript\">\n");
         result.append("<!--\n");
         result.append("\tCalendar.setup({\n");
-        result.append("\t\tinputField     :    \"" + inputFieldId + "\",\n");
-        result.append("\t\tifFormat       :    \"" + key("calendar.dateformat"));
+        result.append("\t\tinputField     :    \"");
+        result.append(inputFieldId);
+        result.append("\",\n");
+        result.append("\t\tifFormat       :    \"");
+        result.append(key("calendar.dateformat"));
         if (showTime) {
-            result.append(" " + key("calendar.timeformat"));
+            result.append(" ");
+            result.append(key("calendar.timeformat"));
         }
         result.append("\",\n");
-        result.append("\t\tbutton         :    \"" + triggerButtonId + "\",\n");
-        result.append("\t\talign          :    \"" + align + "\",\n");
-        result.append("\t\tsingleClick    :    " + singleClick + ",\n");
-        result.append("\t\tweekNumbers    :    " + weekNumbers + ",\n");
-        result.append("\t\tmondayFirst    :    " + mondayFirst + ",\n");
+        result.append("\t\tbutton         :    \"");
+        result.append(triggerButtonId);
+        result.append("\",\n");
+        result.append("\t\talign          :    \"");
+        result.append(align);
+        result.append("\",\n");
+        result.append("\t\tsingleClick    :    ");
+        result.append(singleClick);
+        result.append(",\n");
+        result.append("\t\tweekNumbers    :    ");
+        result.append(weekNumbers);
+        result.append(",\n");
+        result.append("\t\tmondayFirst    :    ");
+        result.append(mondayFirst);
+        result.append(",\n");
         result.append("\t\tshowsTime      :    " + showTime);
         if (showTime && key("calendar.timeformat").toLowerCase().indexOf("p") != -1) {
             result.append(",\n\t\ttimeFormat     :    \"12\"");
         }
         if (dateStatusFunc != null && !"".equals(dateStatusFunc)) {
-            result.append(",\n\t\tdateStatusFunc :    " + dateStatusFunc);
+            result.append(",\n\t\tdateStatusFunc :    ");
+            result.append(dateStatusFunc);
         }
         result.append("\n\t});\n");
 
@@ -1258,9 +1277,9 @@ public abstract class CmsWorkplace {
                     className = "dialogadmin";
                 }
                 if (parameters == null) {
-                    result.append(" onLoad=\"window.top.body.admin_head.location.href='"
-                        + getJsp().link(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/administration_head.html")
-                        + "';\"");
+                    result.append(" onLoad=\"window.top.body.admin_head.location.href='");
+                    result.append(getJsp().link(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/administration_head.html"));
+                    result.append("';\"");
                 }
             }
             if (className != null) {
