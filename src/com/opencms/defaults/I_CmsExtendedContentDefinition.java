@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/I_CmsExtendedContentDefinition.java,v $
-* Date   : $Date: 2001/10/30 15:48:10 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/11/02 08:55:42 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -160,5 +160,5 @@ public interface I_CmsExtendedContentDefinition {
      * @param versionId The version id
      * @return Object The object with the version of the cd
      */
-    public Object getVersionFromHistory(CmsObject cms, int versionId);
+    public Object getVersionFromHistory(CmsObject cms, int versionId) throws Exception;
 }
