@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbungContentDefinition.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/18 10:00:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/02/19 12:49:02 $
+ * Version: $Revision: 1.2 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -33,12 +33,11 @@ import java.util.*;
 import java.io.*;
 
 /**
- * This class is used to display the application form of mindfact and makes it
- * possible to send the application form as a mail.
+ * This class is used to access the application form's XML-datablocks.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.1 $ $Date: 2000/02/18 10:00:20 $
- * @see com.opencms.template.CmsXmlTemplate
+ * @version $Name:  $ $Revision: 1.2 $ $Date: 2000/02/19 12:49:02 $
+ * @see com.opencms.template.CmsXmlTemplateFile
  */
 public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
 		
@@ -81,6 +80,32 @@ public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
 	private static final String C_BEWERBUNGSTEXT="bewerbungsText";
 	private static final String C_MESSAGE="message";
 	private static final String C_ERROR="error";
+	// Hashtable keys for building a form
+	private static final String C_HASH_CERTIFICATES="certificates";
+	private static final String C_HASH_TEXT="text";		
+	private static final String C_HASH_OLDPOSITION="oldPosition";
+	private static final String C_HASH_NEWPOSITION="newPosition";
+	private static final String C_HASH_BASE="base";
+	private static final String C_HASH_ENTRY="entry";
+	private static final String C_HASH_SALARY="salary";
+	private static final String C_HASH_HOW="how";
+	private static final String C_HASH_ANREDE="anrede";
+	private static final String C_HASH_TITEL="titel";
+	private static final String C_HASH_FIRSTNAME="firstname";
+	private static final String C_HASH_SURNAME="surname";
+	private static final String C_HASH_BIRTHDATE="birthdate";
+	private static final String C_HASH_CITIZEN="citizen";
+	private static final String C_HASH_FAMILY="family";
+	private static final String C_HASH_CO="co";
+	private static final String C_HASH_STREET="street";
+	private static final String C_HASH_PLZ="plz";
+	private static final String C_HASH_CITY="city";
+	private static final String C_HASH_COMPANYFON="companyFon";
+	private static final String C_HASH_PRIVATEFON="privateFon";
+	private static final String C_HASH_MOBILEFON="mobileFon";
+	private static final String C_HASH_FAX="fax";
+	private static final String C_HASH_EMAIL="email";	
+	private static final String C_HASH_URL="url";
 
 	
     /**
@@ -419,7 +444,33 @@ public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
      * This method gets the value of bewerbungsText datablock.
      * @return It returns the value of bewerbungsText datablock.
      */
-    public String getBewerbungsText() throws CmsException {
+    public String getBewerbungsText(Hashtable mailInfo) throws CmsException {
+		
+		setData(C_TEXT,(String)mailInfo.get(C_HASH_TEXT));
+		setData(C_CERTIFICATES,(String)mailInfo.get(C_HASH_CERTIFICATES));
+		setData(C_OLDPOSITION,(String)mailInfo.get(C_HASH_OLDPOSITION));
+		setData(C_NEWPOSITION,(String)mailInfo.get(C_HASH_NEWPOSITION));
+		setData(C_BASE,(String)mailInfo.get(C_HASH_BASE));
+		setData(C_ENTRY,(String)mailInfo.get(C_HASH_ENTRY));
+		setData(C_HOW,(String)mailInfo.get(C_HASH_HOW));
+		setData(C_SALARY,(String)mailInfo.get(C_HASH_SALARY));
+		setData(C_ANREDE,(String)mailInfo.get(C_HASH_ANREDE));
+		setData(C_TITEL,(String)mailInfo.get(C_HASH_TITEL));
+		setData(C_FIRSTNAME,(String)mailInfo.get(C_HASH_FIRSTNAME));
+		setData(C_SURNAME,(String)mailInfo.get(C_HASH_SURNAME));
+		setData(C_BIRTHDATE,(String)mailInfo.get(C_HASH_BIRTHDATE));
+		setData(C_CITIZEN,(String)mailInfo.get(C_HASH_CITIZEN));
+		setData(C_FAMILY,(String)mailInfo.get(C_HASH_FAMILY));
+		setData(C_CO,(String)mailInfo.get(C_HASH_CO));
+		setData(C_STREET,(String)mailInfo.get(C_HASH_STREET));
+		setData(C_PLZ,(String)mailInfo.get(C_HASH_PLZ));
+		setData(C_CITY,(String)mailInfo.get(C_HASH_CITY));
+		setData(C_COMPANYFON,(String)mailInfo.get(C_HASH_COMPANYFON));
+		setData(C_PRIVATEFON,(String)mailInfo.get(C_HASH_PRIVATEFON));
+		setData(C_MOBILEFON,(String)mailInfo.get(C_HASH_MOBILEFON));
+		setData(C_FAX,(String)mailInfo.get(C_HASH_FAX));
+		setData(C_EMAIL,(String)mailInfo.get(C_HASH_EMAIL));
+		setData(C_URL,(String)mailInfo.get(C_HASH_URL));		
         return getDataValue(C_BEWERBUNGSTEXT);
 	}
 	
@@ -685,6 +736,46 @@ public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
      */
     public void setSelected(int i,String selected) throws CmsException {
         setData(C_SELECTED+i,selected);
+	}
+	
+	
+	/**
+     * This method sets the value of newPosition datablock.
+     */
+    public void setNewPosition(String newPosition) throws CmsException {
+        setData(C_NEWPOSITION,newPosition);
+	}
+	
+	
+	/**
+     * This method sets the value of base datablock.
+     */
+    public void setBase(String base) throws CmsException {
+        setData(C_BASE,base);
+	}
+	
+	
+	/**
+     * This method sets the value of how datablock.
+     */
+    public void setHow(String how) throws CmsException {
+        setData(C_HOW,how);
+	}
+	
+	
+	/**
+     * This method sets the value of anrede datablock.
+     */
+    public void setAnrede(String anrede) throws CmsException {
+        setData(C_ANREDE,anrede);
+	}
+	
+	
+	/**
+     * This method sets the value of family datablock.
+     */
+    public void setFamily(String family) throws CmsException {
+        setData(C_FAMILY,family);
 	}
 	
 }

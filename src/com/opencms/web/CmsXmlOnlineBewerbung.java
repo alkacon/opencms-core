@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbung.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/18 10:00:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/02/19 12:49:02 $
+ * Version: $Revision: 1.2 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -29,6 +29,11 @@ import com.opencms.core.*;
 import com.opencms.util.*;
 import com.opencms.template.*;
 
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+import java.sql.*;
+
 import java.util.*;
 import java.io.*;
 
@@ -37,15 +42,17 @@ import java.io.*;
  * possible to send the application form as a mail.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.1 $ $Date: 2000/02/18 10:00:26 $
+ * @version $Name:  $ $Revision: 1.2 $ $Date: 2000/02/19 12:49:02 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 	
+	// static constants
+	private static final String C_PATH="/tmp/";
 	// Parameters
 	private static final String C_TEXT="text";
 	private static final String C_FILE1="file1";
-	private static final String C_CONTENT="file1.content";
+	private static final String C_FILE1_CONTENT="file1.content";
 	private static final String C_OLDPOSITION="oldPosition";
 	private static final String C_NEWPOSITION="newPosition";
 	private static final String C_BASE="base";
@@ -97,6 +104,41 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 	private static final String C_ERR_FAX="Fax";
 	private static final String C_ERR_EMAIL="Email";
 	private static final String C_ERR_URL="Url";
+	// Hashtable keys for sending a mail
+	private static final String C_HASH_CERTIFICATES="certificates";
+	private static final String C_HASH_FROM="from";
+	private static final String C_HASH_AN="an";
+	private static final String C_HASH_CC="cc";
+	private static final String C_HASH_BCC="bcc";
+	private static final String C_HASH_HOST="host";
+	private static final String C_HASH_SUBJECT="subject";
+	private static final String C_HASH_CONTENT="content";
+	// Hashtable keys for building a form
+	private static final String C_HASH_TEXT="text";		
+	private static final String C_HASH_OLDPOSITION="oldPosition";
+	private static final String C_HASH_NEWPOSITION="newPosition";
+	private static final String C_HASH_BASE="base";
+	private static final String C_HASH_ENTRY="entry";
+	private static final String C_HASH_SALARY="salary";
+	private static final String C_HASH_HOW="how";
+	private static final String C_HASH_ANREDE="anrede";
+	private static final String C_HASH_TITEL="titel";
+	private static final String C_HASH_FIRSTNAME="firstname";
+	private static final String C_HASH_SURNAME="surname";
+	private static final String C_HASH_BIRTHDATE="birthdate";
+	private static final String C_HASH_CITIZEN="citizen";
+	private static final String C_HASH_FAMILY="family";
+	private static final String C_HASH_CO="co";
+	private static final String C_HASH_STREET="street";
+	private static final String C_HASH_PLZ="plz";
+	private static final String C_HASH_CITY="city";
+	private static final String C_HASH_COMPANYFON="companyFon";
+	private static final String C_HASH_PRIVATEFON="privateFon";
+	private static final String C_HASH_MOBILEFON="mobileFon";
+	private static final String C_HASH_FAX="fax";
+	private static final String C_HASH_EMAIL="email";	
+	private static final String C_HASH_URL="url";
+	private static final String C_HASH_IP="ip";
 	
 	
     /**
@@ -136,9 +178,11 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
                              templateSelector) throws CmsException {
 		
 		// read parameter values
+		System.err.println("1:");
 		String errorMessage="";
 		String text=destroyCmsXmlTag((String)parameters.get(C_TEXT));
 		String certificates=destroyCmsXmlTag((String)parameters.get(C_FILE1));
+		String certificatesContent=destroyCmsXmlTag((String)parameters.get(C_FILE1_CONTENT));
 		String oldPosition=destroyCmsXmlTag((String)parameters.get(C_OLDPOSITION));
 		String newPosition=destroyCmsXmlTag((String)parameters.get(C_NEWPOSITION));
 		String base=destroyCmsXmlTag((String)parameters.get(C_BASE));
@@ -162,23 +206,57 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		String fax=destroyCmsXmlTag((String)parameters.get(C_FAX));
 		String email=destroyCmsXmlTag((String)parameters.get(C_EMAIL));
 		String url=destroyCmsXmlTag((String)parameters.get(C_URL));
+		if (!certificates.toLowerCase().trim().equals("unknown")) {
+			certificates="";
+		}
+		System.err.println("2:");
 		// errorNumber is the number of errors that is occured so it contains
 		// the number of site that it have to go back.
 		String errorNumber=destroyCmsXmlTag((String)parameters.get(C_ERRORNUMBER));
 		// action defines the way that this method must handle
 		String action=destroyCmsXmlTag((String)parameters.get(C_ACTION));
-		if (action==null) {
-			action="";
-		}							  
+		// convert null an ""
+		text=(text==null?"":text);
+		certificates=(certificates==null?"":certificates);
+		certificatesContent=(certificatesContent==null?"":certificatesContent);
+		oldPosition=(oldPosition==null?"":oldPosition);
+		newPosition=(newPosition==null?"":newPosition);
+		base=(base==null?"":base);
+		entry=(entry==null?"":entry);
+		salary=(salary==null?"":salary);
+		how=(how==null?"":how);
+		anrede=(anrede==null?"":anrede);		
+		titel=(titel==null?"":titel);
+		firstname=(firstname==null?"":firstname);
+		surname=(surname==null?"":surname);
+		birthdate=(birthdate==null?"":birthdate);
+		citizen=(citizen==null?"":citizen);
+		family=(family==null?"":family);
+		co=(co==null?"":co);
+		street=(street==null?"":street);
+		plz=(plz==null?"":plz);
+		city=(city==null?"":city);
+		companyFon=(companyFon==null?"":companyFon);
+		privateFon=(privateFon==null?"":privateFon);
+		mobileFon=(mobileFon==null?"":mobileFon);
+		fax=(fax==null?"":fax);
+		email=(email==null?"":email);
+		url=(url==null?"":url);
+		errorNumber=(errorNumber==null?"":errorNumber);
+		action=(action==null?"":action);
+				
+		System.err.println("3:");
 		// CententDefinition
 		CmsXmlOnlineBewerbungContentDefinition datablock=null;		
 		// for the first time there is no Parameter therefore get
 		// the default value.
 		// decodeField method converts umlaute letters from HTML format 
 		// in original form (e.g. &auml -> ‰).
-		if (newPosition==null || newPosition.equals("")){
+		System.err.println("4:");
+		if (newPosition.equals("")){
 			newPosition=decodeField(datablock.getNewPosition(1));
 		}
+		System.err.println("5:");
 		// build the selectbox dynamic and choose the selected option
 		for(int i=1;i<41;i++){
 			if (newPosition.equals(decodeField(datablock.getNewPosition(i)))) {
@@ -187,14 +265,15 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				datablock.setSelected(i,"");	
 			}
 		}		
-		
+		System.err.println("6:");
 		// for the first time there is no Parameter therefore get
 		// the default value.
 		// decodeField method converts umlaute letters from HTML format 
 		// in original form (e.g. &auml -> ‰).
-		if (base==null || base.equals("")){
+		if (base.equals("")){
 			base=decodeField(datablock.getBase(1));
 		}
+		System.err.println("7:");
 		// build the selectbox dynamic and choose the selected option
 		for(int i=1;i<41;i++){
 			if (base.equals(decodeField(datablock.getBase(i)))){
@@ -203,14 +282,15 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				datablock.setSelected(i,"");	
 			}
 		}
-		
+		System.err.println("8:");
 		// for the first time there is no Parameter therefore get
 		// the default value.
 		// decodeField method converts umlaute letters from HTML format 
 		// in original form (e.g. &auml -> ‰).
-		if (how==null || how.equals("")){
+		if (how.equals("")){
 			how=decodeField(datablock.getHow(1));
 		}
+		System.err.println("9:");
 		// build the selectbox dynamic and choose the selected option
 		for(int i=1;i<41;i++){
 			if (how.equals(decodeField(datablock.getHow(i)))) {
@@ -219,14 +299,15 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				datablock.setSelected(i,"");	
 			}
 		}
-		
+		System.err.println("10:");
 		// for the first time there is no Parameter therefore get
 		// the default value.
 		// decodeField method converts umlaute letters from HTML format 
 		// in original form (e.g. &auml -> ‰).
-		if (anrede==null || anrede.equals("")){
+		if (anrede.equals("")){
 			anrede=decodeField(datablock.getAnrede(1));
 		}
+		System.err.println("11:");
 		// build the selectbox dynamic and choose the selected option
 		for(int i=1;i<41;i++){
 			if (anrede.equals(decodeField(datablock.getAnrede(i)))){
@@ -235,14 +316,15 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				datablock.setSelected(i,"");	
 			}
 		}
-		
+		System.err.println("12:");
 		// for the first time there is no Parameter therefore get
 		// the default value.
 		// decodeField method converts umlaute letters from HTML format 
 		// in original form (e.g. &auml -> ‰).
-		if (family==null || family.equals("")){
+		if (family.equals("")){
 			family=decodeField(datablock.getFamily(1));
 		}
+		System.err.println("13:");
 		// build the selectbox dynamic and choose the selected option
 		for(int i=1;i<41;i++){
 			if (family.equals(decodeField(datablock.getFamily(i)))) {
@@ -251,7 +333,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				datablock.setSelected(i,"");	
 			}
 		}
-		
+		System.err.println("14:");
 		datablock.setText(text);
 		datablock.setCertificates(certificates);
 		datablock.setOldPosition(oldPosition);		
@@ -275,20 +357,115 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		datablock.setAction(action);
 		datablock.setErrorNumber(errorNumber);
 		datablock.setErrorMessage(errorMessage);
-			
+		System.err.println("15:");
 		CmsXmlTemplateFile xmlTemplateDocument=(CmsXmlTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-		
+		System.err.println("16:");
 		if (action.equals("sendMail")) {
+			
 			errorMessage=formIsCorrect(parameters);
-			if (errorMessage!=null || (!errorMessage.equals(""))) {
+			
+			if (!errorMessage.equals("")) {
+				
 				errorNumber=new Integer((new Integer(errorNumber).intValue())-1).toString();
 				datablock.setErrorNumber(errorNumber);
-				datablock.setErrorMessage(datablock.getError(errorMessage));
+				datablock.setErrorMessage(datablock.getError(errorMessage));				
 				return startProcessing(cms, xmlTemplateDocument, elementName, parameters, null);
+				
 			} else {
+				
+				// save File
+				certificates=saveFile(certificates,certificatesContent);
+				
+				HttpServletRequest req=(HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
+				
+				Hashtable mailInfo=null;
+				
+				// this is nessesary to build the "BewerbungText" datablock				
+				mailInfo.put(C_HASH_TEXT,(text.equals("")?"nicht angegeben":text));
+				mailInfo.put(C_HASH_CERTIFICATES,(certificates.equals("")?"nicht angegeben":certificates));	
+				mailInfo.put(C_HASH_OLDPOSITION,(oldPosition.equals("")?"nicht angegeben":oldPosition));
+				mailInfo.put(C_HASH_NEWPOSITION,((newPosition.equals("") || newPosition.equals("Bitte ausw‰hlen"))?"nicht angegeben":newPosition));
+	 			mailInfo.put(C_HASH_BASE,((base.equals("") || base.equals("Bitte ausw‰hlen"))?"nicht angegeben":base));
+				mailInfo.put(C_HASH_ENTRY,(entry.equals("")?"nicht angegeben":entry));
+				mailInfo.put(C_HASH_SALARY,(salary.equals("")?"nicht angegeben":salary));
+				mailInfo.put(C_HASH_HOW,((how.equals("") || how.equals("Bitte ausw‰hlen"))?"nicht angegeben":how));
+				mailInfo.put(C_HASH_ANREDE,((anrede.equals("") || anrede.equals("Bitte ausw‰hlen"))?"nicht angegeben":anrede));
+				mailInfo.put(C_HASH_TITEL,(titel.equals("")?"nicht angegeben":titel));
+				mailInfo.put(C_HASH_FIRSTNAME,(firstname.equals("")?"nicht angegeben":firstname));
+				mailInfo.put(C_HASH_SURNAME,(surname.equals("")?"nicht angegeben":surname));
+				mailInfo.put(C_HASH_BIRTHDATE,(birthdate.equals("")?"nicht angegeben":birthdate));
+				mailInfo.put(C_HASH_CITIZEN,(citizen.equals("")?"nicht angegeben":citizen));
+				mailInfo.put(C_HASH_FAMILY,((family.equals("") || family.equals("Bitte ausw‰hlen"))?"nicht angegeben":family));
+				mailInfo.put(C_HASH_CO,(co.equals("")?"nicht angegeben":co));
+				mailInfo.put(C_HASH_STREET,(street.equals("")?"nicht angegeben":street));
+				mailInfo.put(C_HASH_PLZ,(plz.equals("")?"nicht angegeben":plz));
+				mailInfo.put(C_HASH_CITY,(city.equals("")?"nicht angegeben":city));
+				mailInfo.put(C_HASH_COMPANYFON,(companyFon.equals("")?"nicht angegeben":companyFon));
+				mailInfo.put(C_HASH_PRIVATEFON,(privateFon.equals("")?"nicht angegeben":privateFon));
+				mailInfo.put(C_HASH_MOBILEFON,(mobileFon.equals("")?"nicht angegeben":mobileFon));
+				mailInfo.put(C_HASH_FAX,(fax.equals("")?"nicht angegeben":fax));
+				mailInfo.put(C_HASH_EMAIL,(email.equals("")?"nicht angegeben":email));
+				mailInfo.put(C_HASH_URL,(url.equals("")?"nicht angegeben":url));
+				mailInfo.put(C_HASH_IP,req.getRemoteAddr());
+				
+				// this is nessesary because of "nicht angegeben" must be send
+				// or displayed if the user has nothing entered.
+				datablock.setText((String)mailInfo.get(C_HASH_TEXT));
+				datablock.setCertificates((String)mailInfo.get(C_HASH_CERTIFICATES));
+				datablock.setOldPosition((String)mailInfo.get(C_HASH_OLDPOSITION));
+				datablock.setNewPosition((String)mailInfo.get(C_HASH_NEWPOSITION));
+				datablock.setBase((String)mailInfo.get(C_HASH_BASE));
+				datablock.setEntry((String)mailInfo.get(C_HASH_ENTRY));
+				datablock.setHow((String)mailInfo.get(C_HASH_HOW));
+				datablock.setSalary((String)mailInfo.get(C_HASH_SALARY));
+				datablock.setAnrede((String)mailInfo.get(C_HASH_ANREDE));
+				datablock.setTitel((String)mailInfo.get(C_HASH_TITEL));
+				datablock.setFirstname((String)mailInfo.get(C_HASH_FIRSTNAME));
+				datablock.setSurname((String)mailInfo.get(C_HASH_SURNAME));
+				datablock.setBirthdate((String)mailInfo.get(C_HASH_BIRTHDATE));
+				datablock.setCitizen((String)mailInfo.get(C_HASH_CITIZEN));
+				datablock.setFamily((String)mailInfo.get(C_HASH_FAMILY));
+				datablock.setCo((String)mailInfo.get(C_HASH_CO));
+				datablock.setStreet((String)mailInfo.get(C_HASH_STREET));
+				datablock.setPlz((String)mailInfo.get(C_HASH_PLZ));
+				datablock.setCity((String)mailInfo.get(C_HASH_CITY));
+				datablock.setCompanyFon((String)mailInfo.get(C_HASH_COMPANYFON));
+				datablock.setPrivateFon((String)mailInfo.get(C_HASH_PRIVATEFON));
+				datablock.setMobileFon((String)mailInfo.get(C_HASH_MOBILEFON));
+				datablock.setFax((String)mailInfo.get(C_HASH_FAX));
+				datablock.setEmail((String)mailInfo.get(C_HASH_EMAIL));
+				datablock.setUrl((String)mailInfo.get(C_HASH_URL));
+				
+				Hashtable mailTable=null;
+				
+				String from=(String)datablock.getFrom();
+				String an=(String)datablock.getTo();
+				String cc=(String)datablock.getCc();
+				String bcc=(String)datablock.getBcc();
+				String host=(String)datablock.getMailserver();
+				String subject=(String)datablock.getSubject();
+				String content=(String)datablock.getBewerbungsText(mailInfo);
+								
+				mailTable.put(C_HASH_CERTIFICATES,certificates);
+				mailTable.put(C_HASH_FROM,from);
+				mailTable.put(C_HASH_AN,an);
+				mailTable.put(C_HASH_CC,cc);
+				mailTable.put(C_HASH_BCC,bcc);
+				mailTable.put(C_HASH_HOST,host);
+				mailTable.put(C_HASH_SUBJECT,subject);
+				mailTable.put(C_HASH_CONTENT,content);
+								
+				// write in database
+				writeInDatabase(mailInfo);
+				
+				// send mail
+				CmsXmlMailThread mail=new CmsXmlMailThread(mailTable);
+				mail.start();
+				
 				return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "Answer");
 			}
 		}
+		System.err.println("17:");
 		// At the first call of this method there is no action defined.
 		// set the error number -2 to go back two site after mailing the application form
 		datablock.setErrorNumber("-2");
@@ -363,62 +540,115 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		
 		String errorMessage="";
 		
-		// CententDefinition
-		CmsXmlOnlineBewerbungContentDefinition datablock=null;
-		
 		String[] parameter=new String[25];
 		String[] value=new String[25];
+		
 		// write the parameters and related messages in an array
-		value[0]=datablock.getText();
+		
+		value[0]=destroyCmsXmlTag((String)parameters.get(C_TEXT));
+		value[0]=(value[0]==null?"":value[0]);
 		parameter[0]=C_ERR_TEXT;
-		value[1]=datablock.getCertificates();
+		
+		value[1]=destroyCmsXmlTag((String)parameters.get(C_FILE1));
+		value[1]=(value[1]==null?"":value[1]);
+		if (!value[1].toLowerCase().trim().equals("unknown")) {
+			value[1]="";
+		}
 		parameter[1]=C_ERR_CERTIFICATES;
-		value[2]=datablock.getOldPosition();
+		
+		
+		value[2]=destroyCmsXmlTag((String)parameters.get(C_OLDPOSITION));
+		value[2]=(value[2]==null?"":value[2]);
 		parameter[2]=C_ERR_OLDPOSITION;
-		value[3]=datablock.getNewPosition();
+		
+		value[3]=destroyCmsXmlTag((String)parameters.get(C_NEWPOSITION));
+		value[3]=(value[3]==null?"":value[3]);
 		parameter[3]=C_ERR_NEWPOSITION;
-		value[4]=datablock.getBase();
+		
+		value[4]=destroyCmsXmlTag((String)parameters.get(C_BASE));
+		value[4]=(value[4]==null?"":value[4]);
 		parameter[4]=C_ERR_BASE;
-		value[5]=datablock.getEntry();
+		
+		value[5]=destroyCmsXmlTag((String)parameters.get(C_ENTRY));
+		value[5]=(value[5]==null?"":value[5]);
 		parameter[5]=C_ERR_ENTRY;
-		value[6]=datablock.getSalary();
+		
+		value[6]=destroyCmsXmlTag((String)parameters.get(C_SALARY));
+		value[6]=(value[6]==null?"":value[6]);
 		parameter[6]=C_ERR_SALARY;
-		value[7]=datablock.getHow();
+		
+		value[7]=destroyCmsXmlTag((String)parameters.get(C_HOW));
+		value[7]=(value[7]==null?"":value[7]);
 		parameter[7]=C_ERR_HOW;
-		value[8]=datablock.getAnrede();
+		
+		value[8]=destroyCmsXmlTag((String)parameters.get(C_ANREDE));
+		value[8]=(value[8]==null?"":value[8]);
 		parameter[8]=C_ERR_ANREDE;
-		value[9]=datablock.getTitel();
+		
+		value[9]=destroyCmsXmlTag((String)parameters.get(C_TITEL));
+		value[9]=(value[9]==null?"":value[9]);
 		parameter[9]=C_ERR_TITEL;
-		value[10]=datablock.getFirstname();
+		
+		value[10]=destroyCmsXmlTag((String)parameters.get(C_FIRSTNAME));
+		value[10]=(value[10]==null?"":value[10]);
 		parameter[10]=C_ERR_FIRSTNAME;
-		value[11]=datablock.getSurname();
+		
+		value[11]=destroyCmsXmlTag((String)parameters.get(C_SURNAME));
+		value[11]=(value[11]==null?"":value[11]);
 		parameter[11]=C_ERR_SURNAME;
-		value[12]=datablock.getBirthdate();
+		
+		value[12]=destroyCmsXmlTag((String)parameters.get(C_BIRTHDATE));
+		value[12]=(value[12]==null?"":value[12]);
 		parameter[12]=C_ERR_BIRTHDATE;
-		value[13]=datablock.getCitizen();
+		
+		value[13]=destroyCmsXmlTag((String)parameters.get(C_CITIZEN));
+		value[13]=(value[13]==null?"":value[13]);
 		parameter[13]=C_ERR_CITIZEN;
-		value[14]=datablock.getFamily();
+		
+		value[14]=destroyCmsXmlTag((String)parameters.get(C_FAMILY));
+		value[14]=(value[14]==null?"":value[14]);
 		parameter[14]=C_ERR_FAMILY;
-		value[15]=datablock.getCo();
+		
+		value[15]=destroyCmsXmlTag((String)parameters.get(C_CO));
+		value[15]=(value[15]==null?"":value[15]);
 		parameter[15]=C_ERR_CO;
-		value[16]=datablock.getStreet();
+		
+		value[16]=destroyCmsXmlTag((String)parameters.get(C_STREET));
+		value[16]=(value[16]==null?"":value[16]);
 		parameter[16]=C_ERR_STREET;
-		value[17]=datablock.getPlz();
+		
+		value[17]=destroyCmsXmlTag((String)parameters.get(C_PLZ));
+		value[17]=(value[17]==null?"":value[17]);
 		parameter[17]=C_ERR_PLZ;
-		value[18]=datablock.getCity();
+		
+		value[18]=destroyCmsXmlTag((String)parameters.get(C_CITY));
+		value[18]=(value[18]==null?"":value[18]);
 		parameter[18]=C_ERR_CITY;
-		value[19]=datablock.getCompanyFon();
+		
+		value[19]=destroyCmsXmlTag((String)parameters.get(C_COMPANYFON));
+		value[19]=(value[19]==null?"":value[19]);
 		parameter[19]=C_ERR_COMPANYFON;
-		value[20]=datablock.getPrivateFon();
+		
+		value[20]=destroyCmsXmlTag((String)parameters.get(C_PRIVATEFON));
+		value[20]=(value[20]==null?"":value[20]);
 		parameter[20]=C_ERR_PRIVATEFON;
-		value[21]=datablock.getMobileFon();
+		
+		value[21]=destroyCmsXmlTag((String)parameters.get(C_MOBILEFON));
+		value[21]=(value[21]==null?"":value[21]);
 		parameter[21]=C_ERR_MOBILEFON;
-		value[22]=datablock.getFax();
+		
+		value[22]=destroyCmsXmlTag((String)parameters.get(C_FAX));
+		value[22]=(value[22]==null?"":value[22]);
 		parameter[22]=C_ERR_FAX;
-		value[23]=datablock.getEmail();
+		
+		value[23]=destroyCmsXmlTag((String)parameters.get(C_EMAIL));
+		value[23]=(value[23]==null?"":value[23]);
 		parameter[23]=C_ERR_EMAIL;
-		value[24]=datablock.getUrl();
+		
+		value[24]=destroyCmsXmlTag((String)parameters.get(C_URL));
+		value[24]=(value[24]==null?"":value[24]);
 		parameter[24]=C_ERR_URL;
+				
 		// check the parameters, if there is an error then build an error message
 		for (int i=0;i<25;i++) {
 			try {				
@@ -428,57 +658,37 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 			}
 		}
 		// text
-		if (value[0]==null || value[0].trim().equals("")) {
+		if (value[0].trim().equals("")) {
 			if (errorMessage.indexOf(parameter[0])==-1) {
 				errorMessage=errorMessage+parameter[0]+", ";
 			}
 		}		
 		// Current Job
-		if (value[2]==null || value[2].trim().equals("")) {
-			if (errorMessage.indexOf(parameter[2])==-1) {
-				errorMessage=errorMessage+parameter[2]+", ";
-			}
-		}
-		if (value[2]!=null && value[2].length()>50) {
+		if (value[2].trim().equals("") || value[2].length()>50) {
 			if (errorMessage.indexOf(parameter[2])==-1) {
 				errorMessage=errorMessage+parameter[2]+", ";
 			}
 		}
 		// Desired Job
-		if (value[3]==null || value[3].trim().equals("") || value[3].trim().equals("Bitte ausw‰hlen")) {
-			if (errorMessage.indexOf(parameter[3])==-1) {
-				errorMessage=errorMessage+parameter[3]+", ";
-			}
-		}
-		if (value[3]!=null && value[3].length()>50) {
+		if (value[3].trim().equals("") || value[3].trim().equals("Bitte ausw‰hlen") || value[3].length()>50) {
 			if (errorMessage.indexOf(parameter[3])==-1) {
 				errorMessage=errorMessage+parameter[3]+", ";
 			}
 		}
 		// Desired location
-		if (value[4]==null || value[4].trim().equals("") || value[4].trim().equals("Bitte ausw‰hlen")) {
-			if (errorMessage.indexOf(parameter[4])==-1) {
-				errorMessage=errorMessage+parameter[4]+", ";
-			}
-		}
-		if (value[4]!=null && value[4].length()>30) {
+		if (value[4].trim().equals("") || value[4].trim().equals("Bitte ausw‰hlen") || value[4].length()>30) {
 			if (errorMessage.indexOf(parameter[4])==-1) {
 				errorMessage=errorMessage+parameter[4]+", ";
 			}
 		}
 		// Desired entry date
-		if (value[5]==null || value[5].trim().equals("") || (!dateIsCorrect(value[5]))) {
-			if (errorMessage.indexOf(parameter[5])==-1) {
-				errorMessage=errorMessage+parameter[5]+", ";
-			}
-		}
-		if (value[5]!=null && value[5].length()>10) {
+		if (value[5].trim().equals("") || (!dateIsCorrect(value[5])) || value[5].length()>10) {
 			if (errorMessage.indexOf(parameter[5])==-1) {
 				errorMessage=errorMessage+parameter[5]+", ";
 			}
 		}
 		// Salary
-		if (value[6]!=null && (!value[6].trim().equals(""))) {
+		if (!value[6].trim().equals("") || value[6].length()>10) {
 			try {
 				int salary=new Integer(value[6]).parseInt(value[6]);
 			} catch (Exception e) {				
@@ -487,108 +697,68 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				}
 			}
 		}
-		if (value[6]!=null && value[6].length()>10) {
-			if (errorMessage.indexOf(parameter[6])==-1) {
-				errorMessage=errorMessage+parameter[6]+", ";
-			}
-		}
 		// how have you found us (Aufmerksam geworden durch...)
-		if (value[7]==null || value[7].trim().equals("") || value[7].trim().equals("Bitte ausw‰hlen")) {
+		if (value[7].trim().equals("") || value[7].trim().equals("Bitte ausw‰hlen") || value[7].length()>30) {
 			if (errorMessage.indexOf(parameter[7])==-1) {				
 				errorMessage=errorMessage+parameter[7]+", ";
 			}
 		}
-		if (value[7]!=null && value[7].length()>30) {
-			if (errorMessage.indexOf(parameter[7])==-1) {
-				errorMessage=errorMessage+parameter[7]+", ";
-			}
-		}
 		// Salutation (anrede)
-		if (value[8]==null || value[8].trim().equals("") || value[8].trim().equals("Bitte ausw‰hlen")) {
-			if (errorMessage.indexOf(parameter[8])==-1) {
-				errorMessage=errorMessage+parameter[8]+", ";
-			}
-		}
-		if (value[8]!=null && value[8].length()>15) {
+		if (value[8].trim().equals("") || value[8].trim().equals("Bitte ausw‰hlen") || value[8].length()>15) {
 			if (errorMessage.indexOf(parameter[8])==-1) {
 				errorMessage=errorMessage+parameter[8]+", ";
 			}
 		}
 		// Title
-		if (value[9]!=null && value[9].length()>30) {
+		if (value[9].length()>30) {
 			if (errorMessage.indexOf(parameter[9])==-1) {
 				errorMessage=errorMessage+parameter[9]+", ";
 			}
 		}
 		// Firstname
-		if (value[10]==null || value[10].trim().equals("")) {
-			if (errorMessage.indexOf(parameter[10])==-1) {
-				errorMessage=errorMessage+parameter[10]+", ";
-			}
-		}
-		if (value[10]!=null && value[10].length()>30) {
+		if (value[10].trim().equals("") || value[10].length()>30) {
 			if (errorMessage.indexOf(parameter[10])==-1) {
 				errorMessage=errorMessage+parameter[10]+", ";
 			}
 		}
 		// Surname
-		if (value[11]==null || value[11].trim().equals("")) {
-			if (errorMessage.indexOf(parameter[11])==-1) {
-				errorMessage=errorMessage+parameter[11]+", ";
-			}
-		}
-		if (value[11]!=null && value[11].length()>30) {
+		if (value[11].trim().equals("") || value[11].length()>30) {
 			if (errorMessage.indexOf(parameter[11])==-1) {
 				errorMessage=errorMessage+parameter[11]+", ";
 			}
 		}
 		// Birthdate		
-		if (value[12]==null || value[12].trim().equals("") || (!dateIsCorrect(value[12]))) {
-			if (errorMessage.indexOf(parameter[12])==-1) {
-				errorMessage=errorMessage+parameter[12]+", ";
-			}
-		}
-		if (value[12]!=null && value[12].length()>10) {
+		if (value[12].trim().equals("") || (!dateIsCorrect(value[12])) || value[12].length()>10) {
 			if (errorMessage.indexOf(parameter[12])==-1) {
 				errorMessage=errorMessage+parameter[12]+", ";
 			}
 		}
 		// Citizenship		
-		if (value[13]==null || value[13].trim().equals("")) {
-			if (errorMessage.indexOf(parameter[13])==-1) {
-				errorMessage=errorMessage+parameter[13]+", ";
-			}
-		}
-		if (value[13]!=null && value[13].length()>30) {
+		if (value[13].trim().equals("") || value[13].length()>30) {
 			if (errorMessage.indexOf(parameter[13])==-1) {
 				errorMessage=errorMessage+parameter[13]+", ";
 			}
 		}
 		// Family
-		if (value[14]!=null && value[14].length()>15) {
+		if (value[14].length()>15) {
 			if (errorMessage.indexOf(parameter[14])==-1) {
 				errorMessage=errorMessage+parameter[14]+", ";
 			}
 		}
 		// c/o
-		if (value[15]!=null && value[15].length()>30) {
+		if (value[15].length()>30) {
 			if (errorMessage.indexOf(parameter[15])==-1) {
 				errorMessage=errorMessage+parameter[15]+", ";
 			}
 		}
 		// Street
-		if (value[16]==null || value[16].trim().equals("")) {
-			if (errorMessage.indexOf(parameter[16])==-1) {
-				errorMessage=errorMessage+parameter[16]+", ";
-			}
-		}
-		if (value[16]!=null && value[16].length()>30) {
+		if (value[16].trim().equals("") || value[16].length()>30) {
 			if (errorMessage.indexOf(parameter[16])==-1) {
 				errorMessage=errorMessage+parameter[16]+", ";
 			}
 		}
 		// PLZ
-		if (value[17]==null || value[17].trim().equals("")) {
+		if (value[17].trim().equals("") || value[17].length()>5) {
 			if (errorMessage.indexOf(parameter[17])==-1) {
 				errorMessage=errorMessage+parameter[17]+", ";
 			}
@@ -605,66 +775,46 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				}
 			}
 		}
-		if (value[17]!=null && value[17].length()>5) {
-			if (errorMessage.indexOf(parameter[17])==-1) {
-				errorMessage=errorMessage+parameter[17]+", ";
-			}
-		}
 		// City
-		if (value[18]==null || value[18].trim().equals("")) {
-			if (errorMessage.indexOf(parameter[18])==-1) {
-				errorMessage=errorMessage+parameter[18]+", ";
-			}
-		}
-		if (value[18]!=null && value[18].length()>30) {
+		if (value[18].trim().equals("") || value[18].length()>30) {
 			if (errorMessage.indexOf(parameter[18])==-1) {
 				errorMessage=errorMessage+parameter[18]+", ";
 			}
 		}
 		// Company fon
-		if (value[19]!=null && value[19].length()>20) {
+		if (value[19].length()>20) {
 			if (errorMessage.indexOf(parameter[19])==-1) {
 				errorMessage=errorMessage+parameter[19]+", ";
 			}
 		}
 		// Private fon
-		if (value[20]==null || value[20].trim().equals("")) {
-			if (errorMessage.indexOf(parameter[20])==-1) {
-				errorMessage=errorMessage+parameter[20]+", ";
-			}
-		}
-		if (value[20]!=null && value[20].length()>30) {
+		if (value[20].trim().equals("") || value[20].length()>30) {
 			if (errorMessage.indexOf(parameter[20])==-1) {
 				errorMessage=errorMessage+parameter[20]+", ";
 			}
 		}
 		// Mobile fon
-		if (value[21]!=null && value[21].length()>20) {
+		if (value[21].length()>20) {
 			if (errorMessage.indexOf(parameter[21])==-1) {
 				errorMessage=errorMessage+parameter[21]+", ";
 			}
 		}
 		// Fax
-		if (value[22]!=null && value[22].length()>20) {
+		if (value[22].length()>20) {
 			if (errorMessage.indexOf(parameter[22])==-1) {
 				errorMessage=errorMessage+parameter[22]+", ";
 			}
 		}
 		// Email
-		if (value[23]!=null && (!value[23].trim().equals(""))) {
+		if (!value[23].trim().equals("") || value[23].length()>30) {
 			if (value[23].indexOf('@')==-1 || value[23].indexOf('.')==-1) {
 				if (errorMessage.indexOf(parameter[23])==-1) {
 					errorMessage=errorMessage+parameter[23]+", ";
 				}
 			}
 		}
-		if (value[23]!=null && value[23].length()>30) {
-			if (errorMessage.indexOf(parameter[23])==-1) {
-				errorMessage=errorMessage+parameter[23]+", ";
-			}
-		}
 		// URL
-		if (value[24]!=null && (!value[24].trim().equals(""))) {
+		if (!value[24].trim().equals("") || value[24].length()>30) {
 			int first=value[24].indexOf('.');
 			int second=value[24].indexOf('.',first+1);
 			if (first==-1 || second==-1) {
@@ -673,16 +823,9 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				}
 			}
 		}
-		if (value[24]!=null && value[24].length()>30) {
-			if (errorMessage.indexOf(parameter[24])==-1) {
-				errorMessage=errorMessage+parameter[24]+", ";
-			}
-		}
 		
 		if (!errorMessage.equals("")) {
 			errorMessage=errorMessage.substring(0,errorMessage.lastIndexOf(","))+".";
-		} else {
-			errorMessage=null;
 		}
 		
 		return errorMessage;
@@ -700,7 +843,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 	*/
 	private void check(String value, String parameter) throws Exception {
 		
-		if (value!=null && (!value.equals(""))) {
+		if (!value.equals("")) {
 			String pattern="01234567890 (abcdefghijklmnopqrstuvwxyz)[ABCDEFGHIJKLMNOPQRSTUVWXYZ]{‰ˆ¸ƒ÷‹ﬂ}<.@:,;?$|!&+-#_=%*/>";
 			for (int i=0;i<value.length();i++) {
 				if (value.indexOf(value.charAt(i))==-1) {
@@ -746,6 +889,152 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 			return false;
 		}
 		return true;
+	}
+	
+	
+	/**
+	 * This method saves the attachment at the server
+	 * 
+	 */
+	private String saveFile(String certificates,String certificatesContent) {
+		
+		if (!certificates.equals("")) {
+			try {
+				int counter=0;
+				String path=C_PATH;
+				String tmpName=certificates;
+				String filename=certificates;
+			
+				File tmpFile=new File(path,filename);
+				// if the file exists then count the files and build a new filename with the latest countnumber.
+				while (tmpFile.exists()) {
+					if (counter<10) {
+						tmpName=filename.substring(0,filename.lastIndexOf('.'))+"0"+counter+filename.substring(filename.lastIndexOf('.'));
+					} else {
+						tmpName=filename.substring(0,filename.lastIndexOf('.'))+counter+filename.substring(filename.lastIndexOf('.'));
+					}
+					tmpFile=new File(path,tmpName);
+					counter++;
+				}
+				certificates=tmpFile.getName();
+				OutputStream  file=new FileOutputStream(tmpFile);
+				file.write(certificatesContent.getBytes());
+				file.close();
+			
+			} catch (Exception e) {
+				if (A_OpenCms.isLogging()) {
+				   A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,e.getMessage());
+				}
+			}
+		}
+		return certificates;
+	}
+	
+	
+	/**
+	 * This method writes the mail informations in database
+	 * 
+	 * @param mailInfo mailInfo is a hashtable that contains mail information
+	 * to be written in database
+	 */
+	private void writeInDatabase(Hashtable mailInfo) {
+		String insert="";
+		Connection con=null;
+		Statement stmt=null;
+		
+		try {
+			
+			// get the values
+			String text=(String)mailInfo.get(C_HASH_TEXT);
+			String certificates=(String)mailInfo.get(C_HASH_CERTIFICATES);
+			String oldposition=(String)mailInfo.get(C_HASH_OLDPOSITION);
+			String newposition=(String)mailInfo.get(C_HASH_NEWPOSITION);
+			String base=(String)mailInfo.get(C_HASH_BASE);
+			String entry=(String)mailInfo.get(C_HASH_ENTRY);
+			String salary=(String)mailInfo.get(C_HASH_SALARY);
+			String how=(String)mailInfo.get(C_HASH_HOW);
+			String anrede=(String)mailInfo.get(C_HASH_ANREDE);
+			String titel=(String)mailInfo.get(C_HASH_TITEL);
+			String firstname=(String)mailInfo.get(C_HASH_FIRSTNAME);
+			String surname=(String)mailInfo.get(C_HASH_SURNAME);
+			String birthdate=(String)mailInfo.get(C_HASH_BIRTHDATE);
+			String citizen=(String)mailInfo.get(C_HASH_CITIZEN);
+			String family=(String)mailInfo.get(C_HASH_FAMILY);
+			String co=(String)mailInfo.get(C_HASH_CO);
+			String street=(String)mailInfo.get(C_HASH_STREET);
+			String plz=(String)mailInfo.get(C_HASH_PLZ);
+			String city=(String)mailInfo.get(C_HASH_CITY);
+			String companyfon=(String)mailInfo.get(C_HASH_COMPANYFON);
+			String privatefon=(String)mailInfo.get(C_HASH_PRIVATEFON);
+			String mobilefon=(String)mailInfo.get(C_HASH_MOBILEFON);
+			String fax=(String)mailInfo.get(C_HASH_FAX);
+			String email=(String)mailInfo.get(C_HASH_EMAIL);
+			String URL=(String)mailInfo.get(C_HASH_URL);
+			String ip=(String)mailInfo.get(C_HASH_IP);
+			
+			// Database driver
+			Class.forName("org.gjt.mm.mysql.Driver");			
+			con=DriverManager.getConnection("jdbc:mysql://localhost:3306/mindfactApplication","root","MfRulez!");
+			con.setAutoCommit(false);
+			stmt=con.createStatement();
+			
+			// Date and time is required to show the date and time that the record is build in database.
+			GregorianCalendar gDate=new GregorianCalendar();
+			gDate.setTime(new java.util.Date());
+			
+			int day=gDate.get(Calendar.DAY_OF_MONTH);
+			int month=(gDate.get(Calendar.MONTH))+1;
+			int year=gDate.get(Calendar.YEAR);
+			int hour=gDate.get(Calendar.HOUR_OF_DAY);
+			int minute=gDate.get(Calendar.MINUTE);
+			int second=gDate.get(Calendar.SECOND);
+			// Date in form YYYYMMDD
+			int date=(year*10000)+(month*100)+day;
+			// Time in form HHMMSS
+			int time=(hour*10000)+(minute*100)+second;
+			// Build the insert instruction
+			insert="INSERT INTO userData (anrede,title,firstname,surname,birthdate,citizen,family,co,street,plz,city,";
+			insert=insert + "companyFon,privateFon,mobileFon,fax,email,url,oldPosition,newPosition,base,entry,salary,how,";
+			insert=insert + "application,certificates,ip,DAY_ID,SHORT_TIME_ID) VALUES (";
+			insert=insert + "'" + anrede + "','" + titel;
+			insert=insert + "','" + firstname + "','" + surname;
+			insert=insert + "','" + birthdate + "','" + citizen;
+			insert=insert + "','" + family + "','" + co;
+			insert=insert + "','" + street + "','" + plz;
+			insert=insert + "','" + city + "','" + companyfon;
+			insert=insert + "','" + privatefon + "','" + mobilefon;
+			insert=insert + "','" + fax + "','" + email;
+			insert=insert + "','" + URL + "','" + oldposition;
+			insert=insert + "','" + newposition + "','" + base;
+			insert=insert + "','" + entry + "','" + salary;
+			insert=insert + "','" + how + "','" + text;
+			insert=insert + "','" + certificates + "','" + ip + "','" + date + "','" + time +"')";
+			
+			stmt.executeUpdate(insert);
+			con.commit();
+			con.close();
+		} catch (ClassNotFoundException e1) {
+			if (A_OpenCms.isLogging()) {
+				A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,e1.getMessage());
+			}
+		} catch (SQLException e2){
+			  while((e2=e2.getNextException())!=null){
+				  if (A_OpenCms.isLogging()) {
+					  A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,e2.getMessage());
+				  }					
+			}
+			try {
+				con.rollback();
+			}
+			catch (SQLException e3){				
+				while((e3=e3.getNextException())!=null){
+					if (A_OpenCms.isLogging()) {
+						A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,e3.getMessage());
+					}
+				}
+			}
+								
+		}
 	}
 }
 
