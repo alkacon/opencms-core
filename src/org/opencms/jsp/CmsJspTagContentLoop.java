@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoop.java,v $
- * Date   : $Date: 2004/10/18 13:57:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/17 12:16:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagContentContainer {
@@ -56,6 +56,9 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
     /** Name of the content node element to show. */
     private String m_element;
 
+    /** Name of the current element (including the index). */
+    private String m_currentElement;
+    
     /** Index of the content node element to show. */
     private int m_index = -1;
 
@@ -72,6 +75,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
 
         if (m_content.hasValue(m_element, m_locale, m_index + 1)) {
             m_index++;
+            m_currentElement = A_CmsXmlDocument.createXpath(m_element, m_index);
             // one more element with the same name is available, loop again
             return EVAL_BODY_AGAIN;
         } else {
@@ -99,6 +103,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
 
         if (m_content.hasValue(m_element, m_locale)) {
             // selected element is available at last once in content
+            m_currentElement = A_CmsXmlDocument.createXpath(m_element, m_index);
             return EVAL_BODY_INCLUDE;
         } else {
             // no value available for the selected element name, so we skip the whole body
@@ -137,15 +142,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
      */
     public String getXmlDocumentElement() {
 
-        return m_element;
-    }
-
-    /**
-     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getXmlDocumentIndex()
-     */
-    public int getXmlDocumentIndex() {
-
-        return m_index;
+        return m_currentElement;
     }
 
     /**
@@ -163,6 +160,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
 
         super.release();
         m_element = null;
+        m_currentElement = null;
         m_content = null;
         m_locale = null;
         m_parentTag = null;

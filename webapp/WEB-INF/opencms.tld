@@ -129,9 +129,6 @@
         <attribute>
             <name>element</name>
         </attribute>
-        <attribute>
-            <name>index</name>
-        </attribute>   
     </tag>    
     
     <tag>

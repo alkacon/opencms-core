@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/11/08 15:06:43 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/11/17 12:16:59 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.3.5
  */
 public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -118,7 +118,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      * 
      * @return the simplified Xpath for the given name
      */
-    protected static String createXpath(String path, int index) {
+    public static String createXpath(String path, int index) {
 
         if (path.indexOf('/') > -1) {
             // this is a complex path over more then 1 node

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2004/11/04 16:37:28 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/11/17 12:16:59 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagContentContainer {
@@ -331,15 +331,6 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         // value must be set in "loop" or "show" class
         return null;
-    }
-
-    /**
-     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getXmlDocumentIndex()
-     */
-    public int getXmlDocumentIndex() {
-
-        // index must be set in "loop" or "show" class
-        return 0;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2004/10/18 13:57:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/17 12:16:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public class CmsJspTagContentShow extends TagSupport {
@@ -61,15 +61,12 @@ public class CmsJspTagContentShow extends TagSupport {
     /** Name of the content node element to show. */
     private String m_element;
 
-    /** Index of the content node element to show. */
-    private int m_index = -1;
-
     /**
      * Internal action method to show an element from a XML content document.<p>
+     * 
      * @param content the XML content to show the element from
      * @param element the node name of the element to show
      * @param locale the locale of the element to show
-     * @param index the node index of the element to show
      * @param req the current request 
      * 
      * @return the value of the selected content element
@@ -78,7 +75,6 @@ public class CmsJspTagContentShow extends TagSupport {
         A_CmsXmlDocument content,
         String element,
         Locale locale,
-        int index,
         ServletRequest req) {
 
         if (content == null) {
@@ -86,7 +82,7 @@ public class CmsJspTagContentShow extends TagSupport {
             return null;
         }
 
-        if (content.hasValue(element, locale, index)) {
+        if (content.hasValue(element, locale)) {
 
             // selected element is available in content
             CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
@@ -94,10 +90,10 @@ public class CmsJspTagContentShow extends TagSupport {
 
             try {
                 // read the element from the content
-                return content.getStringValue(cms, element, locale, index);
+                return content.getStringValue(cms, element, locale);
             } catch (CmsXmlException e) {
                 OpenCms.getLog(CmsJspTagContentShow.class).error(
-                    "Error processing content element '" + element + '[' + index + "]'",
+                    "Error processing content element '" + element,
                     e);
                 return null;
             }
@@ -135,18 +131,12 @@ public class CmsJspTagContentShow extends TagSupport {
             content = contentContainer.resolveMagicName(element);
         } else {
 
-            // resolve "normal" content reference
-            int index = getIndex();
-            if (getIndex() < 0) {
-                index = contentContainer.getXmlDocumentIndex();
-            }
-
             // now get the content element value to display
-            content = contentShowTagAction(xmlContent, element, locale, index, pageContext.getRequest());
+            content = contentShowTagAction(xmlContent, element, locale, pageContext.getRequest());
 
             // make sure that no null String is returned
             if (content == null) {
-                content = CmsMessages.formatUnknownKey(element + '[' + index + ']');
+                content = CmsMessages.formatUnknownKey(element);
             }
         }
 
@@ -173,23 +163,12 @@ public class CmsJspTagContentShow extends TagSupport {
     }
 
     /**
-     * Returns the index of the content node element to show.<p>
-     *
-     * @return the index of the content node element to show
-     */
-    public int getIndex() {
-
-        return m_index;
-    }
-
-    /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
     public void release() {
 
         super.release();
         m_element = null;
-        m_index = -1;
     }
 
     /**
@@ -200,15 +179,5 @@ public class CmsJspTagContentShow extends TagSupport {
     public void setElement(String element) {
 
         m_element = element;
-    }
-
-    /**
-     * Sets the index of the content node element to show.<p>
-     *
-     * @param index the index of the content node element to show
-     */
-    public void setIndex(int index) {
-
-        m_index = index;
     }
 }

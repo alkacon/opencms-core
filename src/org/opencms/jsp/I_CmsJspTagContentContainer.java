@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/I_CmsJspTagContentContainer.java,v $
- * Date   : $Date: 2004/10/18 13:57:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/17 12:16:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,13 +72,6 @@ public interface I_CmsJspTagContentContainer {
      * @return the currently selected element name for the current content
      */
     String getXmlDocumentElement();
-
-    /**
-     * Returns the currently selected index for the current content.<p>
-     * 
-     * @return the currently selected index for the current content
-     */
-    int getXmlDocumentIndex();
 
     /**
      * Returns the currently selected locale for the current content.<p>
