@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2004/11/11 16:39:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/11/12 18:43:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -255,7 +255,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         i = table.iterator();
         while (i.hasNext()) {
             CmsLink link = (CmsLink)i.next();
-            links.add(link.toString());    
+            links.add(link.toString());  
+            System.out.println("Link: " + link.toString());            
         }                
         assertEquals(2, links.size());
         assertTrue(links.contains("/sites/mysite/importtest/page2.html"));
@@ -267,6 +268,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         while (i.hasNext()) {
             CmsResource sibling = (CmsResource)i.next();
             links.add(sibling.getRootPath());
+            System.out.println("Sibling: " + sibling.toString());            
         }        
         assertEquals(2, links.size());
         assertTrue(links.contains("/sites/mysite/importtest/index.html"));
@@ -286,6 +288,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         while (i.hasNext()) {
             CmsLink link = (CmsLink)i.next();
             links.add(link.toString());    
+            System.out.println("Link: " + link.toString());            
         }                
         assertTrue(links.size() == 2);
         assertTrue(links.contains("/sites/mysite/importtest/page2.html"));
@@ -312,6 +315,28 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         // need to create the "galleries" folder manually
         cms.createResource("/system/galleries", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
         cms.unlockResource("/system/galleries");
+        
+        CmsResourceTranslator oldFolderTranslator = OpenCms.getResourceManager().getFolderTranslator();
+        
+        CmsResourceTranslator folderTranslator = new CmsResourceTranslator(
+            new String[] {
+                "s#^/sites/default/content/bodys(.*)#/system/bodies$1#",
+                "s#^/sites/default/pics/system(.*)#/system/workplace/resources$1#",
+                "s#^/sites/default/pics(.*)#/system/galleries/pics$1#",                
+                "s#^/sites/default/download(.*)#/system/galleries/download$1#",
+                "s#^/sites/default/externallinks(.*)#/system/galleries/externallinks$1#",
+                "s#^/sites/default/htmlgalleries(.*)#/system/galleries/htmlgalleries$1#",
+                "s#^/sites/default/content(.*)#/system$1#"
+                }, 
+            false);
+        
+        // set modified folder translator
+        OpenCms.getResourceManager().setTranslators(
+            folderTranslator, 
+            OpenCms.getResourceManager().getFileTranslator());
+        
+        // update OpenCms context to ensure new translator is used
+        cms = getCmsObject();        
         
         cms.getRequestContext().setSiteRoot("/sites/default");
         
@@ -356,8 +381,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         assertTrue(links.contains("/sites/default/importtest/index.html"));
         assertTrue(links.contains("/sites/default/importtest/linktest.html"));          
         
-        
-        
+                
         // test "/importtest/page2.html"
         file = cms.readFile("/importtest/page2.html");
         page = CmsXmlPageFactory.unmarshal(cms, file);
@@ -368,6 +392,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         while (i.hasNext()) {
             CmsLink link = (CmsLink)i.next();
             links.add(link.toString());    
+            System.out.println("Link: " + link.toString());
         }                
         assertEquals(2, links.size());
         assertTrue(links.contains("/system/galleries/pics/_anfang/bg_teaser_test2.jpg"));       
@@ -385,7 +410,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         i = table.iterator();
         while (i.hasNext()) {
             CmsLink link = (CmsLink)i.next();
-            links.add(link.toString());    
+            links.add(link.toString());  
+            System.out.println("Link: " + link.toString());            
         }                
         assertEquals(2, links.size());
         assertTrue(links.contains("/sites/default/importtest/page2.html"));
@@ -411,7 +437,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         i = table.iterator();
         while (i.hasNext()) {
             CmsLink link = (CmsLink)i.next();
-            links.add(link.toString());    
+            links.add(link.toString());  
+            System.out.println("Link: " + link.toString());            
         }                
         assertTrue(links.size() == 2);
         assertTrue(links.contains("/sites/default/importtest/page2.html"));
@@ -427,5 +454,10 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         cms.unlockResource("/sites/default");
         cms.unlockResource("/system");               
         cms.publishProject();
+        
+        // reset the translation rules
+        OpenCms.getResourceManager().setTranslators(
+            oldFolderTranslator, 
+            OpenCms.getResourceManager().getFileTranslator());        
     }
 }

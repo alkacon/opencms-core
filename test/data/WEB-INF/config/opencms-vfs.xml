@@ -77,15 +77,7 @@
 				<translation>s#[^0-9a-zA-Z_\.\-\/]#!#g</translation>
 				<translation>s#!+#x#g</translation>
 			</filetranslations>
-			<foldertranslations enabled="true">
-				<translation>s#^/sites/default/content/bodys(.*)#/system/bodies$1#</translation>
-				<translation>s#^/sites/default/pics/system(.*)#/system/workplace/resources$1#</translation>
-				<translation>s#^/sites/default/pics(.*)#/system/galleries/pics$1#</translation>
-				<translation>s#^/sites/default/download(.*)#/system/galleries/download$1#</translation>
-				<translation>s#^/sites/default/externallinks(.*)#/system/galleries/externallinks$1#</translation>
-				<translation>s#^/sites/default/htmlgalleries(.*)#/system/galleries/htmlgalleries$1#</translation>
-				<translation>s#^/sites/default/content(.*)#/system$1#</translation>
-			</foldertranslations>
+			<foldertranslations enabled="false" />
 		</translations>
 		<xmlcontents>
 			<xmlcontent class="org.opencms.xml.types.CmsXmlBooleanValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" />
