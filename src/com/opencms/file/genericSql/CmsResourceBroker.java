@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/09/06 13:10:10 $
-* Version: $Revision: 1.271 $
+* Date   : $Date: 2001/09/07 15:09:12 $
+* Version: $Revision: 1.272 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.271 $ $Date: 2001/09/06 13:10:10 $
+ * @version $Revision: 1.272 $ $Date: 2001/09/07 15:09:12 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -297,7 +297,8 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
         do {
             // is the resource locked?
             if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ||
-                resource.getLockedInProject() != currentProject.getId()) ) {
+                (resource.getLockedInProject() != currentProject.getId() &&
+                 currentProject.getFlags() != C_PROJECT_STATE_INVISIBLE)) ) {
                 // resource locked by anopther user, no creation allowed
                 return(false);
             }

@@ -83,6 +83,7 @@ PACKAGE BODY opencmsAccess IS
     recResource cms_resources%ROWTYPE;
     vOnlineProject NUMBER;
     vLockedInProject NUMBER;
+    vProjectFlag NUMBER;
   BEGIN
     -- project = online-Project => false
     vOnlineProject := opencmsProject.onlineProject(pProjectID).project_id;
@@ -125,9 +126,11 @@ PACKAGE BODY opencmsAccess IS
         select project_id into vLockedInProject 
                from cms_resources 
                where resource_id = recResource.resource_id;
+        select project_flags into vProjectFlag from cms_projects where project_id = pProjectId;
         -- resource.locked_by not in (C_UNKNOWN_ID, pUserID) => false
         IF recResource.locked_by NOT IN (opencmsConstants.C_UNKNOWN_ID, pUserID) 
-           OR (recResource.locked_by != opencmsConstants.C_UNKNOWN_ID AND vLockedInProject != pProjectId) THEN
+           OR (recResource.locked_by != opencmsConstants.C_UNKNOWN_ID AND vLockedInProject != pProjectId
+           AND vProjectFlag != opencmsConstants.C_PROJECT_STATE_INVISIBLE) THEN
           RETURN 0;
         END IF;
         vResPath := opencmsResource.getParent(vResPath);
