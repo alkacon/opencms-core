@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/01/08 16:59:52 $
- * Version: $Revision: 1.220 $
+ * Date   : $Date: 2001/01/08 17:07:30 $
+ * Version: $Revision: 1.221 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.220 $ $Date: 2001/01/08 16:59:52 $
+ * @version $Revision: 1.221 $ $Date: 2001/01/08 17:07:30 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3800,6 +3800,8 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 	public CmsUser loginUser(CmsUser currentUser, CmsProject currentProject, 
 							   String username, String password) 
 		throws CmsException {
+			
+		// we must read the user from the dbAccess to avoid the cache
    		CmsUser newUser = m_dbAccess.readUser(username, password, C_USER_TYPE_SYSTEMUSER);
 		
 		// is the user enabled?
@@ -3835,6 +3837,8 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 	public CmsUser loginWebUser(CmsUser currentUser, CmsProject currentProject, 
 							   String username, String password) 
 		throws CmsException {
+			
+		// we must read the user from the dbAccess to avoid the cache
    		CmsUser newUser = m_dbAccess.readUser(username, password, C_USER_TYPE_WEBUSER);
 		
 		// is the user enabled?
