@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2001/02/09 15:32:52 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2001/02/22 15:35:16 $
+* Version: $Revision: 1.20 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -39,7 +39,6 @@ import java.io.*;
  *
  * @author Andreas Schouten
  * @author Alexander Lucas <alexander.lucas@framfab.de>
- * @author Stefan Marx <Stefan.Marx@framfab.de>
  */
 public class Utils implements I_CmsConstants,I_CmsLogChannels {
 
@@ -332,23 +331,6 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
             GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]),
                     Integer.parseInt(splittetDate[1]) - 1, Integer.parseInt(splittetDate[0]), 0, 0, 0);
             result = cal.getTime().getTime();
-        }
-        return result;
-    }
-
-    /**
-     * Check a given email address for conformness with
-     * RFC822 rules, see http://www.rfc-editor.org/rfc.html
-     * @author Stefan Marx <Stefan.Marx@framfab.de>
-     * @param address EMail address to be checked
-     * @return <code>true</code> if the address is syntactically correct, <code>false</code> otherwise.
-    */
-    public static boolean checkEmail(String address) {
-        boolean result = true;
-        try {
-            javax.mail.internet.InternetAddress IPAdd = new javax.mail.internet.InternetAddress(address);
-        } catch(javax.mail.internet.AddressException e) {
-            result = false;
         }
         return result;
     }
