@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2001/02/21 12:35:28 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2001/02/28 16:42:57 $
+ * Version: $Revision: 1.29 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.28 $ $Date: 2001/02/21 12:35:28 $
+ * @version $Revision: 1.29 $ $Date: 2001/02/28 16:42:57 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -1410,7 +1410,6 @@ private void init() throws Exception {
 	NodeList modules = m_xmlReg.getElementsByTagName("module");
 	// create the hashtable for the shortcuts
 	m_modules.clear();
-
 	// walk throug all modules
 	for (int i = 0; i < modules.getLength(); i++) {
 		Element module = (Element) modules.item(i);

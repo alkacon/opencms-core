@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2001/02/21 10:06:56 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2001/02/28 16:42:57 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.16 $ $Date: 2001/02/21 10:06:56 $
+ * @version $Revision: 1.17 $ $Date: 2001/02/28 16:42:57 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -159,7 +159,7 @@ public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean
 	 */
 	public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged, Node moduleNode)
 		throws CmsException {
-        this(exportFile, exportPaths, cms, excludeSystem, excludeUnchanged, null, false);
+        this(exportFile, exportPaths, cms, excludeSystem, excludeUnchanged, moduleNode, false);
     }
 	/**
 	 * This constructs a new CmsImport-object which imports the resources.
