@@ -105,7 +105,7 @@
 			<destination>system/workplace/action/administration.html</destination>
 			<type>XMLTemplate</type>
 			<user>Admin</user>
-			<group>Users</group>
+			<group>Projectmanager</group>
 			<access>15</access>
 			<properties/>
 		</file>
@@ -519,7 +519,7 @@
 			<destination>system/workplace/action/explorer_head.html</destination>
 			<type>XMLTemplate</type>
 			<user>Admin</user>
-			<group>Projectmanager</group>
+			<group>Users</group>
 			<access>15</access>
 			<properties/>
 		</file>
@@ -6724,8 +6724,8 @@
 			<destination>system/workplace/templates/adminbackbuttontemplate</destination>
 			<type>plain</type>
 			<user>Admin</user>
-			<group>Administrators</group>
-			<access>383</access>
+			<group>Users</group>
+			<access>79</access>
 			<properties>
 				<property>
 					<name>Title</name>
@@ -7297,8 +7297,8 @@
 			<destination>system/workplace/templates/frame_links1</destination>
 			<type>plain</type>
 			<user>Admin</user>
-			<group>Administrators</group>
-			<access>383</access>
+			<group>Users</group>
+			<access>79</access>
 			<properties/>
 		</file>
 		<file>
@@ -7306,8 +7306,8 @@
 			<destination>system/workplace/templates/frame_links2</destination>
 			<type>plain</type>
 			<user>Admin</user>
-			<group>Administrators</group>
-			<access>383</access>
+			<group>Users</group>
+			<access>79</access>
 			<properties/>
 		</file>
 		<file>
@@ -7315,8 +7315,8 @@
 			<destination>system/workplace/templates/frame_mitte1</destination>
 			<type>plain</type>
 			<user>Admin</user>
-			<group>Administrators</group>
-			<access>383</access>
+			<group>Users</group>
+			<access>79</access>
 			<properties/>
 		</file>
 		<file>
@@ -7324,8 +7324,8 @@
 			<destination>system/workplace/templates/frame_rechts1</destination>
 			<type>plain</type>
 			<user>Admin</user>
-			<group>Administrators</group>
-			<access>383</access>
+			<group>Users</group>
+			<access>79</access>
 			<properties/>
 		</file>
 		<file>
@@ -7333,8 +7333,8 @@
 			<destination>system/workplace/templates/frame_rechts3</destination>
 			<type>plain</type>
 			<user>Admin</user>
-			<group>Administrators</group>
-			<access>383</access>
+			<group>Users</group>
+			<access>79</access>
 			<properties/>
 		</file>
 		<file>
@@ -7342,8 +7342,8 @@
 			<destination>system/workplace/templates/frame_text</destination>
 			<type>plain</type>
 			<user>Admin</user>
-			<group>Administrators</group>
-			<access>383</access>
+			<group>Users</group>
+			<access>79</access>
 			<properties/>
 		</file>
 		<file>
@@ -7351,8 +7351,8 @@
 			<destination>system/workplace/templates/frame_title</destination>
 			<type>plain</type>
 			<user>Admin</user>
-			<group>Administrators</group>
-			<access>383</access>
+			<group>Users</group>
+			<access>79</access>
 			<properties/>
 		</file>
 		<file>
@@ -7450,8 +7450,8 @@
 			<destination>system/workplace/templates/moduletemplate</destination>
 			<type>plain</type>
 			<user>Admin</user>
-			<group>Administrators</group>
-			<access>383</access>
+			<group>Users</group>
+			<access>79</access>
 			<properties>
 				<property>
 					<name>Title</name>
