@@ -128,6 +128,15 @@
 			<properties/>
 		</file>
 		<file>
+			<source>action/administration_content_siteedit.html</source>
+			<destination>system/workplace/action/administration_content_siteedit.html</destination>
+			<type>XMLTemplate</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>7</access>
+			<properties/>
+		</file>
+		<file>
 			<source>action/administration_content_downgalleries.html</source>
 			<destination>system/workplace/action/administration_content_downgalleries.html</destination>
 			<type>XMLTemplate</type>
@@ -6758,6 +6767,15 @@
 		<file>
 			<source>templates/administration_content_sitenew</source>
 			<destination>system/workplace/templates/administration_content_sitenew</destination>
+			<type>plain</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>79</access>
+			<properties/>
+		</file>
+		<file>
+			<source>templates/administration_content_siteedit</source>
+			<destination>system/workplace/templates/administration_content_siteedit</destination>
 			<type>plain</type>
 			<user>Admin</user>
 			<group>Users</group>

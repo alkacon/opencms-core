@@ -1,0 +1,34 @@
+####################################################################################
+# opencms setup script for adding multisite data to OpenCMS.
+#
+# The script should be run on top of a "clean" import of standard data. 
+# After the cmssetup.txt is runned.
+# The script contains test data for to additional sites (next to the standard online site.)
+#
+# Author: Martin Langelund
+# Date  : 2000-09-29
+####################################################################################
+
+#Database
+INSERT INTO CMS_SITES (SITE_ID, NAME, DESCRIPTION, CATEGORY_ID, LANGUAGE_ID, COUNTRY_ID, ONLINEPROJECT_ID) VALUES ( '0', 'Default', 'Default online project', '0', '1', '0', '1');
+UPDATE CMS_SYSTEMID SET ID=ID+1 WHERE TABLE_KEY = 13;
+INSERT INTO CMS_SITE_PROJECTS (SITE_ID, PROJECT_ID) VALUES ( '0', '1');
+INSERT INTO CMS_SITE_PROJECTS (SITE_ID, PROJECT_ID) VALUES ( '0', '2');
+UPDATE CMS_SYSTEMID SET ID=ID+2 WHERE TABLE_KEY = 14;
+INSERT INTO CMS_SITE_URLS (URL_ID, URL, SITE_ID, PRIMARYURL) VALUES ( '0', 'www.default.com', '0', '0');
+UPDATE CMS_SYSTEMID SET ID=ID+1 WHERE TABLE_KEY = 15;
+
+#CmsShell
+login Admin admin
+createCategory Corporate "Corporate site" COM 1
+createCategory Default "Default Category" DEF 2
+createLanguage "English (uk)" UK 1
+createLanguage Danish DK 2
+createCountry International I 1
+createCountry Denmark DK 2
+newSite company.com "Corporate International" 1 1 1 www.company.com Guests Projectmanager
+newSite company.dk "Corporate Danish" 1 2 2 www.company.dk Guests Projectmanager
+exit
+
+
+
