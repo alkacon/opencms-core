@@ -1,6 +1,6 @@
 
 	// "resource_id" will be replaced with the id
-	// language_key(...) will be replaced with the right languageentry
+	// language_key(explorer.context.lock) will be replaced with the right languageentry
 
 	vi.resource[resource_id]=new res("XMLTemplate",vi.iconPath+"ic_XMLTemplate.gif");
 
