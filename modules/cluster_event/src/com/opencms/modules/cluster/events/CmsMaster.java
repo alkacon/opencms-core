@@ -19,7 +19,8 @@ import java.net.*;
 
 public class CmsMaster implements I_CmsLifeCycle, I_CmsEventListener {
 
-    /**
+    private static final boolean C_DEBUG = false;
+   /**
      * names of the used parameter of this module
      */
     public static String C_PARA_USER = "user";
@@ -31,6 +32,11 @@ public class CmsMaster implements I_CmsLifeCycle, I_CmsEventListener {
     }
 
     public void startUp(CmsObject cms) {
+        if(C_DEBUG){
+            System.err.println("");
+            System.err.println("----event module added to the eventlistener.");
+            System.err.println("");
+        }
         com.opencms.core.A_OpenCms.addCmsEventListener(this);
     }
     public void shutDown() {
@@ -67,9 +73,19 @@ public class CmsMaster implements I_CmsLifeCycle, I_CmsEventListener {
             }
         }
         */
+        if(C_DEBUG){
+            System.err.println("");
+            System.err.println("----event module get Event: "+event.getType());
+            System.err.println("");
+        }
         if(event.getType() == EVENT_PUBLISH_PROJECT){
                 // we will start the command on the slave systems
                 // we need the module parameters: user, password, listOfSlaveServer
+                if(C_DEBUG){
+                    System.err.println("");
+                    System.err.println("----event module: publish event.");
+                    System.err.println("");
+                }
                 CmsObject cms = event.getCmsObject();
                 try{
                     String user = cms.getRegistry().getModuleParameter(
@@ -94,6 +110,12 @@ public class CmsMaster implements I_CmsLifeCycle, I_CmsEventListener {
                             Thread sender = new CmsSendEventThread(container, target);
                             sender.start();
                         }catch(MalformedURLException e){
+                            if(C_DEBUG){
+                                System.err.println("");
+                                System.err.println("----event module Exeption 2:");
+                                e.printStackTrace();
+                                System.err.println("");
+                            }
                             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                                 A_OpenCms.log(A_OpenCms.C_MODULE_DEBUG,
                                     " module com.opencms.modules.cluster.events cant send command "
@@ -102,6 +124,12 @@ public class CmsMaster implements I_CmsLifeCycle, I_CmsEventListener {
                         }
                     }
                 }catch(CmsException e){
+                    if(C_DEBUG){
+                        System.err.println("");
+                        System.err.println("----event module Exeption 1:");
+                        e.printStackTrace();
+                        System.err.println("");
+                    }
                 }
         }
     }
