@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsUUID.java,v $
- * Date   : $Date: 2003/06/05 19:02:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/06/25 11:22:47 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.doomdark.uuid.UUIDGenerator;
  * This class is just a facade wrapper for the "real" UUID implementation.<p> 
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.0.0
  */
@@ -65,7 +65,10 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
     /** Ethernet addess of the server machine */
     private static EthernetAddress m_ethernetAddress = null;
     
-    /** Flag to indicate if the ethernet addess has been initilized */
+    /** OpenCms UUID (name based uuid of "www.opencms.org" in the dns name space) */
+    private static UUID m_opencmsUUID = UUIDGenerator.getInstance().generateNameBasedUUID(new UUID(UUID.NAMESPACE_DNS), "www.opencms.org");
+    
+    /** Flag to indicate if the ethernet addess has been initialized */
     private static boolean m_isNotInitialized = true;
 
     /** Internal UUID implementation */
@@ -150,7 +153,28 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
     public static CmsUUID getNullUUID() {
         return new CmsUUID(UUID.getNullUUID());
     }        
-    
+
+	/**
+	 * Returns a constant (name based) UUID for OpenCms,
+	 * based on "www.opencms.org" in the dns name space.
+	 * 
+	 * @return name based UUID of OpenCms
+	 */
+	public static CmsUUID getOpenCmsUUID() {
+		return new CmsUUID(m_opencmsUUID);
+	}
+
+	/**
+	 * Returns a constant (name based) UUID,
+	 * based on the given name in the OpenCms name space.
+	 * 
+	 * @param name the name to derive the uuid from
+	 * @return name based UUID of the given name
+	 */	
+	public static CmsUUID getConstantUUID (String name) {
+		return new CmsUUID(UUIDGenerator.getInstance().generateNameBasedUUID(m_opencmsUUID, name));
+	}
+	
     /**
      * Returns true if this UUID is equal to the null UUID.<p>
      * 
