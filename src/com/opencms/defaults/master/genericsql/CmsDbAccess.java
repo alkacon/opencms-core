@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
- * Author : $Author: a.schouten $
- * Date   : $Date: 2001/12/21 15:01:34 $
- * Version: $Revision: 1.15 $
+ * Author : $Author: e.falkenhan $
+ * Date   : $Date: 2002/01/09 08:39:21 $
+ * Version: $Revision: 1.16 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -137,6 +137,61 @@ public class CmsDbAccess {
             // after inserting the row, we have to update media and channel tables
             updateMedia(dataset.m_masterId, dataset.m_mediaToAdd, new Vector(), new Vector());
             updateChannels(cms, dataset.m_masterId, dataset.m_channelToAdd, dataset.m_channelToDelete);
+        } catch(SQLException exc) {
+            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+        } finally {
+            sqlClose(con, stmnt, null);
+        }
+    }
+
+    /**
+     * Inserts a new row in the database with the copied dataset.
+     * @param cms the CmsObject to get access to cms-ressources.
+     * @param content the CmsMasterContent to write to the database.
+     * @param dataset the set of data for this contentdefinition.
+     * @param mediaToAdd a Vector of media to add.
+     * @param channelToAdd a Vector of channels to add.
+     */
+    public void copy(CmsObject cms, CmsMasterContent content,
+                       CmsMasterDataSet dataset, Vector mediaToAdd, Vector channelToAdd)
+        throws CmsException {
+        if(isOnlineProject(cms)) {
+            // this is the onlineproject - don't write into this project directly
+            throw new CmsException("Can't write to the online project", CmsException.C_NO_ACCESS);
+        }
+        if(dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
+            // this is not the online row - it was read from history
+            // don't write it!
+            throw new CmsException("Can't update a cd with a backup cd ", CmsException.C_NO_ACCESS);
+        }
+        if(!content.isWriteable()) {
+            // no write access
+            throw new CmsException("Not writeable", CmsException.C_NO_ACCESS);
+        }
+        int newMasterId = CmsIdGenerator.nextId(m_poolName, "CMS_MODULE_MASTER");
+        int projectId = cms.getRequestContext().currentProject().getId();
+        int currentUserId = cms.getRequestContext().currentUser().getId();
+        long currentTime = new java.util.Date().getTime();
+        // filling some default-values for new dataset's
+        dataset.m_masterId = newMasterId;
+        dataset.m_projectId = projectId;
+        dataset.m_lockedInProject = projectId;
+        dataset.m_state = I_CmsConstants.C_STATE_NEW;
+        dataset.m_lockedBy = currentUserId;
+        dataset.m_lastModifiedBy = currentUserId;
+        dataset.m_dateCreated = currentTime;
+        dataset.m_dateLastModified = currentTime;
+
+        PreparedStatement stmnt = null;
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(m_poolName);
+            stmnt = sqlPrepare(con, "insert_offline");
+            sqlFillValues(stmnt, content.getSubId(), dataset);
+            stmnt.executeUpdate();
+            // after inserting the row, we have to update media and channel tables
+            updateMedia(dataset.m_masterId, mediaToAdd, new Vector(), new Vector());
+            updateChannels(cms, dataset.m_masterId, channelToAdd, new Vector());
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
@@ -531,6 +586,64 @@ public class CmsDbAccess {
             int rowcounter = sqlFillValues(stmnt, content.getSubId(), dataset);
             stmnt.setInt(rowcounter++, dataset.m_masterId);
             stmnt.setInt(rowcounter++, content.getSubId());
+            stmnt.executeUpdate();
+        } catch(SQLException exc) {
+            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+        } finally {
+            sqlClose(con, stmnt, null);
+        }
+    }
+
+    /**
+     * Changes the perrmissions of the Master
+     *
+     * @param cms the CmsObject to get access to cms-ressources.
+     * @param content the CmsMasterContent to write to the database.
+     * @param dataset the set of data for this contentdefinition.
+     */
+    public void changePermissions(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset) throws CmsException {
+        if(isOnlineProject(cms)) {
+            // this is the onlineproject - don't write into this project directly
+            throw new CmsException("Can't change permissions in online project", CmsException.C_NO_ACCESS);
+        }
+        if(dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
+            // this is not the online row - it was read from history
+            // don't delete it!
+            throw new CmsException("Can't change permissions of a backup cd ", CmsException.C_NO_ACCESS);
+        }
+        // read the lockstate
+        readLockstate(dataset, content.getSubId());
+        if((dataset.m_lockedBy != cms.getRequestContext().currentUser().getId())) {
+            // is not locked by this user
+            throw new CmsException("Not locked by this user", CmsException.C_NO_ACCESS);
+        }
+        if(dataset.m_lockedInProject != dataset.m_projectId) {
+            // not locked in this project
+            throw new CmsException("Not locked in this project", CmsException.C_NO_ACCESS);
+        }
+        if(!content.isWriteable()) {
+            // no write access
+            throw new CmsException("Not writeable", CmsException.C_NO_ACCESS);
+        }
+        if (dataset.m_state != I_CmsConstants.C_STATE_NEW){
+            dataset.m_state = I_CmsConstants.C_STATE_CHANGED;
+        }
+        dataset.m_dateLastModified = System.currentTimeMillis();
+        dataset.m_lastModifiedBy = cms.getRequestContext().currentUser().getId();
+        // update the line
+        PreparedStatement stmnt = null;
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(m_poolName);
+            stmnt = sqlPrepare(con, "update_permissions_offline");
+            stmnt.setInt(1, dataset.m_userId);
+            stmnt.setInt(2, dataset.m_groupId);
+            stmnt.setInt(3, dataset.m_accessFlags);
+            stmnt.setInt(4, dataset.m_state);
+            stmnt.setInt(5, dataset.m_lastModifiedBy);
+            stmnt.setTimestamp(6, new Timestamp(dataset.m_dateLastModified));
+            stmnt.setInt(7, dataset.m_masterId);
+            stmnt.setInt(8, content.getSubId());
             stmnt.executeUpdate();
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);

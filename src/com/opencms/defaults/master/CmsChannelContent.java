@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
  * Author : $Author: e.falkenhan $
- * Date   : $Date: 2001/11/27 10:44:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2002/01/09 08:39:10 $
+ * Version: $Revision: 1.4 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -41,8 +41,8 @@ import java.lang.*;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.3 $
- * $Date: 2001/11/27 10:44:28 $
+ * $Revision: 1.4 $
+ * $Date: 2002/01/09 08:39:10 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -277,6 +277,52 @@ public class CmsChannelContent extends A_CmsContentDefinition
     public void restore(CmsObject cms, int versionId) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Channels can't be restored from history!");
+        }
+    }
+
+    /**
+     * Change owner method
+     * for changing permissions of content definition
+     * @param cms the CmsObject to use.
+     * @param owner the new owner of the cd.
+     */
+    public void chown(CmsObject cms, int owner) {
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Permissions of Channels can be changed only in EditBackoffice!");
+        }
+    }
+
+    /**
+     * Change group method
+     * for changing permissions of content definition
+     * @param cms the CmsObject to use.
+     * @param group the new group of the cd.
+     */
+    public void chgrp(CmsObject cms, int group) {
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Permissions of Channels can be changed only in EditBackoffice!");
+        }
+    }
+
+    /**
+     * Change access flags method
+     * for changing permissions of content definition
+     * @param cms the CmsObject to use.
+     * @param accessflags the new access flags of the cd.
+     */
+    public void chmod(CmsObject cms, int accessflags) {
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Permissions of Channels can be changed only in EditBackoffice!");
+        }
+    }
+    /**
+     * Copy method
+     * for copying content definition
+     * @param cms the CmsObject to use.
+     */
+    public void copy(CmsObject cms) {
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Channels can be copied!");
         }
     }
 

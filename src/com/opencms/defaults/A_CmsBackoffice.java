@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/11/29 15:05:37 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2002/01/09 08:38:55 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -84,6 +84,11 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
 
     /** The style for changed files or folders */
     private final static String C_STYLE_CHANGED = "dateigeaendert";
+
+    /** Default value of permission*/
+    protected final static int C_DEFAULT_PERMISSIONS=383;
+    // possible accessflags
+    protected final static String[] C_ACCESS_FLAGS = {"1","2","4","8","16","32","64","128","256"};
 
   /**
   * Gets the backoffice url of the module.
@@ -206,14 +211,16 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     String idlock = (String) parameters.get("idlock");
     String iddelete = (String) parameters.get("iddelete");
     String idedit = (String) parameters.get("idedit");
-        String idview = (String) parameters.get("idview");
+    String idview = (String) parameters.get("idview");
     String action = (String) parameters.get("action");
-        String parentId = (String) parameters.get("parentId");
+    String parentId = (String) parameters.get("parentId");
     String ok = (String) parameters.get("ok");
     String setaction = (String) parameters.get("setaction");
     String idundelete = (String)parameters.get("idundelete");
     String idpublish = (String)parameters.get("idpublish");
     String idhistory = (String)parameters.get("idhistory");
+    String idpermissions = (String)parameters.get("idpermissions");
+    String idcopy = (String)parameters.get("idcopy");
         // debug-code
 /*
         System.err.println("### "+this.getContentDefinitionClass().getName());
@@ -249,6 +256,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	} else {
 	  template.setData("filternumber", (String)session.getValue("filter"));
 	}
+
 	//move id values to id, remove old markers
 	if (idlock != null) {
 	  id = idlock;
@@ -259,6 +267,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       session.removeValue("idundelete");
       session.removeValue("idpublish");
       session.removeValue("idhistory");
+      session.removeValue("idpermissions");
+      session.removeValue("idcopy");
 	}
 	if (idedit != null) {
 	  id = idedit;
@@ -269,6 +279,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       session.removeValue("idundelete");
       session.removeValue("idpublish");
       session.removeValue("idhistory");
+      session.removeValue("idpermissions");
+      session.removeValue("idcopy");
 	}
 	if (iddelete != null) {
 	  id = iddelete;
@@ -279,6 +291,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       session.removeValue("idundelete");
       session.removeValue("idpublish");
       session.removeValue("idhistory");
+      session.removeValue("idpermissions");
+      session.removeValue("idcopy");
 	}
 	if (idundelete != null) {
 	  id = idundelete;
@@ -289,6 +303,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       session.removeValue("iddelete");
       session.removeValue("idpublish");
       session.removeValue("idhistory");
+      session.removeValue("idpermissions");
+      session.removeValue("idcopy");
 	}
 	if (idpublish != null) {
 	  id = idpublish;
@@ -299,6 +315,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       session.removeValue("iddelete");
       session.removeValue("idundelete");
       session.removeValue("idhistory");
+      session.removeValue("idpermissions");
+      session.removeValue("idcopy");
 	}
 
 	if (idhistory != null) {
@@ -310,16 +328,46 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       session.removeValue("iddelete");
       session.removeValue("idundelete");
       session.removeValue("idpublish");
+      session.removeValue("idpermissions");
+      session.removeValue("idcopy");
 	}
+
+	if (idpermissions != null) {
+	  id = idpermissions;
+	  session.putValue("idpermissions", idpermissions);
+	  session.removeValue("idedit");
+	  session.removeValue("idnew");
+	  session.removeValue("idlock");
+      session.removeValue("iddelete");
+      session.removeValue("idundelete");
+      session.removeValue("idpublish");
+      session.removeValue("idhistory");
+      session.removeValue("idcopy");
+	}
+
+	if (idcopy != null) {
+	  id = idcopy;
+	  session.putValue("idcopy", idcopy);
+	  session.removeValue("idedit");
+	  session.removeValue("idnew");
+	  session.removeValue("idlock");
+      session.removeValue("iddelete");
+      session.removeValue("idundelete");
+      session.removeValue("idpublish");
+      session.removeValue("idhistory");
+      session.removeValue("idpermissions");
+	}
+
 	if ((id != null) && (id.equals("new"))) {
 	  session.putValue("idnew", id);
 	  session.removeValue("idedit");
-	  //session.removeValue("idnew");
 	  session.removeValue("iddelete");
 	  session.removeValue("idlock");
       session.removeValue("idundelete");
       session.removeValue("idpublish");
       session.removeValue("idhistory");
+      session.removeValue("idpermissions");
+      session.removeValue("idcopy");
 	}
 	//get marker id from session
 	String idsave = (String) session.getValue("idsave");
@@ -351,7 +399,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     }
     //go to the appropriate getContent methods
     if ((id == null) && (idsave == null) && (action == null) && (idlock==null) && (iddelete == null) && (idedit == null)
-        && (idundelete == null) && (idpublish == null) && (idhistory == null))  {
+        && (idundelete == null) && (idpublish == null) && (idhistory == null) && (idpermissions == null) && (idcopy == null))  {
       //process the head frame containing the filter
       returnProcess = getContentHead(cms, template, elementName, parameters, templateSelector);
       //finally return processed data
@@ -418,6 +466,23 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             returnProcess = getContentHistory(cms, template, elementName, parameters, templateSelector);
             return returnProcess;
         }
+
+        //get marker for accessing the change permissions dialog
+        //check if the permissions of cd should be dispayed
+        String idpermissionssave = (String) session.getValue("idpermissions");
+        if(idpermissions != null || idpermissionssave != null){
+            returnProcess = getContentPermissions(cms, template, elementName, parameters, templateSelector);
+            return returnProcess;
+        }
+
+        //get marker for accessing the copy dialog
+        //check if the permissions of cd should be dispayed
+        String idcopysave = (String) session.getValue("idcopy");
+        if(idcopy != null || idcopysave != null){
+            returnProcess = getContentCopy(cms, template, elementName, parameters, templateSelector);
+            return returnProcess;
+        }
+
         //get marker for accessing the delete dialog
         String iddeletesave = (String) session.getValue("iddelete");
         //access delete dialog
@@ -580,17 +645,10 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         //set template section
     templateSelector = "delete";
 
-    //create appropriate class name with underscores for labels
-/*  String moduleName = "";
-    moduleName = (String) getClass().toString(); //get name
-    moduleName = moduleName.substring(5); //remove 'class' substring at the beginning
-    moduleName = moduleName.trim();
-    moduleName = moduleName.replace('.', '_'); //replace dots with underscores
-*/
         //create new language file object
     CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
 
-    //get the dialog from the langauge file and set it in the template
+    //get the dialog from the language file and set it in the template
     template.setData("deletetitle", lang.getLanguageValue("messagebox.title.delete"));
     template.setData("deletedialog", lang.getLanguageValue("messagebox.message1.delete"));
     template.setData("newsentry", id);
@@ -601,7 +659,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       //set template section
       templateSelector = "done";
       //remove marker
-      session.removeValue("idsave");
+      session.removeValue("iddelete");
       //delete the content definition instance
       Integer idInteger = null;
       try {
@@ -675,7 +733,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         //set template section
         templateSelector = "done";
         //remove marker
-        session.removeValue("idsave");
+        session.removeValue("idundelete");
         //undelete the content definition instance
         Integer idInteger = null;
         try {
@@ -709,6 +767,88 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             template.setData("undeleteerror", e.getMessage());
         }
 
+        //finally start the processing
+        processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
+        return processResult;
+    }
+
+    /**
+     * Gets the content of a given template file.
+     * <P>
+     * While processing the template file the table entry
+     * <code>entryTitle<code> will be displayed in the delete dialog
+     *
+     * @param cms A_CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file
+     * @param elementName not used here
+     * @param parameters get the parameters action for the button activity
+     * and id for the used content definition instance object
+     * @param templateSelector template section that should be processed.
+     * @return Processed content of the given template file.
+     * @exception CmsException
+     */
+    public byte[] getContentCopy(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+        //return var
+        byte[] processResult = null;
+
+        // session will be created or fetched
+        I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
+        //get the class of the content definition
+        Class cdClass = getContentDefinitionClass();
+
+        //get (stored) id parameter
+        String id = (String) parameters.get("id");
+        if (id == null) {
+            id = "";
+        }
+        // get value of hidden input field action
+        String action = (String) parameters.get("action");
+
+        //no button pressed, go to the default section!
+        //copy dialog, displays information of the entry to be copy
+        if (action == null || action.equals("")) {
+            if (id != "") {
+                //access content definition constructor by reflection
+                Object o = getContentDefinition(cms, cdClass, new Integer(id));
+                // get owner and group of content definition
+                String curOwner = cms.readUser(((I_CmsExtendedContentDefinition) o).getOwner()).getName();
+                String curGroup = cms.readGroup(((I_CmsExtendedContentDefinition) o).getGroupId()).getName();
+
+                //set template section
+                templateSelector = "copy";
+
+                //get the dialog from the language file and set it in the template
+                template.setData("username", curOwner);
+                template.setData("groupname", curGroup);
+                template.setData("id", id);
+                template.setData("setaction", "default");
+            }
+            // confirmation button pressed, process data!
+        } else {
+            //set template section
+            templateSelector = "done";
+            //remove marker
+            session.removeValue("idcopy");
+            //copy the content definition instance
+            Integer idInteger = null;
+            Object o = null;
+            try {
+                idInteger = Integer.valueOf(id);
+                //access content definition constructor by reflection
+                o = getContentDefinition(cms, cdClass, idInteger);
+            } catch (Exception e) {
+                //access content definition constructor by reflection
+                o = getContentDefinition(cms, cdClass, id);
+            }
+
+            //get copy method and copy content definition instance
+            try {
+                ((I_CmsExtendedContentDefinition) o).copy(cms);
+            }catch (Exception e) {
+                templateSelector = "copyerror";
+                template.setData("copyerror", e.getMessage());
+            }
+        }
         //finally start the processing
         processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
         return processResult;
@@ -1023,6 +1163,111 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             }
         }
         return new Integer(-1);
+    }
+
+    /**
+     * Gets the content of a given template file.
+     * <P>
+     * While processing the template file the table entry
+     * <code>entryTitle<code> will be displayed in the delete dialog
+     *
+     * @param cms A_CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file
+     * @param elementName not used here
+     * @param parameters get the parameters action for the button activity
+     * and id for the used content definition instance object
+     * @param templateSelector template section that should be processed.
+     * @return Processed content of the given template file.
+     * @exception CmsException
+     */
+    public byte[] getContentPermissions(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+        //return var
+        byte[] processResult = null;
+        Object o = null;
+        // session will be created or fetched
+        I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
+        //get the class of the content definition
+        Class cdClass = getContentDefinitionClass();
+
+        // get mode of permission changing
+        String mode = (String) parameters.get("chmode");
+        if(mode == null || "".equals(mode)){
+            mode = "";
+        }
+        //get (stored) id parameter
+        String id = (String) parameters.get("id");
+        if (id == null) {
+            id = "";
+        }
+        // get value of hidden input field action
+        String action = (String) parameters.get("action");
+        // get values of input fields
+        int newOwner = 0;
+        int newGroup = 0;
+        String newOwnerString = (String) parameters.get("owner");
+        if (newOwnerString != null && !"".equals(newOwnerString)){
+            newOwner = Integer.parseInt(newOwnerString);
+        }
+        String newGroupString = (String) parameters.get("groupId");
+        if (newGroupString != null && !"".equals(newGroupString)){
+            newGroup = Integer.parseInt(newGroupString);
+        }
+        int newAccessFlags = getAccessValue(parameters);
+        //no button pressed, go to the default section!
+        //change permissions dialog, displays owner, group and access flags of the entry to be changed
+        if (action == null || action.equals("")) {
+            if (id != "" && mode != "") {
+                //access content definition constructor by reflection
+                o = getContentDefinition(cms, cdClass, new Integer(id));
+                //set template section
+                templateSelector = mode;
+                int curOwner = ((I_CmsExtendedContentDefinition) o).getOwner();
+                int curGroup = ((I_CmsExtendedContentDefinition) o).getGroupId();
+                int curAccessFlags = ((I_CmsExtendedContentDefinition) o).getAccessFlags();
+                // set the values in the dialog
+                this.setOwnerSelectbox(cms, template, curOwner);
+                this.setGroupSelectbox(cms, template, curGroup);
+                this.setAccessValue(template, curAccessFlags);
+                template.setData("id", id);
+                template.setData("setaction", mode);
+            }
+            // confirmation button pressed, process data!
+        } else {
+            //set template section
+            templateSelector = "done";
+            //remove marker
+            session.removeValue("idpermissions");
+            //change the content definition instance
+            Integer idInteger = null;
+            try {
+                idInteger = Integer.valueOf(id);
+                //access content definition constructor by reflection
+                o = getContentDefinition(cms, cdClass, idInteger);
+            } catch (Exception e) {
+                //access content definition constructor by reflection
+                o = getContentDefinition(cms, cdClass, id);
+            }
+
+            //get change method and change content definition instance
+            try {
+                if ("chown".equalsIgnoreCase(action) && newOwner != 0){
+                    ((I_CmsExtendedContentDefinition) o).chown(cms, newOwner);
+                } else if ("chgrp".equalsIgnoreCase(action) && newGroup != 0){
+                    ((I_CmsExtendedContentDefinition) o).chgrp(cms, newGroup);
+                } else if ("chmod".equalsIgnoreCase(action)){
+                    ((I_CmsExtendedContentDefinition) o).chmod(cms, newAccessFlags);
+                }
+            } catch (Exception e) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: changing permissions method throwed an exception!");
+                }
+                templateSelector = "permissionserror";
+                template.setData("permissionserror", e.getMessage());
+            }
+        }
+        //finally start the processing
+        processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
+        return processResult;
     }
 
   /**
@@ -3275,5 +3520,87 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
     return templateSelector;
   }
 
+    /**
+     * get the accessFlags from the template
+     */
+    private int getAccessValue(Hashtable parameters){
+        int accessFlag = 0;
+        for(int i=0; i<=8; i++){
+            String permissionsAtI=(String)parameters.get("permission_"+i);
+            if(permissionsAtI != null) {
+                if(permissionsAtI.equals("on")) {
+                    accessFlag += new Integer(this.C_ACCESS_FLAGS[i]).intValue();
+                }
+            }
+        }
+        if(accessFlag == 0){
+            accessFlag = this.C_DEFAULT_PERMISSIONS;
+        }
+        return accessFlag;
+    }
 
+    /**
+     * Set the accessFlags in the template
+     */
+     private void setAccessValue(CmsXmlWpTemplateFile template, int accessFlags){
+        // permissions check boxes
+        for(int i=0; i<=8; i++) {
+            int accessValueAtI = new Integer(this.C_ACCESS_FLAGS[i]).intValue();
+            if ((accessFlags & accessValueAtI) > 0) {
+                template.setData("permission_"+i,"checked");
+            } else {
+                template.setData("permission_"+i,"");
+            }
+        }
+     }
+
+    /**
+     * Set the groups in the template
+     */
+     private void setGroupSelectbox(CmsObject cms, CmsXmlWpTemplateFile template, int group) throws CmsException{
+        //get all groups
+        Vector cmsGroups=cms.getGroups();
+        // select box of group
+        String groupOptions="";
+        // name of current group
+        String curGroupName = cms.readGroup(group).getName();
+        for (int i=0; i<cmsGroups.size(); i++) {
+            String groupName=((CmsGroup)cmsGroups.elementAt(i)).getName();
+            int groupId=((CmsGroup)cmsGroups.elementAt(i)).getId();
+            template.setData("name",groupName);
+            template.setData("value",(new Integer(groupId)).toString());
+            if (group != 0 && curGroupName.equals(groupName)) {
+                template.setData("check","selected");
+            }else{
+                template.setData("check","");
+            }
+            groupOptions=groupOptions+template.getProcessedDataValue("selectoption",this);
+        }
+        template.setData("groups",groupOptions);
+        template.setData("groupname",curGroupName);
+     }
+
+    /**
+     * Set the owner in the template
+     */
+     private void setOwnerSelectbox(CmsObject cms, CmsXmlWpTemplateFile template, int owner) throws CmsException{
+        // select box of owner
+        String userOptions="";
+        Vector cmsUsers=cms.getUsers();
+        String curUserName = cms.readUser(owner).getName();
+        for (int i=0;i<cmsUsers.size();i++) {
+            String userName=((CmsUser)cmsUsers.elementAt(i)).getName();
+            int userId=((CmsUser)cmsUsers.elementAt(i)).getId();
+            template.setData("name",userName);
+            template.setData("value",(new Integer(userId)).toString());
+            if (owner != 0 && curUserName.equals(userName)) {
+                template.setData("check","selected");
+            }else{
+                template.setData("check","");
+            }
+            userOptions=userOptions+template.getProcessedDataValue("selectoption",this);
+        }
+        template.setData("users",userOptions);
+        template.setData("username",curUserName);
+     }
 }

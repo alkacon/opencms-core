@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
- * Author : $Author: m.dernen $
- * Date   : $Date: 2001/11/15 13:55:09 $
- * Version: $Revision: 1.11 $
+ * Author : $Author: e.falkenhan $
+ * Date   : $Date: 2002/01/09 08:39:10 $
+ * Version: $Revision: 1.12 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -39,8 +39,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.11 $
- * $Date: 2001/11/15 13:55:09 $
+ * $Revision: 1.12 $
+ * $Date: 2002/01/09 08:39:10 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -225,6 +225,49 @@ public abstract class CmsMasterContent
      */
     public void delete(CmsObject cms) throws Exception {
         getDbAccessObject(getSubId()).delete(m_cms, this, m_dataSet);
+    }
+
+    /**
+     * change group method
+     * for the permissions of content definition
+     * @param cms the CmsObject to use.
+     * @param group the id of the new group.
+     */
+    public void chgrp(CmsObject cms, int group) throws Exception {
+        m_dataSet.m_groupId = group;
+        getDbAccessObject(getSubId()).changePermissions(m_cms, this, m_dataSet);
+    }
+
+    /**
+     * change owner method
+     * for the permissions of content definition
+     * @param cms the CmsObject to use.
+     * @param owner the id of the new owner.
+     */
+    public void chown(CmsObject cms, int owner) throws Exception {
+        m_dataSet.m_userId = owner;
+        getDbAccessObject(getSubId()).changePermissions(m_cms, this, m_dataSet);
+    }
+
+    /**
+     * change access flags method
+     * for the permissions of content definition
+     * @param cms the CmsObject to use.
+     * @param accessflags the new access flags.
+     */
+    public void chmod(CmsObject cms, int accessflags) throws Exception {
+        m_dataSet.m_accessFlags = accessflags;
+        getDbAccessObject(getSubId()).changePermissions(m_cms, this, m_dataSet);
+    }
+
+    /**
+     * copy method
+     *
+     * @param cms the CmsObject to use.
+     */
+    public void copy(CmsObject cms) throws Exception {
+        // insert the new cd with the copied dataset
+        getDbAccessObject(getSubId()).copy(cms, this, m_dataSet, this.getMedia(), this.getChannels());
     }
 
     /**

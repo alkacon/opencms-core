@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/I_CmsExtendedContentDefinition.java,v $
-* Date   : $Date: 2001/11/02 08:55:42 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2002/01/09 08:38:55 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -119,6 +119,27 @@ public interface I_CmsExtendedContentDefinition {
     public String getTitle();
 
     /**
+     * Returns the ownerId of the content definition
+     *
+     * @return int The ownerId of the cd
+     */
+    public int getOwner();
+
+    /**
+     * Returns the groupId of the content definition
+     *
+     * @return int The groupId of the cd
+     */
+    public int getGroupId();
+
+    /**
+     * Returns the access flags of the content definition
+     *
+     * @return int The access flags of the cd
+     */
+    public int getAccessFlags();
+
+    /**
      * Publishes the content definition directly
      *
      * @param cms The CmsObject
@@ -142,6 +163,41 @@ public interface I_CmsExtendedContentDefinition {
      * @param versionId The id of the version to restore
      */
     public void restore(CmsObject cms, int versionId) throws Exception;
+
+    /**
+     * Change owner method
+     * for changing permissions of content definition
+     *
+     * @param cms The CmsObject
+     * @param owner The id of the new owner
+     */
+    public void chown(CmsObject cms, int owner) throws Exception;
+
+    /**
+     * Change group method
+     * for changing permissions of content definition
+     *
+     * @param cms The CmsObject
+     * @param group The id of the new group
+     */
+    public void chgrp(CmsObject cms, int group) throws Exception;
+
+    /**
+     * Change access flags method
+     * for changing permissions of content definition
+     *
+     * @param cms The CmsObject
+     * @param accessflags The new access flags
+     */
+    public void chmod(CmsObject cms, int accessflags) throws Exception;
+
+    /**
+     * Copy method
+     * for copying content definition
+     *
+     * @param cms The CmsObject
+     */
+    public void copy(CmsObject cms) throws Exception;
 
     /**
      * History method
