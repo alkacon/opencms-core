@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/11/10 15:21:17 $
- * Version: $Revision: 1.440 $
+ * Date   : $Date: 2004/11/10 16:12:32 $
+ * Version: $Revision: 1.441 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.440 $ $Date: 2004/11/10 15:21:17 $
+ * @version $Revision: 1.441 $ $Date: 2004/11/10 16:12:32 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -3805,7 +3805,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * 
      * @param context the current request context
      * @param resource the resource
-     * @param acEntries vector of access control entries applied to the resource
+     * @param acEntries list of access control entries applied to the resource
      * @throws CmsException if something goes wrong
      */
     public void importAccessControlEntries(CmsRequestContext context, CmsResource resource, List acEntries)

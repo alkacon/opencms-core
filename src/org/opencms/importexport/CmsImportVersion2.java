@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/11/10 15:21:55 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2004/11/10 16:12:32 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -312,18 +312,22 @@ public class CmsImportVersion2 extends A_CmsImport {
                     resourceTypeName = CmsResourceTypePlain.C_RESOURCE_TYPE_NAME;
                 }
 
-                String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug("Import: Original resource name is " + destination);
+                }                
+                String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);                
                 if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(resourceTypeName)) {
                     translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
                 }
                 translatedName = m_cms.getRequestContext().getDirectoryTranslator().translateResource(translatedName);
-                if (DEBUG > 3) {
-                    System.err.println("Import: Translated resource name is " + translatedName);
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug("Import: Translated resource name is " + translatedName);
                 }
 
                 boolean resourceNotImmutable = checkImmutable(translatedName, immutableResources);
 
                 translatedName = m_cms.getRequestContext().removeSiteRoot(translatedName);
+                                
                 if (resourceNotImmutable && (!excludeList.contains(translatedName))) {
 
                     // print out the information to the report
@@ -336,29 +340,30 @@ public class CmsImportVersion2 extends A_CmsImport {
 
                     // import the specified file 
                     CmsResource res = importResource(source, destination, uuid, uuidresource, resourceTypeId, resourceTypeName, lastmodified, properties, writtenFilenames, fileCodes);
-
+                    
+                    List aceList = new ArrayList();
                     if (res != null) {
 
                         // write all imported access control entries for this file
                         acentryNodes = currentElement.selectNodes("*/" + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
                         // collect all access control entries
-                        //String resid = getTextNodeValue(currentElement, C_EXPORT_TAG_ID);
                         for (int j = 0; j < acentryNodes.size(); j++) {
                             currentEntry = (Element)acentryNodes.get(j);
                             // get the data of the access control entry
                             String id = CmsImport.getChildElementTextValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_ID);
-                            String flags = CmsImport.getChildElementTextValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_FLAGS);
+                            String acflags = CmsImport.getChildElementTextValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_FLAGS);
                             String allowed = CmsImport.getChildElementTextValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS);
                             String denied = CmsImport.getChildElementTextValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS);
 
                             // add the entry to the list
-                            addImportAccessControlEntry(res, id, allowed, denied, flags);
+                            aceList.add(getImportAccessControlEntry(res, id, allowed, denied, acflags));
                         }
-                        importAccessControlEntries(res);
+                        importAccessControlEntries(res, aceList);
 
                     } else {
                         // resource import failed, since no CmsResource was created
                         m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_OK);
+                        m_report.println(translatedName);
                     }
                 } else {
                     // skip the file import, just print out the information to the report
@@ -505,7 +510,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 m_linkPropertyStorage.put(m_importPath + destination, properties);
                 res = resource;
             } else {                                                                                                       
-                //  import this resource in the VFS   
+                //  import this resource in the VFS                         
                 String resName = m_importPath+destination;
                 res = m_cms.importResource(resName, resource, content, properties);
                 m_cms.unlockResource(resName);

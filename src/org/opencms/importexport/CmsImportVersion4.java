@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/11/08 15:55:29 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2004/11/10 16:12:32 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -537,6 +537,9 @@ public class CmsImportVersion4 extends A_CmsImport {
 
                     // if the resource was imported add the access control entrys if available
                     if (res != null) {
+                        
+                        List aceList = new ArrayList();
+                        
                         // write all imported access control entries for this file
                         acentryNodes = currentElement.selectNodes("*/"
                             + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
@@ -580,7 +583,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                                     .getTextTrim();
 
                                 // add the entry to the list
-                                addImportAccessControlEntry(res, principalId, allowed, denied, acflags);
+                                aceList.add(getImportAccessControlEntry(res, principalId, allowed, denied, acflags));
                             } catch (CmsException e) {
                                 // user or group of ACE might not exist in target system, ignore ACE
                                 OpenCms.getLog(this).warn("Could not import ACE for resource " + translatedName, e);
@@ -588,7 +591,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                             }
                         }
                         
-                        importAccessControlEntries(res);
+                        importAccessControlEntries(res, aceList);
                     } else {
                         // resource import failed, since no CmsResource was created
                         m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);

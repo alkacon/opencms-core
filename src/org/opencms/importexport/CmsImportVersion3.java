@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/10/31 21:30:18 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2004/11/10 16:12:32 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -237,8 +237,9 @@ public class CmsImportVersion3 extends A_CmsImport {
                     // import the resource               
                     CmsResource res = importResource(source, destination, type, uuidstructure, uuidresource, datelastmodified, userlastmodified, datecreated, usercreated, flags, properties, writtenFilenames, fileCodes);
 
-                    // if the resource was imported add the access control entrys if available
-                    if (res != null) {
+                    List aceList = new ArrayList();
+                    if (res != null) {                    
+                    
                         // write all imported access control entries for this file
                         acentryNodes = currentElement.selectNodes("*/" + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
                         // collect all access control entries
@@ -249,10 +250,12 @@ public class CmsImportVersion3 extends A_CmsImport {
                             String acflags = CmsImport.getChildElementTextValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_FLAGS);
                             String allowed = CmsImport.getChildElementTextValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS);
                             String denied = CmsImport.getChildElementTextValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS);
+
                             // add the entry to the list
-                            addImportAccessControlEntry(res, id, allowed, denied, acflags);
+                            aceList.add(getImportAccessControlEntry(res, id, allowed, denied, acflags));
                         }
-                        importAccessControlEntries(res);
+                        importAccessControlEntries(res, aceList);
+
                     } else {
                         // resource import failed, since no CmsResource was created
                         m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);

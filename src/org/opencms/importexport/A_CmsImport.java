@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/11/10 15:21:17 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2004/11/10 16:12:32 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,9 +100,6 @@ public abstract class A_CmsImport implements I_CmsImport {
     /** Debug flag to show debug output. */
     protected static final int DEBUG = 0;
 
-    /** Access control entries for a single resource. */
-    private List m_acEntriesToCreate;
-
     /** The cms context to do the import operations with. */
     protected CmsObject m_cms;
 
@@ -154,13 +151,11 @@ public abstract class A_CmsImport implements I_CmsImport {
     protected void initialize() {
         m_groupsToCreate = new Stack();
         m_importedPages = new ArrayList();
-        m_acEntriesToCreate = new ArrayList();
         
         if (OpenCms.getRunLevel() > 1) {
             if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
-                OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_acEntriesToCreate", m_acEntriesToCreate);
                 OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_importedPages", m_importedPages);
-            }            
+    }
         }            
     }
     
@@ -178,7 +173,6 @@ public abstract class A_CmsImport implements I_CmsImport {
         m_linkPropertyStorage = null;
         m_importedPages = null;
         m_groupsToCreate = null;
-        m_acEntriesToCreate = null; 
         m_cms = null;
     }
     
@@ -190,11 +184,12 @@ public abstract class A_CmsImport implements I_CmsImport {
      * @param allowed the allowed permissions
      * @param denied the denied permissions
      * @param flags the flags
+     * 
+     * @return the created ACE
      */
-    protected void addImportAccessControlEntry(CmsResource res, String id, String allowed, String denied, String flags) {
+    protected CmsAccessControlEntry getImportAccessControlEntry(CmsResource res, String id, String allowed, String denied, String flags) {
 
-        CmsAccessControlEntry ace = new CmsAccessControlEntry(res.getResourceId(), new CmsUUID(id), Integer.parseInt(allowed), Integer.parseInt(denied), Integer.parseInt(flags));
-        m_acEntriesToCreate.add(ace);
+        return new CmsAccessControlEntry(res.getResourceId(), new CmsUUID(id), Integer.parseInt(allowed), Integer.parseInt(denied), Integer.parseInt(flags));
     }
 
     /**
@@ -491,25 +486,17 @@ public abstract class A_CmsImport implements I_CmsImport {
      * Writes alread imported access control entries for a given resource.
      * 
      * @param resource the resource assigned to the access control entries
-     * @throws CmsException if something goes wrong
+     * @param aceList the access control entries to create
      */
-    protected void importAccessControlEntries(CmsResource resource) throws CmsException {
-        
-        if (getVersion() < 3) {
-            // imports with a version <3 don't have any ACE's at all
+    protected void importAccessControlEntries(CmsResource resource, List aceList) {
+        if (aceList.size() == 0) {
+            // no ACE in the list
             return;
-        }
-        
+        }        
         try {
-            try {
-                m_cms.importAccessControlEntries(resource, m_acEntriesToCreate);
-            } catch (CmsException exc) {                 
-                m_report.println(m_report.key("report.import_accesscontroldata_failed"), I_CmsReport.C_FORMAT_WARNING);
-            }
-        } catch (Exception exc) {            
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            m_acEntriesToCreate = new Vector();
+            m_cms.importAccessControlEntries(resource, aceList);
+        } catch (CmsException exc) {
+            m_report.println(m_report.key("report.import_accesscontroldata_failed"), I_CmsReport.C_FORMAT_WARNING);
         }
     }
 
