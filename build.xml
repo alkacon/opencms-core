@@ -314,6 +314,7 @@ ${build.inputlib.fesi}
         <mkdir dir="${build.srcdist.libs}"/>        
         <mkdir dir="${build.srcdist.etc}"/>     
         <mkdir dir="${build.srcdist.web}"/>        
+        <mkdir dir="${zip.home}"/>        
 
         <copy file="${build.inputlib.servlet}"      todir="${build.srcdist.libs}"/>
         <copy file="${build.inputlib.xerces}"       todir="${build.srcdist.libs}"/>
