@@ -468,7 +468,7 @@
                 <splitcell>Dividi Celle</splitcell>
             </context>
             <message>
-            	<confirmhttp>The link URL you entered looks like a server name\nbut misses the required protocol (eg. 'http://').\n\nShould the http protocol be added to the URL?\n(Hey, we could need an italian translation for this!)</confirmhttp>
+            	<confirmhttp>L'URL del link che hai inserito sembra un nome di server\nma manca del protocollo richiesto (eg. 'http://' ).\n\nIl protocollo http deve essere aggiunto all'URL?</confirmhttp>
             </message>
         </editor>
         <explorer>
@@ -578,7 +578,7 @@
             <linktargetself>Stessa finestra</linktargetself>
             <linktargetblank>Nuova finestra</linktargetblank>
             <linktargettop>Finestra principale</linktargettop>
-            <linktargetnamed>Named Window (it)</linktargetnamed>
+            <linktargetnamed>Finestra con nome</linktargetnamed>
             <linkanchor>Ancora</linkanchor>
             <linkstyle>Definizioni di stile</linkstyle>
             <linkstyleclass>Classe stile</linkstyleclass>
