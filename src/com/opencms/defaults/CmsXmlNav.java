@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2000/04/06 10:25:57 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/06 11:53:12 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.5 $ $Date: 2000/04/06 10:25:57 $
+ * @version $Revision: 1.6 $ $Date: 2000/04/06 11:53:12 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 		
@@ -127,7 +127,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 		// tagcontent determines the folder starting from parent folder.
 		// if tagcontent is null, zero or negative, then the navigation of current
 		// folder must be showed.
-		if (tagcontent!=null) {
+		if (!tagcontent.equals("")) {
 			try {
 				level=Integer.parseInt(tagcontent);
 			} catch(NumberFormatException e) {
@@ -173,7 +173,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 		int level=0;
 		// tagcontent determines the folder starting from root folder.
 		// if tagcontent is null, then the navigation of root folder must be showed.
-		if (tagcontent!=null) {
+		if (!tagcontent.equals("")) {
 			try {
 				level=Integer.parseInt(tagcontent);
 			} catch(NumberFormatException e) {
@@ -217,7 +217,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 		// if level is zero or null or negative then all folders recursive must  
 		// be showed starting from root folder unless all folders stating from 
 		// specified level of parent folder.
-		if (tagcontent!=null) {
+		if (!tagcontent.equals("")) {
 			try {
 				level=Integer.parseInt(tagcontent);
 			} catch(NumberFormatException e) {
@@ -390,7 +390,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 		
 		int level=0;
 		// tagcontent determines the parent folder starting from root folder.
-		if (tagcontent!=null) {
+		if (!tagcontent.equals("")) {
 			try {
 				level=Integer.parseInt(tagcontent);
 			} catch(NumberFormatException e) {
@@ -452,7 +452,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 		// the level must be a positive number.
 		// if level is zero then it means the root page unless it means the page
 		// of specified level starting from root page.
-		if (tagcontent!=null) {
+		if (!tagcontent.equals("")) {
 			try {
 				level=Integer.parseInt(tagcontent);
 			} catch(NumberFormatException e) {
@@ -510,7 +510,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 		
 		String property="";
 		// tagcontent must contain the property definition name.
-		if (tagcontent!=null) {		
+		if (!tagcontent.equals("")) {
 			String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
 			
 			property=cms.readProperty(currentFolder, tagcontent);		
@@ -539,7 +539,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 		String property="";
 		// tagcontent determines the parent folder starting from current folder and
 		// the property definition name sparated by a comma.
-		if (tagcontent!=null) {
+		if (!tagcontent.equals("")) {
 			try {
 				level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
 			} catch(NumberFormatException e) {
@@ -583,7 +583,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 		String property="";
 		// tagcontent determines the folder starting from root folder and
 		// the property definition name sparated by a comma.
-		if (tagcontent!=null) {
+		if (!tagcontent.equals("")) {
 			try {
 				level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
 			} catch(NumberFormatException e) {
