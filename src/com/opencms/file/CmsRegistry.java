@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2001/10/02 12:24:45 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2001/10/31 13:04:18 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.38 $ $Date: 2001/10/02 12:24:45 $
+ * @version $Revision: 1.39 $ $Date: 2001/10/31 13:04:18 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -87,7 +87,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     /**
      * Declaration of an empty module in the registry.
      */
-    private static final String[] C_EMPTY_MODULE = { "<module><name>", "</name><nicename>", "</nicename><version>", "</version><description>", "</description><author>", "</author><email/><creationdate>", "</creationdate><view/><documentation/><dependencies/><maintenance_class/><parameters/><repository/></module>" };
+    private static final String[] C_EMPTY_MODULE = { "<module><name>", "</name><nicename>", "</nicename><version>", "</version><description>", "</description><author>", "</author><email/><creationdate>", "</creationdate><view/><publishclass/><documentation/><dependencies/><maintenance_class/><parameters/><repository/></module>" };
 
 /**
  * Creates a new CmsRegistry for a user. The cms-object represents the current state of the current user.
@@ -1164,6 +1164,31 @@ public String getModuleViewUrl(String modulname) {
     }
     return retValue;
 }
+
+/**
+ * Returns all publishable classes for all modules.
+ *
+ * @parameter Vector classes in this parameter the classes will be returned.
+ * @return int the amount of classes.
+ */
+public int getModulePublishables(Vector classes) {
+    try {
+        NodeList classList = m_xmlReg.getElementsByTagName("publishclass");
+        for (int x = 0; x < classList.getLength(); x++) {
+            try {
+                String name = ((Element) classList.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+                classes.addElement(name);
+            } catch(Exception exc) {
+                // ignore the exception and try the next view-pair.
+            }
+        }
+        return classes.size();
+    } catch (Exception exc) {
+        // no return-values
+        return 0;
+    }
+}
+
 /**
  * Returns all repositories for all modules.
  *
@@ -1287,6 +1312,7 @@ public int getViews(Vector views, Vector urls) {
         return 0;
     }
 }
+
     /**
      * Gets the expected tagname for the XML documents of this content type
      * @return Expected XML tagname.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
-* Date   : $Date: 2001/07/31 15:50:14 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2001/10/31 13:04:18 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -35,7 +35,7 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.23 $ $Date: 2001/07/31 15:50:14 $
+ * @version $Revision: 1.24 $ $Date: 2001/10/31 13:04:18 $
  *
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -447,6 +447,15 @@ public String getModuleViewName(String modulename);
  * @return java.lang.String the view-url to the module.
  */
 public String getModuleViewUrl(String modulename);
+
+/**
+ * Returns all publishable classes for all modules.
+ *
+ * @parameter Vector classes in this parameter the classess will be returned.
+ * @return int the amount of classess.
+ */
+public int getModulePublishables(Vector classes);
+
 /**
  * Returns all repositories for all modules.
  *
@@ -491,6 +500,7 @@ public Hashtable getSystemValues(String key);
  * @return int the amount of views.
  */
 public int getViews(Vector views, Vector urls);
+
 /**
  * Checks the dependencies for a new Module.
  * @param moduleZip the name of the zipfile for the new module.
