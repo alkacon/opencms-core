@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/07/09 08:10:38 $
- * Version: $Revision: 1.203 $
+ * Date   : $Date: 2001/07/10 15:47:59 $
+ * Version: $Revision: 1.204 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.203 $ $Date: 2001/07/09 08:10:38 $ *
+ * @version $Revision: 1.204 $ $Date: 2001/07/10 15:47:59 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -840,9 +840,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         } catch (CmsException e) {
             // if the file is marked as deleted remove it!
 			if (e.getType() == CmsException.C_RESOURCE_DELETED) {
-    			//removeFile(project.getId(), filename);
-				//state=C_STATE_CHANGED;
-                throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
+    			removeFile(project.getId(), filename);
+				state=C_STATE_CHANGED;
+                //throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
             }
 			if (e.getType() == CmsException.C_FILE_EXISTS) {
 			    throw e;
@@ -964,9 +964,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		} catch (CmsException e) {
 			// if the file is maked as deleted remove it!
 			if (e.getType() == CmsException.C_RESOURCE_DELETED) {
-				//removeFile(project.getId(), filename);
-				//state = C_STATE_CHANGED;
-                throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
+				removeFile(project.getId(), filename);
+				state = C_STATE_CHANGED;
+                //throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
 			}
 			if (e.getType() == CmsException.C_FILE_EXISTS) {
 				throw e;
