@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/06 17:20:19 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/06/07 07:38:07 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.7 $ $Date: 2000/06/06 17:20:19 $
+ * @version $Revision: 1.8 $ $Date: 2000/06/07 07:38:07 $
  */
 public interface I_CmsQuerys {
     
@@ -65,19 +65,19 @@ public interface I_CmsQuerys {
     // Constants for Systemproperties
     public static final String C_SYSTEMPROPERTY_VALUE="SYSTEMPROPERTY_VALUE";
     
-    public static final Integer C_SYSTEMPROPERTIES_MAXID_KEY = new Integer(610);	
+    public static final Integer C_SYSTEMPROPERTIES_MAXID_KEY = new Integer(600);	
 	public static final String C_SYSTEMPROPERTIES_MAXID = "SELECT MAX(SYSTEMPROPERTY_ID) FROM " + C_DATABASE_PREFIX + "SYSTEMPROPERTIES";
 
-    public static final Integer C_SYSTEMPROPERTIES_READ_KEY = new Integer(610);	
+    public static final Integer C_SYSTEMPROPERTIES_READ_KEY = new Integer(601);	
 	public static final String C_SYSTEMPROPERTIES_READ = "SELECT * FROM " + C_DATABASE_PREFIX + "SYSTEMPROPERTIES WHERE SYSTEMPROPERTY_NAME = ? ";
 
-    public static final Integer C_SYSTEMPROPERTIES_WRITE_KEY = new Integer(620);
+    public static final Integer C_SYSTEMPROPERTIES_WRITE_KEY = new Integer(602);
     public static final String C_SYSTEMPROPERTIES_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "SYSTEMPROPERTIES VALUES(?,?)";
     
-    public static final Integer C_SYSTEMPROPERTIES_UPDATE_KEY = new Integer(630);
+    public static final Integer C_SYSTEMPROPERTIES_UPDATE_KEY = new Integer(603);
     public static final String C_SYSTEMPROPERTIES_UPDATE="UPDATE " + C_DATABASE_PREFIX + "SYSTEMPROPERTIES SET SYSTEMPROPERTY_VALUE = ? WHERE SYSTEMPROPERTY_NAME = ? ";
      
-    public static final Integer C_SYSTEMPROPERTIES_DELETE_KEY = new Integer(640);
+    public static final Integer C_SYSTEMPROPERTIES_DELETE_KEY = new Integer(604);
 	public static final String C_SYSTEMPROPERTIES_DELETE="DELETE FROM " + C_DATABASE_PREFIX + "SYSTEMPROPERTIES WHERE SYSTEMPROPERTY_NAME = ?";
     
 	

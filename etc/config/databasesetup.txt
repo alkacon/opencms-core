@@ -1,5 +1,5 @@
-create table CMS_SYSTEMPROPERTIES       (SYSTEMPROPERTY_ID int not null
-					 SYSTEMPROPERTY_NAME VARCHAR(40) not null, 
+create table CMS_SYSTEMPROPERTIES       (SYSTEMPROPERTY_ID int not null,
+										 SYSTEMPROPERTY_NAME VARCHAR(40) not null, 
                                          SYSTEMPROPERTY_VALUE blob,
                                          primary key(SYSTEMPROPERTY_ID));
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/06 17:20:19 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/06/07 07:38:07 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.14 $ $Date: 2000/06/06 17:20:19 $ * 
+ * @version $Revision: 1.15 $ $Date: 2000/06/07 07:38:07 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -133,6 +133,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	private static final String C_CONFIGURATIONS_FILLDEFAULTS = "filldefaults";
 	
 	/**
+	 * Constant to get property from configurations.
+	 */
+	private static final String C_CONFIGURATIONS_DIGEST = "digest";
+	
+	/**
 	 * The prepared-statement-pool.
 	 */
 	private CmsPreparedStatementPool m_pool = null;
@@ -141,6 +146,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	 * A array containing all max-ids for the tables.
 	 */
 	private int[] m_maxIds;
+	
+	/**
+	 * A digest to encrypt the passwords.
+	 */
+	private MessageDigest m_digest = null;
 	
 	/**
      * Instanciates the access-module and sets up all required modules and connections.
@@ -155,6 +165,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		String url = null;
 		String user = null;
 		String password = null;
+		String digest = null;
 		boolean fillDefaults;
 		int maxConn;
 		
@@ -194,6 +205,23 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		fillDefaults = config.getBoolean(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_FILLDEFAULTS, false);
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read fillDefaults from configurations: " + fillDefaults);
+		}
+		
+		digest = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_DIGEST, "MD5");
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read digest from configurations: " + digest);
+		}
+		
+		// create the digest
+		try {
+			m_digest = MessageDigest.getInstance(digest);
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] digest created, using: " + m_digest.toString() );
+			}
+		} catch (NoSuchAlgorithmException e){
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] error creating digest - using clear paswords: " + e.getMessage());
+			}
 		}
 		
 		// create the pool
@@ -386,7 +414,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		int id = nextId(C_TABLE_USERS);
         byte[] value=null;
 		PreparedStatement statement = null;
-
+		
 		try	{			
             // serialize the hashtable
             ByteArrayOutputStream bout= new ByteArrayOutputStream();            
@@ -401,8 +429,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
             statement.setInt(1,id);
 			statement.setString(2,name);
 			// crypt the password with MD5
-			MessageDigest digest = MessageDigest.getInstance("MD5");
-			statement.setString(3,new String(digest.digest(password.getBytes())));
+			statement.setString(3, digest(password));
 			statement.setString(4,description);
 			statement.setString(5,firstname);
 			statement.setString(6,lastname);
@@ -421,10 +448,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         catch (SQLException e){
 			m_pool.putPreparedStatement(C_USERS_ADD_KEY, statement);
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		}
-        catch (NoSuchAlgorithmException e){
-			m_pool.putPreparedStatement(C_USERS_ADD_KEY, statement);
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_UNKNOWN_EXCEPTION, e);			
 		}
         catch (IOException e){
             throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:"+CmsException. C_SERIALIZATION, e);			
@@ -639,7 +662,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	 * Private method to init the max-id of the projects-table.
 	 * 
 	 * @param key the key for the prepared statement to use.
-	 * @return the max-id
+	  * @return the max-id
 	 * @exception throws CmsException if something goes wrong.
 	 */
 	private int initMaxId(Integer key) 
@@ -655,7 +678,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         		id = res.getInt(1);
         	}else {
 				// no values in Database
-				id = 1;
+				id = 0;
 			}
 			res.close();
 			m_pool.putPreparedStatement(key, statement);
@@ -677,5 +700,21 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	private synchronized int nextId(int key) {
 		// increment the id-value and return it.
 		return( ++m_maxIds[key] );
+	}
+	
+	/**
+	 * Private method to encrypt the passwords.
+	 * 
+	 * @param value The value to encrypt.
+	 * @return The encrypted value.
+	 */
+	private String digest(String value) {
+		// is there a valid digest?
+		if( m_digest != null ) {
+			return new String(m_digest.digest(value.getBytes()));
+		} else {
+			// no digest - use clear passwords
+			return value;
+		}
 	}
 }
