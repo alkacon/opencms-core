@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/19 15:30:42 $
- * Version: $Revision: 1.101 $
+ * Date   : $Date: 2000/07/19 15:58:18 $
+ * Version: $Revision: 1.102 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.101 $ $Date: 2000/07/19 15:30:42 $ * 
+ * @version $Revision: 1.102 $ $Date: 2000/07/19 15:58:18 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2341,7 +2341,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 					// property exists already - use update.
 					// create statement
 					statement = m_pool.getPreparedStatement(C_PROPERTIES_UPDATE_KEY);
-					statement.setString(1, value);
+					statement.setString(1, checkNull(value) );
 					statement.setInt(2, resourceId);
 					statement.setInt(3, propdef.getId());
 					statement.executeUpdate();
