@@ -18,6 +18,8 @@ OpenCms 4.5.14 Gom Jabbar   - xx September 2001
 * PL/SQL-Bugfix when writing property: there were problems with some characters in the property value.
 * When restoring a page do not throw an exception if the body-file could not be restored because only
   the control file might exist in the history.
+* Pic and downloadgalleries now work with tomcat 4.0. There are no '=' alowed in
+  the parameters.
 - System startup time decreased. The system starts faster, even with a full registry.
 - Removed unused method createResource in resourcebroker and DbAccess.
 
