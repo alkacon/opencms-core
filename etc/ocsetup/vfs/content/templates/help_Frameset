@@ -43,7 +43,6 @@
 
 <![CDATA[
 <HTML><HEAD>
-  <meta http-equiv="Page-Enter" content="revealTrans(Duration=2.0,Transition=30)">
   <link rel=stylesheet type="text/css" href="/servlets/opencms/system/workplace/css/help.css"></HEAD>
   <BODY>]]><ELEMENT name="ContentFrame"/><![CDATA[
   </BODY>
