@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/25 12:08:23 $
- * Version: $Revision: 1.256 $
+ * Date   : $Date: 2001/07/26 06:44:50 $
+ * Version: $Revision: 1.257 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.256 $ $Date: 2001/07/25 12:08:23 $
+ * @version $Revision: 1.257 $ $Date: 2001/07/26 06:44:50 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2149,16 +2149,15 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
         // has the user write-access?
         if( accessWriteUnlocked(currentUser, currentProject, resource)) {
             resource.setState(state);
+            resource.setLocked(currentUser.getId());
             // write-access  was granted - write the file.
             if (filename.endsWith("/")) {
                 m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,false);
                 // update the cache
-                //m_resourceCache.put(currentProject.getId()+C_FOLDER+filename,(CmsFolder)resource);
                 m_resourceCache.remove(filename);
             } else {
                 m_dbAccess.writeFileHeader(currentProject,(CmsFile)resource,false);
                 // update the cache
-                //m_resourceCache.put(currentProject.getId()+C_FILE+filename,resource);
                 m_resourceCache.remove(filename);
             }
             m_subresCache.clear();
