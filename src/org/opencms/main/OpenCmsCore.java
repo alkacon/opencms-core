@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.126 $
+ * Date   : $Date: 2004/06/28 16:26:14 $
+ * Version: $Revision: 1.127 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.126 $
+ * @version $Revision: 1.127 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1897,7 +1897,7 @@ public final class OpenCmsCore {
     private void requestAuthorization(HttpServletRequest req, HttpServletResponse res) throws IOException {
         String servletPath = null;
         String redirectURL = null;
-
+        
         if (m_useBasicAuthentication) {
             // HTTP basic authentication is used
             res.setHeader(I_CmsConstants.C_HEADER_WWW_AUTHENTICATE, "BASIC realm=\"" + getSystemInfo().getOpenCmsContext() + "\"");
@@ -1911,10 +1911,16 @@ public final class OpenCmsCore {
                 // get a Admin cms context object
                 CmsObject adminCms = initCmsObject(req, res, getDefaultUsers().getUserAdmin(), null);
                 CmsProperty propertyLoginForm = adminCms.readPropertyObject(I_CmsConstants.C_PROPERTY_LOGIN_FORM, req.getPathInfo(), true);
-    
-                // "__loginform" is a dummy request parameter that could be used in a JSP template to trigger
-                // if the template should display a login formular or not
-                if (propertyLoginForm != CmsProperty.getNullProperty() && propertyLoginForm.getValue() != null) {
+
+                if (org.opencms.main.OpenCms.getLog(this).isDebugEnabled()) {
+                    org.opencms.main.OpenCms.getLog(this).debug("resource: " + req.getPathInfo());
+                    org.opencms.main.OpenCms.getLog(this).debug("property: " + propertyLoginForm);
+                }                
+                             
+                if (propertyLoginForm != CmsProperty.getNullProperty() && propertyLoginForm.getValue() != null && !"".equals(propertyLoginForm.getValue())) {
+                    // build a redirect URL using the value of the property
+    	            // "__loginform" is a dummy request parameter that could be used in a JSP template to trigger
+	                // if the template should display a login formular or not                       
                     redirectURL = servletPath + propertyLoginForm.getValue() + "?__loginform=true&requestedResource=" + req.getPathInfo();
                 }
             } catch (CmsException e) {
@@ -1923,9 +1929,15 @@ public final class OpenCmsCore {
                 }                
             } finally {
                 if (redirectURL == null) {
-            redirectURL = servletPath + m_authenticationFormURI + "?requestedResource=" + req.getPathInfo();
+                    // login-form property value not set- build a redirect URL to the 
+                    // authentication redirect page configured in opencms.properties
+                    redirectURL = servletPath + m_authenticationFormURI + "?requestedResource=" + req.getPathInfo();
                 }
             }
+            
+            if (org.opencms.main.OpenCms.getLog(this).isDebugEnabled()) {
+                org.opencms.main.OpenCms.getLog(this).debug("Redirecting response for authentication to: " + redirectURL);
+            }            
             
             res.sendRedirect(redirectURL);
         }
