@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionSet.java,v $
- * Date   : $Date: 2003/06/20 07:32:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/06/23 12:31:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.util.StringTokenizer;
 /**
  * A permission set contains both allowed and denied permissions as bitsets.<p>
  * 
- * @version $Revision: 1.3 $ $Date: 2003/06/20 07:32:52 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/23 12:31:40 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPermissionSet {
@@ -64,7 +64,7 @@ public class CmsPermissionSet {
 	 * 
 	 * @return Enumeration of message keys
 	 */
-	static Enumeration getPermissionKeys() {
+	public static Enumeration getPermissionKeys() {
 		return permissions().keys();	
 	}
 	
@@ -74,7 +74,7 @@ public class CmsPermissionSet {
 	 * @param key the key of the permission
 	 * @return the value of the given permission
 	 */
-	static int getPermissionValue(String key) {
+	public static int getPermissionValue(String key) {
 		return ((Integer)permissions().get(key)).intValue();
 	}
 	
