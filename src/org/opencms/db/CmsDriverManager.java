@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/15 07:41:01 $
- * Version: $Revision: 1.158 $
+ * Date   : $Date: 2003/08/15 14:43:32 $
+ * Version: $Revision: 1.159 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.158 $ $Date: 2003/08/15 07:41:01 $
+ * @version $Revision: 1.159 $ $Date: 2003/08/15 14:43:32 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -236,7 +236,7 @@ public class CmsDriverManager extends Object {
                 return 509;
             } else {
                 return m_uuid.hashCode();
-    }
+            }            
         }
 
     }
@@ -3990,7 +3990,7 @@ public class CmsDriverManager extends Object {
             // read must still be possible, since the explorer file list needs some properties
             if (!context.currentUser().getId().equals(lock.getUserId())) {         
                 denied |= I_CmsConstants.C_PERMISSION_WRITE;
-        }
+            }
         }        
 
         if (isAdmin) {
@@ -4009,7 +4009,7 @@ public class CmsDriverManager extends Object {
             result = (requiredPermissions.getPermissions() & (permissions.getPermissions())) == requiredPermissions.getPermissions();
         } else {
             result = (requiredPermissions.getPermissions() & (permissions.getPermissions())) > 0;
-    }
+        }
         m_permissionCache.put(cacheKey, new Boolean(result));
         return result;
     }
@@ -4481,11 +4481,14 @@ public class CmsDriverManager extends Object {
             m_userDriver.writeUser(newUser);
             // update cache
             m_userCache.put(new CacheId(newUser), newUser);
+            
             // clear invalidated caches
             m_accessControlListCache.clear();
             m_groupCache.clear();
             m_userGroupsCache.clear();
             m_resourceListCache.clear();
+            m_permissionCache.clear();
+            
             return (newUser);
         } else {
             // No Access!
@@ -4698,7 +4701,7 @@ public class CmsDriverManager extends Object {
             
             if (copyResource) {                
                 // move the existing resource to the lost and foud folder
-            moveResource(context,resourcename,destination) ;
+                moveResource(context,resourcename,destination);
             }           
           } catch (CmsException e2) {
             throw e2;           
@@ -8494,7 +8497,8 @@ public class CmsDriverManager extends Object {
                 onlineFolder = readFolder(context, resourcename);
                 contents = new byte[0];
                 properties = readProperties(context, resourcename, context.getAdjustedSiteRoot(resourcename), false);
-}
+            }
+
             // switch back to the previous project
             context.setCurrentProject(oldProject.getId());
 
