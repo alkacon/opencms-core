@@ -8,6 +8,12 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.7.14 Ecaz - 06 August 2002
+* Now the manager of a project who is not member of the projectmanager-group can publish a resource directly
+* general bugfixes
+- There is a patch for changing the database from version 4.7.9 to 4.7.10. The column VERSION_ID is added to the tables
+  CMS_BACKUP_FILES and CMS_BACKUP_PROPERTIES. Please read the readme.html.
+
 OpenCms 4.7.13 Ecaz - 25 July 2002
 * When exporting moduledata the entries that are in more than one channel are exported only once.
 * In the modules backoffice only administrators and the managers of the project can publish a
