@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2004/07/07 18:01:09 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/07/27 14:44:54 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.3.3
  */
@@ -161,6 +161,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
      * @throws JspException if inclusion of error dialog fails
      */
     public void actionUpdateFile() throws JspException {
+        
         try {
             CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             I_CmsResourceType oldType = OpenCms.getResourceManager().getResourceType(res.getTypeId()); 
@@ -170,12 +171,10 @@ public class CmsNewResourceUpload extends CmsNewResource {
                 getCms().chtype(getParamResource(), newType);
             }
             if (getParamNewResourceName() != null && !getParamResource().endsWith(getParamNewResourceName())) {
+                String newResourceName = CmsResource.getFolderPath(getParamResource()) + getParamNewResourceName();
                 // rename the resource
-                getCms().renameResource(getParamResource(), getParamNewResourceName());
-                // determine new full resource name
-                String newResName = getParamResource().substring(0, getParamResource().lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1);
-                newResName += getParamNewResourceName();
-                setParamResource(newResName);
+                getCms().renameResource(getParamResource(), newResourceName);
+                setParamResource(newResourceName);
             }
         } catch (CmsException e) {
             // error updating file, show error dialog
