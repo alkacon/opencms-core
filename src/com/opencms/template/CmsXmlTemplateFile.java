@@ -12,7 +12,7 @@ import java.io.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2000/02/14 18:44:36 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/15 13:09:32 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -156,6 +156,50 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public Vector getAllSections() throws CmsException {
         NodeList nl = ((Element)getXmlDocument().getDocumentElement()).getChildNodes();             
         return getNamesFromNodeList(nl, "TEMPLATE", true);
+    }
+
+    public int createNewSection(String sectionName) {
+        String tempName = sectionName;
+        int loop = 0;
+        while(hasData("template." + tempName)) {
+            tempName = sectionName + (++loop);        
+        }        
+        
+        Element newData = getXmlDocument().createElement("template");
+        newData.setAttribute("name", tempName);
+        setData("template." + tempName, newData);
+        
+        return loop;
+    
+    }
+    
+    public void setSectionTitle(String sectionName, String title) throws CmsException {
+        String datablockName = getTemplateDatablockName(sectionName);
+        Element data = null;
+        try {
+            data = getData(datablockName);
+        } catch(Exception e) {
+            // The given section doesn't exist. Ignore.
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_INFO, "Cannot set title for template section \"" + sectionName + "\" in file " 
+                + getAbsoluteFilename() + ". Section doesn't exist.");
+            }
+            return;
+        }
+        data.setAttribute("title", title);
+    }
+
+    public String getSectionTitle(String sectionName) throws CmsException {
+        String datablockName = getTemplateDatablockName(sectionName);
+        String result = null;
+        try {
+            Element data = getData(datablockName);
+            result = data.getAttribute("title");
+        } catch(Exception e) {
+            // The given section doesn't exist. Ignore.
+            result = "";
+        }
+        return result;
     }
     
     /**
@@ -356,9 +400,12 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         int startClosingDocTag = xmlString.lastIndexOf("<");
         int startClosingBodyTag = xmlString.lastIndexOf("<", startClosingDocTag - 1);
         
-        xmlString = xmlString.substring(endOpeningBodyTag, startClosingBodyTag);
-        xmlString = xmlString.trim();
-
+        if(startClosingBodyTag <= endOpeningBodyTag) {
+            xmlString = "";
+        } else {
+            xmlString = xmlString.substring(endOpeningBodyTag, startClosingBodyTag);
+            xmlString = xmlString.trim();
+        }
         
         int cdataStart = xmlString.indexOf("<![CDATA[");
         int currentPos = 0;

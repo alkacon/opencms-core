@@ -18,7 +18,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/02/14 18:45:23 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/15 13:09:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -65,8 +65,10 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         String save = (String)parameters.get("save");
         String body = (String)parameters.get("body");
         String bodychange = (String)parameters.get("bodychange");
+        String newbody = (String)parameters.get("newbody");
         String editor = (String)parameters.get("editor");
         String title = (String)parameters.get("title");
+        String bodytitle = (String)parameters.get("bodytitle");
         String layoutTemplateFilename = (String)parameters.get("template");
         String bodyElementClassName = (String)parameters.get("bodyclass");
         String bodyElementFilename = (String)parameters.get("bodyfile");
@@ -76,6 +78,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         String oldLayoutFilename = (String)session.getValue("te_oldlayout");
         String oldTitle = (String)session.getValue("te_title");
         String oldBody = (String)session.getValue("te_oldbody");
+        String oldBodytitle = (String)session.getValue("te_oldbodytitle");
         String layoutTemplateClassName = (String)session.getValue("te_templateclass");
         String tempPageFilename = (String)session.getValue("te_temppagefile");
         String tempBodyFilename = (String)session.getValue("te_tempbodyfile");
@@ -92,7 +95,9 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                                            && (!(oldLayoutFilename.equals(layoutTemplateFilename))));
         boolean titlechangeRequested = (oldTitle != null && title != null && (!(oldTitle.equals(title))));
         boolean previewRequested = ((preview != null) && "1".equals(preview));
-        
+        boolean newbodyRequested = ((newbody != null) && "1".equals(newbody));
+        boolean bodytitlechangeRequested = (oldBodytitle != null && bodytitle != null
+                                           && (!(oldBodytitle.equals(bodytitle))));
         // Check if there is a file parameter in the request
         if(! existsFileParam) {
             throwException("No \"file\" parameter given. Don't know which file should be edited.");
@@ -179,13 +184,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 }
             }
         }
-
-        if(bodychangeRequested) {
-            CmsXmlControlFile temporaryControlFile = new CmsXmlControlFile(cms, tempPageFilename);
-            temporaryControlFile.setElementTemplSelector("body", body);
-            temporaryControlFile.write();
-        }
-        
+               
         // Get the XML parsed content of the layout file.
         // This can be done by calling the getOwnTemplateFile() method of the
         // layout's template class.
@@ -215,10 +214,36 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 body = (String)allBodys.elementAt(0);
             }
 
+            bodytitle = bodyTemplateFile.getSectionTitle(body);
+            
             CmsXmlControlFile temporaryControlFile = new CmsXmlControlFile(cms, tempPageFilename);
             temporaryControlFile.setElementTemplSelector("body", body);
             temporaryControlFile.setElementTemplate("body", tempBodyFilename);
             temporaryControlFile.write();
+        }
+        
+        if(bodytitlechangeRequested) {
+            // The user entered a new title for the current body
+            System.err.println("Changing body title to \"" + title + "\".");
+            bodyTemplateFile.setSectionTitle(oldBody, bodytitle);
+        }
+ 
+        if(bodychangeRequested) {
+            CmsXmlControlFile temporaryControlFile = new CmsXmlControlFile(cms, tempPageFilename);
+            temporaryControlFile.setElementTemplSelector("body", body);
+            temporaryControlFile.write();
+            bodytitle = bodyTemplateFile.getSectionTitle(body);
+        }
+             
+        if(newbodyRequested) {
+            int bodyNum = bodyTemplateFile.createNewSection("body");   
+            body = "body" + bodyNum;
+            CmsXmlControlFile temporaryControlFile = new CmsXmlControlFile(cms, tempPageFilename);
+            temporaryControlFile.setElementTemplSelector("body", body);
+            temporaryControlFile.setElementTemplate("body", tempBodyFilename);
+            temporaryControlFile.write();
+            
+            //bodyTemplateFile.write();
         }
         
         
@@ -294,6 +319,10 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         Encoder encoder = new Encoder();
         content = encoder.escape(content);
         parameters.put("CONTENT", content);
+        
+        // put the body parameter so that the selectbox can set the correct current value
+        parameters.put("body", body);
+        
         parameters.put("bodyfile", bodyElementFilename);
         parameters.put("bodyclass", bodyElementClassName);
         parameters.put("template", layoutTemplateFilename);
@@ -314,6 +343,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         
         session.putValue("te_oldedit", editor);
         session.putValue("te_oldbody", body);
+        session.putValue("te_oldbodytitle", bodytitle);
         session.putValue("te_oldlayout", layoutTemplateFilename);       
         session.putValue("te_title", title);       
         session.putValue("te_templateclass", layoutTemplateClassName);       
@@ -349,13 +379,15 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
     public Integer getBodys(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
             throws CmsException {
         
+        HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(false);        
+
         String currentBodySection = (String)parameters.get("body");
-        String bodyFilename = (String)parameters.get("bodyfile");
         String bodyClassName = (String)parameters.get("bodyclass");
+        String tempBodyFilename = (String)session.getValue("te_tempbodyfile");
 
         Object tempObj = CmsTemplateClassManager.getClassInstance(cms, bodyClassName);
         CmsXmlTemplate bodyElementClassObject = (CmsXmlTemplate)tempObj;
-        CmsXmlTemplateFile bodyTemplateFile = bodyElementClassObject.getOwnTemplateFile(cms, bodyFilename, "body", parameters, null);
+        CmsXmlTemplateFile bodyTemplateFile = bodyElementClassObject.getOwnTemplateFile(cms, tempBodyFilename, "body", parameters, null);
             
         Vector allBodys = bodyTemplateFile.getAllSections();
         int loop=0;
@@ -468,6 +500,21 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         return name;
     }    
 
+     /**
+     * Pre-Sets the value of the body title input field.
+     * This method is directly called by the content definiton.
+     * @param Cms The CmsObject.
+     * @param lang The language file.
+     * @return Value that is pre-set into the title field.
+     * @exception CmsExeption if something goes wrong.
+     */
+    public String setBodyTitle(A_CmsObject cms, CmsXmlLanguageFile lang)
+        throws CmsException {
+        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);        
+        String title=(String)session.getValue("te_oldbodytitle");      
+        return title;
+    }    
+        
     /**
      * User method to generate an URL for a preview.
      * The currently selected temporary file name will be considered.
