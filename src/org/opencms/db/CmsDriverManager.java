@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/01/06 14:42:34 $
- * Version: $Revision: 1.300 $
+ * Date   : $Date: 2004/01/07 09:19:22 $
+ * Version: $Revision: 1.301 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.300 $ $Date: 2004/01/06 14:42:34 $
+ * @version $Revision: 1.301 $ $Date: 2004/01/07 09:19:22 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -99,7 +99,14 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     private class CacheId extends Object {
 
+        /**
+         * Name of the object
+         */
         public String m_name = null;
+        
+        /**
+         * Id of the object
+         */
         public CmsUUID m_uuid = null;
 
         /**
@@ -231,27 +238,69 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
     }
 
+    /**
+     * Key for all properties
+     */
     public static final String C_CACHE_ALL_PROPERTIES = "__CACHE_ALL_PROPERTIES__";
 
-    // Constants used for cache property lookup
+    /**
+     * Key for null value
+     */
     public static final String C_CACHE_NULL_PROPERTY_VALUE = "__CACHE_NULL_PROPERTY_VALUE__";
 
-    //
+    /**
+     * Key for indicating no changes
+     */
     public static final int C_NOTHING_CHANGED = 0;
+    
+    /**
+     * Key to indicate complete update
+     */
     public static final int C_UPDATE_ALL = 3;
+    
+    /**
+     * Key to indicate update of resource record
+     */
     public static final int C_UPDATE_RESOURCE = 4;
+    
+    /**
+     * Key to indicate update of resource state
+     */
     public static final int C_UPDATE_RESOURCE_STATE = 1;
+    
+    /**
+     * Key to indicate update of struicture record
+     */
     public static final int C_UPDATE_STRUCTURE = 5;
+    
+    /**
+     * Key to indicate update of structure state
+     */
     public static final int C_UPDATE_STRUCTURE_STATE = 2;
 
+    /**
+     * Separator for user cache
+     */
     private static final String C_USER_CACHE_SEP = "\u0000";
 
-    // Dummy task used in createDirectPublishProject
+    /**
+     * Dummy task used in createDirectPublishProject
+     */
     protected static final CmsTask noTask = new CmsTask();
+        
+    /**
+     * Cache for access control lists
+     */
     protected Map m_accessControlListCache = null;
 
-    /** The backup driver. */
+    /** 
+     * The backup driver
+     */
     protected I_CmsBackupDriver m_backupDriver;
+    
+    /**
+     * Cache limit
+     */
     protected int m_cachelimit = 0;
 
     /**
@@ -268,6 +317,10 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * Constant to count the file-system changes if Folders are involved.
      */
     protected long m_fileSystemFolderChanges = 0;
+    
+    /**
+     * Cache for groups
+     */
     protected Map m_groupCache = null;
 
     /**
@@ -275,48 +328,102 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     protected int m_limitedWorkplacePort = -1;
 
+    /**
+     * The lock dispatcher
+     */
     protected CmsLockDispatcher m_lockDispatcher = CmsLockDispatcher.getInstance();
 
-    // Define caches for often read resources
+    /**
+     * Cache for online project data
+     */
     protected CmsProject m_onlineProjectCache = null;
 
-    /** The class used for password validation */
+    /** 
+     * The class used for password validation 
+     */
     private I_CmsPasswordValidation m_passwordValidationClass;
 
-    /** The class used for cache key generation */
+    /** 
+     * The class used for cache key generation 
+     */
     private I_CmsCacheKey m_keyGenerator;
         
+    /**
+     * Cache for permission checks
+     */
     protected Map m_permissionCache = null;
+    
+    /**
+     * Cache for offline projects
+     */
     protected Map m_projectCache = null;
 
-    /** the project driver. */
+    /** 
+     * The project driver 
+     */
     protected I_CmsProjectDriver m_projectDriver;
+    
+    /**
+     * Cache for properties
+     */
     protected Map m_propertyCache = null;
+    
+    /**
+     * Cache for property definitions
+     */
     protected Map m_propertyDefCache = null;
+    
+    /**
+     * Cache for property definition lists
+     */
     protected Map m_propertyDefVectorCache = null;
+    
+    /**
+     * Comment for <code>m_refresh</code>
+     */
     protected String m_refresh = null;
 
     /**
-    * The Registry
-    */
+     * The Registry
+     */
     protected CmsRegistry m_registry = null;
+    
+    /**
+     * Cache for resources
+     */
     protected Map m_resourceCache = null;
+    
+    /**
+     * Cache for resource lists
+     */
     protected Map m_resourceListCache = null;
 
     /**
      * Hashtable with resource-types.
      */
     protected I_CmsResourceType[] m_resourceTypes = null;
+    
+    /**
+     * Cache for user data
+     */
     protected Map m_userCache = null;
 
     /** The user driver. */
     protected I_CmsUserDriver m_userDriver;
+    
+    /**
+     * Cache for user groups
+     */
     protected Map m_userGroupsCache = null;
 
-    /** The VFS driver. */
+    /** 
+     * The VFS driver 
+     */
     protected I_CmsVfsDriver m_vfsDriver;
 
-    /** The workflow driver. */
+    /** 
+     * The workflow driver
+     */
     protected I_CmsWorkflowDriver m_workflowDriver;
 
     /**
@@ -3496,7 +3603,12 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * @see org.opencms.lock.CmsLockDispatcher#getLock(CmsDriverManager, CmsRequestContext, String)
+     * Returns the lock for a resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource
+     * @return the lock
+     * @throws CmsException if something goes wrong
      */
     public CmsLock getLock(CmsRequestContext context, CmsResource resource) throws CmsException {
         if (!resource.hasFullResourceName()) {
@@ -3512,7 +3624,12 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * @see org.opencms.lock.CmsLockDispatcher#getLock(CmsDriverManager, CmsRequestContext, String)
+     * Returns the lock for a resource name.<p>
+     * 
+     * @param context the current request context
+     * @param resourcename name of the resource
+     * @return the lock
+     * @throws CmsException if something goes wrong
      */
     public CmsLock getLock(CmsRequestContext context, String resourcename) throws CmsException {
         return m_lockDispatcher.getLock(this, context, resourcename);
@@ -4558,7 +4675,12 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * @see org.opencms.lock.CmsLockDispatcher#isLocked(CmsDriverManager, CmsRequestContext, String)
+     * Proves if a resource is locked.<p>
+     * 
+     * @param context  the current request context
+     * @param resourcename name of the resource
+     * @return true if resource is locked
+     * @throws CmsException if something goes wrong
      */
     public boolean isLocked(CmsRequestContext context, String resourcename) throws CmsException {
         return m_lockDispatcher.isLocked(this, context, resourcename);

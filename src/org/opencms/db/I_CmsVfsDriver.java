@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/12/11 12:02:44 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2004/01/07 09:19:22 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.66 $ $Date: 2003/12/11 12:02:44 $
+ * @version $Revision: 1.67 $ $Date: 2004/01/07 09:19:22 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -375,9 +375,9 @@ public interface I_CmsVfsDriver {
      * {online|offline|backup} pool Urls have to be specified
      * 
      * @return the SQL manager for this driver
-     * @see org.opencms.db.generic.CmsSqlManager#setOfflinePoolUrl(String)
-     * @see org.opencms.db.generic.CmsSqlManager#setOnlinePoolUrl(String)
-     * @see org.opencms.db.generic.CmsSqlManager#setBackupPoolUrl(String)
+     * @see org.opencms.db.generic.CmsSqlManager#setPoolUrlOffline(String)
+     * @see org.opencms.db.generic.CmsSqlManager#setPoolUrlOnline(String)
+     * @see org.opencms.db.generic.CmsSqlManager#setPoolUrlBackup(String)
      */
     org.opencms.db.generic.CmsSqlManager initQueries();
 

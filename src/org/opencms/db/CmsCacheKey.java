@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsCacheKey.java,v $
- * Date   : $Date: 2003/11/03 09:05:53 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/01/07 09:19:22 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/11/03 09:05:53 $
+ * @version $Revision: 1.5 $ $Date: 2004/01/07 09:19:22 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsCacheKey implements I_CmsCacheKey {
@@ -50,7 +50,7 @@ public class CmsCacheKey implements I_CmsCacheKey {
     }
     
     /**
-     * @see org.opencms.db.I_CmsCacheKey#createPermissionKey(com.opencms.file.CmsRequestContext, com.opencms.file.CmsResource, org.opencms.security.CmsPermissionSet, boolean)
+     * @see org.opencms.db.I_CmsCacheKey#getCacheKeyForUserPermissions(java.lang.String, com.opencms.file.CmsRequestContext, com.opencms.file.CmsResource, org.opencms.security.CmsPermissionSet)
      */
     public String getCacheKeyForUserPermissions (String prefix, CmsRequestContext context, CmsResource resource, CmsPermissionSet requiredPermissions) {
         
@@ -66,7 +66,7 @@ public class CmsCacheKey implements I_CmsCacheKey {
     }
     
     /**
-     * @see org.opencms.db.I_CmsCacheKey#getCacheKeyForUserGroups(com.opencms.file.CmsRequestContext, com.opencms.file.CmsUser)
+     * @see org.opencms.db.I_CmsCacheKey#getCacheKeyForUserGroups(java.lang.String, com.opencms.file.CmsRequestContext, com.opencms.file.CmsUser)
      */
     public String getCacheKeyForUserGroups (String prefix, CmsRequestContext context, CmsUser user) {
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/I_CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/09/15 15:37:46 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/01/07 09:19:22 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2003/09/15 15:37:46 $
+ * @version $Revision: 1.13 $ $Date: 2004/01/07 09:19:22 $
  * @since 5.1
  */
 public interface I_CmsWorkflowDriver {
@@ -106,9 +106,9 @@ public interface I_CmsWorkflowDriver {
      * {online|offline|backup} pool Urls have to be specified.
      * 
      * @return the SQL manager for this driver
-     * @see org.opencms.db.generic.CmsSqlManager#setOfflinePoolUrl(String)
-     * @see org.opencms.db.generic.CmsSqlManager#setOnlinePoolUrl(String)
-     * @see org.opencms.db.generic.CmsSqlManager#setBackupPoolUrl(String)
+     * @see org.opencms.db.generic.CmsSqlManager#setPoolUrlOffline(String)
+     * @see org.opencms.db.generic.CmsSqlManager#setPoolUrlOnline(String)
+     * @see org.opencms.db.generic.CmsSqlManager#setPoolUrlBackup(String)
      */
     org.opencms.db.generic.CmsSqlManager initQueries();
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2003/11/19 16:57:47 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/01/07 09:19:22 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * based pools might be added probably later.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.17 $ $Date: 2003/11/19 16:57:47 $
+ * @version $Revision: 1.18 $ $Date: 2004/01/07 09:19:22 $
  * @since 5.1
  */
 public final class CmsDbPool extends Object {
@@ -61,26 +61,99 @@ public final class CmsDbPool extends Object {
     /** The default OpenCms JDBC pool URL.<p> */
     public static final String C_OPENCMS_DEFAULT_POOL_URL = "opencms:default";
 
+    /**
+     * Prefix for database keys
+     */
     public static final String C_KEY_DATABASE = "db.";
+    
+    /**
+     * Key for database name
+     */
     public static final String C_KEY_DATABASE_NAME = C_KEY_DATABASE + "name";
+    
+    /**
+     * Key for pool id
+     */
     public static final String C_KEY_DATABASE_POOL = C_KEY_DATABASE + "pool";
+    
+    /**
+     * Key for statement pooling
+     */
     public static final String C_KEY_DATABASE_STATEMENTS = C_KEY_DATABASE + "statements";
 
+    /**
+     * Key for jdbc driver
+     */
     protected static final String C_KEY_JDBC_DRIVER = "jdbcDriver";
+    
+    /**
+     * Key for jdbc url
+     */
     protected static final String C_KEY_JDBC_URL = "jdbcUrl";
+    
+    /**
+     * Key for max active connections
+     */
     protected static final String C_KEY_MAX_ACTIVE = "maxActive";
+    
+    /**
+     * Key for max idle connections
+     */
     protected static final String C_KEY_MAX_IDLE = "maxIdle";
+    
+    /**
+     * Key for max wait time
+     */
     protected static final String C_KEY_MAX_WAIT = "maxWait";
+    
+    /**
+     * Key for database password
+     */
     protected static final String C_KEY_PASSWORD = "password";
+    
+    /**
+     * Key for default
+     */
     public static final String C_KEY_POOL_DEFAULT = "default";
+    
+    /**
+     * Key for pool url
+     */
     protected static final String C_KEY_POOL_URL = "poolUrl";
+    
+    /**
+     * Key for pool user
+     */
     public static final String C_KEY_POOL_USER = "user";
+    
+    /**
+     * Key for vfs pool
+     */
     public static final String C_KEY_POOL_VFS = "vfs";
+    
+    /**
+     * Key for pooling flag
+     */
     protected static final String C_KEY_POOLING = "pooling";
 
+    /**
+     * Key for test on borrow flag
+     */
     protected static final String C_KEY_TEST_ON_BORROW = "testOnBorrow";
+    
+    /**
+     * Key for test query
+     */
     protected static final String C_KEY_TEST_QUERY = "testQuery";
+    
+    /**
+     * Comment for <code>C_KEY_USERNAME</code>
+     */
     protected static final String C_KEY_USERNAME = "user";
+    
+    /**
+     * Comment for <code>C_KEY_WHEN_EXHAUSTED_ACTION</code>
+     */
     protected static final String C_KEY_WHEN_EXHAUSTED_ACTION = "whenExhaustedAction";
 
     /**
