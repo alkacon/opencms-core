@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<nounchanged></nounchanged>
+<contentage>(not set)</contentage>
+<currenttime>(not set)</currenttime>
+<nounchangedbox><![CDATA[
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td class=formular>
+                                    <input type=checkbox name="nounchanged" value="nounchanged">]]><LABEL value="database.label.nounchanged"/><![CDATA[
+                                </td>
+                            </tr>
+]]></nounchangedbox>
+
+<userdata></userdata>
+<userdatabox><![CDATA[
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td class=formular>
+                                    <input type=checkbox name="userdata" value="userdata" checked>]]><LABEL value="database.label.userdata"/><![CDATA[
+                                </td>
+                            </tr>
+]]></userdatabox>
+
+<contentagedata><![CDATA[
+                            <tr>
+                                <td class=formular width=10%>]]><LABEL value="database.label.contentage"/><![CDATA[:</td>
+                                <td class=formular><input type="text" class="textfeld3" maxlength="30" name="contentageinput" value="12-31-1970 12:00:00" size="30" maxsize="30"><input type="hidden" name="contentage"></td>
+                            </tr>
+]]></contentagedata>
+
+<TEMPLATE>
+<![CDATA[
+
+<HTML>
+
+<script language=JavaScript>
+<!--
+top.head.helpUrl=']]><LABEL value="help.administration.database.export" /><![CDATA[';
+//-->
+</script>
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+
+<script language=JavaScript>
+<!--
+//------------------------------------------------------------------------------------
+// checkFormData(formField)
+//
+// author:  Matthias Schreiber
+// company: mindfact interaktive medien ag
+// date:    13.03.2000
+// update:  14.03.2000
+//
+// Method checkFormData performs a client-side check of form fields containing names.
+// Form can be surrounded by <DIV>-section (layer).
+//
+// @param form Name of the form where the field to be checked is situated
+// @param field Name of the field to be checked
+// @param lyr Name of the layer in which the form is embedded. If there's no layer set it to null.
+//
+//------------------------------------------------------------------------------------
+
+function checkFormData()
+{
+    var result=true;
+    var at_pos, entry, strLength;
+
+    if(document.DBEXPORT.ALLRES.value.length < 1){
+        alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
+        return false;
+    }
+
+    if (! checkContentAge()) {
+        alert(']]><LABEL value="error.message.contentage" /><![CDATA[');
+        return false
+    }
+
+    entry = document.DBEXPORT.VNAME.value;
+    strLength=entry.length;
+    if (strLength < 1){
+        alert(']]><LABEL value="error.reason.namemissing" /><![CDATA[');
+        document.DBEXPORT.VNAME.focus;
+        return false;
+    }
+
+    for (i=0; i < strLength; i++)
+    {
+        if (charList.indexOf(entry.charAt(i))==-1)
+        {
+            alert(']]><LABEL value="error.message.badcharacter" /><![CDATA[' + entry.charAt(i));
+            document.DBEXPORT.VNAME.focus;
+            return false;
+        }
+    }
+
+    return result;
+}
+
+function checkContentAge() {
+  var validdate = true;
+  var d = document.DBEXPORT.contentageinput.value;
+  d = d.replace(/^\s*(\b.*\b|)\s*$/, "$1");
+  if (d == "") {
+    document.DBEXPORT.contentage.value = "(none)"
+  } else {
+    d = new Date(d);
+    if (!isNaN(d)) {
+      document.DBEXPORT.contentage.value = d.getTime();
+    } else {
+      validdate = false;
+    }
+  }
+  return validdate;
+}
+
+
+function deleteAnItem(theList,itemNo) {
+var n=theList.length;
+if ((n > 0) && (itemNo > -1)) {
+    theList.options[itemNo]=null;
+}
+}
+
+function addFolder(theList, item) {
+    if (item != null && item != "") {
+        newOption = new Option(item, item, false, false);
+        theList.options[theList.length] = newOption;
+        document.DBEXPORT.selectallfolders.value='';
+    }
+}
+
+function copySelection() {
+    addFolder(document.DBEXPORT.new_ressources, document.DBEXPORT.tempFolder.value);
+}
+
+function selectAll(theList) {
+    var n=theList.length;
+    for (i=0; i<n; i++) {
+        theList.options[i].selected=true;
+    }
+    // umgehe das Problem mit Silverstream
+    var allResources="";
+    if (n>0) {
+        for (i=0; i<n; i++) {
+            allResources = allResources + theList.options[i].value + ';';
+        }
+    }
+    document.DBEXPORT.ALLRES.value=allResources;
+}
+
+//-->
+</script>
+
+</HEAD>
+<BODY bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='../../../action/administration_head.html';" onUnload="top.closeTreeWin();">
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
+<form id=DBEXPORT name=DBEXPORT action="index.html?action=export" method="post" onSubmit="return checkFormData()">
+<table cellspacing=0 cellpadding=0 border=2 width=450>
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td class="head">]]><LABEL value="database.label.titleexport"/><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Beginn Inhalt-->
+            <tr><td class=dialogtxt>
+                <table border=1 width=100%>
+                    <tr><td class=dialogtxt>
+                        <table border=0 width=100%>
+                            <tr>
+                                <td class=formular>]]><LABEL value="input.exportadd" /><![CDATA[:</td>
+                                <td class=dialogtxt>
+                                <input type="text" name="selectallfolders" class="textfeld3" size=31 value=""
+                                       onSubmit="">
+
+                                </td>
+                                <td class=formular valign=bottom>
+                                    <a href="javascript:addFolder(document.DBEXPORT.new_ressources, document.DBEXPORT.selectallfolders.value);" ><img src="]]><METHOD name="resourcesUri">ic_admin_enter.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.addnew" /><![CDATA[" border=0 width=16 heigth=16></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class=formular valign=middle>]]><LABEL value="input.exportresources" /><![CDATA[:</td>
+                                <td class=dialogtxt>
+                                    <select name="new_ressources" id="new_ressources" style="width:300px" size=5 width="300" multiple></select>
+                                </td>
+                                <td valign=middle>
+                                    <table border=0 cellspacing=0 width=100% height=100% valign=middle>
+                                        <tr>
+                                            <td class=formular><a href="javascript:top.openTreeWin('export', true, 'DBEXPORT', 'tempFolder', document);"><img src="]]><METHOD name="resourcesUri">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
+                                            <td class=formular><a href="javascript:deleteAnItem(document.DBEXPORT.new_ressources , document.DBEXPORT.new_ressources.selectedIndex);"><img src="]]><METHOD name="resourcesUri">ic_admin_deleteext.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.delete" /><![CDATA[" border=0 width=16 heigth=16></a></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td class=formular>
+                                    <input type=checkbox name="nosystem" value="nosystem" checked>]]><LABEL value="database.label.nosystem"/><![CDATA[
+                                    <input type="hidden" name="tempFolder" id="tempFolder">
+                                    <input type="hidden" name="ALLRES" id="ALLRES" value="">
+                                </td>
+                            </tr>
+                            ]]><PROCESS>userdata</PROCESS><![CDATA[
+                            ]]><PROCESS>nounchanged</PROCESS><![CDATA[
+                            ]]><PROCESS>contentagedata</PROCESS><![CDATA[
+                            <tr>
+                                <td class=formular width=10%>]]><LABEL value="database.label.filename"/><![CDATA[:</td>
+                                <td class=dialogtxt><input type="text" class="textfeld3" maxlength="30" name="filename" id="VNAME"></td>
+                            </tr>
+                            <tr>
+                                <td class=formular>]]><LABEL value="database.label.files"/><![CDATA[:</td>
+                                <td class=dialogtxt>
+                                    ]]><SELECT class="textfeld" name="existingfile" width="300" method="getExportFiles" onchange="document.DBEXPORT.filename.value=document.DBEXPORT.existingfile.options[document.DBEXPORT.existingfile.selectedIndex].value;"/><![CDATA[
+                                </td>
+                            </tr>
+                            <!-- Beginn Leerzeile-->
+                            <tr>
+                                <td class="leerzeile" colspan=3>&nbsp;</td>
+                            </tr>
+                            <!-- Ende Leerzeile-->
+                            </table>
+                    </td></tr>
+                </table>
+            </td></tr>
+
+            <!-- Beginn Buttonleisete-->
+            <tr><td class=dialogtxt>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="selectAll(DBEXPORT.new_ressources);" /><![CDATA[</td>
+                    <td class=formular align=left width=50%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="100" action="location.href='../../../action/administration_content_top.html?sender=/system/workplace/administration/database/'" /><![CDATA[</td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            <!-- Ende Buttonleisete-->
+
+            </table>
+    </td></tr>
+</table>
+</form>
+</td></tr>
+</table>
+
+</BODY>
+</html>
+
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="error">
+<![CDATA[
+]]><ERRORPAGE title="error.title.database" message="error.message.database" reason="error.reason.database" suggestion="error.suggestion.database" ref="index.html?sender=/system/workplace/administration/database/export/index.html" ><process>details</process></ERRORPAGE><![CDATA[
+]]>
+</TEMPLATE>
+
+<!-- This is the default template for the html report -->
+
+<TEMPLATE name="showresult">
+<![CDATA[
+<HTML>
+
+<!-- Include external JavaScripts-->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+
+<script language=JavaScript>
+<!--
+var pageStart =
+    "<html>\n<head>\n" +
+    "<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=]]><METHOD name="getEncoding"/><![CDATA['>\n"+ 
+    
+    "<script language='JavaScript'>\n" + 
+    "function init() { setTimeout('window.scrollBy(0, 1000000)', 100); }\n" +
+    "</script>\n" +
+    
+    "<style type='text/css'>\n<!--\n" +
+    
+    "body       { color: #000000; background-color:#ffffff; font-family: sans-serif; font-size: 11px; }\n" +
+    "div.main   { color: #000000; font-family: sans-serif; font-size: 11px; white-space: nowrap; }\n" +
+    "span.head  { color: #000099; font-weight: bold; }\n" +
+    "span.note  { color: #666666; }\n" +
+    "span.ok    { color: #009900; }\n" +
+    "span.warn  { color: #990000; padding-left: 40px; }\n" +    
+    "span.throw { color: #990000; font-weight: bold; }\n" +
+    "span.link1 { color: #666666; }\n" +
+    "span.link2 { color: #666666; padding-left: 40px; }\n" +    
+    "span.link2 { color: #990000; }\n" +         
+    
+    "-->\n</style>\n" +
+    "</head>\n" +
+    "<body style='margin:0px 0px 0px 3px;' onload='init();'>\n<div class='main'>\n";
+                                               
+var pageEnd = "</div>\n</body>\n</html>\n";
+
+var pageBody="";
+ 
+function initiate(){
+    refreshResult("");
+}
+function refreshResult(addOn){
+	var size = 512000;
+	if (pageBody.length > size) {
+        pageBody = pageBody.substring(pageBody.length - size, pageBody.length);
+        var pos = pageBody.indexOf("\n"); 
+        if (pos > 0) {
+            // cut output at the first linebreak to have a "nice" start
+            pageBody = pageBody.substring(pos, pageBody.length);      
+        }
+    }
+    pageBody += addOn;
+    showframe.document.open();
+    showframe.document.write(pageStart + pageBody + pageEnd);
+    showframe.document.close();
+}
+function finish(){
+    document.getElementById("cancel").disabled=false;
+}
+function fillHead(content){
+    document.getElementById("headline").innerHTML=content;
+}
+//-->
+</script>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="initiate();">
+
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+<table cellspacing=0 cellpadding=0 border=1 width="90%">
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+            <tr>
+                <td class="head">]]><process>headLabel</process><![CDATA[</td>
+            </tr>
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <tr><td class=dialogtxt>
+                <table border=0 width=100%>
+                    <tr><td class=dialogtxt>
+                        <table border=0 cellspacing=4 width=100% height=300px>
+                            <tr>
+                                <td id=headline class=formular width=10%></td>
+                            </tr>
+                            <tr>
+                                <td height=280px>
+                                    <iframe src="empty.html" align="center" width="100%" height="100%" scrolling="yes" name="showframe" id="showframe">
+                                    </iframe>
+                                </td>
+                            </tr>
+                        </table>
+                    </td></tr>
+                    <tr><td class=dialogtxt>
+                        <table cellspacing=0 border=0 cellpadding=5 width=100%>
+                            <tr>
+                                <td width="20">&nbsp;</td>
+                                <td class=formular align=center width=100%><input type="button" class="button" disabled="true" width=100 value="]]><LABEL value="button.ok" /><![CDATA[" name="cancel" id="cancel" onClick="]]><process>finishUri</process><![CDATA["></td>
+                                <td width="20">
+                                    <iframe src="]]><process>updateUri</process><![CDATA[" width="20" height="20" id="loadframe" marginwidth="0" marginheight="0" frameborder="0" framespacing="0">
+                                    </iframe>                                                                
+                                </td>
+                            </tr>
+                        </table>
+                    </td></tr>
+                </table>
+            </td></tr>
+        </table>
+    </td></tr>
+</table>
+</td></tr>
+</table>
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+
+<TEMPLATE name="updateReport">
+<![CDATA[
+<HTML>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+<script language=JavaScript>
+<!--
+function update(){
+    var value="]]><process>data</process><![CDATA[";
+    var headline="]]><process>text</process><![CDATA[";
+    parent.refreshResult(value);
+    parent.fillHead(headline);
+}
+
+function finish(){
+    parent.finish();
+}
+//-->
+</script>
+<SCRIPT LANGUAGE="Javascript">
+function reload()
+{
+location.href="]]><process>updateUri</process><![CDATA[";
+}
+</SCRIPT>
+<title>OpenCms</title>
+
+</HEAD>
+<BODY bgcolor="#c0c0c0" marginwidth="0" marginheight="0" topmargin="0" leftmargin="0" onLoad="]]><process>autoUpdate</process><![CDATA[update();]]><process>endMethod</process><![CDATA[">
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+<endMethod><![CDATA[finish();]]></endMethod>
+<autoUpdate><![CDATA[setTimeout('reload()', 2000);]]></autoUpdate>
+<updateUri><![CDATA[index.html?action=showExportResult]]></updateUri>
+<finishUri><![CDATA[parent.admin_content.location.href='../../../action/administration_content_top.html?sender=/system/workplace/administration/database/';]]></finishUri>
+<headLabel><LABEL value="database.label.titleexport" /></headLabel>
+
+</WORKPLACE>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<head>
+    <title>OpenCms</title>
+</head>
+
+
+<BODY background="]]><METHOD name="resourcesUri">_bg_mitte_links.gif</METHOD><![CDATA[" bgcolor="#000000">
+
+
+</BODY>
+</HTML>
+]]>
+</TEMPLATE>
+</WORKPLACE> 

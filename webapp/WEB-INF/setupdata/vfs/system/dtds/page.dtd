@@ -1,0 +1,15 @@
+<!ELEMENT page (elements)>
+<!ELEMENT elements (element+)>	
+<!ELEMENT element (links, editdata, displaydata)>	
+   <!ATTLIST element name CDATA #REQUIRED>
+   <!ATTLIST element order CDATA #REQUIRED>
+   <!ATTLIST element language CDATA "all">
+<!ELEMENT links (link*)>	
+<!ELEMENT link EMPTY>	
+   <!ATTLIST link name CDATA #REQUIRED>
+   <!ATTLIST link internal (true|false) #REQUIRED>
+   <!ATTLIST link type (href|imgsrc) #REQUIRED>   
+   <!ATTLIST link target CDATA #REQUIRED>   
+<!ELEMENT editdata (#PCDATA)>	
+<!ELEMENT displaydata (#PCDATA)>	
+   <!ATTLIST displaydata format (html|xhtml) #REQUIRED>

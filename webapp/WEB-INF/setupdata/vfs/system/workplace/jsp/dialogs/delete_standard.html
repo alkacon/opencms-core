@@ -1,0 +1,61 @@
+<%@ page import="org.opencms.workplace.*" buffer="none" %><%	
+
+	// initialize the workplace class
+	CmsDelete wp = new CmsDelete(pageContext, request, response);
+	
+//////////////////// start of switch statement 
+	
+switch (wp.getAction()) {
+
+case CmsDelete.ACTION_DELETE:
+case CmsDelete.ACTION_WAIT:
+
+//////////////////// ACTION: main delete action (with optional confirm / wait screen)
+
+	wp.actionDelete();
+
+break;
+case CmsDelete.ACTION_DEFAULT:
+default:
+
+//////////////////// ACTION: show delete dialog (default)
+
+	wp.setParamAction("delete");
+
+%><%= wp.htmlStart("help.explorer.contextmenu.delete") %>
+<%= wp.bodyStart("dialog") %>
+
+<%= wp.dialogStart() %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %>
+
+<%@ include file="common/resourceinfo.txt" %>
+
+<%= wp.dialogSpacer() %>
+
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+
+<%= wp.paramsAsHidden() %>
+
+<% if (wp.hasVfsLinks() && wp.hasCorrectLockstate()) { %>
+<%= wp.key("messagebox.vfsLinks") %>
+<p>
+<input type="radio" name="deletevfslinks" value="false" checked="checked">&nbsp;<%= wp.key("messagebox.option.vfsLinksPreserve") %>
+<br>
+<input type="radio" name="deletevfslinks" value="true">&nbsp;<%= wp.key("messagebox.option.vfsLinksDelete") %>
+<p>
+<% } %>
+
+<%= wp.key("messagebox.delete") %>
+
+<%= wp.dialogContentEnd() %>
+<%= wp.dialogButtonRowOkCancel() %>
+
+</form>
+
+<%= wp.dialogEnd() %>
+<%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %>
+<%
+} 
+//////////////////// end of switch statement 
+%>

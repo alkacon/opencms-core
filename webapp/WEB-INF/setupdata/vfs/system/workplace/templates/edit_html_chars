@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+  <head>
+    <title>]]><label value="label.specialchar" /><![CDATA[</title>
+    <script language="Javascript">
+      function insertChar(thechar) {
+        opener.document.EDIT_HTML.focus();
+        opener.document.EDIT_HTML.DOM.selection.createRange().pasteHTML(thechar);
+        self.close();
+      }
+    </script>
+    
+    <style type="text/css">
+
+	a {
+		color: #000000;
+		text-decoration: none;
+		font-family: Arial; 
+		font-size: 14px;
+		font-weight: bold;
+	}
+	a:Hover {
+		color: #ff0000;
+	}
+	
+	span {
+	  font-family: Arial;
+	  font-size: 12px;
+	  font-weight: bold;
+	}
+
+    </style>    
+  </head>
+
+  <body onload="self.focus();" bgcolor="#CCCCCC">
+    <center>
+      <span>]]><label value="label.specialchar" /><![CDATA[</span>
+      <table border="1" cellspacing="0"  cellpadding="4" bordercolor="#000000" bgcolor="#ffffff">
+        <colgroup>
+          <col width="25">
+          <col width="25">
+          <col width="25">
+          <col width="25">
+          <col width="25">
+          <col width="25">
+          <col width="25">
+          <col width="25">
+          <col width="25">
+          <col width="25">
+          <col width="25">
+          <col width="25">
+          <col width="25">
+          <col width="25">
+          <col width="25">
+          <col width="25">          
+        </colgroup>
+	    <tr>
+	      <td align="center"><a href="javascript:insertChar('&quot; ')">&quot;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&amp; ')">&amp;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&lt; ')">&lt;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&gt; ')">&gt;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&iexcl; ')">&iexcl;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&cent; ')">&cent;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&pound; ')">&pound;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&curren; ')">&curren;</a></td>    	      	      	      
+	      <td align="center"><a href="javascript:insertChar('&euro; ')">&euro;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&yen; ')">&yen;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&brvbar; ')">&brvbar;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&sect; ')">&sect;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&uml; ')">&uml;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&copy; ')">&copy;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&ordf; ')">&ordf;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&laquo; ')">&laquo;</a></td>    	      	      	      	      
+	    </tr>
+	    <tr>
+	      <td align="center"><a href="javascript:insertChar('&not; ')">&not;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&reg; ')">&reg;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&macr; ')">&macr;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&deg; ')">&deg;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&plusmn; ')">&plusmn;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&sup2; ')">&sup2;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&sup3; ')">&sup3;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&acute; ')">&acute;</a></td>    	      	      	      
+	      <td align="center"><a href="javascript:insertChar('&micro; ')">&micro;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&para; ')">&para;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&middot; ')">&middot;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&cedil; ')">&cedil;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&sup1; ')">&sup1;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&ordm; ')">&ordm;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&raquo; ')">&raquo;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&frac14; ')">&frac14;</a></td>    	      	      	      	      
+	    </tr>	    
+	    <tr>
+	      <td align="center"><a href="javascript:insertChar('&frac12; ')">&frac12;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&frac34; ')">&frac34;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&iquest; ')">&iquest;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&Agrave; ')">&Agrave;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&Aacute; ')">&Aacute;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&Acirc; ')">&Acirc;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&Atilde; ')">&Atilde;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&Auml; ')">&Auml;</a></td>    	      	      	      
+	      <td align="center"><a href="javascript:insertChar('&Aring; ')">&Aring;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&AElig; ')">&AElig;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&Ccedil; ')">&Ccedil;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&Egrave; ')">&Egrave;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&Eacute; ')">&Eacute;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&Ecirc; ')">&Ecirc;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&Euml; ')">&Euml;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&Igrave; ')">&Igrave;</a></td>    	      	      	      	      
+	    </tr>	    	    
+	    <tr>
+	      <td align="center"><a href="javascript:insertChar('&Iacute; ')">&Iacute;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&Icirc; ')">&Icirc;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&Iuml; ')">&Iuml;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&ETH; ')">&ETH;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&Ntilde; ')">&Ntilde;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&Ograve; ')">&Ograve;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&Oacute; ')">&Oacute;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&Ocirc; ')">&Ocirc;</a></td>    	      	      	      
+	      <td align="center"><a href="javascript:insertChar('&Otilde; ')">&Otilde;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&Ouml; ')">&Ouml;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&times; ')">&times;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&Oslash; ')">&Oslash;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&Ugrave; ')">&Ugrave;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&Uacute; ')">&Uacute;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&Ucirc; ')">&Ucirc;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&Uuml; ')">&Uuml;</a></td>    	      	      	      	      
+	    </tr>	    
+	    <tr>
+	      <td align="center"><a href="javascript:insertChar('&Yacute; ')">&Yacute;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&THORN; ')">&THORN;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&szlig; ')">&szlig;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&agrave; ')">&agrave;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&aacute; ')">&aacute;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&acirc; ')">&acirc;</a></td>    	      	      	      
+	      <td align="center"><a href="javascript:insertChar('&atilde; ')">&atilde;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&auml; ')">&auml;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&aring; ')">&aring;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&aelig; ')">&aelig;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&ccedil; ')">&ccedil;</a></td>	        	      	      	      	      	      
+	      <td align="center"><a href="javascript:insertChar('&egrave; ')">&egrave;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&eacute; ')">&eacute;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&ecirc; ')">&ecirc;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&euml; ')">&euml;</a></td>  
+	      <td align="center"><a href="javascript:insertChar('&igrave; ')">&igrave;</a></td>    
+	    </tr>		    
+	    <tr>
+	      <td align="center"><a href="javascript:insertChar('&iacute; ')">&iacute;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&icirc; ')">&icirc;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&iuml; ')">&iuml;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&eth; ')">&eth;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&ntilde; ')">&ntilde;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&ograve; ')">&ograve;</a></td>    	      	      	      
+	      <td align="center"><a href="javascript:insertChar('&oacute; ')">&oacute;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&ocirc; ')">&ocirc;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&otilde; ')">&otilde;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&ouml; ')">&ouml;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&divide; ')">&divide;</a></td>	        	      	      	      	      	      
+	      <td align="center"><a href="javascript:insertChar('&oslash; ')">&oslash;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&ugrave; ')">&ugrave;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&uacute; ')">&uacute;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&ucirc; ')">&ucirc;</a></td>  
+	      <td align="center"><a href="javascript:insertChar('&uuml; ')">&uuml;</a></td>    
+	    </tr>		    	    
+	    <tr>
+	      <td align="center"><a href="javascript:insertChar('&yacute; ')">&yacute;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&thorn; ')">&thorn;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&yuml; ')">&yuml;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&alpha; ')">&alpha;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&beta; ')">&beta;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&gamma; ')">&gamma;</a></td>    	      	      	      
+	      <td align="center"><a href="javascript:insertChar('&delta; ')">&delta;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&epsilon; ')">&epsilon;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&mu; ')">&mu;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&pi; ')">&pi;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&rho; ')">&rho;</a></td>	        	      	      	      	      	      
+	      <td align="center"><a href="javascript:insertChar('&Omega; ')">&Omega;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&omega; ')">&omega;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&prod; ')">&prod;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&sum; ')">&sum;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&radic; ')">&radic;</a></td>    	      
+	    </tr>		    	    	    
+	    <tr>
+	      <td align="center"><a href="javascript:insertChar('&infin; ')">&infin;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&int; ')">&int;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&asymp; ')">&asymp;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&ne; ')">&ne;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&le; ')">&le;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&ge; ')">&ge;</a></td>	        	      	      	      	      	      
+	      <td align="center"><a href="javascript:insertChar('&loz; ')">&loz;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&bull; ')">&bull;</a></td>
+	      <td align="center"><a href="javascript:insertChar('&prime; ')">&prime;</a></td>    
+	      <td align="center"><a href="javascript:insertChar('&trade; ')">&trade;</a></td>	        	      	      	      	      	      
+	      <td align="center"><a href="javascript:insertChar('&permil; ')">&permil;</a></td>    
+	      <td>&nbsp;</td>   
+	      <td>&nbsp;</td>   
+	      <td>&nbsp;</td>   
+	      <td>&nbsp;</td>   
+	      <td>&nbsp;</td>   	      	      	      	      
+	    </tr>		    	    	    	    
+	  </table>
+	  <br />
+	  <input class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="window.close();">
+	</center>
+  </body>
+</html>
+]]>
+</TEMPLATE>
+
+</WORKPLACE>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<head>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+    return explorer_content.show_help();
+}
+//-->
+</script>
+
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+
+<title>opencms</title>
+
+</head>
+
+<!-- begin frameset for explorer -->
+<frameset cols="25%,75%" border=5 frameborder=2 framespacing=5>
+    <frame name="explorer_tree" src="explorer_tree.html" marginwidth=8 marginheight=8 leftmargin=8 topmargin=8>
+    <frame name="explorer_content" src="explorer_content.html" marginwidth=0 marginheight=0 leftmargin=0 topmargin=0 scrolling=no>
+</frameset>
+<!-- end frameset for explorer -->
+
+</html>
+]]>
+</TEMPLATE>
+</WORKPLACE>

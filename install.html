@@ -4,7 +4,7 @@
     </head>
     <body>
 
-<H2>Installation of OpenCms 5.0</H2>This page provides 
+<H2>Installation of OpenCms 5.x</H2>This page provides 
 information on how to install OpenCms using <A 
 href="http://jakarta.apache.org/tomcat/index.html" target=extern>Tomcat</A> and 
 <A href="http://www.mysql.com" target=extern>MySql</A>. All installation parts are described as single 
@@ -31,11 +31,11 @@ steps. After completing each step you are strongly advised to verify the success
 <P><STRONG>2. Install Tomcat</STRONG></P>
 
 <BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
-  <P>OpenCms 5.0 requires a Servlet 2.3 / JSP 1.2 standards compliant container. 
+  <P>OpenCms 5.x requires a Servlet 2.3 / JSP 1.2 standards compliant container. 
   Tomcat 4 is the reference implementation of this Standard. This release was 
   tested with Tomcat 4.0.x and Tomcat 4.1.x. Older versions of Tomcat (3.x and 
   earlier) do not support this newer standard and are thus not usable for 
-  OpenCms 5.0. </P>
+  OpenCms 5.x. </P>
   <P></P>
         
         <p>
@@ -71,9 +71,9 @@ steps. After completing each step you are strongly advised to verify the success
         To avoid problems regarding the encoding, run Tomcat in standalone mode and edit the properties of the shortcut "Start Tomcat"
         in the start menu of Windows.
         Add the parameter <code>-Dfile.encoding=ISO-8859-1</code> to the command line behind the call of the java executable. Here's an example of how the start command of Tomcat should look like after the modification: <code>c:\j2sdk1.4.1\bin\java.exe -jar <strong>-Dfile.encoding=ISO-8859-1</strong> -Duser.dir="C:\tomcat4" "C:\tomcat4\bin\bootstrap.jar" start</code>. 
-</p>
-        <p></p><STRONG>3. Install MySQL</STRONG> 
-  <P></P></BLOCKQUOTE>
+</p></BLOCKQUOTE>
+        <p></p><STRONG>3. Install MySQL</STRONG>
+  <P></P>
 
 <BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
   <P>
@@ -130,7 +130,7 @@ steps. After completing each step you are strongly advised to verify the success
 <BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
   <P>
         Start the Setup-Wizard by pointing your webbrowser to 
-        <code>http://localhost:8080/opencms/ocsetup</code>. 
+        <code>http://localhost:8080/opencms/setup/</code>. 
   Depending on your configuration, you have to replace <code>localhost</code> with your 
   servername. The port 8080 is only used if you start Tomcat in standalone mode. 
   </P>

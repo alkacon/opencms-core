@@ -1,0 +1,21 @@
+<%@ page import="
+	org.opencms.workplace.*,
+	org.opencms.workplace.editor.*,
+	com.opencms.flex.jsp.*"
+	buffer="none"
+%><%
+	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
+	CmsEditorFrameset wp = new CmsEditorFrameset(cms);
+
+%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
+<title>(<%= wp.getSettings().getUser().getName() %>) - <%= wp.getParamResource() %></title>
+</head>
+
+<frameset rows="*,24" border="0" frameborder="0" framespacing="0">
+    <frame name="edit" src="editor_main.html?<%= wp.getParamsAsRequest() %>" noresize scrolling="no">
+    <frame name="foot" src="../top_foot.html" noresize scrolling="no">
+</frameset>
+</html>

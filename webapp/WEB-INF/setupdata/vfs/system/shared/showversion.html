@@ -1,0 +1,11 @@
+<%@ page session="false" buffer="none" %><%
+
+/* Displays a backup version of a resource given in the request parameter "_version". 
+ * The parameter value has to be the complete resource name and the desired backup version, 
+ * separated by a ":".
+ */
+ 
+org.opencms.workplace.CmsVersion version = new org.opencms.workplace.CmsVersion(pageContext, request, response);
+version.load();
+
+%>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<workplace>
+<template>
+<![CDATA[<table width="100%" border="0" cellspacing="0" cellpadding="0" class="toolbar">
+			<tr height="28">
+				<td width="5" align="left"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="28"></td>
+				<td align="left" width="20"><img src="]]><METHOD name="resourcesUri">bu_tb_start.gif</METHOD><![CDATA[" width="10" height="28"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="10" height="28"></td>
+				<td align="left" width="100%"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr height="20"> 
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu2.className='over';" onMouseOut="bu2.className='norm';" onMouseDown="bu2.className='push';" onMouseUp="bu2.className='over';doEditHTML(2);"><img name="bu2" src="]]><METHOD name="resourcesUri">bu_save_exit.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.saveclose"/><![CDATA["></a></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu3.className='over';" onMouseOut="bu3.className='norm';" onMouseDown="bu3.className='push';" onMouseUp="bu3.className='over';doEditHTML(3);"><img name="bu3" src="]]><METHOD name="resourcesUri">bu_save.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.save"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu4.className='over';" onMouseOut="bu4.className='norm';" onMouseDown="bu4.className='push';" onMouseUp="bu4.className='over';doEditHTML(4);"><img name="bu4" src="]]><METHOD name="resourcesUri">bu_undo.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.undo"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu5.className='over';" onMouseOut="bu5.className='norm';" onMouseDown="bu5.className='push';" onMouseUp="bu5.className='over';doEditHTML(5);"><img name="bu5" src="]]><METHOD name="resourcesUri">bu_redo.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.redo"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu6.className='over';" onMouseOut="bu6.className='norm';" onMouseDown="bu6.className='push';" onMouseUp="bu6.className='over';doEditHTML(6);"><img name="bu6" src="]]><METHOD name="resourcesUri">bu_search.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.search"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu9.className='over';" onMouseOut="bu9.className='norm';" onMouseDown="bu9.className='push';" onMouseUp="bu9.className='over';doEditHTML(9);"><img name="bu9" src="]]><METHOD name="resourcesUri">bu_cut.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.cut"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu10.className='over';" onMouseOut="bu10.className='norm';" onMouseDown="bu10.className='push';" onMouseUp="bu10.className='over';doEditHTML(10);"><img name="bu10" src="]]><METHOD name="resourcesUri">bu_copy.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.copy"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu11.className='over';" onMouseOut="bu11.className='norm';" onMouseDown="bu11.className='push';" onMouseUp="bu11.className='over';doEditHTML(11);"><img name="bu11" src="]]><METHOD name="resourcesUri">bu_paste.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.paste"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu40.className='over';" onMouseOut="bu40.className='norm';" onMouseDown="bu40.className='push';doEditHTML(40);"><img name="bu40" src="]]><METHOD name="resourcesUri">bu_table.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.table"/><![CDATA["></a></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu90.className='over';" onMouseOut="bu90.className='norm';" onMouseDown="bu90.className='push';doEditHTML(51);"><img name="bu90" src="]]><METHOD name="resourcesUri">bu_table_tr.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.tablerow"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu91.className='over';" onMouseOut="bu91.className='norm';" onMouseDown="bu91.className='push';doEditHTML(52);"><img name="bu91" src="]]><METHOD name="resourcesUri">bu_table_td.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.tablecell"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu50.className='over';" onMouseOut="bu50.className='norm';" onMouseDown="bu50.className='push';doEditHTML(50);"><img name="bu50" src="]]><METHOD name="resourcesUri">bu_link.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.linkto"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu42.className='over';" onMouseOut="bu42.className='norm';" onMouseDown="bu42.className='push';" onMouseUp="bu42.className='over';doEditHTML(42);"><img name="bu42" src="]]><METHOD name="resourcesUri">bu_image.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.image"/><![CDATA["></a></td>
+						<script language="JavaScript">					
+						if (USE_IMAGEGALS) {
+							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu43.className=\'over\';" onMouseOut="bu43.className=\'norm\';" onMouseDown="bu43.className=\'push\';doEditHTML(43);"><img name="bu43" src="]]><METHOD name="resourcesUri">bu_imagegallery.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.imagelist"/><![CDATA["></td>');
+						}
+						if (USE_DOWNLOADGALS) {
+							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu44.className=\'over\';" onMouseOut="bu44.className=\'norm\';" onMouseDown="bu44.className=\'push\';doEditHTML(44);"><img name="bu44" src="]]><METHOD name="resourcesUri">bu_downloadgallery.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.downloadlist"/><![CDATA["></td>');
+						}
+						if (USE_EXTERNLINKGALS) {
+							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu92.className=\'over\';" onMouseOut="bu92.className=\'norm\';" onMouseDown="bu92.className=\'push\';window.open(\'linkbrowser.html?initial=true\',\'LinkBrowser\', \'width=550, height=500, resizable=yes, top=200, left=450\');"><img name="bu92" src="]]><METHOD name="resourcesUri">bu_linkgallery.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.linklist"/><![CDATA["></td>');
+						}
+						if (USE_HTMLGALS) {
+							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu93.className=\'over\';" onMouseOut="bu93.className=\'norm\';" onMouseDown="bu93.className=\'push\';window.open(\'htmlbrowser.html?initial=true\',\'HtmlBrowser\', \'width=550, height=500, resizable=yes, top=200, left=450\');"><img name="bu93" src="]]><METHOD name="resourcesUri">bu_htmlgallery.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.htmllist"/><![CDATA["></td>');
+						}
+						</script>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<script language="JavaScript">					
+						if (USE_PRINTBUTTON) {
+							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu15.className=\'over\';" onMouseOut="bu15.className=\'norm\';" onMouseDown="bu15.className=\'push\';" onMouseUp="bu15.className=\'over\';doEditHTML(15);"><img name="bu15" src="]]><METHOD name="resourcesUri">bu_print.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.print"/><![CDATA["></td>');
+							document.write('<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>');
+						}
+						</script>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu47.className='over';" onMouseOut="bu47.className='norm';" onMouseDown="bu47.className='push';" onMouseUp="bu47.className='over';doEditHTML(47);"><img name="bu47" src="]]><METHOD name="resourcesUri">bu_details.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.toggledetails"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu48.className='over';" onMouseOut="bu48.className='norm';" onMouseDown="bu48.className='push';doEditHTML(48);"><img name="bu48" src="]]><METHOD name="resourcesUri">bu_specialchar.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.specialchars"/><![CDATA["></td>
+						]]><PROCESS>HELP</PROCESS><![CDATA[		
+						<td width="100%" align="right" class="tbl"><a href="#" onMouseOver="bu1.className='over';" onMouseOut="bu1.className='norm';" onMouseDown="bu1.className='push';" onMouseUp="bu1.className='over';confirmExitHTML();"><img name="bu1" src="]]><METHOD name="resourcesUri">bu_exit.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.close"/><![CDATA["><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="1"></td>
+					</tr>
+				</table></td>
+			</tr>
+			<tr>
+				<td colspan="3" height="4" width="100%" background="]]><METHOD name="resourcesUri">bu_sep_horizontal.gif</METHOD><![CDATA["><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="1" height="4"></td>
+			</tr>
+			<tr height="28">
+				<td width="5" align="left"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="28"></td>
+				<td align="left" width="20"><img src="]]><METHOD name="resourcesUri">bu_tb_start.gif</METHOD><![CDATA[" width="10" height="28"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="10" height="28"></td>
+				<td align="left" width="100%"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr height="20"> 
+						<td><select class=textfeld name="BLOCK" id="BLOCK" width=100 style="width:100px" onchange="return ParagraphStyle_onchange()" size="1"><option selected value="Normal">Normal</select></td>
+						<td width="5" align="left"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="1"></td>
+						<script language="JavaScript">					
+						if (USE_FONTFACE) {
+							document.write('<td>]]><SELECT class="textfeld" name="FONTFACE" width="120" method="getFonts" onchange="doEditHTML(22);"/><![CDATA[</td>');
+							document.write('<td width="5" align="left"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="1"></td>');
+						} else {
+							document.write('<td><INPUT TYPE=HIDDEN name="FONTFACE"></td>');
+							document.write('<td width="5" align="left"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="1"></td>');
+						}
+						if (USE_FONTSIZE) {
+							document.write('<td><select class=textfeld name="FONTSIZE" id="FONTSIZE" width=40 style="width:40px" onchange="doEditHTML(23);" size="1"><option selected value="1">1<option value="2">2<option value="3">3<option value="4">4<option value="5">5<option value="6">6<option value="7">7</select></td>');
+							document.write('<td width="5" align="left"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="1"></td>');
+						} else {
+							document.write('<td><INPUT TYPE=HIDDEN name="FONTSIZE"></td>');
+						}
+						</script>		
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu24.className='over';" onMouseOut="bu24.className='norm';" onMouseDown="bu24.className='push';" onMouseUp="bu24.className='over';doEditHTML(24);"><img name="bu24" src="]]><METHOD name="resourcesUri">bu_bold.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.bold"/><![CDATA["></a></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu25.className='over';" onMouseOut="bu25.className='norm';" onMouseDown="bu25.className='push';" onMouseUp="bu25.className='over';doEditHTML(25);"><img name="bu25" src="]]><METHOD name="resourcesUri">bu_italic.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.italic"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu26.className='over';" onMouseOut="bu26.className='norm';" onMouseDown="bu26.className='push';" onMouseUp="bu26.className='over';doEditHTML(26);"><img name="bu26" src="]]><METHOD name="resourcesUri">bu_underline.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.underline"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu31.className='over';" onMouseOut="bu31.className='norm';" onMouseDown="bu31.className='push';" onMouseUp="bu31.className='over';doEditHTML(31);"><img name="bu31" src="]]><METHOD name="resourcesUri">bu_left.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.alignleft"/><![CDATA["></a></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu32.className='over';" onMouseOut="bu32.className='norm';" onMouseDown="bu32.className='push';" onMouseUp="bu32.className='over';doEditHTML(32);"><img name="bu32" src="]]><METHOD name="resourcesUri">bu_center.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.aligncenter"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu33.className='over';" onMouseOut="bu33.className='norm';" onMouseDown="bu33.className='push';" onMouseUp="bu33.className='over';doEditHTML(33);"><img name="bu33" src="]]><METHOD name="resourcesUri">bu_right.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.alignright"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu34.className='over';" onMouseOut="bu34.className='norm';" onMouseDown="bu34.className='push';" onMouseUp="bu34.className='over';doEditHTML(34);"><img name="bu34" src="]]><METHOD name="resourcesUri">bu_bullist.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.ul"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu35.className='over';" onMouseOut="bu35.className='norm';" onMouseDown="bu35.className='push';" onMouseUp="bu35.className='over';doEditHTML(35);"><img name="bu35" src="]]><METHOD name="resourcesUri">bu_numlist.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.ol"/><![CDATA["></td>
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu36.className='over';" onMouseOut="bu36.className='norm';" onMouseDown="bu36.className='push';" onMouseUp="bu36.className='over';doEditHTML(36);"><img name="bu36" src="]]><METHOD name="resourcesUri">bu_indent.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.indentin"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu37.className='over';" onMouseOut="bu37.className='norm';" onMouseDown="bu37.className='push';" onMouseUp="bu37.className='over';doEditHTML(37);"><img name="bu37" src="]]><METHOD name="resourcesUri">bu_outdent.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.indentout"/><![CDATA["></td>
+						<script language="JavaScript">					
+						if (USE_FONTCOLOR || USE_BGCOLOR) {
+							document.write('<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>');
+						}
+						if (USE_FONTCOLOR) {
+							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu38.className=\'over\';" onMouseOut="bu38.className=\'norm\';" onMouseDown="bu38.className=\'push\';doEditHTML(38);"><img name="bu38" src="]]><METHOD name="resourcesUri">bu_color_text.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.fontcolor"/><![CDATA["></td>');
+						}
+						if (USE_BGCOLOR) {
+							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu39.className=\'over\';" onMouseOut="bu39.className=\'norm\';" onMouseDown="bu39.className=\'push\';doEditHTML(39);"><img name="bu39" src="]]><METHOD name="resourcesUri">bu_color_fill.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.color"/><![CDATA["></td>');
+						}
+						</script>
+						<td width="100%">&nbsp;</td>
+					</tr>
+				</table></td>
+			</tr>
+		</table></td>
+	</tr>
+	<tr>
+		<td width=100% height=100%><OBJECT
+			CLASSID="clsid:2D360201-FFF5-11D1-8D03-00A0C959BC0A" 
+			ID="EDIT_HTML"
+			WIDTH="100%"
+			height="100%"
+			VIEWASTEXT>
+			<param name=Scrollbars value=true>
+			<param name=ShowBorders value=true>							
+		</OBJECT>
+		<!-- DEInsertTableParam Object -->
+		<object ID="ObjTableInfo" CLASSID="clsid:47B0DFC7-B7A3-11D1-ADC5-006008A5848C" VIEWASTEXT>
+		</object>
+		<!-- DEGetBlockFmtNamesParam Object -->
+		<object ID="ObjBlockFormatInfo" CLASSID="clsid:8D91090E-B955-11D1-ADC5-006008A5848C" VIEWASTEXT>
+		</object></td>
+	</tr>
+]]>
+</template>
+
+<HELP_ENABLED>
+<![CDATA[
+						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu16.className='over';" onMouseOut="bu16.className='norm';" onMouseDown="bu16.className='push';treewin=opensmallwin('../help/]]><PROCESS>LOCALE</PROCESS><![CDATA[/]]><LABEL value="help.pageeditor" /><![CDATA[', ']]><LABEL value="button.help" /><![CDATA[', 600, 450);treewin.focus();"><img name="bu16" src="]]><METHOD name="resourcesUri">bu_help.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.help"/><![CDATA["></td>
+]]>
+</HELP_ENABLED>
+
+<HELP_DISABLED>
+<![CDATA[
+						<!-- online help is either disabled or not available for the current user language! -->
+]]>
+</HELP_DISABLED>
+
+</workplace>

@@ -1,0 +1,143 @@
+# Turn echo on
+echo on
+
+# Login the Admin user
+login Admin admin
+
+# Create the setup project
+createTempfileProject
+setCurrentProject 2
+
+# Initialize the default property definitions
+createPropertydefinition folder Title
+createPropertydefinition folder Description
+createPropertydefinition folder Keywords
+createPropertydefinition folder NavText
+createPropertydefinition folder NavPos
+createPropertydefinition folder ChannelId
+createPropertydefinition folder export
+createPropertydefinition folder exportname
+createPropertydefinition folder relativeroot
+createPropertydefinition folder default-file
+createPropertydefinition folder content-encoding
+createPropertydefinition folder internal
+createPropertydefinition plain Title
+createPropertydefinition plain Description
+createPropertydefinition plain Keywords
+createPropertydefinition plain NavText
+createPropertydefinition plain NavPos
+createPropertydefinition plain export
+createPropertydefinition plain exportname
+createPropertydefinition plain content-encoding
+createPropertydefinition plain internal
+createPropertydefinition jsp Title
+createPropertydefinition jsp Description
+createPropertydefinition jsp Keywords
+createPropertydefinition jsp NavText
+createPropertydefinition jsp NavPos
+createPropertydefinition jsp export
+createPropertydefinition jsp cache
+createPropertydefinition jsp stream
+createPropertydefinition jsp content-encoding
+createPropertydefinition jsp internal
+createPropertydefinition newpage Title
+createPropertydefinition newpage Description
+createPropertydefinition newpage Keywords
+createPropertydefinition newpage NavText
+createPropertydefinition newpage NavPos
+createPropertydefinition newpage export
+createPropertydefinition newpage template
+createPropertydefinition newpage exportname
+createPropertydefinition newpage content-encoding
+createPropertydefinition newpage internal
+createPropertydefinition page Title
+createPropertydefinition page Description
+createPropertydefinition page Keywords
+createPropertydefinition page NavText
+createPropertydefinition page NavPos
+createPropertydefinition page export
+createPropertydefinition page exportname
+createPropertydefinition page content-encoding
+createPropertydefinition page internal
+createPropertydefinition link Title
+createPropertydefinition link Description
+createPropertydefinition link Keywords
+createPropertydefinition link NavText
+createPropertydefinition link NavPos
+createPropertydefinition link export
+createPropertydefinition link exportname
+createPropertydefinition link content-encoding
+createPropertydefinition link internal
+createPropertydefinition pointer Title
+createPropertydefinition pointer Description
+createPropertydefinition pointer Keywords
+createPropertydefinition pointer NavText
+createPropertydefinition pointer NavPos
+createPropertydefinition pointer export
+createPropertydefinition pointer exportname
+createPropertydefinition pointer content-encoding
+createPropertydefinition pointer internal
+createPropertydefinition XMLTemplate Title
+createPropertydefinition XMLTemplate Description
+createPropertydefinition XMLTemplate Keywords
+createPropertydefinition XMLTemplate internal
+createPropertydefinition binary Title
+createPropertydefinition binary Description
+createPropertydefinition binary Keywords
+createPropertydefinition binary internal
+createPropertydefinition image Title
+createPropertydefinition image Description
+createPropertydefinition image Keywords
+createPropertydefinition image internal
+createPropertydefinition xmlpage Title
+createPropertydefinition xmlpage template
+
+# Initialize the default file extensions
+addFileExtension binary doc
+addFileExtension binary pdf
+addFileExtension binary zip
+addFileExtension binary class
+addFileExtension binary ppt
+addFileExtension plain txt
+addFileExtension plain html
+addFileExtension plain htm
+addFileExtension image jpeg
+addFileExtension image jpg
+addFileExtension image gif
+addFileExtension image png
+addFileExtension image tif
+addFileExtension image tiff
+addFileExtension jsp jsp
+
+
+# Switch to the root context
+setSiteRoot "/"
+
+# Create folder structure
+createFolder "/" "system/"
+createFolder "/" "sites/"
+createFolder "/" "channels/"
+createFolder "/sites/" "default/"
+
+# Apply folder permissions
+chacc "/" "group" "Administrators" "+v+w+r+c+i"
+chacc "/" "group" "Projectmanagers" "+v+w+r+c+i"
+chacc "/" "group" "Users" "+v+w+r+c+i"
+chacc "/" "group" "Guests" "+v+r+i"
+
+# Import the workplace and publish the project
+importResources "setupdata/vfs"
+publishProject "2"
+writeExportPath "packages/"
+createDefaultProject "Offline" "The Offline Project"
+setSiteRoot "/sites/default/"
+
+# Import the default modules
+importModuleFromDefault "org.opencms.default.zip"
+importModuleFromDefault "org.opencms.welcome.zip"
+
+# The setup is finished
+exit
+
+
+

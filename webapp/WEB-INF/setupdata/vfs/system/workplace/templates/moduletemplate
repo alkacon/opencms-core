@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+	<defaultmodulelist>
+	<![CDATA[
+	<tr>
+		<td nowrap valign=top><A href="javascript:showkontext(']]><PROCESS>menue</PROCESS><![CDATA[',']]><PROCESS>name</PROCESS><![CDATA[',]]><PROCESS>idx</PROCESS><![CDATA[);"><img src="]]><METHOD name="resourcesUri">ic_file_binary.gif</METHOD><![CDATA[" width=16 height=16 border=0></a></td>
+		<td nowrap valign=top><p class=einzug><a href="properties.html?view=description&module=]]><PROCESS>name</PROCESS><![CDATA[" class=task>]]><PROCESS>name</PROCESS><![CDATA[</a></td>
+		<td nowrap valign=top><p class=einzug>]]><PROCESS>nicename</PROCESS><![CDATA[</td>
+		<td nowrap valign=top><p class=einzug>]]><PROCESS>version</PROCESS><![CDATA[</td>
+		<td nowrap valign=top><p class=einzug>]]><PROCESS>author</PROCESS><![CDATA[</td>
+		<td nowrap valign=top><p class=einzug>]]><PROCESS>datecreated</PROCESS><![CDATA[</td>
+		<td nowrap valign=top><p class=einzug>]]><PROCESS>dateuploaded</PROCESS><![CDATA[</td>
+	</tr>
+	]]>
+	</defaultmodulelist>
+</WORKPLACE>
+ 

@@ -1,1 +1,0 @@
-var version = '4.4.1 Gom Jabbar';

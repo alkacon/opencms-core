@@ -1,0 +1,48 @@
+<%@ page import="org.opencms.workplace.*" buffer="none" %><%	
+
+	// initialize the workplace class
+	CmsUndelete wp = new CmsUndelete(pageContext, request, response);
+	
+//////////////////// start of switch statement 
+	
+switch (wp.getAction()) {
+
+case CmsUndelete.ACTION_UNDELETE:
+case CmsUndelete.ACTION_WAIT:
+
+//////////////////// ACTION: main undelete action (with optional confirm / wait screen)
+
+	wp.actionUndelete();
+
+break;
+case CmsUndelete.ACTION_DEFAULT:
+default:
+
+//////////////////// ACTION: show undelete dialog (default)
+
+	wp.setParamAction("undelete");
+
+%><%= wp.htmlStart() %>
+<%= wp.bodyStart("dialog") %>
+<%= wp.dialogStart() %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %>
+
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+
+<%= wp.paramsAsHidden() %>
+
+<%= wp.key("messagebox.undelete") %>
+
+<%= wp.dialogContentEnd() %>
+<%= wp.dialogButtonRowOkCancel() %>
+
+</form>
+
+<%= wp.dialogEnd() %>
+
+<%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %>
+<%
+} 
+//////////////////// end of switch statement 
+%>

@@ -1,0 +1,10 @@
+#############################################################
+# @OPENCMS_VERSION@ (c) 2002-2004 Alkacon Software
+# 
+# This file contains the information of your currently used
+# configuration.                                         
+# It is filled when the setup wizard is used.
+# Date:         The current date
+# Used JDK:     The currently used JDK
+# Used Servlet: The currently used Servlet Engine
+#############################################################

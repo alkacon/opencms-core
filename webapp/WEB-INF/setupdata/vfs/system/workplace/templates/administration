@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<head>
+
+<script language=JavaScript>
+<!--
+//-->
+</script>
+
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+
+<title>OpenCms</title>
+</head>
+
+<!-- Begin Frames Administration -->
+<frameset rows="40,*" border=0 frameborder=0 framespacing=0>
+	<frame name="admin_head" src="administration_head.html" marginwidth=1 marginheight=5 leftmargin=1 topmargin=1 noresize scrolling=no>
+	<frame name="admin_content" src="administration_content_top.html" marginwidth=8 marginheight=8 topmargin=8 leftmargin=8>
+</frameset>
+<!-- End Frames Administration -->
+</html>
+]]>
+</TEMPLATE>
+</WORKPLACE>

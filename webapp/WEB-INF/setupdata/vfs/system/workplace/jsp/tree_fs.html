@@ -1,0 +1,50 @@
+<%@ page import="
+	org.opencms.workplace.*,
+	com.opencms.flex.jsp.*"
+	buffer="none"
+%><%
+	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
+	CmsTree wp = new CmsTree(cms);
+	
+	String params = "";
+	if (wp.includeFiles()) {
+		params = "&includefiles=true";
+	}
+	if (wp.getTreeType() != null) {
+		params += "&type=" + wp.getTreeType();
+	}
+	
+	String frameRows = "*,0";
+	String frameSiteSelector = "";
+	if (wp.showSiteSelector()) {
+		frameRows = "24,*,0";
+		frameSiteSelector = "<frame name=\"tree_siteselector\" src=\"tree_siteselector.html?resource=/" + params + "\" scrolling=\"no\">\n\t";
+	}
+	
+%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+
+<head>
+<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= wp.getEncoding() %>">
+<title><%= wp.key("title.explorertree") %></title>
+<script Language="Javascript" type="text/javascript" src="<%= wp.getSkinUri() %>files/tree.js"></script>
+<script type="text/javascript"> 
+
+<% 
+	String init =  wp.initTree();
+	//System.err.println(init);
+	out.println(init);
+	
+	
+	
+%>
+
+</script>
+</head>
+
+<frameset rows="<%= frameRows %>" border="0" frameborder="0" framespacing="0">
+	<%= frameSiteSelector %><frame name="tree_display" src="<%= wp.getSkinUri() %>files/empty.html" scrolling="auto">
+	<frame name="tree_files"   src="tree_files.html?resource=/<%= params %>">
+</frameset>
+
+</html>

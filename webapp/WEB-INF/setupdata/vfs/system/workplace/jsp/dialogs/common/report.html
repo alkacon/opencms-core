@@ -1,0 +1,136 @@
+<%@ page import="org.opencms.workplace.*" buffer="none" %><%	
+
+    // get workplace class from request attribute
+    CmsReport wp = CmsReport.initCmsReport(pageContext, request, response);
+	
+//////////////////// start of switch statement 
+	
+switch (wp.getAction()) {
+
+//////////////////// ACTION: get report update
+case CmsReport.ACTION_REPORT_UPDATE:
+
+%><%= wp.htmlStart(false) %>
+<script language=JavaScript>
+<!--
+
+function init() {
+    var alive=<%= wp.isAlive() %>;
+	var value="<%= wp.getReportUpdate() %>";
+    parent.update(value);
+	if (alive) {
+    	setTimeout('reload();', <%= wp.REPORT_UPDATE_TIME %>);
+   	} else {
+   		setTimeout('parent.stop();', 10);
+   	}
+}
+
+function reload() {
+	location.href="<%= wp.getDialogUri() %>?<%= wp.PARAM_ACTION %>=<%= wp.REPORT_UPDATE %>&<%= wp.PARAM_THREAD %>=<%= wp.getParamThread() %>";
+}
+
+// -->
+</script>
+
+<%= wp.bodyStart("empty", "style=\"background-color:#c0c0c0;\" onLoad=\"init();\"") %><%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %><%
+
+break;
+//////////////////// ACTION: report begin
+case CmsReport.ACTION_REPORT_BEGIN:
+default:
+
+wp.setParamAction(CmsReport.REPORT_END);
+
+%><%= wp.htmlStart() %>
+<script language=JavaScript>
+<!--
+var pageStart =
+    "<html>\n<head>\n" +
+    "<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=<%= wp.getEncoding() %>'>\n"+ 
+    "<style type='text/css'>\n<!--\n" +
+    
+    "body       { color: #000000; background-color:#ffffff; font-family: sans-serif; font-size: 11px; }\n" +
+    "div.main   { color: #000000; font-family: sans-serif; font-size: 11px; white-space: nowrap; }\n" +
+    "span.head  { color: #000099; font-weight: bold; }\n" +
+    "span.note  { color: #666666; }\n" +
+    "span.ok    { color: #009900; }\n" +
+    "span.warn  { color: #990000; padding-left: 40px; }\n" +    
+    "span.throw { color: #990000; font-weight: bold; }\n" +
+    "span.link1 { color: #666666; }\n" +
+    "span.link2 { color: #666666; padding-left: 40px; }\n" +    
+    "span.link2 { color: #990000; }\n" +          
+    
+    "-->\n</style>\n" +
+    "</head>\n" +
+    "<body style='margin:0px 0px 0px 3px;'>\n<div class='main'>\n";
+                                               
+var pageEnd = "</div>\n</body>\n</html>\n";
+
+var pageBody = "";
+
+function start() {
+	document.getElementById("ok").disabled = true;
+	update("");
+}
+
+function stop() {
+    document.getElementById("ok").disabled = false;
+}
+
+function update(text) {
+	var size = <%= wp.REPORT_UPDATE_SIZE %>; 
+    if (pageBody.length > size) {
+        pageBody = pageBody.substring(pageBody.length - size, pageBody.length);
+        var pos = pageBody.indexOf("\n"); 
+        if (pos > 0) {
+            // cut output at the first linebreak to have a "nice" start
+            pageBody = pageBody.substring(pos, pageBody.length);      
+        }
+    }
+    pageBody += text;
+    report.document.open();
+    report.document.write(pageStart + pageBody + pageEnd);
+    report.document.close();
+    setTimeout('doScroll();', 1);
+}
+
+function doScroll() {
+	var pos = 1000000;
+    report.window.scrollTo(0, pos);
+}
+
+//-->
+</script>
+
+<%= wp.bodyStart("dialog", "onLoad=\"start();\"") %>
+
+<%= wp.dialogStart() %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %>
+
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+
+<%= wp.paramsAsHidden() %>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td>
+<iframe name="report" id="report" src="about:blank" style="width:100%; height:400px"></iframe>
+</td></tr></Table>
+
+<%= wp.dialogContentEnd() %>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0"><tr>
+<td><span style="height:20px; width:20px; display:block"></span></td>
+<td width="100%"><%= wp.dialogButtonRowOk() %></td>
+<td><iframe src="<%= wp.getDialogUri() %>?<%= wp.PARAM_ACTION %>=<%= wp.REPORT_UPDATE %>&<%= wp.PARAM_THREAD %>=<%= wp.getParamThread() %>" name="update" style="width:20px; height:20px; margin: 0px;" marginwidth="0" marginheight="0" frameborder="0" framespacing="0" scrolling="no"></iframe></td>
+</tr></table>
+
+</form>
+
+<%= wp.dialogEnd() %>
+<%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %><%
+
+break;
+} 
+//////////////////// end of switch statement 
+%>

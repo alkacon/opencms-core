@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<head>
+<script language=JavaScript>
+<!--
+function show_help()
+{
+    return explorer_files.show_help();
+}
+//-->
+</script>
+</head>
+
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+<title>opencms</title>
+</head>
+
+<!-- Beginn Aufbau der Frames des explorer Kontent Filebereich -->
+<frameset rows="40,*" border=0 frameborder=0 framespacing=0>
+    <frame name="explorer_head" src="explorer_head.html" marginwidth=1 marginheight=5 leftmargin=1 topmargin=1 noresize scrolling=no>
+    <frame name="explorer_files" src="explorer_files.html" marginwidth=8 marginheight=8 leftmargin=8 topmargin=8>
+</frameset>
+<!-- Ende Aufbau der Frames des explorer Kontent Filebereich -->
+
+</html>
+]]>
+</TEMPLATE>
+</WORKPLACE>

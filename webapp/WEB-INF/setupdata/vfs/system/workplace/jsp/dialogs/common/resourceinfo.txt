@@ -1,0 +1,5 @@
+<!-- display resource information -->
+<%= wp.dialogBlockStart(null) %>
+<%= wp.key("input.title") %>: <%= wp.getJsp().property("Title", wp.getParamResource(), "") %><br>
+<%= wp.key("input.state") %>: <%= wp.getState() %>
+<%= wp.dialogBlockEnd() %>

@@ -1,0 +1,335 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
+<title>(<%= wp.getSettings().getUser().getName() %>) - <%= wp.getParamResource() %></title>
+
+<link rel=stylesheet type="text/css" href="<%= wp.getEditorResourceUri() %>format.css">
+<script type="text/javascript" src="<%= cms.link("../../../scripts/opencms.js") %>"></script>
+<script type="text/javascript">
+
+	// which button is clicked
+	function doTemplSubmit(para)
+	{
+		document.EDITOR.action.value = "";
+		switch (para)
+		{
+		case 1:
+			doSubmit();
+			document.EDITOR.submit();
+			break;
+		case 2:
+			alert("NYI!");
+			break;
+		case 3:
+			doSubmit();
+			document.EDITOR.action.value = "show";
+			document.EDITOR.target = "_self";
+			document.EDITOR.submit();
+			break;
+		case 4:
+			// new template selected
+			doSubmit();
+			document.EDITOR.action.value = "changetemplate";
+			document.EDITOR.target = "_self";
+			document.EDITOR.submit();
+			break;
+		case 5:
+			// preview selected			
+			document.EDITOR.action.value = "preview";
+			doSubmit();
+			document.EDITOR.target = "PREVIEW";
+			document.EDITOR.submit();
+			break;
+		case 6:
+			// New Body;
+			doSubmit();
+			document.EDITOR.action.value = "newbody";
+			document.EDITOR.target = "_self";
+			document.EDITOR.submit();
+			break;
+		case 7:
+			// Change Body;
+			doSubmit();
+			document.EDITOR.action.value = "changebody";
+			document.EDITOR.target = "_self";
+			document.EDITOR.submit();
+			break;
+		}
+	}
+	
+	<!-- Sets some display variables -->
+	var USE_LINKSTYLEINPUTS = <%= options.showElement("linkstyleinputs") %>;
+	var USE_FONTFACE = <%= options.showElement("font.face") %>;
+	var USE_FONTSIZE = <%= options.showElement("font.size") %>; 
+        
+        <!-- determines if the simple editor should be loaded -->
+        var loadSimple = false;
+	
+	<!-- OpenCms context prefix, required for page editor because no link replacement is done here -->
+	var linkEditorPrefix = "<%= org.opencms.main.OpenCms.getOpenCmsContext() %>";
+
+	<!-- Sets the Document Source-Code for later including into the editor -->
+	var text="<%= wp.getParamContent() %>";
+
+	<!-- URL for pictures -->
+	var pfad="<%= wp.getPicsUri() %>";
+
+	<!-- Filename -->
+	var filename="<%= wp.getParamResource() %>";
+	
+	<!-- Workplacepath needed in included javascript files -->
+	var workplacePath="<%= cms.link("/system/workplace/") %>";
+
+	<!-- Needed space for additional toolbar -->
+	var space=75;
+
+	var tbsize = 73;
+	
+	var NS = null;
+	var IE = null;
+
+	NS = (document.layers)? true:false;
+	IE = (document.all)? true:false;
+
+	var LANG_CUT = "<%= wp.key("editor.context.cut") %>";
+	var LANG_COPY = "<%= wp.key("editor.context.copy") %>";
+	var LANG_PASTE = "<%= wp.key("editor.context.paste") %>";
+	var LANG_INSERTROW = "<%= wp.key("editor.context.insertrow") %>";
+	var LANG_DELETEROW = "<%= wp.key("editor.context.deleterow") %>";
+	var LANG_INSERTCOL = "<%= wp.key("editor.context.insertcol") %>";
+	var LANG_DELETECOL = "<%= wp.key("editor.context.deletecol") %>";
+	var LANG_INSERTCELL = "<%= wp.key("editor.context.insertcell") %>";
+	var LANG_DELETECELL = "<%= wp.key("editor.context.deletecell") %>";
+	var LANG_MERGECELL = "<%= wp.key("editor.context.mergecell") %>";
+	var LANG_SPLITCELL = "<%= wp.key("editor.context.splitcell") %>";
+</script>
+<%
+	if ("edit".equals(wp.getParamEditormode()) || CmsEditor.BROWSER_NS.equals(wp.getBrowserType()) || ("true".equals(wp.getParamNoactivex()) && "edit".equals(wp.getParamEditormode()))) {
+		%><script type="text/javascript" src="<%= wp.getEditorResourceUri() %>scripts/edit.js"></script><%  
+	} else {
+		%><script type="text/javascript" src="<%= wp.getEditorResourceUri() %>scripts/edithtml.js"></script><%
+	}
+%>
+<!-- Update the Font display on change -->
+<script type="text/javascript" for="EDIT_HTML" event="DisplayChanged">
+<!--
+	function displayChangedHandle()
+	{
+	if (IE==true) return DisplayChanged();
+	}
+	displayChangedHandle();
+	//-->
+</script>
+
+<!-- Show a context menu if the right mousebutton is clicked -->
+<script type="text/javascript" for="EDIT_HTML" event="ShowContextMenu">
+<!--
+	function showContextMenuHandle()
+	{
+	if (IE==true) return ShowContextMenu();
+	}
+	showContextMenuHandle();
+//-->
+</script>
+
+<!-- Invoke a context menu action -->
+<script type="text/javascript" for="EDIT_HTML" event="ContextMenuAction(itemIndex)">
+<!--
+	function contextMenuActionHandle()
+	{
+	if (IE==true) return ContextMenuAction(itemIndex);
+	}
+	contextMenuActionHandle();
+//-->
+</script>
+
+<script type="text/javascript" for="EDIT_HTML" event="onkeyup">
+<!--
+/**
+ * if the user selected a text or a image, that has a link and delete
+ * then the link will be clean.
+ * this function is for pasted text from word to mshtml editor,too.
+ */
+	function checkContentByKeyUp()
+	{
+	var cBackSpace  = 8;
+	var cDelete		= 46;
+	var cReturn		= 13;
+		if (IE==true) 
+		{			
+			var keyPressed;	
+			keyPressed = document.EDITOR.EDIT_HTML.DOM.parentWindow.event.keyCode;		
+			if (keyPressed == cBackSpace || keyPressed == cDelete || keyPressed == cReturn)
+			{
+				deleteEmptyATags();
+			}
+		}
+	}
+	checkContentByKeyUp();
+//-->
+</script>
+
+<script LANGUAGE="vbscript">
+Sub getStyles()
+	' Create the block fmt names holder
+	Set fmt = CreateObject("DEGetBlockFmtNamesParam.DEGetBlockFmtNamesParam.1")
+
+	' Get the localized strings for the DECMD_SETBLOCKFMT command
+	EDITOR.EDIT_HTML.ExecCommand DECMD_GETBLOCKFMTNAMES, OLECMDEXECOPT_DONTPROMPTUSER, fmt
+
+	' Put the localized strings into a (JavaScript) array
+	i = 0
+	For Each fmtName In fmt.Names
+		setStyles i, fmtName
+		i = i + 1
+	Next
+End Sub
+</script>
+
+<!-- Ask user whether he really wants to leave Texteditor without saving -->
+<script type="text/javascript">
+<!--
+	function confirmExit()
+	{
+		if (confirm("<%= wp.key("editor.message.exit") %>")) {
+			doEdit(1);
+		}
+	}
+	function confirmExit()
+	{
+		if (EDITOR.edit1.IsModified(2)) {
+			if (confirm("<%= wp.key("editor.message.exit") %>")) {
+				doEdit(1);
+			}
+		} else {
+				doEdit(1);
+		}
+	}
+//-->
+</script>
+
+<!-- Ask user whether he really wants to leave HTML-Editor without saving -->
+<script type="text/javascript">
+<!--
+	function confirmExitHTML()
+	{
+		
+		if (EDITOR.EDIT_HTML.IsDirty) {
+			if (confirm("<%= wp.key("editor.message.exit") %>")) {
+				doEditHTML(1);
+			}
+		} else {
+				doEditHTML(1);
+		}
+	}
+//-->
+</script>
+
+</head>
+
+<body background="<%= wp.getPicsUri() %>bg_grau2.gif" bgproperties="fixed" scroll="no" onload="setText(); initStyles();" marginwidth="0" marginheight="0" leftmargin="0" topmargin="0">
+<table cellspacing="0" cellpadding="0" border="0" width="100%" height="100%" class="toolbar">
+<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogUri() %>">
+	<tr>
+		<td valign="top"><table width=100% cellspacing="0" cellpadding="0" border="0" class="toolbar">
+			<tr height="28">
+				<td width="5" align="left"><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="30"></td>
+				<td align="left" width="20"><img src="<%= wp.getPicsUri() %>bu_tb_start.gif" width="10" height="28"><img src="<%= wp.getPicsUri() %>empty.gif" width="10" height="28"></td>
+				<td align="left"><table border="0" cellspacing="0" cellpadding="0">
+					<tr height="20">
+						<td><%= wp.key("input.title") %>:&nbsp;&nbsp;</td>
+						<td><input name="pagetitle" value="<%= wp.getParamPagetitle() %>" size="10" maxlength=255 style="width:100px"></td>
+						<td><img src="<%= wp.getPicsUri() %>empty.gif" width="10" height="1"></td>
+						<td><%= wp.key("input.editor") %>:&nbsp;&nbsp;</td>
+						<td><%= wp.buildSelectViews("class=\"textfeld\" name=\"editormode\" width=\"120\" onchange=\"doTemplSubmit(3);\"") %></td>
+						<td><img src="<%= wp.getPicsUri() %>empty.gif" width="10" height="1"></td>						
+						<%
+						
+							if (options.showElement("selector.template") && !options.showElement("selector.body")) {%>
+								<td><%= wp.key("input.template") %>:&nbsp;&nbsp;</td>
+								<td><%= wp.buildSelectTemplates("class=\"textfeld\" name=\"pagetemplate\" width=\"150\" onchange=\"doTemplSubmit(4);\"") %></td>
+								<td><img src="<%= wp.getPicsUri() %>empty.gif" width="10" height="1"></td><%
+							} else if (!options.showElement("selector.template")) {%>
+								<td style="visibility: hidden;"><input type="hidden" name="pagetemplate" value="<%= wp.getParamPagetemplate() %>"></td><%
+							}
+							
+							if (!options.showElement("selector.body")) {%>
+								<td style="visibility:hidden;"><input type="hidden" name="bodylanguage" value="<%= wp.getParamBodylanguage() %>"><input type="hidden" name="bodyname" value="<%= wp.getParamBodyname() %>"></td>
+								<td><input type="hidden" name="newbodyname" value="<%= wp.getParamNewbodyname() %>"></td><%
+							}
+							
+							if (options.showElement("selector.template") && options.showElement("selector.body")) {%>
+								<td><%= wp.key("input.template") %>:&nbsp;&nbsp;</td>
+								<td><%= wp.buildSelectTemplates("class=\"textfeld\" name=\"pagetemplate\" width=\"150\" onchange=\"doTemplSubmit(4);\"") %></td>
+								<td><img src="<%= wp.getPicsUri() %>empty.gif" width="10" height="1"></td><%
+							}
+							
+							if (options.showElement("selector.body")) {%>
+								<td><%= wp.key("input.body") %>:&nbsp;&nbsp;</td>
+								<td><%= wp.buildSelectBodyLanguage("class=\"textfeld\" name=\"bodylanguage\" width=\"150\" onchange=\"doTemplSubmit(7);\"") %></td>
+								<td><img src="<%= wp.getPicsUri() %>empty.gif" width="3" height="1"></td>
+								<td><%= wp.buildSelectBodyName("class=\"textfeld\" name=\"bodyname\" width=\"150\" onchange=\"doTemplSubmit(7);\"") %></td>
+								<td><img src="<%= wp.getPicsUri() %>empty.gif" width="10" height="1"></td><%
+							}
+							
+							if (!options.showElement("option.newbody")) {%>
+								<td><input type="hidden" name="newbodyname" value="<%= wp.getParamNewbodyname() %>"></td><%
+							}
+							
+							if (options.showElement("selector.body") && options.showElement("option.newbody")) {%>
+								<td><input type="text" name="newbodyname" class="textfeld" size="8" length="255"></td>
+								<td><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="1"></td>
+								<td width="26" align="center" class="tbl"><a href="javascript:doTemplSubmit(6);" onMouseOver="bu06.className='over';" onMouseOut="bu06.className='norm';" onClick="bu06.className='push';"><img name="bu06" src="<%= wp.getPicsUri() %>bu_newbody.gif" width="20" height="20" alt="<%= wp.key("button.newbody") %>"></td><%
+							}					
+						
+						%>						
+						<td width="20" align="left"><img src="<%= wp.getPicsUri() %>empty.gif" width="20" height="28"></td>
+						<td width="100%" align="right" class="tbl"><a href="#" onMouseOver="bu05.className='over';" onMouseOut="bu05.className='norm';" onMouseDown="bu05.className='push';doTemplSubmit(5);"><img name="bu05" src="<%= wp.getPicsUri() %>bu_preview.gif" width="20" height="20" alt="<%= wp.key("button.preview") %>"><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="1"></td>
+					</tr> 
+				</table></td>
+			</tr>
+		</table></td>
+	</tr>
+	<tr>
+		<td height="4" width="100%" background="<%= wp.getPicsUri() %>bu_sep_horizontal.gif"><img src="<%= wp.getPicsUri() %>empty.gif" width="1" height="4"></td>
+	</tr>
+	<tr>
+		<td>
+		<%
+			if (CmsEditor.BROWSER_NS.equals(wp.getBrowserType()) || ("true".equals(wp.getParamNoactivex())  && "edit".equals(wp.getParamEditormode()))) {
+				%><%@ include file="form_ns.txt" %><%
+			} else {
+				if ("edit".equals(wp.getParamEditormode())) {
+					%><%@ include file="form_text.txt" %><%
+				} else {
+					%><%@ include file="form_html.txt" %><%
+				}
+			}
+
+		%>
+<input type="hidden" name="content">
+<input type="hidden" name="action" value="<%= wp.getParamAction() %>">
+<input type="hidden" name="resource" value="<%= wp.getParamResource() %>">
+<input type="hidden" name="tempfile" value="<%= wp.getParamTempfile() %>">
+<input type="hidden" name="noactivex" value="<%= wp.getParamNoactivex() %>">
+<input type="hidden" name="editastext" value="<%= wp.getParamEditastext() %>">
+<input type="hidden" name="directedit" value="<%= wp.getParamDirectedit() %>">
+<input type="hidden" name="oldbodyname" value="<%= wp.getParamBodyname() %>">
+<input type="hidden" name="oldbodylanguage" value="<%= wp.getParamBodylanguage() %>">
+</form>
+</table>
+
+<script type="text/javascript">
+<!--
+if (loadSimple) {
+    document.EDITOR.action.value = "show";
+    document.EDITOR.content.value = text;
+    document.EDITOR.noactivex.value = "true";
+    document.EDITOR.target = "_self";
+    document.EDITOR.submit();
+}
+//-->
+</script>
+
+</body>
+</html>

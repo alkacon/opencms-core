@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<HTML>
+
+<script language=JavaScript>
+<!--
+top.head.helpUrl=']]><LABEL value="help.history"/><![CDATA[';
+
+var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
+
+//-->
+</script>
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+
+</HEAD>
+<BODY bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA[" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
+<form id=HIST name=HIST>
+<table cellspacing=0 cellpadding=0 border=2 width=500>
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td class="head">]]><LABEL value="title.history" /><![CDATA[ : ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <tr><td class=dialogtxt>
+                <table border=1 width=100%>
+                    <tr><td class=dialogtxt>
+                        <table border=0 width=100% height=200>
+                            <tr><td class=dialogtxt>]]><LABEL value="label.historyheader" /><![CDATA[</td></tr>
+                            <tr><td class=dialogtxt>
+                            ]]><SELECT class="textfeld" size="10" name="versionid" width="400" method="getFiles" /><![CDATA[
+                            </td></tr>
+                            <tr><td class=dialogtxt>
+                                <table cellspacing=0 cellpadding=5 width=100%>
+                                <tr>
+                                <!--<td class=formular align=right width=80%><INPUT  class=button width = 100 type="button" value="]]><LABEL value="button.view" /><![CDATA[" id=VIEW name=VIEW onClick="javascript: notImplemented(']]><LABEL value="button.view" /><![CDATA[');"></td>-->
+                                <td class=formular align=middle width=20%><INPUT class=button width = 100 type="submit" value="]]><LABEL value="button.detail" /><![CDATA[" id=DETAIL name=DETAIL onClick="location.href='history.html'"></td>
+                                </tr>
+                                </table>
+                            </td></tr>
+                        </table>
+                    </td></tr>
+                </table>
+            </td></tr>
+
+            <!-- Beginn Buttonleisete-->
+            <tr><td class=dialogtxt>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=center><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href=lasturl"></td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            <!-- Ende Buttonleisete-->
+
+            </table>
+    </td></tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+
+</BODY>
+</html>
+
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="detail">
+<![CDATA[
+<HTML>
+
+<script language=JavaScript>
+<!--
+top.head.helpUrl=']]><LABEL value="help.history"/><![CDATA[';
+//-->
+</script>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
+<form id=HIST name=HIST>
+<table cellspacing=0 cellpadding=0 border=2 width=500>
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td class="head">]]><LABEL value="title.historydetails" /><![CDATA[ : ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Beginn Inhalt-->
+            <tr><td class=dialogtxt>]]><LABEL value="label.project" /><![CDATA[ : ]]><PROCESS>PROJECT</PROCESS><![CDATA[</td></tr>
+
+            <tr><td class=dialogtxt>
+                <table border=1 width=100%>
+                    <tr><td class=dialogtxt>
+                        <table border=0 width=100% height=200>
+                            <tr>
+                                <td class=formular width=25%>]]><LABEL value="label.name" /><![CDATA[:</td>
+                                <td class=dialogtxt width=25%>]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
+                                <td class=formular width=25%>&nbsp;</td>
+                                <td class=dialogtxt width=25%>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class=formular>]]><LABEL value="label.title" /><![CDATA[:</td>
+                                <td class=dialogtxt>]]><PROCESS>TITLE</PROCESS><![CDATA[</td>
+                                <td class=formular>]]><LABEL value="label.size" /><![CDATA[:</td>
+                                <td class=dialogtxt>]]><PROCESS>SIZE</PROCESS><![CDATA[</td>
+                            </tr>
+                            <tr>
+                                <td class=formular>]]><LABEL value="label.editedat" /><![CDATA[:</td>
+                                <td class=dialogtxt>]]><PROCESS>EDITEDAT</PROCESS><![CDATA[</td>
+                                <td class=formular>]]><LABEL value="label.publishedat" /><![CDATA[:</td>
+                                <td class=dialogtxt>]]><PROCESS>PUBLISHEDAT</PROCESS><![CDATA[</td>
+                            </tr>
+                            <tr>
+                                <td class=formular>]]><LABEL value="label.editedby" /><![CDATA[:</td>
+                                <td class=dialogtxt>]]><PROCESS>EDITEDBY</PROCESS><![CDATA[</td>
+                            <!-- not yet available
+                                <td class=formular>]]><LABEL value="label.publishedby" /><![CDATA[:</td>
+                                <td class=dialogtxt>]]><PROCESS>PUBLISHEDBY</PROCESS><![CDATA[</td>
+                            -->
+                            </tr>
+                            <tr>
+                                <td class=formular colspan=4 height=30px>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class=formular colspan=4 >]]><LABEL value="label.projectdescription" /><![CDATA[:</td>
+                            </tr>
+                            <tr>
+                                <td class=dialogtxt colspan=4 >]]><PROCESS>PROJECTDESCRIPTION</PROCESS><![CDATA[</td>
+                            </tr>
+                        </table>
+                        </td>
+                    </tr>
+                </table>
+                </td>
+            </tr>
+
+            <!-- Beginn Buttonleisete-->
+            <tr><td class=dialogtxt>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=dialogtxt align=center>
+                        ]]><PROCESS>BUTTONRESTORE</PROCESS><![CDATA[
+                        <INPUT class=button width = 200 type="button" value="]]><LABEL value="label.histdetailok" /><![CDATA[" id=OK name=OK onClick="location.href='history.html'">
+                    </td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            <!-- Ende Buttonleisete-->
+
+            </table>
+    </td></tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+<ENABLERESTORE>
+<![CDATA[
+    <INPUT class=button width = 200 type="button" value="]]><LABEL value="label.histrestoreversion" /><![CDATA[" id=RESTORE name=RESTORE onClick="location.href='restore_resource.html?'">
+]]>
+</ENABLERESTORE>
+
+<DISABLERESTORE>
+<![CDATA[ ]]>
+</DISABLERESTORE>
+
+<TEMPLATE name="error">
+<ERRORPAGE title="error.title.history" message="error.message.history" reason="error.reason.history" suggestion="error.suggestion.history" ref="explorer_files.html" ><process>details</process></ERRORPAGE></TEMPLATE>
+</WORKPLACE>

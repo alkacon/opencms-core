@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+
+<script language=JavaScript>
+<!--
+
+if(top.frames[0].document.wpProjectSelect.wpProject.options[top.frames[0].document.wpProjectSelect.wpProject.selectedIndex].value !=]]><PROCESS>proId</PROCESS><![CDATA[){
+    window.top.head.location.href='../../../jsp/top_head.html';
+}
+
+top.head.helpUrl=']]><LABEL value="help.administration.project.current"/><![CDATA[';
+//-->
+</script>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+<title>OpenCms</title>
+
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<!-- Ende Style -->
+<!-- Beginn Script -->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_choosebrowser.js</method><![CDATA["></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_kontextmenu.js</method><![CDATA["></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+
+<!-- Ende Script -->
+
+</head>
+
+<body bgcolor="#FFFFFF" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="window.top.body.admin_head.location.href='../../../action/administration_head.html'; start();">
+
+<!-- Beginn Kontent Neue Aufgaben fuer mich-->
+<table cellspacing=1 cellpadding=1 border=0 width="1082">
+    <!-- Beginn Kopf Kontent Aufgaben-->
+    <tr bgcolor="#c0c0c0">
+        <td valign=bottom width=32 colspan=2 nowrap valign=top>&nbsp;</td>
+        <td valign=bottom width=200 nowrap valign=top><p class=einzug>]]><LABEL value="label.projectname" /><![CDATA[</p></td>
+        <td valign=bottom width=200 nowrap valign=top><p class=einzug>]]><LABEL value="label.description" /><![CDATA[</p></td>
+        <td valign=bottom width=150 nowrap valign=top><p class=einzug>]]><LABEL value="label.state" /><![CDATA[</p></td>
+        <td valign=bottom width=100 nowrap valign=top><p class=einzug>]]><LABEL value="label.groupsprojectmanager" /><![CDATA[</p></td>
+        <td valign=bottom width=150 nowrap valign=top><p class=einzug>]]><LABEL value="label.groupsprojectworker" /><![CDATA[</p></td>
+        <td valign=bottom width=100 nowrap valign=top><p class=einzug>]]><LABEL value="label.datecreated" /><![CDATA[</p></td>
+        <td valign=bottom width=150 nowrap valign=top><p class=einzug>]]><LABEL value="label.createdby" /><![CDATA[</p></td>
+    </tr>
+    ]]><PROJECTLIST method="projectList" /><![CDATA[
+</table>
+<!-- Ende Inhalt Aufgaben Projektbezogen -->
+
+</body>
+</html>
+
+<!-- Contextmenus -->
+]]>
+
+<contextmenue name="project_lock">
+    <contextentry name="project.context.removelock" href="javascript:doPAction(DO_PUNLOCK);"/>
+    <contextdisabled name="project.context.publish" href="javascript:doPAction(DO_PONLINE);"/>
+    <contextspacer/>
+    <contextentry name="project.context.delete" href="javascript:doPAction(DO_PDELETE);"/>
+</contextmenue>
+
+<contextmenue name="project_unlock">
+    <contextdisabled name="project.context.removelock" href="javascript:doPAction(DO_PUNLOCK);"/>
+    <contextentry name="project.context.publish" href="javascript:doPAction(DO_PONLINE);"/>
+    <contextspacer/>
+    <contextentry name="project.context.delete" href="javascript:doPAction(DO_PDELETE);"/>
+</contextmenue>
+
+</TEMPLATE>
+</WORKPLACE>

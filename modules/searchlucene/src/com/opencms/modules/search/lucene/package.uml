@@ -1,9 +1,0 @@
-V[1.1:com.opencms.modules.search.lucene]
-S[com.opencms.modules.search.lucene:IndexFiles,java.lang:Thread]{2:(1344,248),(1690,390)}
-S[com.opencms.modules.search.lucene:ControlLucene,com.opencms.core:I_CmsConstants]{2:(747,903),(2008,2200)}
-P[com.opencms.modules.search.lucene:ControlLucene]{20,20}
-P[com.opencms.modules.search.lucene:IndexDirectory]{767,20}
-P[com.opencms.modules.search.lucene:IndexFiles]{1044,20}
-P[com.opencms.modules.search.lucene:SearchLucene]{1364,20}
-P[java.lang:Thread]{1690,20}
-P[com.opencms.core:I_CmsConstants]{2008,20}

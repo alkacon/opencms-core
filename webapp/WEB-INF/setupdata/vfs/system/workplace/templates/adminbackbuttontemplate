@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE> 
+
+<disable><![CDATA[
+    <img src="]]><METHOD name="resourcesUri">bt_back_in.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.back" /><![CDATA[" border=0 width=32 heigth=32> ]]>
+</disable>
+
+<enable><![CDATA[
+    <A href="#" onmousedown="ChPush('bt_back')" onmouseout="ChOff('bt_back')" onmouseover="ChOn('bt_back')" onmouseup="ChOn('bt_back');parent.frames[1].location.href='administration_content_top.html]]><PROCESS>linkTo</PROCESS><![CDATA['"><IMG alt="]]><LABEL value="button.back" /><![CDATA[" width=32 border=0 name=bt_back src="]]><METHOD name="resourcesUri">bt_back_off.gif</METHOD><![CDATA[" ></a>]]>
+</enable>
+
+</WORKPLACE>

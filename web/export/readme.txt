@@ -1,1 +1,0 @@
-To this folder "export" OpenCms will write the static export.

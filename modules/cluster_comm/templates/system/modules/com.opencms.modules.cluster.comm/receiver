@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<PAGE>
-	<CLASS>com.opencms.modules.cluster.comm.CmsCommReceiver</CLASS>
-	<MASTERTEMPLATE>/system/modules/com.opencms.modules.cluster.comm/receiver</MASTERTEMPLATE>
-</PAGE>

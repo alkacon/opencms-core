@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+
+<tablehead>
+    <![CDATA[<tr bgcolor="#c0c0c0">
+        <td>]]><LABEL value="label.name" /><![CDATA[</td>
+        <td>URL</td>
+    </tr>]]>
+</tablehead>
+<linklistentry>
+    <![CDATA[<tr>
+        <TD VALIGN="BOTTOM" nowrap class="wizardbold"><p class="einzug"><a href="#" onClick="sendLink(']]><LABEL value="explorer.linkto" /><![CDATA[ ]]><PROCESS>url</PROCESS><![CDATA[',']]><PROCESS>filename</PROCESS><![CDATA[');">]]><PROCESS>linktext</PROCESS><![CDATA[</a></p></TD>
+        <TD VALIGN="BOTTOM" nowrap class="wizard">]]><PROCESS>url</PROCESS><![CDATA[</TD>
+        <TD VALIGN="BOTTOM" nowrap class="wizard" width="100%">&nbsp;</TD>
+    </tr>]]>
+</linklistentry>
+
+<TEMPLATE>
+<![CDATA[
+<html>
+
+<script language=JavaScript>
+<!--
+    function sendExternalLinkWithText(linkcontent, linkname){
+        var sel = top.window.opener.self.document.EDITOR.EDIT_HTML.DOM.selection;
+        if(sel != null && sel.type != "Control"){
+            var rng = sel.createRange();
+            if(rng != null){
+                if("" == rng.text){
+                    var thelink = "<a href='"+linkname+"'>" + linkcontent + "</a>";
+                    rng.pasteHTML(thelink);
+                } else {
+                    sendURLString('EDITOR','URL',linkname);
+                }
+            }
+        }
+    }
+
+    function sendLink(linkcontent, linkname){
+        sendExternalLinkWithText(linkcontent, linkname);
+    }
+//-->
+</script>
+<head>
+
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+<title>OpenCms</title>
+
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<!-- Ende Style -->
+<!-- Beginn Script -->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></script>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_choosebrowser.js</method><![CDATA["></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_kontextmenu.js</method><![CDATA["></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_edithtml.js</method><![CDATA["></SCRIPT>
+<!-- Ende Script -->
+
+</head>
+
+<body bgcolor="#FFFFFF" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="start();">
+
+<!-- begin content list with galleries-->
+<table cellspacing=1 cellpadding=1 border=0>]]>
+    <PROCESS>tablehead</PROCESS>
+    <METHOD name="linkList"/><![CDATA[
+</table>
+<!-- end content list -->
+
+</body>
+</html>
+]]>
+</TEMPLATE>
+
+</WORKPLACE>

@@ -1,3 +1,0 @@
-Manifest-Version: 1.0
-Created-By: OpenCms buildscript
-Main-Class: com.opencms.boot.CmsMain

@@ -1,0 +1,22 @@
+<%@ page import="org.opencms.workplace.*" buffer="none" %><%
+	
+	// get workplace class from request attribute
+	CmsDialog wp = CmsDialog.initCmsDialog(pageContext, request, response);
+	wp.setParamAction(wp.DIALOG_CONFIRMED);
+
+%><%= wp.htmlStart() %>
+<%= wp.bodyStart("dialog") %>
+<%= wp.dialogStart() %>
+
+<%= wp.dialogContentStart(wp.getParamTitle()) %>
+<%= wp.getParamMessage() %>
+<%= wp.dialogContentEnd() %>
+
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+<%= wp.paramsAsHidden() %>       
+<%= wp.dialogButtonRowOkCancel() %>
+</form>
+
+<%= wp.dialogEnd() %>  
+<%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %>

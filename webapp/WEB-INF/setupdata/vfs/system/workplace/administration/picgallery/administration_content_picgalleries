@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<title>OpenCms</title>
+
+<script language=JavaScript>
+<!--
+top.head.helpUrl=']]><LABEL value="help.administration.downgalleries"/><![CDATA[';
+window.top.body.admin_head.location.href='administration_head_picgalleries1.html';
+document.location.href="]]><method name="getServletPath"/><![CDATA[system/workplace/jsp/explorer_files.html?mode=galleryview&resource=]]><process>link_value</process><![CDATA[&flaturl=window.body.admin_head.location.href%3d\"]]><method name="getServletPath"/><![CDATA[system/workplace/administration/picgallery/administration_head_picgalleries2.html";
+//-->
+</script>
+
+</head>
+
+<body>
+</body>
+</html>
+
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="error"> 
+<ERRORPAGE title="error.title.picgallery" message="error.message.gallerynoright" reason="error.reason.gallerynoright" suggestion="error.suggestion.none" ref="administration_content_picgallery_new.html" ><PROCESS>ERRORDETAILS</PROCESS></ERRORPAGE> 
+</TEMPLATE>
+
+</WORKPLACE>

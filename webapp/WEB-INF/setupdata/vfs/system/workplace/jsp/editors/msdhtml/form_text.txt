@@ -1,0 +1,97 @@
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="toolbar">
+			<tr height="28">
+				<td width="5" align="left"><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="28"></td>
+				<td align="left" width="20"><img src="<%= wp.getPicsUri() %>bu_tb_start.gif" width="10" height="28"><img src="<%= wp.getPicsUri() %>empty.gif" width="10" height="28"></td>
+				<td align="left" width="100%"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr height="20"> 
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu2.className='over';" onMouseOut="bu2.className='norm';" onMouseDown="bu2.className='push';" onMouseUp="bu2.className='over';doEdit(2);"><img name="bu2" src="<%= wp.getPicsUri() %>bu_save_exit.gif" width="20" height="20" alt="<%= wp.key("button.saveclose") %>"></a></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu3.className='over';" onMouseOut="bu3.className='norm';" onMouseDown="bu3.className='push';" onMouseUp="bu3.className='over';doEdit(3);"><img name="bu3" src="<%= wp.getPicsUri() %>bu_save.gif" width="20" height="20" alt="<%= wp.key("button.save") %>"></td>
+						<td width="8"><img src="<%= wp.getPicsUri() %>bu_sep_vertical.gif" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu4.className='over';" onMouseOut="bu4.className='norm';" onMouseDown="bu4.className='push';" onMouseUp="bu4.className='over';doEdit(4);"><img name="bu4" src="<%= wp.getPicsUri() %>bu_undo.gif" width="20" height="20" alt="<%= wp.key("button.undo") %>"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu5.className='over';" onMouseOut="bu5.className='norm';" onMouseDown="bu5.className='push';" onMouseUp="bu5.className='over';doEdit(5);"><img name="bu5" src="<%= wp.getPicsUri() %>bu_redo.gif" width="20" height="20" alt="<%= wp.key("button.redo") %>"></td>
+						<td width="8"><img src="<%= wp.getPicsUri() %>bu_sep_vertical.gif" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu6.className='over';" onMouseOut="bu6.className='norm';" onMouseDown="bu6.className='push';" onMouseUp="bu6.className='over';doEdit(6);"><img name="bu6" src="<%= wp.getPicsUri() %>bu_search.gif" width="20" height="20" alt="<%= wp.key("button.search") %>"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu7.className='over';" onMouseOut="bu7.className='norm';" onMouseDown="bu7.className='push';" onMouseUp="bu7.className='over';doEdit(7);"><img name="bu7" src="<%= wp.getPicsUri() %>bu_replace.gif" width="20" height="20" alt="<%= wp.key("button.replace") %>"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu8.className='over';" onMouseOut="bu8.className='norm';" onMouseDown="bu8.className='push';" onMouseUp="bu8.className='over';doEdit(8);"><img name="bu8" src="<%= wp.getPicsUri() %>bu_goto.gif" width="20" height="20" alt="<%= wp.key("button.goto") %>"></td>
+						<td width="8"><img src="<%= wp.getPicsUri() %>bu_sep_vertical.gif" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu9.className='over';" onMouseOut="bu9.className='norm';" onMouseDown="bu9.className='push';" onMouseUp="bu9.className='over';doEdit(9);"><img name="bu9" src="<%= wp.getPicsUri() %>bu_cut.gif" width="20" height="20" alt="<%= wp.key("button.cut") %>"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu10.className='over';" onMouseOut="bu10.className='norm';" onMouseDown="bu10.className='push';" onMouseUp="bu10.className='over';doEdit(10);"><img name="bu10" src="<%= wp.getPicsUri() %>bu_copy.gif" width="20" height="20" alt="<%= wp.key("button.copy") %>"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu11.className='over';" onMouseOut="bu11.className='norm';" onMouseDown="bu11.className='push';" onMouseUp="bu11.className='over';doEdit(11);"><img name="bu11" src="<%= wp.getPicsUri() %>bu_paste.gif" width="20" height="20" alt="<%= wp.key("button.paste") %>"></td>
+						<td width="8"><img src="<%= wp.getPicsUri() %>bu_sep_vertical.gif" width="8" height="20"></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu15.className='over';" onMouseOut="bu15.className='norm';" onMouseDown="bu15.className='push';" onMouseUp="bu15.className='over';doEdit(15);"><img name="bu15" src="<%= wp.getPicsUri() %>bu_print.gif" width="20" height="20" alt="<%= wp.key("button.print") %>"></td>
+						<%
+							if (wp.isHelpEnabled()) {%>								
+								<td width="8"><img src="<%= wp.getPicsUri() %>bu_sep_vertical.gif" width="8" height="20"></td>
+								<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu16.className='over';" onMouseOut="bu16.className='norm';" onMouseDown="bu16.className='push';treewin=opensmallwin(workplacePath + 'help/<%= wp.getSettings().getLanguage() %>/<%= wp.key("help.pageeditor") %>', '<%= wp.key("button.help") %>', 600, 450);treewin.focus();"><img name="bu16" src="<%= wp.getPicsUri() %>bu_help.gif" width="20" height="20" alt="<%= wp.key("button.help") %>"></td>									
+						<%  } %>	
+						<td width="100%" align="right" class="tbl"><a href="#" onMouseOver="bu1.className='over';" onMouseOut="bu1.className='norm';" onMouseDown="bu1.className='push';" onMouseUp="bu1.className='over';return confirmExit();"><img name="bu1" src="<%= wp.getPicsUri() %>bu_exit.gif" width="20" height="20" alt="<%= wp.key("button.close") %>"><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="1"></td>
+					</tr>
+				</table></td>
+			</tr>
+		</table></td>
+	</tr>
+
+<!-- Inhalt -->
+	<tr>
+		<td class="texteditor" height="100%" width="100%">
+		<OBJECT classid="clsid:EB3A74C0-5343-101D-BB4D-040224009C02" width="100%" height="100%" id="edit1" name="edit1" onFocus="setTextDelayed();">
+			<PARAM NAME="_StockProps" VALUE="125">
+			<PARAM NAME="Text" VALUE="Loading .....">
+			<PARAM NAME="ForeColor" VALUE="0">
+			<PARAM NAME="BackColor" VALUE="16777215">
+			<PARAM NAME="BorderStyle" VALUE="1">
+			<PARAM NAME="Enabled" VALUE="-1">
+			<PARAM NAME="AutoIndent" VALUE="-1">
+			<PARAM NAME="BackColorSelected" VALUE="8388608">
+			<PARAM NAME="BookmarksMax" VALUE="16">
+			<PARAM NAME="CanChangeFile" VALUE="0">
+			<PARAM NAME="CanChangeFont" VALUE="0">
+			<PARAM NAME="CaretWidth" VALUE="0">
+			<PARAM NAME="DefaultSelection" VALUE="-1">
+			<PARAM NAME="ExtraComments" VALUE="0">
+			<PARAM NAME="Item2AsComment" VALUE="0">
+			<PARAM NAME="UnixStyleSave" VALUE="0">
+			<PARAM NAME="CurrentWordAsText" VALUE="0">
+			<PARAM NAME="MultilineItems" VALUE="0">
+			<PARAM NAME="MultilineStrings" VALUE="0">
+			<PARAM NAME="SinglelineStrings" VALUE="0">
+			<PARAM NAME="ExtraHorzSpacing" VALUE="3">
+			<PARAM NAME="ExtraVertSpacing" VALUE="0">
+			<PARAM NAME="FileMask" VALUE="/All Files/*.*/">
+			<PARAM NAME="FileName" VALUE="+">
+			<PARAM NAME="ForeColorSelected" VALUE="16777215">
+			<PARAM NAME="HasFile" VALUE="-1">
+			<PARAM NAME="HasMenu" VALUE="0">
+			<PARAM NAME="Highlight" VALUE="0">
+			<PARAM NAME="InsertMode" VALUE="1">
+			<PARAM NAME="ScrollBars" VALUE="3">
+			<PARAM NAME="Syntax" VALUE="">
+			<PARAM NAME="PaintMode" VALUE="0">
+			<PARAM NAME="TabStopSize" VALUE="4">
+			<PARAM NAME="ReadOnly" VALUE="0">
+			<PARAM NAME="UndoDepth" VALUE="-1">
+			<PARAM NAME="InitializeType" VALUE="0">
+			<PARAM NAME="GroupNumber" VALUE="0">
+			<PARAM NAME="StartInComments" VALUE="0">
+			<PARAM NAME="MacStyleSave" VALUE="0">
+			<PARAM NAME="WantTab" VALUE="-1">
+			<PARAM NAME="WordWrap" VALUE="0">
+			<PARAM NAME="WordWrapAuto" VALUE="-1">
+			<PARAM NAME="WordWrapRMargin" VALUE="0">
+			<PARAM NAME="WordWrapWidth" VALUE="0">
+			<PARAM NAME="NoPrintDialog" VALUE="0">
+			<PARAM NAME="NoPrintProgress" VALUE="0">
+			<PARAM NAME="WrapKeys" VALUE="0">
+			<PARAM NAME="BackColorPrint" VALUE="16777215">
+			<PARAM NAME="PrintJobName" VALUE="Document">
+			<PARAM NAME="ZeroSubstitute" VALUE="0">
+		</OBJECT>
+		<script type="text/javascript">
+		<!--
+			if (document.edit1 != true) {
+				loadSimple = true;		
+			}
+		// -->
+		</script>
+		</td>
+	</tr>

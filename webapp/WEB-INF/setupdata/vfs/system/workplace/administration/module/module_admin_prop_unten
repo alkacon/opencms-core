@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+    <head>
+    <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+    </head>
+    <body background="]]><METHOD name="resourcesUri">_bg_mitte.gif</METHOD><![CDATA[">
+
+    <table border=0 cellspacing=0 cellpadding=0 align=center width=90%>
+        <tr>
+        <td align="center">
+            <form>
+            <table width="100%">
+                <tr>
+                    <td class=formular align=right ><input type="button" class="button" width=100 value="]]><LABEL value="button.previousscreen" /><![CDATA[" name="BACK" id="BACK" onClick="window.top.body.admin_content.location.href='module_admin.html?from=props' "></td>
+                    <td class=formular align=left ><input type="button" class="button" width=100 value="]]><LABEL value="button.endwizard" /><![CDATA[" name="FINISH" id="FINISH" onClick="window.top.body.admin_content.location.href='module_admin.html?from=propsready'"></td>
+                    <td class=formular align=left ><input type=button class="button" width=100 value="]]><LABEL value="button.cancel" /><![CDATA[" onClick="window.top.body.admin_content.location.href='index.html'">
+                    <td class=formular align=right ><input type="button" class="button" width=100 value="]]><LABEL value="button.new" /><![CDATA[" name="NEW" id="NEW" onClick="window.top.body.admin_content.location.href='module_admin_prop_edit.html'"></td>
+
+                </tr>
+            </table>
+            </form>
+        </td>
+        </tr>
+    </table>
+    </body>
+</html>
+]]>
+</TEMPLATE>
+</WORKPLACE>

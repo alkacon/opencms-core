@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>	
+<scrollerwin><![CDATA[
+<div id="divCont"> <!-- Beginn Container-Layer -->
+<div id="divText"> <!-- Beginn Content-Layer -->
+]]><PROCESS>scrollercontent</PROCESS><![CDATA[	
+</div>
+</div>
+
+<!-- "frame"-Layer contains dialog box surrounding the scrollable area -->
+
+<div id="frame">
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td>
+<br><br>
+<form id=PROPERTIES name=PROPERTIES>
+<table border=2 cellspacing=0 cellpadding=0 width=500 bgcolor=#c0c0c0>
+<tr>
+	<td>
+	<table cellspacing=0 cellpadding=3 border=0 width=100% height=100%>
+	<tr>
+		<td class=head>]]><PROCESS>scrollertitle</PROCESS><![CDATA[</td>
+	</tr>
+	<tr>
+		<td class=leerzeile>&nbsp;</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt>
+		<table border=1 width=100%>
+		<tr><td class=wizardbig height=355><spacer type=block width=10 height=355></td></tr>
+		</table>
+		</td>
+	</tr>
+	</table>
+	<table border=0 width=100%>
+	<tr>
+		<td align=left class=dialogtxt width=30%>
+		<a href="#" onmousedown="ChPush('bt_movestart','frame');move('start')" onmouseup="ChOn('bt_movestart','frame');noScroll()" onMouseOver="ChOn('bt_movestart','frame')" onMouseOut="ChOff('bt_movestart','frame')"><img src="]]><METHOD name="resourcesUri"/><![CDATA[bt_movestart_off.gif" name="bt_movestart" alt="Anfang" border=0 width=32 heigth=32></a>
+		<a href="#" onmousedown="ChPush('bt_moveend','frame');move('end')" onmouseup="ChOn('bt_moveend','frame');noScroll();" onMouseOver="ChOn('bt_moveend','frame')" onMouseOut="ChOff('bt_moveend','frame')"><img src="]]><METHOD name="resourcesUri"/><![CDATA[bt_moveend_off.gif" name="bt_moveend" alt="Ende" border=0 width=32 heigth=32></a></td>
+		</td>
+		<td align=center class=dialogtxt width=40%><INPUT class=button width=100 type="button" value="OK" id=OK name=OK onClick="location.href='../../action/administration_content_top.html?sender=/system/workplace/administration/'"></td>
+		<td align=right class=dialogtxt width=30%>
+		<a href="#" onmousedown="ChPush('bt_moveup','frame');scroll(-5)" onmouseup="ChOn('bt_moveup','frame');noScroll()" onMouseOver="ChOn('bt_moveup','frame')" onMouseOut="ChOff('bt_moveup','frame')"><img src="]]><METHOD name="resourcesUri"/><![CDATA[bt_moveup_off.gif" name="bt_moveup" alt="" border=0 width=32 heigth=32></a>
+		<a href="#" onmousedown="ChPush('bt_movedown','frame'); scroll(5);" onmouseup="ChOn('bt_movedown','frame');noScroll();" onMouseOver="ChOn('bt_movedown','frame')" onMouseOut="ChOff('bt_movedown','frame')"><img src="]]><METHOD name="resourcesUri"/><![CDATA[bt_movedown_off.gif" name="bt_movedown" alt="" border=0 width=32 heigth=32></a></td>
+		</td>
+	</tr>
+	</table>
+	</td>
+</tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+</div>
+
+<script language=JavaScript>
+<!--
+scrollInit('frame','divCont','divText');
+//-->
+</script>
+
+]]></scrollerwin>
+</WORKPLACE>
+
+

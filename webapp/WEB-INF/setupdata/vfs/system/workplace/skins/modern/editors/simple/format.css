@@ -1,0 +1,137 @@
+BODY
+{
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px
+}
+TD
+{
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px
+}
+TD.texteditor
+{
+    BACKGROUND-COLOR: #c0c0c0;
+    COLOR: black;
+    FONT-FAMILY: fixedsys, monospace;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal;
+}
+
+SELECT
+{
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+}
+input
+{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal;
+}
+INPUT.button
+{
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal;
+    WIDTH: 100px;
+}
+INPUT.textfeld
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal;
+    HEIGHT: 20px;
+    WIDTH: 150px
+}
+INPUT.textfeld1
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal;
+    HEIGHT: 20px;
+    WIDTH: 200px
+}
+INPUT.textfeld2
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal;
+    WIDTH: 425px
+}
+INPUT.textfeld3
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal;
+    WIDTH: 300px
+}
+INPUT.textfeld4
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    FONT-WEIGHT: normal;
+    WIDTH: 500px
+}
+TEXTAREA.textarea
+{
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    WIDTH: 300px
+}
+TEXTAREA.textarea1
+{
+    COLOR: #000000;
+    FONT-FAMILY: sans-serif;
+    FONT-SIZE: 11px;
+    WIDTH: 500px
+}
+table.toolbar {
+    background-color: #C0C0C0;
+}
+td.tbl {
+    font-family: Arial, Helvetica, sans-serif;
+    padding:0;
+    padding-bottom:0;
+    padding-top:0;
+    vertical-align: middle;
+}
+.tbl img {
+    border: 1px solid #C0C0C0;
+    margin:0;
+    padding:1px;
+    cursor: pointer;
+}
+.tbl img.norm{
+    border: 1px solid #C0C0C0;
+    margin:0;
+    padding:1px;
+    cursor: pointer;
+}
+.tbl img.over{
+    border-top: 1px solid #FFFFFF;
+    border-left: 1px solid #FFFFFF;
+    border-bottom: 1px solid #666666;
+    border-right: 1px solid #666666;
+}
+.tbl img.push{
+    border-top: 1px solid #666666;
+    border-left: 1px solid #666666;
+    border-bottom: 1px solid #FFFFFF;
+    border-right: 1px solid #FFFFFF;
+}

@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<workplace>
+<template>
+<![CDATA[
+<HTML>
+<HEAD>
+<TITLE>
+]]><LABEL value="title.newtable"/><![CDATA[
+</TITLE>
+
+<!-- Style Sheet to the Table Dialog -->
+<STYLE TYPE="text/css">
+ BODY   {margin-left:10; font-family:Verdana; font-size:12; background:menu}
+ BUTTON {width:7em}
+ TABLE  {font-family:Verdana; font-size:12}
+ P      {text-align:center}
+</STYLE>
+
+<SCRIPT LANGUAGE=JavaScript>
+
+<!-- Checks if a entered number is a digit -->
+
+function IsDigit()
+{
+  return ((event.keyCode >= 48) && (event.keyCode <= 57)) 
+}
+
+
+<!-- Sets the Table Background Color with the value returned by the Color Dialog -->
+
+function setTBColor(arr)
+  {
+  if (arr != -1) 
+    {
+	if(arr == 0) {
+	  TableColor.value="";	      
+	  TableColorSelected.checked = false;
+	}
+	else {
+	  TableColor.value = arr;	      
+	  TableColorSelected.checked = true;
+	}
+     window.clearInterval(CheckTBCol);
+  	}
+  }
+
+</SCRIPT>
+
+<!-- Reads default values received by the Explorer and adds them into the Form Input-Fields when the Dokument is loaded -->
+
+<SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
+  for ( elem in window.dialogArguments )
+  {
+    switch( elem )
+    {
+    case "NumRows":
+      NumRows.value = window.dialogArguments["NumRows"];
+      break;
+    case "NumCols":
+      NumCols.value = window.dialogArguments["NumCols"];
+      break;
+    case "Caption":
+      Caption.value = window.dialogArguments["Caption"];
+      break;
+    case "BorderLineWidth":
+      BorderLineWidth.value = window.dialogArguments["BorderLineWidth"];
+      break;
+    case "CellSpacing":
+      CellSpacing.value = window.dialogArguments["CellSpacing"];
+      break;
+    case "CellPadding":
+      CellPadding.value = window.dialogArguments["CellPadding"];
+      break;
+    case "TableAlignment":
+      TableAlignment.value = window.dialogArguments["TableAlignment"];
+    case "TableWidth":
+      TableWidth.value = window.dialogArguments["TableWidth"];
+      break;
+    case "TableWidthMode":
+      TableWidthMode.value = window.dialogArguments["TableWidthMode"];
+	  break;
+    case "TableHeight":
+      TableHeight.value = window.dialogArguments["TableHeight"];
+      break;
+    case "TableHeigthMode":
+      TableHeightMode.value = window.dialogArguments["TableHeightMode"];
+      break;
+    }
+  }
+</SCRIPT>
+
+<!-- When the Ok-Button is pressed, the values from the Input-Fileds are stored in to an array and returned -->
+<!-- to the HTML-Editor -->
+
+<SCRIPT LANGUAGE=JavaScript FOR=Ok EVENT=onclick>
+  var arr = new Array();
+  arr["NumRows"] = NumRows.value;
+  arr["NumCols"] = NumCols.value;
+  if (TableAlignment[0].checked) arr["TableAlignment"] ="left";
+  if (TableAlignment[1].checked) arr["TableAlignment"] ="center";
+  if (TableAlignment[2].checked) arr["TableAlignment"] ="right";
+  if (BorderLineSelected.checked)
+  {
+   arr["BorderLineWidth"] = BorderLineWidth.value;
+  }
+  else
+  {  
+   arr["BorderLineWidth"] =0;
+  }
+  arr["CellSpacing"] = CellSpacing.value;
+  arr["CellPadding"] = CellPadding.value;
+  arr["TableWidth"] = TableWidth.value;  
+  arr["TableWidthMode"] = TableWidthMode.value;  
+  if (TableWidthSelected.checked) arr["TableWidthSelected"] ="TRUE";
+  arr["TableHeight"] = TableHeight.value;  
+  arr["TableHeightMode"] = TableHeightMode.value;  
+  if (TableHeight.checked) arr["TableHeigthSelected"] ="TRUE";
+  arr["TableAttrs"] = " ";
+  arr["CellAttrs"] = " ";
+  if(CaptionSelected.checked) 
+  {
+    arr["Caption"] = Caption.value;
+  }
+  else
+  {
+    arr["Caption"] = "";  
+  }
+  if (TableColorSelected.checked) arr["TableColorSelected"] ="TRUE";
+  arr["TableColor"]=TableColor.value;
+  
+  window.returnValue = arr;
+  window.close();
+</SCRIPT>
+
+
+<!-- Opens the Color Dialog and presets the required Variables "ColorSelected" and "SelColor" -->
+<!-- Note: see the "edit_html_selcolor" file also -->
+<!-- The "setTBColor" function is called every second to check if the color selection is completed -->
+
+
+<SCRIPT LANGUAGE=JavaScript FOR=TableColorBt EVENT=onclick>
+  ColorSelected=-1;
+  SelColor=-1;
+  CheckTBCol= window.setInterval("setTBColor(SelColor)",1000);
+  var SelColorWindow= window.open('edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=100");
+  SelColorWindow.opener = self;
+</SCRIPT>
+
+  
+
+</HEAD>
+
+<!-- Body of the Table Dialog. All input fields and buttons are defined and displayed -->
+
+<BODY>
+<TABLE CELLSPACING=10>
+ <TR>
+  <TD>
+  <TD>]]><LABEL value="input.rows"/><![CDATA[: <INPUT ID=NumRows TYPE=TEXT SIZE=5 NAME=NumRows ONKEYPRESS="event.returnValue=IsDigit();">
+  <TD>]]><LABEL value="input.columns"/><![CDATA[: <INPUT ID=NumCols TYPE=TEXT SIZE=5 NAME=NumCols ONKEYPRESS="event.returnValue=IsDigit();">
+ <TR>
+  <TD> 
+  <TD>]]><LABEL value="input.alignment"/><![CDATA[:
+ <TR>
+  <TD>
+  <TD><input type=radio ID="TableAlignment" name="TableAlignment" value="left">]]><LABEL value="input.left"/><![CDATA[
+  <TD><input type=radio ID="TableAlignment" name="TableAlignment" value="center">]]><LABEL value="input.center"/><![CDATA[
+  <TD><input type=radio ID="TableAlignment" name="TableAlignment" value="right">]]><LABEL value="input.right"/><![CDATA[
+ <TR>
+  <TD><input type=checkbox  ID="BorderLineSelected" name="BorderLineSelected" checked value="TRUE">
+  <TD>]]><LABEL value="input.border"/><![CDATA[:
+  <TD><INPUT ID=BorderLineWitdh TYPE=TEXT SIZE=5 NAME=BorderLineWidth ONKEYPRESS="event.returnValue=IsDigit();">
+  <TD>]]><LABEL value="input.borderinfo"/><![CDATA[
+ <TR>
+  <TD>
+  <TD>]]><LABEL value="input.spacing"/><![CDATA[: 
+  <TD><INPUT ID=CellSpacing TYPE=TEXT SIZE=5 NAME=CellSpacing ONKEYPRESS="event.returnValue=IsDigit();">
+  <TD>]]><LABEL value="input.spacinginfo"/><![CDATA[
+ <TR>
+  <TD>
+  <TD>]]><LABEL value="input.padding"/><![CDATA[: 
+  <TD><INPUT ID=CellPadding TYPE=TEXT SIZE=5 NAME=CellPadding ONKEYPRESS="event.returnValue=IsDigit();">
+  <TD>]]><LABEL value="input.paddinginfo"/><![CDATA[   
+ <TR>
+  <TD><input type=checkbox  ID="TableWidthSelected" name="TableWidthSelected" checked value="TRUE">
+  <TD>]]><LABEL value="input.width"/><![CDATA[:
+  <TD><INPUT ID=TableWidth TYPE=TEXT SIZE=5 NAME=TableWidth ONKEYPRESS="event.returnValue=IsDigit();">
+  <TD><select name="TableWidthMode" size=1>
+      <option selected value="%"> ]]><LABEL value="input.inpercent"/><![CDATA[
+      <option value="pixel"> ]]><LABEL value="input.inpixel"/><![CDATA[
+      </select>
+ <TR>  
+  <TD><input type=checkbox  ID="TableHeigthSelected" name="TableHeigthSelected" value="TRUE">
+  <TD>]]><LABEL value="input.height"/><![CDATA[:
+  <TD><INPUT ID=TableHeight TYPE=TEXT SIZE=5 NAME=TableHeight ONKEYPRESS="event.returnValue=IsDigit();">
+  <TD><select name="TableHeightMode" size=1>
+      <option selected value="%"> ]]><LABEL value="input.inpercent"/><![CDATA[
+      <option value="pixel"> ]]><LABEL value="input.inpixel"/><![CDATA[
+      </select> 
+ <TR>
+  <TD><input type=checkbox  ID="CaptionSelected" name="CaptionSelected" value="TRUE">
+  <TD>]]><LABEL value="input.title"/><![CDATA[:
+  <TD><INPUT TYPE=TEXT SIZE=20 NAME=Caption>
+ <TR>
+  <TD> <input type=checkbox  ID="TableColorSelected" name="TableColorSelected" value="TRUE">
+  <TD> ]]><LABEL value="input.color"/><![CDATA[
+  <TD> <INPUT type=text  ID=TableColor name="TableColor" size="20" maxlength="7">
+  <TD> <INPUT type=button  ID=TableColorBt value="]]><LABEL value="button.color"/><![CDATA[">
+  
+  
+</TABLE>
+
+<P>
+<BUTTON ID=Ok TYPE=SUBMIT>]]><LABEL value="button.ok"/><![CDATA[</BUTTON>
+<BUTTON ONCLICK="window.close();">]]><LABEL value="button.cancel"/><![CDATA[</BUTTON>
+
+</BODY>
+</HTML>
+]]>
+</template>
+</workplace>

@@ -1,0 +1,781 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+
+<HTML>
+<!-- Include internal JavaScripts -->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+
+<script language=JavaScript>
+<!--
+top.head.helpUrl=']]><LABEL value="help.administration.users"/><![CDATA[';
+//-->
+</script>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+
+</HEAD>
+<BODY bgcolor="#ffffff" background="]]><METHOD
+name="resourcesUri">bg_weiss.gif"</METHOD><![CDATA[" onLoad="window.top.body.admin_head.location.href='../../../action/administration_head.html';">
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
+<form id="USERS" name="USERS">
+<input type=hidden name="perspective" value="user">
+<table cellspacing=0 cellpadding=0 border=2 width=500>
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td class="head">]]><LABEL value="label.user" /><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Beginn Inhalt-->
+            <tr><td class=dialogtxt>
+                <table border=1 width=100%>
+                    <tr><td class=dialogtxt>
+                        <table border=0 width=100% height=200>
+                            <tr><td class=dialogtxt>]]>
+                            <SELECT class="textfeld" name="USER" size="20" method="getUsers" width="470"  onchange=""/>
+                            <![CDATA[
+
+                            </td></tr>
+                            <tr><td class=dialogtxt>
+                                <table cellspacing=0 cellpadding=5 width=100%>
+                                <tr>
+                                <td class=formular align=right width=60%><INPUT  class="button" width ="100" type="submit" value="]]><LABEL value="button.new" /><![CDATA[" id=NEW name=NEW onClick="location.href='index.html?perspective=newuser'"></td>
+                                <td class=formular align=middle width=30%><INPUT class="button" width ="100" type="submit" value="]]><LABEL value="button.edit" /><![CDATA[" id=CHANGE name=CHANGE onClick="location.href='index.html?perspective=changeuser'"></td>
+                                <td class=formular align=left width=30%><INPUT class="button" width ="100" type="submit" value="]]><LABEL value="button.delete" /><![CDATA[" id=DELETE name=DELETE onClick="location.href='index.html?perspective=deleteuser'"></td>
+                                </tr>
+                                </table>
+                            </td></tr>
+                        </table>
+                    </td></tr>
+                </table>
+            </td></tr>
+
+            <!-- Beginn Buttonleiste-->
+            <tr><td class=dialogtxt>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=center width=50%><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id="OK" name="OK" onClick="location.href='../../../action/administration_content_top.html?sender=/system/workplace/administration/user/'"></td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            <!-- Ende Buttonleisete-->
+
+            </table>
+    </td></tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+
+<TEMPLATE name="changeuser">
+<![CDATA[
+
+<HTML>
+<!-- Include internal JavaScripts -->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+
+<script language=JavaScript>
+<!--
+top.head.helpUrl=']]><LABEL value="help.administration.users.edit"/><![CDATA[';
+//-->
+</script>
+
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+
+</HEAD>
+<BODY bgcolor="#ffffff"  background="]]><METHOD
+name="resourcesUri">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='../../../action/administration_head.html';">
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
+<form id=CHANGENEW name=CHANGENEW>
+<input type=hidden name="perspective" value="changeuser">
+<table cellspacing=0 cellpadding=0 border=2 width=500>
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td class="head">]]><LABEL value="task.label.changeuser"/><![CDATA[  ]]><PROCESS>USER</PROCESS><![CDATA[ </td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Beginn Inhalt-->
+            <tr><td class=dialogtxt>
+                <table border=1 width=100%>
+                    <tr><td class=dialogtxt>
+                        <table border=0 width=100% height=200px>
+                            <tr>
+                                <td class=formular width=10%>]]><LABEL value="input.username"/><![CDATA[:</td>
+                                <td class=dialogtxt width=40%>]]><PROCESS>USER</PROCESS><![CDATA[</td>
+                                <input type=hidden name="USER" value="]]><PROCESS>USER</PROCESS><![CDATA[">
+                                <td class=formular width=10%>
+                                ]]><LABEL value="input.description"/><![CDATA[:</td>
+                                <td class=dialogtxt width=40%><input type="text" value="]]><PROCESS>USERDESC</PROCESS><![CDATA[" maxlength=255 class="textfeld" name="USERDESC" id="USERDESC"></td>
+                            </tr>
+                            <tr>
+                                 <td class=formular>
+                                 ]]><LABEL value="input.lastname"/><![CDATA[:</td>
+                                 <td class=dialogtxt><input type="text" value="]]><PROCESS>USERNAME</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="USERNAME" id="USERNAME"></td>
+                                 <td class=formular>
+                                 ]]><LABEL value="input.email"/><![CDATA[:</td>
+                                 <td class=dialogtxt><input type="text" value="]]><PROCESS>EMAIL</PROCESS><![CDATA[" maxlength=100 class="textfeld" name="USEREMAIL" id="USEREMAIL"></td>
+                            </tr>
+                            <tr>
+                                 <td class=formular>
+                                 ]]><LABEL value="input.firstname"/><![CDATA[:</td>
+                                 <td class=dialogtxt><input type="text" value="]]><PROCESS>USERFIRSTNAME</PROCESS><![CDATA[" maxlength=50 class="textfeld" name="USERFIRSTNAME" id="USERFIRSTNAME"></td>
+                                 <td class=formular>
+                                 ]]><LABEL value="input.street"/><![CDATA[:</td>
+                                 <td class=dialogtxt><input type="text" value="]]><PROCESS>USERSTREET</PROCESS><![CDATA[" maxlength=100 class="textfeld" name="USERSTREET" id="USERSTREET"></td>
+                            </tr>
+
+                            <tr>
+                                 <td class=formular>
+                                 ]]><LABEL value="input.zipcode"/><![CDATA[:</td>
+                                 <td class=dialogtxt><input type="text" value="]]><PROCESS>ZIP</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="ZIP" id="ZIP"></td>
+
+                                <td class=formular>
+                                ]]><LABEL value="input.city"/><![CDATA[:</td>
+                                <td class=dialogtxt><input type="text" value="]]><PROCESS>TOWN</PROCESS><![CDATA[" class="textfeld" name="TOWN" id="TOWN"></td>
+
+                            </tr>
+                            <tr>
+                                <td class=formular>
+                                ]]><LABEL value="input.password"/><![CDATA[:</td>
+                                <td class=dialogtxt><input type="password" value="]]><PROCESS>PWD</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="PWD" id="PWD"></td>
+
+                                <td class=formular>
+                                ]]><LABEL value="input.newpwdrepeat"/><![CDATA[:</td>
+                                <td class=dialogtxt><input type="password" value="]]><PROCESS>PWD2</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="PWD2" id="PWD2"></td>
+                            </tr>
+
+                        </table>
+
+                        <table border=0 width=100%>
+                            <tr>
+                                <td class=formular colspan=2>
+                                ]]><LABEL value="input.userbelongstogroup"/><![CDATA[:</td>
+                                <td class=formular>
+                                ]]><LABEL value="input.allgroups"/><![CDATA[:</td>
+                            </tr>
+                            <tr>
+                                <td class=dialogtxt valign=top>
+                                    <table border=0 width=100%>
+                                        <tr>
+                                            <td>
+                                            ]]><SELECT class="textfeld" name="selectgroup" size="6" width="150"
+                                            method="getSelectedGroups" onchange=""/><![CDATA[</td>
+                                        </tr>
+                                        <tr>
+                                            <td class=formular>
+                                            ]]><LABEL value="input.useralsoin"/><![CDATA[:</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                            ]]><SELECT class="textfeld" name="selectgroup" size="4" width="150"
+                                            method="getIndirectGroups" onchange=""/><![CDATA[</td>
+                                        </tr>
+
+                                    </table>
+                                </td>
+                                <td class=dialogtxt valign=top>
+                                <INPUT  class="button" name="ADD" id="ADD" type="submit"
+                                value="]]><LABEL value="button.add"/>"<![CDATA[ width="100" type="button">
+                                <br>&nbsp;<br>
+                                <INPUT  class="button" name="REMOVE" id="REMOVE" type="submit"
+                                value="]]><LABEL value="button.remove"/>"<![CDATA[ width="100" type="button">
+                                </td>
+                                <td class=dialogtxt valign=top>]]>
+                                <SELECT class="textfeld" name="notselectgroup" size="12" width="150"
+                                method="getNotSelectedGroups" onchange=""/><![CDATA[
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class=formular>
+                                ]]><LABEL value="input.defaultgroup"/><![CDATA[:</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                    <td class=dialogtxt align=left valign=top>
+                                    ]]><SELECT class="textfeld" name="DEFAULTGROUP" width="150"
+                                    method="getGroupsOfUser" onchange=""/><![CDATA[
+                                    </td>
+                                    <td></td>
+                                    <td class=dialogtxt>
+                                    <INPUT type="checkbox" id="LOCK" name="LOCK" ]]><PROCESS>DISABLED</PROCESS><![CDATA[
+                                    value="DISABLED">]]><LABEL value="input.lockuser"/><![CDATA[
+                                </td>
+                            </tr>
+
+                        </table>
+
+                </td></tr>
+
+            <!-- Beginn Buttonleiste-->
+                <tr><td class=dialogtxt>
+                    <table cellspacing=0 cellpadding=5 width=100%>
+                        <tr>
+                            <td class=formular align=right width=50%><INPUT class="button" width="100" type="submit" type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id="OK" name="OK"></td>
+                            <td class=formular align=left width=50%><INPUT class="button" width="100" type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id="CANCEL" name="CANCEL" onClick="location.href='index.html'"></td>
+                        </tr>
+                    </table>
+                    </td>
+                </tr>
+            <!-- Ende Buttonleisete-->
+
+        </table>
+    </td></tr>
+</table>
+
+</td></tr>
+</table>
+</form>
+</table>
+
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+
+
+
+
+<TEMPLATE name="newuser">
+<![CDATA[
+
+<HTML>
+
+<!-- Include external JavaScripts-->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+
+<script language=JavaScript>
+<!--
+top.head.helpUrl=']]><LABEL value="help.administration.users.new"/><![CDATA[';
+
+function checkFormData(a,b)
+{
+    var result=true;
+    var at_pos, entry, strLength;
+
+    form=b;
+
+    entry = form.value;
+    strLength=entry.length;
+
+    if(entry.length>0){
+        for (i=0; i < strLength; i++)
+        {
+            if(entry.charAt(i)=="\"")
+            {
+                alert(']]><LABEL value="error.message.badcharacter" /><![CDATA[' + entry.charAt(i));
+                form.focus;
+                result= false;
+            }
+        }
+    }
+    if(result==true)return 0;
+    else return 1;
+
+}
+
+function checkForm(){
+
+    var a=0;
+
+    a+=checkFormData(document.USERNEW,document.USERNEW.USER);
+    a+=checkFormData(document.USERNEW,document.USERNEW.USERDESC);
+
+    a+=checkFormData(document.USERNEW,document.USERNEW.USERNAME);
+    a+=checkFormData(document.USERNEW,document.USERNEW.USEREMAIL);
+
+    a+=checkFormData(document.USERNEW,document.USERNEW.USERFIRSTNAME);
+    a+=checkFormData(document.USERNEW,document.USERNEW.USERSTREET);
+
+    a+=checkFormData(document.USERNEW,document.USERNEW.ZIP);
+    a+=checkFormData(document.USERNEW,document.USERNEW.TOWN);
+
+    if(a==0)return true;
+    else return false;
+
+    //document.USERNEW.submit();
+
+}
+
+
+//-->
+</script>
+
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+
+</HEAD>
+<BODY bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='../../../action/administration_head.html';">  <!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
+<form id=USERNEW name=USERNEW onSubmit="return checkForm();">
+<input type=hidden name="perspective" value="newuser">
+<table cellspacing=0 cellpadding=0 border=2 width=500>
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td class="head">]]><LABEL value="label.createnewuser"/><![CDATA[:</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Beginn Inhalt-->
+            <tr><td class=dialogtxt>
+                <table border=1 width=100%>
+                    <tr><td class=dialogtxt>
+                        <table border=0 width=100% height=200px>
+                            <tr>
+                                <td class=formular width=10%>
+                                ]]><LABEL value="input.user"/><![CDATA[:</td>
+                                <td class=dialogtxt width=40%><input type="text" value="]]><PROCESS>USER</PROCESS><![CDATA[" maxlength="64" class="textfeld" name="USER" id="USER"></td>
+                                <td class=formular width=10%>
+                                ]]><LABEL value="input.description"/><![CDATA[:</td>
+                                <td class=dialogtxt width=40%><input type="text" value="]]><PROCESS>USERDESC</PROCESS><![CDATA[" maxlength=255 class="textfeld" name="USERDESC" id="USERDESC"></td>
+                            </tr>
+                            <tr>
+                                <td class=formular>
+                                ]]><LABEL value="input.lastname"/><![CDATA[:</td>
+                                <td class=dialogtxt><input type="text" value="]]><PROCESS>USERNAME</PROCESS><![CDATA[" maxlength=50 class="textfeld" name="USERNAME" id="USERNAME"></td>
+                                <td class=formular>
+                                ]]><LABEL value="input.email"/><![CDATA[:</td>
+                                <td class=dialogtxt><input type="text" value="]]><PROCESS>EMAIL</PROCESS><![CDATA[" maxlength=100 class="textfeld" name="USEREMAIL" id="USEREMAIL"></td>
+                            </tr>
+                            <tr>
+                                <td class=formular>
+                                ]]><LABEL value="input.firstname"/><![CDATA[:</td>
+                                <td class=dialogtxt><input type="text" value="]]><PROCESS>USERFIRSTNAME</PROCESS><![CDATA[" maxlength=50 class="textfeld" name="USERFIRSTNAME" id="USERFIRSTNAME"></td>
+                                <td class=formular>
+                                ]]><LABEL value="input.street"/><![CDATA[:</td>
+                                <td class=dialogtxt><input type="text" value="]]><PROCESS>USERSTREET</PROCESS><![CDATA[" maxlength=100 class="textfeld" name="USERSTREET" id="USERSTREET"></td>
+                            </tr>
+                            <tr>
+                                <td class=formular>
+                                ]]><LABEL value="input.zipcode"/><![CDATA[:</td>
+                                <td class=dialogtxt><input type="text" value="]]><PROCESS>ZIP</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="ZIP" id="ZIP"></td>
+
+                                <td class=formular>
+                                ]]><LABEL value="input.city"/><![CDATA[:</td>
+                                <td class=dialogtxt><input type="text" value="]]><PROCESS>TOWN</PROCESS><![CDATA[" class="textfeld" name="TOWN" id="TOWN"></td>
+
+                            </tr>
+                            <tr>
+                                <td class=formular>
+                                ]]><LABEL value="input.password"/><![CDATA[:</td>
+                                <td class=dialogtxt><input type="password" value="]]><PROCESS>PWD</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="PWD" id="PWD"></td>
+
+                                <td class=formular>
+                                ]]><LABEL value="input.newpwdrepeat"/><![CDATA[:</td>
+                                <td class=dialogtxt><input type="password" value="]]><PROCESS>PWD2</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="PWD2" id="PWD2"></td>
+                            </tr>
+                        </table>
+
+                        <table border=0 width=100%>
+                            <tr>
+                                <td class=formular colspan=2>
+                                ]]><LABEL value="input.userbelongstogroup"/><![CDATA[:</td>
+                                <td class=formular>
+                                ]]><LABEL value="input.allgroups"/><![CDATA[:</td>
+                            </tr>
+                            <tr>
+                                <td class=dialogtxt valign=top>
+                                    <table border=0 width=100%>
+                                        <tr>
+                                            <td>
+                                            ]]><SELECT class="textfeld" name="selectgroup" size="6" width="150"
+                                            method="getSelectedGroups" onchange=""/><![CDATA[</td>
+                                        </tr>
+                                        <tr>
+                                            <td class=formular>
+                                            ]]><LABEL value="input.useralsoin"/><![CDATA[:</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                            ]]><SELECT class="textfeld" name="selectgroup" size="4" width="150"
+                                            method="getIndirectGroups" onchange=""/><![CDATA[</td>
+                                        </tr>
+
+                                    </table>
+                                </td>
+                                <td class=dialogtxt valign=top>
+                                <INPUT  class="button" name="ADD" id="ADD" type="submit"
+                                value="]]><LABEL value="button.add"/>"<![CDATA[ width="100" type="button">
+                                <br>&nbsp;<br>
+                                <INPUT  class="button" name="REMOVE" id="REMOVE" type="submit"
+                                value="]]><LABEL value="button.remove"/>"<![CDATA[ width="100" type="button">
+                                </td>
+                                <td class=dialogtxt valign=top>]]>
+                                <SELECT class="textfeld" name="notselectgroup" size="12" width="150"
+                                method="getNotSelectedGroups" onchange=""/><![CDATA[
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class=formular>
+                                ]]><LABEL value="input.defaultgroup"/><![CDATA[:</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                    <td class=dialogtxt align=left valign=top>
+                                    ]]><SELECT class="textfeld" name="DEFAULTGROUP" width="150"
+                                    method="getGroupsOfUser" onchange=""/><![CDATA[
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+
+                        </table>
+            </td></tr>
+
+            <!-- Beginn Buttonleiste-->
+            <tr><td class=dialogtxt>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=right width=50%><INPUT class="button" width="100" type="submit" type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id="OK" name="OK"></td>
+                    <td class=formular align=left width=50%><INPUT class="button" width="100" type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id="CANCEL" name="CANCEL" onClick="location.href='index.html'"></td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            <!-- Ende Buttonleisete-->
+
+            </table>
+    </td></tr>
+</table>
+</td></tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="RUsureDelete">
+<![CDATA[
+
+<HTML>
+
+<!-- Include external JavaScripts-->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+
+<script language=JavaScript>
+<!--
+top.head.helpUrl=']]><LABEL value="help.administration.users"/><![CDATA[';
+//-->
+</script>
+
+
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="parent.frames[0].location.href='../../../action/administration_head.html';">
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
+<form id=DELETE name=DELETE>
+<input type=hidden name="USER" value="]]><PROCESS>USER</PROCESS><![CDATA[">
+<input type=hidden name="perspective" value="reallydeleteuser">
+<table cellspacing=0 cellpadding=0 border=2 width=300>
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td colspan=2 class="head">]]><LABEL value="title.deleteuser"/><![CDATA[:  ]]><PROCESS>USER</PROCESS><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td colspan=2 class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <tr>
+                <td class=dialogtxt colspan=2>
+                ]]><LABEL value="messagebox.message6"/><![CDATA[
+
+                </td>
+            </tr>
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td colspan=2 class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Beginn Buttonleisete-->
+            <tr><td class=dialogtxt colspan=2>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=right width=50%><INPUT class=button width = 100 type="submit" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK></td>
+                    <td class=formular align=left width=50%><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.cancel"/><![CDATA[" id=CANCEL name=CANCEL onClick="location.href='index.html?perspective='"></td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            <!-- Ende Buttonleisete-->
+
+            </table>
+    </td></tr>
+</table>
+</form>
+</td></tr>
+</table>
+
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+
+<TEMPLATE name="deleteerror">
+<![CDATA[
+]]><ERRORPAGE title="error.title.deleteuser" message="error.message.deleteuser" reason="error.reason.deleteuser" suggestion="error.suggestion.deleteuser" ref="index.html" ><PROCESS>DELETEDETAILS</PROCESS></ERRORPAGE>
+</TEMPLATE>
+
+<TEMPLATE name="passworderror1">
+<![CDATA[
+]]><ERRORPAGE title="error.title.adduser" message="error.message.adduser" reason="error.reason.chpwd" suggestion="error.suggestion.adduser" ref="index.html?perspective=newuser" /><![CDATA[
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="passworderror2">
+<![CDATA[
+]]><ERRORPAGE title="error.title.adduser" message="error.message.adduser" reason="error.reason.chpwd3" suggestion="error.suggestion.adduser" ref="index.html?perspective=newuser" /><![CDATA[
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="passworderror3">
+<![CDATA[
+]]><ERRORPAGE title="error.title.changeuser" message="error.message.changeuser" reason="error.reason.chpwd" suggestion="error.suggestion.adduser" ref="index.html?perspective=changeuser" /><![CDATA[
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="passworderror4">
+<![CDATA[
+]]><ERRORPAGE title="error.title.changeuser" message="error.message.changeuser" reason="error.reason.chpwd3" suggestion="error.suggestion.adduser" ref="index.html?perspective=changeuser" /><![CDATA[
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="passworderror5">
+<![CDATA[
+    <HTML>
+
+    <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+    <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+    <style type="text/css">
+    #errormain{position:absolute; top:78; left:0; width:350; visibility:hidden; z-index:10; }
+    #errordetails{position:absolute; top:78; left:0; width:350; visibility:hidden; z-index:100}
+    </style>
+
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_choosebrowser.js</method><![CDATA["></SCRIPT>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_dialogscroll.js</method><![CDATA["></SCRIPT>
+
+    </HEAD>
+    <BODY onLoad="errorinit();" bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+
+    <div id="errormain">
+    <!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+    <form id=ERROR name=ERROR>
+    <table cellspacing=0 cellpadding=0 border=2 width=350>
+        <tr><td class=dialogtxt>
+            <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+                <!-- Beginn Tabellenkopf blau-->
+                <tr>
+                    <td colspan=2 class="head">]]><LABEL value="error.title.changeuser" /><![CDATA[</td>
+                </tr>
+                <!-- Ende Tabellenkopf blau-->
+                <!-- Beginn Leerzeile-->
+                <tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
+                <!-- Ende Leerzeile-->
+                <tr>
+                    <td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><method name="resourcesUri">ic_caution.gif</method><![CDATA[" width=32 height=32></td>
+                <td class=dialogtxt>]]><LABEL value="error.message.changeuser" /><![CDATA[</td>
+                </tr>
+                <tr><td class=dialogtxt><BR>]]><LABEL value="message.reason" /><![CDATA[:<BR>]]><PROCESS>reasonOfError</PROCESS><![CDATA[<BR>]]><LABEL value="error.suggestion.adduser" /><![CDATA[</td></tr>
+                <!-- Beginn Leerzeile-->
+                <tr> <td class="leerzeile">&nbsp;</td></tr>
+                <!-- Ende Leerzeile-->
+
+                <!-- Beginn Buttonleisete-->
+                <tr><td class=dialogtxt colspan=2>
+                    <table cellspacing=0 cellpadding=5 width=100%>
+                    <tr>
+                        <td class=formular align=center><INPUT class=button width = 100 type="button" value="OK" id=OK name=OK onClick="location.href='index.html?perspective=]]><PROCESS>perspective</PROCESS><![CDATA['"></td>
+                        <td class=formular align=center><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.showdetails"/><![CDATA[" id=details name=details onClick="toggleLayer('errordetails');chButtonTxt('ERROR','details',']]><LABEL value="button.showdetails"/><![CDATA[',']]><LABEL value="button.hidedetails"/><![CDATA[','errormain')"></td>
+                    </tr>
+                    </table>
+                </td>
+                </tr>
+                </table>
+                <!-- Ende Buttonleisete-->
+        </td></tr>
+    </table>
+    </form>
+    </div>
+
+    <div id="errordetails">
+    <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+    <form id=DETAILS name=DETAILS>
+    <table cellspacing=0 cellpadding=0 border=2 width=350>
+        <tr><td class=dialogtxt>
+            <table cellspacing=1 cellpadding=5 border=0 width=100% height=100%>
+                <tr><td class=formular>Fehlermeldung:</td>
+                <tr><td align=center class=dialogtxt>
+                <textarea wrap=off cols=33 rows=6 style="width:330" class="textarea" onfocus="this.blur();" id=EXCEPTION name=EXCEPTION>no details</textarea>
+                </td></tr>
+            </table>
+        </td></tr>
+    </table>
+    </form>
+    </div>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    </BODY>
+    </html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="errornogroup1">
+<![CDATA[
+]]><ERRORPAGE title="error.title.adduser" message="error.message.adduser" reason="error.reason.nogroup"  suggestion="error.suggestion.none" ref="index.html?perspective=newuser" /><![CDATA[
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="errordatamissing1">
+<![CDATA[
+]]><ERRORPAGE title="error.title.adduser" message="error.message.adduser" reason="error.reason.datamissing" suggestion="error.suggestion.none" ref="index.html?perspective=newuser" /><![CDATA[
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="errornogroup2">
+<![CDATA[
+]]><ERRORPAGE title="error.title.changeuser" message="error.message.changeuser" reason="error.reason.nogroup"  suggestion="error.suggestion.none" ref="index.html?perspective=changeuser" /><![CDATA[
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="errordatamissing2">
+<![CDATA[
+]]><ERRORPAGE title="error.title.changeuser" message="error.message.changeuser" reason="error.reason.datamissing" suggestion="error.suggestion.none" ref="index.html?perspective=changeuser" /><![CDATA[
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="errordisabledadmin">
+<![CDATA[
+]]><ERRORPAGE title="error.title.changeuser" message="error.message.changeuser" reason="error.reason.disadmin" suggestion="error.suggestion.disadmin" ref="index.html?perspective=changeuser" /><![CDATA[
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="error">
+<![CDATA[
+]]><ERRORPAGE title="error.title.adduser" message="error.message.adduser" reason="error.reason.deleteextension" suggestion="error.suggestion.none" ref="index.html?perspective=newuser"><PROCESS>details</PROCESS></ERRORPAGE><![CDATA[
+]]>
+</TEMPLATE>
+
+
+<TEMPLATE name="done">
+<![CDATA[
+<HTML>
+<HEAD>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+</HEAD>
+<BODY onload="window.top.head.location.reload(); parent.frames[0].location.reload()">
+<CENTER>
+<!-- Begin Logo opencms -->
+<table border=0 cellspacing=0 cellpadding=0 align=center height=100>
+    <tr>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA["></td>
+    </tr>
+</table>
+<!-- End Logo opencms -->
+
+<!-- Begin please wait text -->
+<table cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td><font size="-1" face="MS Sans Serif,Arial,Helvetica">]]><LABEL value="message.wait"/><![CDATA[</font></td>
+</tr>
+</table>
+<!-- End please wait text -->
+</CENTER>
+</BODY>
+</HTML>
+]]>
+</TEMPLATE>
+
+</WORKPLACE>

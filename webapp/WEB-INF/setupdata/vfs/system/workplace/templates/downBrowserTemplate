@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+
+<deleteentry>
+<![CDATA[<a href="javascript:deleteDownload(']]><PROCESS>filepath</PROCESS><![CDATA[');"><img src="]]><METHOD name="resourcesUri">ic_admin_deleteext.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="button.delete" /><![CDATA[" title="]]><LABEL value="button.delete" /><![CDATA["></a>]]>
+</deleteentry>
+
+	<COLUMN_CUSTOMIZED>
+		<PROCESS>COLUMN_NAME_GALLERY</PROCESS> 
+		<PROCESS>COLUMN_TITLE_GALLERY</PROCESS> 
+		<PROCESS>COLUMN_DELETE_GALLERY</PROCESS> 
+	</COLUMN_CUSTOMIZED> 
+	<COLUMN_NAME_GALLERY><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="label.name" /><![CDATA[</p></td>]]></COLUMN_NAME_GALLERY> 
+	<COLUMN_TITLE_GALLERY><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="label.title" /><![CDATA[</p></td>]]></COLUMN_TITLE_GALLERY> 
+	<COLUMN_DELETE_GALLERY><![CDATA[<td valign=bottom nowrap><p class=einzug>]]><LABEL value="button.delete" /><![CDATA[</p></td>]]></COLUMN_DELETE_GALLERY>
+	
+	
+	
+	<COLUMN_CUSTOMIZED_VALUE>
+		<PROCESS>COLUMN_NAME_GALLERY_VALUE</PROCESS> 
+		<PROCESS>COLUMN_TITEL_GALLERY_VALUE</PROCESS>
+		<PROCESS>COLUMN_DELETE_GALLERY_VALUE</PROCESS> 
+	</COLUMN_CUSTOMIZED_VALUE>
+	<COLUMN_NAME_GALLERY_VALUE><![CDATA[<td valign=bottom nowrap><p class="einzug"><a href="#" onClick="sendURLString('EDITOR','URL',']]><PROCESS>fullpath</PROCESS><![CDATA[')" class="]]><PROCESS>output_class</PROCESS><![CDATA[">]]><PROCESS>name_value</PROCESS><![CDATA[</a></p></td>]]></COLUMN_NAME_GALLERY_VALUE> 	
+	<COLUMN_TITEL_GALLERY_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>output_class</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>title_value</PROCESS><![CDATA[</p></td>]]></COLUMN_TITEL_GALLERY_VALUE>
+	<COLUMN_DELETE_GALLERY_VALUE><![CDATA[<TD ALIGN="RIGHT" VALIGN="BOTTOM" nowrap>]]><PROCESS>delete</PROCESS><![CDATA[</TD>]]></COLUMN_DELETE_GALLERY_VALUE>
+</WORKPLACE>

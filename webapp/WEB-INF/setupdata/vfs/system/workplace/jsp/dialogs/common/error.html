@@ -1,0 +1,58 @@
+<%@ page import="org.opencms.workplace.*" buffer="none" %><%
+	
+	// get workplace class from request attribute
+	CmsDialog wp = CmsDialog.initCmsDialog(pageContext, request, response);
+    wp.setParamAction(wp.DIALOG_CONFIRMED);
+
+%><%= wp.htmlStart() %>
+
+<script type="text/javascript">
+function toggleDetail(id) {
+
+    var element = document.getElementById(id);
+    var cl = element.className;
+    if (cl == "hide") {
+        element.className = "show";
+    } else {
+        element.className = "hide";
+    }
+}
+</script>
+
+<%= wp.bodyStart("dialog") %>
+
+<%= wp.dialogStart() %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %>
+
+<%= wp.getParamMessage() %>
+
+<%= wp.dialogBlockStart(wp.key("message.reason")) %>
+
+<%= wp.getParamReasonSuggestion() %>
+
+<%= wp.dialogBlockEnd() %>
+<%= wp.dialogSpacer() %>
+
+<form name="toggledetails" action="" class="nomargin">
+	<input name="ok" type="button" value="<%= wp.key("button.detail") %>" onClick="toggleDetail('details');" class="dialogbutton" style="margin-left: 0; width: 60px;">
+</form>
+
+<%= wp.dialogSpacer() %>
+<div id="details" class="hide">
+<%= wp.dialogWhiteBoxStart() %>
+
+<tt unselectable="off">
+<%= wp.getParamErrorstack() %>
+</tt>
+
+<%= wp.dialogWhiteBoxEnd() %>
+</div>
+<%= wp.dialogContentEnd() %>
+
+<form name="close" action="" class="nomargin">
+<%= wp.dialogButtonRowClose() %>
+</form>
+
+<%= wp.dialogEnd() %>
+<%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %>

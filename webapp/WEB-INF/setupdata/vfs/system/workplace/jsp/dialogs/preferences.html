@@ -1,0 +1,250 @@
+<%@ page import="org.opencms.workplace.*"%><%	
+
+	// initialize the workplace class
+	CmsPreferences wp = new CmsPreferences(pageContext, request, response);
+	
+//////////////////// start of switch statement 
+	
+switch (wp.getAction()) {
+
+case CmsPreferences.ACTION_CANCEL:		
+//////////////////// ACTION: cancel button pressed, leave dialog
+
+	wp.actionCancel();
+	
+break;
+case CmsPreferences.ACTION_RELOAD:		
+//////////////////// ACTION: reload the workplace window after pressing "ok"
+%>
+<html>
+<head></head>
+<body onload="window.top.location.reload(true);">
+</body>
+</html>
+<%
+	
+break;
+case CmsPreferences.ACTION_OK:
+case CmsPreferences.ACTION_SET:		
+//////////////////// ACTION: save the preferences
+
+	wp.actionSave();
+	
+break;
+case CmsPreferences.ACTION_CHPWD:
+//////////////////// ACTION: change the user password
+
+	wp.actionChangePassword();
+	if (wp.getAction() == CmsPreferences.ACTION_ERROR) {
+		break;
+	}
+
+case CmsPreferences.ACTION_DEFAULT:
+case CmsPreferences.ACTION_SWITCHTAB:
+default:
+
+//////////////////// ACTION: show tab dialog (default)
+
+	wp.setParamAction(wp.DIALOG_OK);
+
+%><%= wp.htmlStart() %>
+<script type="text/javascript">
+<!--
+function cancelButtonAction() {
+	document.forms[0].<%= wp.PARAM_ACTION %>.value = "<%= wp.DIALOG_CANCEL %>";
+    document.forms[0].submit();
+}
+//-->
+</script>
+<%= wp.bodyStart("dialog") %>
+<%= wp.dialogStart() %>
+
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+<%= wp.paramsAsHidden() %>
+<%= wp.dialogTabContentStart(wp.getParamTitle(), "style=\"height: 200px;\" id=\"tabcontent\"") %>
+
+<%
+switch (wp.getActiveTab()) {
+case 1:
+default:
+	// ########## explorer display settings
+	%>	
+		<script type="text/javascript">
+		<!--
+			function setToDefault() {
+				document.forms[0].tab1filetitle.checked = true;
+				document.forms[0].tab1filetype.checked = true;
+				document.forms[0].tab1filedatelastmodified.checked = true;				
+				document.forms[0].tab1fileuserlastmodified.checked = false;
+				document.forms[0].tab1filesize.checked = false;
+				document.forms[0].tab1filedatecreated.checked = false;
+				document.forms[0].tab1filepermissions.checked = false;
+				document.forms[0].tab1fileusercreated.checked = false;
+				document.forms[0].tab1filelockedby.checked = false;
+				document.forms[0].tab1filestate.checked = false;
+			}
+		//-->
+		</script>
+		<table border="0" cellpadding="4" cellspacing="0">
+		<tr>
+			<td><input type="checkbox" name="tab1filetitle" value="true"<%= wp.isChecked(wp.getParamTab1FileTitle()) %>> <%= wp.key("input.title") %></td>
+			<td style="width: 40px;">&nbsp;</td>
+			<td><input type="checkbox" name="tab1filedatelastmodified" value="true"<%= wp.isChecked(wp.getParamTab1FileDateLastModified()) %>> <%= wp.key("input.datelastmodified") %></td>
+		</tr>
+		<tr>
+			<td><input type="checkbox" name="tab1filetype" value="true"<%= wp.isChecked(wp.getParamTab1FileType()) %>> <%= wp.key("input.type") %></td>
+			<td>&nbsp;</td>
+			<td><input type="checkbox" name="tab1fileuserlastmodified" value="true"<%= wp.isChecked(wp.getParamTab1FileUserLastModified()) %>> <%= wp.key("input.userlastmodified") %></td>
+		</tr>
+		<tr>
+			<td><input type="checkbox" name="tab1filesize" value="true"<%= wp.isChecked(wp.getParamTab1FileSize()) %>> <%= wp.key("input.size") %></td>
+			<td>&nbsp;</td>
+			<td><input type="checkbox" name="tab1filedatecreated" value="true"<%= wp.isChecked(wp.getParamTab1FileDateCreated()) %>> <%= wp.key("input.datecreated") %></td>
+		</tr>
+		<tr>
+			<td><input type="checkbox" name="tab1filepermissions" value="true"<%= wp.isChecked(wp.getParamTab1FilePermissions()) %>> <%= wp.key("input.permissions") %></td>
+			<td>&nbsp;</td>
+			<td><input type="checkbox" name="tab1fileusercreated" value="true"<%= wp.isChecked(wp.getParamTab1FileUserCreated()) %>> <%= wp.key("input.usercreated") %></td>
+		</tr>
+		<tr>
+			<td><input type="checkbox" name="tab1filelockedby" value="true"<%= wp.isChecked(wp.getParamTab1FileLockedBy()) %>> <%= wp.key("input.lockedby") %></td>
+			<td>&nbsp;</td>
+			<td><input type="checkbox" name="tab1filestate" value="true"<%= wp.isChecked(wp.getParamTab1FileState()) %>> <%= wp.key("input.state") %></td>
+		</tr>
+		<tr>
+			<td colspan="3">&nbsp;</td>
+		</tr>
+		<tr>
+			<td colspan="3"><input type="button" class="dialogbutton" style="margin-left: 0px;" value="<%= wp.key("button.default") %>" onclick="setToDefault();"></td>
+		</tr>
+		</table>
+	<%
+break;
+case 2:
+	// ########## task settings
+	%>
+		<%= wp.dialogSubheadline(wp.key("label.preferencesexplorer")) %>
+		<table border="0" cellpadding="4" cellspacing="0">
+		<tr>
+			<td><%= wp.key("input.taskfilter") %>:</td>
+			<td><%= wp.buildSelectFilter("name=\"tab2filter\" style=\"width: 250px;\"") %></td>
+			<td><input type="checkbox" name="tab2showallprojects" value="true"<%= wp.isChecked(wp.getParamTab2ShowAllProjects()) %>> <%= wp.key("input.allprojects") %></td>
+		</tr>
+		</table>
+		<%= wp.dialogSubheadline(wp.key("input.defaulttasks")) %>
+		<table border="0" cellpadding="4" cellspacing="0">
+		<tr>
+			<td><input type="checkbox" name="tab2messageaccepted" value="true"<%= wp.isChecked(wp.getParamTab2MessageAccepted()) %>> <%= wp.key("input.messageaccept") %></td>
+		</tr>
+		<tr>
+			<td><input type="checkbox" name="tab2messageforwarded" value="true"<%= wp.isChecked(wp.getParamTab2MessageForwarded()) %>> <%= wp.key("input.messageforward") %></td>
+		</tr>
+		<tr>
+			<td><input type="checkbox" name="tab2messagecompleted" value="true"<%= wp.isChecked(wp.getParamTab2MessageCompleted()) %>> <%= wp.key("input.messagecompleted") %></td>
+		</tr>
+		<tr>
+			<td><input type="checkbox" name="tab2messagemembers" value="true"<%= wp.isChecked(wp.getParamTab2MessageMembers()) %>> <%= wp.key("input.messagemembers") %></td>
+		</tr>
+		</table>
+	<%
+break;
+case 3:
+	// ########## startup settings
+	%>
+		<table border="0" cellpadding="4" cellspacing="0">
+		<tr>
+			<td><%= wp.key("input.lang") %></td><td><%= wp.buildSelectLanguage("name=\"tab3language\" style=\"width: 200px;\"") %></td>
+		</tr>
+		<tr>
+			<td><%= wp.key("input.startupproject") %></td><td><%= wp.buildSelectProject("name=\"tab3project\" style=\"width: 200px;\"") %></td>
+		</tr>
+		<tr>
+			<td><%= wp.key("input.startupview") %></td><td><%= wp.buildSelectView("name=\"tab3view\" style=\"width: 200px;\"") %></td>
+		</tr>
+		<tr>
+			<td colspan="2"><input type="checkbox" name="tab3showlock" value="true"<%= wp.isChecked(wp.getParamTab3ShowLock()) %>> <%= wp.key("input.showlockdialog") %></td>
+		</tr>
+		<tr>
+			<td colspan="2"><input type="checkbox" name="tab3useuploadapplet" value="true"<%= wp.isChecked(wp.getParamTab3UseUploadApplet()) %>> <%= wp.key("input.uploadapplet") %></td>
+		</tr>
+		</table>
+	<%
+break;
+case 4:
+	// ########## user data settings
+	%>
+		<script type="text/javascript">
+		<!--
+			function togglePassword() {
+				var element = document.getElementById("changepwd");
+    			var cl = element.className;
+    			if (cl == "hide") {
+        			element.className = "show";
+        			document.getElementById("tabcontent").style.height = "320px"; 
+    			} else {
+        			element.className = "hide";
+        			document.getElementById("tabcontent").style.height = "200px";
+    			}
+			}
+			
+			function changePassword() {
+				var pwdForm = document.forms[0];
+				var oldPwd = pwdForm.oldpassword.value;
+				var newPwd = pwdForm.newpassword.value;
+				var conPwd = pwdForm.confirmpassword.value;
+				if (oldPwd == null || newPwd == null || conPwd == null || oldPwd == "" || newPwd == "" || conPwd == "") {
+					alert("<%= wp.key("error.message.chpwd.form") %>");
+					return;
+				}
+				if (newPwd == conPwd) {
+					pwdForm.<%= wp.PARAM_ACTION %>.value = "<%= wp.DIALOG_CHPWD %>";
+					pwdForm.submit();
+				} else {
+					alert("<%= wp.key("error.message.chpwd.nomatch") %>");
+				}
+			}
+		//-->
+		</script>
+		<%= wp.dialogSubheadline(wp.key("label.preferencesuser")) %>
+		<%= wp.buildUserInformation() %>
+		<%= wp.dialogSubheadline(wp.key("input.settings")) %>
+		<%= wp.dialogSpacer() %>
+		<input type="button" class="dialogbutton" style="margin-left: 0px;" value="<%= wp.key("button.changepasswd") %>" onclick="togglePassword();">
+		<%= wp.dialogSpacer() %>
+		<div class="hide" id="changepwd">
+			<%= wp.dialogBlockStart("") %>
+			<table border="0" cellpadding="4" cellspacing="0">
+			<tr>
+				<td><%= wp.key("input.oldpwd") %></td>
+				<td><input type="password" name="oldpassword" maxlength="8" style="width: 200px;"></td>
+			</tr>
+			<tr>
+				<td><%= wp.key("input.newpwd") %></td>
+				<td><input type="password" name="newpassword" maxlength="8" style="width: 200px;"></td> 
+			</tr>
+			<tr>
+				<td><%= wp.key("input.newpwdrepeat") %></td>
+				<td><input type="password" name="confirmpassword" maxlength="8" style="width: 200px;"></td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td><input type="button" class="dialogbutton" style="margin-left: 0px;" value="<%= wp.key("button.ok") %>" onclick="changePassword();"></td>
+			</tr>
+			</table>
+			<%= wp.dialogBlockEnd() %>
+		</div>
+	<%
+} // end of switch tab statement
+%>
+
+<%= wp.dialogTabContentEnd() %>
+<%= wp.dialogButtonRowSetOkCancel("onclick=\"setButtonAction();\"", null, "onclick=\"cancelButtonAction();\"") %>
+</form>
+
+<%= wp.dialogEnd() %>
+<%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %>
+<%
+} 
+//////////////////// end of switch action statement 
+%>

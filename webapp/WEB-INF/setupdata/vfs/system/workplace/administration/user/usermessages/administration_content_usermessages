@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+
+<line>
+<![CDATA[
+    <tr>
+        <td nowrap valign=top><p class=einzug>]]><process>username</process><![CDATA[</p></td>
+        <td nowrap valign=top><p class=einzug>]]><process>firstname</process><![CDATA[</p></td>
+        <td nowrap valign=top><p class=einzug>]]><process>lastname</process><![CDATA[</p></td>
+        <td nowrap valign=top><p class=einzug><a href="mailto:]]><process>email</process><![CDATA[">]]><process>email</process><![CDATA[</p></td>
+        <td nowrap valign=top><p class=einzug>]]><process>currentgroup</process><![CDATA[</p></td>
+        <td nowrap valign=top><p class=einzug>]]><process>currentproject</process><![CDATA[</p></td>
+        <td nowrap valign=top><p class=einzug>]]><process>messagepending</process><![CDATA[</p></td>
+    </tr>
+]]>
+</line>
+
+<TEMPLATE>
+<![CDATA[
+
+<HTML>
+<!-- Include internal JavaScripts -->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+
+<script language=JavaScript>
+<!--
+top.head.helpUrl=']]><LABEL value="help.administration.usermessages"/><![CDATA[';
+//-->
+</script>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+
+</HEAD>
+<BODY bgcolor="#ffffff" background="]]><METHOD
+name="resourcesUri">bg_weiss.gif"</METHOD><![CDATA[" onLoad="window.top.body.admin_head.location.href='../../../action/administration_head.html';">
+
+<table cellspacing=1 cellpadding=1 border=0>
+    <!-- Beginn Kopf Kontent Aufgaben-->
+    <tr bgcolor="#c0c0c0">
+        <td valign=bottom width=100 nowrap valign=top><p class=einzug>]]><label value="input.username"/><![CDATA[</p></td>
+        <td valign=bottom width=100 nowrap valign=top><p class=einzug>]]><label value="input.firstname"/><![CDATA[</p></td>
+        <td valign=bottom width=100 nowrap valign=top><p class=einzug>]]><label value="input.lastname"/><![CDATA[</p></td>
+        <td valign=bottom width=100 nowrap valign=top><p class=einzug>]]><label value="input.email"/><![CDATA[</p></td>
+        <td valign=bottom width=100 nowrap valign=top><p class=einzug>]]><label value="input.currentgroup"/><![CDATA[</p></td>
+        <td valign=bottom width=100 nowrap valign=top><p class=einzug>]]><label value="label.project"/><![CDATA[</p></td>
+        <td valign=bottom width=150 nowrap valign=top><p class=einzug>]]><label value="label.messagepending"/><![CDATA[</p></td>
+    </tr>
+
+    ]]><process>all_lines</process><![CDATA[
+
+
+</table>
+
+<form name=message method=post>
+    <p>
+    <b>]]><label value="label.messagetoall"/><![CDATA[:</b>
+    </p>
+    &nbsp;&nbsp;<TEXTAREA rows=6 cols=60 class="textarea1" id=message name=message></TEXTAREA>&nbsp;
+    <input type=submit value=]]><label value="label.sendmessage"/><![CDATA[></input>
+</form>
+
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+
+</WORKPLACE>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+        "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+    <display-name>OpenCms</display-name>
+    
+    <description>
+        OpenCms, the Open Source Content Management System. 
+        For more details about OpenCms, please see http://www.opencms.org/
+    </description>
+
+	<context-param>
+		<param-name>OpenCmsServlet</param-name>
+		<param-value>/opencms/*</param-value>
+	</context-param>
+    
+    <listener>
+        <listener-class>org.opencms.main.OpenCmsListener</listener-class>
+    </listener>    
+    
+    <listener>
+        <listener-class>org.opencms.main.OpenCmsSessionManager</listener-class>
+    </listener>  
+        
+    <servlet>
+        <servlet-name>OpenCmsServlet</servlet-name>
+        <description>
+            The main servlet that handles all requests to the OpenCms VFS.  
+        </description>
+        <servlet-class>org.opencms.main.OpenCmsServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>OpenCmsServlet</servlet-name>
+        <url-pattern>/opencms/*</url-pattern>
+    </servlet-mapping>
+    
+    <session-config>
+        <session-timeout>120</session-timeout>
+    </session-config>
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>index_export.html</welcome-file>
+    </welcome-file-list>
+    
+    <error-page>
+      <error-code>404</error-code>
+      <location>/opencms/handle404</location>
+    </error-page>
+    
+    <taglib>
+        <taglib-uri>http://www.opencms.org/taglib/cms</taglib-uri>
+        <taglib-location>/WEB-INF/opencms.tld</taglib-location>
+    </taglib>
+
+</web-app>
+

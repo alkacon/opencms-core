@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+
+<error></error>
+<errormsg><![CDATA[Fehler! Bei der Eingabe sind die folgenden Fehler aufgetreten: ]]></errormsg>
+
+<template name="enter your name here">
+<PROCESS>TEMPLATE_START</PROCESS>
+<![CDATA[
+]]>
+<PROCESS>TEMPLATE_END</PROCESS>
+</template>
+
+<!-- Media backoffice template remove it if not used -->
+<media_alt_text/>
+
+<media_preview>
+<![CDATA[
+    window.open(']]><method name="getServletPath"/><![CDATA[system/workplace/templates/showMediaFrame','media','');
+]]>
+</media_preview>
+
+<media_upload>
+<![CDATA[
+    <input type="file" name="media_name" style="width:350px">
+]]>
+</media_upload>
+
+<media_edit>
+<![CDATA[
+    <input type="text" name="media_name" style="width:350px" value="]]><process>media_name</process><![CDATA[">
+    <input type="hidden" name="posEdit" value="]]><process>posEdit</process><![CDATA[">
+]]>
+</media_edit>
+
+<media_content>
+<![CDATA[
+<SCRIPT language="JavaScript">
+    ]]><PROCESS>preview</PROCESS><![CDATA[
+
+function setMediaAction(para) {
+
+  //window.top.body.admin_content.Editor.backofficepage.value=window.top.body.admin_head.backofficepage.value;
+  parent.frames[1].document.getElementById("Editor").backofficepage.value=parent.frames[0].document.getElementById("backofficepage").value;
+
+  switch(para) {
+  case 1: {
+    document.Editor.media_action.value = "delPicture";
+    document.Editor.submit();
+    break;
+    }
+  case 2: {
+    document.Editor.media_action.value = "editPicture";
+    document.Editor.submit();
+    break;
+    }
+  case 3: {
+    document.Editor.media_action.value = "prevPicture";
+    document.Editor.submit();
+    break;
+    }
+  case 4: {
+    document.Editor.media_action.value = "addPicture";
+    document.Editor.submit();
+    break;
+    }
+  case 5: {
+    document.Editor.media_action.value = "clear";
+    document.Editor.submit();
+    break;
+    }
+    }
+
+}
+</script>
+
+<center>
+<table width="100%" cellspacing=5>
+<tr>
+    <td>
+        ]]><process>media_file</process><![CDATA[
+    </td>
+    <td>
+        ]]><Label value="media.mediaAltText"/><![CDATA[:
+    </td>
+    <td>
+        <input name="media_alt_text" style="width:350px" value="]]><process>media_alt_text</process><![CDATA[">
+    </td>
+    <td>
+        ]]><Label value="media.mediaPosition"/><![CDATA[:
+    </td>
+    <td>
+        ]]><select name="media_position" width="150" style="width:150px" method="getMediaPosition"/><![CDATA[
+    </td>
+</tr>
+<tr>
+    <td colspan=5>
+        <input type=button value="]]><LABEL value="button.addnew"/><![CDATA[" onClick="setMediaAction(4);">&nbsp;&nbsp;
+        <input type=button value="]]><LABEL value="button.clear"/><![CDATA[" onClick="setMediaAction(5);">&nbsp;&nbsp;
+    </td>
+</tr>
+<tr>
+    <td colspan=5>
+        &nbsp;
+    </td>
+</tr>
+<tr>
+    <td colspan=5>
+        <input type=button value="]]><LABEL value="button.delete"/><![CDATA[" onClick="setMediaAction(1);">&nbsp;&nbsp;
+        <input type=button value="]]><LABEL value="button.edit"/><![CDATA[" onClick="setMediaAction(2);">&nbsp;&nbsp;
+        <input type=button value="]]><LABEL value="button.preview"/><![CDATA[" onClick="setMediaAction(3);">&nbsp;&nbsp;
+    </td>
+</tr>
+</table>
+
+<br/>
+
+<table width="100%" cellspacing=5>
+    <tr>
+        <td>
+            &nbsp;
+        </td>
+        <td>
+            <b>]]><LABEL value="media.mediaName"/><![CDATA[:
+        </td>
+        <td>
+            <b>]]><Label value="media.mediaText"/><![CDATA[:
+        </td>
+        <td>
+            <b>]]><Label value="media.mediaPosition"/><![CDATA[:
+        </td>
+        <td>
+            <b>]]><Label value="media.mediaSize"/><![CDATA[:
+        </td>
+        <td>
+            <b>]]><Label value="media.mediaType"/><![CDATA[:
+        </td>
+    </tr>
+    ]]><process>media_line</process><![CDATA[
+</table>
+</center>
+<input type=hidden name="media_action">
+]]>
+</media_content>
+
+<media_row>
+<![CDATA[
+    <tr>
+        <td>
+            <input type="radio" value="]]><process>pos</process><![CDATA[" name="pos">
+        </td>
+        <td>
+            ]]><process>media_row_name</process><![CDATA[
+        </td>
+        <td>
+            ]]><process>media_title</process><![CDATA[
+        </td>
+        <td>
+            ]]><process>media_position</process><![CDATA[
+        </td>
+        <td>
+            ]]><process>media_size</process><![CDATA[
+        </td>
+        <td>
+            ]]><process>media_type</process><![CDATA[
+        </td>
+    </tr>
+]]>
+</media_row>
+
+<TEMPLATE name="Media">
+<PROCESS>TEMPLATE_START</PROCESS>
+<method name="getContentMedia"/>
+<PROCESS>TEMPLATE_END</PROCESS>
+</TEMPLATE>
+
+<!-- channel backoffice template remove it if not used -->
+<TEMPLATE name="Channels">
+<PROCESS>TEMPLATE_START</PROCESS>
+<![CDATA[
+<table cellpadding="3" cellspacing="2" border="0" align="center">
+<tr>
+    <td class="formular">]]><LABEL value="input.channelselected"/><![CDATA[</td><td></td><td class="formular">]]><LABEL value="input.channelavailable"/><![CDATA[</td>
+</tr>
+<tr>
+    <td class="formular">
+        ]]><SELECT class="textfeld" name="channelSelected" size="20" width="400" method="getSelectedChannels" onchange=""/><![CDATA[</td>
+    </td>
+    <td class="formular">
+        <INPUT  class="button" name="ADD" id="ADD" value="]]><LABEL value="button.add"/>"<![CDATA[ width="100" type="button" onclick="javascript:moveChannel(document.Editor.channelSelected,document.Editor.channelAvailable);copySelection();">
+        <br>&nbsp;<br>
+        <INPUT  class="button" name="REMOVE" id="REMOVE" value="]]><LABEL value="button.remove"/>"<![CDATA[ width="100" type="button" onclick="javascript:moveChannel(document.Editor.channelAvailable,document.Editor.channelSelected);copySelection();"></td>
+    </td>
+    <td class="formular">
+        ]]><SELECT class="textfeld" name="channelAvailable" size="20" width="400" method="getAvailableChannels" onchange=""/><![CDATA[</td>
+    </td>
+</tr>
+<input type=hidden name="availablechannels">
+<input type=hidden name="selectedchannels">
+</table>
+]]>
+<PROCESS>TEMPLATE_END</PROCESS>
+</TEMPLATE>
+
+<!-- Templateselectors needed for abstract backoffice. DO NOT MODIFY! -->
+
+<TEMPLATE>
+</TEMPLATE>
+
+<TEMPLATE name="done">
+<![CDATA[
+<HEAD>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+</HEAD>
+<HTML>
+    <BODY onLoad="window.top.body.admin_head.location.href=']]><method name="getServletPath"/><method name="getBackofficeUrl"/><![CDATA[';">
+</BODY>
+</HTML>
+]]>
+</TEMPLATE>
+
+
+<!-- Definition for the Datablocks for the HTML-Head, Button List, Error display -->
+
+<BOHEAD>
+<![CDATA[
+
+ <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+    <title>Comments Backoffice</title>
+    <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+    <script language="JavaScript">
+    var pfad="]]><METHOD name="resourcesUri"/><![CDATA[";
+     function doEdit(para) {
+        switch(para) {
+        case 1: {
+                document.Editor.action.value = "exit";
+                document.Editor.submit();
+                break;
+                }
+        case 2: {
+                document.Editor.action.value = "saveexit";
+                document.Editor.submit();
+                break;
+                }
+        case 3: {
+                document.Editor.action.value = "save";
+                document.Editor.submit();
+                break;
+                }
+          }
+      }
+     </script>
+     <script LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_channelbackoffice.js</method><![CDATA["></script>
+     <script LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></script>
+</head>
+]]>
+</BOHEAD>
+
+<BOBUTTONS>
+<PROCESS>BOSELECTOR</PROCESS>
+</BOBUTTONS>
+
+<BOSELECTOR>
+<![CDATA[
+<!-- <td class=menu valign="center">]]><SELECT method="getSelectedPage" class="textfeld" name="backofficepage" id="backofficepage" width="auto" size="1" onchange="document.Editor.submit()"/><![CDATA[</td>-->
+<td><input type=hidden name="backofficepage" id="backofficepage"></td>
+]]>
+</BOSELECTOR>
+
+<BOERROR>
+<![CDATA[
+<table cellspacing=0 cellpadding=0 border=0 width="100%" height=32>
+    <tr valign=bottom>
+        <td class=menu ><center><font color=red>]]><process>error</process><![CDATA[</font></center></td>
+    </tr>
+</table>
+<hr>
+]]>
+</BOERROR>
+
+
+<TEMPLATE_START>
+<![CDATA[
+<html>
+]]><PROCESS>BOHEAD</PROCESS><![CDATA[
+<body background="]]><METHOD name="resourcesUri">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed scroll=auto marginwidth="5" marginheight="5" leftmargin=5 topmargin=5
+onLoad="javascript:(window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head_backoffice.html');">
+
+<form name=Editor id=Editor method=post ENCTYPE="multipart/form-data">
+
+<input type="hidden" name="action" id="action">
+
+<!-- Buttons -->
+]]><PROCESS>BOBUTTONS</PROCESS><![CDATA[
+
+<!-- Error messages -->
+]]><PROCESS>BOERROR</PROCESS>
+</TEMPLATE_START>
+
+
+<TEMPLATE_END>
+<![CDATA[
+</form>
+</body>
+</html>
+]]>
+</TEMPLATE_END>
+
+</WORKPLACE>

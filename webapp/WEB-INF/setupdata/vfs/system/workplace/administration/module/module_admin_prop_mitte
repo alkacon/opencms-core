@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<script language=JavaScript>
+<!--
+    function getTitle()
+    {
+        parent.title.document.writeln("]]><LABEL value="module.lable.moduleadmin"/><![CDATA[: ]]><PROCESS>packetname</PROCESS><![CDATA[");
+    }
+//-->
+</script>
+<script language=JavaScript>
+<!--
+    function getText()
+    {
+        parent.text.document.writeln("]]><LABEL value="module.lable.modulepropertys"/><![CDATA[");
+    }
+//-->
+</script>
+
+</HEAD>
+    <body background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA[" onload="parent.title.location.href='../../action/frame_title.html';parent.text.location.href='../../action/frame_text.html';">
+
+
+            <table width="100%" cellpadding=0 cellspacing=10 border=0>
+                <tr>
+                    <td align="center">
+                        <b>]]><LABEL value="input.name"/><![CDATA[</b>
+                    </td>
+                    <td  style="background:#FFFFFF;" align="center">
+                        <b>]]><LABEL value="module.lable.type"/><![CDATA[</b>
+                    </td>
+                    <td  style="background:#FFFFFF;" align="center">
+                        <b>]]><LABEL value="module.lable.value"/><![CDATA[</b>
+                    </td>
+                    <td  width="200" style="background:#FFFFFF;" align="center">
+                        <b>]]><LABEL value="module.lable.description"/><![CDATA[</b>
+                    </td>
+                </tr>
+                ]]><PROCESS>list</PROCESS><![CDATA[
+            </table>
+
+    </body>
+</html>
+]]>
+</TEMPLATE>
+
+<list_entry><![CDATA[
+    <tr>
+        <td align="center" >
+            ]]><PROCESS>propname</PROCESS><![CDATA[
+        </td>
+        <td  style="background:#FFFFFF;" align="center">
+            ]]><PROCESS>typ</PROCESS><![CDATA[
+        </td>
+        <td  style="background:#FFFFFF;" align="center">
+            ]]><PROCESS>value</PROCESS><![CDATA[
+        </td>
+        <td  width ="200" style="background:#FFFFFF;" align="center">
+            ]]><PROCESS>description</PROCESS><![CDATA[
+        </td>
+        <td  style="background:#FFFFFF;">
+            &nbsp;
+        </td>
+        <td  style="background:#FFFFFF;" align="center">
+            <a href="module_admin_prop_edit.html?prop=]]><PROCESS>propname</PROCESS><![CDATA[" target="admin_content"><img border="0" src="]]><METHOD name="resourcesUri">ic_admin_editprop.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.edit"/><![CDATA["></a>
+        </td>
+    </tr>
+
+
+    ]]>
+</list_entry>
+<TEMPLATE name="ready">
+<![CDATA[
+<html>
+<head>
+</head>
+<body onload="window.top.body.admin_content.location.href='module_new.html?fromerrorpage=true'">
+</body>
+</html>
+]]>
+</TEMPLATE>
+
+</WORKPLACE>

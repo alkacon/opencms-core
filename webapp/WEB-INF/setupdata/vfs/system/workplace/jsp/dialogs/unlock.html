@@ -1,0 +1,11 @@
+<%@ page import="org.opencms.workplace.*" buffer="none" %><%	
+
+	// initialise the JSP action element
+	com.opencms.flex.jsp.CmsJspActionElement cms = new com.opencms.flex.jsp.CmsJspActionElement(pageContext, request, response);
+	
+	// initialize the workplace class
+	CmsDialogSelector wp = new CmsDialogSelector(cms, CmsDialogSelector.DIALOG_LOCK);
+	
+	cms.include(wp.getSelectedDialogUri(), null, request.getParameterMap());
+	
+%>

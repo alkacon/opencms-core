@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+	<defaulttasklist>
+	<![CDATA[
+	<tr>
+		<td nowrap>]]><PROCESS>stateicon</PROCESS><![CDATA[</td>
+		<td nowrap>]]><PROCESS>priority</PROCESS><![CDATA[</td>
+		<td nowrap class=]]><PROCESS>style</PROCESS><![CDATA[ ><p class=einzug > <a class=]]><PROCESS>style</PROCESS><![CDATA[ href="tasks_content_detail.html?lastrelurl=tasks_content_detail.html&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[" > ]]><PROCESS>task</PROCESS><![CDATA[ </a></p></td>
+		<td nowrap class=]]><PROCESS>style</PROCESS><![CDATA[ ><p class=einzug > ]]><PROCESS>foruser</PROCESS><![CDATA[</p></td>
+		<td nowrap class=]]><PROCESS>style</PROCESS><![CDATA[ ><p class=einzug > ]]><PROCESS>forrole</PROCESS><![CDATA[</p></td>
+		<td nowrap class=]]><PROCESS>style</PROCESS><![CDATA[ ><p class=einzug > ]]><PROCESS>actuator</PROCESS><![CDATA[</p></td>
+		<td nowrap class=]]><PROCESS>style</PROCESS><![CDATA[ ><p class=einzug > ]]><PROCESS>due</PROCESS><![CDATA[</p></td>
+		<td nowrap class=]]><PROCESS>style</PROCESS><![CDATA[ ><p class=einzug > ]]><PROCESS>from</PROCESS><![CDATA[</p></td>
+		<td nowrap class=]]><PROCESS>style</PROCESS><![CDATA[ ><p class=einzug > ]]><PROCESS>project</PROCESS><![CDATA[</p></td>
+	</tr>
+	]]>
+	</defaulttasklist>
+	
+	<!-- Priorities -->
+	<priority0></priority0>
+	<priority1><![CDATA[<img src="]]><METHOD name="resourcesUri">ic_task_priohigh.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.prioritylevel.high" /><![CDATA[">]]></priority1>
+	<priority2></priority2>
+	<priority3><![CDATA[<img src="]]><METHOD name="resourcesUri">ic_task_priolow.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.prioritylevel.low" /><![CDATA[">]]></priority3>
+	
+	
+	
+	
+	<!-- States --> 
+	<new><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="resourcesUri">ic_task_new.gif  </METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.new"/><![CDATA[">]]></new>  
+	<activ><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="resourcesUri">ic_task_activ.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.activ" /><![CDATA[">]]></activ>
+	<alert><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="resourcesUri">ic_task_alert.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.alert" /><![CDATA[">]]></alert>
+	<ok><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="resourcesUri">ic_task_ok.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.ok" /><![CDATA[">]]></ok>
+	<alertok><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="resourcesUri">ic_task_alertok.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.alertok" /><![CDATA[">]]></alertok>
+ 
+ 
+	<!-- style classes -->
+	<style_new>einzug</style_new>
+	<style_activ>einzug</style_activ>
+	<style_alert>taskalert</style_alert>
+	<style_ok>taskok</style_ok>
+	<style_alertok>taskok</style_alertok>
+
+</WORKPLACE>

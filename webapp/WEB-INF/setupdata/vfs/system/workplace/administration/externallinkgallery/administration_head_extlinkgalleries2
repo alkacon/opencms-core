@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></script>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_edithtml.js</method><![CDATA["></script>
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+    // URL for pictures
+    var pfad="]]><METHOD name="resourcesUri"/><![CDATA[";
+    var folder = ']]><PROCESS>link_value</PROCESS><![CDATA[';
+</SCRIPT>
+</head>
+<body bgcolor="#E0E0E0" background="]]><METHOD name="resourcesUri">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed onload="]]><METHOD name="onLoad"/><![CDATA[">
+
+<table cellspacing=0 cellpadding=0 border=0>
+    <tr valign=center>
+        <td class=menu nowrap width=32px><a href="javascript:updateFrame('body.admin_content','index.html?folder=]]><process>galleryRootFolder</process><![CDATA[');updateFrame('body.admin_head','administration_head_extlinkgalleries1.html?folder=]]><process>galleryRootFolder</process><![CDATA[')"  onMouseDown="ChPush('bt_back')" onMouseUp="ChOn('bt_back')" onMouseOver="ChOn('bt_back')" onMouseOut="ChOff('bt_back')"><img src="]]><METHOD name="resourcesUri">bt_back_off.gif</METHOD><![CDATA[" name="bt_back" alt="]]><LABEL value="button.back" /><![CDATA[" border=0 width=32 heigth=32></a></td>
+        <td class=menu nowrap width=32px><a href="#" onclick="javascript:window.top.body.admin_content.location.href='administration_content_link_new.html?action=newlink&initial=true&folder=' + folder + '&lasturl=]]><method name="getServletPath"/><![CDATA[system/workplace/jsp/explorer_files.html%3Fmode%3Dgalleryview'" onMouseDown="ChPush('bt_new')" onMouseUp="ChOn('bt_new')" onMouseOver="ChOn('bt_new')" onMouseOut="ChOff('bt_new')"><IMG SRC="]]><METHOD name="resourcesUri">bt_new_off.gif</METHOD><![CDATA[" alt="]]><LABEL value="icon.newlink" /><![CDATA[" name="bt_new" border=0 width=32 heigth=32></a></td>
+        <td class=menu nowrap width=32px><a href="#" onclick="javascript:window.open('../../action/linkbrowser.html?initial=true&folder=' + folder, 'LinkBrowser', 'width=550, height=500, resizable=yes, top=200, left=450');" onmouseout="ChOff('bt_extlinkgallery')" onmouseover="ChOn('bt_extlinkgallery')" onmouseup="ChOn('bt_extlinkgallery')"><IMG alt="]]><LABEL value="button.linklist" /><![CDATA[" border=0 height=32 name="bt_extlinkgallery" src="]]><METHOD name="resourcesUri">bt_extlinkgallery_off.gif</METHOD><![CDATA[" width=32></A></td>
+        <td class=menu width=100% nowrap>&nbsp;</td>
+        </tr>
+</table>
+</body>
+</html>
+]]>
+</TEMPLATE>
+</WORKPLACE>

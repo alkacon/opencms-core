@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE> 
+    <errorpagedefinition>
+    <![CDATA[
+
+    <HTML>
+
+    <head>
+   	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+    <title>OpenCms - ]]><PROCESS>title</PROCESS><![CDATA[</title>
+
+    <link rel=stylesheet type="text/css" href="]]><PROCESS>stylesheetpath</PROCESS><![CDATA[format.css">
+    <style type="text/css">
+    #errormain{position:absolute; top:78; left:0; width:350; visibility:hidden; z-index:10; }
+    #errordetails{position:absolute; top:78; left:0; width:350; visibility:hidden; z-index:100}
+    </style>
+
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><PROCESS>jspath</PROCESS><![CDATA[opencms.js"></SCRIPT>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><PROCESS>jspath</PROCESS><![CDATA[opencms_choosebrowser.js"></SCRIPT>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><PROCESS>jspath</PROCESS><![CDATA[opencms_dialogscroll.js"></SCRIPT>
+
+    </HEAD>
+    <BODY onLoad="errorinit();" bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+
+    <div id="errormain">
+    <!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
+    <form id=ERROR name=ERROR>
+    <table cellspacing=0 cellpadding=0 border=2 width=350>
+        <tr><td class=dialogtxt>
+            <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+                <!-- Beginn Tabellenkopf blau-->
+                <tr> 
+                    <td colspan=2 class="head">]]><PROCESS>title</PROCESS><![CDATA[</td>
+                </tr>
+                <!-- Ende Tabellenkopf blau-->
+                <!-- Beginn Leerzeile-->
+                <tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
+                <!-- Ende Leerzeile-->
+                <tr> 
+                    <td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="resourcesUri">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
+                <td class=dialogtxt>]]><PROCESS>message</PROCESS><![CDATA[</td>
+                </tr>   
+                <tr><td class=dialogtxt><BR>]]><PROCESS>msgreason</PROCESS><![CDATA[:<BR>]]><PROCESS>reason</PROCESS><![CDATA[<BR>]]><PROCESS>suggestion</PROCESS><![CDATA[</td></tr>
+                <!-- Beginn Leerzeile-->
+                <tr> <td class="leerzeile">&nbsp;</td></tr>
+                <!-- Ende Leerzeile-->
+
+                <!-- Beginn Buttonleisete-->
+                <tr><td class=dialogtxt colspan=2>
+                    <table cellspacing=0 cellpadding=5 width=100%>
+                    <tr>
+                        <td class=formular align=center><INPUT class=button width = 100 type="button" value="]]><PROCESS>msgbutton</PROCESS><![CDATA[" id=OK name=OK onClick="location.href=']]><PROCESS>ref</PROCESS><![CDATA['"></td>
+                        <td class=formular align=center><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.showdetails"/><![CDATA[" id=details name=details onClick="toggleLayer('errordetails');chButtonTxt('ERROR','details',']]><LABEL value="button.showdetails"/><![CDATA[',']]><LABEL value="button.hidedetails"/><![CDATA[','errormain')"></td>
+                    </tr>
+                    </table>
+                </td>
+                </tr>
+                </table>
+                <!-- Ende Buttonleisete-->  
+        </td></tr>
+    </table>
+    </form>
+    </div>
+
+    <div id="errordetails">
+    <link rel=stylesheet type="text/css" href="]]><PROCESS>stylesheetpath</PROCESS><![CDATA[format.css">
+    <form id=DETAILS name=DETAILS>
+    <table cellspacing=0 cellpadding=0 border=2 width=350>
+        <tr><td class=dialogtxt>
+            <table cellspacing=1 cellpadding=5 border=0 width=100% height=100%>
+                <tr><td class=formular>]]><LABEL value="label.errormessage"/><![CDATA[:</td>
+                <tr><td align=center class=dialogtxt>
+                <textarea wrap=off cols=33 rows=6 style="width:330" class="textarea" onfocus="this.blur();" id=EXCEPTION name=EXCEPTION>]]><PROCESS>details</PROCESS><![CDATA[</textarea>
+                </td></tr>
+            </table>
+        </td></tr>
+    </table>
+    </form>
+    </div> 
+    <!-- <A href="explorer_files_copyf.html">[Copy]</A> -->
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    </BODY>
+    </html>
+    ]]>
+    </errorpagedefinition>
+</WORKPLACE>

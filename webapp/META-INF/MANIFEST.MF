@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Created-By: OpenCms build script (Alkacon Software)
+Main-Class: com.opencms.boot.CmsMain

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<HTML>
+
+<!-- Include external JavaScripts-->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+
+<script language=JavaScript>
+<!--
+
+top.head.helpUrl=']]><LABEL value="help.administration.sync_management"/><![CDATA[';
+
+function deleteAnItem(theList,itemNo) {
+    var n=theList.length;
+    if ((n > 0) && (itemNo > -1)) {
+        theList.options[itemNo]=null;
+    }
+}
+
+function addFolder(theList, item) {
+    if (item != null && item != "") {
+        newOption = new Option(item, item, false, false);
+        theList.options[theList.length] = newOption;
+        document.SYNCPROP.selectallfolders.value='';
+    }
+}
+
+function copySelection() {
+    addFolder(document.SYNCPROP.new_ressources, document.SYNCPROP.tempFolder.value);
+}
+
+function selectAll(theList) {
+    var n=theList.length;
+    for (i=0; i<n; i++) {
+        theList.options[i].selected=true;
+    }
+    // umgehe das Problem mit Silverstream
+    var allResources="";
+    if (n>0) {
+        for (i=0; i<n; i++) {
+            allResources = allResources + theList.options[i].value + ';';
+        }
+    }
+    document.SYNCPROP.syncresources.value=allResources;
+}
+
+//-->
+</script>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='../../action/administration_head.html';" onUnload="top.closeTreeWin();">
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
+<form id="SYNCPROP" name="SYNCPROP" method="post" >
+<table cellspacing=0 cellpadding=0 border=1 width=500>
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td class="head">]]><LABEL value="label.syncproperties" /><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Beginn Inhalt-->
+            <tr><td class=dialogtxt>
+                <table border=0 width=100%>
+                    <tr><td class=dialogtxt>
+                        <table border=0 cellspacing=4 width=100% height=200px>
+                            <tr>
+                                <td class=formular width=10%>]]><LABEL value="label.projectname" /><![CDATA[:</td>
+                                <td class=dialogtxt>
+                                    ]]><SELECT class="textfeld" name="syncproject" width="150" method="getProjects" onchange="javascript:document.SYNCPROP.submit()"/><![CDATA[
+                                </td>
+                                <td class=formular>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class=formular>&nbsp;</td>
+                                <td class=dialogtxt>
+                                <input type="text" name="selectallfolders" class="textfeld3" size=31 value="" onSubmit="">
+                                </td>
+                                <td class=formular valign=bottom>
+                                    <a href="javascript:addFolder(document.SYNCPROP.new_ressources, document.SYNCPROP.selectallfolders.value);" ><img src="]]><METHOD name="resourcesUri">ic_admin_enter.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.addnew" /><![CDATA[" border=0 width=16 heigth=16></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class=formular valign=top>]]><LABEL value="label.allfolders" /><![CDATA[:</td>
+                                <td class=dialogtxt>
+                                    ]]><SELECT class="textfeld" name="new_ressources" size="10" width="300" method="getResources" onchange=""/><![CDATA[
+                                </td>
+                                <td valign=middle>
+                                    <table border=0 cellspacing=0 width=100% height=100% valign=middle>
+                                        <tr>
+                                            <td class=formular><a href="javascript:top.openTreeWin('sync', true, 'SYNCPROP', 'tempFolder', document);"><img src="]]><METHOD name="resourcesUri">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
+                                            <td class=formular><a href="javascript:deleteAnItem(document.SYNCPROP.new_ressources , document.SYNCPROP.new_ressources.selectedIndex);"><img src="]]><METHOD name="resourcesUri">ic_admin_deleteext.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.delete" /><![CDATA[" border=0 width=16 heigth=16></a></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <input type="hidden" name="tempFolder" id="tempFolder" >
+                            <input type="hidden" name="syncresources" id="syncresources" value="">
+                            <tr>
+                                <td colspan=3 class=leerzeile>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class=formular width=10%>]]><LABEL value="label.syncdestinationpath" /><![CDATA[:</td>
+                                <td class=dialogtxt><input type="text" name="syncpath" class="textfeld3" size=31 value="]]><PROCESS>syncpath</PROCESS><![CDATA["> </td>
+                                <td class=formular><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="50" height="1" alt="" border="0"></td>
+                            </tr>
+                        </table>
+                    </td></tr>
+
+                    <!-- Beginn Buttonleiste-->
+                    <tr><td class=dialogtxt>
+                        <table cellspacing=0 border=0 cellpadding=5 width=100%>
+                            <tr>
+                                <td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="step" value="ok" width="100" action="selectAll(SYNCPROP.new_ressources);" /><![CDATA[</td>
+                                <td class=formular align=left width=50%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="100" action="location.href='index.html?step=cancel'" /><![CDATA[</td>
+                            </tr>
+                        </table>
+                    </td></tr>
+                    <!-- Ende Buttonleiste-->
+                </table>
+            </td></tr>
+        </table>
+    </td></tr>
+</table>
+</form>
+</td></tr>
+</table>
+
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="done">
+<![CDATA[
+<HTML>
+<BODY onload="parent.frames[1].location.href='../../action/administration_content_top.html?sender=/system/workplace/administration/'">
+</BODY>
+</HTML>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="errorsyncproperties">
+<![CDATA[
+]]><ERRORPAGE title="error.title.syncproperties" message="error.message.syncproperties" reason="error.reason.syncproperties" suggestion="error.suggestion.none" ref="index.html" ><process>details</process></ERRORPAGE><![CDATA[
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="datamissing">
+<![CDATA[
+]]><ERRORPAGE title="error.title.syncproperties" message="error.message.datamissing" reason="error.reason.syncdatamissing" suggestion="error.suggestion.none" ref="index.html" >no details</ERRORPAGE><![CDATA[
+]]>
+</TEMPLATE>
+
+</WORKPLACE>

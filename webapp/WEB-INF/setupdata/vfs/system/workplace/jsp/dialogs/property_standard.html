@@ -1,0 +1,165 @@
+<%@ page import="org.opencms.workplace.*" buffer="none" %><%	
+
+	// initialize the workplace class
+	CmsProperty wp = new CmsProperty(pageContext, request, response);
+	
+//////////////////// start of switch statement 
+	
+switch (wp.getAction()) {
+
+case CmsProperty.ACTION_SAVE_EDIT:
+//////////////////// ACTION: save edited properties for the current resource type
+
+	wp.actionEdit(request);
+
+break;
+
+
+case CmsProperty.ACTION_SAVE_DEFINE:
+//////////////////// ACTION: save new property definition for the current resource type
+
+	wp.actionDefine();
+
+break;
+
+
+case CmsProperty.ACTION_SHOW_EDIT:
+//////////////////// ACTION: show edit properties window
+
+	wp.setParamAction(wp.DIALOG_SAVE_EDIT);
+	
+%><%= wp.htmlStart("help.explorer.contextmenu.properties") %>
+<script type="text/javascript">
+<!--
+function toggleDelete(propName) {
+	var hiddenValue = document.getElementById("<%= wp.PREFIX_HIDDEN %>"+propName).value;
+	var checked = document.getElementById("<%= wp.PREFIX_USEPROPERTY %>"+propName).checked;
+	var field = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName);
+	if (checked == true) {
+		field.value = hiddenValue;
+	} else {
+		field.value = "";
+	}
+}
+
+function checkValue(propName) {
+	var newVal = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName).value;
+	var field = document.getElementById("<%= wp.PREFIX_USEPROPERTY %>"+propName);
+	if (newVal != null && newVal != "") {
+		field.checked = true;
+	} else {
+		field.checked = false;
+	}
+}
+//-->
+</script>
+<%= wp.bodyStart("dialog") %>
+
+<%= wp.dialogStart() %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %>
+
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+<%= wp.paramsAsHidden() %>
+
+<%= wp.buildEditForm() %>
+
+<%= wp.dialogContentEnd() %>
+<% wp.setParamAction(wp.DIALOG_SHOW_DEFAULT); %>
+<%= wp.dialogButtonRowOkCancel(null,"onclick=\"location.href='" + wp.getDialogUri() + "?" + wp.paramsAsRequest() + "';\"") %>
+</form>
+
+<%= wp.dialogEnd() %>
+<%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %>
+<%
+break;
+
+
+case CmsProperty.ACTION_SHOW_DEFINE:
+//////////////////// ACTION: show define properties window
+
+	wp.setParamAction(wp.DIALOG_SAVE_DEFINE);
+	
+%><%= wp.htmlStart("help.explorer.contextmenu.properties") %>
+<script type="text/javascript">
+<!--
+function checkName() {
+	var newProp = document.getElementById("<%= wp.PARAM_NEWPROPERTY %>").value;
+	if (newProp != null && newProp != "") {
+		document.getElementsByName("ok")[0].disabled = false;
+	} else {
+		document.getElementsByName("ok")[0].disabled = true;
+	}
+}
+//-->
+</script>
+<%= wp.bodyStart("dialog") %>
+
+<%= wp.dialogStart() %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %>
+
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+
+<%= wp.paramsAsHidden() %>
+
+<table border="0" width="100%">
+<tr>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.newpropertydef") %></td>
+	<td class="maxwidth"><input id="<%= wp.PARAM_NEWPROPERTY %>" name="<%= wp.PARAM_NEWPROPERTY %>" type="text" value="" class="maxwidth" onKeyup="checkName();" on></td>
+</tr>
+</table>
+
+<%= wp.dialogSubheadline(wp.key("input.activepropertydef")) %>
+
+<%= wp.dialogWhiteBoxStart() %>
+<%= wp.buildActivePropertiesList() %>
+<%= wp.dialogWhiteBoxEnd() %>
+
+<%= wp.dialogContentEnd() %>
+<% wp.setParamAction(wp.DIALOG_SHOW_DEFAULT); %>
+<%= wp.dialogButtonRowOkCancel("disabled=\"disabled\"","onclick=\"location.href='" + wp.getDialogUri() + "?" + wp.paramsAsRequest() + "';\"") %>
+</form>
+
+<%= wp.dialogEnd() %>
+<%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %>
+<%
+break;
+
+
+case CmsProperty.ACTION_DEFAULT:
+default:
+//////////////////// ACTION: show property overview dialog (default)
+
+
+
+%><%= wp.htmlStart("help.explorer.contextmenu.properties") %>
+<%= wp.bodyStart("dialog") %>
+
+<%= wp.dialogStart() %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %>
+
+<%@ include file="common/resourceinfo.txt" %>
+
+<%= wp.dialogSpacer() %>
+
+<%= wp.dialogWhiteBoxStart() %>
+<%= wp.buildPropertiesList() %>
+<%= wp.dialogWhiteBoxEnd() %>
+
+<%= wp.dialogSpacer() %>
+
+<%= wp.buildActionButtons() %>
+
+<%= wp.dialogContentEnd() %>
+<form name="close" action="" method="post" class="nomargin">
+<%= wp.dialogButtonRowClose() %>
+</form>
+
+<%= wp.dialogEnd() %>
+<%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %>
+<%
+} 
+//////////////////// end of switch statement 
+%>

@@ -1,0 +1,56 @@
+<%@ page import="org.opencms.workplace.*" buffer="none" %><%	
+
+	// initialize the workplace class
+	CmsRename wp = new CmsRename(pageContext, request, response);
+	
+//////////////////// start of switch statement 
+	
+switch (wp.getAction()) {
+
+case CmsRename.ACTION_RENAME:
+
+//////////////////// ACTION: main rename action
+
+	wp.actionRename();
+
+break;
+case CmsRename.ACTION_DEFAULT:
+default:
+
+//////////////////// ACTION: show rename dialog (default)
+
+	wp.setParamAction("rename");
+
+%><%= wp.htmlStart("help.explorer.contextmenu.rename") %>
+<%= wp.bodyStart("dialog") %>
+
+<%= wp.dialogStart() %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %>
+
+<%@ include file="common/resourceinfo.txt" %>
+
+<%= wp.dialogSpacer() %>
+
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+
+<%= wp.paramsAsHidden() %>
+
+<table border="0" width="100%">
+<tr>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.name") %></td>
+	<td class="maxwidth"><input name="<%= wp.PARAM_TARGET %>" type="text" value="<%= wp.getOldResourceName() %>" class="maxwidth"></td
+</tr>
+</table>
+
+<%= wp.dialogContentEnd() %>
+<%= wp.dialogButtonRowOkCancel() %>
+
+</form>
+
+<%= wp.dialogEnd() %>
+<%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %>
+<%
+} 
+//////////////////// end of switch statement 
+%>

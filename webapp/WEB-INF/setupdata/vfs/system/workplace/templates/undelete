@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<HTML>
+
+<script language=JavaScript>
+<!--
+
+//for the filename to undelete
+var js_filename=': ]]><PROCESS>FILENAME</PROCESS><![CDATA[';
+
+top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.undelete"/><![CDATA[';
+//-->
+</script>
+<BODY>
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="done">
+<![CDATA[
+<HTML>
+<BODY onload="window.top.head.location.href='head.html';">
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="error">
+<ERRORPAGE title="error.title.undelete" message="error.message.undelete" reason="error.reason.undelete" suggestion="error.suggestion.undelete" ref="explorer_files.html" ><process>details</process><process>lasturl</process></ERRORPAGE>
+</TEMPLATE>
+</WORKPLACE>

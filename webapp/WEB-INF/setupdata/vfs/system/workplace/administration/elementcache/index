@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORKPLACE>
+
+<TEMPLATE>
+<![CDATA[
+
+<HTML>
+
+<script language=JavaScript>
+<!--
+top.head.helpUrl=']]><LABEL value="help.administration.element_cache"/><![CDATA[';
+//-->
+</script>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+
+
+</HEAD>
+<BODY bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.location.href='../../action/administration_head.html';" >
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
+<form id=DBEXPORT name=DBEXPORT action="index.html?action=clear" method="post" onSubmit="">
+<table cellspacing=0 cellpadding=0 border=2 width=450>
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+
+            <!-- Beginn Tabellenkopf blau-->
+            <tr>
+                <td class="head">]]><LABEL value="elementcache.label.title"/><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+
+            <!-- Beginn Leerzeile-->
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+
+            <!-- Beginn Inhalt-->
+            <tr><td class=dialogtxt>
+                <table border=1 width=100%>
+                    <tr><td class=dialogtxt>
+                        <table border=0 width=100%>
+                            <tr>
+                                <td class=dialogtxt>]]><LABEL value="elementcache.label.uri" /><![CDATA[:</td>
+                                <td class=dialogtxt>]]><PROCESS>urisize</PROCESS><![CDATA[</td>
+                            </tr>
+                            <tr>
+                                <td class=dialogtxt>]]><LABEL value="elementcache.label.element" /><![CDATA[<a href="index.html?info=dep_out">:</a></td>
+                                <td class=dialogtxt>]]><PROCESS>elementsize</PROCESS><![CDATA[</td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <!-- Beginn Leerzeile-->
+                            <tr>
+                                <td class="leerzeile" colspan=3>&nbsp;</td>
+                            </tr>
+                            <!-- Ende Leerzeile-->
+                            </table>
+                    </td></tr>
+                    <tr>
+                        <td class=dialogtxt>]]><LABEL value="elementcache.label.text" /><![CDATA[</td>
+                    </tr>
+                </table>
+            </td></tr>
+
+            <!-- Beginn Buttonleisete-->
+            <tr><td class=dialogtxt>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
+                    <td class=formular align=left width=50%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="100" action="location.href='../../action/administration_content_top.html?sender=/system/workplace/administration/'" /><![CDATA[</td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            <!-- Ende Buttonleisete-->
+
+            </table>
+    </td></tr>
+</table>
+</form>
+</td></tr>
+</table>
+
+</BODY>
+</html>
+
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="done">
+<![CDATA[
+<HTML>
+<HEAD>
+</HEAD>
+<BODY onload="parent.admin_content.location.href='../../action/administration_content_top.html?sender=/system/workplace/administration/';">
+</BODY>
+</HTML>
+]]>
+</TEMPLATE>
+
+</WORKPLACE>

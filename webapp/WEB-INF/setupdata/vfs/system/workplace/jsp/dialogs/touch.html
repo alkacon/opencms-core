@@ -1,0 +1,77 @@
+<%@ page import="org.opencms.workplace.*" buffer="none" %><%	
+
+	// initialize the workplace class
+	CmsTouch wp = new CmsTouch(pageContext, request, response);
+	
+//////////////////// start of switch statement 
+	
+switch (wp.getAction()) {
+
+case CmsTouch.ACTION_TOUCH:	
+case CmsTouch.ACTION_WAIT:
+
+//////////////////// ACTION: main touching action (with optional wait screen)
+
+	wp.actionTouch();
+
+break;
+
+case CmsTouch.ACTION_DEFAULT:
+default:
+
+//////////////////// ACTION: show touch dialog (default)
+
+	wp.setParamAction("touch");
+	
+%><%= wp.htmlStart() %>
+<%= wp.calendarIncludes() %>
+<%= wp.bodyStart("dialog") %>
+<%= wp.dialogStart() %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %>
+
+<%@ include file="common/resourceinfo.txt" %>
+<%= wp.dialogSpacer() %>
+
+<form name="touch" class="nomargin" action="<%= wp.getDialogUri() %>" method="post">
+<%= wp.paramsAsHidden() %>
+
+<table border="0">
+<tr>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.newtimestamp") %>
+	<td style="width: 300px;"><input class="maxwidth" type="text" name="<%= wp.PARAM_NEWTIMESTAMP %>" id="<%= wp.PARAM_NEWTIMESTAMP %>" value="<%= wp.getCurrentDateTime() %>"></td>
+	<td>&nbsp;<img src="<%= wp.getResourceUri() %>ic_timer.gif" id="triggercalendar" alt="<%= wp.key("calendar.input.choosedate") %>" title="<%=  wp.key("calendar.input.choosedate") %>" border="0"></td>
+</tr>
+<%= wp.buildCheckRecursive() %>
+</table>
+
+<%= wp.dialogContentEnd() %>
+
+<%= wp.dialogButtonRowStart() %>
+<%= wp.dialogButtonRowOkCancel() %>
+<%= wp.dialogButtonRowEnd() %>
+</form>
+
+<%= wp.dialogEnd() %>
+
+<%
+	/**
+	 * This initializes the JS calendar.<p>
+	 * 
+	 * @param inputFieldId the ID of the input field where the date is pasted to
+     * @param triggerButtonId the ID of the button which triggers the calendar
+     * @param align initial position of the calendar popup element
+     * @param singleClick if true, a single click selects a date and closes the calendar, otherwise calendar is closed by doubleclick
+     * @param weekNumbers show the week numbers in the calendar or not
+     * @param mondayFirst show monday as first day of week
+     * @param disableFunc JS function which determines if a date should be disabled or not
+     * @param showTime true if the time selector should be shown, otherwise false
+     */
+
+%><%= wp.calendarInit(wp.PARAM_NEWTIMESTAMP, "triggercalendar", "cR", false, false, true, null, true) %>
+
+<%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %>
+<%
+} 
+//////////////////// end of switch statement 
+%>
