@@ -14,7 +14,7 @@ function checkSelected()
 {
  for(i=0;i<document.GROUP.name.length;++i)if(document.GROUP.name.options[i].selected == true)selectedowner=document.GROUP.name.options[i].value;
  
- location.href='chown.html?newowner='+selectedowner;
+ location.href='chgrp.html?newowner='+selectedowner;
  //alert(document.GROUP.name.options[i].value);
 }
 
