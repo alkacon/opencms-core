@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/23 13:26:30 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2003/07/28 12:07:01 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.53 $ $Date: 2003/07/23 13:26:30 $
+ * @version $Revision: 1.54 $ $Date: 2003/07/28 12:07:01 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -380,6 +380,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         long dateModified = 0, dateCreated = 0;
         Connection conn = null;
         PreparedStatement stmt = null;
+        boolean contentExistsAlready = false;
 
         // validate the resource name
         if (filename.length() > I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME) {
@@ -405,7 +406,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             modifiedByUserId = createdByUserId;
         }
 
-        // prove if the resource already exists
+        // check if the resource already exists
         try {
             readFileHeader(project.getId(), parentId, filename, false);
             throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
@@ -422,18 +423,26 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         }
 
         try {
+            
             conn = m_sqlManager.getConnection(project);
-
-            if (file.isHardLink()) {
-                // write the content
-                try {
-                    createFileContent(file.getFileId(), file.getContents(), 0, project.getId(), false);
-                } catch (CmsException se) {
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + "] " + se.getMessage());
-                    }
-                }
-
+            
+            // write the structure
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_WRITE");
+            stmt.setString(1, file.getId().toString());
+            stmt.setString(2, parentId.toString());
+            stmt.setString(3, file.getResourceId().toString());
+            stmt.setString(4, filename);
+            stmt.setInt(5, vfsLinkType);
+            stmt.setInt(6, newState);
+            stmt.setTimestamp(7, new Timestamp(dateModified));
+            stmt.setString(8, modifiedByUserId.toString());
+            stmt.setString(9, userId.toString());
+            stmt.executeUpdate(); 
+        
+            if (!existsResource(project, file)) { 
+            
+                m_sqlManager.closeAll(null, stmt, null);
+                
                 // write the resource
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_WRITE");
                 stmt.setString(1, file.getResourceId().toString());
@@ -449,26 +458,16 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 stmt.setInt(11, file.getLength());
                 stmt.setString(12, file.isLockedBy().toString());
                 stmt.setInt(13, project.getId());
-                stmt.executeUpdate();
-                m_sqlManager.closeAll(null, stmt, null);
+                stmt.executeUpdate();               
+            
+                // write the content
+                createFileContent(file.getFileId(), file.getContents(), 0, project.getId(), false);
+            } else {
                 
-                vfsLinkType = I_CmsConstants.C_VFS_LINK_TYPE_MASTER;
-            } // else {
-            //    vfsLinkType = I_CmsConstants.C_VFS_LINK_TYPE_SLAVE;
-            // }
-
-            // write the structure
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_WRITE");
-            stmt.setString(1, file.getId().toString());
-            stmt.setString(2, parentId.toString());
-            stmt.setString(3, file.getResourceId().toString());
-            stmt.setString(4, filename);
-            stmt.setInt(5, vfsLinkType);
-            stmt.setInt(6, newState);
-            stmt.setTimestamp(7, new Timestamp(dateModified));
-            stmt.setString(8, modifiedByUserId.toString());
-            stmt.setString(9, userId.toString());
-            stmt.executeUpdate();
+                // update the resource and content records
+                updateResourcestate(file, CmsDriverManager.C_UPDATE_RESOURCE);        
+                writeFileContent(file.getFileId(), file.getContents(), project.getId(), false);
+            }                        
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
@@ -477,6 +476,30 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
         return readFile(project.getId(), false, file.getId());
     }
+
+    private boolean existsResource (CmsProject project, CmsResource resource) throws CmsException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;           
+        boolean exists = false;
+        
+        try {
+            conn = m_sqlManager.getConnection(project);
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_READ_RESOURCE_STATE");
+            stmt.setString(1, resource.getResourceId().toString());
+            res = stmt.executeQuery();
+
+            exists = res.next();
+                
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }        
+        
+        return exists;       
+    }
+    
     
     /**
      * Creates a new file with the given content and resourcetype.
@@ -1243,6 +1266,17 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         }
     }    
 
+    
+    /**
+     * Checks what parts of the given resource exists already.
+     * 
+     * @return
+     */
+    public boolean existsResource () {
+        // TODO: implement this
+        return false;    
+    }
+    
     public long fetchDateFromResource(int theProjectId, int theResourceId, long theDefaultDate) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1282,6 +1316,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      * @return the value of the resource flag attribute.
      * @throws CmsException
      */
+    // TODO: check this !!!!!
     public int fetchResourceFlags(CmsProject theProject, String theResourceName) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -3777,5 +3812,57 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
+   
     
+    /**
+     * Checks if the passed id is already used as structure id.<p>
+     * 
+     * @param projectId the id of the current project (online/offline)
+     * @param id the id to check
+     * @return true if the passed id is used as structure id
+     */
+    private boolean existsStructureId (int projectId, CmsUUID id) throws CmsException {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet res = null;
+        
+        try {
+            conn = m_sqlManager.getConnection(projectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_EXISTS_STRUCTURE_ID");
+            res = stmt.executeQuery();
+            
+            return res.next();
+            
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }        
+    }
+    
+    /**
+     * Checks if the passed id is already used as resource id.<p>
+     * 
+     * @param projectId the id of the current project (online/offline)
+     * @param id
+     * @return
+     */
+    private boolean existsResourceId (int projectId, CmsUUID id) throws CmsException {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet res = null;
+        
+        try {
+            conn = m_sqlManager.getConnection(projectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_EXISTS_RESOURCE_ID");
+            res = stmt.executeQuery();
+            
+            return res.next();
+            
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }                
+    }
 }
