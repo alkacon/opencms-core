@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/09 13:44:46 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2000/06/09 14:16:30 $
+ * Version: $Revision: 1.43 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.42 $ $Date: 2000/06/09 13:44:46 $
+ * @version $Revision: 1.43 $ $Date: 2000/06/09 14:16:30 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2669,7 +2669,11 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( accessRead(currentUser, currentProject, (CmsResource)cmsFolder) ) {
 				
 			// acces to all subfolders was granted - return the folder.
-			return cmsFolder;
+            if (cmsFolder.getState() == C_STATE_DELETED) {
+                throw new CmsException("["+this.getClass().getName()+"]"+cmsFolder.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);  
+            } else {
+			    return cmsFolder;
+            }
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + folder + folderName, 
 				CmsException.C_ACCESS_DENIED);
@@ -2711,7 +2715,54 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 								  String folder, String newFolderName, 
 								  Hashtable propertyinfos)
         throws CmsException {
-     return null;
+     
+		// check for mandatory metainfos
+		 checkMandatoryProperties(currentUser, currentProject, C_TYPE_FOLDER_NAME, 
+								  propertyinfos);
+	
+		// checks, if the filename is valid, if not it throws a exception
+		validFilename(newFolderName);
+
+		CmsFolder cmsFolder = m_dbAccess.readFolder(currentProject.getId(), folder);
+   
+		if( accessCreate(currentUser, currentProject, (CmsResource)cmsFolder) ) {
+				
+			// write-acces  was granted - create the folder.
+       
+			CmsFolder newFolder = m_dbAccess.createFolder(currentUser, currentProject, 
+                                                          cmsFolder.getResourceId(),
+                                                          C_UNKNOWN_ID,
+														  folder + newFolderName + 
+														  C_FOLDER_SEPERATOR,
+														  0);
+
+            // update the access flags
+            Hashtable startSettings=null;
+            Integer accessFlags=null;
+            startSettings=(Hashtable)currentUser.getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+            if (startSettings != null) {
+                accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
+                if (accessFlags != null) {
+                    newFolder.setAccessFlags(accessFlags.intValue());
+                }
+            }
+            if(currentGroup != null) {
+                newFolder.setGroupId(currentGroup.getId());
+            }
+            m_dbAccess.writeFolder(currentProject, newFolder, false);
+                                        
+            // write metainfos for the folder
+         
+			writeProperties(currentUser,currentProject, newFolder.getName(), propertyinfos);
+			// inform about the file-system-change
+     
+			fileSystemChanged();
+			// return the folder
+			return newFolder ;			
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + folder + newFolderName, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 	
      /**
