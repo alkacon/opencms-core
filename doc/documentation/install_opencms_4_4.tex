@@ -17,12 +17,12 @@ system, see the documentation that comes with them.
 \section{Installing Tomcat}
 Note: OpenCms does not work correctly with Tomcat 3.2.x. Tomcat
 3.2.x uses its own XML parser which results in major errors while
-using OpenCms. Please use Tomcat 3.3 instead.
+using OpenCms. Please use Tomcat 4 instead.
 
 Install JakartaTomcat
 \rqhttp{http://jakarta.apache.org/tomcat/index.html}{http://jakarta.apache.org/tomcat/index.html}
-into a folder of your choice. This is the TOMCAT\_HOME folder.
-Don't forget to set the environment variables TOMCAT\_HOME and
+into a folder of your choice. This is the JAKARTA\_HOME folder.
+Don't forget to set the environment variables JAKARTA\_HOME and
 JAVA\_HOME.
 
 Test the installation by running tomcat in standalone mode and
@@ -38,6 +38,9 @@ write files you should add the following parameter to the
 commandline that is used to start Tomcat:
 
 \texttt{-Dfile.encoding=ISO8859\_1}
+
+You can set the environment varibale CATALINA\_OPTS to do so.
+(\texttt{CATALINA\_OPTS=-Dfile.encoding=ISO8859\_1})
 
 \section{Installing MySQL}
 Install MySQL from
@@ -60,8 +63,8 @@ calling the monitor. Quit the MySQL monitor by typing
 
 \section{Deploy the opencms.war file}
 Copy the \texttt{opencms.war} file to
-\texttt{TOMCAT\_HOME/web-apps/}. Note: replace
-\texttt{TOMCAT\_HOME} with the real path to your Tomcat
+\texttt{CATALINA\_HOME/web-apps/}. Note: replace
+\texttt{CATALINA\_HOME} with the real path to your Tomcat
 installation.
 
 (Re-)Start Tomcat. Tomcat will now deploy the web application
