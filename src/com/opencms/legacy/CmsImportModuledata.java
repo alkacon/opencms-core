@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2004/03/06 18:52:07 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2004/06/18 10:46:13 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.5 $ $Date: 2004/03/06 18:52:07 $
+ * @version $Revision: 1.6 $ $Date: 2004/06/18 10:46:13 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -583,7 +583,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @return long converted date
      */
     private long convertDate(String date) {
-        java.text.SimpleDateFormat formatterFullTime = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        java.text.SimpleDateFormat formatterFullTime = new SimpleDateFormat("M/d/yy h:mm a");
         long adate = 0;
         try {
             adate = formatterFullTime.parse(date).getTime();
