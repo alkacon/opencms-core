@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/17 16:24:11 $
-* Version: $Revision: 1.288 $
+* Date   : $Date: 2003/06/20 16:16:23 $
+* Version: $Revision: 1.289 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.288 $
+ * @version $Revision: 1.289 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -1750,7 +1750,7 @@ public Vector getGroups() throws CmsException {
  * @throws CmsException if operation was not succesful.
  */
 public Vector getGroupsOfUser(String username) throws CmsException {
-    return (m_driverManager.getGroupsOfUser(m_context.currentUser(), username));
+    return (m_driverManager.getGroupsOfUser(m_context.currentUser(), m_context.currentProject(), username));
 }
 /**
  * Get the launcher manager used with this instance of CmsObject.
