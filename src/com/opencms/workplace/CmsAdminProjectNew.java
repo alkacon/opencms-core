@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/04/04 10:28:48 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/04/05 09:21:18 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/04/04 10:28:48 $
+ * @version $Revision: 1.13 $ $Date: 2000/04/05 09:21:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -141,21 +141,26 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 			
 			// create new Project
 			try {
-                //test if the given folder is existing
-                cms.readFolder(newFolder);
-         		A_CmsProject project = cms.createProject(newName, newDescription, newGroup, newManagerGroup);
-				// change the current project
-            	reqCont.setCurrentProject(project.getId());
-				// copy the resource the the project
-              	cms.copyResourceToProject(newFolder);
-				// try to copy the content resources to the project
-				try {
-					cms.copyResourceToProject(C_CONTENTBODYPATH);
-				} catch (CmsException exc) {
-					// the content is in the project already - ignore the exception
-					A_OpenCms.log(C_OPENCMS_INFO, "Creating project " + newName + ": " + C_CONTENTBODYPATH + " was already in Project.");
+                //test if the given folder is existing and writeable
+                
+				if(checkWriteable(cms, cms.readFolder(newFolder))) {
+         			A_CmsProject project = cms.createProject(newName, newDescription, newGroup, newManagerGroup);
+					// change the current project
+					reqCont.setCurrentProject(project.getId());
+					// copy the resource the the project
+					cms.copyResourceToProject(newFolder);
+					// try to copy the content resources to the project
+					try {
+						cms.copyResourceToProject(C_CONTENTBODYPATH);
+					} catch (CmsException exc) {
+						// the content is in the project already - ignore the exception
+						A_OpenCms.log(C_OPENCMS_INFO, "Creating project " + newName + ": " + C_CONTENTBODYPATH + " was already in Project.");
+					}
+					templateSelector = C_PROJECTNEW_DONE;
+				} else {
+					// the choosen folder was not writeable -> don't create the project.
+					templateSelector = C_PROJECTNEW_ERROR;
 				}
-				templateSelector = C_PROJECTNEW_DONE;
 			} catch(CmsException exc) {
        			templateSelector = C_PROJECTNEW_ERROR;
 			}
@@ -297,4 +302,25 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		// no current folder, set index to -1
         return new Integer(-1);
     }
+
+     /** 
+      * Check if this resource is writeable by the user.
+      * @param cms The CmsObject
+      * @param res The resource to be checked.
+      * @return True or false.
+      * @exception CmsException if something goes wrong.
+      */
+     private boolean checkWriteable(A_CmsObject cms, CmsResource res)
+     throws CmsException {
+         boolean access=false;
+         int accessflags=res.getAccessFlags();
+         
+         if ( ((accessflags & C_ACCESS_PUBLIC_WRITE) > 0) ||
+              (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_WRITE) > 0) ||
+              (cms.readGroup(res).equals(cms.getRequestContext().currentGroup()) && (accessflags & C_ACCESS_GROUP_WRITE) > 0)) {    
+              access=true;
+         }
+               
+         return access;
+     }
 }

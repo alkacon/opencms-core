@@ -23,7 +23,7 @@ function show_help()
 <link rel=stylesheet type="text/css" href="../css/format.css">
 
 </HEAD>
-<BODY bgcolor="#ffffff"  background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.admincontenturl='administration_content_project.html';">
+<BODY bgcolor="#ffffff"  background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.admincontenturl='administration_content_project.html';" onUnload="if(treewin!=null)treewin.close();">
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -70,7 +70,7 @@ function show_help()
 								     <input type="text" name="selectallfolders" class="textfeld3" size=31>	
 								</td>
 								
-								<td class=formular><a href="javascript:opensmallwin('folder_tree.html?foldertree=/&formname=PROJECTNEW&variable=selectallfolders', 'explorer_viewer', 150, 300)"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="Durchsuchen"></a></td>
+								<td class=formular><a href="javascript:treewin=opensmallwin('folder_tree.html?foldertree=/&formname=PROJECTNEW&variable=selectallfolders', 'explorer_viewer', 150, 300),treewin.focus();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="Durchsuchen"></a></td>
 								
 							</tr>
 							<tr>

@@ -7,6 +7,7 @@ var admincontenturl="administration_content_top.html";
 
 var selectedTask=0;
 var lastVisited="tasks_content_nafm.html";
+var treewin=null;
 
 // List of valid characters for INPUT fields containing names:
 var charList="0123456789-._~abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -154,10 +155,10 @@ function openwinfull(url, name, w, h) //opens a new window with parameter URL, W
 //------------------------------------------------------------------------------------
 // open new window
 // m.schleich 26.01.2000
+// m.schreiber 20.03.2000
 //------------------------------------------------------------------------------------
 
 var smallwindow;
-
 
 function opensmallwin(url, name, w, h) //opens a new window with parameter URL, Windowname (free choosable), width and height
 {
@@ -169,8 +170,8 @@ function opensmallwin(url, name, w, h) //opens a new window with parameter URL, 
 	         smallwindow.opener = self;
 	      }
    		}
-	smallwindow.focus();
-
+	//smallwindow.focus();
+	return smallwindow;
 }
 
 //------------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
- * Date   : $Date: 2000/03/10 14:11:34 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/04/05 09:21:18 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/03/10 14:11:34 $
+ * @version $Revision: 1.18 $ $Date: 2000/04/05 09:21:18 $
  */
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants  {
 
@@ -343,8 +343,10 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                     template.setXmlData(C_TREETAB,tab);
                     template.setXmlData(C_TREEFOLDER,folderimg);
                     template.setXmlData(C_TREESWITCH,treeswitch);
-                    // test if the folder is in the current project
-                    if (folder.inProject(cms.getRequestContext().currentProject())) {
+                    // test if the folder is in the current project and if the user has
+					// write access to this folder.
+                    if (folder.inProject(cms.getRequestContext().currentProject()) &&
+						checkWriteable(cms, folder)) {
                         template.setXmlData(C_TREESTYLE,C_FILE_INPROJECT);
                         output.append(template.getProcessedXmlDataValue(C_TREELINE,this));
                     } else {
@@ -381,4 +383,25 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                
          return access;
      }
-  }
+
+     /** 
+      * Check if this resource should be displayed in the filelist.
+      * @param cms The CmsObject
+      * @param res The resource to be checked.
+      * @return True or false.
+      * @exception CmsException if something goes wrong.
+      */
+     private boolean checkWriteable(A_CmsObject cms, CmsResource res)
+     throws CmsException {
+         boolean access=false;
+         int accessflags=res.getAccessFlags();
+         
+         if ( ((accessflags & C_ACCESS_PUBLIC_WRITE) > 0) ||
+              (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_WRITE) > 0) ||
+              (cms.readGroup(res).equals(cms.getRequestContext().currentGroup()) && (accessflags & C_ACCESS_GROUP_WRITE) > 0)) {    
+              access=true;
+         }
+               
+         return access;
+     }
+}
