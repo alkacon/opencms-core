@@ -81,6 +81,7 @@ function addFolder(theList, item) {
 	if (item != null && item != "") {
 		newOption = new Option(item, item, false, false); 
 		theList.options[theList.length] = newOption;
+		document.DBEXPORT.selectallfolders.value='';
 	}
 }
 
