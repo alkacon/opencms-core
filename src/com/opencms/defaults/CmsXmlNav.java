@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2003/01/20 23:59:23 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/05/14 08:50:25 $
+* Version: $Revision: 1.46.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * @author Alexander Kandzior
  * @author Waruschan Babachan
  * @author Thomas Weckert
- * @version $Revision: 1.46 $ $Date: 2003/01/20 23:59:23 $
+ * @version $Revision: 1.46.2.1 $ $Date: 2003/05/14 08:50:25 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 
@@ -385,9 +385,11 @@ public class CmsXmlNav extends A_CmsNavBase {
         if (exact.equals("true") && (level<=0 || level>count || (level==count && requestedUri.equals(uri)))) {
             return "";
         }
-        if (level==count && requestedUri.equals(uri)) {
-            level--;
-        }
+        // ulrich.rueth@gmx.de: this seems to have been the reason for the navigation
+        // not displaying correctly in top-level index.html files!
+        //if (level==count && requestedUri.equals(uri)) {
+        //    level--;
+        //}
         while (st.hasMoreTokens()) {
             if (level>1) {
                 currentFolder=currentFolder+st.nextToken()+"/";
@@ -599,7 +601,7 @@ public class CmsXmlNav extends A_CmsNavBase {
         if (exact.equals("true") && level!=count) {
             return "".getBytes();
         }
-		while (st.hasMoreTokens()) {
+        while (st.hasMoreTokens()) {
             if (level>1) {
                 currentFolder=currentFolder+st.nextToken()+"/";
                 level--;
@@ -1392,435 +1394,435 @@ public class CmsXmlNav extends A_CmsNavBase {
         return result;
     }
     
-	/**
-	 * This method retrieves max. three navigation levels per menu entry to 
-	 * build dynamic DHTML pop-up menus.
-	 *
-	 * @param cms CmsObject Object for accessing system resources.
-	 * @param tagcontent used in this special case of a user method. Can't be ignored.
-	 * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-	 * @param userObject Hashtable with parameters.
-	 * @return byte[] with the content of this subelement.
-	 * @throws CmsException
-	 */
-	public Object getNavPop(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-		String currentFolder = "";
-		StringBuffer sRet = new StringBuffer();
-		// String currentFolder2 = cms.getRequestContext().currentFolder().getAbsolutePath();
-		// int iLevel = extractLevel(cms, currentFolder2);
-		int deep = 3;
-		int level = -1;
+    /**
+     * This method retrieves max. three navigation levels per menu entry to 
+     * build dynamic DHTML pop-up menus.
+     *
+     * @param cms CmsObject Object for accessing system resources.
+     * @param tagcontent used in this special case of a user method. Can't be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObject Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @throws CmsException
+     */
+    public Object getNavPop(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+        String currentFolder = "";
+        StringBuffer sRet = new StringBuffer();
+        // String currentFolder2 = cms.getRequestContext().currentFolder().getAbsolutePath();
+        // int iLevel = extractLevel(cms, currentFolder2);
+        int deep = 3;
+        int level = -1;
 
-		if (!tagcontent.equals("")) {
-			try {
-				StringTokenizer st = new StringTokenizer(tagcontent.toString(), ",");
+        if (!tagcontent.equals("")) {
+            try {
+                StringTokenizer st = new StringTokenizer(tagcontent.toString(), ",");
 
-				if (st.hasMoreTokens()) {
-					level = Integer.parseInt(st.nextToken().trim());
+                if (st.hasMoreTokens()) {
+                    level = Integer.parseInt(st.nextToken().trim());
 
-				}
-				if (st.hasMoreTokens()) {
-					deep = Integer.parseInt(st.nextToken().trim());
-				}
-			}
-			catch (Exception e) {
-				throw new CmsException(e.getMessage());
-			}
-		}
+                }
+                if (st.hasMoreTokens()) {
+                    deep = Integer.parseInt(st.nextToken().trim());
+                }
+            }
+            catch (Exception e) {
+                throw new CmsException(e.getMessage());
+            }
+        }
         
         switch (level) {
-        	case -1 :
-        		currentFolder = cms.getRequestContext().currentFolder().getAbsolutePath();
-        		break;
+            case -1 :
+                currentFolder = cms.getRequestContext().currentFolder().getAbsolutePath();
+                break;
         
-        	case 0 :
-        		currentFolder = cms.rootFolder().getAbsolutePath();
-        		break;
+            case 0 :
+                currentFolder = cms.rootFolder().getAbsolutePath();
+                break;
         
-        	default :
-        		if (extractFolder(cms, 1, "").equals("/")) {
-        			currentFolder = extractFolder(cms, level + 1, "");
-        		}
-        		else {
-        			currentFolder = extractFolder(cms, level, "");
-        		}
-        		break;
+            default :
+                if (extractFolder(cms, 1, "").equals("/")) {
+                    currentFolder = extractFolder(cms, level + 1, "");
+                }
+                else {
+                    currentFolder = extractFolder(cms, level, "");
+                }
+                break;
         }
 
-		Vector resources = cms.getSubFolders(currentFolder);
-		Vector allFile = cms.getFilesInFolder(currentFolder);
-		resources.ensureCapacity(resources.size() + allFile.size());
-		Enumeration e = allFile.elements();
+        Vector resources = cms.getSubFolders(currentFolder);
+        Vector allFile = cms.getFilesInFolder(currentFolder);
+        resources.ensureCapacity(resources.size() + allFile.size());
+        Enumeration e = allFile.elements();
 
-		Vector resources2 = null;
-		Vector allFile2 = null;
-		Enumeration e2 = null;
-		Object oBuffer2 = null;
+        Vector resources2 = null;
+        Vector allFile2 = null;
+        Enumeration e2 = null;
+        Object oBuffer2 = null;
 
-		Vector resources3 = null;
-		Vector allFile3 = null;
-		Enumeration e3 = null;
-		Object oBuffer1 = null;
-		Object oBuffer3 = null;
+        Vector resources3 = null;
+        Vector allFile3 = null;
+        Enumeration e3 = null;
+        Object oBuffer1 = null;
+        Object oBuffer3 = null;
 
-		Vector resources4 = new Vector();
-		ArrayList alLink = new ArrayList();
-		ArrayList alPos = new ArrayList();
-		ArrayList alLink2 = new ArrayList();
-		ArrayList alPos2 = new ArrayList();
+        Vector resources4 = new Vector();
+        ArrayList alLink = new ArrayList();
+        ArrayList alPos = new ArrayList();
+        ArrayList alLink2 = new ArrayList();
+        ArrayList alPos2 = new ArrayList();
 
-		while (e.hasMoreElements()) {
-			oBuffer1 = e.nextElement();
-			resources.addElement(oBuffer1);
-		}
+        while (e.hasMoreElements()) {
+            oBuffer1 = e.nextElement();
+            resources.addElement(oBuffer1);
+        }
 
-		sRet = buildNavPop(cms, doc, userObject, resources, null, 1, 0, 0, deep);
+        sRet = buildNavPop(cms, doc, userObject, resources, null, 1, 0, 0, deep);
 
-		if (deep > 1) {
-			int size = resources.size();
-			String navLink[] = new String[size];
-			String navText[] = new String[size];
-			float navPos[] = new float[size];
+        if (deep > 1) {
+            int size = resources.size();
+            String navLink[] = new String[size];
+            String navText[] = new String[size];
+            float navPos[] = new float[size];
 
-			int max = extractNav(cms, resources, navLink, navText, navPos);
+            int max = extractNav(cms, resources, navLink, navText, navPos);
 
-			for (int iCount = 0; iCount < max; iCount++) {
-				if (navLink[iCount].endsWith("/") || navLink[iCount].endsWith("\\")) {
-					alLink.add(navLink[iCount]);
-					alPos.add(new Integer(iCount));
-					resources2 = cms.getSubFolders(navLink[iCount]);
-					allFile2 = cms.getFilesInFolder(navLink[iCount]);
-					resources2.ensureCapacity(resources2.size() + allFile2.size());
-					e2 = allFile2.elements();
+            for (int iCount = 0; iCount < max; iCount++) {
+                if (navLink[iCount].endsWith("/") || navLink[iCount].endsWith("\\")) {
+                    alLink.add(navLink[iCount]);
+                    alPos.add(new Integer(iCount));
+                    resources2 = cms.getSubFolders(navLink[iCount]);
+                    allFile2 = cms.getFilesInFolder(navLink[iCount]);
+                    resources2.ensureCapacity(resources2.size() + allFile2.size());
+                    e2 = allFile2.elements();
 
-					while (e2.hasMoreElements()) {
-						oBuffer2 = e2.nextElement();
-						resources2.addElement(oBuffer2);
-					}
+                    while (e2.hasMoreElements()) {
+                        oBuffer2 = e2.nextElement();
+                        resources2.addElement(oBuffer2);
+                    }
 
-					for (int iResCounter = 0; iResCounter < resources2.size(); iResCounter++) {
-						resources4.addElement(resources2.elementAt(iResCounter));
-					}
+                    for (int iResCounter = 0; iResCounter < resources2.size(); iResCounter++) {
+                        resources4.addElement(resources2.elementAt(iResCounter));
+                    }
 
-					sRet = buildNavPop(cms, doc, userObject, resources2, sRet, 2, iCount, 0, deep);
+                    sRet = buildNavPop(cms, doc, userObject, resources2, sRet, 2, iCount, 0, deep);
 
-					// these arrays are now initialized with the correct length
-					int size2 = resources2.size();
-					String navLink2[] = new String[size2];
-					String navText2[] = new String[size2];
-					float navPos2[] = new float[size2];
+                    // these arrays are now initialized with the correct length
+                    int size2 = resources2.size();
+                    String navLink2[] = new String[size2];
+                    String navText2[] = new String[size2];
+                    float navPos2[] = new float[size2];
 
-					int max3 = extractNav(cms, resources2, navLink2, navText2, navPos2);
+                    int max3 = extractNav(cms, resources2, navLink2, navText2, navPos2);
 
-					for (int iCount3 = 0; iCount3 < max3; iCount3++) {
-						alLink2.add(navLink2[iCount3]);
-						alPos2.add(new Integer(iCount3));
-					}
+                    for (int iCount3 = 0; iCount3 < max3; iCount3++) {
+                        alLink2.add(navLink2[iCount3]);
+                        alPos2.add(new Integer(iCount3));
+                    }
 
-				}
-			}
-		}
+                }
+            }
+        }
 
-		if (deep > 2) {
-			int size2 = resources4.size();
-			String[] navLink = new String[size2];
-			String[] navText = new String[size2];
-			float[] navPos = new float[size2];
-			int iCounter3 = 0;
+        if (deep > 2) {
+            int size2 = resources4.size();
+            String[] navLink = new String[size2];
+            String[] navText = new String[size2];
+            float[] navPos = new float[size2];
+            int iCounter3 = 0;
 
-			int max2 = extractNav(cms, resources4, navLink, navText, navPos);
+            int max2 = extractNav(cms, resources4, navLink, navText, navPos);
 
-			for (int iCount = 0; iCount < max2; iCount++) {
-				if (navLink[iCount].endsWith("/") || navLink[iCount].endsWith("\\")) {
-					resources3 = cms.getSubFolders(navLink[iCount]);
-					allFile3 = cms.getFilesInFolder(navLink[iCount]);
-					resources3.ensureCapacity(resources3.size() + allFile3.size());
-					e3 = allFile3.elements();
+            for (int iCount = 0; iCount < max2; iCount++) {
+                if (navLink[iCount].endsWith("/") || navLink[iCount].endsWith("\\")) {
+                    resources3 = cms.getSubFolders(navLink[iCount]);
+                    allFile3 = cms.getFilesInFolder(navLink[iCount]);
+                    resources3.ensureCapacity(resources3.size() + allFile3.size());
+                    e3 = allFile3.elements();
 
-					while (e3.hasMoreElements()) {
-						oBuffer3 = e3.nextElement();
-						resources3.addElement(oBuffer3);
-					}
+                    while (e3.hasMoreElements()) {
+                        oBuffer3 = e3.nextElement();
+                        resources3.addElement(oBuffer3);
+                    }
 
-					int iArrayPos = -1;
-					int iArrayPos2 = -1;
-					String sLinkDummy = "";
+                    int iArrayPos = -1;
+                    int iArrayPos2 = -1;
+                    String sLinkDummy = "";
 
-					for (iCounter3 = 0; iCounter3 < alLink.size(); iCounter3++) {
-						sLinkDummy = navLink[iCount].substring(0, navLink[iCount].lastIndexOf("/"));
-						sLinkDummy = sLinkDummy.substring(0, sLinkDummy.lastIndexOf("/") + 1);
-						if (((String) alLink.get(iCounter3)).equals(sLinkDummy)) {
-							iArrayPos = ((Integer) alPos.get(iCounter3)).intValue();
-						}
-					}
+                    for (iCounter3 = 0; iCounter3 < alLink.size(); iCounter3++) {
+                        sLinkDummy = navLink[iCount].substring(0, navLink[iCount].lastIndexOf("/"));
+                        sLinkDummy = sLinkDummy.substring(0, sLinkDummy.lastIndexOf("/") + 1);
+                        if (((String) alLink.get(iCounter3)).equals(sLinkDummy)) {
+                            iArrayPos = ((Integer) alPos.get(iCounter3)).intValue();
+                        }
+                    }
 
-					for (iCounter3 = 0; iCounter3 < alLink2.size(); iCounter3++) {
-						sLinkDummy = navLink[iCount].substring(0, navLink[iCount].lastIndexOf("/") + 1);
-						if (((String) alLink2.get(iCounter3)).equals(sLinkDummy)) {
-							iArrayPos2 = ((Integer) alPos2.get(iCounter3)).intValue();
-						}
-					}
+                    for (iCounter3 = 0; iCounter3 < alLink2.size(); iCounter3++) {
+                        sLinkDummy = navLink[iCount].substring(0, navLink[iCount].lastIndexOf("/") + 1);
+                        if (((String) alLink2.get(iCounter3)).equals(sLinkDummy)) {
+                            iArrayPos2 = ((Integer) alPos2.get(iCounter3)).intValue();
+                        }
+                    }
 
-					if (navText.length > 0) {
-						sRet = buildNavPop(cms, doc, userObject, resources3, sRet, 3, iArrayPos, iArrayPos2, deep);
-					}
+                    if (navText.length > 0) {
+                        sRet = buildNavPop(cms, doc, userObject, resources3, sRet, 3, iArrayPos, iArrayPos2, deep);
+                    }
 
-				}
-			}
+                }
+            }
 
-		}
+        }
 
-		return sRet.toString().getBytes();
-	}
+        return sRet.toString().getBytes();
+    }
 
-	/**
-	 * Builds the navigation customized with additional data block menueLevel, 
-	 * Level1Pos and Level2Pos to build dynamic DHTML pop-up menus by using
-	 * getNavPop.
-	 *
-	 * @param cms CmsObject Object for accessing system resources.
-	 * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-	 * @param resources a vector that contains the elements of navigation.
-	 * @param userObj Hashtable with parameters.
-	 * @return String that contains the navigation.
-	 */
-	protected StringBuffer buildNavPop(CmsObject cms, A_CmsXmlContent doc, Object userObject, Vector resources, StringBuffer result2, int iDirLevel, int lPos, int lPos2, int iMaxDeep) throws CmsException {
-		String requestedUri = cms.getRequestContext().getUri();
-		String currentFolder = cms.getRequestContext().currentFolder().getAbsolutePath();
-		String servletPath = cms.getRequestContext().getRequest().getServletUrl();
+    /**
+     * Builds the navigation customized with additional data block menueLevel, 
+     * Level1Pos and Level2Pos to build dynamic DHTML pop-up menus by using
+     * getNavPop.
+     *
+     * @param cms CmsObject Object for accessing system resources.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param resources a vector that contains the elements of navigation.
+     * @param userObj Hashtable with parameters.
+     * @return String that contains the navigation.
+     */
+    protected StringBuffer buildNavPop(CmsObject cms, A_CmsXmlContent doc, Object userObject, Vector resources, StringBuffer result2, int iDirLevel, int lPos, int lPos2, int iMaxDeep) throws CmsException {
+        String requestedUri = cms.getRequestContext().getUri();
+        String currentFolder = cms.getRequestContext().currentFolder().getAbsolutePath();
+        String servletPath = cms.getRequestContext().getRequest().getServletUrl();
 
-		CmsXmlTemplateFile xmlDataBlock = (CmsXmlTemplateFile) doc;
-		StringBuffer result = null;
-		if (result2 == null) {
-			result = new StringBuffer();
-		}
-		else {
-			result = result2;
-		}
+        CmsXmlTemplateFile xmlDataBlock = (CmsXmlTemplateFile) doc;
+        StringBuffer result = null;
+        if (result2 == null) {
+            result = new StringBuffer();
+        }
+        else {
+            result = result2;
+        }
 
-		int size = resources.size();
+        int size = resources.size();
 
-		String navLink[] = new String[size];
-		String navText[] = new String[size];
-		float navPos[] = new float[size];
+        String navLink[] = new String[size];
+        String navText[] = new String[size];
+        float navPos[] = new float[size];
 
-		int max = extractNav(cms, resources, navLink, navText, navPos);
+        int max = extractNav(cms, resources, navLink, navText, navPos);
 
-		// The arrays folderNames and folderTitles now contain all folders
-		// that should appear in the nav.
-		// Loop through all folders and generate output
-		if (xmlDataBlock.hasData("navEntry")) {
-			if (!xmlDataBlock.hasData("navCurrent")) {
-				xmlDataBlock.setData("navCurrent", xmlDataBlock.getData("navEntry"));
-			}
+        // The arrays folderNames and folderTitles now contain all folders
+        // that should appear in the nav.
+        // Loop through all folders and generate output
+        if (xmlDataBlock.hasData("navEntry")) {
+            if (!xmlDataBlock.hasData("navCurrent")) {
+                xmlDataBlock.setData("navCurrent", xmlDataBlock.getData("navEntry"));
+            }
 
-			xmlDataBlock.setData("menueLevel", iDirLevel + "");
-			xmlDataBlock.setData("Level1Pos", lPos + 1 + "");
-			xmlDataBlock.setData("Level2Pos", lPos2 + 1 + "");
+            xmlDataBlock.setData("menueLevel", iDirLevel + "");
+            xmlDataBlock.setData("Level1Pos", lPos + 1 + "");
+            xmlDataBlock.setData("Level2Pos", lPos2 + 1 + "");
 
-			result.append(xmlDataBlock.getProcessedDataValue("navStart" + iDirLevel, this, userObject));
+            result.append(xmlDataBlock.getProcessedDataValue("navStart" + iDirLevel, this, userObject));
 
-			boolean bHasSubFiles = false;
-			for (int i = 0; i < max; i++) {
-				bHasSubFiles = false;
-				if (navLink[i].endsWith("/") || navLink[i].endsWith("\\")) {
-					Vector resources2 = cms.getSubFolders(navLink[i]);
-					Vector allFile2 = cms.getFilesInFolder(navLink[i]);
-					resources2.ensureCapacity(resources2.size() + allFile2.size());
-					Enumeration e2 = allFile2.elements();
-					while (e2.hasMoreElements()) {
-						resources2.addElement(e2.nextElement());
-					}
-					int size2 = resources2.size();
-					String navLink2[] = new String[size2];
-					String navText2[] = new String[size2];
-					float navPos2[] = new float[size2];
+            boolean bHasSubFiles = false;
+            for (int i = 0; i < max; i++) {
+                bHasSubFiles = false;
+                if (navLink[i].endsWith("/") || navLink[i].endsWith("\\")) {
+                    Vector resources2 = cms.getSubFolders(navLink[i]);
+                    Vector allFile2 = cms.getFilesInFolder(navLink[i]);
+                    resources2.ensureCapacity(resources2.size() + allFile2.size());
+                    Enumeration e2 = allFile2.elements();
+                    while (e2.hasMoreElements()) {
+                        resources2.addElement(e2.nextElement());
+                    }
+                    int size2 = resources2.size();
+                    String navLink2[] = new String[size2];
+                    String navText2[] = new String[size2];
+                    float navPos2[] = new float[size2];
 
-					if (extractNav(cms, resources2, navLink2, navText2, navPos2) > 0) {
-						bHasSubFiles = true;
-					}
+                    if (extractNav(cms, resources2, navLink2, navText2, navPos2) > 0) {
+                        bHasSubFiles = true;
+                    }
 
-				}
+                }
 
-				xmlDataBlock.setData("navText", navText[i]);
-				xmlDataBlock.setData("count", new Integer(i + 1).toString());
-				xmlDataBlock.setData("level", new Integer(extractLevel(cms, navLink[i])).toString());
-				// this if condition is necessary because of url parameter,
-				// if there is no filename then the parameters are ignored, so I
-				// can't use e.g. ?cmsframe=body.
-				if (navLink[i].endsWith("/")) {
-					String navIndex = cms.readProperty(navLink[i], C_PROPERTY_NAVINDEX);
-					if (navIndex == null) {
-						navIndex = C_NAVINDEX;
-					}
-					try {
-						cms.readFile(navLink[i] + navIndex);
-						xmlDataBlock.setData("navLink", servletPath + navLink[i] + navIndex);
-					}
-					catch (CmsException e) {
-						xmlDataBlock.setData("navLink", servletPath + requestedUri);
-					}
-				}
-				else {
-					try {
-						cms.readFile(navLink[i]);
-						xmlDataBlock.setData("navLink", servletPath + navLink[i]);
-					}
-					catch (CmsException e) {
-						xmlDataBlock.setData("navLink", servletPath + requestedUri);
-					}
-				}
-				// Check if nav is current nav
-				xmlDataBlock.setData("data1", navLink[i]);
-				xmlDataBlock.setData("data2", requestedUri);
-				xmlDataBlock.setData("data3", currentFolder);
+                xmlDataBlock.setData("navText", navText[i]);
+                xmlDataBlock.setData("count", new Integer(i + 1).toString());
+                xmlDataBlock.setData("level", new Integer(extractLevel(cms, navLink[i])).toString());
+                // this if condition is necessary because of url parameter,
+                // if there is no filename then the parameters are ignored, so I
+                // can't use e.g. ?cmsframe=body.
+                if (navLink[i].endsWith("/")) {
+                    String navIndex = cms.readProperty(navLink[i], C_PROPERTY_NAVINDEX);
+                    if (navIndex == null) {
+                        navIndex = C_NAVINDEX;
+                    }
+                    try {
+                        cms.readFile(navLink[i] + navIndex);
+                        xmlDataBlock.setData("navLink", servletPath + navLink[i] + navIndex);
+                    }
+                    catch (CmsException e) {
+                        xmlDataBlock.setData("navLink", servletPath + requestedUri);
+                    }
+                }
+                else {
+                    try {
+                        cms.readFile(navLink[i]);
+                        xmlDataBlock.setData("navLink", servletPath + navLink[i]);
+                    }
+                    catch (CmsException e) {
+                        xmlDataBlock.setData("navLink", servletPath + requestedUri);
+                    }
+                }
+                // Check if nav is current nav
+                xmlDataBlock.setData("data1", navLink[i]);
+                xmlDataBlock.setData("data2", requestedUri);
+                xmlDataBlock.setData("data3", currentFolder);
 
-				String sFolder = "";
-				String sFolder2 = "";
-				sFolder = navLink[i];
-				if (currentFolder.length() >= sFolder.length()) {
-					if (currentFolder.length() > sFolder.length()) {
-						sFolder2 = currentFolder.substring(0, sFolder.length());
-					}
-					else {
-						sFolder2 = currentFolder.substring(0);
-					}
-				}
+                String sFolder = "";
+                String sFolder2 = "";
+                sFolder = navLink[i];
+                if (currentFolder.length() >= sFolder.length()) {
+                    if (currentFolder.length() > sFolder.length()) {
+                        sFolder2 = currentFolder.substring(0, sFolder.length());
+                    }
+                    else {
+                        sFolder2 = currentFolder.substring(0);
+                    }
+                }
 
-				String sSubExten = "";
-				if (bHasSubFiles && iDirLevel < iMaxDeep) {
-					sSubExten = "ws";
-				}
-				if (sFolder2.equals(sFolder) || navLink[i].equals(currentFolder) || navLink[i].equals(requestedUri)) {
-					result.append(xmlDataBlock.getProcessedDataValue("navCurrent" + iDirLevel + sSubExten, this, userObject));
-				}
-				else {
-					result.append(xmlDataBlock.getProcessedDataValue("navEntry" + iDirLevel + sSubExten, this, userObject));
-				}
+                String sSubExten = "";
+                if (bHasSubFiles && iDirLevel < iMaxDeep) {
+                    sSubExten = "ws";
+                }
+                if (sFolder2.equals(sFolder) || navLink[i].equals(currentFolder) || navLink[i].equals(requestedUri)) {
+                    result.append(xmlDataBlock.getProcessedDataValue("navCurrent" + iDirLevel + sSubExten, this, userObject));
+                }
+                else {
+                    result.append(xmlDataBlock.getProcessedDataValue("navEntry" + iDirLevel + sSubExten, this, userObject));
+                }
 
-			}
-			result.append(xmlDataBlock.getProcessedDataValue("navEnd" + iDirLevel, this, userObject));
-		}
+            }
+            result.append(xmlDataBlock.getProcessedDataValue("navEnd" + iDirLevel, this, userObject));
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * Can be used to build valid hrefs to switch the language. The parameter
-	 * list is contained in the body as a comma separated list:
-	 * <ul>
-	 * <li>language token to be replaced: <b>de</b>_lang_{foldername}/ -> <b>en</b>_lang_{foldername}/</li>
-	 * <li>token to split the language and the folder name, here _lang_</li>
-	 * <li>determines whether just the language token (0) or the entire folder name will be replaced (1)</li>
-	 * <li>URL of an error page if the page doesn't exist in the other language</li>
-	 * </ul>
-	 * 
-	 * @param cms CmsObject Object for accessing system resources.
-	 * @param tagcontent the parameters for this tag
-	 * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-	 * @param userObj Hashtable with parameters.
-	 * @return String or byte[] with the content of this subelement.
-	 * @throws CmsException
-	 */
-	public Object getLanguagePath(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-		String sLanguageToken = "_lang_";
-		String sLanguageIdent = "";
-		String sNoFoundLink = "";
-		String sTokenReplaceType = "0";
-		String sLinkLeftSide = "/";
-		String currentFolder = cms.getRequestContext().getUri();
-		String sReturnPath = "";
-		int iParamCount;
-		String sParam = "";
+    /**
+     * Can be used to build valid hrefs to switch the language. The parameter
+     * list is contained in the body as a comma separated list:
+     * <ul>
+     * <li>language token to be replaced: <b>de</b>_lang_{foldername}/ -> <b>en</b>_lang_{foldername}/</li>
+     * <li>token to split the language and the folder name, here _lang_</li>
+     * <li>determines whether just the language token (0) or the entire folder name will be replaced (1)</li>
+     * <li>URL of an error page if the page doesn't exist in the other language</li>
+     * </ul>
+     * 
+     * @param cms CmsObject Object for accessing system resources.
+     * @param tagcontent the parameters for this tag
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @throws CmsException
+     */
+    public Object getLanguagePath(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+        String sLanguageToken = "_lang_";
+        String sLanguageIdent = "";
+        String sNoFoundLink = "";
+        String sTokenReplaceType = "0";
+        String sLinkLeftSide = "/";
+        String currentFolder = cms.getRequestContext().getUri();
+        String sReturnPath = "";
+        int iParamCount;
+        String sParam = "";
 
-		if (!tagcontent.equals("")) {
-			try {
-				StringTokenizer st = new StringTokenizer(tagcontent.toString(), ",");
-				iParamCount = st.countTokens();
+        if (!tagcontent.equals("")) {
+            try {
+                StringTokenizer st = new StringTokenizer(tagcontent.toString(), ",");
+                iParamCount = st.countTokens();
 
-				if (iParamCount < 1) {
-					throw new CmsException("Not enough parameters!");
-				}
+                if (iParamCount < 1) {
+                    throw new CmsException("Not enough parameters!");
+                }
 
-				if (st.hasMoreTokens()) {
-					sLanguageIdent = st.nextToken().trim();
-				}
+                if (st.hasMoreTokens()) {
+                    sLanguageIdent = st.nextToken().trim();
+                }
 
-				if (st.hasMoreTokens()) {
-					sParam = st.nextToken().trim();
-					if (!sParam.equals("")) {
-						sLanguageToken = sParam;
-					}
-				}
+                if (st.hasMoreTokens()) {
+                    sParam = st.nextToken().trim();
+                    if (!sParam.equals("")) {
+                        sLanguageToken = sParam;
+                    }
+                }
 
-				if (st.hasMoreTokens()) {
-					sParam = st.nextToken().trim();
-					if (!sParam.equals("")) {
-						sTokenReplaceType = sParam;
-					}
-				}
+                if (st.hasMoreTokens()) {
+                    sParam = st.nextToken().trim();
+                    if (!sParam.equals("")) {
+                        sTokenReplaceType = sParam;
+                    }
+                }
 
-				if (st.hasMoreTokens()) {
-					sParam = st.nextToken().trim();
-					if (!sParam.equals("")) {
-						sNoFoundLink = sParam;
-					}
-				}
+                if (st.hasMoreTokens()) {
+                    sParam = st.nextToken().trim();
+                    if (!sParam.equals("")) {
+                        sNoFoundLink = sParam;
+                    }
+                }
 
-			}
-			catch (Exception e) {
-				throw new CmsException(e.getMessage());
-			}
+            }
+            catch (Exception e) {
+                throw new CmsException(e.getMessage());
+            }
 
-			int ifound = 0;
+            int ifound = 0;
 
-			if (sTokenReplaceType.equals("0")) {
-				ifound = currentFolder.indexOf(sLanguageToken);
-			}
-			else {
-				currentFolder = currentFolder.substring(1);
-				ifound = currentFolder.indexOf("/");
-			}
+            if (sTokenReplaceType.equals("0")) {
+                ifound = currentFolder.indexOf(sLanguageToken);
+            }
+            else {
+                currentFolder = currentFolder.substring(1);
+                ifound = currentFolder.indexOf("/");
+            }
 
-			if (ifound > (-1)) {
-				String sTemp = currentFolder.substring(0, ifound);
-				sLinkLeftSide = sTemp.substring(0, sTemp.lastIndexOf("/") + 1);
-				sReturnPath = sLinkLeftSide + "" + sLanguageIdent + currentFolder.substring(ifound);
+            if (ifound > (-1)) {
+                String sTemp = currentFolder.substring(0, ifound);
+                sLinkLeftSide = sTemp.substring(0, sTemp.lastIndexOf("/") + 1);
+                sReturnPath = sLinkLeftSide + "" + sLanguageIdent + currentFolder.substring(ifound);
 
-				//check if the resource exists
-				boolean resourceExists = false;
+                //check if the resource exists
+                boolean resourceExists = false;
 
-				try {
-					CmsResource dummy = cms.readFileHeader(sReturnPath);
+                try {
+                    CmsResource dummy = cms.readFileHeader(sReturnPath);
 
-					if (dummy != null) {
-						// the resource exists
-						resourceExists = true;
-					}
-				}
-				catch (CmsException e) {
-					// the resource doesn't exist
-					resourceExists = false;
-				}
+                    if (dummy != null) {
+                        // the resource exists
+                        resourceExists = true;
+                    }
+                }
+                catch (CmsException e) {
+                    // the resource doesn't exist
+                    resourceExists = false;
+                }
 
-				if (!resourceExists) {
-					if (iParamCount > 3) {
-						sReturnPath = "/" + sNoFoundLink;
-					}
-					else {
-						sReturnPath = sReturnPath.substring(0, sReturnPath.lastIndexOf("/") + 1);
-					}
-				}
-			}
-			else {
-				currentFolder = cms.getRequestContext().getUri();
-			}
-		}
-		else {
-			throw new CmsException("Not enough parameters!");
+                if (!resourceExists) {
+                    if (iParamCount > 3) {
+                        sReturnPath = "/" + sNoFoundLink;
+                    }
+                    else {
+                        sReturnPath = sReturnPath.substring(0, sReturnPath.lastIndexOf("/") + 1);
+                    }
+                }
+            }
+            else {
+                currentFolder = cms.getRequestContext().getUri();
+            }
+        }
+        else {
+            throw new CmsException("Not enough parameters!");
 
-		}
+        }
 
-		return cms.getRequestContext().getRequest().getServletUrl() + sReturnPath;
-	}   
+        return cms.getRequestContext().getRequest().getServletUrl() + sReturnPath;
+    }   
 }
