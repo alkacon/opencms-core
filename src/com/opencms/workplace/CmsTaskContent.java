@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContent.java,v $
- * Date   : $Date: 2000/04/20 08:53:32 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/04/20 15:16:01 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/04/20 08:53:32 $
+ * @version $Revision: 1.10 $ $Date: 2000/04/20 15:16:01 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -81,10 +81,9 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
 		
 		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(false);
 		String taskid=(String)session.getValue(C_PARA_STARTTASKID);
-		
 		if (session.getValue(C_PARA_STARTTASKID)!=null) {
 			session.removeValue(C_PARA_STARTTASKID);
-			session.removeValue(C_PARA_VIEW);
+			session.removeValue(C_PARA_VIEW);			
 			CmsXmlWpConfigFile conf=new CmsXmlWpConfigFile(cms);
 			String actionPath=conf.getWorkplaceActionPath();
 			try {
