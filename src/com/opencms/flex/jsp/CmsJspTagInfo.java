@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInfo.java,v $
- * Date   : $Date: 2002/11/09 20:06:14 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2002/12/04 14:45:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import com.opencms.flex.cache.CmsFlexRequest;
  * JDK version etc.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -87,7 +87,10 @@ public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
             "java.vm.vendor", // 8
             "os.name",  // 9
             "os.version", // 10
-            "os.arch" // 11  
+            "os.arch", // 11  
+            "opencms.request.uri", // 12
+            "opencms.request.element.uri", // 13
+            "opencms.request.folder" // 14           
             };
 
     /** array list of allowed property values for more convenient lookup */
@@ -157,6 +160,15 @@ public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
             case 11:
                 result = System.getProperty(property);
                 break;
+            case 12: // opencms.request.uri
+                result = req.getCmsRequestedResource();
+                break;   
+            case 13: // opencms.request.element.uri
+                result = req.getCmsResource();
+                break;                               
+            case 14: // opencms.request.folder
+                result = com.opencms.file.CmsResource.getParent(req.getCmsRequestedResource());
+                break;            
             default :
 				result =
 					"+++ Invalid info property selected: " + property + " +++";
