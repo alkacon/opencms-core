@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/10 11:58:37 $
- * Version: $Revision: 1.272 $
+ * Date   : $Date: 2003/10/10 13:18:21 $
+ * Version: $Revision: 1.273 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.272 $ $Date: 2003/10/10 11:58:37 $
+ * @version $Revision: 1.273 $ $Date: 2003/10/10 13:18:21 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2134,33 +2134,52 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @param context the current request context
      * @param timestamp the max age of backup resources
      * @param versions the number of remaining backup versions for each resource
+     * @param report the report for output logging
      * @throws CmsException if operation was not succesful
      */
-    public void deleteBackups(CmsRequestContext context, long timestamp, int versions) throws CmsException {
+    public void deleteBackups(CmsRequestContext context, long timestamp, int versions, I_CmsReport report) throws CmsException {
         if (isAdmin(context)) {
             // get all resources from the backup table
             // do only get one version per resource
             List allBackupFiles = m_backupDriver.readBackupFileHeaders();
+            int counter = 1;
+            int size = allBackupFiles.size();
             // get the tagId of the oldest Backupproject which will be kept in the database
             int maxTag = m_backupDriver.readBackupProjectTag(timestamp);
-            Iterator i = allBackupFiles.iterator();
+            Iterator i = allBackupFiles.iterator();        
             while (i.hasNext()) {
                 // now check get a single backup resource
-                CmsBackupResource res = (CmsBackupResource) i.next();
+                CmsBackupResource res = (CmsBackupResource)i.next();
+                
+                // get the full resource path if not present
+                if (!res.hasFullResourceName()) {
+                    res.setFullResourceName(readPath(context, res, true));
+                }
+                
+                report.print("( " + counter + " / " + size + " ) ", I_CmsReport.C_FORMAT_NOTE);
+                report.print(report.key("report.history.checking"), I_CmsReport.C_FORMAT_NOTE);
+                report.print(res.getRootPath() + " ");
+                
                 // now delete all versions of this resource that have more than the maximun number
                 // of allowed versions and which are older then the maximum backup date
                 int resVersions = m_backupDriver.readBackupMaxVersion(res.getResourceId());
                 int versionsToDelete = resVersions - versions;
+                
                 // now we know which backup versions must be deleted, so remove them now
                 if (versionsToDelete > 0) {
-                    m_backupDriver.deleteBackup(res, maxTag, versionsToDelete);
+                    report.print(report.key("report.history.deleting1") + versionsToDelete + report.key("report.history.deleting2") + report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+                    m_backupDriver.deleteBackup(res, maxTag, versionsToDelete);           
+                } else {
+                    report.print(report.key("report.history.nothing") + report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
                 }
-
+                report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                counter++;
+                
                 //TODO: delete the old backup projects as well
-            }
-            
+                
             m_projectDriver.deletePublishHistory(context.currentProject().getId(), maxTag);
-        }
+            }
+        }       
     }
 
     /**

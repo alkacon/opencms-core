@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHistoryProperties.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/10/10 13:18:22 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,6 @@
 
 package com.opencms.workplace;
 
-import org.opencms.main.OpenCms;
-
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsCronJob;
 import com.opencms.core.I_CmsSession;
@@ -39,6 +37,9 @@ import com.opencms.file.CmsRequestContext;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;
+
+import org.opencms.main.OpenCms;
+import org.opencms.report.CmsHtmlReport;
 
 /**
  * Template class for displaying OpenCms workplace administration synchronisation properties.
@@ -264,7 +265,7 @@ public class CmsAdminHistoryProperties extends CmsWorkplaceDefault implements I_
             long oneWeek = 604800000;
             long maxDate = System.currentTimeMillis() - (intWeeks * oneWeek);
             //TODO: the second parameter is still a dummy
-            cms.deleteBackups(maxDate, intWeeks*2);
+            cms.deleteBackups(maxDate, intWeeks*2, new CmsHtmlReport("en"));
         }
        
     } 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/09/24 14:19:24 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/10/10 13:18:22 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $ $Date: 2003/09/24 14:19:24 $ 
+ * @version $Revision: 1.23 $ $Date: 2003/10/10 13:18:22 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -685,7 +685,7 @@ class CmsShellCommands {
             int intWeeks=Integer.parseInt(weeks);
             long oneWeek = 604800000;
             long maxDate = System.currentTimeMillis() - (intWeeks * oneWeek);
-            m_cms.deleteBackups(maxDate, 100);
+            m_cms.deleteBackups(maxDate, 100, new CmsShellReport());
         } catch (Exception e) {
             CmsShell.printException(e);
         }

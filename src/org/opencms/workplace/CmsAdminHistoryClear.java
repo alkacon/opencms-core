@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2003/09/15 09:14:19 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/10/10 13:18:22 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,12 +39,16 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+
+import org.opencms.threads.CmsAdminHistoryClearThread;
 
 /**
  * Provides methods for the history clear dialog.<p> 
@@ -55,11 +59,11 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */
-public class CmsAdminHistoryClear extends CmsDialog {
+public class CmsAdminHistoryClear extends CmsReport {
     
     public static final int ACTION_SAVE_EDIT = 300;
     
@@ -98,6 +102,12 @@ public class CmsAdminHistoryClear extends CmsDialog {
         // set the action for the JSP switch 
         if (DIALOG_SAVE_EDIT.equals(getParamAction())) {
             setAction(ACTION_SAVE_EDIT);
+        } else if (REPORT_UPDATE.equals(getParamAction())) {
+            setAction(ACTION_REPORT_UPDATE);         
+        } else if (REPORT_BEGIN.equals(getParamAction())) {
+            setAction(ACTION_REPORT_BEGIN);
+        } else if (REPORT_END.equals(getParamAction())) {
+            setAction(ACTION_REPORT_END);
         } else { 
             // set the default action               
             setAction(ACTION_DEFAULT); 
@@ -249,35 +259,52 @@ public class CmsAdminHistoryClear extends CmsDialog {
     /**
      * Performs the change of the history settings, this method is called by the JSP.<p>
      * 
-     * @param request the HttpServletRequest
      * @throws JspException if something goes wrong
      */
-    public void actionEdit(HttpServletRequest request) throws JspException {
+    public void actionEdit() throws JspException {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-        try {
-            performEditOperation(request);
-            // set the request parameters before returning to the overview
-            getCms().getRequestContext().getResponse().sendCmsRedirect(getAdministrationBackLink());              
-        } catch (CmsException e) {
-            // error setting history values, show error dialog
-            setParamMessage(key("error.message.historyclear"));
-            setParamErrorstack(e.getStackTraceAsString());
-            setParamReasonSuggestion(getErrorSuggestionDefault());
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
-        } catch (IOException exc) {
-          getJsp().include(C_FILE_EXPLORER_FILELIST);
+        switch (getAction()) {
+            case ACTION_REPORT_UPDATE:
+                setParamAction(REPORT_UPDATE);   
+                getJsp().include(C_FILE_REPORT_OUTPUT);  
+                break;
+            case ACTION_REPORT_END:
+                try {
+                    getCms().getRequestContext().getResponse().sendCmsRedirect(getAdministrationBackLink());
+                    break;
+                } catch (IOException e) { }
+            case ACTION_REPORT_BEGIN:
+            case ACTION_SAVE_EDIT:
+            default:
+                Map params = new HashMap();
+                try {
+                params = getBackupParams();
+                } catch (CmsException e) {
+                    // error setting history values, show error dialog
+                    setParamMessage(key("error.message.historyclear"));
+                    setParamErrorstack(e.getStackTraceAsString());
+                    setParamReasonSuggestion(getErrorSuggestionDefault());
+                    getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+                }
+                CmsAdminHistoryClearThread thread = new CmsAdminHistoryClearThread(getCms(), params);
+                setParamAction(REPORT_BEGIN);
+                setParamThread(thread.getId().toString());
+                getJsp().include(C_FILE_REPORT_OUTPUT);  
+                break;
         }
     }
     
     /**
-     * Performs the change of the history settings.<p>
+     * Returns the necessary parameters to perform the backup deletion.<p>
      * 
-     * @param request the HttpServletRequest
-     * @return true if everything was ok
+     * @return a map with necessary parameters for the deleteBackups method
      * @throws CmsException if something goes wrong
      */
-    private boolean performEditOperation(HttpServletRequest request) throws CmsException {
+    private Map getBackupParams() throws CmsException {
+        HttpServletRequest request = getJsp().getRequest();
+        Map parameterMap = new HashMap(); 
+        
         // get the delete information from the request parameters
         String paramVersions = request.getParameter("versions");
         String paramDay = request.getParameter("day");
@@ -313,12 +340,14 @@ public class CmsAdminHistoryClear extends CmsDialog {
         
         if (DEBUG) System.err.println("Versions: "+versions+"\nDate: "+timeStamp);
         
-        // delete the backup files
-        getCms().deleteBackups(timeStamp, versions);
+        
+        // add the correct values to the parameter map
+        parameterMap.put("timeStamp", String.valueOf(timeStamp));
+        parameterMap.put("versions", String.valueOf(versions));
              
         if (DEBUG) System.err.println("Done");             
              
-        return true;
+        return parameterMap;
     }
 
 }
