@@ -184,6 +184,7 @@
                 <restoreresource>Leider konnte diese Version der Ressource nicht wiederhergestellt werden.</restoreresource>
                 <rmdefault>Leider konnten nicht alle Benutzerzugehörigkeiten geändert werden.</rmdefault>
                 <deleteproject>Leider konnte das Projekt nicht gelöscht werden.</deleteproject>
+                <search>Bitte füllen Sie alle Felder der jeweiligen Suche.</search>
                 <staticexport>Leider konnte der statische Export nicht vollständig ausgführt werden.</staticexport>
                 <syncfolder>Leider konnten die Ordner nicht synchronisiert werden.</syncfolder>
                 <syncproperties>Die Daten für die Synchronisierung konnten nicht gespeichert werden.</syncproperties>
@@ -584,8 +585,12 @@
             <allfolders>Verzeichnisse</allfolders>
             <allchannels>Channels</allchannels>
             <articlestate>Artikel-Status</articlestate>
+            <byproperty>nach Eigenschaften</byproperty>
+            <byresourcename>nach Ressourcename</byresourcename>
+            <byfilecontent>nach Dateiinhalt</byfilecontent>
             <changegroup>Gruppe bearbeiten</changegroup>
             <close><![CDATA[Schlie&szlig;en]]></close>
+            <content>Inhalt</content>
             <createdby>Angelegt von</createdby>
             <createnewproject>Neues Projekt anlegen</createnewproject>
             <createnewuser>Benutzer neu anlegen</createnewuser>
@@ -648,6 +653,8 @@
             <publishedat>Veröffentlicht am</publishedat>
             <publishedby>Veröffentlicht von</publishedby>
             <readrights>Leseberechtigung für andere</readrights>
+            <resourcetype>Ressourcetyp</resourcetype>
+            <search>Suchen</search>
             <selectfolder>Ordner auswählen...</selectfolder>
             <size>Größe</size>
             <specialchar>Sonderzeichen einfügen</specialchar>
@@ -660,6 +667,7 @@
             <upload>Hochladen von Datei</upload>
             <uploaddate>Hochgeladen am</uploaddate>
             <user>Benutzer</user>
+            <value>Wert</value>
             <version>Version</version>
             <view>Ansicht</view>
             <wptitle>OpenCms Arbeitsplatz von</wptitle>

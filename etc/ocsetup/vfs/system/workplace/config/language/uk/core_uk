@@ -186,6 +186,7 @@
                 <restoreresource>Sorry, this version of the resource could not be restored.</restoreresource>
                 <rmdefault>Sorry, not all users could be removed.</rmdefault>
                 <deleteproject>Sorry, the project could not be deleted.</deleteproject>
+                <search>Please fill in all fields for the current search.</search>
                 <staticexport>Sorry, the Resources could not be exported.</staticexport>
                 <syncfolder>Sorry, the folders could not be synchronized.</syncfolder>
                 <syncproperties>Sorry, the properties for synchronisation could not be saved.</syncproperties>
@@ -584,8 +585,12 @@
             <allfolders>Folders</allfolders>
             <allchannels>Channels</allchannels>
             <author>Author</author>
+            <byproperty>by property</byproperty>
+            <byresourcename>by resourcename</byresourcename>
+            <byfilecontent>by filecontent</byfilecontent>
             <changegroup>Edit Group</changegroup>
             <close>Close</close>
+            <content>Filecontent</content>
             <createdby>Task Agent</createdby>
             <createnewproject>Create new Project</createnewproject>
             <createnewuser>Create new User</createnewuser>
@@ -649,6 +654,8 @@
             <publishedat>Published</publishedat>
             <publishedby>Published by</publishedby>
             <readrights>permission to read for others</readrights>
+            <resourcetype>Resourcetype</resourcetype>
+            <search>Search</search>
             <selectfolder>Select folder...</selectfolder>
             <size>Size</size>
             <specialchar>Insert special character</specialchar>
@@ -662,6 +669,7 @@
             <uploaddate>Active since</uploaddate>
             <user>User</user>
             <version>Version</version>
+            <value>Value</value>
             <view>View</view>
             <wptitle>OpenCms Workplace of</wptitle>
             <writerights>permission to write for others</writerights>
