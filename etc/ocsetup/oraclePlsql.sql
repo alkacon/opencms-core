@@ -742,45 +742,59 @@ CREATE INDEX PROJECTRESOURCE_RESOURCE_NAME ON
 prompt 'package_usertypes';
 @./oracleplsql/package_usertypes.sql;
 
+
 prompt 'package_usererrors';
 @./oracleplsql/package_usererrors.sql;
+
 
 prompt 'package_body_usererrors';
 @./oracleplsql/package_body_usererrors.sql;
 
+
 prompt 'package_opencmsconstants';
-@./oracleplsql/package_opencmsconstants;
+@./oracleplsql/package_opencmsconstants.sql;
+
 
 prompt 'function_getnextid';
 @./oracleplsql/function_getnextid.sql;
 
 prompt 'package_opencmsgroup';
-@./oracleplsql/package_opencmsgroup;
+@./oracleplsql/package_opencmsgroup.sql;
+
 
 prompt 'package_opencmsaccess';
-@./oracleplsql/package_opencmsaccess;
+@./oracleplsql/package_opencmsaccess.sql;
+
 
 prompt 'package_opencmsproperty';
-@./oracleplsql/package_opencmsproperty;
+@./oracleplsql/package_opencmsproperty.sql;
+
 
 prompt 'package_opencmsresource';
-@./oracleplsql/package_opencmsresource;
+@./oracleplsql/package_opencmsresource.sql;
+
 
 prompt 'package_opencmsproject';
-@./oracleplsql/package_opencmsproject;
+@./oracleplsql/package_opencmsproject.sql;
+
 
 prompt 'package_body_opencmsgroup';
-@./oracleplsql/package_body_opencmsgroup;
+@./oracleplsql/package_body_opencmsgroup.sql;
+
 
 prompt 'package_body_opencmsaccess';
-@./oracleplsql/package_body_opencmsaccess;
+@./oracleplsql/package_body_opencmsaccess.sql;
+
 
 prompt 'package_body_opencmsproperty';
-@./oracleplsql/package_body_opencmsproperty;
+@./oracleplsql/package_body_opencmsproperty.sql;
+
 
 prompt 'package_body_opencmsresource';
-@./oracleplsql/package_body_opencmsresource;
+@./oracleplsql/package_body_opencmsresource.sql;
+
 
 prompt 'package_body_opencmsproject';
-@./oracleplsql/package_body_opencmsproject;
+@./oracleplsql/package_body_opencmsproject.sql;
+
 
