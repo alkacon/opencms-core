@@ -126,9 +126,6 @@ COMMIT;
 CREATE TABLE CMS_TaskLog ( coment long, externalusername varchar(254), id int NOT NULL, starttime date, taskref int, userref int, type int DEFAULT '0', PRIMARY KEY (id) );
 CREATE TABLE CMS_TaskPar ( id int NOT NULL, parname varchar(50), parvalue varchar(50), ref int, PRIMARY KEY (id) );
 
-CREATE INDEX GROUPUSER_NAME ON 
-  CMS_GROUPS(GROUP_NAME);
-
 CREATE INDEX GROUP_PARENTID ON 
   CMS_GROUPS(PARENT_GROUP_ID);
 
