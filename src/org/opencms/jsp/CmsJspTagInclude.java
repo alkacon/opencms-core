@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2004/02/18 15:26:17 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/02/19 11:46:11 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypePage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexResponse;
-import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -44,8 +43,8 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.workplace.editor.I_CmsEditorActionHandler;
 
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplate;
-import com.opencms.template.CmsXmlTemplateLoader;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -62,7 +61,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -311,28 +310,9 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         
         return EVAL_PAGE;
     }
-    
 
     /**
-     * Include action method for non-editable targets.<p>
-     * 
-     * @param context the current JSP page context
-     * @param target the target for the include, might be <code>null</code>
-     * @param element the element to select form the target might be <code>null</code>
-     * @param paramMap a map of parameters for the include, will be merged with the request 
-     *      parameters, might be <code>null</code>
-     * @param req the current request
-     * @param res current response
-     * @throws JspException in case something goes wrong
-     */
-    public static void includeTagAction(PageContext context, String target, String element, Map paramMap, ServletRequest req, ServletResponse res) 
-    throws JspException {
-        
-        includeTagAction(context, target, element, false, paramMap, req, res);
-    }
-
-    /**
-     * Include action method for potentially editable targets.<p>
+     * Include action method.<p>
      * 
      * The logic in this mehod is more complex than it should be.
      * This is because of the XMLTemplate integration, which requires some settings 
@@ -344,7 +324,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      * @param context the current JSP page context
      * @param target the target for the include, might be <code>null</code>
      * @param element the element to select form the target might be <code>null</code>
-     * @param editable the flag to indicate that the target is editable
+     * @param editable the flag to indicate if the target is editable
      * @param paramMap a map of parameters for the include, will be merged with the request 
      *      parameters, might be <code>null</code>
      * @param req the current request
@@ -443,7 +423,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         
         if (editable) {
             I_CmsEditorActionHandler actionClass = OpenCms.getWorkplaceManager().getEditorActionHandler();
-            editMode = actionClass.getEditMode(controller.getCmsObject(), target, (CmsXmlPage)req.getAttribute(CmsXmlPageLoader.C_XMLPAGE_OBJECT), element);
+            editMode = actionClass.getEditMode(controller.getCmsObject(), target, (CmsXmlPage)req.getAttribute(CmsXmlPage.C_ATTRIBUTE_XMLPAGE_OBJECT), element);
             editArea = (String)context.getRequest().getAttribute(I_CmsEditorActionHandler.C_EDIT_AREA);
         }
 

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/02/18 15:26:17 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
+ * Date   : $Date: 2004/02/19 11:46:11 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.opencms.template;
+package com.opencms.legacy;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -47,6 +47,15 @@ import org.opencms.staticexport.CmsLinkManager;
 import com.opencms.core.CmsRequestHttpServlet;
 import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsResponse;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.template.CmsRootTemplate;
+import com.opencms.template.CmsTemplateCache;
+import com.opencms.template.CmsTemplateClassManager;
+import com.opencms.template.CmsXmlControlFile;
+import com.opencms.template.CmsXmlTemplate;
+import com.opencms.template.I_CmsTemplate;
+import com.opencms.template.I_CmsTemplateCache;
+import com.opencms.template.I_CmsXmlTemplate;
 import com.opencms.template.cache.CmsElementCache;
 import com.opencms.template.cache.CmsElementDefinition;
 import com.opencms.template.cache.CmsElementDefinitionCollection;
@@ -74,7 +83,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -764,9 +773,23 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#supportsStaticExport()
+     * @see org.opencms.loader.I_CmsResourceLoader#isStaticExportEnabled()
      */
-    public boolean supportsStaticExport() {
+    public boolean isStaticExportEnabled() {
+        return true;
+    }
+    
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#isUsableForTemplates()
+     */
+    public boolean isUsableForTemplates() {
+        return true;
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#isUsingUriWhenLoadingTemplate()
+     */
+    public boolean isUsingUriWhenLoadingTemplate() {
         return true;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/02/18 15:26:17 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/02/19 11:46:11 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -179,7 +179,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      * @see org.opencms.loader.I_CmsResourceLoader#dump(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, java.util.Locale, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public byte[] dump(CmsObject cms, CmsResource file, String element, Locale locale, HttpServletRequest req, HttpServletResponse res) 
-    throws ServletException, IOException, CmsLoaderException {
+    throws ServletException, IOException {
 
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
 
@@ -457,9 +457,9 @@ public class CmsJspLoader implements I_CmsResourceLoader {
     }
     
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#supportsStaticExport()
+     * @see org.opencms.loader.I_CmsResourceLoader#isStaticExportEnabled()
      */
-    public boolean supportsStaticExport() {
+    public boolean isStaticExportEnabled() {
         return true;
     }    
     
@@ -676,4 +676,18 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         }                      
         return jspfilename;
     }
+    
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#isUsableForTemplates()
+     */
+    public boolean isUsableForTemplates() {
+        return true;
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#isUsingUriWhenLoadingTemplate()
+     */
+    public boolean isUsingUriWhenLoadingTemplate() {
+        return false;
+    }      
 }

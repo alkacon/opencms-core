@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2004/02/18 15:27:26 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/02/19 11:46:11 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since FLEX alpha 1
  * 
  * @see org.opencms.flex.CmsFlexRequest
@@ -190,5 +190,20 @@ public interface I_CmsResourceLoader {
      * 
      * @return true if static export is supported, false otherwise
      */
-    boolean supportsStaticExport();
+    boolean isStaticExportEnabled();
+
+    /**
+     * Signals if the loader implementation is usable for creating templates.<p>
+     * 
+     * @return true  if the loader implementation is usable for creating templates, false otherwise
+     */
+    boolean isUsableForTemplates();
+    
+    /**
+     * Signals if a loader that supports templates must be invoked on the 
+     * template URI or the resource URI.<p>
+     * 
+     * @return true if the resource URI is to be used, false if the template URI is to be used
+     */
+    boolean isUsingUriWhenLoadingTemplate();
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/02/17 11:48:51 $
- * Version: $Revision: 1.522 $
+ * Date   : $Date: 2004/02/19 11:46:11 $
+ * Version: $Revision: 1.523 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -24,9 +24,13 @@ OpenCms 5.3.3 Ix - February xx, 2004
 - Moved com.opencms.core.CmsException to org.opencms.main.CmsException
 - Moved com.opencms.core.I_CmsConstants to org.opencms.main.I_CmsConstants
 - Moved several other utility classes to org.opencms.* packages
+- Created package com.opencms.legacy for legacy XmlTemplate related classes
 ! Improved the CmsShell, providing direct access to the CmsObject
 - Rewrote import routines, import now uses dom4j Xml API
 - Updated Setup wizard to use new Wokrplace layout
+! Added new database selection scheme to Setup Wizard, 
+  so that additional DBs can be more easily be integrated into the setup
+! Added facility to select modules during installation to setup wizard
 
 OpenCms 5.3.2 Ix - February 13, 2004
 ! Improved dialogs for MS DHTML editor implemented in JSP

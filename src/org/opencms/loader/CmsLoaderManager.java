@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsLoaderManager.java,v $
- * Date   : $Date: 2004/02/18 15:26:17 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/02/19 11:46:11 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,12 @@
 
 package org.opencms.loader;
 
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-
-import com.opencms.template.CmsXmlTemplateLoader;
 
 import java.util.Iterator;
 import java.util.List;
@@ -53,7 +50,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.1
  */
 public class CmsLoaderManager {
@@ -105,29 +102,24 @@ public class CmsLoaderManager {
     }
 
     /**
-     * Returns a resource loader facade for the given file.<p>
+     * Returns a template loader facade for the given file.<p>
      * 
      * @param cms the current cms context
      * @param resource the requested file
      * @return a resource loader facade for the given file
      * @throws CmsException if something goes wrong
      */
-    public CmsResourceLoaderFacade getLoaderFacade(CmsObject cms, CmsResource resource) throws CmsException {        
+    public CmsTemplateLoaderFacade getTemplateLoaderFacade(CmsObject cms, CmsResource resource) throws CmsException {        
         String absolutePath = cms.readAbsolutePath(resource);        
         String templateProp = cms.readProperty(absolutePath, I_CmsConstants.C_PROPERTY_TEMPLATE);       
 
         if (templateProp == null) {
-            // no template property defined, throw exception
-            throw new CmsException("Property '" + I_CmsConstants.C_PROPERTY_TEMPLATE + "' undefined for page file " + absolutePath);
+            // no template property defined, this is a must for facade loaders
+            throw new CmsLoaderException("Property '" + I_CmsConstants.C_PROPERTY_TEMPLATE + "' undefined for file " + absolutePath);
         }        
 
-        CmsFile templateFile = cms.readFile(templateProp);
-        
-        if (templateFile.getLoaderId() == CmsJspLoader.C_RESOURCE_LOADER_ID) {
-            return new CmsResourceLoaderFacade(getLoader(CmsJspLoader.C_RESOURCE_LOADER_ID), templateFile);
-        } else {
-            return new CmsResourceLoaderFacade(getLoader(CmsXmlTemplateLoader.C_RESOURCE_LOADER_ID), resource);
-        }
+        CmsResource template = cms.readFile(templateProp);
+        return new CmsTemplateLoaderFacade(getLoader(template.getLoaderId()), resource, template);
     }
     
     /**

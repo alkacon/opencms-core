@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTemplate.java,v $
- * Date   : $Date: 2004/02/18 15:26:17 $
- * Version: $Revision: 1.11 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlPageTemplate.java,v $
+ * Date   : $Date: 2004/02/19 11:46:11 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,47 +29,46 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
  
-package org.opencms.jsp;
+package com.opencms.legacy;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.loader.CmsJspLoader;
+import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.page.CmsXmlPage;
 
 import com.opencms.template.CmsCacheDirectives;
 import com.opencms.template.CmsDumpTemplate;
 
 import java.util.Hashtable;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Locale;
 
 /**
- * A simple dump class for JSPs which enables
- * the use of JSP as sub-elements in the legacy OpenCms XMLTemplate 
+ * A simple dump class which enables
+ * the use of XmlPage as sub-elements in the legacy OpenCms XMLTemplate 
  * mechanism.<p>
  *
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author  Carsten Weinholz
  * 
- * @version $Revision: 1.11 $
- * @since 5.0 beta 1
+ * @version $Revision: 1.1 $
+ * @since 5.1
  */
-public class CmsJspTemplate extends CmsDumpTemplate {
+public class CmsXmlPageTemplate extends CmsDumpTemplate {
     
     /**
      * The constructor of the class is empty and does nothing.<p>
      */
-    public CmsJspTemplate() {
+    public CmsXmlPageTemplate() {
         // NOOP
     }
 
     /**
-     * Gets the content of the given JSP file to include them
+     * Gets the content of the given XmlPage file to include them
      * in the XMLTemplate.<p>
      *
      * @param cms for accessing system resources
-     * @param jspFile filename of the JSP in the VFS
+     * @param filename name of the xml page file in the VFS
      * @param elementName <em>not used</em>
      * @param parameters <em>not used</em>
      * 
@@ -77,30 +76,30 @@ public class CmsJspTemplate extends CmsDumpTemplate {
      * 
      * @throws CmsException in case something goes wrong
      */
-    public byte[] getContent(CmsObject cms, String jspFile, String elementName, Hashtable parameters) throws CmsException {
+    public byte[] getContent(CmsObject cms, String filename, String elementName, Hashtable parameters) throws CmsException {
         if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Loading contents of file " + jspFile);
+            OpenCms.getLog(this).debug("Loading contents of file " + filename);
         }
 
         byte[] s = null;
         try {
-            CmsFile file = cms.readFile(jspFile);
-            CmsJspLoader loader = (CmsJspLoader)OpenCms.getLoaderManager().getLoader(CmsJspLoader.C_RESOURCE_LOADER_ID);
-
-            HttpServletRequest req = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
-            HttpServletResponse res = (HttpServletResponse)cms.getRequestContext().getResponse().getOriginalResponse();             
-
-            s = loader.dump(cms, file, null, null, req, res);            
+            CmsFile file = cms.readFile(filename);
+            CmsXmlPageLoader loader = (CmsXmlPageLoader)OpenCms.getLoaderManager().getLoader(CmsXmlPageLoader.C_RESOURCE_LOADER_ID);
+            // check the current locales
+            CmsXmlPage page = CmsXmlPage.read(cms, file);
+            String absolutePath = cms.readAbsolutePath(file);
+            Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(cms.getRequestContext().getLocale(), OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath), page.getLocales());            
+            s = loader.dump(cms, file, elementName, locale, null, null);
         } catch (java.lang.ClassCastException e) {
             s = null;
-            throw new CmsException("[CmsJspTemplate] " + jspFile + " is not a JSP");
+            throw new CmsException("[CmsXmlPageTemplate] " + filename + " is not a xml page");
         } catch (org.opencms.main.CmsException e) {
             s = null;
             // File might not exist or no read permissions
-            throw new CmsException("[CmsJspTemplate] Error while reading JSP " + jspFile + "\n" + e, e);
+            throw new CmsException("[CmsXmlPageTemplate] Error while reading xml page " + filename + "\n" + e, e);
         } catch (Exception e) {
             s = null;
-            String errorMessage = "[CmsJspTemplate] Error while loading jsp file " + jspFile + ": " + e;
+            String errorMessage = "[CmsXmlPageTemplate] Error while loading xml page file " + filename + ": " + e;
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error(errorMessage, e);
             }
@@ -117,9 +116,6 @@ public class CmsJspTemplate extends CmsDumpTemplate {
      * Cache method required by the ElementCache to indicate if the
      * results of the page should be cached in the ElementCache.<p>
      * 
-     * JSPs will be cached in the FlexCache and so 
-     * we always return <code>false</code> here.
-     * 
      * @return <code>false</code>
      */
     public boolean isTemplateCacheSet() {
@@ -129,9 +125,6 @@ public class CmsJspTemplate extends CmsDumpTemplate {
     /**
      * Method used by the ElementCache to check if the page 
      * should reload or not.<p>
-     * 
-     * JSPs will be cached in the FlexCache and so 
-     * we always return <code>true</code> here.
      * 
      * @param cms default argument for element cache method
      * @param templateFile default argument for element cache method

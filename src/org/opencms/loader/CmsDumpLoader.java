@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2004/02/18 15:26:17 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/02/19 11:46:11 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,6 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Locale;
 
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +60,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -86,7 +85,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.io.OutputStream, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void export(CmsObject cms, CmsResource resource, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
-    throws ServletException, IOException, CmsException {
+    throws IOException, CmsException {
         CmsFile file = CmsFile.upgrade(resource, cms);
         
         if (exportStream != null) {
@@ -139,7 +138,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
-    throws ServletException, IOException, CmsException {
+    throws IOException, CmsException {
 
         CmsFile file = CmsFile.upgrade(resource, cms);
         
@@ -195,10 +194,24 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#supportsStaticExport()
+     * @see org.opencms.loader.I_CmsResourceLoader#isStaticExportEnabled()
      */
-    public boolean supportsStaticExport() {
+    public boolean isStaticExportEnabled() {
         
         return true;
     }
- }
+    
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#isUsableForTemplates()
+     */
+    public boolean isUsableForTemplates() {
+        return false;
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#isUsingUriWhenLoadingTemplate()
+     */
+    public boolean isUsingUriWhenLoadingTemplate() {
+        return false;
+    }      
+}

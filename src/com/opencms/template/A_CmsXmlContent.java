@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2004/02/13 13:45:33 $
-* Version: $Revision: 1.100 $
+* Date   : $Date: 2004/02/19 11:46:11 $
+* Version: $Revision: 1.101 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,8 @@ import org.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+
+import com.opencms.legacy.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -85,7 +87,7 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.100 $ $Date: 2004/02/13 13:45:33 $
+ * @version $Revision: 1.101 $ $Date: 2004/02/19 11:46:11 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 

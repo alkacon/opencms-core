@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsLoaderException.java,v $
- * Date   : $Date: 2004/02/18 15:26:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/19 11:46:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,13 +37,16 @@ import org.opencms.main.CmsException;
  * Signals exceptions occuring during the resource loading process.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3
  */
 public class CmsLoaderException extends CmsException {
 
     /** Generic error code for loader errors */
     public static final int C_LOADER_GENERIC_ERROR = 28; 
+    
+    /** Non-template loader called through template loader facade */
+    public static final int C_LOADER_NOT_TEMPLATE_ENABLED = 300;
         
     /**
      * Default constructor for a CmsSecurityException.<p>
@@ -102,15 +105,17 @@ public class CmsLoaderException extends CmsException {
     }
     
     /**
-     * Returns the description String for the provided CmsException type.<p>
+     * Returns the description String for the provided CmsLoaderException type.<p>
      * 
      * @param type exception error code 
-     * @return the description String for the provided CmsException type
+     * @return the description String for the provided CmsLoaderException type
      */    
     protected String getErrorDescription(int type) {
         switch (type) {
             case C_LOADER_GENERIC_ERROR:
-                return "Error while loading invoking resource loader";           
+                return "Error while loading invoking resource loader";       
+            case C_LOADER_NOT_TEMPLATE_ENABLED:
+                return "Resource loader not template enabled";
             default:
                 return super.getErrorDescription(type);
         }

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsPageException.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPageException.java,v $
+ * Date   : $Date: 2004/02/19 11:46:11 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,77 +34,74 @@ package org.opencms.page;
 import org.opencms.main.CmsException;
 
 /**
- * Signals that a particular action was invoked on resource with an insufficient lock state.<p>
+ * Signals that an error occured while processing an XmlPage.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * @since 5.1.4
  */
-public class CmsPageException extends CmsException {
+public class CmsXmlPageException extends CmsException {
     
     // the allowed type range for this exception is >=400 and <500    
     
     /** Generic init error */
-    public static final int C_PAGE_UNSPECIFIED_ERROR = 400;
-    
-    /** Wizard still enabled error */
-    public static final int C_PAGE_DOCUMENT_ERROR = 401; 
+    public static final int C_XMLPAGE_GENERIC_ERROR = 400;
         
     /**
-     * Default constructor for a CmsInitException.<p>
+     * Default constructor for a CmsXmlPageException.<p>
      */
-    public CmsPageException() {
+    public CmsXmlPageException() {
         super();
     }
     
     /**
-     * Constructs a CmsInitException with the specified description message and type.<p>
+     * Constructs a CmsXmlPageException with the specified description message and type.<p>
      * 
      * @param type the type of the exception
      */
-    public CmsPageException(int type) {
+    public CmsXmlPageException(int type) {
         super(type);
     }
         
     /**
-     * Constructs a CmsInitException with the specified description message and type.<p>
+     * Constructs a CmsXmlPageException with the specified description message and type.<p>
      * 
      * @param message the description message
      * @param type the type of the exception
      */
-    public CmsPageException(String message, int type) {
+    public CmsXmlPageException(String message, int type) {
         super(message, type);
     }
     
     /**
-     * Constructs a CmsInitException with the specified description message.<p>
+     * Constructs a CmsXmlPageException with the specified description message.<p>
      * 
      * @param message the description message
      */
-    public CmsPageException(String message) {
-        super(message, C_PAGE_UNSPECIFIED_ERROR);
+    public CmsXmlPageException(String message) {
+        super(message, C_XMLPAGE_GENERIC_ERROR);
     }    
     
     /**
-     * Constructs a CmsInitException with the specified description message and root cause.<p>
+     * Constructs a CmsXmlPageException with the specified description message and root cause.<p>
      * 
      * @param message the description message
      * @param rootCause the root cause
      */
-    public CmsPageException(String message, Throwable rootCause) {
-        super(message, C_PAGE_UNSPECIFIED_ERROR, rootCause);
+    public CmsXmlPageException(String message, Throwable rootCause) {
+        super(message, C_XMLPAGE_GENERIC_ERROR, rootCause);
     }        
     
     /**
-     * Returns the description String for the provided CmsException type.<p>
+     * Returns the description String for the provided CmsXmlPageException type.<p>
      * 
      * @param type exception error code 
-     * @return the description String for the provided CmsException type
+     * @return the description String for the provided CmsXmlPageException type
      */    
     protected String getErrorDescription(int type) {
         switch (type) {
-            case C_PAGE_UNSPECIFIED_ERROR:
-                return "OpenCms page error";
+            case C_XMLPAGE_GENERIC_ERROR:
+                return "Error in XmlPage processing";
             default:
                 return super.getErrorDescription(type);
         }

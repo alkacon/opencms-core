@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/02/16 16:22:30 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/02/19 11:46:11 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  */
 public class CmsXmlPage {
     
@@ -143,6 +143,9 @@ public class CmsXmlPage {
     
     /** The file that contains the page data (note: is not set when creating an empty or document based CmsXmlPage) */
     private CmsFile m_file;
+
+    /** Attribute name for a the requested instance of the xml page */
+    public static final String C_ATTRIBUTE_XMLPAGE_OBJECT = "org.opencms.loader.CmsXmlPageLoader_page";
     
     /**
      * Creates a new empty CmsXmlPage.<p>
@@ -170,9 +173,9 @@ public class CmsXmlPage {
      * @param cms the current cms object
      * @param file the file with xml data
      * @return the concrete PageObject instanciated with the xml data
-     * @throws CmsPageException if something goes wrong
+     * @throws CmsXmlPageException if something goes wrong
      */
-    public static CmsXmlPage read(CmsObject cms, CmsFile file) throws CmsPageException {
+    public static CmsXmlPage read(CmsObject cms, CmsFile file) throws CmsXmlPageException {
 
         CmsXmlPage newPage = null;
         
@@ -220,16 +223,16 @@ public class CmsXmlPage {
      * @param cms the current cms object
      * @param xmlData the xml data
      * @return the page initialized with the given xml data
-     * @throws CmsPageException if something goes wrong
+     * @throws CmsXmlPageException if something goes wrong
      */
-    public static CmsXmlPage read(CmsObject cms, String xmlData) throws CmsPageException {        
+    public static CmsXmlPage read(CmsObject cms, String xmlData) throws CmsXmlPageException {        
         try {
             SAXReader reader = new SAXReader();
             reader.setEntityResolver(new CmsEntityResolver(cms));
             Document document = reader.read(new StringReader(xmlData));            
             return new CmsXmlPage(document);
         } catch (DocumentException e) {
-            throw new CmsPageException("Reading xml page from a String failed: " + e.getMessage(), e);
+            throw new CmsXmlPageException("Reading xml page from a String failed: " + e.getMessage(), e);
         }
     }
     
@@ -290,9 +293,9 @@ public class CmsXmlPage {
      * @param locale locale of the element
      * @return the display content or the empty string "" if the element dos not exist
      * 
-     * @throws CmsPageException if something goes wrong
+     * @throws CmsXmlPageException if something goes wrong
      */
-    public String getContent(CmsObject cms, String name, Locale locale) throws CmsPageException {    
+    public String getContent(CmsObject cms, String name, Locale locale) throws CmsXmlPageException {    
         return getContent(cms, name, locale, false);
     }
 
@@ -305,9 +308,9 @@ public class CmsXmlPage {
      * @param forEditor indicates that link processing should be done for editing purposes
      * @return the display content or the empty string "" if the element dos not exist
      * 
-     * @throws CmsPageException if something goes wrong
+     * @throws CmsXmlPageException if something goes wrong
      */
-    public String getContent(CmsObject cms, String name, Locale locale, boolean forEditor) throws CmsPageException {
+    public String getContent(CmsObject cms, String name, Locale locale, boolean forEditor) throws CmsXmlPageException {
 
         Element element = getBookmark(name, locale);        
         String content = "";
@@ -330,7 +333,7 @@ public class CmsXmlPage {
                     
                         content = macroReplacer.processLinks(cms, content, forEditor);
                     } catch (Exception exc) {
-                        throw new CmsPageException ("HTML data processing failed", exc);
+                        throw new CmsXmlPageException ("HTML data processing failed", exc);
                     }
                 } 
             }
@@ -553,9 +556,9 @@ public class CmsXmlPage {
      * @param locale locale of the element
      * @param content character data (CDATA) of the element
      * 
-     * @throws CmsPageException if something goes wrong
+     * @throws CmsXmlPageException if something goes wrong
      */
-    public void setContent(CmsObject cms, String name, Locale locale, String content) throws CmsPageException {
+    public void setContent(CmsObject cms, String name, Locale locale, String content) throws CmsXmlPageException {
         
         Element element = getBookmark(name, locale);
         Element data = element.element(C_NODE_CONTENT);
@@ -575,7 +578,7 @@ public class CmsXmlPage {
             }
                         
         } catch (Exception exc) {
-            throw new CmsPageException ("HTML data processing failed", exc);
+            throw new CmsXmlPageException ("HTML data processing failed", exc);
         }
         
         links.setContent(null);
@@ -631,9 +634,9 @@ public class CmsXmlPage {
      * using the opencms default encoding.<p>
      * 
      * @return the assigned file with the xml content
-     * @throws CmsPageException if something goes wrong
+     * @throws CmsXmlPageException if something goes wrong
      */
-    public CmsFile write() throws CmsPageException {        
+    public CmsFile write() throws CmsXmlPageException {        
         return write(m_file, OpenCms.getSystemInfo().getDefaultEncoding());
     }
     
@@ -643,9 +646,9 @@ public class CmsXmlPage {
      * 
      * @param file the file to write the xml
      * @return the file with the xml content
-     * @throws CmsPageException if something goes wrong
+     * @throws CmsXmlPageException if something goes wrong
      */
-    public CmsFile write(CmsFile file) throws CmsPageException {        
+    public CmsFile write(CmsFile file) throws CmsXmlPageException {        
         return write(file, OpenCms.getSystemInfo().getDefaultEncoding());
     }
     
@@ -655,9 +658,9 @@ public class CmsXmlPage {
      * @param file the file to write the xml
      * @param encoding the encoding to use
      * @return the file with the xml content
-     * @throws CmsPageException if something goes wrong
+     * @throws CmsXmlPageException if something goes wrong
      */
-    public CmsFile write(CmsFile file, String encoding) throws CmsPageException {        
+    public CmsFile write(CmsFile file, String encoding) throws CmsXmlPageException {        
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         file.setContents(((ByteArrayOutputStream)write(out, encoding)).toByteArray());
         
@@ -670,9 +673,9 @@ public class CmsXmlPage {
      * @param out the output stream to write to
      * @param encoding the encoding to use
      * @return the output stream with the xml content
-     * @throws CmsPageException if something goes wrong
+     * @throws CmsXmlPageException if something goes wrong
      */
-    public OutputStream write(OutputStream out, String encoding) throws CmsPageException {        
+    public OutputStream write(OutputStream out, String encoding) throws CmsXmlPageException {        
         try {
 
             OutputFormat format = OutputFormat.createPrettyPrint();
@@ -684,7 +687,7 @@ public class CmsXmlPage {
             writer.close();
             
         } catch (Exception exc) {
-            throw new CmsPageException("Writing xml page failed", exc);
+            throw new CmsXmlPageException("Writing xml page failed", exc);
         }
         
         return out;
@@ -695,9 +698,9 @@ public class CmsXmlPage {
      * 
      * @param encoding the encoding to use
      * @return the assigned file with the xml content
-     * @throws CmsPageException if something goes wrong
+     * @throws CmsXmlPageException if something goes wrong
      */
-    public CmsFile write(String encoding) throws CmsPageException {        
+    public CmsFile write(String encoding) throws CmsXmlPageException {        
         return write(m_file, encoding);
     }
 }

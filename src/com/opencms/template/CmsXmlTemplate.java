@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.141 $
+* Date   : $Date: 2004/02/19 11:46:11 $
+* Version: $Revision: 1.142 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,6 +37,8 @@ import org.opencms.staticexport.CmsLinkManager;
 
 import com.opencms.defaults.A_CmsContentDefinition;
 import com.opencms.defaults.I_CmsTimedContentDefinition;
+import com.opencms.legacy.*;
+
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
@@ -59,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.141 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.142 $ $Date: 2004/02/19 11:46:11 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";

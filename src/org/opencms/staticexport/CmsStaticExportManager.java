@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/02/18 15:26:17 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/02/19 11:46:11 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -351,7 +351,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // check loader id for resource
         int loaderId = file.getLoaderId();
         I_CmsResourceLoader loader = OpenCms.getLoaderManager().getLoader(loaderId);
-        if ((loader == null) || (! loader.supportsStaticExport())) {
+        if ((loader == null) || (! loader.isStaticExportEnabled())) {
             throw new CmsException("Unable to export VFS file " + vfsName + ", loader with id " + loaderId + " does not support static export");
         }
 
