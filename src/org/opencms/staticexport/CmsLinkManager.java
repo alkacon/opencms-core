@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/12/17 17:46:37 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,15 @@
 package org.opencms.staticexport;
 
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSiteManager;
+import org.opencms.site.CmsSiteMatcher;
 
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 /**
@@ -48,7 +51,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsLinkManager {
     
@@ -155,7 +158,75 @@ public class CmsLinkManager {
         result.append(toUri.substring(pos));
         return result.toString();
     }
-    
+
+    /**
+     * Returns the site path for a given uri.<p>
+     * 
+     * If the uri contains no site information, but starts with the opencms context, it is returned unchanged
+     *  /opencms/opencms/system/further_path -> /opencms/opencms/system/further_path
+     * 
+     * If the uri contains no site information, the path will be prefixed with the current site
+     *  page.html -> /sites/mysite/page.html
+     *  /folder/page.html -> /sites/mysite/folder/page.html
+     *  (if mysite is the site currently selected in the workplace or in the request)
+     * 
+     * If the uri contains a scheme/server name that denotes an opencms site, it is replaced by the appropriate site path
+     *  http://www.mysite.de/folder/page.html -> /sites/mysite/folder/page.html
+     * 
+     * If the uri contains a scheme/server name that does not match with any site, or if the uri is opaque or invalid,
+     * null is returned.
+     *  http://www.elsewhere.com/page.html -> null
+     *  mailto:someone@elsewhere.com -> null
+     * 
+     * @param cms the cms object
+     * @param targetUri the target uri
+     * @return the root path for the target uri or null
+     */
+    public static String getSitePath(CmsObject cms, String relativePath, String targetUri) {
+        
+        URI uri;
+        
+        // malformed uri
+        try {
+            uri = new URI(targetUri);
+        } catch (Exception exc) {   
+            return null;
+        }
+        
+        // opaque uri
+        if (uri.isOpaque()) { 
+            return null;
+        }
+        
+        // absolute uri
+        if (uri.isAbsolute()) {
+            CmsSiteMatcher matcher = new CmsSiteMatcher(targetUri);
+            if (OpenCms.getSiteManager().isMatching(matcher)) {
+                String path = uri.getPath();
+                path = path.substring(OpenCms.getOpenCmsContext().length());
+                return OpenCms.getSiteManager().matchSite(matcher).getSiteRoot() + path;
+            } else {
+                return null;
+            }
+        } 
+        
+        // relative uri starting with opencms context
+        if (uri.getPath().startsWith(OpenCms.getOpenCmsContext())) {
+            return targetUri;
+        }
+        
+        // uri with relative path is relative to the given relativePath if available, otherwise invalid
+        if (!uri.getPath().startsWith("/")) {
+            if (relativePath != null) {
+                return cms.getRequestContext().addSiteRoot(relativePath + uri.getPath());
+            } else {
+                return null;
+            }
+        }
+        
+        // relative uri (= vfs path relative to currently selected site root)
+        return cms.getRequestContext().addSiteRoot(uri.getPath());
+    }
     /**
      * Checks if the export is required for a given vfs resource.<p>
      * 
@@ -221,6 +292,11 @@ public class CmsLinkManager {
         } else {
             vfsName = absoluteLink;
             parameters = null;
+        }
+        
+        // check if the link has already the opencms context, if so remove it
+        if (vfsName.startsWith(OpenCms.getStaticExportManager().getVfsPrefix())) {
+            vfsName = vfsName.substring(OpenCms.getStaticExportManager().getVfsPrefix().length());
         }
         
         String resultLink = null;

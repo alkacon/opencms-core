@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2003/12/15 09:27:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/12/17 17:46:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,11 @@
 package org.opencms.staticexport;
 
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManager;
 
 import com.opencms.file.CmsObject;
+
 
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
@@ -50,7 +53,7 @@ import org.htmlparser.visitors.NodeVisitor;
 /**
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3
  */
 public class CmsLinkProcessor extends NodeVisitor {
@@ -58,6 +61,7 @@ public class CmsLinkProcessor extends NodeVisitor {
     /** Processing modes */
     private static final int C_REPLACE_LINKS = 0;
     private static final int C_PROCESS_LINKS = 1;
+    private static final int C_PROCESS_EDIT_LINKS = 2;
     
     /** Current processing mode */
     private int m_mode;
@@ -73,6 +77,12 @@ public class CmsLinkProcessor extends NodeVisitor {
 
     /** The current cms instance */
     private CmsObject m_cms;
+    
+    /** The relative path for relative links, if not set, relative links are treated as external links */
+    private String m_relativePath;
+    
+    /** Indicates if links should be generated for editing purposes */
+    private boolean m_processEditorLinks;
     
     /**
      * Creates a new CmsLinkProcessor.<p>
@@ -92,15 +102,19 @@ public class CmsLinkProcessor extends NodeVisitor {
      * Starts link processing for the given content in replacement mode.<p>
      * Links are replaced by macros.
      * 
+     * @param cms the cms object
      * @param content the content to process
      * @return the processed content with replaced links
      * 
      * @throws ParserException if something goes wrong
      */
-    public String replaceLinks(String content) throws ParserException {
+    public String replaceLinks(CmsObject cms, String content, String relativePath) throws ParserException {
         Lexer lexer = new Lexer(content);
         
+        m_relativePath = relativePath;
         m_mode = C_REPLACE_LINKS;
+        m_cms = cms; 
+        
         m_result = new StringBuffer();
         m_parser.setLexer(lexer);
         m_parser.visitAllNodesWith(this);
@@ -118,9 +132,10 @@ public class CmsLinkProcessor extends NodeVisitor {
      * 
      * @throws ParserException if something goes wrong
      */
-    public String processLinks(CmsObject cms, String content) throws ParserException {
+    public String processLinks(CmsObject cms, String content, boolean processEditorLinks) throws ParserException {
         Lexer lexer = new Lexer(content);
         
+        m_processEditorLinks = processEditorLinks;
         m_mode = C_PROCESS_LINKS;
         m_cms = cms;
         
@@ -142,13 +157,18 @@ public class CmsLinkProcessor extends NodeVisitor {
         switch (m_mode) {
             case C_REPLACE_LINKS:
 
-                linkTag.setLink(replaceLink(m_linkTable.addLink(linkTag.getTagName(), linkTag.getLink())));
+                String target = CmsLinkManager.getSitePath(m_cms, m_relativePath, linkTag.extractLink());
+                if (target != null) {
+                    linkTag.setLink(replaceLink(m_linkTable.addLink(linkTag.getTagName(), target, true)));
+                } else {
+                    linkTag.setLink(replaceLink(m_linkTable.addLink(linkTag.getTagName(), linkTag.extractLink(), false)));
+                }
                 break;
                 
             case C_PROCESS_LINKS:
                 
                 linkTag.setLink(processLink(m_linkTable.getLink(getLinkName(linkTag.getLink()))));
-                break;
+                break;           
                 
             default:
                 // noop
@@ -165,14 +185,20 @@ public class CmsLinkProcessor extends NodeVisitor {
      * @see org.htmlparser.visitors.NodeVisitor#visitImageTag(org.htmlparser.tags.ImageTag)
      */
     public void visitImageTag(ImageTag imageTag) {
+              
         switch (m_mode) {
             case C_REPLACE_LINKS:
-                
-                imageTag.setImageURL(replaceLink(m_linkTable.addLink(imageTag.getTagName(), imageTag.getImageURL())));
+
+                String target = CmsLinkManager.getSitePath(m_cms, m_relativePath, imageTag.getImageURL());
+                if (target != null) {
+                    imageTag.setImageURL(replaceLink(m_linkTable.addLink(imageTag.getTagName(), target, true)));
+                } else {
+                    imageTag.setImageURL(replaceLink(m_linkTable.addLink(imageTag.getTagName(), imageTag.getImageURL(), false)));
+                }
                 break;
                 
             case C_PROCESS_LINKS:
-
+                
                 imageTag.setImageURL(processLink(m_linkTable.getLink(getLinkName(imageTag.getImageURL()))));
                 break;
                 
@@ -258,13 +284,42 @@ public class CmsLinkProcessor extends NodeVisitor {
      * @return processed link
      */
     private String processLink(CmsLink link) {
-//        String serverURL = link.getServerURL();
-        
-        // an internal link is substituted only, if it matches the current site
+//        String serverURL = link.getServerURL();        
+// an internal link is substituted only, if it matches the current site
+
         if (link.isInternal()) {
-//                && (serverURL == null || OpenCms.getSiteManager().isMatchingCurrentSite(m_cms, new CmsSiteMatcher(serverURL)))) {
-            return OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsTarget());
+
+            CmsSite site = null;
+            
+            // we are in the opencms root site but not in edit mode - use link as stored
+            if (!m_processEditorLinks && "".equals(m_cms.getRequestContext().getSiteRoot())) {
+                return OpenCms.getLinkManager().substituteLink(m_cms, link.getTarget());    
+            }
+
+            // otherwise get the desired site root from the stored link
+            // - if there is no site root, this site was deleted and we have an invalid link or we have a system link
+            // so, return link unprocessed
+            String siteRoot = link.getSiteRoot();
+            if (siteRoot == null) {
+                return link.getTarget();
+            } else {
+                site = CmsSiteManager.getSite(siteRoot);
+            }
+
+            // if we are in the desired site, relative links are generated if not in editmode (otherwise the vfs link is returned)
+            // otherwise, links are generated as absolute links
+            if (m_cms.getRequestContext().getSiteRoot().equals(siteRoot)) {
+                if (m_processEditorLinks) {
+                    return link.getVfsTarget();
+                } else {
+                    return OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsTarget());
+                }
+            } else {
+                return site.getUrl() + OpenCms.getOpenCmsContext() + link.getVfsTarget();
+            }
         } else {
+            
+            // don't touch external links
             return link.getTarget();
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteMatcher.java,v $
- * Date   : $Date: 2003/11/08 10:32:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/12/17 17:46:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package org.opencms.site;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.1
  */
 public final class CmsSiteMatcher implements Cloneable {   
@@ -100,8 +100,15 @@ public final class CmsSiteMatcher implements Cloneable {
         } else {
             serverName = serverString;
             serverPort = 80;
-        }        
-        // initialize menmbers
+        }
+        
+        // cut trailing path in server name
+        pos = serverName.indexOf("/");
+        if (pos >= 0) {
+            serverName = serverName.substring(0, pos);
+        }
+        
+        // initialize members
         init(serverProtocol, serverName, serverPort);
     }
 
@@ -178,6 +185,16 @@ public final class CmsSiteMatcher implements Cloneable {
      */
     public String getServerProtocol() {
         return m_serverProtocol;
+    }
+    
+    /**
+     * Returns the url of this site matcher.<p>
+     * 
+     * @return the url, i.e. <protocol>://<servername>[:<port>], port appened only if != 80
+     */
+    public String getUrl() {
+        return m_serverProtocol + "://" + m_serverName 
+            + ((m_serverPort != 80) ? ":" + m_serverPort : ""); 
     }
     
     /**

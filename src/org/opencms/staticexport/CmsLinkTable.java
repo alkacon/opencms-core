@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkTable.java,v $
- * Date   : $Date: 2003/12/15 09:27:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/12/17 17:46:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,10 +30,6 @@
  */
 package org.opencms.staticexport;
 
-import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSiteMatcher;
-
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -42,7 +38,7 @@ import java.util.Iterator;
  *  
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3
  */
 public class CmsLinkTable {
@@ -65,10 +61,11 @@ public class CmsLinkTable {
      * 
      * @param type type of the link
      * @param target link destination
+     * @param internal flag to indicate if the link is a local link
      * @return the new link entry
      */
-    public CmsLink addLink (String type, String target) {        
-        CmsLink link = new CmsLink(C_LINK_PREFIX + m_linkTable.size(), type, target, isInternal(target));
+    public CmsLink addLink (String type, String target, boolean internal) {
+        CmsLink link = new CmsLink(C_LINK_PREFIX + m_linkTable.size(), type, target, internal);
         m_linkTable.put(link.getName(), link);
         return link;
     }
@@ -121,7 +118,7 @@ public class CmsLinkTable {
      * 
      * @param target the link target
      * @return true if the target is identidfied as local
-     */
+     *//*
     private boolean isInternal(String target) {       
         URI targetURI = URI.create(target);
         String context = OpenCms.getOpenCmsContext();
@@ -151,5 +148,5 @@ public class CmsLinkTable {
         
         // every other relative uri is internal
         return true;
-    }
+    }*/
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLink.java,v $
- * Date   : $Date: 2003/12/15 09:27:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/12/17 17:46:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,14 @@
 package org.opencms.staticexport;
 
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSiteManager;
 
 /**
  * A single link entry in the link table.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  */
 public class CmsLink {
 
@@ -96,21 +97,33 @@ public class CmsLink {
     }
     
     /**
-     * Convenience method to get a vfs link from the target.<p>
+     * Returns the vfs link of the target if it is internal.<p>
      * 
-     * If the link is internal and starts with the context (i.e. /opencms/opencms),
-     * the context is removed
-     * 
-     * @return the full link destination
+     * @return the full link destination or null if the link is not internal.
      */
     public String getVfsTarget() {        
-        String context = OpenCms.getOpenCmsContext();
-        if (m_internal && m_target.startsWith(context)) {
-            return m_target.substring(context.length());
-        } else {
-            return m_target;
+        
+        if (m_internal) {
+            String siteRoot = CmsSiteManager.getSiteRoot(m_target);
+            return m_target.substring(siteRoot.length());
         }
+        
+        return null;
     } 
+    
+    /**
+     * Return the site root of the target if it is internal.<p>
+     * 
+     * @return the site root or null
+     */
+    public String getSiteRoot() {
+        
+        if (m_internal) {
+            return CmsSiteManager.getSiteRoot(m_target);
+        }
+        
+        return null;
+    }
     
     /**
      * Returns if the link is internal.<p>

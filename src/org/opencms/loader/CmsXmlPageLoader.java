@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2003/12/12 12:16:42 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/12/17 17:46:37 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -129,7 +129,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
         String absolutePath = cms.readAbsolutePath(file);
         try {
             // get the requested page
-            CmsXmlPage page = new CmsXmlPage().read(cms, cms.readFile(absolutePath));
+            CmsXmlPage page = CmsXmlPage.read(cms, cms.readFile(absolutePath));
             
             // get the element selector
             // TODO: Check this, maybe use a request attribute instead of a parameter

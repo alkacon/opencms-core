@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2003/12/12 08:43:19 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/12/17 17:46:37 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1.12
  */
@@ -85,7 +85,7 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
         if (getParamTempfile() != null && !"null".equals(getParamTempfile())) {
             try {
                 m_file = getCms().readFile(this.getParamTempfile());
-                m_page = new CmsXmlPage().read(getCms(), m_file);
+                m_page = CmsXmlPage.read(getCms(), m_file);
             } catch (CmsException e) {
                 // error during initialization
                 try {
@@ -126,7 +126,7 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
                 setParamTempfile(createTempFile());
                 // initialize a page object from the created temporary file
                 m_file =  getCms().readFile(this.getParamTempfile());
-                m_page = new CmsXmlPage().read(getCms(), m_file);
+                m_page = CmsXmlPage.read(getCms(), m_file);
             } catch (CmsException e) {
                 // error during initialization
                 try {
