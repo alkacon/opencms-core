@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/09 09:40:46 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2000/06/09 09:51:02 $
+ * Version: $Revision: 1.42 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.41 $ $Date: 2000/06/09 09:40:46 $ * 
+ * @version $Revision: 1.42 $ $Date: 2000/06/09 09:51:02 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -2519,7 +2519,329 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
          return readResource(project,resource.getAbsolutePath());
       } 
             
-     
+    /**
+     * Deletes a specified project
+     *
+     * @param project The project to be deleted.
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void deleteProjectResources(CmsProject project)
+        throws CmsException {
+        PreparedStatement statement = null;
+        try {
+			// delete all project-resources.
+	      	statement = m_pool.getPreparedStatement(C_RESOURCES_DELETE_PROJECT_KEY);
+			statement.setInt(1,project.getId());
+			statement.executeQuery();
+            // delete all project-files.
+            clearFilesTable();
+		} catch (SQLException e){
+           throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		}finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_RESOURCES_DELETE_PROJECT_KEY, statement);
+			}
+		  }
+	}
+	
+	/**
+	 * Reads a file from the Cms.<BR/>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param filename The complete name of the new file (including pathinformation).
+	 * 
+	 * @return file The read file.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 public CmsFile readFile(CmsProject project,
+                             CmsProject onlineProject,
+                             String filename)
+         throws CmsException {
+          
+         CmsFile file = null;
+         int projectId;
+         PreparedStatement statement = null;
+         ResultSet res = null;
+         try {
+             // if the actual project is the online project read file header and content
+             // from the online project
+             if (project.equals(onlineProject)) {
+                    statement = m_pool.getPreparedStatement(C_FILE_READ_ONLINE_KEY);
+                    statement.setString(1, filename);
+                    statement.setInt(2,onlineProject.getId());
+                    res = statement.executeQuery();  
+                    if(res.next()) {
+                         file = new CmsFile(res.getInt(C_RESOURCES_RESOURCE_ID),
+											res.getInt(C_RESOURCES_PARENT_ID),
+											res.getInt(C_RESOURCES_FILE_ID),
+											filename,
+                                            res.getInt(C_RESOURCES_RESOURCE_TYPE),
+                                            res.getInt(C_RESOURCES_RESOURCE_FLAGS),
+                                            res.getInt(C_RESOURCES_USER_ID),
+                                            res.getInt(C_RESOURCES_GROUP_ID),
+                                            onlineProject.getId(),
+                                            res.getInt(C_RESOURCES_ACCESS_FLAGS),
+                                            res.getInt(C_RESOURCES_STATE),
+                                            res.getInt(C_RESOURCES_LOCKED_BY),
+                                            res.getInt(C_RESOURCES_LAUNCHER_TYPE),
+                                            res.getString(C_RESOURCES_LAUNCHER_CLASSNAME),
+											res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
+                                            res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
+                                            res.getInt(C_RESOURCES_LASTMODIFIED_BY),
+                                            res.getBytes(C_RESOURCES_FILE_CONTENT),
+                                            res.getInt(C_RESOURCES_SIZE)
+                                           );
+                          res.close();
+                     } else {
+                       throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);  
+                  }                
+             } else {
+               // reading a file from an offline project must be done in two steps:
+               // first read the file header from the offline project, then get either
+               // the file content of the offline project (if it is already existing)
+               // or form the online project.
+               
+               // get the file header
+               file=readFileHeader(project,filename);
+               // check if the file is marked as deleted
+               if (file.getState() == C_STATE_DELETED) {
+                   throw new CmsException("["+this.getClass().getName()+"] "+CmsException.C_NOT_FOUND); 
+               }
+			   // read the file content
+                   statement = m_pool.getPreparedStatement(C_FILE_READ_KEY);
+                   statement.setInt(1,file.getFileId());
+                   res = statement.executeQuery();
+                   if (res.next()) {
+                       file.setContents(res.getBytes(C_FILE_CONTENT));
+                   } else {
+                         throw new CmsException("["+this.getClass().getName()+"]"+filename,CmsException.C_NOT_FOUND);  
+                   }
+                res.close();       
+             }                
+         } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+ 		} catch( Exception exc ) {
+            throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}finally {
+			if (project.equals(onlineProject)) {
+				if( statement != null) {
+					m_pool.putPreparedStatement(C_FILE_READ_ONLINE_KEY, statement);
+				}
+			}else{
+				if( statement != null) {
+					m_pool.putPreparedStatement(C_FILE_READ_KEY, statement);
+				}
+			}	
+		  }
+         return file;
+     }	
+
+	/**
+	 * Reads a file header from the Cms.<BR/>
+	 * The reading excludes the filecontent.
+	 * 
+	 * @param callingUser The user who wants to use this method.
+	 * @param project The project in which the resource will be used.
+	 * @param filename The complete name of the new file (including pathinformation).
+	 * 
+	 * @return file The read file.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 public CmsFile readFileHeader(CmsProject project, String filename)
+         throws CmsException {
+         
+         CmsFile file=null;
+         ResultSet res =null;
+         PreparedStatement statement = null;  
+         try {
+               statement=m_pool.getPreparedStatement(C_RESOURCES_READ_KEY);
+               // read file data from database
+               statement.setString(1, filename);
+               statement.setInt(2, project.getId());
+               res = statement.executeQuery();
+               // create new file
+               if(res.next()) {
+                        file = new CmsFile(res.getInt(C_RESOURCES_RESOURCE_ID),
+										   res.getInt(C_RESOURCES_PARENT_ID),
+										   res.getInt(C_RESOURCES_FILE_ID),
+										   res.getString(C_RESOURCES_RESOURCE_NAME),
+                                           res.getInt(C_RESOURCES_RESOURCE_TYPE),
+                                           res.getInt(C_RESOURCES_RESOURCE_FLAGS),
+                                           res.getInt(C_RESOURCES_USER_ID),
+                                           res.getInt(C_RESOURCES_GROUP_ID),
+                                           res.getInt(C_PROJECT_ID_RESOURCES),
+                                           res.getInt(C_RESOURCES_ACCESS_FLAGS),
+                                           res.getInt(C_RESOURCES_STATE),
+                                           res.getInt(C_RESOURCES_LOCKED_BY),
+                                           res.getInt(C_RESOURCES_LAUNCHER_TYPE),
+                                           res.getString(C_RESOURCES_LAUNCHER_CLASSNAME),
+                                           res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
+                                           res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
+                                           res.getInt(C_RESOURCES_LASTMODIFIED_BY),
+                                           new byte[0],
+                                           res.getInt(C_RESOURCES_SIZE)
+                                           );
+                          res.close();                 
+                         // check if this resource is marked as deleted
+                        if (file.getState() == C_STATE_DELETED) {
+                            throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);  
+                        }
+               } else {
+                 throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);  
+               }
+         } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         } catch (CmsException ex) {
+            throw ex;       
+         } catch( Exception exc ) {
+			throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_RESOURCES_READ_KEY, statement);
+			}
+		  }
+
+        return file;
+       }
+	 
+	
+    /**
+	 * Creates a new file with the given content and resourcetype.
+     *
+	 * @param user The user who wants to create the file.
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param filename The complete name of the new file (including pathinformation).
+	 * @param flags The flags of this resource.
+	 * @param contents The contents of the new file.
+	 * @param resourceType The resourceType of the new file.
+	 * 
+	 * @return file The created file.
+	 * 
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */    
+	 public CmsFile createFile(int resourceId, int parentId,int fileId,
+							   CmsUser user,
+                               CmsProject project,
+                               CmsProject onlineProject,
+                               String filename, int flags,int resourceLastModifiedBy, 
+							   byte[] contents, CmsResourceType resourceType)
+							
+         throws CmsException {
+
+          int state= C_STATE_NEW;
+           // Test if the file is already there and marked as deleted.
+           // If so, delete it
+           try {
+            readFileHeader(project,filename);     
+           } catch (CmsException e) {
+               // if the file is maked as deleted remove it!
+               if (e.getType()==CmsException.C_RESOURCE_DELETED) {
+                    removeFile(project,filename);
+                    state=C_STATE_CHANGED;
+               }              
+           }
+           if (resourceId == C_UNKNOWN_ID){
+				resourceId = nextId(C_TABLE_RESOURCES);
+		   }
+           if (fileId == C_UNKNOWN_ID){
+				fileId = nextId(C_TABLE_FILES);
+		   }
+		   PreparedStatement statement = null;
+		   PreparedStatement statementFileWrite = null;
+           try {             
+                statement = m_pool.getPreparedStatement(C_RESOURCES_WRITE_KEY);
+                // write new resource to the database
+                //RESOURCE_ID
+                statement.setInt(1,resourceId);
+                //PARENT_ID
+                statement.setInt(2,parentId);
+                //RESOURCE_NAME
+                statement.setString(3, filename);
+                //RESOURCE_TYPE
+                statement.setInt(4,resourceType.getResourceType());
+                //RESOURCE_FLAGS
+                statement.setInt(5,flags);
+                //USER_ID
+                statement.setInt(6,user.getId());
+                //GROUP_ID
+                statement.setInt(7,user.getDefaultGroupId());
+                //PROJECT_ID
+                statement.setInt(8,project.getId());
+                //FILE_ID
+                statement.setInt(9,fileId);
+                //ACCESS_FLAGS
+                statement.setInt(10,C_ACCESS_DEFAULT_FLAGS);
+                //STATE
+                statement.setInt(11,state);
+                //LOCKED_BY
+                statement.setInt(12,C_UNKNOWN_ID);
+                //LAUNCHER_TYPE
+                statement.setInt(13,resourceType.getLauncherType());
+                //LAUNCHER_CLASSNAME
+                statement.setString(14,resourceType.getLauncherClass());
+                //DATE_CREATED
+                statement.setTimestamp(15,new Timestamp(System.currentTimeMillis()));
+                //DATE_LASTMODIFIED
+                statement.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
+                //SIZE
+                statement.setInt(17,contents.length);
+                //RESOURCE_LASTMODIFIED_BY
+                statement.setInt(18,resourceLastModifiedBy);
+                statement.executeUpdate();
+                
+                statementFileWrite = m_pool.getPreparedStatement(C_FILES_WRITE_KEY);
+                //FILE_ID
+                statementFileWrite.setInt(1,fileId);
+                //FILE_CONTENT
+                statementFileWrite.setBytes(2,contents);
+                statementFileWrite.executeUpdate();
+         } catch (SQLException e){                        
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }finally {
+				if( statement != null) {
+					m_pool.putPreparedStatement(C_RESOURCES_WRITE_KEY, statement);
+				}
+				if( statementFileWrite != null) {
+					m_pool.putPreparedStatement(C_FILES_WRITE_KEY, statementFileWrite);
+				}
+			 }	
+         return readFile(project,onlineProject,filename);
+     }
+	
+	 /**
+      * Deletes a file in the database. 
+      * This method is used to physically remove a file form the database.
+      * 
+      * @param project The project in which the resource will be used.
+	  * @param filename The complete path of the file.
+      * @exception CmsException Throws CmsException if operation was not succesful
+      */
+     public void removeFile(CmsProject project, String filename) 
+        throws CmsException{
+        
+		  PreparedStatement statement = null;
+          try { 
+         	// delete the file header
+			statement = m_pool.getPreparedStatement(C_RESOURCES_DELETE_KEY);
+            statement.setString(1, filename);
+            statement.setInt(2,project.getId());
+            statement.executeUpdate(); 
+            // delete the file content
+            clearFilesTable();
+          } catch (SQLException e){
+                throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            }finally {
+				if( statement != null) {
+					m_pool.putPreparedStatement(C_RESOURCES_DELETE_KEY, statement);
+				}
+			 }         
+     }
+
+	 
     /**
 	 * Deletes all files in CMS_FILES without fileHeader in CMS_RESOURCES
 	 * 
@@ -2634,8 +2956,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         m_pool.initPreparedStatement(C_RESOURCES_WRITE_KEY,C_RESOURCES_WRITE);
         m_pool.initPreparedStatement(C_RESOURCES_GET_LOST_ID_KEY,C_RESOURCES_GET_LOST_ID);
         m_pool.initPreparedStatement(C_FILE_DELETE_KEY,C_FILE_DELETE);
+        m_pool.initPreparedStatement(C_RESOURCES_DELETE_PROJECT_KEY,C_RESOURCES_DELETE_PROJECT);
+        m_pool.initPreparedStatement(C_FILE_READ_ONLINE_KEY,C_FILE_READ_ONLINE);
+        m_pool.initPreparedStatement(C_FILE_READ_KEY,C_FILE_READ);
+        m_pool.initPreparedStatement(C_FILES_WRITE_KEY,C_FILES_WRITE);
         m_pool.initPreparedStatement(C_RESOURCES_UNLOCK_KEY,C_RESOURCES_UNLOCK);
         m_pool.initPreparedStatement(C_RESOURCES_COUNTLOCKED_KEY,C_RESOURCES_COUNTLOCKED);
+        	
 
 		// init statements for groups
 		m_pool.initPreparedStatement(C_GROUPS_MAXID_KEY,C_GROUPS_MAXID);

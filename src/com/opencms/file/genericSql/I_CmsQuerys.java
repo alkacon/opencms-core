@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/09 09:40:46 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2000/06/09 09:51:02 $
+ * Version: $Revision: 1.29 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.28 $ $Date: 2000/06/09 09:40:46 $
+ * @version $Revision: 1.29 $ $Date: 2000/06/09 09:51:02 $
  */
 public interface I_CmsQuerys {
     
@@ -79,6 +79,9 @@ public interface I_CmsQuerys {
 	public static final String C_RESOURCES_GET_LOST_ID = "SELECT A.FILE_ID FROM "+C_DATABASE_PREFIX+"FILES A LEFT JOIN "
 										+C_DATABASE_PREFIX+"RESOURCES B ON A.FILE_ID=B.FILE_ID WHERE B.FILE_ID is NULL";
     
+    public static final Integer C_RESOURCES_DELETE_PROJECT_KEY = new Integer(105);
+	public static final String C_RESOURCES_DELETE_PROJECT = "DELETE FROM " + C_DATABASE_PREFIX + "RESOURCES "
+															 + "WHERE PROJECT_ID = ?";
     public static final Integer C_RESOURCES_UNLOCK_KEY = new Integer(120);
 	public static final String C_RESOURCES_UNLOCK = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET "
 													+"LOCKED_BY = " + I_CmsConstants.C_UNKNOWN_ID
@@ -88,8 +91,14 @@ public interface I_CmsQuerys {
 	public static final String C_RESOURCES_COUNTLOCKED = "SELECT MAX(RESOURCE_ID) FROM " + C_DATABASE_PREFIX + "RESOURCES where LOCKED_BY <> " + 
 														 I_CmsConstants.C_UNKNOWN_ID + " and PROJECT_ID = ?";
 	
+	public static final Integer C_RESOURCES_DELETE_KEY = new Integer(106);
+	public static final String C_RESOURCE_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
+
+		
 	// Constants for files table
 	public static final String C_FILE_ID="FILE_ID";
+	public static final String C_FILE_CONTENT="FILE_CONTENT";
+    
     	
 	// Constants for files
 	public static final Integer C_FILES_MAXID_KEY = new Integer(150);
@@ -98,7 +107,25 @@ public interface I_CmsQuerys {
 	public static final Integer C_FILE_DELETE_KEY = new Integer(151);
 	public static final String C_FILE_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "FILES WHERE FILE_ID = ?";
 
-
+	public static final Integer C_FILE_READ_KEY = new Integer(152);
+	public static final String C_FILE_READ = "SELECT FILE_CONTENT FROM " + C_DATABASE_PREFIX + "FILES " +"WHERE FILE_ID = ? ";
+   
+	public static final Integer C_FILE_READ_ONLINE_KEY = new Integer(153);
+	public static final String C_FILE_READ_ONLINE = "SELECT RESOURCE_ID,PARENT_ID,"
+													 +"RESOURCE_TYPE,"
+                                                     +"RESOURCE_FLAGS,USER_ID,"
+                                                     + "GROUP_ID,"+C_DATABASE_PREFIX+"FILES.FILE_ID,ACCESS_FLAGS,STATE,"
+                                                     +"LOCKED_BY,LAUNCHER_TYPE,LAUNCHER_CLASSNAME,"
+                                                     +"DATE_CREATED,DATE_LASTMODIFIED,RESOURCE_LASTMODIFIED_BY,SIZE, "
+                                                     + C_DATABASE_PREFIX + "FILES.FILE_CONTENT FROM " + C_DATABASE_PREFIX + "RESOURCES," + C_DATABASE_PREFIX + "FILES "
+                                                     +"WHERE " + C_DATABASE_PREFIX + "RESOURCES.FILE_ID = " + C_DATABASE_PREFIX + "FILES.FILE_ID "
+                                                     +"AND " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_NAME = ? "
+                                                     +"AND " + C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID = ?";
+    
+    public static final Integer C_FILES_WRITE_KEY = new Integer(154);
+	public static final String C_FILES_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "FILES VALUES(?,?)";
+    
+    
     // Constants for Groups table
     public static final String C_GROUPS_GROUP_ID="GROUP_ID";
     public static final String C_GROUPS_PARENT_GROUP_ID="PARENT_GROUP_ID";
