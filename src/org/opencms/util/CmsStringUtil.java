@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/03/20 13:46:17 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/03/24 17:38:21 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -478,6 +478,32 @@ public final class CmsStringUtil {
         }
         return true;
     }
+    
+    /**
+     * Applies white space padding to the left of the given String.<p>
+     * 
+     * @param input the input to pad left
+     * @param size the size of the padding
+     * 
+     * @return the input padded to the left
+     */
+    public static String padLeft(String input, int size) {
+        
+        return (new PrintfFormat("%" + size + "s")).sprintf(input);
+    }
+
+    /**
+     * Applies white space padding to the right of the given String.<p>
+     * 
+     * @param input the input to pad right
+     * @param size the size of the padding
+     * 
+     * @return the input padded to the right
+     */
+    public static String padRight(String input, int size) {
+        
+        return (new PrintfFormat("%-" + size + "s")).sprintf(input);
+    }
 
     /**
      * Splits a String into substrings along the provided char delimiter and returns
@@ -667,7 +693,7 @@ public final class CmsStringUtil {
         sb.append(content.substring(start, end));
         return sb.toString();
     }
-
+    
     /**
      * Substitutes the OpenCms context path (e.g. /opencms/opencms/) in a HTML page with a 
      * special variable so that the content also runs if the context path of the server changes.<p>

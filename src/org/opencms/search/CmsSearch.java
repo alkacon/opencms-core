@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/03/23 22:09:06 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/03/24 17:38:20 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.Serializable;
@@ -42,6 +43,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 
 /**
  * Helper class to access the search facility within a jsp.<p>
@@ -59,12 +63,25 @@ import java.util.TreeMap;
  * <li>contentdefinition - the name of the content definition class of a resource</li>
  * </ul>
  * 
- * @version $Revision: 1.22 $ $Date: 2005/03/23 22:09:06 $
+ * @version $Revision: 1.23 $ $Date: 2005/03/24 17:38:20 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
  */
 public class CmsSearch implements Serializable, Cloneable {
+
+    /** Sort result documents by date of last modification, then score. */
+    public static final Sort SORT_DATE_LASTMODIFIED = new Sort(new SortField[] {
+        new SortField(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, true),
+        SortField.FIELD_SCORE});
+
+    /** Default sort order (by document score). */
+    public static final Sort SORT_DEFAULT = Sort.RELEVANCE;
+
+    /** Sort result documents by title, then score. */
+    public static final Sort SORT_TITLE = new Sort(new SortField[] {
+        new SortField(I_CmsDocumentFactory.DOC_TITLE),
+        SortField.FIELD_SCORE});
 
     /** The cms object. */
     protected transient CmsObject m_cms;
@@ -117,6 +134,9 @@ public class CmsSearch implements Serializable, Cloneable {
     /** The search root. */
     protected String m_searchRoot;
 
+    /** The search sort order. */
+    protected Sort m_sortOrder;
+
     /**
      * Default constructor, used to instanciate the search facility as a bean.<p>
      */
@@ -130,6 +150,7 @@ public class CmsSearch implements Serializable, Cloneable {
         m_matchesPerPage = 10;
         m_displayPages = 10;
         m_queryLength = -1;
+        m_sortOrder = CmsSearch.SORT_DEFAULT;
     }
 
     /**
@@ -343,11 +364,17 @@ public class CmsSearch implements Serializable, Cloneable {
             try {
                 List result;
 
-                if (m_fields != null) {
-                    result = m_index.search(m_cms, m_searchRoot, m_query, m_fields, m_page, m_matchesPerPage);
-                } else {
-                    result = m_index.search(m_cms, m_searchRoot, m_query, m_page, m_matchesPerPage);
+                String[] searchRoots = null;
+                if (m_searchRoot != null) {
+                    searchRoots = new String[] {m_searchRoot};
                 }
+
+                String[] fields = m_fields;
+                if ((fields == null) || (fields.length == 0)) {
+                    fields = CmsSearchIndex.C_DOC_META_FIELDS;
+                }
+
+                result = m_index.search(m_cms, searchRoots, m_query, m_sortOrder, fields, m_page, m_matchesPerPage);
 
                 if (result.size() > 1) {
                     // the total number of search results matching the query is saved at the last index in the result 
@@ -418,6 +445,16 @@ public class CmsSearch implements Serializable, Cloneable {
     public String getSearchRoot() {
 
         return m_searchRoot;
+    }
+
+    /**
+     * Returns the sort order used for sorting the results of s search.<p>
+     *
+     * @return the sort order used for sorting the results of s search
+     */
+    public Sort getSortOrder() {
+
+        return m_sortOrder;
     }
 
     /**
@@ -561,6 +598,17 @@ public class CmsSearch implements Serializable, Cloneable {
     public void setSearchRoot(String searchRoot) {
 
         m_searchRoot = searchRoot;
+        resetLastResult();
+    }
+
+    /**
+     * Sets the sort order used for sorting the results of s search.<p>
+     *
+     * @param sortOrder the sort order to set
+     */
+    public void setSortOrder(Sort sortOrder) {
+
+        m_sortOrder = sortOrder;
         resetLastResult();
     }
 

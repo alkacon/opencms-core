@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
- * Date   : $Date: 2005/03/23 19:08:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/03/24 17:38:21 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,12 +53,15 @@ import junit.framework.TestSuite;
  * Unit test for the cms search indexer.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TestCmsSearch extends OpenCmsTestCase {
 
     /** Name of the index used for testing. */
-    public static final String C_TEST_INDEX = "Offline project (VFS)";
+    public static final String INDEX_OFFLINE = "Offline project (VFS)";
+
+    /** Name of the search index created using API. */
+    public static final String INDEX_TEST = "Test new index";
 
     /**
      * Default JUnit constructor.<p>
@@ -105,55 +108,27 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
         return wrapper;
     }
-
-    /** Name of the search index created using API. */
-    public static final String C_TEST_INDEX_NEW = "Test new index";
     
     /**
-     * Tests index generation with different analyzers.<p>
-     * 
-     * This test was added in order to verify proper generation of resource "root path" information
-     * in the index.
+     * Tests searching in various document types.<p>
      * 
      * @throws Throwable if something goes wrong
      */
-    public void testIndexGeneration() throws Throwable {
+    public void testCmsSearchDocumentTypes() throws Throwable {
 
-        CmsSearchIndex searchIndex = new CmsSearchIndex();
-        searchIndex.setName(C_TEST_INDEX_NEW);
-        searchIndex.setProjectName("Offline");
-        // important: use german locale for a special treat on term analyzing
-        searchIndex.setLocale(Locale.GERMAN.toString());
-        searchIndex.setRebuildMode(CmsSearchIndex.C_AUTO_REBUILD);
-        // available pre-configured in the test configuration files opencms-search.xml
-        searchIndex.addSourceName("source1");
+        CmsObject cms = getCmsObject();
+        echo("Testing search for various document types");
 
-        // initialize the new index
-        searchIndex.initialize();
-        
-        // add the search index to the manager
-        OpenCms.getSearchManager().addSearchIndex(searchIndex);
-        
-        I_CmsReport report = new CmsShellReport();
-        OpenCms.getSearchManager().updateIndex(report);
-        
-        // perform a search on the newly generated index
-        CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        CmsSearch cmsSearchBean = new CmsSearch();
+        cmsSearchBean.init(cms);
+        cmsSearchBean.setIndex(INDEX_OFFLINE);
+        cmsSearchBean.setSearchRoot("/types/");
+        List results;
 
-        searchBean.init(getCmsObject());
-        searchBean.setIndex(C_TEST_INDEX_NEW);        
-        searchBean.setQuery(">>SearchEgg1<<");
-        
-        // assert one file is found in the default site     
-        searchResult = searchBean.getSearchResult();
-        assertEquals(1, searchResult.size());
-        assertEquals("/sites/default/xmlcontent/article_0001.html", ((CmsSearchResult)searchResult.get(0)).getPath()); 
-
-        // change seach root and assert no more files are found
-        searchBean.setSearchRoot("/folder1/");        
-        searchResult = searchBean.getSearchResult();
-        assertEquals(0, searchResult.size());
+        cmsSearchBean.setQuery("+Alkacon +OpenCms +Text");
+        results = cmsSearchBean.getSearchResult();
+        assertEquals(1, results.size());
+        assertEquals("/sites/default/types/text.txt", ((CmsSearchResult)results.get(0)).getPath());
     }
     
     /**
@@ -198,12 +173,12 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
         // publish the project and update the search index
         I_CmsReport report = new CmsShellReport();
-        OpenCms.getSearchManager().updateIndex(C_TEST_INDEX, report);
+        OpenCms.getSearchManager().updateIndex(INDEX_OFFLINE, report);
 
         // search for "pdf"
         CmsSearch cmsSearchBean = new CmsSearch();
         cmsSearchBean.init(cms);
-        cmsSearchBean.setIndex(C_TEST_INDEX);
+        cmsSearchBean.setIndex(INDEX_OFFLINE);
         List results;
 
         cms.addUser("test", "test", "Users", "", null);
@@ -213,10 +188,10 @@ public class TestCmsSearch extends OpenCmsTestCase {
         cmsSearchBean.setQuery("pdf");
 
         echo("With Permission check, with excerpt");
-        OpenCms.getSearchManager().getIndex(C_TEST_INDEX).addConfigurationParameter(
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
             CmsSearchIndex.C_PERMISSIONS,
             "true");
-        OpenCms.getSearchManager().getIndex(C_TEST_INDEX).addConfigurationParameter(CmsSearchIndex.C_EXCERPT, "true");
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.C_EXCERPT, "true");
 
         cmsSearchBean.setPage(1);
         long duration = -System.currentTimeMillis();
@@ -241,10 +216,10 @@ public class TestCmsSearch extends OpenCmsTestCase {
         }
 
         echo("With Permission check, without excerpt");
-        OpenCms.getSearchManager().getIndex(C_TEST_INDEX).addConfigurationParameter(
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
             CmsSearchIndex.C_PERMISSIONS,
             "true");
-        OpenCms.getSearchManager().getIndex(C_TEST_INDEX).addConfigurationParameter(CmsSearchIndex.C_EXCERPT, "false");
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.C_EXCERPT, "false");
 
         cmsSearchBean.setPage(1);
         duration = -System.currentTimeMillis();
@@ -259,10 +234,10 @@ public class TestCmsSearch extends OpenCmsTestCase {
         echo("Search2: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
 
         echo("Without Permission check, with excerpt");
-        OpenCms.getSearchManager().getIndex(C_TEST_INDEX).addConfigurationParameter(
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
             CmsSearchIndex.C_PERMISSIONS,
             "false");
-        OpenCms.getSearchManager().getIndex(C_TEST_INDEX).addConfigurationParameter(CmsSearchIndex.C_EXCERPT, "true");
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.C_EXCERPT, "true");
 
         cmsSearchBean.setPage(1);
         duration = -System.currentTimeMillis();
@@ -277,10 +252,10 @@ public class TestCmsSearch extends OpenCmsTestCase {
         echo("Search2: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
 
         echo("Without Permission check, without excerpt");
-        OpenCms.getSearchManager().getIndex(C_TEST_INDEX).addConfigurationParameter(
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
             CmsSearchIndex.C_PERMISSIONS,
             "false");
-        OpenCms.getSearchManager().getIndex(C_TEST_INDEX).addConfigurationParameter(CmsSearchIndex.C_EXCERPT, "false");
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.C_EXCERPT, "false");
 
         cmsSearchBean.setPage(1);
         duration = -System.currentTimeMillis();
@@ -307,7 +282,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
         CmsSearch cmsSearchBean = new CmsSearch();
         cmsSearchBean.init(cms);
-        cmsSearchBean.setIndex(C_TEST_INDEX);
+        cmsSearchBean.setIndex(INDEX_OFFLINE);
         List results;
 
         cmsSearchBean.setQuery(">>SearchEgg1<<");
@@ -327,24 +302,49 @@ public class TestCmsSearch extends OpenCmsTestCase {
     }
     
     /**
-     * Tests searching in various document types.<p>
+     * Tests index generation with different analyzers.<p>
+     * 
+     * This test was added in order to verify proper generation of resource "root path" information
+     * in the index.
      * 
      * @throws Throwable if something goes wrong
      */
-    public void testCmsSearchDocumentTypes() throws Throwable {
+    public void testIndexGeneration() throws Throwable {
 
-        CmsObject cms = getCmsObject();
-        echo("Testing search for various document types");
+        CmsSearchIndex searchIndex = new CmsSearchIndex();
+        searchIndex.setName(INDEX_TEST);
+        searchIndex.setProjectName("Offline");
+        // important: use german locale for a special treat on term analyzing
+        searchIndex.setLocale(Locale.GERMAN.toString());
+        searchIndex.setRebuildMode(CmsSearchIndex.C_AUTO_REBUILD);
+        // available pre-configured in the test configuration files opencms-search.xml
+        searchIndex.addSourceName("source1");
 
-        CmsSearch cmsSearchBean = new CmsSearch();
-        cmsSearchBean.init(cms);
-        cmsSearchBean.setIndex(C_TEST_INDEX);
-        cmsSearchBean.setSearchRoot("/types/");
-        List results;
+        // initialize the new index
+        searchIndex.initialize();
+        
+        // add the search index to the manager
+        OpenCms.getSearchManager().addSearchIndex(searchIndex);
+        
+        I_CmsReport report = new CmsShellReport();
+        OpenCms.getSearchManager().updateIndex(report);
+        
+        // perform a search on the newly generated index
+        CmsSearch searchBean = new CmsSearch();
+        List searchResult;
 
-        cmsSearchBean.setQuery("+Alkacon +OpenCms +Text");
-        results = cmsSearchBean.getSearchResult();
-        assertEquals(1, results.size());
-        assertEquals("/sites/default/types/text.txt", ((CmsSearchResult)results.get(0)).getPath());
+        searchBean.init(getCmsObject());
+        searchBean.setIndex(INDEX_TEST);        
+        searchBean.setQuery(">>SearchEgg1<<");
+        
+        // assert one file is found in the default site     
+        searchResult = searchBean.getSearchResult();
+        assertEquals(1, searchResult.size());
+        assertEquals("/sites/default/xmlcontent/article_0001.html", ((CmsSearchResult)searchResult.get(0)).getPath()); 
+
+        // change seach root and assert no more files are found
+        searchBean.setSearchRoot("/folder1/");        
+        searchResult = searchBean.getSearchResult();
+        assertEquals(0, searchResult.size());
     }
 }

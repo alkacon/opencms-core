@@ -346,7 +346,7 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Page1]]></value>
+					<value><![CDATA[Page1 in A]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -384,7 +384,7 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Page2]]></value>
+					<value><![CDATA[Page2 in A]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -586,7 +586,7 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Indexpage]]></value>
+					<value><![CDATA[Indexpage E]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -877,7 +877,7 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Indexpage]]></value>
+					<value><![CDATA[Indexpage D]]></value>
 				</property>
 			</properties>
 			<accesscontrol>
@@ -1074,7 +1074,7 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Indexpage]]></value>
+					<value><![CDATA[Indexpage A]]></value>
 				</property>
 			</properties>
 			<accesscontrol>
@@ -1295,7 +1295,7 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Indexpage]]></value>
+					<value><![CDATA[Indexpage C]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/03/23 22:09:06 $
- * Version: $Revision: 1.616 $
+ * Date   : $Date: 2005/03/24 17:38:21 $
+ * Version: $Revision: 1.617 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ OpenCms 5.7.2 Corrin (aka 6.0 beta 2) - March xx, 2005
 ! MS PowerPoint, HTML (plain) and RTF added to searchable document types, improved MS Word and Excel
 - Improved API for text extraction, added test cases for text extraction API
 ! Added "search.priority" property to boost marked documents up in the search result list
+! Added sort options to search, default is by score, options are by title or date of last modification
 
 OpenCms 5.7.1 Corrin (aka 6.0 beta 1) - February 21, 2005
 ! Static export "file scrubbing" can now be customized implementing I_CmsStaticExportHandler

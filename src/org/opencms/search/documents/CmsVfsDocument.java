@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsVfsDocument.java,v $
- * Date   : $Date: 2005/03/24 10:25:26 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/03/24 17:38:20 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -169,7 +169,7 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
         StringBuffer meta = new StringBuffer(512);
 
         if ((value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_TITLE, false).getValue()) != null) {
-            document.add(Field.Text(I_CmsDocumentFactory.DOC_TITLE, value));
+            document.add(Field.Keyword(I_CmsDocumentFactory.DOC_TITLE, value));
             meta.append(value);
             meta.append(" ");
             // title is appended twice to meta, effectifly booting the relevance

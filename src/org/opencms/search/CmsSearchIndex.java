@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/03/24 10:25:26 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/03/24 17:38:20 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,11 +62,12 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
+import org.apache.lucene.search.Sort;
 
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.43 $ $Date: 2005/03/24 10:25:26 $
+ * @version $Revision: 1.44 $ $Date: 2005/03/24 17:38:20 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -78,6 +79,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** Manual rebuild as default value. */
     public static final String C_DEFAULT_REBUILD = "manual";
+
+    /** Constant for a field list that cointains only the "meta" field. */
+    public static final String[] C_DOC_META_FIELDS = new String[] {
+        I_CmsDocumentFactory.DOC_META,
+        I_CmsDocumentFactory.DOC_CONTENT};
 
     /** Constant for additional param to enable excerpt creation (default: true). */
     public static final String C_EXCERPT = CmsSearchIndex.class.getName() + ".createExcerpt";
@@ -93,11 +99,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** Special root path start token for optimized path queries. */
     public static final String C_ROOT_PATH_TOKEN = "root";
-
-    /** Constant for a field list that cointains only the "meta" field. */
-    private static final String[] C_DOC_META_FIELDS = new String[] {
-        I_CmsDocumentFactory.DOC_META,
-        I_CmsDocumentFactory.DOC_CONTENT};
 
     /** The permission check mode for this index. */
     private boolean m_checkPermissions;
@@ -436,11 +437,32 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         int page,
         int matchesPerPage) throws CmsException {
 
-        Document luceneDocument = null;
-        double maxScore = -1.0;
-        CmsSearchResult searchResult = null;
-        double score = -1;
-        String excerpt = null;
+        return search(cms, new String[] {searchRoot}, searchQuery, Sort.RELEVANCE, fields, page, matchesPerPage);
+    }
+
+    /**
+     * Performs a search on the index within the given fields.<p>
+     * 
+     * The result is returned as List with entries of type I_CmsSearchResult.<p>
+     * 
+     * @param cms the current user's Cms object
+     * @param searchRoots only resource that are sub-resource of one of the search roots are included in the search result
+     * @param searchQuery the search term to search the index
+     * @param sortOrder the sort order for the search
+     * @param fields the list of fields to search
+     * @param page the page to calculate the search result list, or -1 to return all found documents in the search result
+     * @param matchesPerPage the number of search results per page, or -1 to return all found documents in the search result
+     * @return the List of results found or an empty list
+     * @throws CmsException if something goes wrong
+     */
+    public synchronized List search(
+        CmsObject cms,
+        String[] searchRoots,
+        String searchQuery,
+        Sort sortOrder,
+        String[] fields,
+        int page,
+        int matchesPerPage) throws CmsException {
 
         long timeTotal = -System.currentTimeMillis();
         long timeLucene;
@@ -476,12 +498,14 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             context.setCurrentProject(cms.readProject(m_project));
 
             // complete the search root
-            if (CmsStringUtil.isNotEmpty(searchRoot)) {
-                // add the site root to the search root
-                searchRoot = cms.getRequestContext().addSiteRoot(searchRoot);
+            if ((searchRoots != null) && (searchRoots.length > 0)) {
+                // add the site root to all the search root
+                for (int i = 0; i < searchRoots.length; i++) {
+                    searchRoots[i] = cms.getRequestContext().addSiteRoot(searchRoots[i]);
+                }
             } else {
                 // just use the site root as the search root
-                searchRoot = cms.getRequestContext().getSiteRoot();
+                searchRoots = new String[] {cms.getRequestContext().getSiteRoot()};
             }
 
             timeLucene = -System.currentTimeMillis();
@@ -494,24 +518,22 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // the main query to use, will be constructed in the next lines 
             BooleanQuery query = new BooleanQuery();
 
-            // add query to search only in the selected site root
-            if (CmsStringUtil.isNotEmpty(searchRoot)) {
-                // implementation note: 
-                // initially this was a simple PrefixQuery based on the DOC_PATH
-                // however, internally Lucene rewrote that to literally hundreds of BooleanQuery parts
-                // the following implementation will lead to just one Lucene query and is thus much better                
-                StringBuffer phrase = new StringBuffer();
+            // implementation note: 
+            // initially this was a simple PrefixQuery based on the DOC_PATH
+            // however, internally Lucene rewrote that to literally hundreds of BooleanQuery parts
+            // the following implementation will lead to just one Lucene PhraseQuery per directory and is thus much better                
+            StringBuffer phrase = new StringBuffer();
+            phrase.append("+(");
+            for (int i = 0; i < searchRoots.length; i++) {
                 phrase.append("\"");
-                phrase.append(rewriteResourcePath(searchRoot, true));
-                phrase.append("\"");
-                // it's important to parse the query and not construct it from terms in order to 
-                // ensure the words are processed with the same analyzer that also created the index
-                Query phraseQuery = QueryParser.parse(
-                    phrase.toString(),
-                    I_CmsDocumentFactory.DOC_ROOT,
-                    languageAnalyzer);
-                query.add(phraseQuery, true, false);
+                phrase.append(rewriteResourcePath(searchRoots[i], true));
+                phrase.append("\" ");
             }
+            phrase.append(")");
+            // it's important to parse the query and not construct it from terms in order to 
+            // ensure the words are processed with the same analyzer that also created the index
+            Query phraseQuery = QueryParser.parse(phrase.toString(), I_CmsDocumentFactory.DOC_ROOT, languageAnalyzer);
+            query.add(phraseQuery, true, false);
 
             if ((fields != null) && (fields.length > 0)) {
                 // this is a "regular" query over one or more fields
@@ -543,13 +565,21 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
 
             // perform the search operation
-            hits = searcher.search(query);
+            if (sortOrder != Sort.RELEVANCE) {
+                hits = searcher.search(query, sortOrder);
+            } else {
+                // according to Lucene JavaDoc, using the default sort order explicitly has a slight overhead 
+                hits = searcher.search(query);
+            }
 
             timeLucene += System.currentTimeMillis();
             timeResultProcessing = -System.currentTimeMillis();
 
+            Document luceneDocument;
+            CmsSearchResult searchResult;
+            String excerpt = null;
+
             if (hits != null) {
-                maxScore = (hits.length() > 0) ? hits.score(0) : 0.0;
 
                 int start = -1, end = -1;
                 if (matchesPerPage > 0 && page > 0 && hits.length() > 0) {
@@ -572,22 +602,19 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                             luceneDocument = hits.doc(i);
                             if (getIndexResource(cms, luceneDocument) != null) {
                                 // user has read permission
-                                score = (hits.score(i) / maxScore) * 100.0;
                                 if (cnt >= start) {
                                     // do not use the resource to obtain the raw content, read it from the lucene document !
                                     if (m_createExcerpt) {
                                         excerpt = getExcerpt(luceneDocument.getField(I_CmsDocumentFactory.DOC_CONTENT)
                                             .stringValue(), searchQuery);
                                     }
-                                    searchResult = new CmsSearchResult((int)score, luceneDocument, excerpt);
+                                    searchResult = new CmsSearchResult(
+                                        Math.round(hits.score(i) * 100f),
+                                        luceneDocument,
+                                        excerpt);
                                     searchResults.add(searchResult);
                                 }
                                 cnt++;
-                            } else {
-                                // document removed due to permissions, adjust max score
-                                if ((hits.score(i) == maxScore) && (i < (hits.length() - 1))) {
-                                    maxScore = hits.score(i + 1);
-                                }
                             }
                         } catch (Exception exc) {
                             // happens if resource was deleted or current user has not the permission to view the current resource at least
@@ -598,13 +625,14 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     for (int i = start; i < end; i++) {
                         try {
                             luceneDocument = hits.doc(i);
-                            score = (hits.score(i) / maxScore) * 100.0;
-
                             if (m_createExcerpt) {
                                 excerpt = getExcerpt(luceneDocument.getField(I_CmsDocumentFactory.DOC_CONTENT)
                                     .stringValue(), searchQuery);
                             }
-                            searchResult = new CmsSearchResult((int)score, luceneDocument, excerpt);
+                            searchResult = new CmsSearchResult(
+                                Math.round(hits.score(i) * 100f),
+                                luceneDocument,
+                                excerpt);
                             searchResults.add(searchResult);
                         } catch (Exception exc) {
                             // happens if resource was deleted or current user has not the permission to view the current resource at least
