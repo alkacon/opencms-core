@@ -41,7 +41,7 @@
 			</tr>
 			<tr>
 				<td height="375" align="center" valign="middle">
-					<strong>Setup canceled!</strong><br><br>Click <a href=''>here</a> to restart setup
+					<strong>Setup cancelled!</strong><br><br>Click <a href="index.jsp">here</a> to restart setup
 				</td>
 			</tr>
 			<tr>
