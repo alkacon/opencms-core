@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2002/08/08 09:41:36 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2002/08/12 12:49:56 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.47 $ $Date: 2002/08/08 09:41:36 $
+ * @version $Revision: 1.48 $ $Date: 2002/08/12 12:49:56 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -1231,6 +1231,24 @@ public int getModuleLifeCycle(Vector classes){
 }
 
 /**
+ * Returns the name of the class, that contains the publish method of the module.
+ *
+ * @parameter String the name of the module.
+ * @return java.lang.Class that contains the publish method of the module.
+ */
+ public String getModulePublishClass(String modulname) {
+    String retValue = null;
+    try {
+        Element module = getModuleElement(modulname);
+        Element publishClass = (Element) (module.getElementsByTagName("publishclass").item(0));
+        retValue = publishClass.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+    } catch (Exception exc) {
+        // ignore the exception - reg is not welformed
+    }
+    return retValue;
+}
+
+/**
  * Returns all publishable classes for all modules.
  *
  * @parameter Vector classes in this parameter the classes will be returned.
@@ -1787,6 +1805,35 @@ public void setModuleDocumentPath(String modulename, String url) throws CmsExcep
 public void setModuleMaintenanceEventClass(String modulname, String classname) throws CmsException {
     setModuleData(modulname, "maintenance_class", classname);
 }
+
+/**
+ * Sets the classname, that contains the publish method of the module.
+ *
+ * @param String the name of the module.
+ * @param String the name of the class that contains the publish method of the module.
+ */
+public void setModulePublishClass(String modulname, String classname) throws CmsException {
+    try {
+        Element module = getModuleElement(modulname);
+        Element pubClass = (Element) (module.getElementsByTagName("publishclass").item(0));
+
+        // delete all subnodes
+        while(pubClass.hasChildNodes()) {
+            pubClass.removeChild(pubClass.getFirstChild());
+        }
+
+        // create the new repository
+        Element path = m_xmlReg.createElement("name");
+        path.appendChild(m_xmlReg.createTextNode(classname));
+        pubClass .appendChild(path);
+        
+        // save the registry
+        saveRegistry();
+    } catch (Exception exc) {
+        // ignore the exception - reg is not welformed
+    }
+}
+
 /**
  * Sets the description of the module.
  *

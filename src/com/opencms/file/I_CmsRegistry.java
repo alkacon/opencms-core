@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
-* Date   : $Date: 2002/08/08 09:42:03 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2002/08/12 12:49:55 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.29 $ $Date: 2002/08/08 09:42:03 $
+ * @version $Revision: 1.30 $ $Date: 2002/08/12 12:49:55 $
  *
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -457,6 +457,14 @@ public String getModuleViewUrl(String modulename);
 public int getModuleLifeCycle(Vector classes);
 
 /**
+ * Returns the name of the class, that contains the publish method of the module.
+ *
+ * @parameter String the name of the module.
+ * @return java.lang.Class that contains the publish method of the module.
+ */
+ public String getModulePublishClass(String modulname);
+ 
+/**
  * Returns all publishable classes for all modules.
  *
  * @parameter Vector classes in this parameter the classess will be returned.
@@ -627,6 +635,15 @@ public void setModuleDocumentPath(String modulename, String url) throws CmsExcep
  * @param java.lang.Class that receives all maintenance-events for the module.
  */
 public void setModuleMaintenanceEventClass(String modulname, String classname) throws CmsException;
+
+/**
+ * Sets the classname, that contains the publish method of the module.
+ *
+ * @param String the name of the module.
+ * @param String the name of the class that contains the publish method of the module.
+ */
+public void setModulePublishClass(String modulname, String classname) throws CmsException;
+
 /**
  * Sets the description of the module.
  *
