@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/03/23 10:32:10 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2000/03/24 13:16:07 $
+ * Version: $Revision: 1.87 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.86 $ $Date: 2000/03/23 10:32:10 $
+ * @version $Revision: 1.87 $ $Date: 2000/03/24 13:16:07 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -672,6 +672,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 	
 		m_metadefRb.writeMetainformation(res, meta, value);
+		// set the file-state to changed
+		if(res.isFile()){
+			m_fileRb.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, true);
+		} else {
+			m_fileRb.writeFolder(currentProject, m_fileRb.readFolder(currentProject, resource), true);
+		}
+
 
 		// inform about the file-system-change
 		fileSystemChanged(currentProject.getName(), resource);
@@ -705,7 +712,14 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 		
 		m_metadefRb.writeMetainformations(res, metainfos);
-		// inform about the file-system-change
+		// set the file-state to changed
+		if(res.isFile()){
+			m_fileRb.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, true);
+		} else {
+			m_fileRb.writeFolder(currentProject, m_fileRb.readFolder(currentProject, resource), true);			
+		}
+
+		// inform about the file-system-change		
 		fileSystemChanged(currentProject.getName(), resource);
 	}
 
