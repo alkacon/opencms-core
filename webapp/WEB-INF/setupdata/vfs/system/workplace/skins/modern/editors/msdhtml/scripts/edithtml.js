@@ -375,14 +375,20 @@ function doEditHTML(para)
         SelColor=-1;
         CheckFGCol= window.setInterval("setFGColor(SelColor)",500);
         var SelColorWindow= window.open(workplacePath + 'action/edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=450");
+        openWindow = SelColorWindow;
+        focusCount = 1;
         SelColorWindow.opener = self;
+        SelColorWindow.focus();
         break;
     case 39:
         ColorSelected=-1;
         SelColor=-1;
         CheckBGCol= window.setInterval("setBGColor(SelColor)",500);
         var SelColorWindow= window.open(workplacePath + 'action/edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=450");
+        openWindow = SelColorWindow;
+        focusCount = 1;
         SelColorWindow.opener = self;
+        SelColorWindow.focus();
         break;
     case 40:
         checkTableSelection();
@@ -394,10 +400,15 @@ function doEditHTML(para)
         DECMD_IMAGE_onclick();
         break;      
     case 43:
-        window.open(workplacePath + "action/picturebrowser.html?initial=true", "PicBrowser", "width=550, height=500, resizable=yes, top=200, left=450");
+        picwin = window.open(workplacePath + "action/picturebrowser.html?initial=true", "PicBrowser", "width=550, height=500, resizable=yes, top=200, left=450");
+        openWindow = picwin;
+        focusCount = 1;
+        picwin.focus();
         break;
     case 44: 
         binlist = window.open(workplacePath + 'action/downloadbrowser.html?initial=true','DownBrowser', "width=550, height=500, resizable=yes, top=200, left=450");
+        openWindow = binlist;
+        focusCount = 1;
         binlist.focus(); 
         break;
     case 45:
@@ -411,6 +422,8 @@ function doEditHTML(para)
         break;   
     case 48:
         specchar = window.open(workplacePath + 'action/edit_html_chars.html','characters', "width=450, height=300, resizable=no, status=yes, top=300, left=250");
+        openWindow = specchar;
+        focusCount = 1;
         specchar.focus();
         break;     
     case 49:    
@@ -424,6 +437,8 @@ function doEditHTML(para)
         linkEditorSelection = EDITOR.EDIT_HTML.DOM.selection;
         linkEditorStyleInputs = USE_LINKSTYLEINPUTS;
         linkwin = window.open('dialogs/link.html','SetLink', "width=480, height=" + winheight + ", resizable=no, top=300, left=250");
+        openWindow = linkwin;
+        focusCount = 1;
         linkwin.focus();       
         break;      	         
     case 51:
@@ -440,8 +455,22 @@ function doEditHTML(para)
         linkEditorSelection = EDITOR.EDIT_HTML.DOM.selection;
         linkEditorStyleInputs = USE_LINKSTYLEINPUTS;
         anchorwin = window.open('dialogs/anchor.html','SetAnchor', "width=350, height=" + winheight + ", resizable=no, top=300, left=250");
+        openWindow = anchorwin;
+        focusCount = 1;
         anchorwin.focus();
-        break;      	           
+        break; 
+    case 56:
+        LinkBrowser = window.open(workplacePath + 'action/linkbrowser.html?initial=true', 'LinkBrowser', "width=550, height=500, resizable=no, status=yes, top=300, left=250");
+        openWindow = LinkBrowser;
+        focusCount = 1;
+        LinkBrowser.focus();
+        break;      	
+    case 57:
+        HtmlBrowser = window.open(workplacePath + 'action/htmlbrowser.html?initial=true', 'HtmlBrowser', "width=550, height=500, resizable=no, status=yes, top=300, left=250");
+        openWindow = HtmlBrowser;
+        focusCount = 1;
+        HtmlBrowser.focus();
+        break;      	     	           
     default:
         alert("Sorry, the requested function code " + para + " is not implemented.");          
     }   

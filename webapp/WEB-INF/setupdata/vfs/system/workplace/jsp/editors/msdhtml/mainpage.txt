@@ -7,6 +7,9 @@
 
 <script type="text/javascript">
 
+	var openWindow = null;
+	var focusCount = 0;
+
 	// which button is clicked
 	function doTemplSubmit(para)
 	{
@@ -36,15 +39,19 @@
 			break;
 		case 4:
 			// open elements window;
-			dialogWindow = window.open("about:blank","DIALOG","width=320,height=250,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
+			focusCount = 1;
+			dialogElementWindow = window.open("about:blank","dialogElementWindow","width=320,height=250,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
 			document.ELEMENTS.submit();
-			dialogWindow.focus();
+			openWindow = dialogElementWindow;
+			dialogElementWindow.focus();
 			break;		
 		case 5:
 			// open properties window;
-			dialogWindow = window.open("about:blank","DIALOG","width=600,height=320,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
+			focusCount = 1;
+			dialogPropertyWindow = window.open("about:blank","dialogPropertyWindow","width=600,height=320,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
 			document.PROPERTIES.submit();
-			dialogWindow.focus();
+			openWindow = dialogPropertyWindow;
+			dialogPropertyWindow.focus();
 			break;
 		}
 	}
@@ -238,6 +245,14 @@ End Sub
 		}
 	    return smallwindow;
 	}
+	
+	function checkPopup() {
+		if (openWindow && focusCount > 0) {
+			openWindow.focus();
+			focusCount = 0;
+		}
+	}
+	
 //-->
 </script>
 
@@ -318,7 +333,7 @@ if (CmsEditor.BROWSER_NS.equals(wp.getBrowserType()) || ("true".equals(wp.getPar
 	
 </form>
 
-<form name="ELEMENTS" action="dialogs/elements.html" target="DIALOG" method="post">
+<form name="ELEMENTS" action="dialogs/elements.html" target="dialogElementWindow" method="post">
 <input type="hidden" name="tempfile" value="<%= wp.getParamTempfile() %>">
 <input type="hidden" name="bodylanguage" value="<%= wp.getParamBodylanguage() %>">
 <input type="hidden" name="bodyname" value="<%= wp.getParamBodyname() %>">
@@ -326,7 +341,7 @@ if (CmsEditor.BROWSER_NS.equals(wp.getBrowserType()) || ("true".equals(wp.getPar
 <input type="hidden" name="ispopup" value="true">
 </form>
 
-<form name="PROPERTIES" action="../dialogs/property.html" target="DIALOG" method="post">
+<form name="PROPERTIES" action="../dialogs/property.html" target="dialogPropertyWindow" method="post">
 <input type="hidden" name="resource" value="<%= wp.getParamTempfile() %>">
 <input type="hidden" name="okfunctions" value="window.close();">
 <input type="hidden" name="usetempfileproject" value="true">

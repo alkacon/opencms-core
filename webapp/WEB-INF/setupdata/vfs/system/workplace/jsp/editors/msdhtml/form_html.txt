@@ -33,10 +33,10 @@ if (options.showElement("gallery.download")) {%>
 	<%= wp.button("javascript:doEditHTML(44);", null, "downloadgallery", "button.downloadlist", buttonStyle) %><%
 }
 if (options.showElement("gallery.externlink")) {%>
-	<%= wp.button("javascript:LinkBrowser=opensmallwin('" + cms.link("/system/workplace/action/linkbrowser.html") + "?initial=true', 'LinkBrowser', 550, 500);LinkBrowser.focus();", null, "linkgallery", "button.linklist", buttonStyle) %><%
+	<%= wp.button("javascript:doEditHTML(56);", null, "linkgallery", "button.linklist", buttonStyle) %><%
 }
 if (options.showElement("gallery.html")) {%>
-	<%= wp.button("javascript:HtmlBrowser=opensmallwin('" + cms.link("/system/workplace/action/htmlbrowser.html") + "?initial=true', 'HtmlBrowser', 550, 500);HtmlBrowser.focus();", null, "htmlgallery", "button.htmllist", buttonStyle) %><%
+	<%= wp.button("javascript:doEditHTML(57);", null, "htmlgallery", "button.htmllist", buttonStyle) %><%
 }
 %>
 <%= wp.button("javascript:doEditHTML(48);", null, "specialchar", "button.specialchars", buttonStyle) %>
@@ -104,7 +104,8 @@ if (options.showElement("bg.color")) {%>
 		ID="EDIT_HTML"
 		WIDTH="100%"
 		height="100%"
-		VIEWASTEXT>
+		VIEWASTEXT
+		onfocus="checkPopup();">
 		<param name="Scrollbars" value="true">
 		<param name="ShowBorders" value="true">
 	</OBJECT>
@@ -114,3 +115,4 @@ if (options.showElement("bg.color")) {%>
 	<!-- DEGetBlockFmtNamesParam Object -->
 	<object ID="ObjBlockFormatInfo" CLASSID="clsid:8D91090E-B955-11D1-ADC5-006008A5848C" VIEWASTEXT>
 	</object>
+	
