@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2004/06/29 14:38:57 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/07/03 10:20:15 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.staticexport.CmsLinkManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.1
  */
@@ -130,9 +131,9 @@ public class CmsRename extends CmsDialog {
     } 
     
     /**
-     * Returns the old name of the resource which should be renamed.<p>
+     * Returns the current name of the resource which should be renamed.<p>
      * 
-     * This is used to predefine the input text field with the old resource name.
+     * This is used to preset the input text field with the current resource name.
      * 
      * @return the old name of the resource which should be renamed
      */
@@ -204,6 +205,9 @@ public class CmsRename extends CmsDialog {
         if (isFolder && !getParamResource().endsWith("/")) {
             target = parentFolder + target;
         }
+        
+        // calculate the target name
+        target = CmsLinkManager.getAbsoluteUri(target, CmsResource.getParentFolder(getParamResource()));        
         
         // check if target already exists, if so, throw exception and terminate
         boolean targetExists = false;

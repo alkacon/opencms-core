@@ -50,7 +50,7 @@ default:
 <table border="0" width="100%">
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.moveto") %></td>
-	<td class="maxwidth"><input name="<%= wp.PARAM_TARGET %>" type="text" value="" class="maxwidth"></td>
+	<td class="maxwidth"><input name="<%= wp.PARAM_TARGET %>" type="text" value="<%= wp.getCurrentResourceName() %>" class="maxwidth"></td>
 	<td><input name="selectfolder" type="button" value="<%= wp.key("button.search") %>" onClick="top.openTreeWin('copy');" class="dialogbutton" style="width: 60px;">
 </tr>
 </table>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2004/06/29 14:38:57 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/07/03 10:20:15 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 5.1
  */
@@ -137,6 +137,21 @@ public class CmsMove extends CmsDialog {
         }      
     } 
 
+    /**
+     * Returns the current name of the resource without path information.<p>
+     * 
+     * This is used to preset the input text field with the current resource name.<p>
+     * 
+     * @return the current name of the resource without path information
+     */
+    public String getCurrentResourceName() {
+        String resourceName = CmsResource.getName(getParamResource());
+        if (resourceName.endsWith("/")) {
+            resourceName = resourceName.substring(0, resourceName.length() - 1);
+        }
+        return resourceName;
+    }
+    
     /**
      * Performs the move action, will be called by the JSP page.<p>
      * 
