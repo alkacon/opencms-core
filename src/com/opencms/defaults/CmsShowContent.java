@@ -56,6 +56,9 @@ import java.lang.reflect.*;
  * method invokeFilterMethod where the filtermethod is actually invoked.
  * For both methods the fully qualified classname of the contentdefinition
  * has to be stated in a datablock with the name &lt;contentdefinition_class&gt;.
+ * Note: the method getUniqueId(CmsObject) will be invoked for the contentdefinition
+ * class in any case, and the datablock uniqueid can be used in the template to refer
+ * to the id of an contentdefinition object
  * @author Michael Dernen
  *
  * changed: the tagcontent parameter for getList may only use filterparameter0 to
@@ -212,7 +215,7 @@ public class CmsShowContent extends CmsXmlTemplate {
             }
             try {
                 Method getUniqueIdMethod = cdClass.getMethod("getUniqueId", new Class[] {CmsObject.class});
-                template.setData("id", (String)getUniqueIdMethod.invoke(cdClass, new Object[] {cms}));
+                template.setData("uniqueid", (String)getUniqueIdMethod.invoke(cdClass, new Object[] {cms}));
             } catch (Exception e) {}
             setDatablocks(template, cdObject, getMethods);
         } catch (InvocationTargetException e) {
@@ -298,7 +301,7 @@ public class CmsShowContent extends CmsXmlTemplate {
                 if(showIt){
                     try {
                         Method getUniqueIdMethod = cdClass.getMethod("getUniqueId", new Class[] {CmsObject.class});
-                        template.setData("id", (String)getUniqueIdMethod.invoke(cdClass, new Object[] {cms}));
+                        template.setData("uniqueid", (String)getUniqueIdMethod.invoke(cdClass, new Object[] {cms}));
                     } catch (Exception e) {}
                     setDatablocks(template, curCont, getMethods);
                     list.append(template.getProcessedDataValue(C_LISTENTRY_DATABLOCK, this));
