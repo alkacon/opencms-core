@@ -1,0 +1,39 @@
+# Editor display options
+
+# font manipulation
+font.size=false
+font.face=false
+font.color=true
+font.decoration=true
+
+# color
+bg.color=true
+
+# paragraph manipulation
+text.align=true
+text.indent=true
+text.lists=true
+
+# customized editor button
+button.customized=true
+
+# page editor options
+option.element.selection=true
+option.element.language=true
+option.properties=true
+option.sourcecode=true
+
+# galleries
+gallery.download=true
+gallery.externlink=true
+gallery.image=true
+gallery.html=true
+
+# link & anchor options
+option.links=true
+option.linkstyleinputs=false
+
+# misc buttons
+option.images=true
+option.specialchars=true
+option.table=true

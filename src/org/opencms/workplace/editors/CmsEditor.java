@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/26 15:42:50 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.12
  */
@@ -87,7 +87,7 @@ public abstract class CmsEditor extends CmsDialog {
     
     /** Constant for the Editor special "save error" confirmation dialog. */
     public static final String C_FILE_DIALOG_EDITOR_CONFIRM = C_PATH_EDITORS + "dialogs/confirm.jsp";
-    
+        
     /** Value for the action parameter: change the element. */
     public static final String EDITOR_CHANGE_ELEMENT = "changeelement";
 
@@ -219,7 +219,18 @@ public abstract class CmsEditor extends CmsDialog {
             target = OpenCms.getLinkManager().substituteLink(getCms(), CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
         }
         return "onclick=\"top.location.href='" + getJsp().link(target) + "';\"";
-    }    
+    } 
+    
+    /**
+     * Returns the instanciated editor display option class from the workplace manager.<p>
+     * 
+     * This is a convenience method to be used on editor JSPs.<p>
+     * 
+     * @return the instanciated editor display option class
+     */
+    public CmsEditorDisplayOptions getEditorDisplayOptions() {
+        return OpenCms.getWorkplaceManager().getEditorDisplayOptions();    
+    }
     
     /**
      * Returns the URI to the editor resource folder where button images and javascripts are located.<p>

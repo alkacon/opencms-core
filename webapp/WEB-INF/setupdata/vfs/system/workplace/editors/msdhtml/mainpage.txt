@@ -48,9 +48,9 @@ switch (key) {
 
 <script type="text/javascript">
 // Sets some display variables
-var USE_LINKSTYLEINPUTS = <%= options.showElement("linkstyleinputs") %>;
-var USE_FONTFACE = <%= options.showElement("font.face") %>;
-var USE_FONTSIZE = <%= options.showElement("font.size") %>; 
+var USE_LINKSTYLEINPUTS = <%= options.showElement("option.linkstyleinputs", displayOptions) %>;
+var USE_FONTFACE = <%= options.showElement("font.face", displayOptions) %>;
+var USE_FONTSIZE = <%= options.showElement("font.size", displayOptions) %>; 
 
 // action parameters of the form
 var actionExit = "<%= wp.EDITOR_EXIT %>";
@@ -268,24 +268,41 @@ End Sub
 
 <%= wp.buttonBar(wp.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 5) %>
-
-<%= wp.buttonBarLabel("input.editor") %>
-<td><%= wp.buildSelectViews("class=\"textfeld\" name=\"editormode\" width=\"120\" onchange=\"buttonAction(1);\"") %></td>
-<%= wp.buttonBarSeparator(5, 5) %>
 <%
-if (options.showElement("selector.elements")) {
+boolean showSource = options.showElement("option.sourcecode", displayOptions);
+if (showSource) { 
+	%><%= wp.buttonBarLabel("input.editor") %>
+	<td><%= wp.buildSelectViews("class=\"textfeld\" name=\"editormode\" width=\"120\" onchange=\"buttonAction(1);\"") %></td>
+	<%= wp.buttonBarSeparator(5, 5) %><%
+}
+boolean elementSelection = options.showElement("option.element.selection", displayOptions);
+boolean elementLanguage = options.showElement("option.element.language", displayOptions);
+if (elementSelection || elementLanguage) {
 	out.println(wp.buttonBarLabel("input.element"));
-	out.println("<td>" + wp.buildSelectElementLanguage("name=\"" + wp.PARAM_ELEMENTLANGUAGE + "\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
-	out.println(wp.buttonBarSpacer(2));
-	out.println("<td>" + wp.buildSelectElementName("name=\"" + wp.PARAM_ELEMENTNAME + "\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
-	out.println(wp.buttonBarSeparator(5, 5));
-} else { %>
-	<input type="hidden" name="<%= wp.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>"><input type="hidden" name="<%= wp.PARAM_ELEMENTNAME %>" value="<%= wp.getParamElementname() %>">
-<%
+	if (elementLanguage) {
+		out.println("<td>" + wp.buildSelectElementLanguage("name=\"" + wp.PARAM_ELEMENTLANGUAGE + "\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
+		out.println(wp.buttonBarSpacer(2));
+	} else {
+		%><input type="hidden" name="<%= wp.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>"><%
+	}
+	if (elementSelection) {
+		out.println("<td>" + wp.buildSelectElementName("name=\"" + wp.PARAM_ELEMENTNAME + "\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
+		out.println(wp.buttonBarSeparator(5, 5));
+		out.println(wp.button("javascript:buttonAction(4);", null, "elements", "editor.dialog.elements.button", buttonStyle));
+	} else {
+		%><input type="hidden" name="<%= wp.PARAM_ELEMENTNAME %>" value="<%= wp.getParamElementname() %>"><%
+	}
+} else {
+	// build hidden input fields that editor works correctly
+	%><input type="hidden" name="<%= wp.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>"><input type="hidden" name="<%= wp.PARAM_ELEMENTNAME %>" value="<%= wp.getParamElementname() %>"><%
+}
+if (options.showElement("option.properties", displayOptions)) {
+	if ((showSource || elementLanguage) && !elementSelection) {
+		out.println(wp.buttonBarSeparator(5, 5));
+	}
+	out.println(wp.button("javascript:buttonAction(5);", null, "properties", "editor.dialog.properties.button", buttonStyle));
 }
 %>
-<%= wp.button("javascript:buttonAction(4);", null, "elements", "editor.dialog.elements.button", buttonStyle) %>					
-<%= wp.button("javascript:buttonAction(5);", null, "properties", "editor.dialog.properties.button", buttonStyle) %>				
 <td class="maxwidth">&nbsp;</td>
 <%= wp.button("javascript:buttonAction(2);", null, "preview", "button.preview", buttonStyle) %>
 <%= wp.buttonBarSpacer(5) %>

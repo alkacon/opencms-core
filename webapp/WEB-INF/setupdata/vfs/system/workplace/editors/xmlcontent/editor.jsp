@@ -1,13 +1,15 @@
 <%@ page import="
 	org.opencms.workplace.*,
 	org.opencms.workplace.editors.*,
-	org.opencms.jsp.*"
+	org.opencms.jsp.*,
+	java.util.*"
 	buffer="none"
 %><%
 	
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
-CmsEditorDisplayOptions options = new CmsEditorDisplayOptions(cms.getCmsObject());
 CmsXmlContentEditor wp = new CmsXmlContentEditor(cms);
+CmsEditorDisplayOptions options = wp.getEditorDisplayOptions();
+Properties displayOptions = options.getDisplayOptions(cms);
 
 int buttonStyle = wp.getSettings().getUserSettings().getEditorButtonStyle();
 

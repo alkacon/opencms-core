@@ -1,8 +1,8 @@
 <%= wp.buttonBar(wp.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 5) %>
 <%
-if (options.showElement("button.customized")) {%>
-	<td><%= wp.buttonActionDirectEdit("doEdit(4);", buttonStyle) %></td><%
+if (options.showElement("button.customized", displayOptions)) {
+	%><td><%= wp.buttonActionDirectEdit("doEdit(4);", buttonStyle) %></td><%
 }
 %>
 <%= wp.button("javascript:doEdit(2);", null, "save_exit", "button.saveclose", buttonStyle) %>

@@ -1,7 +1,7 @@
 <%= wp.buttonBar(wp.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 5) %>
 <%
-if (options.showElement("button.customized")) {%>
+if (options.showElement("button.customized", displayOptions)) {%>
 	<td><%= wp.buttonActionDirectEdit("doEditHTML(55);", buttonStyle) %></td><%
 }
 %>
@@ -16,30 +16,38 @@ if (options.showElement("button.customized")) {%>
 <%= wp.button("javascript:doEditHTML(9);", null, "cut", "button.cut", buttonStyle) %>
 <%= wp.button("javascript:doEditHTML(10);", null, "copy", "button.copy", buttonStyle) %>
 <%= wp.button("javascript:doEditHTML(11);", null, "paste", "button.paste", buttonStyle) %>
-<%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:doEditHTML(40);", null, "table", "button.table", buttonStyle) %>
-<%= wp.button("javascript:doEditHTML(51);", null, "table_tr", "button.tablerow", buttonStyle) %>
-<%= wp.button("javascript:doEditHTML(52);", null, "table_td", "button.tablecell", buttonStyle) %>
-<%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:doEditHTML(50);", null, "link", "button.linkto", buttonStyle) %>
-<%= wp.button("javascript:doEditHTML(53);", null, "anchor", "button.anchor", buttonStyle) %>
-<%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:doEditHTML(42);", null, "image", "button.image", buttonStyle) %>
-<%					
-if (options.showElement("gallery.image")) {%>
+<%
+if (options.showElement("option.table", displayOptions)) {
+	%><%= wp.buttonBarSeparator(5, 5) %>
+	<%= wp.button("javascript:doEditHTML(40);", null, "table", "button.table", buttonStyle) %>
+	<%= wp.button("javascript:doEditHTML(51);", null, "table_tr", "button.tablerow", buttonStyle) %>
+	<%= wp.button("javascript:doEditHTML(52);", null, "table_td", "button.tablecell", buttonStyle) %><%
+}
+if (options.showElement("option.links", displayOptions)) {
+	%><%= wp.buttonBarSeparator(5, 5) %>
+	<%= wp.button("javascript:doEditHTML(50);", null, "link", "button.linkto", buttonStyle) %>
+	<%= wp.button("javascript:doEditHTML(53);", null, "anchor", "button.anchor", buttonStyle) %><%
+}
+if (options.showElement("option.images", displayOptions)) {
+	%><%= wp.buttonBarSeparator(5, 5) %>
+	<%= wp.button("javascript:doEditHTML(42);", null, "image", "button.image", buttonStyle) %><%
+}					
+if (options.showElement("gallery.image", displayOptions)) {%>
 	<%= wp.button("javascript:doEditHTML(43);", null, "imagegallery", "button.imagelist", buttonStyle) %><%
 }
-if (options.showElement("gallery.download")) {%>
+if (options.showElement("gallery.download", displayOptions)) {%>
 	<%= wp.button("javascript:doEditHTML(44);", null, "downloadgallery", "button.downloadlist", buttonStyle) %><%
 }
-if (options.showElement("gallery.externlink")) {%>
+if (options.showElement("gallery.externlink", displayOptions)) {%>
 	<%= wp.button("javascript:doEditHTML(56);", null, "linkgallery", "button.linklist", buttonStyle) %><%
 }
-if (options.showElement("gallery.html")) {%>
+if (options.showElement("gallery.html", displayOptions)) {%>
 	<%= wp.button("javascript:doEditHTML(57);", null, "htmlgallery", "button.htmllist", buttonStyle) %><%
 }
+if (options.showElement("option.specialchars", displayOptions)) {
+	%><%= wp.button("javascript:doEditHTML(48);", null, "specialchar", "button.specialchars", buttonStyle) %><%
+}
 %>
-<%= wp.button("javascript:doEditHTML(48);", null, "specialchar", "button.specialchars", buttonStyle) %>
 <%= wp.buttonBarSeparator(5, 5) %>
 <%= wp.button("javascript:doEditHTML(47);", null, "details", "button.toggledetails", buttonStyle) %>
 <%
@@ -55,43 +63,53 @@ if (wp.isHelpEnabled()) {%>
 <%= wp.buttonBar(wp.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 5) %>
 <td><select class="textfeld" name="BLOCK" id="BLOCK" width=100 style="width:100px" onchange="doEditHTML(21);" size="1"><option selected value="Normal">Normal</select></td>
-<%= wp.buttonBarSpacer(5) %>
-<%			
-if (options.showElement("font.face")) {%>
+<%
+		
+if (options.showElement("font.face", displayOptions)) {%>
+	<%= wp.buttonBarSpacer(5) %>
 	<td><%= wp.buildSelectFonts("class=\"textfeld\" name=\"FONTFACE\" width=\"120\" onchange=\"doEditHTML(22);\"") %></td><%
 } else {%>
-	<input type="hidden" name="FONTFACE"><%
-} %>
-<%= wp.buttonBarSpacer(5) %>
-<%
-if (options.showElement("font.size")) {%>
-	<td><select class="textfeld" name="FONTSIZE" id="FONTSIZE" width="40" style="width:40px" onchange="doEditHTML(23);" size="1"><option selected value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></td>
-	<%= wp.buttonBarSpacer(5) %><%
+	<input type="hidden" name="FONTFACE" style="display: none;"><%
+} 
+if (options.showElement("font.size", displayOptions)) {
+	%><%= wp.buttonBarSpacer(5) %>
+	<td><select class="textfeld" name="FONTSIZE" id="FONTSIZE" width="40" style="width:40px" onchange="doEditHTML(23);" size="1"><option selected value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></td><%
 } else {%>
-	<input type="hidden" name="FONTSIZE"><%
+	<input type="hidden" name="FONTSIZE" style="display: none;"><%
 }
-%>
-<%= wp.button("javascript:doEditHTML(24);", null, "bold", "button.bold", buttonStyle) %>
-<%= wp.button("javascript:doEditHTML(25);", null, "italic", "button.italic", buttonStyle) %>
-<%= wp.button("javascript:doEditHTML(26);", null, "underline", "button.underline", buttonStyle) %>
-<%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:doEditHTML(31);", null, "left", "button.alignleft", buttonStyle) %>
-<%= wp.button("javascript:doEditHTML(32);", null, "center", "button.aligncenter", buttonStyle) %>
-<%= wp.button("javascript:doEditHTML(33);", null, "right", "button.alignright", buttonStyle) %>
-<%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:doEditHTML(34);", null, "bullist", "button.ul", buttonStyle) %>
-<%= wp.button("javascript:doEditHTML(35);", null, "numlist", "button.ol", buttonStyle) %>
-<%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:doEditHTML(36);", null, "indent", "button.indentin", buttonStyle) %>
-<%= wp.button("javascript:doEditHTML(37);", null, "outdent", "button.indentout", buttonStyle) %>
-<%			
-if (options.showElement("font.color") || options.showElement("bg.color")) {%>
+
+if (options.showElement("font.decoration", displayOptions)) {
+	%><%= wp.buttonBarSeparator(5, 5) %>
+	<%= wp.button("javascript:doEditHTML(24);", null, "bold", "button.bold", buttonStyle) %>
+	<%= wp.button("javascript:doEditHTML(25);", null, "italic", "button.italic", buttonStyle) %>
+	<%= wp.button("javascript:doEditHTML(26);", null, "underline", "button.underline", buttonStyle) %><%
+} 
+if (options.showElement("text.align", displayOptions)) {
+	%><%= wp.buttonBarSeparator(5, 5) %>
+	<%= wp.button("javascript:doEditHTML(31);", null, "left", "button.alignleft", buttonStyle) %>
+	<%= wp.button("javascript:doEditHTML(32);", null, "center", "button.aligncenter", buttonStyle) %>
+	<%= wp.button("javascript:doEditHTML(33);", null, "right", "button.alignright", buttonStyle) %><%
+}
+if (options.showElement("text.lists", displayOptions)) {
+	%><%= wp.buttonBarSeparator(5, 5) %>
+	<%= wp.button("javascript:doEditHTML(34);", null, "bullist", "button.ul", buttonStyle) %>
+	<%= wp.button("javascript:doEditHTML(35);", null, "numlist", "button.ol", buttonStyle) %><%
+}
+if (options.showElement("text.indent", displayOptions)) {
+	%><%= wp.buttonBarSeparator(5, 5) %>
+	<%= wp.button("javascript:doEditHTML(36);", null, "indent", "button.indentin", buttonStyle) %>
+	<%= wp.button("javascript:doEditHTML(37);", null, "outdent", "button.indentout", buttonStyle) %><%
+}
+
+boolean fontColor = options.showElement("font.color", displayOptions);
+boolean bgColor = options.showElement("bg.color", displayOptions);			
+if (fontColor || bgColor) {%>
 	<%= wp.buttonBarSeparator(5, 5) %><%
 }
-if (options.showElement("font.color")) {%>
+if (fontColor) {%>
 	<%= wp.button("javascript:doEditHTML(38);", null, "color_text", "button.fontcolor", buttonStyle) %><%
 }
-if (options.showElement("bg.color")) {%>
+if (bgColor) {%>
 	<%= wp.button("javascript:doEditHTML(39);", null, "color_fill", "button.color", buttonStyle) %><%
 }
 %>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/08/19 11:26:32 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/08/26 15:42:50 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.CmsEditorHandler;
 import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
 import org.opencms.workplace.editors.I_CmsEditorActionHandler;
@@ -74,7 +75,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 5.3.1
  */
@@ -107,6 +108,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     
     /** The edit action handler. */
     private I_CmsEditorActionHandler m_editorAction;
+    
+    /** The workplace editor display options. */
+    private CmsEditorDisplayOptions m_editorDisplayOptions;
     
     /** The editor handler. */
     private I_CmsEditorHandler m_editorHandler;
@@ -290,6 +294,15 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      */
     public I_CmsEditorActionHandler getEditorActionHandler() {
         return m_editorAction;
+    }
+    
+    /**
+     * Returns the instanciated editor display option class.<p>
+     * 
+     * @return the instanciated editor display option class
+     */
+    public CmsEditorDisplayOptions getEditorDisplayOptions() {
+        return m_editorDisplayOptions;    
     }
     
     /**
@@ -513,6 +526,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                 OpenCms.getLog(this).error("Workplace temporary file project does not yet exist!");
             }
         }
+        // create an instance of editor display options
+        m_editorDisplayOptions = new CmsEditorDisplayOptions();
     }
     /**
      * Returns the default property editing mode on resources.<p>
@@ -603,6 +618,18 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
     
     /**
+     * Sets the editor display option class.<p>
+     * 
+     * @param clazz the editor display option class to set
+     */
+    public void setEditorDisplayOptions(CmsEditorDisplayOptions clazz) {
+        m_editorDisplayOptions = clazz;
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Editor disp. options : " + m_editorAction.getClass().getName());
+        }      
+    }
+    
+    /**
      * Sets the editor handler class.<p>
      * 
      * @param clazz the editor handler class to set
@@ -654,7 +681,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void setUserManagementEnabled(String value) {
         m_showUserGroupIcon = Boolean.valueOf(value).booleanValue();
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". User managememnt icon: " + (m_showUserGroupIcon?"enabled":"disabled"));
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". User management icon : " + (m_showUserGroupIcon?"enabled":"disabled"));
         }         
     }
     

@@ -5787,13 +5787,11 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/editors/edit_options</source>
-			<destination>system/workplace/editors/edit_options</destination>
-			<type>plain</type>
-			<uuidresource>607deee9-f052-11d8-ba65-db38cc8f19d7</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<destination>system/workplace/editors/configuration</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 25 Aug 2004 13:09:42 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 17 Aug 2004 15:36:00 CEST</datecreated>
+			<datecreated>Wed, 25 Aug 2004 09:25:17 CEST</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -5803,6 +5801,59 @@
 				</property>
 			</properties>
 			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/configuration/options_all</source>
+			<destination>system/workplace/editors/configuration/options_all</destination>
+			<type>plain</type>
+			<uuidresource>f8154f42-f667-11d8-ab4d-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 14:30:43 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 25 Aug 2004 09:25:41 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[20]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Common options enabled]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/configuration/options_extended</source>
+			<destination>system/workplace/editors/configuration/options_extended</destination>
+			<type>plain</type>
+			<uuidresource>95d3584f-f75b-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:53:02 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 14:29:33 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[10]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Most options enabled]]></value>
+				</property>
+			</properties>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>36</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/workplace/editors/dialogs</destination>
