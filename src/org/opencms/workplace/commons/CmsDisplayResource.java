@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2004/10/25 16:23:39 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/12/21 16:51:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsBackupResource;
 import org.opencms.file.CmsObject;
+import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -59,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsDisplayResource extends CmsDialog {
 
@@ -67,6 +68,8 @@ public class CmsDisplayResource extends CmsDialog {
     public static final String PARAM_VERSIONID = "versionid";
     
     private String m_paramVersionid;
+    
+    private CmsFlexController m_controller;
     
     /**
      * Public constructor with JSP action element.<p>
@@ -88,6 +91,7 @@ public class CmsDisplayResource extends CmsDialog {
     public CmsDisplayResource(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+        m_controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
     }
 
     /**
@@ -102,8 +106,10 @@ public class CmsDisplayResource extends CmsDialog {
         if (CmsStringUtil.isNotEmpty(getParamVersionid())) {
             byte[] result = getBackupResourceContent(getCms(), getParamResource(), getParamVersionid());
             if (result != null) {
-                getJsp().getResponse().setContentType(OpenCms.getResourceManager().getMimeType(getParamResource(), getCms().getRequestContext().getEncoding()) + ":cms");
-                getJsp().getResponse().setContentLength(result.length);
+                // get the top level ressponse to change the content type
+                m_controller.getTopResponse().setContentType(OpenCms.getResourceManager().getMimeType(getParamResource(), getCms().getRequestContext().getEncoding()));              
+                m_controller.getTopResponse().setContentLength(result.length);
+              
                 try {
                     getJsp().getResponse().getOutputStream().write(result);
                     getJsp().getResponse().getOutputStream().flush();
