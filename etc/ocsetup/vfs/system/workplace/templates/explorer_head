@@ -10,6 +10,12 @@
 <SCRIPT LANGUAGE="JavaScript">
 	var filelist="]]><PROCESS>FILELIST</PROCESS><![CDATA[";
     var previouslist="]]><PROCESS>PREVIOUSLIST</PROCESS><![CDATA[";
+	
+	<!-- URL for pictures -->
+	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
+		
+	<!-- URL for help file -->
+	var help="]]><METHOD name="helpUrl"/><![CDATA[";
 </SCRIPT>
 </head>
 
