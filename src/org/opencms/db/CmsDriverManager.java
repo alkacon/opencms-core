@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/08/11 10:40:26 $
- * Version: $Revision: 1.404 $
+ * Date   : $Date: 2004/08/11 16:53:51 $
+ * Version: $Revision: 1.405 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexRequestContextInfo;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockManager;
@@ -62,7 +61,6 @@ import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 import org.opencms.workplace.CmsWorkplaceManager;
 
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import org.apache.commons.collections.ExtendedProperties;
@@ -76,7 +74,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.404 $ $Date: 2004/08/11 10:40:26 $
+ * @version $Revision: 1.405 $ $Date: 2004/08/11 16:53:51 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -299,7 +297,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
     /** The workflow driver. */
     private I_CmsWorkflowDriver m_workflowDriver;
-
+    
     /** The list of initialized JDBC pools. */
     private List m_connectionPools;
 
@@ -328,7 +326,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @return CmsDriverManager the instanciated driver manager.
      * @throws CmsException if the driver manager couldn't be instanciated.
      */
-    public static final CmsDriverManager newInstance(ExtendedProperties configuration) throws CmsException {
+    public static CmsDriverManager newInstance(ExtendedProperties configuration) throws CmsException {
 
         // initialize static hastables
         CmsDbUtil.init();
@@ -425,19 +423,19 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
         }
 
+        // register the driver manager for required events
+        org.opencms.main.OpenCms.addCmsEventListener(driverManager, new int[] {
+            I_CmsEventListener.EVENT_UPDATE_EXPORTS,
+            I_CmsEventListener.EVENT_CLEAR_CACHES,
+            I_CmsEventListener.EVENT_PUBLISH_PROJECT
+        });
+        
         int todo = 0;
         // TODO: move COS stuff to legacy package        
         // set the pool for the COS
         String cosPoolUrl = configuration.getString("db.cos.pool");
         OpenCms.setRuntimeProperty("cosPoolUrl", cosPoolUrl);
-        CmsDbUtil.setDefaultPool(cosPoolUrl);
-        
-
-        // register the driver manager for clearcache events
-        org.opencms.main.OpenCms.addCmsEventListener(driverManager, new int[] {
-            I_CmsEventListener.EVENT_CLEAR_CACHES,
-            I_CmsEventListener.EVENT_PUBLISH_PROJECT
-        });
+        CmsDbUtil.setDefaultPool(cosPoolUrl);        
         
         // return the configured driver manager
         return driverManager;
@@ -488,7 +486,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsResource newResource = new CmsResource (
             CmsUUID.getNullUUID(), // uuids will be "corrected" later
             CmsUUID.getNullUUID(),                
-            CmsUUID.getNullUUID(),           
+            CmsUUID.getNullUUID(),
             targetName,
             type,
             0,
@@ -539,7 +537,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsRequestContext context, 
         String resourcename,
         CmsResource resource,
-        byte[] content,
+        byte[] content, 
         List properties,
         boolean importCase
     ) throws CmsException {
@@ -610,23 +608,23 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 // folders never have any content
                 contentLength = -1;
                 // must cut of trailing '/' for folder creation (or name check fails)
-                if (targetName.charAt(targetName.length()-1) == '/') {
+                if (targetName.charAt(targetName.length() - 1) == '/') {
                     targetName = targetName.substring(0, targetName.length() - 1);
                 }
-            } else {            
+            } else {
                 // otherwise ensure content and content length are set correctly
                 if (content != null) {
                     // if a content is provided, in each case the length is the length of this content
                     contentLength = content.length;
-                } else if (currentResource != null){
+                } else if (currentResource != null) {
                     // we have no content, but an already existing resource - length remains unchanged
                     contentLength = currentResource.getLength();
                 } else {
                     // we have no content - length is used as set in the resource
                     contentLength = resource.getLength();
                 }
-            }
-
+            }                           
+            
             // check if the target name is valid (forbitten chars etc.), 
             // if not throw an exception
             // must do this here since targetName is modified in folder case (see above)
@@ -880,14 +878,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         
         // prepare the content if required
         byte[] content = null;
-        CmsUUID contentId = null;
         if (source.isFile()) {
             CmsFile file;
             if (source instanceof CmsFile) {
                 // resource already is a file
                 file = (CmsFile)source;
                 content = file.getContents();
-                contentId = file.getContentId();
             }
             if ((content == null) || (content.length < 1)) {
                 // no known content yet - read from database
@@ -896,7 +892,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     false, 
                     source.getStructureId());
                 content = file.getContents();
-                contentId = file.getContentId();
             }
         }        
         
@@ -2014,7 +2009,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             context.currentProject(), 
             resource, 
             C_UPDATE_RESOURCE_STATE);
-       
+        
         m_vfsDriver.writeContent(
             context.currentProject(), 
             resource.getResourceId(), 
@@ -3195,17 +3190,32 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
      */
     public void cmsEvent(CmsEvent event) {
+        
         if (org.opencms.main.OpenCms.getLog(this).isDebugEnabled()) {
-            org.opencms.main.OpenCms.getLog(this).debug("handling event: " + event.getType());
+            org.opencms.main.OpenCms.getLog(this).debug("Handling event: " + event.getType());
         }
         
-        switch (event.getType()) {      
-            case I_CmsEventListener.EVENT_PUBLISH_PROJECT:          
+        I_CmsReport report;
+        switch (event.getType()) {
+            
+            case I_CmsEventListener.EVENT_UPDATE_EXPORTS :
+                report = (I_CmsReport) event.getData().get(I_CmsEventListener.KEY_REPORT);
+                updateExportPoints(report);
+                break;
+                
+            case I_CmsEventListener.EVENT_PUBLISH_PROJECT:    
+                CmsUUID publishHistoryId = new CmsUUID((String) event.getData().get(I_CmsEventListener.KEY_PUBLISHID));
+                report = (I_CmsReport) event.getData().get(I_CmsEventListener.KEY_REPORT);
+                int projectId = ((Integer)event.getData().get(I_CmsEventListener.KEY_PROJECTID)).intValue();
+                writeExportPoints(projectId, report, publishHistoryId);
+                break;                
+                
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
-                this.clearcache();
+                clearcache();
                 break;
+                
             default:
-                break;
+                // noop
         }        
     }
 
@@ -4081,7 +4091,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * 
      * @return CmsBackupDriver
      */
-    public final I_CmsBackupDriver getBackupDriver() {
+    public I_CmsBackupDriver getBackupDriver() {
         return m_backupDriver;
     }
 
@@ -4294,7 +4304,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      *
      * @return CmsProjectDriver
      */
-    public final I_CmsProjectDriver getProjectDriver() {
+    public I_CmsProjectDriver getProjectDriver() {
         return m_projectDriver;
     }
     
@@ -4767,7 +4777,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * 
      * @return I_CmsUserDriver
      */
-    public final I_CmsUserDriver getUserDriver() {
+    public I_CmsUserDriver getUserDriver() {
         return m_userDriver;
     }
 
@@ -4873,7 +4883,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * 
      * @return CmsVfsDriver
      */
-    public final I_CmsVfsDriver getVfsDriver() {
+    public I_CmsVfsDriver getVfsDriver() {
         return m_vfsDriver;
     }
 
@@ -4883,7 +4893,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * 
      * @return I_CmsWorkflowDriver
      */
-    public final I_CmsWorkflowDriver getWorkflowDriver() {
+    public I_CmsWorkflowDriver getWorkflowDriver() {
         return m_workflowDriver;
     }
     
@@ -5538,6 +5548,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         
         CmsRequestContext context = cms.getRequestContext();
         int publishProjectId = context.currentProject().getId();
+        boolean temporaryProject = (context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
         boolean backupEnabled = OpenCms.getSystemInfo().isVersionHistoryEnabled();
         int tagId = 0;
         CmsResource directPublishResource = null;
@@ -5586,6 +5597,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     }
                 }
 
+                // clear the cache
+                clearcache();
+                                
                 m_projectDriver.publishProject(
                     context, 
                     report, 
@@ -5601,26 +5615,29 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     I_CmsModuleAction moduleActionInstance = (I_CmsModuleAction)i.next();
                     moduleActionInstance.publishProject(cms, publishList, tagId, report);
                 }
-
-            } finally {
-                this.clearResourceCache();
+                
                 // the project was stored in the backuptables for history
                 // it will be deleted if the project_flag is C_PROJECT_TYPE_TEMPORARY
-                if (context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY) {
-                    m_projectDriver.deleteProject(context.currentProject());
+                if (temporaryProject) {
                     try {
-                        m_projectCache.remove(new Integer(publishProjectId));
-                    } catch (Exception e) {
-                        if (OpenCms.getLog(this).isWarnEnabled()) {
-                            OpenCms.getLog(this).warn("Could not remove project " + publishProjectId + " from cache");
-                        }
+                        m_projectDriver.deleteProject(context.currentProject());
+                    } catch (CmsException e) {
+                        OpenCms.getLog(this).error("Could not delete temporary project " + publishProjectId);
                     }
-                    if (publishProjectId == context.currentProject().getId()) {
-                        // if project was temporary set context to online project
-                        cms.getRequestContext().setCurrentProject(readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
-                    }
+                    // if project was temporary set context to online project
+                    cms.getRequestContext().setCurrentProject(readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
+                }                
 
-                }              
+            } finally {
+                clearcache();
+                
+                // fire an event that a project has been published
+                Map eventData = new HashMap();
+                eventData.put(I_CmsEventListener.KEY_REPORT, report);
+                eventData.put(I_CmsEventListener.KEY_PUBLISHID, publishList.getPublishHistoryId().toString());
+                eventData.put(I_CmsEventListener.KEY_PROJECTID, new Integer(publishProjectId));
+                CmsEvent exportPointEvent = new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData);
+                OpenCms.fireCmsEvent(exportPointEvent);                
             }
         } else if (publishProjectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             throw new CmsSecurityException("[" + getClass().getName() + "] could not publish project " + publishProjectId, CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
@@ -7288,12 +7305,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @param report an I_CmsReport instance to print output message, or null to write messages to the log file
      */
     public void updateExportPoints(I_CmsReport report) {
-        Set exportPoints = new HashSet();
-        String currentExportPoint = null;
-        List resources = new ArrayList();
-        Iterator i = null;
-        CmsResource currentResource = null;
-        CmsExportPointDriver exportPointDriver = null;
 
         try {
             // export points are always written with the "export" user permissions
@@ -7301,6 +7312,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             context.setCurrentProject(readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
 
             // read the export points and return immediately if there are no export points at all         
+            Set exportPoints = new HashSet();
             exportPoints.addAll(OpenCms.getExportPoints());
             exportPoints.addAll(OpenCms.getModuleManager().getExportPoints());
             if (exportPoints.size() == 0) {
@@ -7311,7 +7323,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             }
 
             // create the driver to write the export points
-            exportPointDriver = new CmsExportPointDriver(exportPoints);
+            CmsExportPointDriver exportPointDriver = new CmsExportPointDriver(exportPoints);
             
             // the report may be null if the export point update was started by an event on a remote server
             if (report == null) {
@@ -7319,9 +7331,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             }
             
             // the export point hash table contains RFS export paths keyed by their internal VFS paths
-            i = exportPointDriver.getExportPointPaths().iterator();
+            Iterator i = exportPointDriver.getExportPointPaths().iterator();
             while (i.hasNext()) {
-                currentExportPoint = (String) i.next();
+                String currentExportPoint = (String) i.next();
                 
                 // print some report messages
                 if (OpenCms.getLog(this).isInfoEnabled()) {
@@ -7329,12 +7341,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 }
 
                 try {
-                    resources = readAllSubResourcesInDfs(context, currentExportPoint, -1);
+                    List resources = readAllSubResourcesInDfs(context, currentExportPoint, -1);
                     setFullResourceNames(context, resources);
 
                     Iterator j = resources.iterator();
                     while (j.hasNext()) {
-                        currentResource = (CmsResource) j.next();
+                        CmsResource currentResource = (CmsResource) j.next();
 
                         if (currentResource.getTypeId() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
                             // export the folder                        
@@ -7345,7 +7357,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                             // export the file content online          
                             CmsFile file = getVfsDriver().readFile(I_CmsConstants.C_PROJECT_ONLINE_ID, false, currentResource.getStructureId());
                             file.setRootPath(currentResource.getRootPath());
-                            writeExportPoint(context, exportPointDriver, currentExportPoint, file);
+                            exportPointDriver.writeFile(file.getRootPath(), currentExportPoint, file.getContents());
                         }
                     }
                 } catch (CmsException e) {
@@ -7361,6 +7373,102 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         } catch (CmsException e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error updating export points", e);
+            }
+        }
+    }
+    
+    /**
+     * Writes all export points into the file system for a publish task 
+     * specified by its publish history ID.<p>
+     * 
+     * @param projectId the id of the project that was published
+     * @param report an I_CmsReport instance to print output message, or null to write messages to the log file
+     * @param publishHistoryId unique int ID to identify each publish task in the publish history
+     */    
+    public void writeExportPoints(int projectId, I_CmsReport report, CmsUUID publishHistoryId) {
+
+        boolean printReportHeaders = false;
+        try {            
+            // read the "published resources" for the specified publish history ID
+            List publishedResources = getProjectDriver().readPublishedResources(projectId, publishHistoryId);
+            if (publishedResources.size() == 0) {
+                if (OpenCms.getLog(this).isWarnEnabled()) {
+                    OpenCms.getLog(this).warn("No published resources in the publish history for the specified ID " + publishHistoryId + " found.");
+                }
+                return;
+            }  
+            
+            // read the export points and return immediately if there are no export points at all         
+            Set exportPoints = new HashSet();
+            exportPoints.addAll(OpenCms.getExportPoints());
+            exportPoints.addAll(OpenCms.getModuleManager().getExportPoints());   
+            if (exportPoints.size() == 0) {
+                if (OpenCms.getLog(this).isWarnEnabled()) {
+                    OpenCms.getLog(this).warn("No export points configured at all.");
+                }
+                return;
+            }
+            
+            // create the driver to write the export points
+            CmsExportPointDriver exportPointDriver = new CmsExportPointDriver(exportPoints);
+            
+            // the report may be null if the export point write was started by an event on a remote server
+            if (report == null) {
+                report = new CmsLogReport();
+            }                                  
+
+            // iterate over all published resources to export them eventually
+            Iterator i = publishedResources.iterator();
+            while (i.hasNext()) {
+                CmsPublishedResource currentPublishedResource = (CmsPublishedResource) i.next();
+                String currentExportPoint = exportPointDriver.getExportPoint(currentPublishedResource.getRootPath());
+
+                if (currentExportPoint != null) {
+                    if (!printReportHeaders) {
+                        report.println(report.key("report.export_points_write_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+                        printReportHeaders = true;
+                    }
+                                        
+                    if (currentPublishedResource.getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+                        // export the folder                        
+                        if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
+                            exportPointDriver.removeResource(currentPublishedResource.getRootPath(), currentExportPoint);
+                        } else {
+                            exportPointDriver.createFolder(currentPublishedResource.getRootPath(), currentExportPoint);
+                        }
+                    } else {
+                        // export the file            
+                        if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
+                            exportPointDriver.removeResource(currentPublishedResource.getRootPath(), currentExportPoint);
+                        } else {
+                            // read the file content online
+                            CmsFile file = getVfsDriver().readFile(I_CmsConstants.C_PROJECT_ONLINE_ID, false, currentPublishedResource.getStructureId());
+                            file.setRootPath(currentPublishedResource.getRootPath());
+                            exportPointDriver.writeFile(file.getRootPath(), currentExportPoint, file.getContents());
+                        }
+                    }
+
+                    // print some report messages
+                    if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
+                        report.print(report.key("report.export_points_delete"), I_CmsReport.C_FORMAT_NOTE);
+                        report.print(currentPublishedResource.getRootPath());
+                        report.print(report.key("report.dots"));
+                        report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                    } else {
+                        report.print(report.key("report.export_points_write"), I_CmsReport.C_FORMAT_NOTE);
+                        report.print(currentPublishedResource.getRootPath());
+                        report.print(report.key("report.dots"));
+                        report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                    }
+                }
+            }
+        } catch (CmsException e) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error writing export points", e);
+            }
+        } finally {
+            if (printReportHeaders) {
+                report.println(report.key("report.export_points_write_end"), I_CmsReport.C_FORMAT_HEADLINE);
             }
         }
     }
@@ -7448,107 +7556,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             char c = filename.charAt(i);                    
             if (((c < 'a') || (c > 'z')) && ((c < '0') || (c > '9')) && ((c < 'A') || (c > 'Z')) && (c != '-') && (c != '.') && (c != '_') && (c != '~') && (c != '$')) {
                 throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_BAD_NAME);
-            }
-        }
-    }
-
-    /**
-     * Writes all export points into the file system for a publish task 
-     * specified by its publish history ID.<p>
-     * 
-     * @param context the current request context
-     * @param report an I_CmsReport instance to print output message, or null to write messages to the log file
-     * @param publishHistoryId unique int ID to identify each publish task in the publish history
-     */    
-    public void writeExportPoints(CmsRequestContext context, I_CmsReport report, CmsUUID publishHistoryId) {
-        Set exportPoints = new HashSet();
-        CmsExportPointDriver exportPointDriver = null;
-        List publishedResources = null;
-        CmsPublishedResource currentPublishedResource = null;
-        String currentExportKey = null;
-        boolean printReportHeaders = false;
-
-        try {            
-            // read the "published resources" for the specified publish history ID
-            publishedResources = getProjectDriver().readPublishedResources(context.currentProject().getId(), publishHistoryId);
-            if (publishedResources.size() == 0) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("No published resources in the publish history for the specified ID " + publishHistoryId + " found.");
-                }
-                return;
-            }  
-            
-            // read the export points and return immediately if there are no export points at all         
-            exportPoints.addAll(OpenCms.getExportPoints());
-            exportPoints.addAll(OpenCms.getModuleManager().getExportPoints());   
-            if (exportPoints.size() == 0) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("No export points configured at all.");
-                }
-                return;
-            }
-            
-            // create the driver to write the export points
-            exportPointDriver = new CmsExportPointDriver(exportPoints);
-            
-            // the report may be null if the export point write was started by an event on a remote server
-            if (report == null) {
-                report = new CmsLogReport();
-            }                                  
-
-            // iterate over all published resources to export them eventually
-            Iterator i = publishedResources.iterator();
-            while (i.hasNext()) {
-                currentPublishedResource = (CmsPublishedResource) i.next();
-                currentExportKey = exportPointDriver.getExportPoint(currentPublishedResource.getRootPath());
-
-                if (currentExportKey != null) {
-                    if (!printReportHeaders) {
-                        report.println(report.key("report.export_points_write_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-                        printReportHeaders = true;
-                    }
-                                        
-                    if (currentPublishedResource.getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
-                        // export the folder                        
-                        if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
-                            exportPointDriver.removeResource(currentPublishedResource.getRootPath(), currentExportKey);
-                        } else {
-                            exportPointDriver.createFolder(currentPublishedResource.getRootPath(), currentExportKey);
-                        }
-                    } else {
-                        // export the file            
-                        if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
-                            exportPointDriver.removeResource(currentPublishedResource.getRootPath(), currentExportKey);
-                        } else {
-                            // read the file content online
-                            CmsFile file = getVfsDriver().readFile(I_CmsConstants.C_PROJECT_ONLINE_ID, false, currentPublishedResource.getStructureId());
-                            file.setRootPath(currentPublishedResource.getRootPath());
-
-                            writeExportPoint(context, exportPointDriver, currentExportKey, file);
-                        }
-                    }
-
-                    // print some report messages
-                    if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
-                        report.print(report.key("report.export_points_delete"), I_CmsReport.C_FORMAT_NOTE);
-                        report.print(currentPublishedResource.getRootPath());
-                        report.print(report.key("report.dots"));
-                        report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-                    } else {
-                        report.print(report.key("report.export_points_write"), I_CmsReport.C_FORMAT_NOTE);
-                        report.print(currentPublishedResource.getRootPath());
-                        report.print(report.key("report.dots"));
-                        report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-                    }
-                }
-            }
-        } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error writing export points", e);
-            }
-        } finally {
-            if (printReportHeaders) {
-                report.println(report.key("report.export_points_write_end"), I_CmsReport.C_FORMAT_HEADLINE);
             }
         }
     }
@@ -7719,27 +7726,27 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             clearcache();
             
             try {
-            m_projectDriver.destroy();
+                m_projectDriver.destroy();
             } catch (Throwable t) {
                 OpenCms.getLog(this).error("Error closing project driver", t);
             }
             try {
-            m_userDriver.destroy();
+                m_userDriver.destroy();
             } catch (Throwable t) {
                 OpenCms.getLog(this).error("Error closing user driver", t);
             }
             try {
-            m_vfsDriver.destroy();
+                m_vfsDriver.destroy();
             } catch (Throwable t) {
                 OpenCms.getLog(this).error("Error closing VFS driver", t);
             }
             try {
-            m_workflowDriver.destroy();
+                m_workflowDriver.destroy();
             } catch (Throwable t) {
                 OpenCms.getLog(this).error("Error closing workflow driver", t);
             }
             try {
-            m_backupDriver.destroy();
+                m_backupDriver.destroy();
             } catch (Throwable t) {
                 OpenCms.getLog(this).error("Error closing backup driver", t);
             }
@@ -8160,64 +8167,5 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         if (info != null) {
             info.updateFromResource(resource);
         }
-    }
-    
-    /**
-     * Exports a specified resource into the local filesystem as an "export point".<p>
-     * 
-     * @param context the current request context
-     * @param discAccess the export point driver
-     * @param exportKey the export key of the export point
-     * @param file the file that gets exported
-     * @throws CmsException if something goes wrong
-     */
-    private void writeExportPoint(
-        CmsRequestContext context,
-        CmsExportPointDriver discAccess,
-        String exportKey,
-        CmsFile file) throws CmsException {
-
-        byte[] contents = null;
-        String encoding = null;
-        CmsProperty property = null;
-
-        try {
-            
-            // TODO: check if this is encoding stuff here is required
-            int warning = 0;
-            
-            // make sure files are written using the correct character encoding 
-            contents = file.getContents();
-            property = getVfsDriver().readPropertyObject(
-                I_CmsConstants.C_PROPERTY_CONTENT_ENCODING,
-                context.currentProject(),
-                file);
-            encoding = (property != null) ? property.getValue() : null;
-            encoding = CmsEncoder.lookupEncoding(encoding, null);
-
-            if (encoding != null) {
-                // only files that have the encodig property set will be encoded,
-                // other files will be ignored. images etc. are not touched.    
-
-                try {
-                    contents = (new String(contents, encoding)).getBytes();
-                } catch (UnsupportedEncodingException e) {
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Unsupported encoding of " + file.toString(), e);
-                    }
-
-                    throw new CmsException("Unsupported encoding of " + file.toString(), e);
-                }
-            }
-
-            discAccess.writeFile(file.getRootPath(), exportKey, contents);
-        } catch (Exception e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error writing export point of " + file.toString(), e);
-            }
-
-            throw new CmsException("Error writing export point of " + file.toString(), e);
-        }
-        contents = null;
     }
 }

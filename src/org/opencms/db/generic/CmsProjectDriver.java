@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/08/11 10:41:46 $
- * Version: $Revision: 1.179 $
+ * Date   : $Date: 2004/08/11 16:54:56 $
+ * Version: $Revision: 1.180 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,12 +71,12 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.179 $ $Date: 2004/08/11 10:41:46 $
+ * @version $Revision: 1.180 $ $Date: 2004/08/11 16:54:56 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
  */
-public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjectDriver, I_CmsEventListener {
+public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjectDriver {
 
     /** Internal debugging flag. */
     private static final boolean C_DEBUG = false;
@@ -93,33 +93,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /** The SQL manager. */
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
-    /**
-     * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
-     */
-    public void cmsEvent(CmsEvent event) {
-        I_CmsReport report = null;
-        
-        switch (event.getType()) {
-            case I_CmsEventListener.EVENT_UPDATE_EXPORTS :
-                report = (I_CmsReport) event.getData().get(I_CmsEventListener.KEY_REPORT);
-                m_driverManager.updateExportPoints(report);
-                break;
-
-            case I_CmsEventListener.EVENT_PUBLISH_PROJECT :
-                CmsUUID publishHistoryId = new CmsUUID((String) event.getData().get(I_CmsEventListener.KEY_PUBLISHID));
-                report = (I_CmsReport) event.getData().get(I_CmsEventListener.KEY_REPORT);
-                CmsObject cms = (CmsObject)event.getData().get(I_CmsEventListener.KEY_CMSOBJECT);
-                m_driverManager.writeExportPoints(cms.getRequestContext(), report, publishHistoryId);
-                break;
-
-            default :
-                // TODO: define default behauvior
-                break;
-            }
-        }
-
-    /**
-     * @see org.opencms.db.I_CmsProjectDriver#createProject(org.opencms.file.CmsUser, org.opencms.file.CmsGroup, org.opencms.file.CmsGroup, org.opencms.workflow.CmsTask, java.lang.String, java.lang.String, int, int, java.lang.Object)
+   /**
+    * @see org.opencms.db.I_CmsProjectDriver#createProject(org.opencms.file.CmsUser, org.opencms.file.CmsGroup, org.opencms.file.CmsGroup, org.opencms.workflow.CmsTask, java.lang.String, java.lang.String, int, int, java.lang.Object)
     */
     public CmsProject createProject(CmsUser owner, CmsGroup group, CmsGroup managergroup, CmsTask task, String name, String description, int flags, int type, Object reservedParam) throws CmsException {
         CmsProject project = null;
@@ -523,13 +498,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Assigned pool        : " + poolUrl);
-        }
-
-        // add this class as an event handler to the Cms event listener
-        OpenCms.addCmsEventListener(this, new int[] { 
-            I_CmsEventListener.EVENT_UPDATE_EXPORTS,
-            I_CmsEventListener.EVENT_PUBLISH_PROJECT 
-        });        
+        }      
 
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
