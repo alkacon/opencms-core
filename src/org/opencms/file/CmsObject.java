@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/05/05 08:42:27 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/05/05 12:53:19 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  */
 public class CmsObject {
 
@@ -3592,13 +3592,13 @@ public class CmsObject {
      * Undo changes in a file by copying the online file.
      *
      * @param filename the complete path of the file.
-     *
+     * @param recursive if true, undo changed recursively all sub-resources (only for folders)
      * @throws CmsException if the file couldn't be deleted, or if the user
      * has not the appropriate rights to write the file.
      */
-    public void undoChanges(String filename) throws CmsException {
+    public void undoChanges(String filename, boolean recursive) throws CmsException {
         //read the file header including deleted
-        getResourceType(readFileHeader(filename, true).getType()).undoChanges(this, filename);
+        getResourceType(readFileHeader(filename, true).getType()).undoChanges(this, filename, recursive);
     }
 
     /**

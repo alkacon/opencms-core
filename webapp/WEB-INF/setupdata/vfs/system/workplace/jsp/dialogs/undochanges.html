@@ -4,7 +4,8 @@
 	CmsUndoChanges wp = new CmsUndoChanges(pageContext, request, response);
 	
 //////////////////// start of switch statement 
-	
+
+
 switch (wp.getAction()) {
 
 case CmsUndoChanges.ACTION_CANCEL:
@@ -16,8 +17,9 @@ break;
 
 
 case CmsUndoChanges.ACTION_UNDOCHANGES:
+case CmsUndoChanges.ACTION_WAIT:
 
-//////////////////// ACTION: main undo changes action
+//////////////////// ACTION: main undo changes action with optional wait screen)
 
 	wp.actionUndoChanges();
 
@@ -50,8 +52,14 @@ default:
 
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
+<table border=0>
+<tr><td>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+</td></tr>
 
+<%= wp.buildCheckRecursive() %>
+
+</table>
 <%= wp.dialogContentEnd() %>
 
 <%= wp.dialogButtonsOkCancel() %>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2004/05/03 07:20:32 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/05/05 12:53:19 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -278,9 +278,10 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      *
      * @param cms the current cms context
      * @param resourcename the name of the resource to apply this operation to
+     * @param recursive if true, change recursively all sub-resources (only for folders)
      * @throws CmsException if something goes wrong
      */
-    void undoChanges(CmsObject cms, String resourcename) throws CmsException;
+    void undoChanges(CmsObject cms, String resourcename, boolean recursive) throws CmsException;
 
     /**
      * Unlocks a resource.<p>

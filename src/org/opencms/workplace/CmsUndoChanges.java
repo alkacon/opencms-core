@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsUndoChanges.java,v $
- * Date   : $Date: 2004/03/16 11:19:16 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/05/05 12:53:19 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1
  */
@@ -62,7 +62,11 @@ public class CmsUndoChanges extends CmsDialog {
     /** The dialog type */
     public static final String DIALOG_TYPE = "undochanges";
     
+    /** Request parameter name for the recursive flag.<p> */
+    public static final String PARAM_RECURSIVE = "recursive";
+    
     private CmsResource m_currentResource;
+    private String m_paramRecursive;
 
     
     /**
@@ -96,6 +100,8 @@ public class CmsUndoChanges extends CmsDialog {
         // set the action for the JSP switch 
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_UNDOCHANGES);
+        } else if (DIALOG_WAIT.equals(getParamAction())) {
+            setAction(ACTION_WAIT);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {          
             setAction(ACTION_CANCEL);
         } else {                        
@@ -121,9 +127,13 @@ public class CmsUndoChanges extends CmsDialog {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         try {
-           performUndoChangesOperation();
-           // if no exception is caused undo changes operation was successful
-           actionCloseDialog();
+            if (performUndoChangesOperation())  {
+                // if no exception is caused undo changes operation was successful
+                actionCloseDialog();
+            } else  {
+                // "false" returned, display "please wait" screen
+                getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
+            }  
         } catch (CmsException e) {          
             // error during deletion, show error dialog
             setParamErrorstack(e.getStackTraceAsString());
@@ -141,11 +151,46 @@ public class CmsUndoChanges extends CmsDialog {
      */
     private boolean performUndoChangesOperation() throws CmsException {     
          
+        // on undo changes display "please wait" screen, not for simple file copy
+        CmsResource sourceRes = getCms().readFileHeader(getParamResource());
+        if (sourceRes.isFolder() && ! DIALOG_WAIT.equals(getParamAction())) {
+            // return false, this will trigger the "please wait" screen
+            return false;
+        }
+        
+        // get the flag if the touch is recursive from request parameter
+        boolean touchRecursive = "true".equalsIgnoreCase(getParamRecursive());    
         // undo changes on the resource
-        getCms().undoChanges(getParamResource());
+        getCms().undoChanges(getParamResource(), touchRecursive);
         
         return true;
     }
+    
+    /**
+     * Creates the "recursive" checkbox for undoing changes to subresources of folders.<p>
+     *  
+     * @return the String with the checkbox input field or an empty String for folders.
+     */
+    public String buildCheckRecursive() {
+        StringBuffer retValue = new StringBuffer(256);
+        
+        CmsResource res = null;
+        try {
+            res = getCms().readFileHeader(getParamResource());
+        } catch (CmsException e) {
+            return "";
+        }    
+        
+        // show the checkbox only for folders
+        if (res.isFolder()) {
+            retValue.append("<tr>\n\t<td colspan=\"3\" style=\"white-space: nowrap;\" unselectable=\"on\">");
+            retValue.append("<input type=\"checkbox\" name=\""+PARAM_RECURSIVE+"\" value=\"true\">&nbsp;"+key("input.changesubresources"));
+            retValue.append("</td>\n</tr>\n");
+        }
+        return retValue.toString();
+    }
+        
+    
     
     /**
      * Returns the last modified date of the current resource as localized String.<p>
@@ -197,5 +242,27 @@ public class CmsUndoChanges extends CmsDialog {
     public void setCurrentResource(CmsResource res) {
         m_currentResource = res;
     }
+    
+    /**
+     * Returns the value of the recursive parameter, 
+     * or null if this parameter was not provided.<p>
+     * 
+     * The recursive parameter on folders decides if all subresources
+     * of the folder should be unchanged, too.<p>
+     * 
+     * @return the value of the recursive parameter
+     */    
+    public String getParamRecursive() {
+        return m_paramRecursive;
+    }
+
+    /**
+     * Sets the value of the recursive parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamRecursive(String value) {
+        m_paramRecursive = value;
+    }  
     
 }

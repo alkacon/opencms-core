@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/05/03 07:20:32 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/05/05 12:53:19 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -51,10 +50,11 @@ import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
 
+
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
     
@@ -460,49 +460,29 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
      * @see org.opencms.file.I_CmsResourceType#touch(CmsObject, String, long, boolean, CmsUUID)
      */
     public void touch(CmsObject cms, String resourceName, long timestamp, boolean touchRecursive, CmsUUID user) throws CmsException {
-        Vector allFolders = new Vector();
-        Vector allFiles = new Vector();
-        Vector unvisited = new Vector();
+        List allFolders = new ArrayList();
+        List allFiles = new ArrayList();
 
         // create a valid resource
         CmsFolder currentFolder = cms.readFolder(resourceName);
-        CmsFile currentFile = null;
-
+        CmsFile currentFile;
+        
         // check the access rights
         // TODO: normally, only resources with write access should be collected here
         // in order to prevent exceptions while touching
         if (!cms.hasPermissions(currentFolder, I_CmsConstants.C_WRITE_ACCESS)) {
             return;
-        }
+        }        
+        
         if (touchRecursive) {
-            // collect all folders and files by traversing the tree on a breadth first search
-            unvisited.add(currentFolder);
-
-            while (unvisited.size() > 0) {
-                // visit all unvisited folders
-                Enumeration unvisitedFolders = unvisited.elements();
-                while (unvisitedFolders.hasMoreElements()) {
-                    currentFolder = (CmsFolder)unvisitedFolders.nextElement();
-
-                    // remove the current folder from the unvisited folders
-                    unvisited.remove(currentFolder);
-                    // add the current folder to the set of all folders to be touched
-                    allFolders.add(currentFolder);
-                    // add the files in the current folder to the set of all files to be touched
-                    allFiles.addAll(cms.getFilesInFolder(cms.readAbsolutePath(currentFolder), true));
-                    // add all sub-folders in the current folder to visit them in the next iteration                        
-                    unvisited.addAll(cms.getSubFolders(cms.readAbsolutePath(currentFolder), true));
-                }
-            }
-        } else {
-            allFolders.add(currentFolder);
-        }
-
+            getAllResources(cms, resourceName, allFiles, allFolders);
+        }  
+        allFolders.add(currentFolder);
         
         // touch the folders that we collected before
-        Enumeration touchFolders = allFolders.elements();
-        while (touchFolders.hasMoreElements()) {
-            currentFolder = (CmsFolder)touchFolders.nextElement();           
+        Iterator touchFolders = allFolders.iterator();
+        while (touchFolders.hasNext()) {
+            currentFolder = (CmsFolder)touchFolders.next();           
             if (DEBUG > 0) {
                 System.err.println("touching: " + cms.readAbsolutePath(currentFolder));
             }
@@ -522,9 +502,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         }
 
         // touch the files/resources that we collected before
-        Enumeration touchFiles = allFiles.elements();
-        while (touchFiles.hasMoreElements()) {
-            currentFile = (CmsFile)touchFiles.nextElement();
+        Iterator touchFiles = allFiles.iterator();
+        while (touchFiles.hasNext()) {
+            currentFile = (CmsFile)touchFiles.next();
 
             if (DEBUG > 0) {
                 System.err.println("touching: " + cms.readAbsolutePath(currentFile));
@@ -579,73 +559,65 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, java.lang.String)
+     * @see org.opencms.file.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, java.lang.String, boolean)
      */
-    public void undoChanges(CmsObject cms, String resource) throws CmsException {
-        // first undo changes of the folder
-        cms.doUndoChanges(resource);
+    public void undoChanges(CmsObject cms, String resource, boolean recursive) throws CmsException {
+        List allFolders = new ArrayList();
+        List allFiles = new ArrayList();
 
-        if (C_BODY_MIRROR) {
-            // check if there is a corrosponding body folder
-            String bodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES + resource.substring(1);
-            boolean hasBodyFolder = false;
-            try {
-                cms.readFileHeader(bodyPath);
-                hasBodyFolder = true;
-            } catch (CmsException e) {
-                // body folder not found or no access, so ignore it
+        // create a valid resource
+        CmsFolder currentFolder = cms.readFolder(resource);
+        CmsFile currentFile;
+        
+        // check the access rights
+        // TODO: normally, only resources with write access should be collected here
+        // in order to prevent exceptions while touching
+        if (!cms.hasPermissions(currentFolder, I_CmsConstants.C_WRITE_ACCESS)) {
+            return;
+        }        
+        
+        if (recursive) {
+            getAllResources(cms, resource, allFiles, allFolders);
+        }  
+        allFolders.add(currentFolder);
+                
+        // undo changes to the folders that we collected before
+        Iterator undoFolders = allFolders.iterator();
+        while (undoFolders.hasNext()) {
+            currentFolder = (CmsFolder)undoFolders.next();           
+            if (DEBUG > 0) {
+                System.err.println("undo changes: " + cms.readAbsolutePath(currentFolder));
             }
-            // undo changes in the corresponding folder in C_VFS_PATH_BODIES          
-            if (hasBodyFolder) {
-                cms.doUndoChanges(bodyPath);
+            // touch the folder itself
+            cms.doUndoChanges(cms.readAbsolutePath(currentFolder));
+
+            if (C_BODY_MIRROR) {
+                // touch its counterpart under content/bodies
+                String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + cms.readAbsolutePath(currentFolder);
+                try {
+                    cms.readFolder(bodyFolder);
+                    cms.doUndoChanges(bodyFolder);
+                } catch (CmsException e) {
+                    // ignore
+                }
             }
         }
 
-        // TODO: Implement optional "recurse" function 
-        // now undo changes of the subfolders
-        //        for (int i=0; i<allSubFolders.size(); i++){
-        //            CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
-        //            if(curFolder.getState() != C_STATE_NEW){
-        //                if(curFolder.getState() == C_STATE_DELETED){
-        //                    undeleteResource(cms, cms.readPath(curFolder));
-        //                    lockResource(cms, cms.readPath(curFolder), true);
-        //                }
-        //                undoChanges(cms, cms.readPath(curFolder));
-        //            } else {
-        //                // if it is a new folder then delete the folder
-        //                try{
-        //                    deleteResource(cms, cms.readPath(curFolder));
-        //                } catch (CmsException ex){
-        //                    // do not throw exception when resource not exists
-        //                    if(ex.getType() != CmsException.C_NOT_FOUND){
-        //                        throw ex;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        // now undo changes in the files
-        //        for (int i=0; i<allSubFiles.size(); i++){
-        //            CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
-        //            if(curFile.getState() != C_STATE_NEW){
-        //                if(curFile.getState() == C_STATE_DELETED){
-        //                    cms.undeleteResource(cms.readPath(curFile));
-        //                    cms.lockResource(cms.readPath(curFile), true);
-        //                }
-        //                cms.undoChanges(cms.readPath(curFile));
-        //            } else {
-        //                // if it is a new file then delete the file
-        //                try{
-        //                    cms.deleteResource(cms.readPath(curFile));
-        //                } catch (CmsException ex){
-        //                    // do not throw exception when resource not exists
-        //                    if(ex.getType() != CmsException.C_NOT_FOUND){
-        //                        throw ex;
-        //                    }
-        //                }
-        //            }
-        //        }
-    }
+        // undo changes to the files/resources that we collected before
+        Iterator undoFiles = allFiles.iterator();
+        while (undoFiles.hasNext()) {
+            currentFile = (CmsFile)undoFiles.next();
 
+            if (DEBUG > 0) {
+                System.err.println("undo changes: " + cms.readAbsolutePath(currentFile));
+            }
+            if (currentFile.getState() != I_CmsConstants.C_STATE_DELETED) {
+                // touch the file itself
+                cms.doUndoChanges(cms.readAbsolutePath(currentFile));
+            }
+        }
+    }
+    
     /**
      * @see org.opencms.file.I_CmsResourceType#unlockResource(org.opencms.file.CmsObject, java.lang.String, boolean)
      */
