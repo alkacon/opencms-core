@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimpleEditor.java,v $
- * Date   : $Date: 2004/05/03 13:09:44 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/05/05 21:25:09 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import org.opencms.file.CmsFile;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.page.CmsXmlPageException;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.workplace.CmsWorkplaceAction;
@@ -57,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1.12
  */
@@ -80,10 +79,10 @@ public class CmsSimpleEditor extends CmsEditor {
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
         // fill the parameter values in the get/set methods
-        fillParamValues(request);
+        fillParamValues(request);        
         // set the dialog type
         setParamDialogtype(EDITOR_TYPE);
-        
+
         // set the action for the JSP switch 
         if (EDITOR_SAVE.equals(getParamAction())) {
             setAction(ACTION_SAVE);
@@ -99,7 +98,8 @@ public class CmsSimpleEditor extends CmsEditor {
             // initial call of editor
             setAction(ACTION_DEFAULT);
             initContent();
-        }      
+        }
+        
         setParamContent(encodeContent(getParamContent()));        
     }   
     
@@ -117,7 +117,6 @@ public class CmsSimpleEditor extends CmsEditor {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         // get the default encoding
-        String encoding = getCms().getRequestContext().getEncoding();
         String content = getParamContent();
         if (! CmsStringSubstitution.isEmpty(content)) {
             // content already read, must be decoded 
@@ -130,11 +129,9 @@ public class CmsSimpleEditor extends CmsEditor {
         try {
             // lock resource if autolock is enabled
             checkLock(getParamResource());
-            // Read file encoding from the property of the temporary file 
-            encoding = getCms().readPropertyObject(getParamResource(), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true).getValue(encoding);
             CmsFile editFile = getCms().readFile(getParamResource());
             try {
-                content = new String(editFile.getContents(), encoding);
+                content = new String(editFile.getContents(), getFileEncoding());
             } catch (UnsupportedEncodingException e) {
                 content = new String(editFile.getContents());
             }
@@ -171,41 +168,32 @@ public class CmsSimpleEditor extends CmsEditor {
     public void actionSave() throws JspException {
         CmsFile editFile = null;
         try {
-            editFile = getCms().readFile(getParamResource());
-            String decodedContent = CmsEncoder.unescape(getParamContent(), CmsEncoder.C_UTF8_ENCODING);
-            // read file encoding from the property of the temporary file 
-            String encoding = getCms().getRequestContext().getEncoding();
-            encoding = getCms().readPropertyObject(getParamResource(), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true).getValue(encoding);
+            editFile = getCms().readFile(getParamResource());            
+            // ensure all chars in the content are valid for the selected encoding
+            String decodedContent = CmsEncoder.encodeForHtml(decodeContent(getParamContent()), getFileEncoding());
+            
             try {
-                editFile.setContents(decodedContent.getBytes(encoding));
+                editFile.setContents(decodedContent.getBytes(getFileEncoding()));
             } catch (UnsupportedEncodingException e) {
                 editFile.setContents(decodedContent.getBytes());
             }        
             // the file content might have been modified during the write operation
             CmsFile writtenFile = getCms().writeFile(editFile);
             try {
-                decodedContent = new String(writtenFile.getContents(), encoding);
+                decodedContent = new String(writtenFile.getContents(), getFileEncoding());
             } catch (UnsupportedEncodingException e) {
                 decodedContent = new String(writtenFile.getContents());
             }
             setParamContent(encodeContent(decodedContent));            
         } catch (CmsXmlPageException e) {
-            // reset the action parameter            
-            setParamAction("");                               
-            showErrorPage(this, e, "xml", C_PATH_EDITORS + "dialogs/confirm.html");
-            // save not successful, set cancel action 
-            setAction(ACTION_CANCEL);
-            return;
+            showErrorPage(e, "xml");
         } catch (CmsException e) {
-            // reset the action parameter            
-            setParamAction("");                               
-            showErrorPage(this, e, "save", C_PATH_EDITORS + "dialogs/confirm.html");
-            // save not successful, set cancel action 
-            setAction(ACTION_CANCEL);
-            return;
+            showErrorPage(e, "save");
         }
     
-        // save was successful, set save action 
-        setAction(ACTION_SAVE);
+        if (getAction() != ACTION_CANCEL) {
+            // save successful, set save action         
+           setAction(ACTION_SAVE);
+        }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/04/14 12:25:21 $
- * Version: $Revision: 1.540 $
+ * Date   : $Date: 2004/05/05 21:25:09 $
+ * Version: $Revision: 1.541 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,15 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 5.3.5 Ix - xx, 2004
+! Content of xmlPage is now verified with the DTD when saving from any editor
+! Improved error handling when an error occurs during save in the editors,
+  it's now possible to go back and correct the errors
+! All editors now ensure that the selected encoding/charset is used for
+  the content, if chars are not available these are escaped with HTML entities
+! Resource locales are cached
+* Fixed issue with galleries not working when in root site  
 
 OpenCms 5.3.4 Ix - April 14, 2004
 - Updated all jars, also added version numbers to all jars

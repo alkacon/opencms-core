@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2004/05/03 07:26:51 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2004/05/05 21:25:09 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.workplace.I_CmsWpConstants;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -52,7 +51,7 @@ import java.util.regex.Pattern;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 5.1.12
  */
@@ -131,6 +130,8 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
         content = CmsStringSubstitution.extractHtmlBody(content);
         // remove unwanted "&amp;" from links
         content = filterAnchors(content);
+        // ensure all chars in the content are valid for the selected encoding
+        content = CmsEncoder.encodeForHtml(content, getFileEncoding());        
         
         if (! ("edit".equals(getParamEditormode()) || save)) {
             // editor is in html mode, add tags for stylesheet
@@ -155,9 +156,6 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
             result.append("</body></html>");
             content = result.toString();       
         }
-        int warning = 0;
-        // TODO: this should really not only be one for MS DHTML, but for xmlage in general
-        content = CmsEncoder.escapeNonAscii(content);
         if (!save) {
             // set the content parameter to the modified content
             setParamContent(content);

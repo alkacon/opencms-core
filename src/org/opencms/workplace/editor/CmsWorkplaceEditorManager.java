@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsWorkplaceEditorManager.java,v $
- * Date   : $Date: 2004/04/10 23:12:23 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/05/05 21:25:09 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.TreeMap;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3.1
  */
@@ -112,7 +112,7 @@ public class CmsWorkplaceEditorManager {
             // get the file contents
             byte[] content = configFile.getContents();
             // determine the encoding of the current file
-            String encoding = getConfigurationFileEncoding(cms, configFile);
+            String encoding = getFileEncoding(cms, configFile);
             // get the xml String from the file contents
             String xmlData;
             try {
@@ -202,15 +202,16 @@ public class CmsWorkplaceEditorManager {
     }
     
     /**
-     * Helper method to determine the encoding of the given file in the VFS.<p>
+     * Helper method to determine the encoding of the given file in the VFS,
+     * which must be set using the "content-encoding" property.<p>
      * 
      * @param cms the CmsObject
-     * @param configFile the file which is checked
+     * @param file the file which is to be checked
      * @return the encoding for the file
      */
-    private String getConfigurationFileEncoding(CmsObject cms, CmsFile configFile) {
+    protected String getFileEncoding(CmsObject cms, CmsFile file) {
         try { 
-            return cms.readPropertyObject(cms.readAbsolutePath(configFile), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false).getValue(OpenCms.getSystemInfo().getDefaultEncoding());
+            return cms.readPropertyObject(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false).getValue(OpenCms.getSystemInfo().getDefaultEncoding());
         } catch (CmsException e) {
             return OpenCms.getSystemInfo().getDefaultEncoding();
         }

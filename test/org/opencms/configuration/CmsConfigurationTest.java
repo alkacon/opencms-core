@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/Attic/CmsConfigurationTest.java,v $
- * Date   : $Date: 2004/04/05 05:42:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/05 21:25:09 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,8 @@ import org.dom4j.io.XMLWriter;
 import org.xml.sax.SAXException;
 
 /**
+ * Tests for the OpenCms configuration handling.<p>
+ * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @since 5.3
  */

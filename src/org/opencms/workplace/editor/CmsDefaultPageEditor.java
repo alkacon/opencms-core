@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/05/04 09:27:25 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2004/05/05 21:25:09 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -57,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  * 
  * @since 5.1.12
  */
@@ -240,23 +239,15 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
              commitTempFile();
 
          } catch (CmsXmlPageException e) {
-             // reset the action parameter            
-             setParamAction("");                               
-             showErrorPage(this, e, "xml", C_PATH_EDITORS + "dialogs/confirm.html");
-             // save not successful, set cancel action 
-             setAction(ACTION_CANCEL);
-             return;
+             showErrorPage(e, "xml");
          } catch (CmsException e) {
-             // reset the action parameter            
-             setParamAction("");                               
-             showErrorPage(this, e, "save", C_PATH_EDITORS + "dialogs/confirm.html");
-             // save not successful, set cancel action 
-             setAction(ACTION_CANCEL);
-             return;
+             showErrorPage(e, "save");
          }
      
-         // save was successful, set save action 
-         setAction(ACTION_SAVE);              
+         if (getAction() != ACTION_CANCEL) {
+             // save successful, set save action         
+            setAction(ACTION_SAVE);
+         }
     }
     
     /**
@@ -529,9 +520,9 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * @see org.opencms.workplace.editor.CmsEditor#initContent()
      */
     protected void initContent() {
-        // get the content from the temporary file     
+        // get the content from the temporary file        
         try {                                  
-            CmsXmlPage page = CmsXmlPage.read(getCms(), getCms().readFile(this.getParamTempfile()));
+            CmsXmlPage page = CmsXmlPage.read(getCms(), getCms().readFile(getParamTempfile()));
             String elementData = page.getContent(getCms(), getParamElementname(), getElementLocale(), true);
             if (elementData != null) {
                 setParamContent(elementData);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2004/02/16 14:42:48 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/05/05 21:25:09 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.workplace.editor;
 
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -49,7 +50,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.3.0
  */
@@ -160,7 +161,13 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
      * @return the prepared content String
      */
     protected String prepareContent(boolean save) {
-        return getParamContent().trim();
+        String content = getParamContent().trim();
+        // ensure all chars in the content are valid for the selected encoding
+        content = CmsEncoder.encodeForHtml(content, getFileEncoding());
+        if (! save) {
+            setParamContent(content);
+        }
+        return content;
     }  
     
     /**

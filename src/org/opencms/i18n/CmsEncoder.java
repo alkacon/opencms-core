@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2004/02/11 16:12:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/05/05 21:25:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,9 @@ import org.opencms.main.OpenCms;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.util.StringTokenizer;
 
 /**
@@ -68,48 +71,39 @@ public final class CmsEncoder {
     }
     
     /**
-     * This method is a substitute for <code>URLEncoder.encode()</code>.
-     * Use this in all OpenCms core classes to ensure the encoding is
-     * always handled the same way.<p>
+     * Changes the encoding of a byte array that represents a String.<p>
      * 
-     * In case you don't know what encoding to use, set the value of 
-     * the <code>encoding</code> parameter to <code>null</code>. 
-     * This method will then default to UTF-8 encoding, which is propably the right one.<p>
-     * 
-     * @param source the String to encode
-     * @param encoding the encoding to use (if null, the system default is used)
-     * @return the encoded source String
+     * @param input the byte array to convert
+     * @param oldEncoding the current encoding of the byte array
+     * @param newEncoding the new encoding of the byte array
+     * @return byte[] the byte array encoded in the new encoding
      */
-    public static String encode(String source, String encoding) {
-        if (source == null) {
-            return null;
+    public static byte[] changeEncoding(byte[] input, String oldEncoding, String newEncoding) {
+        if ((oldEncoding == null) || (newEncoding == null)) {
+            return input;
         }
-        if (encoding != null) {
-            try {
-                return URLEncoder.encode(source, encoding); 
-            } catch (java.io.UnsupportedEncodingException e) {
-                // will fallback to default
-            } 
+        if (oldEncoding.trim().equalsIgnoreCase(newEncoding.trim())) {
+            return input;
         }
-        // fallback to default encoding
+        byte[] result = input;
         try {
-            return URLEncoder.encode(source, C_UTF8_ENCODING); 
-        } catch (java.io.UnsupportedEncodingException e) {
-            // ignore
+            result = (new String(input, oldEncoding)).getBytes(newEncoding);
+        } catch (UnsupportedEncodingException e) {
+            // return value will be input value
         }
-        return source;
+        return result;
     }
     
     /**
-     * Encodes a String using UTF-8 encoding, which is the standard for http data transmission
+     * Decodes a String using UTF-8 encoding, which is the standard for http data transmission
      * with GET ant POST requests.<p>
      * 
-     * @param source the String to encode
-     * @return String the encoded source String
+     * @param source the String to decode
+     * @return String the decoded source String
      */
-    public static String encode(String source) {
-        return encode(source, C_UTF8_ENCODING);
-    }
+    public static String decode(String source) {
+        return decode(source, C_UTF8_ENCODING);
+    }    
 
     /**
      * This method is a substitute for <code>URLDecoder.decode()</code>.
@@ -145,15 +139,86 @@ public final class CmsEncoder {
     }
     
     /**
-     * Decodes a String using UTF-8 encoding, which is the standard for http data transmission
+     * Encodes a String using UTF-8 encoding, which is the standard for http data transmission
      * with GET ant POST requests.<p>
      * 
-     * @param source the String to decode
-     * @return String the decoded source String
+     * @param source the String to encode
+     * @return String the encoded source String
      */
-    public static String decode(String source) {
-        return decode(source, C_UTF8_ENCODING);
-    }    
+    public static String encode(String source) {
+        return encode(source, C_UTF8_ENCODING);
+    }
+    
+    /**
+     * This method is a substitute for <code>URLEncoder.encode()</code>.
+     * Use this in all OpenCms core classes to ensure the encoding is
+     * always handled the same way.<p>
+     * 
+     * In case you don't know what encoding to use, set the value of 
+     * the <code>encoding</code> parameter to <code>null</code>. 
+     * This method will then default to UTF-8 encoding, which is propably the right one.<p>
+     * 
+     * @param source the String to encode
+     * @param encoding the encoding to use (if null, the system default is used)
+     * @return the encoded source String
+     */
+    public static String encode(String source, String encoding) {
+        if (source == null) {
+            return null;
+        }
+        if (encoding != null) {
+            try {
+                return URLEncoder.encode(source, encoding); 
+            } catch (java.io.UnsupportedEncodingException e) {
+                // will fallback to default
+            } 
+        }
+        // fallback to default encoding
+        try {
+            return URLEncoder.encode(source, C_UTF8_ENCODING); 
+        } catch (java.io.UnsupportedEncodingException e) {
+            // ignore
+        }
+        return source;
+    }
+
+    /**
+     * Encodes a given String for HTML display in the given charset encoding.<p>
+     * 
+     * Characters that are contained in the String which can not displayed 
+     * in the given encodings charset are encoded using HTML entity references
+     * like <code>&amp;#8364;</code>. This is required since a Java String is 
+     * internally always stored as Unicode, meaning it can contain almost every character, but 
+     * the HTML charset used might not support all such characters.<p>
+     * 
+     * @param input the input to encode for HTML
+     * @param encoding the charset to encode the input with
+     * @return the encoded HTML input
+     */
+    public static String encodeForHtml(String input, String encoding) {
+        StringBuffer result = new StringBuffer(input.length() * 2);
+        CharBuffer buffer = CharBuffer.wrap(input.toCharArray());
+        Charset charset = Charset.forName(encoding);
+        CharsetEncoder encoder = charset.newEncoder();
+        for (int i = 0; i < buffer.length(); i++) {                        
+            int c = buffer.get(i);
+            if (c < 128) {
+                // first 128 chars are contained in almost every charset
+                result.append((char)c);                
+                // this is intendend as performance improvement since 
+                // the canEncode() operation appears quite CPU heavy
+            } else if (encoder.canEncode((char)c)) {
+                // encoder can endoce this char
+                result.append((char)c);
+            } else {
+                // append HTML entiry reference
+                result.append("&#");
+                result.append(c);
+                result.append(";");
+            }
+        }
+        return result.toString();
+    }        
 
     /**
      * Encodes a String in a way that is compatible with the JavaScript escape function.
@@ -176,6 +241,76 @@ public final class CmsEncoder {
             }
         }
         return ret.toString();
+    }
+
+    /**
+     * Escapes special characters in a HTML-String with their number-based 
+     * entity representation, for example &amp; becomes &amp;#38;.<p>
+     * 
+     * A character <code>num</code> is replaced if<br>
+     * <code>((ch != 32) && ((ch > 122) || (ch < 48) || (ch == 60) || (ch == 62)))</code><p>
+     * 
+     * @param source the String to escape
+     * @return String the escaped String
+     * 
+     * @see #escapeXml(String)
+     */
+    public static String escapeHtml(String source) {
+        int terminatorIndex;
+        if (source == null) {
+            return null;
+        }
+        StringBuffer result = new StringBuffer(source.length()*2);
+        for (int i = 0; i < source.length(); i++) {
+            int ch = source.charAt(i);
+            // Avoid escaping already escaped characters;
+            if ((ch == 38) && ((terminatorIndex = source.indexOf(";", i)) > 0)) {
+                if (source.substring(i + 1, terminatorIndex).matches("#[0-9]+|lt|gt|amp|quote")) {
+                    result.append(source.substring(i, terminatorIndex + 1));
+                    // Skip remaining chars up to (and including) ";"
+                    i = terminatorIndex;
+                    continue;
+                }
+            }
+            if ((ch != 32) && ((ch > 122) || (ch < 48) || (ch == 60) || (ch == 62))) {
+                result.append("&#");
+                result.append(ch);
+                result.append(";");
+            } else {
+                result.append((char)ch);
+            }
+        }
+        return new String(result);
+    }
+
+    /**
+     * Escapes non ASCII characters in a HTML-String with their number-based 
+     * entity representation, for example &amp; becomes &amp;#38;.<p>
+     * 
+     * A character <code>num</code> is replaced if<br>
+     * <code>(ch > 255)</code><p>
+     * 
+     * @param source the String to escape
+     * @return String the escaped String
+     * 
+     * @see #escapeXml(String)
+     */
+    public static String escapeNonAscii(String source) {
+        if (source == null) {
+            return null;
+        }
+        StringBuffer result = new StringBuffer(source.length()*2);
+        for (int i = 0; i < source.length(); i++) {
+            int ch = source.charAt(i);
+            if (ch > 255) {
+                result.append("&#");
+                result.append(ch);
+                result.append(";");
+            } else {
+                result.append((char)ch);
+            }
+        }
+        return new String(result);
     }
 
     /**
@@ -258,75 +393,22 @@ public final class CmsEncoder {
         }
         return new String(result);
     }   
-
+    
     /**
-     * Escapes special characters in a HTML-String with their number-based 
-     * entity representation, for example &amp; becomes &amp;#38;.<p>
+     * Re-decodes a String that has not been correctly decoded and thus has scrambled
+     * character bytes.<p>
      * 
-     * A character <code>num</code> is replaced if<br>
-     * <code>((ch !=  32) && ((ch > 122) || (ch < 48) || (ch == 60) || (ch == 62)))</code><p>
+     * This is an equivalent to the JavaScript "decodeURIComponent" function.
+     * It converts from the default "UTF-8" to the currently selected system encoding.<p>
      * 
-     * @param source the String to escape
-     * @return String the escaped String
-     * 
-     * @see #escapeXml(String)
+     * @param input the String to convert
+     * @return String the converted String
      */
-    public static String escapeHtml(String source) {
-        int terminatorIndex;
-        if (source == null) {
-            return null;
-        }
-        StringBuffer result = new StringBuffer(source.length()*2);
-        for (int i = 0; i < source.length(); i++) {
-            int ch = source.charAt(i);
-            // Avoid escaping already escaped characters;
-            if ((ch == 38) && ((terminatorIndex = source.indexOf(";", i)) > 0)) {
-                if (source.substring(i + 1, terminatorIndex).matches("#[0-9]+|lt|gt|amp|quote")) {
-                    result.append(source.substring(i, terminatorIndex + 1));
-                    // Skip remaining chars up to (and including) ";"
-                    i = terminatorIndex;
-                    continue;
-                }
-            }
-            if ((ch !=  32) && ((ch > 122) || (ch < 48) || (ch == 60) || (ch == 62))) {
-                result.append("&#");
-                result.append(ch);
-                result.append(";");
-            } else {
-                result.append((char)ch);
-            }
-        }
-        return new String(result);
-    }
-
-    /**
-     * Escapes non ASCII characters in a HTML-String with their number-based 
-     * entity representation, for example &amp; becomes &amp;#38;.<p>
-     * 
-     * A character <code>num</code> is replaced if<br>
-     * <code>(ch > 255)</code><p>
-     * 
-     * @param source the String to escape
-     * @return String the escaped String
-     * 
-     * @see #escapeXml(String)
-     */
-    public static String escapeNonAscii(String source) {
-        if (source == null) {
-            return null;
-        }
-        StringBuffer result = new StringBuffer(source.length()*2);
-        for (int i = 0; i < source.length(); i++) {
-            int ch = source.charAt(i);
-            if (ch > 255) {
-                result.append("&#");
-                result.append(ch);
-                result.append(";");
-            } else {
-                result.append((char)ch);
-            }
-        }
-        return new String(result);
+    public static String redecodeUriComponent(String input) {
+       if (input == null) {
+           return input;
+       }
+       return new String(changeEncoding(input.getBytes(), C_UTF8_ENCODING, OpenCms.getSystemInfo().getDefaultEncoding())); 
     }
     
     /**
@@ -353,46 +435,5 @@ public final class CmsEncoder {
             }
         }
         return decode(preparedSource.toString(), encoding);
-    }
-    
-    /**
-     * Changes the encoding of a byte array that represents a String.<p>
-     * 
-     * @param input the byte array to convert
-     * @param oldEncoding the current encoding of the byte array
-     * @param newEncoding the new encoding of the byte array
-     * @return byte[] the byte array encoded in the new encoding
-     */
-    public static byte[] changeEncoding(byte[] input, String oldEncoding, String newEncoding) {
-        if ((oldEncoding == null) || (newEncoding == null)) {
-            return input;
-        }
-        if (oldEncoding.trim().equalsIgnoreCase(newEncoding.trim())) {
-            return input;
-        }
-        byte[] result = input;
-        try {
-            result = (new String(input, oldEncoding)).getBytes(newEncoding);
-        } catch (UnsupportedEncodingException e) {
-            // return value will be input value
-        }
-        return result;
-    }
-    
-    /**
-     * Re-decodes a String that has not been correctly decoded and thus has scrambled
-     * character bytes.<p>
-     * 
-     * This is an equivalent to the JavaScript "decodeURIComponent" function.
-     * It converts from the default "UTF-8" to the currently selected system encoding.<p>
-     * 
-     * @param input the String to convert
-     * @return String the converted String
-     */
-    public static String redecodeUriComponent(String input) {
-       if (input == null) {
-           return input;
-       }
-       return new String(changeEncoding(input.getBytes(), C_UTF8_ENCODING, OpenCms.getSystemInfo().getDefaultEncoding())); 
     }
 }

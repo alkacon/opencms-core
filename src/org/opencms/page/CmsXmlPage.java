@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/05/03 11:47:39 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2004/05/05 21:25:09 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -80,7 +81,7 @@ import org.xml.sax.SAXException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  */
 public class CmsXmlPage {
     
@@ -503,6 +504,9 @@ public class CmsXmlPage {
         Element data = element.element(C_NODE_CONTENT);
         Element links = element.element(C_NODE_LINKS);
         CmsLinkTable linkTable = new CmsLinkTable();
+        
+        // ensure all chars in the given content are valid chars for the selected charset
+        content = CmsEncoder.encodeForHtml(content, getEncoding());
         
         try {
 

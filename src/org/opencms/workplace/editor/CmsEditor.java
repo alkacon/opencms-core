@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/05/03 11:47:39 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/05/05 21:25:09 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.workplace.editor;
 
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
@@ -52,7 +53,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 5.1.12
  */
@@ -81,7 +82,10 @@ public abstract class CmsEditor extends CmsDialog {
     
     /** Stores the VFS editor path */
     public static final String C_PATH_EDITORS = C_PATH_WORKPLACE + "editors/";
-
+    
+    /** Constant for the Editor special "save error" confirmation dialog */
+    public static final String C_FILE_DIALOG_EDITOR_CONFIRM = C_PATH_EDITORS + "dialogs/confirm.html";
+    
     /** Value for the action parameter: change the element */
     public static final String EDITOR_CHANGE_ELEMENT = "changeelement";
 
@@ -123,6 +127,9 @@ public abstract class CmsEditor extends CmsDialog {
     
     /** Parameter name for the request parameter "tempfile" */
     public static final String PARAM_TEMPFILE = "tempfile";
+
+    /** The encoding to use (will be read from the file property) */
+    private String m_fileEncoding;
     
     // some private members for parameter storage
     private String m_paramBackLink;
@@ -204,7 +211,7 @@ public abstract class CmsEditor extends CmsDialog {
      * 
      * @return the URI to the editor resource folder
      */
-    public abstract String getEditorResourceUri();
+    public abstract String getEditorResourceUri();    
     
     /**
      * Returns the back link when closing the editor.<p>
@@ -454,6 +461,19 @@ public abstract class CmsEditor extends CmsDialog {
     }
     
     /**
+     * Decodes the given content the same way the client would do it.<p>
+     * 
+     * Content is decoded as if it was encoded using the JavaScript
+     * "encodeURIComponent()" function.<p>
+     * 
+     * @param content the content to decode
+     * @return the decoded content
+     */    
+    protected String decodeContent(String content) {
+        return CmsEncoder.unescape(content, CmsEncoder.C_UTF8_ENCODING);
+    }
+    
+    /**
      * Deletes a temporary file from the OpenCms VFS, needed when exiting an editor.<p> 
      */
     protected void deleteTempFile() {       
@@ -483,19 +503,6 @@ public abstract class CmsEditor extends CmsDialog {
     }    
     
     /**
-     * Decodes the given content the same way the client would do it.<p>
-     * 
-     * Content is decoded as if it was encoded using the JavaScript
-     * "encodeURIComponent()" function.<p>
-     * 
-     * @param content the content to decode
-     * @return the decoded content
-     */    
-    protected String decodeContent(String content) {
-        return CmsEncoder.unescape(content, CmsEncoder.C_UTF8_ENCODING);
-    }
-    
-    /**
      * Decodes an individual parameter value, ensuring the content is always decoded in UTF-8.<p>
      * 
      * For editors the content is always encoded using the 
@@ -508,8 +515,13 @@ public abstract class CmsEditor extends CmsDialog {
      */
     protected String fillParamValuesDecode(String paramName, String paramValue) {
         if ((paramName != null) && (paramValue != null)) {
-            if (PARAM_CONTENT.equals(paramName)) {                
+            if (PARAM_CONTENT.equals(paramName)) {
+                // content will be always encoded in UTF-8 unicode by the editor client
                 return CmsEncoder.decode(paramValue, CmsEncoder.C_UTF8_ENCODING);
+            } else if (PARAM_RESOURCE.equals(paramName) || PARAM_TEMPFILE.equals(paramName)) {
+                String filename = CmsEncoder.decode(paramValue, getCms().getRequestContext().getEncoding());
+                setFileEncoding(getFileEncoding(getCms(), filename));
+                return filename;
             } else {
                 return CmsEncoder.decode(paramValue, getCms().getRequestContext().getEncoding());
             }
@@ -519,9 +531,59 @@ public abstract class CmsEditor extends CmsDialog {
     }    
     
     /**
+     * Returns the encoding parameter.<p>
+     *
+     * @return the encoding parameter
+     */
+    protected String getFileEncoding() {
+        return m_fileEncoding;
+    }
+    
+    /**
+     * Helper method to determine the encoding of the given file in the VFS,
+     * which must be set using the "content-encoding" property.<p>
+     * 
+     * @param cms the CmsObject
+     * @param filename the name of the file which is to be checked
+     * @return the encoding for the file
+     */
+    protected String getFileEncoding(CmsObject cms, String filename) {
+        try { 
+            return cms.readPropertyObject(filename, I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false).getValue(OpenCms.getSystemInfo().getDefaultEncoding());
+        } catch (CmsException e) {
+            return OpenCms.getSystemInfo().getDefaultEncoding();
+        }
+    }    
+    
+    /**
      * Initializes the editor content when openening the editor for the first time.<p>
      */
     protected abstract void initContent();
+    
+    /**
+     * Sets the encoding parameter.<p>
+     *
+     * @param value the encoding value to set
+     */
+    protected void setFileEncoding(String value) {
+        m_fileEncoding = value;
+    }
+    
+    /**
+     * Shows the selected error page in case of an exception.<p>
+     * 
+     * @param exception the current exception
+     * @param key the suffix for the localized error messages, e.g. "save" for key "error.message.editorsave"
+     * @throws JspException if inclusion of the error page fails
+     */
+    protected void showErrorPage(CmsException exception, String key) throws JspException {
+        // reset the action parameter            
+        setParamAction("");                               
+        showErrorPage(this, exception, key, C_FILE_DIALOG_EDITOR_CONFIRM);
+        // save not successful, set cancel action 
+        setAction(ACTION_CANCEL);
+        return;        
+    }
     
     /**
      * Shows the common error page in case of an exception.<p>
