@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/07/10 08:11:34 $
-* Version: $Revision: 1.327 $
+* Date   : $Date: 2002/07/30 07:36:29 $
+* Version: $Revision: 1.328 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.327 $ $Date: 2002/07/10 08:11:34 $
+ * @version $Revision: 1.328 $ $Date: 2002/07/30 07:36:29 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -7955,9 +7955,7 @@ protected void validName(String name, boolean blank) throws CmsException {
         while (e.hasMoreElements()) {
             CmsResource res = (CmsResource) e.nextElement();
             if (!res.getAbsolutePath().equals(lastcheck)) {
-                if (accessOther(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) ||
-                    accessOwner(currentUser, currentProject, res, C_ACCESS_OWNER_READ + C_ACCESS_OWNER_VISIBLE) ||
-                    accessGroup(currentUser, currentProject, res, C_ACCESS_GROUP_READ + C_ACCESS_GROUP_VISIBLE)) {
+                if (accessReadVisible(currentUser, currentProject, res)) {
                     retValue.addElement(res);
                     lastcheck = res.getAbsolutePath();
                 }
@@ -8066,5 +8064,82 @@ protected void validName(String name, boolean blank) throws CmsException {
             }
         }
         return lastVersion;
+    }
+    
+    /**
+     * Checks, if the user may read this resource and if it is visible to him.
+     * NOTE: If the ressource is in the project you never have to fallback.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param resource The resource to check.
+     *
+     * @return weather the user has access, or not.
+     */
+    public boolean accessReadVisible(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException{
+        if ((resource == null) || !accessProject(currentUser, currentProject, resource.getProjectId()) ||
+            (!accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) && 
+             !accessOwner(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) && 
+             !accessGroup(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE))) {
+            return false;
+        }
+
+        // check the rights for all
+        CmsResource res = resource; // save the original resource name to be used if an error occurs.
+        while (res.getParent() != null){
+            // readFolder without checking access
+            res = m_dbAccess.readFolder(currentProject.getId(), res.getRootName()+res.getParent());
+            if (res == null){
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    A_OpenCms.log(A_OpenCms.C_OPENCMS_DEBUG, "Resource has no parent: " + resource.getAbsolutePath());
+                }
+                throw new CmsException(this.getClass().getName() + ".accessRead(): Cannot find \'" + resource.getName(), CmsException.C_NOT_FOUND);
+            }
+            if (!accessOther(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) && 
+                !accessOwner(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) && 
+                !accessGroup(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE)) {
+                return false;
+            }
+
+        }
+        return true;
+    }
+    
+    /**
+     * Returns a Vector with all resources of the given type that have set the given property to the given value.
+     *
+     * <B>Security:</B>
+     * All users that have read and view access are granted.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param propertyDefinition, the name of the propertydefinition to check.
+     * @param propertyValue, the value of the property for the resource.
+     * @param resourceType The resource type of the resource
+     *
+     * @return Vector with all resources.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful.
+     */
+    public Vector getVisibleResourcesWithProperty(CmsUser currentUser, CmsProject currentProject, String propertyDefinition,
+                                           String propertyValue, int resourceType) throws CmsException {
+        Vector visibleResources = new Vector();
+        Vector allResources = new Vector();
+        allResources = m_dbAccess.getResourcesWithProperty(currentProject.getId(), propertyDefinition, propertyValue, resourceType);
+
+        //make sure that we have access to all these.
+        Enumeration e = allResources.elements();
+        String lastcheck = "#"; // just a char that is not valid in a filename
+        while (e.hasMoreElements()) {
+            CmsResource res = (CmsResource) e.nextElement();
+            if (!res.getAbsolutePath().equals(lastcheck)) {
+                if (accessReadVisible(currentUser, currentProject, res)) {
+                    visibleResources.addElement(res);
+                    lastcheck = res.getAbsolutePath();
+                }
+            }
+        }
+        
+        return visibleResources;
     }
 }

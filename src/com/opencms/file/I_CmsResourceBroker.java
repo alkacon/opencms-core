@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/07/10 08:11:59 $
-* Version: $Revision: 1.181 $
+* Date   : $Date: 2002/07/30 07:37:04 $
+* Version: $Revision: 1.182 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.181 $ $Date: 2002/07/10 08:11:59 $
+ * @version $Revision: 1.182 $ $Date: 2002/07/30 07:37:04 $
  *
  */
 
@@ -3752,4 +3752,35 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      */
     public int deleteBackups(CmsObject cms, CmsUser currentUser, CmsProject currentProject, int weeks) 
         throws CmsException;
+        
+    /**
+     * Checks, if the user may read this resource and if it is visible to him.
+     * NOTE: If the ressource is in the project you never have to fallback.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param resource The resource to check.
+     *
+     * @return weather the user has access, or not.
+     */
+    public boolean accessReadVisible(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException;
+    
+    /**
+     * Returns a Vector with all resources of the given type that have set the given property to the given value.
+     *
+     * <B>Security:</B>
+     * All users that have read and view access are granted.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param propertyDefinition, the name of the propertydefinition to check.
+     * @param propertyValue, the value of the property for the resource.
+     * @param resourceType The resource type of the resource
+     *
+     * @return Vector with all resources.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful.
+     */
+    public Vector getVisibleResourcesWithProperty(CmsUser currentUser, CmsProject currentProject, String propertyDefinition,
+                                           String propertyValue, int resourceType) throws CmsException;
 }
