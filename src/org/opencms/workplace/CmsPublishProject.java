@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2004/08/10 15:45:31 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/08/18 11:52:59 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 5.1.12
  */
@@ -319,7 +319,7 @@ public class CmsPublishProject extends CmsReport {
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
         // set the publishing type: publish project or direct publish
-        if (! CmsStringUtil.isEmpty(getParamResource())) {
+        if (CmsStringUtil.isNotEmpty(getParamResource())) {
             setParamDirectpublish("true");
         }       
         // set the action for the JSP switch 

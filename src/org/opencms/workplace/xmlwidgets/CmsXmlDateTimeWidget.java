@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlDateTimeWidget.java,v $
- * Date   : $Date: 2004/08/03 07:19:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/18 11:53:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
@@ -120,7 +120,7 @@ public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
             CmsXmlDateTimeValue castValue = (CmsXmlDateTimeValue)value;
             long dateTime = castValue.getDateTimeValue();
             String dateTimeValue = values[0].trim();
-            if (!CmsStringUtil.isEmpty(dateTimeValue)) {
+            if (CmsStringUtil.isNotEmpty(dateTimeValue)) {
                 try {
                     dateTime = editor.getCalendarDate(dateTimeValue, true);
                 } catch (ParseException e) {

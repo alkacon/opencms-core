@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2004/07/18 16:34:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/18 11:52:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -292,14 +292,25 @@ public final class CmsStringUtil {
     }
     
     /**
-     * Returns false if the provided String is either <code>null</code>
+     * Returns <code>true</code> if the provided String is either <code>null</code>
      * or the empty String <code>""</code>.<p> 
      * 
-     * @param value a string
-     * @return true, if the provided value is not null nor an empty string, false otherwise
+     * @param value the value to check
+     * @return true, if the provided value is null or the empty String, false otherwise
      */
     public static boolean isEmpty(String value) {
         return (value == null) || (value.length() == 0);
+    }
+    
+    /**
+     * Returns <code>true</code> if the provided String is neither <code>null</code>
+     * nor the empty String <code>""</code>.<p> 
+     * 
+     * @param value the value to check
+     * @return true, if the provided value is not null and not the empty String, false otherwise
+     */    
+    public static boolean isNotEmpty(String value) {
+        return (value != null) && (value.length() != 0);
     }
 
     /**

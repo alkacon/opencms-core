@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2004/08/12 11:01:30 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/08/18 11:53:36 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.1
  */
 public class CmsResourceManager {
@@ -314,11 +314,11 @@ public class CmsResourceManager {
 
         String typeName = null;
         String suffix = null;
-        if (! CmsStringUtil.isEmpty(resourcename)) {
+        if (CmsStringUtil.isNotEmpty(resourcename)) {
             int pos = resourcename.lastIndexOf('.');
             if (pos >= 0) {
                 suffix = resourcename.substring(pos);
-                if (! CmsStringUtil.isEmpty(suffix)) {
+                if (CmsStringUtil.isNotEmpty(suffix)) {
                     suffix = suffix.toLowerCase();  
                     typeName = (String) m_mappings.get(suffix);         
 

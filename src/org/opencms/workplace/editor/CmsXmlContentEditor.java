@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/08/03 07:19:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/18 11:52:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor {
@@ -162,7 +162,7 @@ public class CmsXmlContentEditor extends CmsEditor {
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         // get the default encoding
         String content = getParamContent();
-        if (! CmsStringUtil.isEmpty(content)) {
+        if (CmsStringUtil.isNotEmpty(content)) {
             // content already read, must be decoded 
             setParamContent(decodeContent(content));
             return;

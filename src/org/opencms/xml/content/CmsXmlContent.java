@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2004/08/03 07:19:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/18 11:53:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -191,7 +191,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             int count = getIndexCount(name, locale);
             if (count > 0) {
                 String mapping = m_contentDefinition.getMapping(name);
-                if (!CmsStringUtil.isEmpty(mapping)) {
+                if (CmsStringUtil.isNotEmpty(mapping)) {
 
                     I_CmsXmlContentValue value = getValue(name, locale, 0);
                     String stringValue = value.getStringValue(cms, this);

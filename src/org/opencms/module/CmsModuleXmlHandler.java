@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2004/07/23 13:32:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/08/18 11:53:06 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -202,23 +202,23 @@ public class CmsModuleXmlHandler {
         } else {
             moduleElement.addElement(N_NICENAME);
         }
-        if (! CmsStringUtil.isEmpty(module.getActionClass())) {
+        if (CmsStringUtil.isNotEmpty(module.getActionClass())) {
             moduleElement.addElement(N_CLASS).setText(module.getActionClass());
         } else {
             moduleElement.addElement(N_CLASS);
         }
-        if (! CmsStringUtil.isEmpty(module.getDescription())) {
+        if (CmsStringUtil.isNotEmpty(module.getDescription())) {
             moduleElement.addElement(N_DESCRIPTION).addCDATA(module.getDescription());
         } else {
             moduleElement.addElement(N_DESCRIPTION);
         }
         moduleElement.addElement(N_VERSION).setText(module.getVersion().toString());
-        if (! CmsStringUtil.isEmpty(module.getAuthorName())) {
+        if (CmsStringUtil.isNotEmpty(module.getAuthorName())) {
             moduleElement.addElement(N_AUTHORNAME).addCDATA(module.getAuthorName());
         } else {
             moduleElement.addElement(N_AUTHORNAME);
         }
-        if (! CmsStringUtil.isEmpty(module.getAuthorEmail())) {
+        if (CmsStringUtil.isNotEmpty(module.getAuthorEmail())) {
             moduleElement.addElement(N_AUTHOREMAIL).addCDATA(module.getAuthorEmail());
         } else {
             moduleElement.addElement(N_AUTHOREMAIL);
@@ -228,7 +228,7 @@ public class CmsModuleXmlHandler {
         } else {
             moduleElement.addElement(N_DATECREATED);
         }
-        if (! CmsStringUtil.isEmpty(module.getUserInstalled())) {
+        if (CmsStringUtil.isNotEmpty(module.getUserInstalled())) {
             moduleElement.addElement(N_USERINSTALLED).setText(module.getUserInstalled());
         } else {
             moduleElement.addElement(N_USERINSTALLED);

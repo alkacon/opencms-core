@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagContentItem.java,v $
- * Date   : $Date: 2004/08/03 07:19:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/18 11:53:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public class CmsJspTagContentItem extends BodyTagSupport { 
@@ -351,7 +351,7 @@ public class CmsJspTagContentItem extends BodyTagSupport {
      */
     public int doStartTag() throws JspException {
         
-        if (! CmsStringUtil.isEmpty(getValue())) {
+        if (CmsStringUtil.isNotEmpty(getValue())) {
             String value = contentItemTagValueAction(getValue(), pageContext.getRequest());
             // make sure that no null String is returned
             if (value == null) {

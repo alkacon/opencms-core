@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlStringValue.java,v $
- * Date   : $Date: 2004/08/03 07:19:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/18 11:52:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public class CmsXmlStringValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -109,7 +109,7 @@ public class CmsXmlStringValue extends A_CmsXmlContentValue implements I_CmsXmlC
     public CmsXmlStringValue(String name, String minOccurs, String maxOccurs) {
         m_name = name;
         m_minOccurs = 1;
-        if (! CmsStringUtil.isEmpty(minOccurs)) {
+        if (CmsStringUtil.isNotEmpty(minOccurs)) {
             try {
                 m_minOccurs = Integer.valueOf(minOccurs).intValue();
             } catch (NumberFormatException e) {
@@ -117,7 +117,7 @@ public class CmsXmlStringValue extends A_CmsXmlContentValue implements I_CmsXmlC
             }
         }
         m_maxOccurs = 1;
-        if (! CmsStringUtil.isEmpty(maxOccurs)) {
+        if (CmsStringUtil.isNotEmpty(maxOccurs)) {
             if (CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_UNBOUNDED.equals(maxOccurs)) {
                 m_maxOccurs = Integer.MAX_VALUE;
             } else {

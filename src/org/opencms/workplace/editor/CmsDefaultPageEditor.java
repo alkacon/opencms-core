@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/08/08 08:31:57 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2004/08/18 11:52:52 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.67 $
+ * @version $Revision: 1.68 $
  * 
  * @since 5.1.12
  */
@@ -317,7 +317,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             // get the current list element
             CmsDialogElement element = (CmsDialogElement)i.next();
 
-            if (!CmsStringUtil.isEmpty(elementName) && elementName.equals(element.getName())) {
+            if (CmsStringUtil.isNotEmpty(elementName) && elementName.equals(element.getName())) {
                 // current element is the displayed one, mark it as selected
                 currentIndex = counter;
             }
@@ -512,9 +512,9 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * @see org.opencms.workplace.editor.CmsEditor#initContent()
      */
     protected void initContent() {
-        if (! CmsStringUtil.isEmpty(getParamContent())) {
-            if (!CmsStringUtil.isEmpty(getParamElementname()) && getParamElementname().equals(getParamOldelementname())) {
-                if (!CmsStringUtil.isEmpty(getParamElementlanguage()) && getParamElementlanguage().equals(getParamOldelementlanguage())) {            
+        if (CmsStringUtil.isNotEmpty(getParamContent())) {
+            if (CmsStringUtil.isNotEmpty(getParamElementname()) && getParamElementname().equals(getParamOldelementname())) {
+                if (CmsStringUtil.isNotEmpty(getParamElementlanguage()) && getParamElementlanguage().equals(getParamOldelementlanguage())) {            
                     return;
                 }
             }
