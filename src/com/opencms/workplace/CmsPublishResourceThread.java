@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPublishProjectThread.java,v $
- * Date   : $Date: 2002/12/12 19:06:38 $
- * Version: $Revision: 1.11 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResourceThread.java,v $
+ * Date   : $Date: 2002/12/12 19:06:37 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,30 +31,26 @@ package com.opencms.workplace;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsLogChannels;
-import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.report.CmsHtmlReport;
 import com.opencms.report.I_CmsReport;
 
 /**
- * Thread for publishing a project.
+ * Thread for publishing a resource.
  * 
- * @author: Hanjo Riege
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  */
-public class CmsAdminPublishProjectThread extends Thread {
+public class CmsPublishResourceThread extends Thread {
 
-    private int m_projectId;
+    private String m_resourceName;
     private CmsObject m_cms;
-    private I_CmsSession m_session;
     private boolean m_directPublish;
-    private I_CmsReport m_report;
+    private CmsHtmlReport m_report;
 
-    public CmsAdminPublishProjectThread(CmsObject cms, int projectId, I_CmsSession session) {
+    public CmsPublishResourceThread(CmsObject cms, String resourceName) {
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);
-        m_session = session;
-        m_projectId = projectId;
+        m_resourceName = resourceName;
         String locale = I_CmsWpConstants.C_DEFAULT_LANGUAGE;
         try {
             locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
@@ -64,9 +60,9 @@ public class CmsAdminPublishProjectThread extends Thread {
 
     public void run() {
         try {
-            m_report.addSeperator(I_CmsReport.C_PUBLISH_PROJECT_BEGIN);
-            m_cms.publishProject(m_projectId, m_report);
-            m_report.addSeperator(I_CmsReport.C_PUBLISH_PROJECT_END);
+            m_report.addSeperator(I_CmsReport.C_PUBLISH_RESOURCE_BEGIN);
+            m_cms.publishResource(m_resourceName, false, m_report);
+            m_report.addSeperator(I_CmsReport.C_PUBLISH_RESOURCE_END);
         }
         catch(CmsException e) {
             m_report.println(e);
@@ -75,10 +71,10 @@ public class CmsAdminPublishProjectThread extends Thread {
             }
         }
     }
-    
+
     /**
      * Returns the part of the report that is ready.
-     * 
+     *
      * @return the part of the report that is ready
      */
     public String getReportUpdate(){

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2002/12/06 23:16:47 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2002/12/12 19:06:37 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,15 +44,15 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.11 $ $Date: 2002/12/06 23:16:47 $
+ * @version $Revision: 1.12 $ $Date: 2002/12/12 19:06:37 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
-    // session values
-    private final String C_TEMP_PROJECT_ID = "temp_project_id_for_publish";
-    private final String C_PUBLISH_THREAD = "publishprojectresthread";
-    private final String C_PUBLISH_LINKCHECK_THREAD = "publishreslinkcheckthread";
+    // session keys
+    private static final String C_PUBLISH_THREAD = "publishprojectresthread";
+    private static final String C_PUBLISH_LINKCHECK_THREAD = "publishreslinkcheckthread";
+    private static final String C_PUBLISH_LASTURL = "lasturlForPublishResource";
 
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
@@ -65,9 +65,10 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
      * @return Bytearre containgine the processed data of the template.
      * @exception Throws CmsException if something goes wrong.
      */
-
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
-            Hashtable parameters, String templateSelector) throws CmsException {
+            Hashtable parameters, String templateSelector) 
+    throws CmsException {
+
         I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
@@ -77,16 +78,35 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
 
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);
-        if(initial != null) {
+        if(initial != null) {          
             // remove all session values
             session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PUBLISH_THREAD);
+            session.removeValue(C_PUBLISH_LINKCHECK_THREAD);   
+            session.removeValue(C_PUBLISH_LASTURL);                     
             session.removeValue("lasturl");
-        }
-        String action = (String)parameters.get("action");
+        }       
 
-        // here we show the report updates when the threads are allready running.
-        if("showResult".equals(action)){
-            // ok. Thread is started and we shoud show the report information.
+        // get the filename parameter
+        String filename = (String)parameters.get(C_PARA_FILE);
+        if(filename != null) {
+            session.putValue(C_PARA_FILE, filename);
+        }
+        filename = (String)session.getValue(C_PARA_FILE);
+
+        // now get the action paramter and perform the requested action
+        String action = (String)parameters.get("action");
+        
+        // set the required datablocks
+        if(action == null) {
+            // initial request, display confirm dialog box            
+            CmsResource file = readResource(cms, filename);
+
+            xmlTemplateDocument.setData("CHANGEDATE", Utils.getNiceDate(file.getDateLastModified()));
+            xmlTemplateDocument.setData("USER", cms.readUser(file.getResourceLastModifiedBy()).getName());
+            xmlTemplateDocument.setData("FILENAME", file.getName());
+            
+        } else if("showResult".equals(action)){
             CmsAdminLinkmanagementThread doTheWork = (CmsAdminLinkmanagementThread)session.getValue(C_PUBLISH_LINKCHECK_THREAD);
             //still working?
             if(doTheWork.isAlive()){
@@ -107,22 +127,22 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
             }
             xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");
-        }
-        if("doThePublish".equals(action)){
+            
+        } else if("doThePublish".equals(action)){
+            
             // linkcheck is ready. Now we can start the publishing
-            int projectId = ((Integer)session.getValue(C_TEMP_PROJECT_ID)).intValue();
-            session.removeValue(C_TEMP_PROJECT_ID);
-            Thread doPublish = new CmsAdminPublishProjectThread(cms, projectId, session);
+            CmsResource file = readResource(cms, filename);                     
+            Thread doPublish = new CmsPublishResourceThread(cms, file.getAbsolutePath());
             doPublish.start();
             session.putValue(C_PUBLISH_THREAD, doPublish);
+            // indicate that changes in the user project etc. must be ignored here
             xmlTemplateDocument.setData("actionParameter", "showPublishResult");
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "showresult");
-        }
-
-        if("showPublishResult".equals(action)){
-            // ok. Thread is started and we shoud show the report information.
-            CmsAdminPublishProjectThread doTheWork = (CmsAdminPublishProjectThread)session.getValue(C_PUBLISH_THREAD);
-            //still working?
+            
+        } else if("showPublishResult".equals(action)){
+            
+            // thread is started and we shoud show the report information.
+            CmsPublishResourceThread doTheWork = (CmsPublishResourceThread)session.getValue(C_PUBLISH_THREAD);
             if(doTheWork.isAlive()){
                 xmlTemplateDocument.setData("endMethod", "");
                 xmlTemplateDocument.setData("text", lang.getDataValue("project.publish.message_publish"));
@@ -134,24 +154,13 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
             }
             xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");
-        }
-        if("done".equals(action)){
-            String delTempProject = (String)parameters.get("deleteTempProject");
-            if("true".equals(delTempProject)){
-                // we have to delete the temp project
-                // first save the resource to the current project
-                String resourceName = (String)session.getValue(C_PARA_FILE);
-                cms.lockResource(resourceName, true);
-                cms.unlockResource(resourceName);
-                int delProjectId = ((Integer)session.getValue(C_TEMP_PROJECT_ID)).intValue();
-                cms.deleteProject(delProjectId);
-            }
+            
+        } else if("done".equals(action)){
             // cleanup the session
-            session.removeValue("lasturlForPublishResource");
+            session.removeValue(C_PUBLISH_LASTURL);
             session.removeValue(C_PARA_FILE);
-            session.removeValue(C_TEMP_PROJECT_ID);
             // return to filelist
-            String lasturl = (String)session.getValue("lasturlForPublishResource");
+            String lasturl = getLastUrl(cms, parameters);            
             try {
                 if(lasturl == null || "".equals(lasturl)) {
                     cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
@@ -159,74 +168,60 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
                 }else {
                     cms.getRequestContext().getResponse().sendRedirect(lasturl);
                 }
-            }catch(Exception e) {
+            } catch (Exception e) {
                     throw new CmsException("Redirect fails :"
                             + getConfigFile(cms).getWorkplaceActionPath()
                             + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
             }
             return null;
-        }
-        // get the lasturl parameter
-        String lasturl = getLastUrl(cms, parameters);
-
-        String filename = (String)parameters.get(C_PARA_FILE);
-        if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
-        }
-        filename = (String)session.getValue(C_PARA_FILE);
-        CmsResource file = null;
-        if(filename.endsWith("/")){
-            file = (CmsResource)cms.readFolder(filename, true);
-        } else {
-            file = (CmsResource)cms.readFileHeader(filename);
-        }
-
-        if(action!= null){
+        } else {            
+            CmsResource file = readResource(cms, filename);
+            String lasturl = getLastUrl(cms, parameters);
+                        
             if ("check".equals(action)){
                 if(file.getState() != C_STATE_DELETED){
                     if(checkLocked(cms, file)){
-                        action = "wait";
+                        action = "ok";
                     } else {
                         // ask user if the locks should be removed
                         return startProcessing(cms, xmlTemplateDocument, elementName, parameters,"asklock");
                     }
                 } else {
-                    action = "wait";
+                    action = "ok";
                 }
             } else if("rmlocks".equals(action)){
                 // remove the locks and publish
                 try{
                     unlockResource(cms, file);
-                    action = "wait";
+                    action = "ok";
                 } catch (CmsException exc){
                     xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
                     xmlTemplateDocument.setData("lasturl", lasturl);
                     return startProcessing(cms, xmlTemplateDocument, elementName, parameters,"errorlock");
                 }
-
-            //check if the name parameter was included in the request
-            // if not, the publishresource page is shown for the first time
-            }
-            if("wait".equals(action)) {
-                return startProcessing(cms, xmlTemplateDocument, "", parameters, "wait");
             }
             if("ok".equals(action)) {
-                // start for "publish the resource"
+                // publish is confirmed, let's go
                 try{
-                    // ok here is the plan: first create the temp-project,
-                    // then start the link checker.
-                    // now if cancel delete the temp-project, else publish it.
+                    // here is the plan: 
+                    // first create a direct publish temp project (A)
+                    // then start the link checker with this project (A)
+                    // the link checker will delete project (A) after having checked the links
+                    // if broken links where found, display a confirmation dialog
+                    // if the user continues the publish (or no broken links where found)
+                    // auto-create a direct publish temp project (B) and publish this directly
+                    
                     int tempProjectId = cms.publishResource(file.getAbsolutePath(), true);
-                    session.putValue(C_TEMP_PROJECT_ID, new Integer(tempProjectId));
                     if(lasturl == null){
                         lasturl = "";
                     }
-                    session.putValue("lasturlForPublishResource", lasturl);
+                    session.putValue(C_PUBLISH_LASTURL, lasturl);
                     // first part of the publish: check for broken links
-                    CmsAdminLinkmanagementThread doCheck = new CmsAdminLinkmanagementThread(cms, tempProjectId);
+                    CmsAdminLinkmanagementThread doCheck = new CmsAdminLinkmanagementThread(cms, tempProjectId, file.getAbsolutePath());
                     doCheck.start();
                     session.putValue(C_PUBLISH_LINKCHECK_THREAD, doCheck);
                     template = "showresult";
+                
                 } catch(CmsException e){
                     session.removeValue(C_PARA_FILE);
                     xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
@@ -234,16 +229,27 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");
                 }
             }
-        }
-
-        // set the required datablocks
-        if(action == null) {
-            xmlTemplateDocument.setData("CHANGEDATE", Utils.getNiceDate(file.getDateLastModified()));
-            xmlTemplateDocument.setData("USER", cms.readUser(file.getResourceLastModifiedBy()).getName());
-            xmlTemplateDocument.setData("FILENAME", file.getName());
-        }
+        }        
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
+    }
+    
+    /**
+     * Reads a named resource form the VFS.
+     * 
+     * @param cms the active cms context
+     * @param resourceName the name of the resource to read
+     * @return CmsResource the read resource, or <code>null</code> if nothing was read
+     * @throws CmsException if something goes wrong reading the resource
+     */
+    private CmsResource readResource(CmsObject cms, String resourceName) throws CmsException {
+        CmsResource resource = null;
+        if(resourceName.endsWith("/")){
+            resource = (CmsResource)cms.readFolder(resourceName, true);
+        } else {
+            resource = (CmsResource)cms.readFileHeader(resourceName, true);
+        }        
+        return resource;
     }
 
     /**

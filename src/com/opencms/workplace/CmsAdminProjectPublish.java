@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2002/12/12 19:06:38 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,15 +45,15 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.24 $ $Date: 2002/12/06 23:16:46 $
+ * @version $Revision: 1.25 $ $Date: 2002/12/12 19:06:38 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
 public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_CmsConstants,I_CmsLogChannels {
 
-    private final String C_PUBLISH_THREAD = "publishprojectthread";
-    private final String C_PUBLISH_LINKCHECK_THREAD = "publishlinkcheckthread";
-    private final String C_PROJECT_ID_FOR_PUBLISH="theProjectIdForPublish";
+    private final String C_PUBLISH_THREAD = "publish.resource.thread";
+    private final String C_PUBLISH_LINKCHECK_THREAD = "publish.linkcheck.thread";
+    private final String C_PROJECT_ID_FOR_PUBLISH="project.id.for.publish";
 
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
@@ -66,7 +66,6 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG ) {
@@ -178,7 +177,7 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
             if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
                 session.removeValue(C_SESSION_THREAD_ERROR);
             }
-            if(projectType == C_PROJECT_TYPE_TEMPORARY){
+            if (projectType == C_PROJECT_TYPE_TEMPORARY) {
                 cms.getRequestContext().setCurrentProject(cms.onlineProject().getId());
             }
             // first part of the publish: check for broken links

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDelete.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/12/12 19:06:38 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.I_CmsRegistry;
-import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -75,14 +74,37 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault implements I_CmsCo
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
         }
-        CmsXmlTemplateFile xmlDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+        
+        CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         CmsRequestContext reqCont = cms.getRequestContext();
         I_CmsRegistry reg = cms.getRegistry();
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String step = (String)parameters.get(C_STEP);
         String moduleName = (String)parameters.get(C_MODULE);
-        if((step != null) && ("working".equals(step))) {
+        
+        if(step == null) {
+            xmlTemplateDocument.setData("name", moduleName);
+            xmlTemplateDocument.setData("version", "" + reg.getModuleVersion(moduleName));
+            
+        } else if("showResult".equals(step)){
+            // first look if there is already a thread running.
+            CmsAdminModuleDeleteThread doTheWork = (CmsAdminModuleDeleteThread)session.getValue(C_MODULE_THREAD);
+            if(doTheWork.isAlive()){
+                // thread is still running
+                xmlTemplateDocument.setData("endMethod", "");
+                xmlTemplateDocument.setData("text", "");
+            }else{
+                // thread is finished, activate the buttons
+                xmlTemplateDocument.setData("endMethod", xmlTemplateDocument.getDataValue("endMethod"));
+                xmlTemplateDocument.setData("autoUpdate","");
+                xmlTemplateDocument.setData("text", xmlTemplateDocument.getLanguageFile().getDataValue("module.lable.deleteend"));
+                session.removeValue(C_MODULE_THREAD);
+            }
+            xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());
+            return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");
 
+        /*
+        } else if ("working".equals(step)) {
             // Thread is already running
             Thread doDelete = (Thread)session.getValue(C_MODULE_THREAD);
             if(doDelete.isAlive()) {
@@ -95,70 +117,64 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault implements I_CmsCo
             else {
                 return startProcessing(cms, xmlDocument, elementName, parameters, C_DONE);
             }
-        }
-        if(step == null) {
-            xmlDocument.setData("name", moduleName);
-            xmlDocument.setData("version", "" + reg.getModuleVersion(moduleName));
-        }
-        else {
-            if(C_DELETE.equals(step)) {
-                Vector otherModules = reg.deleteCheckDependencies(moduleName);
-                if(!otherModules.isEmpty()) {
-
-                    // Don't delete; send message error
-                    xmlDocument.setData("name", moduleName);
-                    xmlDocument.setData("version", "" + reg.getModuleVersion(moduleName));
-                    String depModules = "";
-                    for(int i = 0;i < otherModules.size();i++) {
-                        depModules += (String)otherModules.elementAt(i) + "\n";
-                    }
-                    xmlDocument.setData("precondition", depModules);
-                    templateSelector = C_ERROR;
+        */
+            
+        } else if(C_DELETE.equals(step)) {            
+            Vector otherModules = reg.deleteCheckDependencies(moduleName);
+            if(!otherModules.isEmpty()) {
+                // don't delete; send message error
+                xmlTemplateDocument.setData("name", moduleName);
+                xmlTemplateDocument.setData("version", "" + reg.getModuleVersion(moduleName));
+                String depModules = "";
+                for(int i = 0;i < otherModules.size();i++) {
+                    depModules += (String)otherModules.elementAt(i) + "\n";
                 }
-                else {
-
-                    // now we will look if ther are any conflicting files
-                    Vector filesWithProperty = new Vector();
-                    Vector missingFiles = new Vector();
-                    Vector wrongChecksum = new Vector();
-                    Vector filesInUse = new Vector();
-                    Vector resourcesForProject = new Vector();
-                    reqCont.setCurrentProject(cms.onlineProject().getId());
-                    reg.deleteGetConflictingFileNames(moduleName, filesWithProperty, missingFiles, wrongChecksum, filesInUse, resourcesForProject);
-                    session.putValue(C_SESSION_MODULENAME, moduleName);
-                    session.putValue(C_SESSION_MODULE_PROJECTFILES, resourcesForProject);
-                    if(filesWithProperty.isEmpty() && missingFiles.isEmpty() && wrongChecksum.isEmpty() && filesInUse.isEmpty()) {
-                        step = "fromerrorpage";
-                    }
-                    else {
-                        session.putValue(C_SESSION_MODULE_DELETE_STEP, "0");
-                        session.putValue(C_SESSION_MODULE_CHECKSUM, wrongChecksum);
-                        session.putValue(C_SESSION_MODULE_PROPFILES, filesWithProperty);
-                        session.putValue(C_SESSION_MODULE_INUSE, filesInUse);
-                        session.putValue(C_SESSION_MODULE_MISSFILES, missingFiles);
-                        templateSelector = C_WARNING;
-                    }
+                xmlTemplateDocument.setData("precondition", depModules);
+                templateSelector = C_ERROR;
+            }
+            else {
+                // now we will look if there are any conflicting files
+                Vector filesWithProperty = new Vector();
+                Vector missingFiles = new Vector();
+                Vector wrongChecksum = new Vector();
+                Vector filesInUse = new Vector();
+                Vector resourcesForProject = new Vector();
+                reqCont.setCurrentProject(cms.onlineProject().getId());
+                reg.deleteGetConflictingFileNames(moduleName, filesWithProperty, missingFiles, wrongChecksum, filesInUse, resourcesForProject);
+                session.putValue(C_SESSION_MODULENAME, moduleName);
+                session.putValue(C_SESSION_MODULE_PROJECTFILES, resourcesForProject);
+                if(filesWithProperty.isEmpty() && missingFiles.isEmpty() && wrongChecksum.isEmpty() && filesInUse.isEmpty()) {
+                    step = "fromerrorpage";
+                } else {
+                    session.putValue(C_SESSION_MODULE_DELETE_STEP, "0");
+                    session.putValue(C_SESSION_MODULE_CHECKSUM, wrongChecksum);
+                    session.putValue(C_SESSION_MODULE_PROPFILES, filesWithProperty);
+                    session.putValue(C_SESSION_MODULE_INUSE, filesInUse);
+                    session.putValue(C_SESSION_MODULE_MISSFILES, missingFiles);
+                    templateSelector = C_WARNING;
                 }
             }
+            
         }
-        if((step != null) && ("fromerrorpage".equals(step))) {
-            Vector exclusion = (Vector)session.getValue(C_SESSION_MODULE_EXCLUSION);
-            // use the root folder instead of: Vector resourcesForProject = (Vector)session.getValue(C_SESSION_MODULE_PROJECTFILES);
-            Vector resourcesForProject = new Vector();
-            resourcesForProject.add("/");
-            if(exclusion == null) {
-                exclusion = new Vector();
-            }
+        // no else here because the value of "step" might have been changed above 
+        if ("fromerrorpage".equals(step)) {
             moduleName = (String)session.getValue(C_SESSION_MODULENAME);
-            Thread doDelete = new CmsAdminModuleDeleteThread(cms, reg, moduleName, exclusion, resourcesForProject);
+            Vector conflictFiles = (Vector)session.getValue(C_SESSION_MODULE_EXCLUSION);
+            if(conflictFiles == null) {
+                conflictFiles = new Vector();
+            }            
+            // add root folder as file list for the project
+            Vector projectFiles = new Vector();
+            projectFiles.add("/");
+            Thread doDelete = new CmsAdminModuleDeleteThread(cms, reg, moduleName, conflictFiles, projectFiles);
             doDelete.start();
             session.putValue(C_MODULE_THREAD, doDelete);
-            xmlDocument.setData("time", "10");
-            templateSelector = C_WAIT;
+            xmlTemplateDocument.setData("time", "5");
+            templateSelector = "showresult";            
         }
 
         // Now load the template file and start the processing
-        return startProcessing(cms, xmlDocument, elementName, parameters, templateSelector);
+        return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }
 
     /**

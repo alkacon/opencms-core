@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabaseExportThread.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/12/12 19:06:38 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsLogChannels;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
-import com.opencms.report.CmsReport;
+import com.opencms.report.CmsHtmlReport;
 import com.opencms.util.Utils;
 
 /**
@@ -66,7 +66,7 @@ public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstan
     private long m_contentAge;
 
     // the object to send the information to the workplace.
-    private CmsReport m_report;
+    private CmsHtmlReport m_report;
 
     /**
      * Export the VFS (Virtual File System) resources.
@@ -84,7 +84,11 @@ public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstan
         m_exportUserdata = exportUserdata;
         m_contentAge = contentAge;
         m_session = session;
-        m_report = new CmsReport(new String[]{"<br>"});
+        String locale = I_CmsWpConstants.C_DEFAULT_LANGUAGE;
+        try { 
+            locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
+        } catch (CmsException e) {} // we will have the default then
+        m_report = new CmsHtmlReport(locale);
         m_moduledataExport = false;
     }
 
@@ -95,6 +99,7 @@ public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstan
     public CmsAdminDatabaseExportThread(CmsObject cms, String fileName,
             String[] exportChannels, String[] exportModules, I_CmsSession session) {
         m_cms = cms;
+        m_cms.getRequestContext().setUpdateSessionEnabled(false);        
         m_exportPaths = exportChannels;
         m_exportModules = exportModules;
         m_fileName = fileName;

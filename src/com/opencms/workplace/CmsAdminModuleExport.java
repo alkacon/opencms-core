@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2002/12/07 11:14:35 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2002/12/12 19:06:38 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,16 +28,17 @@
 
 package com.opencms.workplace;
 
+import com.opencms.boot.CmsBase;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsLogChannels;
+import com.opencms.core.I_CmsSession;
 import com.opencms.core.OpenCms;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.I_CmsRegistry;
-import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
@@ -53,8 +54,10 @@ import java.util.StringTokenizer;
 public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsConstants {
 
 	private final String C_MODULE = "module";
+    private final String C_MODULENAME = "modulename";
 	private final String C_ACTION = "action";
 	private final String C_NAME_PARAMETER = "module";
+    private final String C_MODULE_THREAD = "modulethread";    
 
 	private static final int C_MINIMUM_MODULE_RESOURCE_COUNT = C_VFS_NEW_STRUCTURE?1:3;
 
@@ -78,29 +81,56 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
 			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
 		}
-		CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-		CmsRequestContext reqCont = cms.getRequestContext();
-		I_CmsRegistry reg = cms.getRegistry();
+        
+        CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+        CmsRequestContext reqCont = cms.getRequestContext();
+        I_CmsRegistry reg = cms.getRegistry();
+        I_CmsSession session = cms.getRequestContext().getSession(true);
 
 		String step = (String) parameters.get(C_ACTION);
-		String moduleName = (String) parameters.get(C_MODULE);
-
-		if ((step != null) && ("ok".equals(step))) {
-			String exportName = (String) parameters.get("modulename");
+        String moduleName = (String) parameters.get(C_MODULENAME);
+               
+		if (step == null) {
+            // first call
+            xmlTemplateDocument.setData("modulename", (String)parameters.get(C_MODULE));    
+            
+        } else if("showResult".equals(step)){
+            if (DEBUG > 1) System.out.println("showResult for export");
+                     
+            // first look if there is already a thread running.
+            CmsAdminModuleExportThread doTheWork = (CmsAdminModuleExportThread)session.getValue(C_MODULE_THREAD);
+            if(doTheWork.isAlive()){
+                if (DEBUG > 1) System.out.println("showResult: thread is still running");
+                // thread is still running
+                xmlTemplateDocument.setData("endMethod", "");
+                xmlTemplateDocument.setData("text", "");
+            }else{
+                if (DEBUG > 1) System.out.println("showResult: thread is finished");
+                // thread is finished, activate the buttons
+                xmlTemplateDocument.setData("endMethod", xmlTemplateDocument.getDataValue("endMethod"));
+                xmlTemplateDocument.setData("autoUpdate","");
+                xmlTemplateDocument.setData("text", xmlTemplateDocument.getLanguageFile().getDataValue("module.lable.exportend"));
+                session.removeValue(C_MODULE_THREAD);
+            }
+            xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());
+            return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");            
+                  
+        } else if ("ok".equals(step)) {
+            // export is confirmed			
 			String[] resourcen = null;
 			int resourceCount = 0;
 			int i = 0;
 
-			if (reg.getModuleType(exportName).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
+			if (reg.getModuleType(moduleName).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
 				// SIMPLE MODULE
 				if (DEBUG > 0) {
-					System.out.println(exportName + " is a simple module");
+					System.out.println(moduleName + " is a simple module");
 				}
 
 				// check if additional resources outside the system/modules/{exportName} folder were 
 				// specified as module resources by reading the property {C_MODULE_PROPERTY_ADDITIONAL_RESOURCES}
 				// to the module (in the module administration)
-				String additionalResources = OpenCms.getRegistry().getModuleParameterString(exportName, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES);
+				String additionalResources = OpenCms.getRegistry().getModuleParameterString(moduleName, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES);
 				int additionalResourceCount = 0;
 				StringTokenizer additionalResourceTokens = null;
 
@@ -136,7 +166,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 			else {
 				// TRADITIONAL MODULE
 				if (DEBUG > 0) {
-					System.out.println(exportName + " is a traditional module");
+					System.out.println(moduleName + " is a traditional module");
 				}
 
 				resourceCount = CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT;
@@ -146,11 +176,11 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 
 			// finally, add the "standard" module resources to the string of all resources for the export
 			// if you add or remove paths here, ensure to adjust CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT to the proper length!
-			resourcen[i++] = C_VFS_PATH_MODULES + exportName + "/";
+			resourcen[i++] = C_VFS_PATH_MODULES + moduleName + "/";
 
 			if (!C_VFS_NEW_STRUCTURE) {
-				resourcen[i++] = C_VFS_PATH_MODULEDEMOS + exportName + "/";
-				resourcen[i++] = C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length() - 1) + C_VFS_PATH_MODULEDEMOS + exportName + "/";
+				resourcen[i++] = C_VFS_PATH_MODULEDEMOS + moduleName + "/";
+				resourcen[i++] = C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length() - 1) + C_VFS_PATH_MODULEDEMOS + moduleName + "/";
 			}
 
 			// check if all resources exists and can be read
@@ -178,19 +208,25 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 				if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
 					A_OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG, "error exporting module: couldn't add " + resourcen[resourceCount - CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT] + " to Module\n" + "You dont have this module in this project!");
 				}
-				return startProcessing(cms, templateDocument, elementName, parameters, "done");
+				return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "done");
 			}
 
+
+            /*
 			reg.exportModule(exportName, resourcen, com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + I_CmsRegistry.C_MODULE_PATH + exportName + "_" + reg.getModuleVersion(exportName));
 			templateSelector = "done";
-		}
-		else {
-			// first call
-			templateDocument.setData("modulename", moduleName);
+            */
+
+            String filename = CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + I_CmsRegistry.C_MODULE_PATH + moduleName + "_" + reg.getModuleVersion(moduleName);
+            Thread doExport = new CmsAdminModuleExportThread(cms, reg, moduleName, resourcen, filename);
+            doExport.start();
+            session.putValue(C_MODULE_THREAD, doExport);
+            xmlTemplateDocument.setData("time", "5");
+            templateSelector = "showresult";
 		}
 
 		// now load the template file and start the processing
-		return startProcessing(cms, templateDocument, elementName, parameters, templateSelector);
+		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
 	}
 
 	/**

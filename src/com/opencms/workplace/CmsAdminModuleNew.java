@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2002/12/06 23:16:47 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2002/12/12 19:06:37 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -89,10 +89,9 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
         }
 
-        //CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 
-        //Get the registry
+        // get the registry
         I_CmsRegistry reg = cms.getRegistry();
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String errorNavigation = (String)parameters.get(C_FROMERRORPAGE);
@@ -100,110 +99,152 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
             templateSelector = importModule(cms, reg, xmlTemplateDocument, session, null);
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
         }
+        
         String step = (String)parameters.get("step");
 
         // first look if there is already a thread running.
-        if((step != null) && ("working".equals(step))) {
+        if("showResult".equals(step)){
+            CmsAdminModuleImportThread doTheWork = (CmsAdminModuleImportThread)session.getValue(C_MODULE_THREAD);
+            if(doTheWork.isAlive()){
+                // thread is still running
+                xmlTemplateDocument.setData("endMethod", "");
+                xmlTemplateDocument.setData("text", "");
+            }else{
+                // thread is finished, activate the buttons 
+                xmlTemplateDocument.setData("endMethod", xmlTemplateDocument.getDataValue("endMethod"));
+                xmlTemplateDocument.setData("autoUpdate","");
+                xmlTemplateDocument.setData("text", xmlTemplateDocument.getLanguageFile().getDataValue("module.lable.importend"));
+                session.removeValue(C_MODULE_THREAD);
+            }
+            xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());
+            return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");
+            
+            /*
+        } 
+        else if ("working".equals(step)) {
 
-            // Thread is already running
-            Thread doImport = (Thread)session.getValue(C_MODULE_THREAD);
-            if(doImport.isAlive()) {
-                String time = (String)parameters.get("time");
+            // TODO: remove this old code once the reports work without problems  
+            Thread doImport = (Thread) session.getValue(C_MODULE_THREAD);
+            if (doImport.isAlive()) {
+                String time = (String) parameters.get("time");
                 int wert = Integer.parseInt(time);
                 wert += 20;
                 xmlTemplateDocument.setData("time", "" + wert);
                 return startProcessing(cms, xmlTemplateDocument, elementName, parameters, C_WAIT);
-            }
-            else {
+            } else {
                 CmsXmlWpTemplateFile.clearcache();
                 return startProcessing(cms, xmlTemplateDocument, elementName, parameters, C_DONE);
             }
-        }
-        if(step != null) {
-            if("server".equals(step)) {
-                File modulefolder = new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + I_CmsRegistry.C_MODULE_PATH);
-                if(!modulefolder.exists()) {
-                    boolean success = modulefolder.mkdir();
-                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && (!success)) {
-                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsAccessFilesystem] Couldn't create folder " + com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + I_CmsRegistry.C_MODULE_PATH + ".");
-                    }
+        */            
+        } else if ("server".equals(step)) {
+            File modulefolder =
+                new File(
+                    com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath())
+                        + "/"
+                        + I_CmsRegistry.C_MODULE_PATH);
+            if (!modulefolder.exists()) {
+                boolean success = modulefolder.mkdir();
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING
+                    && A_OpenCms.isLogging()
+                    && (!success)) {
+                    A_OpenCms.log(
+                        I_CmsLogChannels.C_OPENCMS_INFO,
+                        "[CmsAccessFilesystem] Couldn't create folder "
+                            + com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath())
+                            + "/"
+                            + I_CmsRegistry.C_MODULE_PATH
+                            + ".");
                 }
-                String listentrys = "";
-                if(modulefolder.exists()) {
-                    String[] modules = modulefolder.list();
-                    for(int i = 0;i < modules.length;i++) {
-                        xmlTemplateDocument.setData("modulname", modules[i]);
-                        listentrys += xmlTemplateDocument.getProcessedDataValue("optionentry");
-                    }
-                }
-                xmlTemplateDocument.setData("entries", listentrys);
-                templateSelector = "server";
             }
-            else {
-                if("local".equals(step)) {
-                    templateSelector = "local";
+            String listentrys = "";
+            if (modulefolder.exists()) {
+                String[] modules = modulefolder.list();
+                for (int i = 0; i < modules.length; i++) {
+                    xmlTemplateDocument.setData("modulname", modules[i]);
+                    listentrys += xmlTemplateDocument.getProcessedDataValue("optionentry");
                 }
-                else {
-                    if("localupload".equals(step)) {
+            }
+            xmlTemplateDocument.setData("entries", listentrys);
+            templateSelector = "server";
 
-                        // get the filename
-                        String filename = null;
-                        Enumeration files = cms.getRequestContext().getRequest().getFileNames();
-                        while(files.hasMoreElements()) {
-                            filename = (String)files.nextElement();
-                        }
-                        if(filename != null) {
-                            session.putValue(C_PARA_FILE, filename);
-                        }
-                        filename = (String)session.getValue(C_PARA_FILE);
+        } else if ("local".equals(step)) {
+            templateSelector = "local";
 
-                        // get the filecontent
-                        byte[] filecontent = new byte[0];
-                        if(filename != null) {
-                            filecontent = cms.getRequestContext().getRequest().getFile(filename);
-                        }
-                        if(filecontent != null) {
-                            session.putValue(C_PARA_FILECONTENT, filecontent);
-                        }
-                        filecontent = (byte[])session.getValue(C_PARA_FILECONTENT);
+        } else if ("localupload".equals(step)) {
+            // get the filename
+            String filename = null;
+            Enumeration files = cms.getRequestContext().getRequest().getFileNames();
+            while (files.hasMoreElements()) {
+                filename = (String) files.nextElement();
+            }
+            if (filename != null) {
+                session.putValue(C_PARA_FILE, filename);
+            }
+            filename = (String) session.getValue(C_PARA_FILE);
 
-                        // first create the folder if it doesnt exists
-                        File discFolder = new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + I_CmsRegistry.C_MODULE_PATH);
-                        if(!discFolder.exists()) {
-                            boolean success = discFolder.mkdir();
-                            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && (!success)) {
-                                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsAccessFilesystem] Couldn't create folder " + com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + I_CmsRegistry.C_MODULE_PATH + ".");
-                            }
-                        }
+            // get the filecontent
+            byte[] filecontent = new byte[0];
+            if (filename != null) {
+                filecontent = cms.getRequestContext().getRequest().getFile(filename);
+            }
+            if (filecontent != null) {
+                session.putValue(C_PARA_FILECONTENT, filecontent);
+            }
+            filecontent = (byte[]) session.getValue(C_PARA_FILECONTENT);
 
-                        // now write the file into the modules dierectory in the exportpaht
-                        File discFile = new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + I_CmsRegistry.C_MODULE_PATH + filename);
-                        try {
-
-                            // write the new file to disk
-                            OutputStream s = new FileOutputStream(discFile);
-                            s.write(filecontent);
-                            s.close();
-                        }
-                        catch(Exception e) {
-                            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage());
-                        }
-                        session.removeValue(C_MODULE_NAV);
-                        templateSelector = importModule(cms, reg, xmlTemplateDocument, session, com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + I_CmsRegistry.C_MODULE_PATH + filename);
-                    }
-                    else {
-                        if("serverupload".equals(step)) {
-                            String filename = (String)parameters.get("moduleselect");
-                            session.removeValue(C_MODULE_NAV);
-                            if((filename == null) || ("".equals(filename))) {
-                                templateSelector = C_DONE;
-                            }
-                            else {
-                                templateSelector = importModule(cms, reg, xmlTemplateDocument, session, com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + I_CmsRegistry.C_MODULE_PATH + filename);
-                            }
-                        }
-                    }
+            // first create the folder if it doesnt exists
+            File discFolder =
+                new File(
+                    com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath())
+                        + "/"
+                        + I_CmsRegistry.C_MODULE_PATH);
+            if (!discFolder.exists()) {
+                boolean success = discFolder.mkdir();
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING
+                    && A_OpenCms.isLogging()
+                    && (!success)) {
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO,
+                        "[CmsAccessFilesystem] Couldn't create folder "
+                            + com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath())
+                            + "/"
+                            + I_CmsRegistry.C_MODULE_PATH
+                            + ".");
                 }
+            }
+
+            // now write the file into the modules dierectory in the exportpaht
+            File discFile =
+                new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath())
+                    + "/" + I_CmsRegistry.C_MODULE_PATH + filename);
+            try {
+
+                // write the new file to disk
+                OutputStream s = new FileOutputStream(discFile);
+                s.write(filecontent);
+                s.close();
+            } catch (Exception e) {
+                throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage());
+            }
+            session.removeValue(C_MODULE_NAV);
+            templateSelector = 
+                importModule(cms, reg, xmlTemplateDocument, session,
+                    com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath())
+                        + "/"
+                        + I_CmsRegistry.C_MODULE_PATH
+                        + filename);
+                        
+        } else if ("serverupload".equals(step)) {
+            String filename = (String) parameters.get("moduleselect");
+            session.removeValue(C_MODULE_NAV);
+            if ((filename == null) || ("".equals(filename))) {
+                templateSelector = C_DONE;
+            } else {
+                templateSelector = 
+                    importModule(cms, reg, xmlTemplateDocument, session,
+                        com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath())
+                            + "/"
+                            + I_CmsRegistry.C_MODULE_PATH
+                            + filename);
             }
         }
 
@@ -264,14 +305,15 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
                 session.removeValue(C_MODULE_NAV);
             }
         }
-        // just use the rootfolder instead of: Vector projectFiles = reg.importGetResourcesForProject(zipName);
+        	
+        // add root folder as file list for the project
         Vector projectFiles = new Vector();
         projectFiles.add("/");
-        Thread doTheImport = new CmsAdminModuleImport(cms, reg, zipName, conflictFiles, projectFiles);
+        Thread doTheImport = new CmsAdminModuleImportThread(cms, reg, zipName, conflictFiles, projectFiles);
         doTheImport.start();
         session.putValue(C_MODULE_THREAD, doTheImport);
-        xmlDocument.setData("time", "10");
-        return C_WAIT;
+        xmlDocument.setData("time", "5");      
+        return "showresult";                
     }
 
     /**

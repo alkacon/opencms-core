@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkmanagementThread.java,v $
- * Date   : $Date: 2002/12/06 23:16:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2002/12/12 19:06:38 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@ package com.opencms.workplace;
 
 /**
  * @author Hanjo Riege
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 
 import com.opencms.core.A_OpenCms;
@@ -38,44 +38,62 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsLogChannels;
 import com.opencms.file.CmsObject;
 import com.opencms.linkmanagement.LinkChecker;
-import com.opencms.report.CmsReport;
+import com.opencms.report.CmsHtmlReport;
+import com.opencms.report.I_CmsReport;
 
 public class CmsAdminLinkmanagementThread extends Thread {
 
     private CmsObject m_cms;
-    private CmsReport m_report;
+    private I_CmsReport m_report;
     private int m_projectId;
+    private String m_directPublishResourceName;
+    private int m_oldProjectId;
 
     public CmsAdminLinkmanagementThread(CmsObject cms, int projectId) {
+        this (cms, projectId, null);
+    }
+    
+    public CmsAdminLinkmanagementThread(CmsObject cms, int projectId, String directPublishResourceName) {
         m_cms = cms;
+        m_cms.getRequestContext().setUpdateSessionEnabled(false);
         m_projectId = projectId;
-        m_report = new CmsReport(new String[]{"<br>", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", "<b>", "</b>"});
+        m_oldProjectId = m_cms.getRequestContext().currentProject().getId();
+        m_directPublishResourceName = directPublishResourceName;
+        String locale = I_CmsWpConstants.C_DEFAULT_LANGUAGE;
+        try {
+            locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
+        } catch (CmsException e) {} // we will have the default then
+        m_report = new CmsHtmlReport(locale);
     }
 
-
     public void run() {
-         // Dont try to get the session this way in a thread!
-         // It will result in a NullPointerException sometimes.
-         // !I_CmsSession session = m_cms.getRequestContext().getSession(true);
         try {
+            m_report.addSeperator(I_CmsReport.C_LINK_CHECK_BEGIN);            
             (new LinkChecker()).checkProject(m_cms, m_projectId, m_report);
-        }
-        catch(CmsException e) {
-            /*
-            m_report.addSeperator(0);
-            m_report.addString(e.getMessage());    
-            */      
-             
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
-                
-                /*
-                StackTraceElement[] stack = e.getStackTrace();
-                int len = (stack.length>5)?5:stack.length;
-                for (int i=0; i<len; i++) {
-                    A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, " > " + stack[i]);
+            m_report.addSeperator(I_CmsReport.C_LINK_CHECK_END);            
+        } catch(CmsException e) {
+            m_report.println(e);
+            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());                
+            }
+        } finally {
+            if (m_directPublishResourceName != null) {
+                // if this was a direct publish project delete it here 
+                // another project will be created for the publish
+                // if the user selects "continue" on the workplace dialog
+                try {
+                    // make sure all resources are removed from the temp project
+                    // m_cms.lockResource(m_directPublishResourceName, true);
+                    // m_cms.unlockResource(m_directPublishResourceName);
+                    m_cms.changeLockedInProject(m_oldProjectId, m_directPublishResourceName);
+                    // delete the direct publish project
+                    m_cms.deleteProject(m_projectId);
+                } catch (Exception e) {
+                    // ignore exception, nothing we can do here
+                    if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());
+                    }                
                 }
-                */
             }
         }
     }
@@ -91,6 +109,6 @@ public class CmsAdminLinkmanagementThread extends Thread {
      * shows if there are broken links in this project so far.
      */
     public boolean brokenLinksFound(){
-        return m_report.containsPageLinks();
+        return m_report.hasBrokenLinks();
     }
 }

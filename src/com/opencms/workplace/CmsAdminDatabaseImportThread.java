@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabaseImportThread.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2002/12/12 19:06:38 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsLogChannels;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
-import com.opencms.report.CmsReport;
+import com.opencms.report.CmsHtmlReport;
 import com.opencms.util.Utils;
 
 /**
@@ -49,7 +49,7 @@ public class CmsAdminDatabaseImportThread extends Thread implements I_CmsConstan
 
     private CmsObject m_cms;
 
-    private CmsReport m_report;
+    private CmsHtmlReport m_report;
 
     private I_CmsSession m_session;
 
@@ -60,9 +60,14 @@ public class CmsAdminDatabaseImportThread extends Thread implements I_CmsConstan
 
     public CmsAdminDatabaseImportThread(CmsObject cms, String existingFile, I_CmsSession session) {
         m_cms = cms;
+        m_cms.getRequestContext().setUpdateSessionEnabled(false);        
         m_existingFile = existingFile;
         m_session = session;
-        m_report = new CmsReport(new String[]{"<br>", "<br><p>updating linkmanagement.</p><br>"});
+        String locale = I_CmsWpConstants.C_DEFAULT_LANGUAGE;
+        try {
+            locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
+        } catch (CmsException e) {} // we will have the default then
+        m_report = new CmsHtmlReport(locale);
     }
 
     public void run() {

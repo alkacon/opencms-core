@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDeleteThread.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleImportThread.java,v $
  * Date   : $Date: 2002/12/12 19:06:37 $
- * Version: $Revision: 1.12 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2001  The OpenCms Group
+ * Copyright (C) 2002  The OpenCms Group
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,9 +20,9 @@
  *
  * For further information about OpenCms, please see the
  * OpenCms Website: http://www.opencms.org
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
+ * 
+ * You should have received a copy of the GNU Lesser General Public License 
+ * along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
@@ -41,15 +41,14 @@ import com.opencms.report.I_CmsReport;
 import java.util.Vector;
 
 /**
- * Deletes a module, showing a progress indicator report dialog that is continuously updated.
+ * Imports a module, showing a progress indicator report dialog that is continuously updated.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @author: Hanjo Riege
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.1 $
  * @since 5.0 rc 1
  */
-public class CmsAdminModuleDeleteThread extends Thread {
+public class CmsAdminModuleImportThread extends Thread {
 
     private String m_moduleName;
     private Vector m_conflictFiles;
@@ -57,21 +56,20 @@ public class CmsAdminModuleDeleteThread extends Thread {
     private I_CmsRegistry m_registry;
     private CmsObject m_cms;
     private CmsHtmlReport m_report;
-
+    
     /** DEBUG flag */
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = false;    
 
     /**
-     * Creates the module delete thread.
-     *
-     * @param cms the current cms context
+     * Creates the module import thread.
+     * 
+     * @param cms the current cms context  
      * @param reg the registry to write the new module information to
-     * @param moduleName the name of the module
-     * @param conflictFiles vector of conflict files
-     * @param exclusion vector of files to exclude
+     * @param moduleName the name of the module 
+     * @param conflictFiles vector of conflict files 
      * @param projectFiles vector of project files
      */
-    public CmsAdminModuleDeleteThread(CmsObject cms, I_CmsRegistry reg, String moduleName, Vector conflictFiles, Vector projectFiles) {
+    public CmsAdminModuleImportThread(CmsObject cms, I_CmsRegistry reg, String moduleName, Vector conflictFiles, Vector projectFiles) {
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);
         m_moduleName = moduleName;
@@ -83,54 +81,54 @@ public class CmsAdminModuleDeleteThread extends Thread {
             locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
         } catch (CmsException e) {} // we will have the default then
         m_report = new CmsHtmlReport(locale);
-        if (DEBUG) System.err.println("CmsAdminModuleDeleteThread() constructed");
+        if (DEBUG) System.err.println("CmsAdminModuleImportThread() constructed"); 
     }
 
     /**
      * @see java.lang.Runnable#run()
      */
     public void run() {
-        try {
-            if (DEBUG) System.err.println("CmsAdminModuleDeleteThread() started");
+        try {            
+            if (DEBUG) System.err.println("CmsAdminModuleImportThread() started");            
             String moduleName = m_moduleName.replace('\\', '/');
 
-            // create a Project to delete the module.
-            CmsProject project = m_cms.createProject("DeleteModule", "A System generated project to delete the module " + moduleName, 
-                I_CmsConstants.C_GROUP_ADMIN,
-                I_CmsConstants.C_GROUP_ADMIN,
-                I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);            
+            // create a Project to import the module.
+            CmsProject project = m_cms.createProject("ImportModule", "A System generated project to import the module " + moduleName, 
+                I_CmsConstants.C_GROUP_ADMIN, 
+                I_CmsConstants.C_GROUP_ADMIN, 
+                I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
             m_cms.getRequestContext().setCurrentProject(project.getId());
 
-            m_report.addSeperator(I_CmsReport.C_MODULE_DELETE_BEGIN, " <i>" + moduleName + "</i>");
+            m_report.addSeperator(I_CmsReport.C_MODULE_IMPORT_BEGIN, " <i>" + moduleName + "</i>");
 
             // copy the resources to the project
             for(int i = 0;i < m_projectFiles.size();i++) {
                 m_cms.copyResourceToProject((String)m_projectFiles.elementAt(i));
-            }
+            }                        
             // import the module
-            m_registry.deleteModule(m_moduleName, m_conflictFiles, m_report);
+            m_registry.importModule(m_moduleName, m_conflictFiles, m_report);   
 
-            m_report.addSeperator(I_CmsReport.C_PUBLISH_PROJECT_BEGIN);
+            m_report.addSeperator(I_CmsReport.C_PUBLISH_PROJECT_BEGIN);            
             // now unlock and publish the project
             m_cms.unlockProject(project.getId());
-            m_cms.publishProject(project.getId(), m_report);
+            m_cms.publishProject(project.getId(), m_report);                
 
             m_report.addSeperator(I_CmsReport.C_PUBLISH_PROJECT_END);
-            m_report.addSeperator(I_CmsReport.C_MODULE_DELETE_END);
-
-            if (DEBUG) System.err.println("CmsAdminModuleDeleteThread() finished");
+            m_report.addSeperator(I_CmsReport.C_MODULE_IMPORT_END);
+            
+            if (DEBUG) System.err.println("CmsAdminModuleImportThread() finished");            
         }
         catch(CmsException e) {
             if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());
             }
-            if (DEBUG) System.err.println("CmsAdminModuleDeleteThread() Exception:" + e.getMessage());
+            if (DEBUG) System.err.println("CmsAdminModuleImportThread() Exception:" + e.getMessage());            
         }
     }
 
     /**
      * Returns the part of the report that is ready.
-     *
+     * 
      * @return the part of the report that is ready
      */
     public String getReportUpdate(){
