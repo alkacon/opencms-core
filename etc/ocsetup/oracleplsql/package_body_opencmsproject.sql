@@ -182,14 +182,15 @@ PACKAGE BODY OpenCmsProject IS
     recNewFolder cms_resources%ROWTYPE;
     curNewFile userTypes.anyCursor;
     recNewFile userTypes.fileRecord;
+    vOfflineResourceId cms_resources.resource_id%TYPE;
     vResourceId cms_resources.resource_id%TYPE;
     vFileId cms_resources.file_id%TYPE;
     vDeletedFolders userTypes.numberTable;
     element NUMBER;
-    vCurDelFolders VARCHAR2(32767) := '';
-    vCurDelFiles VARCHAR2(32767) := '';
-    vCurWriteFolders VARCHAR2(32767) := '';
-    vCurWriteFiles VARCHAR2(32767) := '';
+    vCurDelFolders VARCHAR2(100) := '';
+    vCurDelFiles VARCHAR2(100) := '';
+    vCurWriteFolders VARCHAR2(100) := '';
+    vCurWriteFiles VARCHAR2(100) := '';
     vVersionId NUMBER := 1;
     vResVersionId NUMBER := 1;
   BEGIN
@@ -352,7 +353,9 @@ PACKAGE BODY OpenCmsProject IS
         null;
       -- resource of offline-project is marked for delete
       ELSIF substr(recFiles.resource_name,instr(recFiles.resource_name,'/',-1,1)+1,1) = opencmsConstants.C_TEMP_PREFIX THEN
+		delete from cms_properties where resource_id = recFiles.resource_id;
         delete from cms_resources where resource_name = recFiles.resource_name;
+        delete from cms_files where file_id = recFiles.file_id;
       -- resource is deleted
       ELSIF recFiles.state = opencmsConstants.C_STATE_DELETED THEN
         curNewFile := opencmsResource.readFileNoAccess(pUserId, pOnlineProjectId, pOnlineProjectId, recFiles.resource_name);
@@ -366,6 +369,10 @@ PACKAGE BODY OpenCmsProject IS
         delete from cms_online_properties where resource_id = recNewFile.resource_id;
         delete from cms_online_resources where resource_id = recNewFile.resource_id;
         delete from cms_online_files where file_id = recNewFile.file_id;
+        -- delete file and properties of offline resource
+        delete from cms_files where file_id = recFiles.file_id;
+        delete from cms_properties where resource_id = recFiles.resource_id;
+        commit;
         -- remember only one id for mark
         vCurDelFiles := recNewFile.resource_id;
       -- resource is new
@@ -418,6 +425,7 @@ PACKAGE BODY OpenCmsProject IS
             END IF;
         END;
         -- copy the properties
+        delete from cms_online_properties where resource_id = recNewFile.resource_id;
         opencmsProperty.writeProperties(pOnlineProjectId, opencmsProperty.readAllProperties(pUserId, pProjectId, recFiles.resource_name),
                                         recNewFile.resource_id, recFiles.resource_type);
         -- remember only one id for mark
@@ -488,20 +496,20 @@ PACKAGE BODY OpenCmsProject IS
       vCurDelFolders := vDeletedFolders.COUNT;
       FOR element IN 1..vDeletedFolders.COUNT
       LOOP
-        vResourceId := vDeletedFolders(element);
+        vOfflineResourceId := vDeletedFolders(element);
         BEGIN
-          select resource_id, file_id into vResourceId, vFileId
+          delete from cms_properties where resource_id = vOfflineResourceId;
+          select resource_id into vResourceId
                  from cms_online_resources
-          		 where resource_name = (select resource_name from cms_resources where resource_id = vResourceId);
+          		 where resource_name = (select resource_name from cms_resources where resource_id = vOfflineResourceId);
           delete from cms_online_properties where resource_id = vResourceId;
           delete from cms_online_resources where resource_id = vResourceId;
-          delete from cms_online_files where file_id = vFileId;
+          commit;
         EXCEPTION
           WHEN NO_DATA_FOUND THEN
             null;
         END;
       END LOOP;
-      commit;
       vDeletedFolders.DELETE;
     END IF;
     -- build the cursors which are used in java for the discAccess
