@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/05/11 10:18:40 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/05/29 09:44:23 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.27 $ $Date: 2000/05/11 10:18:40 $
+ * @version $Revision: 1.28 $ $Date: 2000/05/29 09:44:23 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -198,32 +198,33 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                     //copy the selected folder
                     cms.copyFolder(filename, newFolder+newFile+"/");                
                     checkFlags(cms, newFolder+newFile+"/",flags);                                           
-                
+           
                     // now copy all subfolders
                     for (int i=0;i<allFolders.size();i++) {
                         CmsFolder folder=(CmsFolder)allFolders.elementAt(i);  
                         if (folder.getState() != C_STATE_DELETED) {
+                    
                             cms.copyFolder(folder.getAbsolutePath(), newFolder+newFile+"/"+folder.getAbsolutePath().substring(file.getAbsolutePath().length()));
                  
                             checkFlags(cms,newFolder+newFile+"/"+folder.getAbsolutePath().substring(file.getAbsolutePath().length()),flags);                    
                         }
                     }
-                
+              
                     // now copy all files in the subfolders
                     for (int i=0;i<allFiles.size();i++) {
                         CmsFile newfile=(CmsFile)allFiles.elementAt(i);  
                         if (newfile.getState() != C_STATE_DELETED) {
+                    
                             copyFile(cms,newfile,newFolder+newFile+"/",newfile.getAbsolutePath().substring(file.getAbsolutePath().length()),flags);
                         }
                     }    
-                   
-                    // finally lock everything
-                    cms.lockResource(newFolder+newFile+"/");
+                  // finally lock everything
+                   // cms.lockResource(newFolder+newFile+"/");
                     try {
                         cms.lockResource(C_CONTENTBODYPATH+(newFolder+newFile+"/").substring(1));
                     } catch (CmsException e) {
                     }
-                    
+                           
                 	// everything is done, so remove all session parameters		
                     session.removeValue(C_PARA_FILE);
                     session.removeValue(C_PARA_NAME);
@@ -232,6 +233,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                     session.removeValue(C_PARA_FLAGS);
 					xmlTemplateDocument.setData("lasturl", lasturl);
                     template="update";
+               
                     
                 }catch (CmsException ex) {
                     // something went wrong, so remove all session parameters

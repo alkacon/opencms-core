@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/05/25 15:06:07 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2000/05/29 09:44:23 $
+ * Version: $Revision: 1.38 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import javax.servlet.http.*;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.37 $ $Date: 2000/05/25 15:06:07 $
+ * @version $Revision: 1.38 $ $Date: 2000/05/29 09:44:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -102,6 +102,9 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
     /** The default context menu */
     private final static String C_DEFAULT_CONTEXTMENU="online";
 
+    /** The default context menu */
+    private final static String C_DEFAULT_CONTEXTMENUFOLDER="onlinefolder";
+    
     /** The context link */
     private final static String C_CONTEXT_LINK="context_link";
 
@@ -673,7 +676,11 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
             // test if the resource is in the project or if the online project is displayed
             if ((cms.getRequestContext().currentProject().equals(cms.onlineProject())) ||
                 (!res.inProject(cms.getRequestContext().currentProject()))) {
-                       contextMenu=C_DEFAULT_CONTEXTMENU;     
+                if (res.isFile()) {
+                      contextMenu=C_DEFAULT_CONTEXTMENU;     
+                } else {
+                      contextMenu=C_DEFAULT_CONTEXTMENUFOLDER;     
+                }
             } else {
                  // get the type of the resource
                 A_CmsResourceType type=cms.getResourceType(res.getType());
