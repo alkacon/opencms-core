@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
- * Date   : $Date: 2000/04/17 10:37:10 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/05/18 12:24:05 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,9 +43,18 @@ import javax.servlet.http.*;
  * replaxed with <code>%hex</code> where hex is a two digit hex number.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/04/17 10:37:10 $
+ * @version $Revision: 1.8 $ $Date: 2000/05/18 12:24:05 $
  */
 public class Encoder { 
+	
+  /**
+     * Identifies the last printable character in the Unicode range
+     * that is supported by the encoding used with this serializer.
+     * For 8-bit encodings this will be either 0x7E or 0xFF.
+     * For 16-bit encodings this will be 0xFFFF. Characters that are
+     * not printable will be escaped using character references.
+     */
+    private static int _lastPrintable = 0x7E;
 	
   /**
    * Constructor
@@ -157,4 +166,71 @@ public class Encoder {
 	}
 	return unescaped.toString();
   }
+ 
+  /**
+     * Encodes special XML characters into the equivalent character references.
+     *
+     * @param ch The character to encode
+     * @return The encoded character as string
+     */
+ 
+	protected static String getEntityRef( char ch )
+    {
+		
+        // These five are defined by default for all XML documents.
+        switch ( ch ) {
+        case '<':
+            return "lt";
+        case '>':
+            return "gt";
+        case '"':
+            return "quot";
+        case '\'':
+            return "apos";
+        case '&':
+            return "amp";
+        }
+        return null;
+    }
+ 
+ /**
+     * Escapes a string so it may be printed as text content or attribute
+     * value. Non printable characters are escaped using character references.
+     * Where the format specifies a deault entity reference, that reference
+     * is used (e.g. <tt>&amp;lt;</tt>).
+     *
+     * @param source The string to escape
+     * @return The escaped string
+     */
+    public static String escapeXml( String source )
+    {
+        StringBuffer    result;
+        int             i;
+        char            ch;
+        String          charRef;
+        
+        result = new StringBuffer( source.length() );
+        for ( i = 0 ; i < source.length() ; ++i )  {
+            ch = source.charAt( i );
+            // If the character is not printable, print as character reference.
+            // Non printables are below ASCII space but not tab or line
+            // terminator, ASCII delete, or above a certain Unicode threshold.
+            if ( ( ch < ' ' && ch != '\t' && ch != '\n' && ch != '\r' ) ||
+                 ch > _lastPrintable || ch == 0xF7 )
+                result.append( "&#" ).append( Integer.toString( ch ) ).append( ';' );
+            else {
+                // If there is a suitable entity reference for this
+                // character, print it. The list of available entity
+                // references is almost but not identical between
+                // XML and HTML.
+                charRef = getEntityRef( ch );
+                if ( charRef == null )
+                    result.append( ch );
+                else
+                    result.append( '&' ).append( charRef ).append( ';' );
+            }
+        }
+        return result.toString();
+    }
+ 
 }
