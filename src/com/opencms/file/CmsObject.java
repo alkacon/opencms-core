@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/11/22 09:54:34 $
-* Version: $Revision: 1.208 $
+* Date   : $Date: 2001/11/23 20:17:22 $
+* Version: $Revision: 1.209 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.208 $ $Date: 2001/11/22 09:54:34 $
+ * @version $Revision: 1.209 $ $Date: 2001/11/23 20:17:22 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2029,7 +2029,11 @@ public void init(I_CmsResourceBroker broker, I_CmsRequest req, I_CmsResponse res
     m_rb = broker;
     m_context = new CmsRequestContext();
     m_context.init(m_rb, req, resp, user, currentGroup, currentProjectId, streaming, elementCache);
-    m_linkSubstitution = new LinkSubstitution();
+    try {
+        m_linkSubstitution = new LinkSubstitution();
+    } catch(java.lang.NoClassDefFoundError error) {
+        // ignore this error - no substitution is needed here
+    }
 }
 /**
  * Checks, if the users current group is the admin-group.
