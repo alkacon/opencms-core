@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsHtmlLinkValidatorThread.java,v $
- * Date   : $Date: 2004/01/28 09:32:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/01/28 09:33:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
-import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 
@@ -44,7 +43,7 @@ import com.opencms.file.CmsResource;
  * A report thread for the HTML link validator.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2004/01/28 09:32:23 $
+ * @version $Revision: 1.4 $ $Date: 2004/01/28 09:33:40 $
  */
 public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
     
@@ -101,6 +100,7 @@ public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
      * @param cms the current OpenCms context object
      * @param directPublishResource the resource which will be directly published
      * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published
+     * @param settings the current user's workplace settings
      * @see com.opencms.file.CmsObject#getPublishList(CmsResource, boolean, org.opencms.report.I_CmsReport)
      */
     public CmsHtmlLinkValidatorThread(CmsObject cms, CmsResource directPublishResource, boolean directPublishSiblings, CmsWorkplaceSettings settings) {
