@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/06/12 09:43:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/06/25 16:12:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import com.opencms.file.CmsUser;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -56,6 +56,8 @@ public class CmsWorkplaceSettings {
     private boolean m_explorerContext = true;
     private int m_explorerChecksum = -1;
     private String m_explorerFlaturl;
+    private String m_fileUri;
+    private String m_detailView;
         
     /**
      * Constructor, only package visible.<p>
@@ -277,6 +279,42 @@ public class CmsWorkplaceSettings {
      */
     public void setExplorerFlaturl(String value) {
         m_explorerFlaturl = value;
+    }
+    
+    /**
+     * Returns the current file name which is selected.<p>
+     * 
+     * @return the file URI
+     */
+    public String getFileUri() {
+        return m_fileUri;
+    }
+    
+    /**
+     * Sets the current file name which is selected.<p>
+     * 
+     * @param value the current file name in the vfs
+     */
+    public void setFileUri(String value) {
+        m_fileUri = value;
+    }
+    
+    /**
+     * Returns the current detail grade of the view.<p>
+     *  
+     * @return value of the details.
+     */
+    public String getDetailView() {
+        return m_detailView;
+    }
+    
+    /**
+     * Sets the current detail grade of the view.<p>
+     * 
+     * @param value the current details.
+     */
+    public void setDetailView(String value) {
+        m_detailView = value;
     }
 
 }
