@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/08/30 11:03:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
@@ -490,14 +490,14 @@ public class CmsTree extends CmsWorkplace {
             if (newTree()) {
                 // new tree 
                 result.append("parent.showTree(parent.tree_display.document, \"");
-                result.append(folder.getStructureId().hashCode());
+                result.append(folder.getRootPath().hashCode());
                 result.append("\");\n");
             } else {
                 // update the current tree with the childs of the selected node
                 if (resources.size() == 0) {
                     // the node had no childs 
                     result.append("parent.setNoChilds(\"");
-                    result.append(folder.getStructureId().hashCode());
+                    result.append(folder.getRootPath().hashCode());
                     result.append("\");\n");
                 } 
                 result.append("parent.showLoadedNodes(parent.tree_display.document,\"");
