@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2004/12/06 11:06:05 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/12/17 09:00:36 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * request parameters.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsTemplateNavigation extends CmsJspActionElement {
     
@@ -93,6 +93,8 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
     
     /** Stores the path to the head navigation start folder.<p> */
     private String m_headNavFolder;
+    /** The default behaviour to include items in head navigation menu if property <code>style_head_nav_showitem</code> is not set. */
+    private boolean m_headNavItemDefaultValue;
     /** Stores the current locale value.<p> */
     private String m_locale;
     /** Stores the localized resource Strings.<p> */
@@ -105,10 +107,10 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
     private boolean m_navLeftShowTree;
     /** Stores the substituted path to the modules resources.<p> */
     private String m_resPath;
-    /** Stores the path to the start folder for navigation and search.<p> */
-    private String m_startFolder;
     /** Flag to determine if the DHTML menus (2nd level) of the head navigation should be shown.<p> */
     private boolean m_showMenus;
+    /** Stores the path to the start folder for navigation and search.<p> */
+    private String m_startFolder;
     
     /**
      * Empty constructor, required for every JavaBean.<p>
@@ -239,7 +241,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
             String showItemProperty;
             for (int i=0; i<navElements.size(); i++) {
                 CmsJspNavElement nav = (CmsJspNavElement)navElements.get(i);
-                showItemProperty = property(C_PROPERTY_HEADNAV_USE, nav.getResourceName(), "true");
+                showItemProperty = property(C_PROPERTY_HEADNAV_USE, nav.getResourceName(), getHeadNavItemDefaultStringValue());
                 boolean showItem = Boolean.valueOf(showItemProperty).booleanValue();
                 if (nav.isFolderLink() && showItem) {
                     // create an entry for every folder
@@ -290,7 +292,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
         String showItemProperty;
         for (int i=0; i<navElements.size(); i++) {
             CmsJspNavElement foldernav = (CmsJspNavElement)navElements.get(i);
-            showItemProperty = property(C_PROPERTY_HEADNAV_USE, foldernav.getResourceName(), "true");
+            showItemProperty = property(C_PROPERTY_HEADNAV_USE, foldernav.getResourceName(), getHeadNavItemDefaultStringValue());
             boolean showItem = Boolean.valueOf(showItemProperty).booleanValue();
             if (foldernav.isFolderLink() && showItem) {
                 // create a menu entry for every found folder
@@ -310,25 +312,29 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                     // add the current page to the menu
                     CmsJspNavElement nav = (CmsJspNavElement)pages.get(k);
                     String target = nav.getResourceName();
-                    if (nav.isFolderLink()) { 
-                        // check folders
-                        if (! (CmsResource.getParentFolder(target).equals(getStartFolder()))) {
-                            target = link(target);
+                    showItemProperty = property(C_PROPERTY_HEADNAV_USE, target, getHeadNavItemDefaultStringValue());
+                    boolean showEntry = Boolean.valueOf(showItemProperty).booleanValue();
+                    if (showEntry) {
+                        if (nav.isFolderLink()) { 
+                            // check folders
+                            if (! (CmsResource.getParentFolder(target).equals(getStartFolder()))) {
+                                target = link(target);
+                            } else {
+                                target = null;
+                            }
                         } else {
-                            target = null;
+                            target = link(target);
+                        }   
+                        if (target != null) {
+                            // create the entry
+                            result.append("\t<tr><td><a class=\"");
+                            result.append(styleClass);
+                            result.append("\" href=\"");
+                            result.append(target);
+                            result.append("\">");
+                            result.append(nav.getNavText());
+                            result.append("</a></td></tr>\n");               
                         }
-                    } else {
-                        target = link(target);
-                    }   
-                    if (target != null) {
-                        // create the entry
-                        result.append("\t<tr><td><a class=\"");
-                        result.append(styleClass);
-                        result.append("\" href=\"");
-                        result.append(target);
-                        result.append("\">");
-                        result.append(nav.getNavText());
-                        result.append("</a></td></tr>\n");               
                     }
                 }
                 result.append("</table>\n");
@@ -515,6 +521,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
             m_locale = property(I_CmsConstants.C_PROPERTY_LOCALE, "search", "en").toLowerCase();    
         }
         m_headNavFolder = req.getParameter(C_PARAM_HEADNAV_FOLDER);
+        m_headNavItemDefaultValue = true;
         m_navLeftElementUri = req.getParameter(C_PARAM_NAVLEFT_ELEMENTURI);
         m_navLeftShowSelected = Boolean.valueOf(req.getParameter(C_PARAM_NAVLEFT_SHOWSELECTED)).booleanValue();
         m_navLeftShowTree = Boolean.valueOf(req.getParameter(C_PARAM_NAVLEFT_SHOWTREE)).booleanValue();
@@ -550,6 +557,25 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
     }
     
     /**
+     * Sets the default value of the property <code>style_head_nav_showitem</code> in case the property is not set.<p>
+     * 
+     * @param defaultValue if true, all resources without property value are included in head menu, if false, vice versa
+     */
+    public void setHeadNavItemDefaultValue(boolean defaultValue) {
+        
+        m_headNavItemDefaultValue = defaultValue;
+    }
+    
+    /**
+     * Returns if the second level navigation menus of the head navigation should be shown.<p>
+     * 
+     * @return true if the second level navigation menus of the head navigation should be shown
+     */
+    public boolean showMenus() {
+        return m_showMenus;
+    }
+    
+    /**
      * Returns true if the left navigation include element should be shown.<p>
      * 
      * @return true if the left navigation include element should be shown
@@ -577,12 +603,13 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
     }
     
     /**
-     * Returns if the second level navigation menus of the head navigation should be shown.<p>
+     * Returns the String representation of the default value for the property <code>style_head_nav_showitem</code>.<p>
      * 
-     * @return true if the second level navigation menus of the head navigation should be shown
+     * @return the String representation of the default value for the property <code>style_head_nav_showitem</code>
      */
-    public boolean showMenus() {
-        return m_showMenus;
+    private String getHeadNavItemDefaultStringValue() {
+    
+        return "" + m_headNavItemDefaultValue;
     }
     
     /**

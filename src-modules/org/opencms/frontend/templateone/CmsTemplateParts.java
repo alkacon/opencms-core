@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2004/10/28 14:04:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/12/17 09:00:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.apache.commons.collections.FastHashMap;
  * An instance of this class is stored in the OpenCms runtime properties.<p> 
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public final class CmsTemplateParts implements I_CmsEventListener {
     
@@ -137,20 +137,27 @@ public final class CmsTemplateParts implements I_CmsEventListener {
         // generate a unique key for the included part
         String partKey = generateKey(target, element, layout);
         // try to get the part String from the stored Map
-        String part = (String)m_parts.get(partKey);
-        if (part == null) {
-            // part not found, get the content of the JSP element and put it to the Map store
-            part = getJsp().getContent(target, element, getJsp().getRequestContext().getLocale());   
-            m_parts.setFast(false);
-            m_parts.put(partKey, part);
-            m_parts.setFast(true);
-            if (OpenCms.getLog(CmsTemplateParts.class).isDebugEnabled()) {
-                OpenCms.getLog(CmsTemplateParts.class).debug("Value for key \"" + partKey + "\" not found, including JSP");
+        String part = "";
+        try {
+            part = (String)m_parts.get(partKey);
+            if (part == null) {
+                // part not found, get the content of the JSP element and put it to the Map store
+                part = getJsp().getContent(target, element, getJsp().getRequestContext().getLocale());   
+                m_parts.setFast(false);
+                m_parts.put(partKey, part);
+                m_parts.setFast(true);
+                if (OpenCms.getLog(CmsTemplateParts.class).isDebugEnabled()) {
+                    OpenCms.getLog(CmsTemplateParts.class).debug("Value for key \"" + partKey + "\" not found, including JSP");
+                }
+                // save modified class to runtime properties
+                OpenCms.setRuntimeProperty(C_RUNTIME_PROPERTY_NAME, this);
+            } else if (OpenCms.getLog(CmsTemplateParts.class).isDebugEnabled()) {
+                OpenCms.getLog(CmsTemplateParts.class).debug("Retrieved value for key \"" + partKey + "\" from Map");
             }
-            // save modified class to runtime properties
-            OpenCms.setRuntimeProperty(C_RUNTIME_PROPERTY_NAME, this);
-        } else if (OpenCms.getLog(CmsTemplateParts.class).isDebugEnabled()) {
-            OpenCms.getLog(CmsTemplateParts.class).debug("Retrieved value for key \"" + partKey + "\" from Map");
+        } catch (Throwable t) {
+            if (OpenCms.getLog(CmsTemplateParts.class).isErrorEnabled()) {
+                OpenCms.getLog(CmsTemplateParts.class).error("Error while trying to include part: \"" + partKey + "\" from Map\n" + t);
+            }
         }
         return part;
     }
