@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbung.java,v $
- * Date   : $Date: 2000/02/20 16:44:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/02/20 16:46:37 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import java.io.*;
  * possible to send the application form as a mail.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.6 $ $Date: 2000/02/20 16:44:29 $
+ * @version $Name:  $ $Revision: 1.7 $ $Date: 2000/02/20 16:46:37 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
@@ -895,12 +895,12 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 			String mobilefon=(String)mailInfo.get(C_HASH_MOBILEFON);
 			String fax=(String)mailInfo.get(C_HASH_FAX);
 			String email=(String)mailInfo.get(C_HASH_EMAIL);
-			String URL=(String)mailInfo.get(C_HASH_URL);
+			String url=(String)mailInfo.get(C_HASH_URL);
 			String ip=(String)mailInfo.get(C_HASH_IP);
 			
 			// Database driver
 			Class.forName("org.gjt.mm.mysql.Driver");			
-			con=DriverManager.getConnection("jdbc:mysql://localhost:3306/mindfactApplication","root","MfRulez!");
+			con=DriverManager.getConnection("jdbc:mysql://localhost:3306/mindfactApplication","root","");
 			con.setAutoCommit(false);
 			stmt=con.createStatement();
 			
@@ -930,7 +930,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 			insert=insert + "','" + city + "','" + companyfon;
 			insert=insert + "','" + privatefon + "','" + mobilefon;
 			insert=insert + "','" + fax + "','" + email;
-			insert=insert + "','" + URL + "','" + oldposition;
+			insert=insert + "','" + url + "','" + oldposition;
 			insert=insert + "','" + newposition + "','" + base;
 			insert=insert + "','" + entry + "','" + salary;
 			insert=insert + "','" + how + "','" + text;
