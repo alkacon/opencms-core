@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/01/20 23:59:20 $
-* Version: $Revision: 1.106 $
+* Date   : $Date: 2003/02/01 23:00:10 $
+* Version: $Revision: 1.107 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.106 $ $Date: 2003/01/20 23:59:20 $
+ * @version $Revision: 1.107 $ $Date: 2003/02/01 23:00:10 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -531,13 +531,14 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @throws CmsException In case no stylesheet was found (or there were errors accessing the CmsObject)
      */
     public String getStylesheet(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        String styleSheetUri = "";
+        String styleSheetUri = null;
         try {
-            styleSheetUri = getStylesheet(cms, tagcontent, "frametemplate", doc, userObject);
+            styleSheetUri = getStylesheet(cms, tagcontent, null, doc, userObject);
         } catch (CmsException e) {} // Happens if no frametemplate is defined, can be ignored
         if ((styleSheetUri == null) || ("".equals(styleSheetUri))) {
-            styleSheetUri = getStylesheet(cms, tagcontent, null, doc, userObject);
+            styleSheetUri = getStylesheet(cms, tagcontent, "frametemplate", doc, userObject);
         } // The original behaviour is to throw an exception in case no stylesheed could be found
+        if (styleSheetUri == null) styleSheetUri = "";
         return styleSheetUri;
     }
                 
