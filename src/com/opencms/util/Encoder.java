@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2003/02/03 19:46:00 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/03/20 13:11:37 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -284,6 +284,35 @@ public class Encoder {
         return new String(result);
     }
 
+    /**
+     * Escapes non ASCII characters in a HTML-String with their number-based 
+     * entity representation, for example &amp; becomes &amp;#38;.<p>
+     * 
+     * A character <code>num</code> is replaced if<br>
+     * <code>(ch > 255)</code><p>
+     * 
+     * @param source the String to escape
+     * @return String the escaped String
+     * 
+     * @see #escapeXml(String)
+     */
+    public static String escapeNonAscii(String source) {
+        if (source == null) return null;
+        StringBuffer result = new StringBuffer(source.length()*2);
+        for(int i = 0;i < source.length();i++) {
+            int ch = source.charAt(i);
+            if(ch > 255) {
+                result.append("&#");
+                result.append(ch);
+                result.append(";");
+            }
+            else {
+                result.append((char)ch);
+            }
+        }
+        return new String(result);
+    }
+    
     /**
      * Decodes a String in a way that is compatible with the JavaScript 
      * unescape function.
