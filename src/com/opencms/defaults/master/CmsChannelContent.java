@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2002/03/25 14:39:34 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2002/10/30 10:16:38 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.defaults.master;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.*;
 import com.opencms.core.exceptions.*;
 import com.opencms.dbpool.*;
@@ -45,8 +46,8 @@ import java.lang.*;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.10 $
- * $Date: 2002/03/25 14:39:34 $
+ * $Revision: 1.11 $
+ * $Date: 2002/10/30 10:16:38 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{

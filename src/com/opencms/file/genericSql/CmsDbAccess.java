@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/10/23 14:07:05 $
-* Version: $Revision: 1.258 $
+* Date   : $Date: 2002/10/30 10:18:03 $
+* Version: $Revision: 1.259 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -35,6 +35,7 @@ import java.io.*;
 import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.*;
 import com.opencms.file.*;
 import com.opencms.file.utils.*;
@@ -54,7 +55,7 @@ import com.opencms.launcher.*;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.258 $ $Date: 2002/10/23 14:07:05 $ *
+ * @version $Revision: 1.259 $ $Date: 2002/10/30 10:18:03 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
