@@ -8,15 +8,17 @@
     var USE_FONTFACE = true;
     var USE_FONTCOLOR = true;
     var USE_BGCOLOR = true;
-    var USE_PRINTBUTTON = true;
-    var USE_IMPORTBUTTONS = true;
+    var USE_PRINTBUTTON = false;
+    var USE_IMPORTBUTTONS = false;
     var USE_HELPBUTTON = true;
-    var USE_BODYSELECTOR = true;
+    var USE_BODYSELECTOR = false;
     var USE_TEMPLATESELECTOR = true;
     var USE_DOWNLOADGALS = true;
     var USE_EXTERNLINKGALS = true;
     var USE_IMAGEGALS = true;
-    var USE_NEWLINKDIALOG = true;
+    var USE_HTMLGALS = true;
+    var USE_WORKINGLINKDIALOG = true;
+    var USE_LINKSTYLEINPUTS = false;    
     
 ]]>
 </TEMPLATE>
