@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2003/07/03 14:34:12 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.51 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.52 $ $Date: 2003/07/03 14:34:12 $
  */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
 
@@ -113,12 +113,12 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
     /**
      * Flag to indicate if basic or form based authentication is used.
      */
-    private boolean m_UseBasicAuthentication;
+    private boolean m_useBasicAuthentication;
     
     /**
      * URI of the authentication form (read from properties).
      */
-    private String m_AuthenticationFormURI;
+    private String m_authenticationFormURI;
     
     /**
      * Flag for debugging.
@@ -201,8 +201,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         // Collect the configurations        
         try {
             extendedProperties = new ExtendedProperties(CmsBase.getPropertiesPath(true));
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             throwInitException(new ServletException(C_ERRORMSG + "Trouble reading property file " + CmsBase.getPropertiesPath(true) + ".\n\n", e));
         }
         
@@ -252,8 +251,8 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) A_OpenCms.log(C_OPENCMS_INIT, ". Session storage      : initialized");
              
         // check if basic or form based authentication should be used      
-        this.m_UseBasicAuthentication = m_configurations.getBoolean( "auth.basic", true );        
-        this.m_AuthenticationFormURI = m_configurations.getString( "auth.form_uri" , "/system/workplace/action/authenticate.html" );
+        m_useBasicAuthentication = m_configurations.getBoolean("auth.basic", true);        
+        m_authenticationFormURI = m_configurations.getString("auth.form_uri" , "/system/workplace/action/authenticate.html");
     }
 
     /**
@@ -310,8 +309,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                 m_opencms.showResource(cms, file);
                 updateUser(cms, cmsReq);
             }
-        }
-        catch(CmsException e) {
+        } catch(CmsException e) {
             errorHandling(cms, cmsReq, cmsRes, e);
         }
     }
@@ -335,7 +333,8 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      * Generates a formated exception output. <br>
      * Because the exception could be thrown while accessing the system files,
      * the complete HTML code must be added here!
-     * @param e The caught CmsException.
+     * @param e the caught CmsException
+     * @param cms the cms object
      * @return String containing the HTML code of the error message.
      */
     private String createErrorBox(CmsException e, CmsObject cms) {
@@ -429,8 +428,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                   }
             //res.sendError(res.SC_INTERNAL_SERVER_ERROR);
             }
-        }
-        catch(IOException ex) {
+        } catch(IOException ex) {
 
         }
     }
@@ -451,10 +449,10 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      * set to the default (guest) user. </li>
      * </ul>
      *
-     * @param req   The clints request.
-     * @param res   The servlets response.
-     * @return The CmsObject
-     * @throws IOException Thrown if user autherization fails.
+     * @param cmsReq   The clints request.
+     * @param cmsRes   The servlets response.
+     * @return the CmsObject
+     * @throws IOException if user authentication fails
      */
     private CmsObject initUser(I_CmsRequest cmsReq, I_CmsResponse cmsRes) throws IOException {
         HttpSession session = null;
@@ -504,8 +502,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                     Hashtable sessionData = null;
                     try {
                         sessionData = m_opencms.restoreSession(oldSessionId);
-                    }
-                    catch(CmsException exc) {
+                    } catch(CmsException exc) {
                         if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO)) {
                             A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] cannot restore session: " + com.opencms.util.Utils.getStackTrace(exc));
                         }
@@ -534,8 +531,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                     project = m_sessionStorage.getCurrentProject(session.getId());
                     m_opencms.initUser(cms, cmsReq, cmsRes, user, group, project.intValue(), m_sessionStorage);
                 }
-            }
-            else {
+            } else {
                 // there was either no session returned or this session was not
                 // found in the CmsCoreSession storage
                 String auth = req.getHeader("Authorization");
@@ -574,23 +570,20 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                             session = req.getSession(true);
                             OpenCmsServletNotify notify = new OpenCmsServletNotify(session.getId(), m_sessionStorage);
                             session.setAttribute("NOTIFY", notify);
-                        }
-                        catch(CmsException e) {
+                        } catch(CmsException e) {
                             if(e.getType() == CmsException.C_NO_ACCESS) {
 
                                 // authentification failed, so display a login screen
                                 requestAuthorization(req, res);
 
-                            }
-                            else {
+                            } else {
                                 throw e;
                             }
                         }
                     }
                 }
             }
-        }
-        catch(CmsException e) {
+        } catch(CmsException e) {
             errorHandling(cms, cmsReq, cmsRes, e);
         }
         
@@ -603,22 +596,22 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      *
      * @param req   The clints request.
      * @param res   The servlets response.
+     * @throws IOException if something goes wrong
      */
     private void requestAuthorization(HttpServletRequest req, HttpServletResponse res) throws IOException {
         String servletPath = null;
         String redirectURL = null;
         
-        if (this.m_UseBasicAuthentication) {
+        if (this.m_useBasicAuthentication) {
             // HTTP basic authentication is used
             res.setHeader("WWW-Authenticate", "BASIC realm=\"OpenCms\"");
             res.setStatus(401);
-        }
-        else {
+        } else {
             // form based authentication is used, redirect the user to
             // a page with a form to enter his username and password
             servletPath = req.getContextPath() + req.getServletPath();
-            redirectURL = servletPath + this.m_AuthenticationFormURI + "?requestedResource=" + req.getPathInfo();
-            res.sendRedirect( redirectURL );
+            redirectURL = servletPath + m_authenticationFormURI + "?requestedResource=" + req.getPathInfo();
+            res.sendRedirect(redirectURL);
         }
     }
 
@@ -633,6 +626,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      *
      * @param cms the current CmsObject initialized with the user data
      * @param cmsReq the current request
+     * @throws IOException if something goes wrong
      */
     private void updateUser(CmsObject cms, I_CmsRequest cmsReq) throws IOException {
         if (! cms.getRequestContext().isUpdateSessionEnabled()) {
@@ -678,8 +672,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                     session.removeAttribute(C_SESSION_IS_DIRTY);
                     try {
                         m_opencms.storeSession(session.getId(), sessionData);
-                    }
-                    catch(CmsException exc) {
+                    } catch(CmsException exc) {
                         if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO)) {
                             A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] cannot store session: " + com.opencms.util.Utils.getStackTrace(exc));
                         }
@@ -696,8 +689,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                         notify = new OpenCmsServletNotify(session.getId(), m_sessionStorage);
                         session.setAttribute("NOTIFY", notify);
                     }
-                }
-                else {
+                } else {
                     notify = new OpenCmsServletNotify(session.getId(), m_sessionStorage);
                     session.setAttribute("NOTIFY", notify);
                 }
