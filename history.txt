@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/04/09 15:59:34 $
- * Version: $Revision: 1.539 $
+ * Date   : $Date: 2004/04/14 12:25:21 $
+ * Version: $Revision: 1.540 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.3.4 Ix - March xx, 2004
+OpenCms 5.3.4 Ix - April 14, 2004
 - Updated all jars, also added version numbers to all jars
 - Added new XML configuration as replacement for "registry.xml",
   this is a work in progress, "registy.xml" will be removed in the end
