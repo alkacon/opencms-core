@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminVfsLinkManagement.java,v $
- * Date   : $Date: 2003/09/05 12:22:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,11 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.CmsException;
 import org.opencms.threads.*;
 
-import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
 
 import java.util.Hashtable;
 
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * Workplace class for the Check Project / Check Filesystem Links backoffice item.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public final class CmsAdminVfsLinkManagement extends CmsWorkplaceDefault {
     

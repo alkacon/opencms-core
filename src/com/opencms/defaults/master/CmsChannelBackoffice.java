@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
-* Date   : $Date: 2004/02/05 08:28:08 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2004/02/13 13:41:45 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,14 +29,14 @@
 package com.opencms.defaults.master;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.defaults.A_CmsBackoffice;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsUser;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.workplace.CmsXmlLanguageFile;
 import com.opencms.workplace.CmsXmlWpTemplateFile;

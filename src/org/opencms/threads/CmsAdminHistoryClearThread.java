@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsAdminHistoryClearThread.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,11 @@
 
 package org.opencms.threads;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
 
 import java.util.Map;
 
+import org.opencms.main.CmsException;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 
@@ -44,7 +44,7 @@ import org.opencms.report.I_CmsReport;
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1.12
  */
 public class CmsAdminHistoryClearThread extends A_CmsReportThread {

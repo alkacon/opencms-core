@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsFileListUsers.java,v $
-* Date   : $Date: 2003/07/09 10:58:09 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,9 +29,9 @@
 
 package com.opencms.workplace;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ import java.util.List;
  * <code>&lt;FILELIST&gt;</code> has to implement this interface.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2003/07/09 10:58:09 $
+ * @version $Revision: 1.9 $ $Date: 2004/02/13 13:41:44 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * @see com.opencms.workplace.CmsFileList
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsUndelete.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,10 +30,10 @@
  */
 package org.opencms.workplace;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsFolder;
-import com.opencms.file.CmsResource;
-import com.opencms.flex.jsp.CmsJspActionElement;
+import org.opencms.file.CmsFolder;
+import org.opencms.file.CmsResource;
+import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */

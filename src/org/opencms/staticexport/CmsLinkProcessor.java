@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2004/01/30 17:30:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/02/13 13:41:46 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
 
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
@@ -53,7 +53,7 @@ import org.htmlparser.visitors.NodeVisitor;
 /**
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.3
  */
 public class CmsLinkProcessor extends NodeVisitor {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/01/06 16:40:29 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,13 @@
 package org.opencms.db.oracle;
 
 import org.opencms.db.CmsDriverManager;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsProject;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -59,7 +59,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.19 $ $Date: 2004/01/06 16:40:29 $
+ * @version $Revision: 1.20 $ $Date: 2004/02/13 13:41:45 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -197,7 +197,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#publishFileContent(com.opencms.file.CmsProject, com.opencms.file.CmsProject, com.opencms.file.CmsResource, java.util.Set)
+     * @see org.opencms.db.I_CmsProjectDriver#publishFileContent(org.opencms.file.CmsProject, org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.Set)
      */
     public CmsFile publishFileContent(CmsProject offlineProject, CmsProject onlineProject, CmsResource offlineFileHeader, Set publishedContentIds) throws Exception {
         CmsFile newFile = null;

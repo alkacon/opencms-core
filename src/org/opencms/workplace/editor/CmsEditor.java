@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,13 +30,13 @@
  */
 package org.opencms.workplace.editor;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsResource;
-import com.opencms.flex.jsp.CmsJspActionElement;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsResource;
 import com.opencms.workplace.I_CmsWpConstants;
 
+import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceAction;
@@ -53,7 +53,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.1.12
  */

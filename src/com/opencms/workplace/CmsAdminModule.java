@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModule.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,12 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRegistry;
-import com.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRegistry;
+import org.opencms.file.CmsRequestContext;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Collections;

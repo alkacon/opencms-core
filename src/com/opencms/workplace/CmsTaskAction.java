@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2004/02/09 14:16:34 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,16 +30,16 @@
 package com.opencms.workplace;
 
 import org.opencms.i18n.CmsMessages;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsGroup;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRequestContext;
-import com.opencms.file.CmsUser;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsUser;
 
 import java.util.GregorianCalendar;
 import java.util.Vector;
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.48 $ $Date: 2004/02/09 14:16:34 $
+ * @version $Revision: 1.49 $ $Date: 2004/02/13 13:41:44 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -106,7 +106,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
                 cms.readOwner(task)
             };
             try {
-                com.opencms.defaults.CmsMail mail = new com.opencms.defaults.CmsMail(cms, cms.readAgent(task),
+                org.opencms.util.CmsMail mail = new org.opencms.util.CmsMail(cms, cms.readAgent(task),
                         users, subject, contentBuf.toString(), "text/plain");
                 mail.start();
             }
@@ -193,9 +193,9 @@ public class CmsTaskAction implements I_CmsWpConstants {
         CmsUser[] users =  {
             cms.readAgent(task)
         };
-        com.opencms.defaults.CmsMail mail = null;
+        org.opencms.util.CmsMail mail = null;
         try {
-            mail = new com.opencms.defaults.CmsMail(cms, cms.readOwner(task), users, subject, contentBuf.toString(), "text/plain");
+            mail = new org.opencms.util.CmsMail(cms, cms.readOwner(task), users, subject, contentBuf.toString(), "text/plain");
         }
         catch(CmsException e) {
             if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
@@ -210,7 +210,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
             // the news deliver always "checked" or ""
             if(cms.getTaskPar(task.getId(), C_TASKPARA_ALL).equals("checked")) {
                 try {
-                    mail = new com.opencms.defaults.CmsMail(cms, cms.readOwner(task), cms.readGroup(task),
+                    mail = new org.opencms.util.CmsMail(cms, cms.readOwner(task), cms.readGroup(task),
                             subject, contentBuf.toString(), "text/plain");
                 }
                 catch(CmsException e) {
@@ -304,7 +304,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
                 cms.readOwner(task)
             };
             try {
-                com.opencms.defaults.CmsMail mail = new com.opencms.defaults.CmsMail(cms, cms.readAgent(task),
+                org.opencms.util.CmsMail mail = new org.opencms.util.CmsMail(cms, cms.readAgent(task),
                         users, subject, contentBuf.toString(), "text/plain");
                 mail.start();
             }
@@ -378,7 +378,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
             // if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
             if(cms.getTaskPar(task.getId(), C_TASKPARA_ALL) != null) {
                 try {
-                    com.opencms.defaults.CmsMail mail = new com.opencms.defaults.CmsMail(cms, cms.getRequestContext().currentUser(),
+                    org.opencms.util.CmsMail mail = new org.opencms.util.CmsMail(cms, cms.getRequestContext().currentUser(),
                             cms.readGroup(task), subject, contentBuf.toString(), "text/plain");
                     mail.start();
                 }
@@ -395,7 +395,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
                     cms.readAgent(task)
                 };
                 try {
-                    com.opencms.defaults.CmsMail mail1 = new com.opencms.defaults.CmsMail(cms,
+                    org.opencms.util.CmsMail mail1 = new org.opencms.util.CmsMail(cms,
                             cms.getRequestContext().currentUser(), user, subject, contentBuf.toString(), "text/plain");
                     mail1.start();
                 }
@@ -410,7 +410,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
                     cms.readOwner(task)
                 };
                 try {
-                    com.opencms.defaults.CmsMail mail2 = new com.opencms.defaults.CmsMail(cms, cms.getRequestContext().currentUser(),
+                    org.opencms.util.CmsMail mail2 = new org.opencms.util.CmsMail(cms, cms.getRequestContext().currentUser(),
                             owner, subject, contentBuf.toString(), "text/plain");
                     mail2.start();
                 }
@@ -504,7 +504,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
             cms.readAgent(task)
         };
         try {
-            com.opencms.defaults.CmsMail mail = new com.opencms.defaults.CmsMail(cms,
+            org.opencms.util.CmsMail mail = new org.opencms.util.CmsMail(cms,
                     cms.readOwner(task), users, subject, contentBuf.toString(), "text/plain");
             mail.start();
         }
@@ -589,7 +589,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
             cms.readOwner(task)
         };
         try {
-            com.opencms.defaults.CmsMail mail = new com.opencms.defaults.CmsMail(cms, cms.readAgent(task),
+            org.opencms.util.CmsMail mail = new org.opencms.util.CmsMail(cms, cms.readAgent(task),
                     users, subject, contentBuf.toString(), "text/plain");
             mail.start();
         }
@@ -676,12 +676,12 @@ public class CmsTaskAction implements I_CmsWpConstants {
         CmsUser[] users =  {
             cms.readAgent(task)
         };
-        com.opencms.defaults.CmsMail mail;
-        mail = new com.opencms.defaults.CmsMail(cms, cms.readOwner(task), users, subject, contentBuf.toString(), "text/plain");
+        org.opencms.util.CmsMail mail;
+        mail = new org.opencms.util.CmsMail(cms, cms.readOwner(task), users, subject, contentBuf.toString(), "text/plain");
 
         // if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
         if(cms.getTaskPar(task.getId(), C_TASKPARA_ALL) != null) {
-            mail = new com.opencms.defaults.CmsMail(cms, cms.readOwner(task), cms.readGroup(task),
+            mail = new org.opencms.util.CmsMail(cms, cms.readOwner(task), cms.readGroup(task),
                     subject, contentBuf.toString(), "text/plain");
         }
         try {
@@ -748,7 +748,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
             cms.readAgent(task)
         };
         try {
-            com.opencms.defaults.CmsMail mail = new com.opencms.defaults.CmsMail(cms, cms.readOwner(task),
+            org.opencms.util.CmsMail mail = new org.opencms.util.CmsMail(cms, cms.readOwner(task),
                     users, subject, contentBuf.toString(), "text/plain");
             mail.start();
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsCosIndexer.java,v $
- * Date   : $Date: 2004/02/13 11:27:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,15 +30,15 @@
  */
 package org.opencms.search;
 
+import org.opencms.main.CmsException;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.CmsException;
 import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 
 import java.util.Iterator;
 import java.util.Vector;
@@ -49,7 +49,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Package to implement indexing of cos data.<p>
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/13 11:27:46 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/13 13:41:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsCosIndexer extends CmsMasterContent {
@@ -187,7 +187,7 @@ public class CmsCosIndexer extends CmsMasterContent {
             
             Class clazz = Class.forName(cdClass);
             CmsMasterContent contentDefinition = (CmsMasterContent)clazz.getDeclaredConstructor(
-                    new Class[] {com.opencms.file.CmsObject.class}).newInstance(new Object[] {cms});
+                    new Class[] {org.opencms.file.CmsObject.class}).newInstance(new Object[] {cms});
 
             CmsMasterDataSet ds = new CmsMasterDataSet();
             CmsMasterContent.getDbAccessObject(contentDefinition.getSubId()).read(cms, contentDefinition, ds, new CmsUUID(contentId));

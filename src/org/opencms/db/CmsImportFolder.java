@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2004/01/06 12:51:21 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,13 @@
 package org.opencms.db;
 
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsResourceTypeFolder;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypeFolder;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -56,7 +56,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsImportFolder {
 

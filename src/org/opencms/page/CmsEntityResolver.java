@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsEntityResolver.java,v $
- * Date   : $Date: 2003/12/12 12:16:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@
  */
 package org.opencms.page;
 
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -43,7 +43,7 @@ import org.xml.sax.InputSource;
  * Resolves XML entities (e.g. external DTDs) in the OpenCms VFS.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  */
 public class CmsEntityResolver implements EntityResolver {
 

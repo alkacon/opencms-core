@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/02/12 16:54:19 $
- * Version: $Revision: 1.319 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.320 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,9 @@ import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
@@ -56,9 +58,7 @@ import org.opencms.validation.CmsHtmlLinkValidator;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.*;
+import org.opencms.file.*;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.io.BufferedReader;
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.319 $ $Date: 2004/02/12 16:54:19 $
+ * @version $Revision: 1.320 $ $Date: 2004/02/13 13:41:44 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2103,7 +2103,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS);
 
         // construct a dummy that is written to the db
-        linkResource = new CmsResource(new CmsUUID(), targetResource.getResourceId(), parentFolder.getStructureId(), CmsUUID.getNullUUID(), resourceName, CmsResourceTypeLink.C_RESOURCE_TYPE_ID, targetResource.getFlags(), context.currentProject().getId(), com.opencms.core.I_CmsConstants.C_STATE_NEW, targetResource.getLoaderId(), System.currentTimeMillis(), context.currentUser().getId(), System.currentTimeMillis(), context.currentUser().getId(), 0, targetResource.getLinkCount() + 1);
+        linkResource = new CmsResource(new CmsUUID(), targetResource.getResourceId(), parentFolder.getStructureId(), CmsUUID.getNullUUID(), resourceName, CmsResourceTypeLink.C_RESOURCE_TYPE_ID, targetResource.getFlags(), context.currentProject().getId(), org.opencms.main.I_CmsConstants.C_STATE_NEW, targetResource.getLoaderId(), System.currentTimeMillis(), context.currentUser().getId(), System.currentTimeMillis(), context.currentUser().getId(), 0, targetResource.getLinkCount() + 1);
 
         // check if the resource has to be labeled now
         if (labelResource(context, targetResource, linkName, 1)) {
@@ -4684,7 +4684,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * 
      * Proves if a resource is locked.<p>
      * 
-     * @see org.opencms.lock.CmsLockManager#isLocked(org.opencms.db.CmsDriverManager, com.opencms.file.CmsRequestContext, java.lang.String)
+     * @see org.opencms.lock.CmsLockManager#isLocked(org.opencms.db.CmsDriverManager, org.opencms.file.CmsRequestContext, java.lang.String)
      * 
      * @param context the current request context
      * @param resourcename the full resource name including the site root
@@ -7225,11 +7225,11 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
             if (!resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
                 // create the file in the offline project     
-                newFile = new CmsFile(onlineFile.getStructureId(), onlineFile.getResourceId(), parentFolder.getStructureId(), onlineFile.getFileId(), CmsResource.getName(resourcename), onlineFile.getType(), onlineFile.getFlags(), 0, com.opencms.core.I_CmsConstants.C_STATE_UNCHANGED, getResourceType(onlineFile.getType()).getLoaderId(), 0, context.currentUser().getId(), 0, context.currentUser().getId(), contents.length, 1, contents);
+                newFile = new CmsFile(onlineFile.getStructureId(), onlineFile.getResourceId(), parentFolder.getStructureId(), onlineFile.getFileId(), CmsResource.getName(resourcename), onlineFile.getType(), onlineFile.getFlags(), 0, org.opencms.main.I_CmsConstants.C_STATE_UNCHANGED, getResourceType(onlineFile.getType()).getLoaderId(), 0, context.currentUser().getId(), 0, context.currentUser().getId(), contents.length, 1, contents);
                 newResource = m_vfsDriver.createFile(context.currentProject(), newFile, context.currentUser().getId(), parentFolder.getStructureId(), CmsResource.getName(resourcename));
             } else {
                 // create the folder in the offline project  
-                newFolder = new CmsFolder(onlineFolder.getStructureId(), onlineFolder.getResourceId(), parentFolder.getStructureId(), CmsUUID.getNullUUID(), CmsResource.getName(resourcename), CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, onlineFolder.getFlags(), 0, com.opencms.core.I_CmsConstants.C_STATE_UNCHANGED, 0, context.currentUser().getId(), 0, context.currentUser().getId(), 1);
+                newFolder = new CmsFolder(onlineFolder.getStructureId(), onlineFolder.getResourceId(), parentFolder.getStructureId(), CmsUUID.getNullUUID(), CmsResource.getName(resourcename), CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, onlineFolder.getFlags(), 0, org.opencms.main.I_CmsConstants.C_STATE_UNCHANGED, 0, context.currentUser().getId(), 0, context.currentUser().getId(), 1);
                 newResource = m_vfsDriver.createFolder(context.currentProject(), newFolder, parentFolder.getStructureId());
             }
 

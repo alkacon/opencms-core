@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2004/01/25 12:42:46 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,12 @@ package org.opencms.db.generic;
 
 import org.opencms.db.CmsDbPool;
 import org.opencms.db.CmsResourceNotFoundException;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringSubstitution;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsProject;
+import org.opencms.file.CmsProject;
 
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
@@ -96,7 +96,7 @@ import java.util.Properties;
  * </table>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.31 $ $Date: 2004/01/25 12:42:46 $
+ * @version $Revision: 1.32 $ $Date: 2004/02/13 13:41:45 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {

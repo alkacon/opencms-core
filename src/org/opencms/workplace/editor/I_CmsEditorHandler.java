@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/I_CmsEditorHandler.java,v $
- * Date   : $Date: 2003/12/12 12:11:58 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@
  */
 package org.opencms.workplace.editor;
 
-import com.opencms.flex.jsp.CmsJspActionElement;
+import org.opencms.jsp.CmsJspActionElement;
 
 /**
  * Provides a method for selecting an individual file editor.<p>
@@ -40,7 +40,7 @@ import com.opencms.flex.jsp.CmsJspActionElement;
  * The class you enter must implement this interface to obtain the URI of the displayed editor.<p>  
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1.14
  */

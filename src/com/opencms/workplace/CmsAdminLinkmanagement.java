@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkmanagement.java,v $
-* Date   : $Date: 2003/09/24 14:19:24 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,9 +28,9 @@
 
 package com.opencms.workplace;
 
-import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.threads.*;
 
@@ -41,7 +41,7 @@ import java.util.Hashtable;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Hanjo Riege
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsAdminLinkmanagement extends CmsWorkplaceDefault {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,10 +32,10 @@ package org.opencms.workplace;
 
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsUserSettings;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsUser;
+import org.opencms.file.CmsUser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +45,7 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * @since 5.1
  */
 public class CmsWorkplaceSettings {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2004/01/25 12:42:45 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2004/02/13 13:41:45 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,17 +29,18 @@
 package com.opencms.defaults.master;
 
 import org.opencms.db.CmsPublishedResource;
-import org.opencms.loader.CmsXmlTemplateLoader;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.defaults.A_CmsContentDefinition;
 import com.opencms.defaults.I_CmsExtendedContentDefinition;
 import com.opencms.defaults.master.genericsql.CmsDbAccess;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsUser;
+import com.opencms.template.CmsXmlTemplateLoader;
+
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsUser;
 
 import java.util.HashMap;
 import java.util.StringTokenizer;
@@ -53,8 +54,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.51 $
- * $Date: 2004/01/25 12:42:45 $
+ * $Revision: 1.52 $
+ * $Date: 2004/02/13 13:41:45 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -903,7 +904,7 @@ public abstract class CmsMasterContent
      * @param cms object to access system resources
      * @param channel channel to be searched for subchannels
      * @return Vector with names of all subchannels
-     * @throws com.opencms.core.CmsException in case of unrecoverable errors
+     * @throws org.opencms.main.CmsException in case of unrecoverable errors
      */
     public static Vector getAllSubChannelsOf (CmsObject cms, String channel)
             throws CmsException {
@@ -945,7 +946,7 @@ public abstract class CmsMasterContent
      * @param cms object to access system resources
      * @param channel channel to be searched for subchannels
      * @return Vector with names of all subchannels
-     * @throws com.opencms.core.CmsException in case of unrecoverable errors
+     * @throws org.opencms.main.CmsException in case of unrecoverable errors
      */
     public Vector getAllSubChannelsOfRootChannel (CmsObject cms)
             throws CmsException {

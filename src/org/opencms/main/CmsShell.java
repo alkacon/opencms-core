@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2004/02/12 16:54:20 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,9 +35,7 @@ package org.opencms.main;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.setup.CmsSetupUtils;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
 
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
@@ -57,7 +55,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $ $Date: 2004/02/12 16:54:20 $
+ * @version $Revision: 1.13 $ $Date: 2004/02/13 13:41:45 $
  */
 public class CmsShell {
 

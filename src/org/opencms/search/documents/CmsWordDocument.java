@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsWordDocument.java,v $
- * Date   : $Date: 2004/02/13 11:27:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,14 @@
 package org.opencms.search.documents;
 
 
+import org.opencms.main.CmsException;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsIndexResource;
 import org.opencms.util.CmsStringSubstitution;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 
 import java.io.ByteArrayInputStream;
 
@@ -46,7 +46,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2004/02/13 11:27:46 $
+ * @version $Revision: 1.4 $ $Date: 2004/02/13 13:41:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsWordDocument extends CmsVfsDocument {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsEvent.java,v $
- * Date   : $Date: 2003/09/15 13:30:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.main;
 
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
 
 /**
  * Event class for OpenCms for system wide events that are thrown by various 
@@ -40,7 +40,7 @@ import com.opencms.file.CmsObject;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsEventListener

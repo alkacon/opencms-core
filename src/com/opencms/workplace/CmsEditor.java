@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2004/02/11 16:12:05 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,14 +32,14 @@ package com.opencms.workplace;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceAction;
 
-import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
 
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.64 $ $Date: 2004/02/11 16:12:05 $
+ * @version $Revision: 1.65 $ $Date: 2004/02/13 13:41:44 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,9 +30,9 @@
  */
 package org.opencms.workplace;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsRegistry;
-import com.opencms.flex.jsp.CmsJspActionElement;
+import org.opencms.file.CmsRegistry;
+import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -55,7 +55,7 @@ import org.opencms.threads.CmsAdminHistoryClearThread;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1
  */

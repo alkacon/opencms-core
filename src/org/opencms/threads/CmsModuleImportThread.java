@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsModuleImportThread.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,14 @@
 
 package org.opencms.threads;
 
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsProject;
-import com.opencms.file.CmsRegistry;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsRegistry;
 
 import java.util.Vector;
 
@@ -47,7 +47,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.1.10
  */
 public class CmsModuleImportThread extends A_CmsReportThread {

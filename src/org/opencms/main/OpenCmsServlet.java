@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2004/01/25 19:22:02 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,8 @@ package org.opencms.main;
 
 import org.opencms.staticexport.CmsStaticExportData;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 
 import java.io.IOException;
 
@@ -70,7 +69,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     

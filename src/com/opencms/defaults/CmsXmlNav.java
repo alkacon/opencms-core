@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2003/09/12 17:38:06 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2004/02/13 13:41:45 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,12 @@
 
 package com.opencms.defaults;
 
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsCacheDirectives;
 import com.opencms.template.CmsXmlTemplateFile;
@@ -51,7 +51,7 @@ import java.util.Vector;
  * @author Alexander Kandzior
  * @author Waruschan Babachan
  * @author Thomas Weckert
- * @version $Revision: 1.56 $ $Date: 2003/09/12 17:38:06 $
+ * @version $Revision: 1.57 $ $Date: 2004/02/13 13:41:45 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 

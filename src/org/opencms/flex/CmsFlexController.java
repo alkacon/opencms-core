@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2003/11/17 07:49:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,8 +30,8 @@
  */
 package org.opencms.flex;
 
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsFlexController {
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2004/02/13 11:06:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,9 @@ package org.opencms.db;
 
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsResourceTypeFolder;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypeFolder;
+import org.opencms.main.I_CmsConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,9 +54,9 @@ import java.util.List;
  * creates Cms publish lists.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2004/02/13 11:06:47 $
+ * @version $Revision: 1.4 $ $Date: 2004/02/13 13:41:44 $
  * @since 5.3.0
- * @see org.opencms.db.CmsDriverManager#getPublishList(com.opencms.file.CmsRequestContext, CmsResource, boolean, org.opencms.report.I_CmsReport)
+ * @see org.opencms.db.CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean, org.opencms.report.I_CmsReport)
  */
 public class CmsPublishList extends Object {
 

@@ -24,10 +24,10 @@
 
 package com.opencms.defaults;
 
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsCacheDirectives;
 import com.opencms.template.CmsXmlTemplate;
@@ -151,7 +151,7 @@ public class CmsShowContent extends CmsXmlTemplate {
      * @param doc reference to the A_CmsXmlContent object of the initiating XLM document
      * @param userObject normally the Hashtable with the url parameters
      * @return String or byte[] with the content of this subelement
-     * @throws com.opencms.core.CmsException in case of unrecoverable errors
+     * @throws org.opencms.main.CmsException in case of unrecoverable errors
      */
     public Object getEntry(CmsObject cms, String tagcontent,
             A_CmsXmlContent doc, Object userObject) throws CmsException {
@@ -257,7 +257,7 @@ public class CmsShowContent extends CmsXmlTemplate {
      * @param doc reference to the A_CmsXmlContent object of the initiating XLM document.
      * @param userObject normally the Hashtable with url parameters.
      * @return String or byte[] with the content of this subelement.
-     * @throws com.opencms.core.CmsException in case of unrecoverable errors
+     * @throws org.opencms.main.CmsException in case of unrecoverable errors
      */
     public Object getList(CmsObject cms, String tagcontent,
             A_CmsXmlContent doc, Object userObject) throws CmsException {
@@ -428,7 +428,7 @@ public class CmsShowContent extends CmsXmlTemplate {
     * @param template The template file of this template
     * @param contentDefinition The actual content defintion object
     * @param methods A vector of java.lang.reflect.Method objects with all "getXYZ" methods to be used
-    * @throws com.opencms.core.CmsException in case of unrecoverable erros
+    * @throws org.opencms.main.CmsException in case of unrecoverable erros
     */
     protected void setDatablocks(CmsXmlTemplateFile template,
             A_CmsContentDefinition contentDefinition,

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.71 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.72 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,11 +29,11 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import com.opencms.template.CmsTemplateClassManager;
 import com.opencms.template.CmsXmlTemplateFile;
 
@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.71 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.72 $ $Date: 2004/02/13 13:41:44 $
  */
 
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile {

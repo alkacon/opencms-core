@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2004/02/11 08:38:17 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,9 +30,9 @@
  */
 package org.opencms.workplace;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsResource;
-import com.opencms.flex.jsp.CmsJspActionElement;
+import org.opencms.file.CmsResource;
+import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1
  */

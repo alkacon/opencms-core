@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceAction.java,v $
- * Date   : $Date: 2004/02/13 13:17:30 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.workplace;
 
 import org.opencms.main.OpenCms;
 
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +44,7 @@ import javax.servlet.http.HttpSession;
  * functionality from the old XML based workplace to the new JSP workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1
  */

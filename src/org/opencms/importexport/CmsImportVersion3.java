@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/02/12 14:54:52 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,18 +31,18 @@
 
 package org.opencms.importexport;
 
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsResourceTypeFolder;
-import com.opencms.file.CmsResourceTypePage;
-import com.opencms.file.CmsResourceTypeXmlPage;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypeFolder;
+import org.opencms.file.CmsResourceTypePage;
+import org.opencms.file.CmsResourceTypeXmlPage;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

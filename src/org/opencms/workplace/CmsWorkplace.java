@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/02/13 13:17:30 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,19 +33,19 @@ package org.opencms.workplace;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringSubstitution;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRequestContext;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsUser;
-import com.opencms.file.I_CmsResourceType;
-import com.opencms.flex.jsp.CmsJspActionElement;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsUser;
+import org.opencms.file.I_CmsResourceType;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.lang.reflect.InvocationTargetException;
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  * 
  * @since 5.1
  */

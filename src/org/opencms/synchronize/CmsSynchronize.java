@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.24 $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,15 +33,15 @@
 
 package org.opencms.synchronize;
 
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsResourceTypeFolder;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypeFolder;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -62,7 +62,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.24 $ $Date: 2003/11/08 10:32:44 $
+ * @version $Revision: 1.25 $ $Date: 2004/02/13 13:41:45 $
  */
 public class CmsSynchronize {
 

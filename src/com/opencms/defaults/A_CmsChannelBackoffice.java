@@ -26,7 +26,9 @@ package com.opencms.defaults;
 
 import com.opencms.defaults.master.*;
 import com.opencms.core.*;
-import com.opencms.file.*;
+import org.opencms.file.*;
+import org.opencms.main.*;
+
 import com.opencms.workplace.*;
 import com.opencms.template.*;
 
@@ -72,7 +74,7 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
      * @param names Vector for the names in the selectBox
      * @param parameters Hashtable with all template class parameters.
      * @return Integer selected Index Value of selectBox
-     * @throws com.opencms.core.CmsException in case of unrecoverable errors
+     * @throws org.opencms.main.CmsException in case of unrecoverable errors
      */
     public Integer getAvailableChannels(CmsObject cms, CmsXmlLanguageFile lang, Vector values, Vector names, Hashtable parameters)
                     throws CmsException {
@@ -97,7 +99,7 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
      * @param names Vector for the names in the selectBox
      * @param parameters Hashtable with all template class parameters.
      * @return Integer selected Index Value of selectBox
-     * @throws com.opencms.core.CmsException in case of unrecoverable errors
+     * @throws org.opencms.main.CmsException in case of unrecoverable errors
      */
     public Integer getMediaPosition(CmsObject cms, CmsXmlLanguageFile lang, Vector values, Vector names, Hashtable parameters)
                     throws CmsException {

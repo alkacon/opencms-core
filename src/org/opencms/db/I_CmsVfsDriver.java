@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/01/07 09:19:22 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,14 +34,14 @@ package org.opencms.db;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsFolder;
-import com.opencms.file.CmsProject;
-import com.opencms.file.CmsPropertydefinition;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsUser;
-import com.opencms.file.I_CmsResourceType;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsFolder;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsPropertydefinition;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsUser;
+import org.opencms.file.I_CmsResourceType;
+import org.opencms.main.CmsException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -54,7 +54,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.67 $ $Date: 2004/01/07 09:19:22 $
+ * @version $Revision: 1.68 $ $Date: 2004/02/13 13:41:45 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsInputPassword.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,8 +29,9 @@
 
 package com.opencms.workplace;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
+
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.Hashtable;
@@ -42,7 +43,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;PASSWORD&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.13 $ $Date: 2004/02/13 13:41:44 $
  */
 
 public class CmsInputPassword extends A_CmsWpElement {

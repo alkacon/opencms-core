@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/12 17:09:42 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.78 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,18 +62,16 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceMessages;
 
-import com.opencms.core.CmsException;
 import com.opencms.core.CmsRequestHttpServlet;
 import com.opencms.core.CmsResponseHttpServlet;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsResponse;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsFolder;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRegistry;
-import com.opencms.file.CmsRequestContext;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsFolder;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRegistry;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.IOException;
@@ -104,7 +102,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.77 $
+ * @version $Revision: 1.78 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -682,10 +680,10 @@ public final class OpenCmsCore {
     private String getErrormsg(String part) {
         Properties props = new Properties();
         try {
-            props.load(getClass().getClassLoader().getResourceAsStream("com/opencms/core/errormsg.properties"));
+            props.load(getClass().getClassLoader().getResourceAsStream("org/opencms/main/errormsg.properties"));
         } catch (Throwable t) {
             if (getLog(this).isErrorEnabled()) {
-                getLog(this).error("Could not load com/opencms/core/errormsg.properties", t);
+                getLog(this).error("Could not load org/opencms/main/errormsg.properties", t);
             }
         }
         String value = props.getProperty(part);

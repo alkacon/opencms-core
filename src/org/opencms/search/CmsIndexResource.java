@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsIndexResource.java,v $
- * Date   : $Date: 2004/02/13 11:27:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,14 +34,14 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
 import com.opencms.defaults.master.CmsMasterDataSet;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsResource;
 
 /**
  * Wrapper class to hide the concrete type of a data object to index.<p>
  * The type is either <code>CmsResource</code> while indexing vfs data,
  * or <code>CmsMasterDataSet</code> while indexing cos data.
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/13 11:27:46 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/13 13:41:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsIndexResource {

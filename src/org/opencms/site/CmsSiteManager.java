@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2003/12/12 16:26:44 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/02/13 13:41:46 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,13 @@
 
 package org.opencms.site;
 
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +58,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {

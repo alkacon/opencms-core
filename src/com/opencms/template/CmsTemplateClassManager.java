@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateClassManager.java,v $
- * Date   : $Date: 2003/08/18 15:11:21 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package com.opencms.template;
 
-import com.opencms.core.CmsException;
+import org.opencms.main.CmsException;
 
 /**
  * Class for loading class instances, required by the legagy XmlTemplate mechanism.<p>

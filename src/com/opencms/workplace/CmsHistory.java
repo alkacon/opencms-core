@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
-* Date   : $Date: 2004/02/09 14:16:34 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2004/02/13 13:41:43 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,14 +32,14 @@ package com.opencms.workplace;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
-import com.opencms.file.CmsBackupProject;
-import com.opencms.file.CmsBackupResource;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsBackupProject;
+import org.opencms.file.CmsBackupResource;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.41 $ $Date: 2004/02/09 14:16:34 $
+ * @version $Revision: 1.42 $ $Date: 2004/02/13 13:41:43 $
  */
 
 public class CmsHistory extends CmsWorkplaceDefault {

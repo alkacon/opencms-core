@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/02/12 14:54:52 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,23 +32,23 @@
 package org.opencms.importexport;
 
 import org.opencms.loader.CmsXmlPageLoader;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsPropertydefinition;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsResourceTypeFolder;
-import com.opencms.file.CmsResourceTypeLink;
-import com.opencms.file.CmsResourceTypePage;
-import com.opencms.file.CmsResourceTypePlain;
-import com.opencms.file.CmsResourceTypeXmlPage;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertydefinition;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypeFolder;
+import org.opencms.file.CmsResourceTypeLink;
+import org.opencms.file.CmsResourceTypePage;
+import org.opencms.file.CmsResourceTypePlain;
+import org.opencms.file.CmsResourceTypeXmlPage;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.workplace.I_CmsWpConstants;
 

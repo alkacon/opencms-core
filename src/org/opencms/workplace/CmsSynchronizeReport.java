@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsSynchronizeReport.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,14 @@
 package org.opencms.workplace;
 
 import org.opencms.importexport.CmsExport;
+import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.threads.CmsSynchronizeThread;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsProject;
-import com.opencms.file.CmsResource;
-import com.opencms.flex.jsp.CmsJspActionElement;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
 
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.10
  */

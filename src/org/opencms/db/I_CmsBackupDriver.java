@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2004/01/07 09:19:22 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,13 +33,13 @@ package org.opencms.db;
 
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsBackupProject;
-import com.opencms.file.CmsBackupResource;
-import com.opencms.file.CmsProject;
-import com.opencms.file.CmsPropertydefinition;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsUser;
+import org.opencms.file.CmsBackupProject;
+import org.opencms.file.CmsBackupResource;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsPropertydefinition;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsUser;
+import org.opencms.main.CmsException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -58,7 +58,7 @@ import java.util.Vector;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.32 $ $Date: 2004/01/07 09:19:22 $
+ * @version $Revision: 1.33 $ $Date: 2004/02/13 13:41:44 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {

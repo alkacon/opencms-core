@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsVersion.java,v $
- * Date   : $Date: 2004/02/11 16:12:05 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,10 +30,8 @@
  */
 package org.opencms.workplace;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsBackupResource;
-import com.opencms.file.CmsObject;
-import com.opencms.flex.jsp.CmsJspActionElement;
+import org.opencms.file.CmsBackupResource;
+import org.opencms.file.CmsObject;
 
 import java.io.IOException;
 
@@ -42,6 +40,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
 /**
@@ -53,7 +53,7 @@ import org.opencms.main.OpenCms;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */

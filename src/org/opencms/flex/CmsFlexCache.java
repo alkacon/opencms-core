@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2004/01/06 09:46:26 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
 
 import java.io.File;
 import java.util.Collections;
@@ -88,7 +88,7 @@ import org.apache.commons.collections.LRUMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry

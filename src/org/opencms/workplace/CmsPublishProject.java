@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2004/02/09 14:16:35 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,14 +32,14 @@ package org.opencms.workplace;
 
 import org.opencms.db.CmsPublishList;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.threads.CmsHtmlLinkValidatorThread;
 import org.opencms.threads.CmsPublishThread;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsResource;
-import com.opencms.flex.jsp.CmsJspActionElement;
+import org.opencms.file.CmsResource;
 
 import java.util.Date;
 
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.1.12
  */

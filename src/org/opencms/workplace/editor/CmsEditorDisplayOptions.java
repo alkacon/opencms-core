@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorDisplayOptions.java,v $
- * Date   : $Date: 2003/12/04 13:19:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,9 +30,9 @@
  */
 package org.opencms.workplace.editor;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -46,7 +46,7 @@ import java.util.Properties;
  * /system/workplace/jsp/editors/edit_options.properties.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1.14
  */

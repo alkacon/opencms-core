@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2003/11/14 10:09:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,11 @@
 
 package org.opencms.flex;
 
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 
 import java.io.IOException;
 
@@ -58,7 +58,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
         
@@ -220,7 +220,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                         System.err.println("FlexDispatcher: Loading file from cache for " + m_vfsTarget);
                     }
                     entry.service(w_req, w_res);
-                } catch (com.opencms.core.CmsException e) {
+                } catch (org.opencms.main.CmsException e) {
                     throw new ServletException("FlexDispatcher: Error while loading file from cache for " + m_vfsTarget + "\n" + e, e);
                 }                       
             } else { 
@@ -236,7 +236,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                         // Read caching property from requested VFS resource                                     
                         cacheProperty = cms.readProperty(m_vfsTarget, org.opencms.loader.I_CmsResourceLoader.C_LOADER_CACHEPROPERTY);                    
                         cache.putKey(w_res.setCmsCacheKey(cms.getRequestContext().addSiteRoot(m_vfsTarget), cacheProperty, f_req.isOnline(), f_req.isWorkplace()));                                            
-                    } catch (com.opencms.core.CmsException e) {
+                    } catch (org.opencms.main.CmsException e) {
                         if (e.getType() == CmsException.C_FLEX_CACHE) {
                             // Invalid key is ignored but logged, used key is cache=never
                             if (OpenCms.getLog(this).isWarnEnabled()) {
@@ -279,7 +279,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                 loader = OpenCms.getLoaderManager().getLoader(type);
             } catch (java.lang.ClassCastException e) {
                 throw new ServletException("FlexDispatcher: CmsResourceLoader interface not implemented for cms resource " + m_vfsTarget + "\n" + e, e);
-            } catch (com.opencms.core.CmsException e) {
+            } catch (org.opencms.main.CmsException e) {
                 // File might not exist or no read permissions
                 throw new ServletException("FlexDispatcher: Error while reading header for cms resource " + m_vfsTarget + "\n" + e, e);
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/02/13 11:27:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@ package org.opencms.search;
 
 import org.opencms.cron.I_CmsCronJob;
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
@@ -39,16 +41,14 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.CmsCosDocument;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
-import com.opencms.file.CmsFolder;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRegistry;
-import com.opencms.file.CmsRequestContext;
-import com.opencms.file.CmsResource;
-import com.opencms.file.I_CmsResourceType;
+import org.opencms.file.CmsFolder;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRegistry;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
+import org.opencms.file.I_CmsResourceType;
 
 import java.io.IOException;
 import java.util.*;
@@ -68,7 +68,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2004/02/13 11:27:46 $
+ * @version $Revision: 1.3 $ $Date: 2004/02/13 13:41:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2004/01/25 12:42:45 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2004/02/13 13:41:45 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,18 +29,18 @@
 package com.opencms.defaults.master;
 
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.defaults.A_CmsContentDefinition;
 import com.opencms.defaults.CmsFilterMethod;
 import com.opencms.defaults.I_CmsExtendedContentDefinition;
-import com.opencms.file.CmsGroup;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsResourceTypeFolder;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypeFolder;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -54,8 +54,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.63 $
- * $Date: 2004/01/25 12:42:45 $
+ * $Revision: 1.64 $
+ * $Date: 2004/02/13 13:41:45 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsExtendedContentDefinition{
 

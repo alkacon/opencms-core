@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsPrimaryKeyException.java,v $
- * Date   : $Date: 2003/07/23 10:25:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,14 @@
  
 package org.opencms.db;
 
-import com.opencms.core.CmsException;
+import org.opencms.main.CmsException;
 
 /**
  * Signals that a foreign key in the VFS STRUCTURE, RESOURCES or FILES database tables is either
  * invalid or empty.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/07/23 10:25:55 $
+ * @version $Revision: 1.4 $ $Date: 2004/02/13 13:41:44 $
  * @since 5.1.4
  */
 public class CmsPrimaryKeyException extends CmsException {

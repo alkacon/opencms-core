@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/I_CmsHtmlLinkValidatable.java,v $
- * Date   : $Date: 2004/01/22 14:17:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/13 13:41:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@
  
 package org.opencms.validation;
 
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ import java.util.List;
  * HTML links are considered as href attribs in anchor tags and src attribs in image tags.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2004/01/22 14:17:26 $
+ * @version $Revision: 1.3 $ $Date: 2004/02/13 13:41:46 $
  * @since 5.3.0
  */
 public interface I_CmsHtmlLinkValidatable {

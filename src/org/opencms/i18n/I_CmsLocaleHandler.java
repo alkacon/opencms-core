@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/I_CmsLocaleHandler.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,8 +30,8 @@
  */
 package org.opencms.i18n;
 
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
 
 import java.util.Locale;
 
@@ -44,7 +44,7 @@ import java.util.Locale;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  */
 public interface I_CmsLocaleHandler {
 

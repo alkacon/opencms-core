@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsIndexingReportThread.java,v $
- * Date   : $Date: 2004/02/11 15:01:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.2 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -46,16 +46,16 @@
 
 package org.opencms.search;
 
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
 
 /**
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.11
  */
 public class CmsIndexingReportThread extends A_CmsReportThread {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2004/02/09 14:16:35 $
-* Version: $Revision: 1.80 $
+* Date   : $Date: 2004/02/13 13:41:45 $
+* Version: $Revision: 1.81 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,18 +30,18 @@ package com.opencms.defaults;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.CmsException;
 import com.opencms.core.CmsSession;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.defaults.master.CmsPlausibilizationException;
-import com.opencms.file.CmsGroup;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsProject;
-import com.opencms.file.CmsUser;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsUser;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.template.I_CmsXmlTemplate;
@@ -74,7 +74,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.80 $
+ * @version $Revision: 1.81 $
  */
 public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
 

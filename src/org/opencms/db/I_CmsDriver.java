@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsDriver.java,v $
- * Date   : $Date: 2003/11/10 08:12:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,14 @@
  
 package org.opencms.db;
 
-import com.opencms.core.CmsException;
+import org.opencms.main.CmsException;
 
 import java.util.List;
 
 import org.apache.commons.collections.ExtendedProperties;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/11/10 08:12:58 $
+ * @version $Revision: 1.5 $ $Date: 2004/02/13 13:41:44 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public interface I_CmsDriver {

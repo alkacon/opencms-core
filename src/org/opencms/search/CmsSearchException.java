@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchException.java,v $
- * Date   : $Date: 2004/02/11 15:01:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
  
 package org.opencms.search;
 
-import com.opencms.core.CmsException;
+import org.opencms.main.CmsException;
 
 /**
  * Signals that an attempt to open a resource in the VFS denoted by a specified 
@@ -39,7 +39,7 @@ import com.opencms.core.CmsException;
  * in the org.opencms.db package and its sub-packages.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2004/02/11 15:01:01 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/13 13:41:45 $
  * @since 5.1.2
  */
 public class CmsSearchException extends CmsException {

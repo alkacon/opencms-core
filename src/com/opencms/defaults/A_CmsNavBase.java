@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsNavBase.java,v $
-* Date   : $Date: 2003/07/14 13:59:36 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2004/02/13 13:41:45 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,9 @@
 
 package com.opencms.defaults;
 
-import com.opencms.file.*;
+import org.opencms.file.*;
+import org.opencms.main.*;
+
 import com.opencms.core.*;
 import com.opencms.template.*;
 import java.util.*;
@@ -38,7 +40,7 @@ import java.util.*;
  *
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.17 $ $Date: 2003/07/14 13:59:36 $
+ * @version $Revision: 1.18 $ $Date: 2004/02/13 13:41:45 $
  */
 public abstract class A_CmsNavBase extends CmsXmlTemplate {
     protected static final String C_PROPERTY_NAVINDEX = "NavIndex";

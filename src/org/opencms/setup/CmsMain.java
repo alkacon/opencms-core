@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsMain.java,v $
- * Date   : $Date: 2004/02/12 16:54:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/13 13:41:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@
 package org.opencms.setup;
 
 import org.opencms.main.CmsShell;
+import org.opencms.main.I_CmsConstants;
 
-import com.opencms.core.I_CmsConstants;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -47,7 +47,7 @@ import java.io.IOException;
  * it is also used for the initial setup.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  */
 public final class CmsMain extends Object {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/01/06 16:51:37 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/02/13 13:41:46 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@
 
 package org.opencms.db.mysql;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,7 +42,7 @@ import java.util.Map;
  * MySQL implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.26 $ $Date: 2004/01/06 16:51:37 $
+ * @version $Revision: 1.27 $ $Date: 2004/02/13 13:41:46 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {        
@@ -55,7 +55,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readProperties(int, com.opencms.file.CmsResource, int)
+     * @see org.opencms.db.I_CmsVfsDriver#readProperties(int, org.opencms.file.CmsResource, int)
      */
     public Map readProperties(int projectId, CmsResource resource, int resourceType) throws CmsException {
         Map original = super.readProperties(projectId, resource, resourceType);
@@ -73,14 +73,14 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readProperty(java.lang.String, int, com.opencms.file.CmsResource, int)
+     * @see org.opencms.db.I_CmsVfsDriver#readProperty(java.lang.String, int, org.opencms.file.CmsResource, int)
      */
     public String readProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException {
         return CmsSqlManager.unescape(super.readProperty(meta, projectId, resource, resourceType));
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#writeProperty(java.lang.String, int, java.lang.String, com.opencms.file.CmsResource, int, boolean)
+     * @see org.opencms.db.I_CmsVfsDriver#writeProperty(java.lang.String, int, java.lang.String, org.opencms.file.CmsResource, int, boolean)
      */
     public void writeProperty(String meta, int projectId, String value, CmsResource resource, int resourceType, boolean addDefinition) throws CmsException {
         super.writeProperty(meta, projectId, CmsSqlManager.escape(value), resource, resourceType, addDefinition);

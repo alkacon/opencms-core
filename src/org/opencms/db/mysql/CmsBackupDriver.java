@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/01/06 16:51:37 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/02/13 13:41:46 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,8 @@ package org.opencms.db.mysql;
 import org.opencms.db.CmsDbUtil;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsBackupProject;
+import org.opencms.file.CmsBackupProject;
+import org.opencms.main.CmsException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -48,7 +48,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.11 $ $Date: 2004/01/06 16:51:37 $
+ * @version $Revision: 1.12 $ $Date: 2004/02/13 13:41:46 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {

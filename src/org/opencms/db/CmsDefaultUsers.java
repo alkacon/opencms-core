@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2003/11/10 08:12:58 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,10 +32,10 @@
 package org.opencms.db;
 
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
 
-import com.opencms.core.I_CmsConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +47,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $ $Date: 2003/11/10 08:12:58 $
+ * @version $Revision: 1.16 $ $Date: 2004/02/13 13:41:44 $
  * @since 5.1.5
  */
 public class CmsDefaultUsers {

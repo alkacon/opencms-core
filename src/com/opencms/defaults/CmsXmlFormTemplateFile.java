@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlFormTemplateFile.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2004/02/13 13:41:45 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,9 +28,10 @@
 
 package com.opencms.defaults;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
+
 import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.workplace.I_CmsWpConstants;
 
@@ -48,7 +49,7 @@ import org.w3c.dom.Element;
  * See the handleXxxTag Methods for more details.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.19 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.20 $ $Date: 2004/02/13 13:41:45 $
  */
 public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsWpConstants {
 

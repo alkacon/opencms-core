@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorHandler.java,v $
- * Date   : $Date: 2004/02/06 16:44:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,12 +30,12 @@
  */
 package org.opencms.workplace.editor;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsResourceTypePlain;
-import com.opencms.flex.jsp.CmsJspActionElement;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypePlain;
 import com.opencms.workplace.I_CmsWpConstants;
 
+import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
@@ -58,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * @see org.opencms.workplace.editor.CmsWorkplaceEditorManager
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.1
  */
@@ -72,7 +72,7 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
     }
     
     /**
-     * @see org.opencms.workplace.editor.I_CmsEditorHandler#getEditorUri(java.lang.String, com.opencms.flex.jsp.CmsJspActionElement)
+     * @see org.opencms.workplace.editor.I_CmsEditorHandler#getEditorUri(java.lang.String, CmsJspActionElement)
      */
     public String getEditorUri(String resource, CmsJspActionElement jsp) {
         // first try to get the "edit as text" and "noactivex" parameters from the request

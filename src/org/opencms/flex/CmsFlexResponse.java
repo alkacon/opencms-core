@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2004/02/11 16:12:04 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,9 @@
 
 package org.opencms.flex;
 
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
     
@@ -616,7 +616,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         m_key = new CmsFlexCacheKey(resourcename, value, online, workplace);
         if (m_key.hadParseError()) {
             // We throw the exception here to make sure this response has a valid key (cache=never)
-            throw new com.opencms.core.CmsException(com.opencms.core.CmsException.C_FLEX_CACHE);            
+            throw new org.opencms.main.CmsException(org.opencms.main.CmsException.C_FLEX_CACHE);            
         }
         return m_key;
     }

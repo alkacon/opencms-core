@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,10 +30,10 @@
  */
 package org.opencms.workplace;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsResource;
-import com.opencms.flex.jsp.CmsJspActionElement;
+import org.opencms.file.CmsResource;
+import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,7 +62,7 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 5.1
  */
@@ -629,7 +629,7 @@ public class CmsChacc extends CmsDialog {
             // show the short view, use an ACL to build the list
             try {
                 // get the inherited ACL of the parent folder 
-                String parentUri = com.opencms.file.CmsResource.getParentFolder(getParamResource());
+                String parentUri = org.opencms.file.CmsResource.getParentFolder(getParamResource());
                 CmsAccessControlList acList = getCms().getAccessControlList(parentUri, true);
                 Set principalSet = acList.getPrincipals();
                 i = principalSet.iterator();

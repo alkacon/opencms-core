@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockException.java,v $
- * Date   : $Date: 2003/09/17 13:04:46 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/13 13:41:46 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,13 @@
  
 package org.opencms.lock;
 
-import com.opencms.core.CmsException;
+import org.opencms.main.CmsException;
 
 /**
  * Signals that a particular action was invoked on resource with an insufficient lock state.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/09/17 13:04:46 $
+ * @version $Revision: 1.8 $ $Date: 2004/02/13 13:41:46 $
  * @since 5.1.4
  */
 public class CmsLockException extends CmsException {

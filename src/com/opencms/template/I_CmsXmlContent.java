@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsXmlContent.java,v $
-* Date   : $Date: 2003/01/20 23:59:21 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,9 +29,9 @@
 
 package com.opencms.template;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 
 import java.io.Writer;
 
@@ -43,7 +43,7 @@ import org.w3c.dom.Node;
  * Classes for each customized content type have to be implemtented.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2003/01/20 23:59:21 $
+ * @version $Revision: 1.11 $ $Date: 2004/02/13 13:41:44 $
  */
 public interface I_CmsXmlContent extends I_CmsContent {
     

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsSession.java,v $
-* Date   : $Date: 2003/11/08 10:32:44 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2004/02/13 13:41:46 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.core;
 
+import org.opencms.main.*;
 import org.opencms.main.OpenCms;
 
 import java.util.Enumeration;
@@ -44,7 +45,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Michael Emmerich
  *
- * @version $Revision: 1.32 $ $Date: 2003/11/08 10:32:44 $
+ * @version $Revision: 1.33 $ $Date: 2004/02/13 13:41:46 $
  */
 public class CmsSession implements I_CmsSession {
 

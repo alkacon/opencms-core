@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2003/08/06 16:32:48 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2004/02/13 13:41:46 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,10 +28,11 @@
 
 package com.opencms.template.cache;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsResponse;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
+
 import com.opencms.template.CmsCacheDirectives;
 
 import java.util.Enumeration;

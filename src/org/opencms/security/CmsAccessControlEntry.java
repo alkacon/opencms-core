@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2004/02/09 12:25:56 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,9 +30,9 @@
  */
 package org.opencms.security;
 
+import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.I_CmsConstants;
 
 import java.util.StringTokenizer;
 
@@ -52,7 +52,7 @@ import java.util.StringTokenizer;
  * <code>C_ACCESSFLAGS_GROUP</code> indicates that the principal is a group
  * </p>
  * 
- * @version $Revision: 1.7 $ $Date: 2004/02/09 12:25:56 $
+ * @version $Revision: 1.8 $ $Date: 2004/02/13 13:41:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlEntry {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsUserDriver.java,v $
- * Date   : $Date: 2004/01/06 16:51:37 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/02/13 13:41:46 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,9 @@ package org.opencms.db.mysql;
 
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsGroup;
-import com.opencms.file.CmsUser;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsUser;
+import org.opencms.main.CmsException;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -47,7 +47,7 @@ import java.util.Hashtable;
 /**
  * MySQL implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.15 $ $Date: 2004/01/06 16:51:37 $
+ * @version $Revision: 1.16 $ $Date: 2004/02/13 13:41:46 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -56,7 +56,7 @@ import java.util.Hashtable;
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#createUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, com.opencms.file.CmsGroup, java.lang.String, java.lang.String, int)
+     * @see org.opencms.db.I_CmsUserDriver#createUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, org.opencms.file.CmsGroup, java.lang.String, java.lang.String, int)
      */
     public CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
         //int id = m_sqlManager.nextPkId("C_TABLE_USERS");
@@ -110,7 +110,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writeUser(com.opencms.file.CmsUser)
+     * @see org.opencms.db.I_CmsUserDriver#writeUser(org.opencms.file.CmsUser)
      */
     public void writeUser(CmsUser user) throws CmsException {
         PreparedStatement stmt = null;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceOthertype.java,v $
-* Date   : $Date: 2004/02/05 08:28:07 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,11 +29,11 @@
 package com.opencms.workplace;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsException;
 import org.opencms.workplace.CmsWorkplaceAction;
 
-import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
 
 import java.util.Hashtable;
 
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.39 $ $Date: 2004/02/05 08:28:07 $
+ * @version $Revision: 1.40 $ $Date: 2004/02/13 13:41:44 $
  */
 
 public class CmsNewResourceOthertype extends CmsWorkplaceDefault {

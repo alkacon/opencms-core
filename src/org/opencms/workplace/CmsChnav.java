@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChnav.java,v $
- * Date   : $Date: 2004/02/05 08:28:07 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,14 @@
 package org.opencms.workplace;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.jsp.CmsJspNavBuilder;
+import org.opencms.jsp.CmsJspNavElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
-import com.opencms.flex.jsp.CmsJspActionElement;
-import com.opencms.flex.jsp.CmsJspNavBuilder;
-import com.opencms.flex.jsp.CmsJspNavElement;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 
 import java.util.ArrayList;
 
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1
  */

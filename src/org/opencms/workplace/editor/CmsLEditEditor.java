@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsLEditEditor.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@
  */
 package org.opencms.workplace.editor;
 
-import com.opencms.flex.jsp.CmsJspActionElement;
+import org.opencms.jsp.CmsJspActionElement;
 
 /**
  * Creates the output for editing a resource.<p> 
@@ -44,7 +44,7 @@ import com.opencms.flex.jsp.CmsJspActionElement;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1.12
  */

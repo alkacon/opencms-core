@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsCosDocument.java,v $
- * Date   : $Date: 2004/02/13 11:27:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,12 +30,12 @@
  */
 package org.opencms.search.documents;
 
+import org.opencms.main.CmsException;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsIndexResource;
 
-import com.opencms.core.CmsException;
 import com.opencms.defaults.master.CmsMasterDataSet;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
 
 import java.util.regex.Pattern;
 
@@ -44,7 +44,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2004/02/13 11:27:46 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/13 13:41:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsCosDocument implements I_CmsDocumentFactory {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/01/06 17:14:11 $
- * Version: $Revision: 1.159 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.160 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,23 +36,23 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsVfsDriver;
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsAdjacencyTree;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsFolder;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsProject;
-import com.opencms.file.CmsPropertydefinition;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsResourceTypeFolder;
-import com.opencms.file.CmsUser;
-import com.opencms.file.I_CmsResourceType;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsFolder;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsPropertydefinition;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypeFolder;
+import org.opencms.file.CmsUser;
+import org.opencms.file.I_CmsResourceType;
 
 import java.io.ByteArrayInputStream;
 import java.sql.Connection;
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.159 $ $Date: 2004/01/06 17:14:11 $
+ * @version $Revision: 1.160 $ $Date: 2004/02/13 13:41:45 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -91,7 +91,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#createFile(com.opencms.file.CmsProject, com.opencms.file.CmsFile, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String)
+     * @see org.opencms.db.I_CmsVfsDriver#createFile(org.opencms.file.CmsProject, org.opencms.file.CmsFile, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String)
      */
     public CmsFile createFile(CmsProject project, CmsFile file, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException {
         int newState = 0;
@@ -223,11 +223,11 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#createFile(com.opencms.file.CmsUser, com.opencms.file.CmsProject, java.lang.String, int, com.opencms.file.CmsFolder, byte[], com.opencms.file.I_CmsResourceType)
+     * @see org.opencms.db.I_CmsVfsDriver#createFile(org.opencms.file.CmsUser, org.opencms.file.CmsProject, java.lang.String, int, org.opencms.file.CmsFolder, byte[], org.opencms.file.I_CmsResourceType)
      */
     public CmsFile createFile(CmsUser user, CmsProject project, String filename, int flags, CmsFolder parentFolder, byte[] contents, I_CmsResourceType resourceType) throws CmsException {
 
-        CmsFile newFile = new CmsFile(new CmsUUID(), new CmsUUID(), parentFolder.getStructureId(), new CmsUUID(), filename, resourceType.getResourceType(), flags, project.getId(), com.opencms.core.I_CmsConstants.C_STATE_NEW, resourceType.getLoaderId(), 0, user.getId(), 0, user.getId(), contents.length, 1, contents);
+        CmsFile newFile = new CmsFile(new CmsUUID(), new CmsUUID(), parentFolder.getStructureId(), new CmsUUID(), filename, resourceType.getResourceType(), flags, project.getId(), org.opencms.main.I_CmsConstants.C_STATE_NEW, resourceType.getLoaderId(), 0, user.getId(), 0, user.getId(), contents.length, 1, contents);
 
         newFile.setFullResourceName(parentFolder.getRootPath() + newFile.getName());
         return createFile(project, newFile, user.getId(), parentFolder.getStructureId(), filename);
@@ -336,7 +336,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#createFolder(com.opencms.file.CmsProject, com.opencms.file.CmsFolder, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsVfsDriver#createFolder(org.opencms.file.CmsProject, org.opencms.file.CmsFolder, org.opencms.util.CmsUUID)
      */
     public CmsFolder createFolder(CmsProject project, CmsFolder folder, CmsUUID parentId) throws CmsException {
         int state = 0;
@@ -467,11 +467,11 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#createFolder(com.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String, int, long, org.opencms.util.CmsUUID, long, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsVfsDriver#createFolder(org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String, int, long, org.opencms.util.CmsUUID, long, org.opencms.util.CmsUUID)
      */
     public CmsFolder createFolder(CmsProject project, CmsUUID parentId, CmsUUID fileId, String folderName, int flags, long dateLastModified, CmsUUID userLastModified, long dateCreated, CmsUUID userCreated) throws CmsException {
 
-        CmsFolder newFolder = new CmsFolder(new CmsUUID(), new CmsUUID(), parentId, CmsUUID.getNullUUID(), folderName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, flags, project.getId(), com.opencms.core.I_CmsConstants.C_STATE_NEW, dateCreated, userCreated, dateLastModified, userLastModified, 1);
+        CmsFolder newFolder = new CmsFolder(new CmsUUID(), new CmsUUID(), parentId, CmsUUID.getNullUUID(), folderName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, flags, project.getId(), org.opencms.main.I_CmsConstants.C_STATE_NEW, dateCreated, userCreated, dateLastModified, userLastModified, 1);
 
         return createFolder(project, newFolder, parentId);
 
@@ -559,7 +559,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#createSibling(com.opencms.file.CmsProject, com.opencms.file.CmsResource, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String)
+     * @see org.opencms.db.I_CmsVfsDriver#createSibling(org.opencms.file.CmsProject, org.opencms.file.CmsResource, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String)
      */
     public CmsResource createSibling(CmsProject project, CmsResource resource, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException {
         Connection conn = null;
@@ -656,7 +656,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#deleteProperties(int, com.opencms.file.CmsResource)
+     * @see org.opencms.db.I_CmsVfsDriver#deleteProperties(int, org.opencms.file.CmsResource)
      */
     public void deleteProperties(int projectId, CmsResource resource) throws CmsException {
         Connection conn = null;
@@ -682,7 +682,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#deleteProperty(java.lang.String, int, com.opencms.file.CmsResource, int)
+     * @see org.opencms.db.I_CmsVfsDriver#deleteProperty(java.lang.String, int, org.opencms.file.CmsResource, int)
      */
     public void deleteProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException {
         CmsPropertydefinition propdef = readPropertyDefinition(meta, projectId, resourceType);
@@ -718,7 +718,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#deletePropertyDefinition(com.opencms.file.CmsPropertydefinition)
+     * @see org.opencms.db.I_CmsVfsDriver#deletePropertyDefinition(org.opencms.file.CmsPropertydefinition)
      */
     public void deletePropertyDefinition(CmsPropertydefinition metadef) throws CmsException {
         Connection conn = null;
@@ -778,7 +778,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#importResource(com.opencms.file.CmsProject, org.opencms.util.CmsUUID, com.opencms.file.CmsResource, byte[], org.opencms.util.CmsUUID, boolean)
+     * @see org.opencms.db.I_CmsVfsDriver#importResource(org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.file.CmsResource, byte[], org.opencms.util.CmsUUID, boolean)
      */
     public CmsResource importResource(CmsProject project, CmsUUID parentId, CmsResource newResource, byte[] filecontent, CmsUUID userId, boolean isFolder) throws CmsException {
 
@@ -1079,7 +1079,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readChildResources(com.opencms.file.CmsProject, com.opencms.file.CmsFolder, boolean)
+     * @see org.opencms.db.I_CmsVfsDriver#readChildResources(org.opencms.file.CmsProject, org.opencms.file.CmsFolder, boolean)
      */
     public List readChildResources(CmsProject currentProject, CmsFolder parentFolder, boolean getSubFolders) throws CmsException {
         Connection conn = null;
@@ -1141,7 +1141,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                     // do nothing only move through all rows because of mssql odbc driver
                 }
                 // check if this resource is marked as deleted
-                if (file.getState() == com.opencms.core.I_CmsConstants.C_STATE_DELETED && !includeDeleted) {
+                if (file.getState() == org.opencms.main.I_CmsConstants.C_STATE_DELETED && !includeDeleted) {
                     throw new CmsException("[" + this.getClass().getName() + ".readFile] " + file.getName(), CmsException.C_RESOURCE_DELETED);
                 }
             } else {
@@ -1181,7 +1181,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                     // do nothing only move through all rows because of mssql odbc driver
                 }
                 // check if this resource is marked as deleted
-                if ((file.getState() == com.opencms.core.I_CmsConstants.C_STATE_DELETED) && !includeDeleted) {
+                if ((file.getState() == org.opencms.main.I_CmsConstants.C_STATE_DELETED) && !includeDeleted) {
                     throw new CmsException("[" + this.getClass().getName() + ".readFileHeader/2] " + file.getName(), CmsException.C_RESOURCE_DELETED);
                 }
             } else {
@@ -1225,7 +1225,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 }
 
                 // check if this resource is marked as deleted
-                if ((file.getState() == com.opencms.core.I_CmsConstants.C_STATE_DELETED) && !includeDeleted) {
+                if ((file.getState() == org.opencms.main.I_CmsConstants.C_STATE_DELETED) && !includeDeleted) {
                     throw new CmsException("[" + this.getClass().getName() + ".readFileHeader/3] " + file.getName(), CmsException.C_RESOURCE_DELETED);
                 }
             } else {
@@ -1437,7 +1437,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readFolderTree(com.opencms.file.CmsProject, com.opencms.file.CmsResource)
+     * @see org.opencms.db.I_CmsVfsDriver#readFolderTree(org.opencms.file.CmsProject, org.opencms.file.CmsResource)
      */
     public List readFolderTree(CmsProject currentProject, CmsResource parentResource) throws CmsException {
         ResultSet res = null;
@@ -1479,7 +1479,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readProperties(int, com.opencms.file.CmsResource, int)
+     * @see org.opencms.db.I_CmsVfsDriver#readProperties(int, org.opencms.file.CmsResource, int)
      */
     public Map readProperties(int projectId, CmsResource resource, int resourceType) throws CmsException {
         HashMap returnValue = new HashMap();
@@ -1513,7 +1513,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readProperty(java.lang.String, int, com.opencms.file.CmsResource, int)
+     * @see org.opencms.db.I_CmsVfsDriver#readProperty(java.lang.String, int, org.opencms.file.CmsResource, int)
      */
     public String readProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException {
 
@@ -1587,7 +1587,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readPropertyDefinitions(int, com.opencms.file.I_CmsResourceType)
+     * @see org.opencms.db.I_CmsVfsDriver#readPropertyDefinitions(int, org.opencms.file.I_CmsResourceType)
      */
     public Vector readPropertyDefinitions(int projectId, I_CmsResourceType resourcetype) throws CmsException {
         Vector metadefs = new Vector();
@@ -1796,7 +1796,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readSiblings(com.opencms.file.CmsProject, com.opencms.file.CmsResource, boolean)
+     * @see org.opencms.db.I_CmsVfsDriver#readSiblings(org.opencms.file.CmsProject, org.opencms.file.CmsResource, boolean)
      */
     public List readSiblings(CmsProject currentProject, CmsResource resource, boolean includeDeleted) throws CmsException {
         PreparedStatement stmt = null;
@@ -1829,7 +1829,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#removeFile(com.opencms.file.CmsProject, com.opencms.file.CmsResource, boolean)
+     * @see org.opencms.db.I_CmsVfsDriver#removeFile(org.opencms.file.CmsProject, org.opencms.file.CmsResource, boolean)
      */
     public void removeFile(CmsProject currentProject, CmsResource resource, boolean removeFileContent) throws CmsException {
         PreparedStatement stmt = null;
@@ -1890,7 +1890,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#removeFolder(com.opencms.file.CmsProject, com.opencms.file.CmsFolder)
+     * @see org.opencms.db.I_CmsVfsDriver#removeFolder(org.opencms.file.CmsProject, org.opencms.file.CmsFolder)
      */
     public void removeFolder(CmsProject currentProject, CmsFolder folder) throws CmsException {
         // the current implementation only deletes empty folders
@@ -1938,7 +1938,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#replaceResource(com.opencms.file.CmsUser, com.opencms.file.CmsProject, com.opencms.file.CmsResource, byte[], int, int)
+     * @see org.opencms.db.I_CmsVfsDriver#replaceResource(org.opencms.file.CmsUser, org.opencms.file.CmsProject, org.opencms.file.CmsResource, byte[], int, int)
      */
     public void replaceResource(CmsUser currentUser, CmsProject currentProject, CmsResource res, byte[] resContent, int newResType, int loaderId) throws CmsException {
         Connection conn = null;
@@ -2087,7 +2087,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#writeFileHeader(com.opencms.file.CmsProject, com.opencms.file.CmsFile, int, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsVfsDriver#writeFileHeader(org.opencms.file.CmsProject, org.opencms.file.CmsFile, int, org.opencms.util.CmsUUID)
      */
     public void writeFileHeader(CmsProject project, CmsFile file, int changed, CmsUUID userId) throws CmsException {
         // this task is split into two statements because Oracle doesnt support muti-table updates
@@ -2101,12 +2101,12 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         int resourceState = file.getState();
         //if (structureState != com.opencms.core.I_CmsConstants.C_STATE_NEW && (changed > CmsDriverManager.C_NOTHING_CHANGED)) {
         if (changed == CmsDriverManager.C_UPDATE_RESOURCE_STATE) {
-            resourceState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
+            resourceState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
         } else if (changed == CmsDriverManager.C_UPDATE_STRUCTURE_STATE) {
-            structureState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
+            structureState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
         } else if (changed != CmsDriverManager.C_NOTHING_CHANGED) {
-            resourceState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
-            structureState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
+            resourceState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
+            structureState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
         }
         //}
 
@@ -2151,7 +2151,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#writeFolder(com.opencms.file.CmsProject, com.opencms.file.CmsFolder, int, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsVfsDriver#writeFolder(org.opencms.file.CmsProject, org.opencms.file.CmsFolder, int, org.opencms.util.CmsUUID)
      */
     public void writeFolder(CmsProject project, CmsFolder folder, int changed, CmsUUID userId) throws CmsException {
         PreparedStatement stmt = null;
@@ -2162,14 +2162,14 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         //Savepoint savepoint = null;
         int structureState = folder.getState();
         int resourceState = folder.getState();
-        if (structureState != com.opencms.core.I_CmsConstants.C_STATE_NEW && (changed > CmsDriverManager.C_NOTHING_CHANGED)) {
+        if (structureState != org.opencms.main.I_CmsConstants.C_STATE_NEW && (changed > CmsDriverManager.C_NOTHING_CHANGED)) {
             if (changed == CmsDriverManager.C_UPDATE_RESOURCE_STATE) {
-                resourceState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
+                resourceState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
             } else if (changed == CmsDriverManager.C_UPDATE_STRUCTURE_STATE) {
-                structureState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
+                structureState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
             } else {
-                resourceState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
-                structureState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
+                resourceState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
+                structureState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
             }
         }
 
@@ -2215,7 +2215,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#writeLastModifiedProjectId(com.opencms.file.CmsProject, int, com.opencms.file.CmsResource)
+     * @see org.opencms.db.I_CmsVfsDriver#writeLastModifiedProjectId(org.opencms.file.CmsProject, int, org.opencms.file.CmsResource)
      */
     public void writeLastModifiedProjectId(CmsProject project, int projectId, CmsResource resource) throws CmsException {
         Connection conn = null;
@@ -2235,7 +2235,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#writeProperties(java.util.Map, int, com.opencms.file.CmsResource, int, boolean)
+     * @see org.opencms.db.I_CmsVfsDriver#writeProperties(java.util.Map, int, org.opencms.file.CmsResource, int, boolean)
      */
     public void writeProperties(Map propertyinfos, int projectId, CmsResource resource, int resourceType, boolean addDefinition) throws CmsException {
         // get all metadefs
@@ -2250,7 +2250,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#writeProperty(java.lang.String, int, java.lang.String, com.opencms.file.CmsResource, int, boolean)
+     * @see org.opencms.db.I_CmsVfsDriver#writeProperty(java.lang.String, int, java.lang.String, org.opencms.file.CmsResource, int, boolean)
      */
     public void writeProperty(String meta, int projectId, String value, CmsResource resource, int resourceType, boolean addDefinition) throws CmsException {
         CmsPropertydefinition propdef = null;
@@ -2320,7 +2320,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#writeResource(com.opencms.file.CmsProject, com.opencms.file.CmsResource, byte[], int, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsVfsDriver#writeResource(org.opencms.file.CmsProject, org.opencms.file.CmsResource, byte[], int, org.opencms.util.CmsUUID)
      * NOTE: the file content is only written if filecontent != null, otherwise the values of the resource are written without changes
      *
      */
@@ -2344,14 +2344,14 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         int structureState = resource.getState();
         int resourceState = resource.getState();
-        if (structureState != com.opencms.core.I_CmsConstants.C_STATE_NEW && (changed > CmsDriverManager.C_NOTHING_CHANGED)) {
+        if (structureState != org.opencms.main.I_CmsConstants.C_STATE_NEW && (changed > CmsDriverManager.C_NOTHING_CHANGED)) {
             if (changed == CmsDriverManager.C_UPDATE_RESOURCE_STATE) {
-                resourceState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
+                resourceState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
             } else if (changed == CmsDriverManager.C_UPDATE_STRUCTURE_STATE) {
-                structureState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
+                structureState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
             } else {
-                resourceState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
-                structureState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
+                resourceState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
+                structureState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
             }
         }
 
@@ -2400,7 +2400,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#writeResource(com.opencms.file.CmsProject, com.opencms.file.CmsResource, com.opencms.file.CmsResource, boolean)
+     * @see org.opencms.db.I_CmsVfsDriver#writeResource(org.opencms.file.CmsProject, org.opencms.file.CmsResource, org.opencms.file.CmsResource, boolean)
      */
     public void writeResource(CmsProject onlineProject, CmsResource onlineResource, CmsResource offlineResource, boolean writeFileContent) throws CmsException {
         Connection conn = null;
@@ -2494,7 +2494,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#writeResourceState(com.opencms.file.CmsProject, com.opencms.file.CmsResource, int)
+     * @see org.opencms.db.I_CmsVfsDriver#writeResourceState(org.opencms.file.CmsProject, org.opencms.file.CmsResource, int)
      */
     public void writeResourceState(CmsProject project, CmsResource resource, int changed) throws CmsException {
         PreparedStatement stmt = null;

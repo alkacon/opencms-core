@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cron/Attic/CmsCronEntry.java,v $
- * Date   : $Date: 2004/02/04 17:18:08 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/13 13:41:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,9 @@
 
 package org.opencms.cron;
 
+import org.opencms.main.CmsException;
 import org.opencms.util.CmsStringSubstitution;
 
-import com.opencms.core.CmsException;
 
 import java.util.Calendar;
 
@@ -43,7 +43,7 @@ import org.dom4j.Element;
 
 /**
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.4 $ $Date: 2004/02/04 17:18:08 $
+ * @version $Revision: 1.5 $ $Date: 2004/02/13 13:41:46 $
  * @since 5.1.12
  */
 public class CmsCronEntry extends Object {

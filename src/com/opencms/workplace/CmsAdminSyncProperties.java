@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminSyncProperties.java,v $
-* Date   : $Date: 2004/01/25 12:42:45 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,15 +28,15 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsProject;
-import com.opencms.file.CmsRegistry;
-import com.opencms.file.CmsRequestContext;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsRegistry;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;

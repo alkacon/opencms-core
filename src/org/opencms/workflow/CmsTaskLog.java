@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/CmsTaskLog.java,v $
- * Date   : $Date: 2003/09/15 10:51:15 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,15 @@
 
 package org.opencms.workflow;
 
+import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.I_CmsConstants;
 
 /**
  * Describes an OpenCms task log entry.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  */
 public class CmsTaskLog {
 

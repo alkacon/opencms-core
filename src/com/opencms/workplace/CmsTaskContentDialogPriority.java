@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogPriority.java,v $
-* Date   : $Date: 2004/02/09 14:16:34 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,14 +31,14 @@ package com.opencms.workplace;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workflow.CmsTask;
 
-import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
-import com.opencms.file.CmsGroup;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsUser;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.Hashtable;
@@ -49,7 +49,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.35 $ $Date: 2004/02/09 14:16:34 $
+ * @version $Revision: 1.36 $ $Date: 2004/02/13 13:41:44 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsFilterMethod.java,v $
-* Date   : $Date: 2003/07/14 12:41:52 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2004/02/13 13:41:45 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
 package com.opencms.defaults;
 
 import java.lang.reflect.*;
-import com.opencms.file.*;
+import org.opencms.file.*;
 
 /**
  * Insert the type's description here.

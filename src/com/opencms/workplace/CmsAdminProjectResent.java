@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResent.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2004/02/13 13:41:43 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,12 +29,12 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsProject;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;
@@ -45,7 +45,7 @@ import java.util.Vector;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.24 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.25 $ $Date: 2004/02/13 13:41:43 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
  
 package org.opencms.util;
 
-import com.opencms.core.CmsException;
+import org.opencms.main.CmsException;
 
 import java.io.Serializable;
 
@@ -56,7 +56,7 @@ import org.doomdark.uuid.UUIDGenerator;
  * This class is just a facade wrapper for the "real" UUID implementation.<p> 
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0.0
  */

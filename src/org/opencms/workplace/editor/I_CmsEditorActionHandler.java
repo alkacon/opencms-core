@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/I_CmsEditorActionHandler.java,v $
- * Date   : $Date: 2004/02/09 13:05:37 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@ package org.opencms.workplace.editor;
 
 import org.opencms.page.CmsXmlPage;
 
-import com.opencms.file.CmsObject;
-import com.opencms.flex.jsp.CmsJspActionElement;
+import org.opencms.file.CmsObject;
+import org.opencms.jsp.CmsJspActionElement;
 
 import java.io.IOException;
 
@@ -47,7 +47,7 @@ import javax.servlet.jsp.JspException;
  * The class you enter must implement this interface to perform the editor action.<p>  
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3.0
  */

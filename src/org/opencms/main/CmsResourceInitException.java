@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsResourceInitException.java,v $
- * Date   : $Date: 2004/01/25 12:38:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,6 @@
  */
 package org.opencms.main;
 
-import com.opencms.core.CmsException;
 
 /**
  * This exeption is thrown by a class which implements com.opencms.core.I_CmsResourceInit.
@@ -38,7 +37,7 @@ import com.opencms.core.CmsException;
  * all other implementations of I_CmsResourceInit will not be executed.<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsResourceInitException extends CmsException {
 

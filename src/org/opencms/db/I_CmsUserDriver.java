@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2004/01/14 12:55:58 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,13 @@
 package org.opencms.db;
 
 import org.opencms.db.generic.CmsSqlManager;
+import org.opencms.main.CmsException;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsGroup;
-import com.opencms.file.CmsProject;
-import com.opencms.file.CmsUser;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsUser;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -48,7 +48,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.30 $ $Date: 2004/01/14 12:55:58 $
+ * @version $Revision: 1.31 $ $Date: 2004/02/13 13:41:44 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {

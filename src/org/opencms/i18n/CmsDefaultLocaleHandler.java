@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,11 +30,11 @@
  */
 package org.opencms.i18n;
 
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
 
 import java.util.List;
 import java.util.Locale;
@@ -44,7 +44,7 @@ import java.util.Locale;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  */
 public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
 
@@ -59,14 +59,14 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
     }
     
     /**
-     * @see org.opencms.i18n.I_CmsLocaleHandler#initHandler(com.opencms.file.CmsObject)
+     * @see org.opencms.i18n.I_CmsLocaleHandler#initHandler(org.opencms.file.CmsObject)
      */
     public void initHandler(CmsObject cms) {
         m_adminCmsObject = cms;
     }
     
     /**
-     * @see org.opencms.i18n.I_CmsLocaleHandler#getLocale(com.opencms.file.CmsRequestContext)
+     * @see org.opencms.i18n.I_CmsLocaleHandler#getLocale(org.opencms.file.CmsRequestContext)
      */
     public Locale getLocale(CmsRequestContext context) {        
         // get resource name (internal "Admin" cms object is in "/" site so adjust name to full path)

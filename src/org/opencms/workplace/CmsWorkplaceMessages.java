@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2004/02/13 11:01:24 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,10 +32,10 @@
 package org.opencms.workplace;
 
 import org.opencms.i18n.CmsMessages;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -51,7 +51,7 @@ import java.util.Set;
  * Provides access to the localized lables for the workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.1
  */

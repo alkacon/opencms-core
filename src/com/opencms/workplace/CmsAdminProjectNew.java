@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2004/02/09 14:16:34 $
-* Version: $Revision: 1.91 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.92 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,17 +29,17 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
-import com.opencms.file.CmsGroup;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsProject;
-import com.opencms.file.CmsRegistry;
-import com.opencms.file.CmsRequestContext;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsRegistry;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;
@@ -53,7 +53,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.91 $ $Date: 2004/02/09 14:16:34 $
+ * @version $Revision: 1.92 $ $Date: 2004/02/13 13:41:44 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

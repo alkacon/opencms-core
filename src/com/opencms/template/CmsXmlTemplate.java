@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2004/02/06 20:52:43 $
-* Version: $Revision: 1.140 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.141 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,18 +29,17 @@
 
 package com.opencms.template;
 
-import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.defaults.A_CmsContentDefinition;
 import com.opencms.defaults.I_CmsTimedContentDefinition;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRequestContext;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
 import com.opencms.template.cache.A_CmsElement;
 import com.opencms.template.cache.CmsElementCache;
 import com.opencms.template.cache.CmsElementDefinition;
@@ -60,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.140 $ $Date: 2004/02/06 20:52:43 $
+ * @version $Revision: 1.141 $ $Date: 2004/02/13 13:41:44 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";

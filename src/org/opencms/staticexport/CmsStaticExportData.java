@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportData.java,v $
- * Date   : $Date: 2003/09/26 11:01:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/13 13:41:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,14 @@
 
 package org.opencms.staticexport;
 
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsResource;
 
 /**
  * Provides a data structure for the result of an export request.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsStaticExportData {
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsResourceLoaderFacade.java,v $
- * Date   : $Date: 2003/12/12 12:16:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.loader;
 
-import com.opencms.file.CmsFile;
+import org.opencms.file.CmsFile;
 
 /**
  * Facade object that contains a resource loader and a file of the cms.<p>
@@ -50,7 +50,7 @@ import com.opencms.file.CmsFile;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3
  */
 public class CmsResourceLoaderFacade {

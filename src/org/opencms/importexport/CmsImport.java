@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
-* Date   : $Date: 2004/02/12 16:54:20 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.13 $
 *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,14 +32,14 @@
 package org.opencms.importexport;
 
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.io.ByteArrayInputStream;
@@ -70,7 +70,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.12 $ $Date: 2004/02/12 16:54:20 $
+ * @version $Revision: 1.13 $ $Date: 2004/02/13 13:41:44 $
  */
 public class CmsImport implements Serializable {
 

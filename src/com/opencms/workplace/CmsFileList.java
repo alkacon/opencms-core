@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2004/02/05 08:28:07 $
-* Version: $Revision: 1.79 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.80 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,16 +31,16 @@ package com.opencms.workplace;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceAction;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsGroup;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsUser;
-import com.opencms.file.I_CmsResourceType;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsUser;
+import org.opencms.file.I_CmsResourceType;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.Calendar;
@@ -64,7 +64,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.79 $ $Date: 2004/02/05 08:28:07 $
+ * @version $Revision: 1.80 $ $Date: 2004/02/13 13:41:44 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

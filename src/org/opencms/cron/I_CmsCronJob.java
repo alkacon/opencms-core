@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cron/Attic/I_CmsCronJob.java,v $
- * Date   : $Date: 2003/10/29 13:00:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 13:41:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,13 +30,13 @@
  */
 package org.opencms.cron;
 
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
 
 /**
  * This interface identifies an Object that can be started as a cronjob.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.1 $ $Date: 2003/10/29 13:00:42 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/13 13:41:46 $
  * @since 5.1.12
  */
 public interface I_CmsCronJob {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPageTemplate.java,v $
- * Date   : $Date: 2004/01/14 17:09:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,11 @@
 package org.opencms.page;
 
 import org.opencms.loader.CmsXmlPageLoader;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import com.opencms.template.CmsCacheDirectives;
 import com.opencms.template.CmsDumpTemplate;
 
@@ -49,7 +49,7 @@ import java.util.Hashtable;
  *
  * @author  Carsten Weinholz
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1
  */
 public class CmsXmlPageTemplate extends CmsDumpTemplate {
@@ -87,7 +87,7 @@ public class CmsXmlPageTemplate extends CmsDumpTemplate {
         } catch (java.lang.ClassCastException e) {
             s = null;
             throw new CmsException("[CmsXmlPageTemplate] " + filename + " is not a xml page");
-        } catch (com.opencms.core.CmsException e) {
+        } catch (org.opencms.main.CmsException e) {
             s = null;
             // File might not exist or no read permissions
             throw new CmsException("[CmsXmlPageTemplate] Error while reading xml page " + filename + "\n" + e, e);

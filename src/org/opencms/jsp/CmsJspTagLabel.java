@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLabel.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,9 @@
 package org.opencms.jsp;
 
 import org.opencms.flex.CmsFlexController;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
 import com.opencms.workplace.CmsXmlLanguageFile;
 import com.opencms.workplace.CmsXmlWpLabelDefFile;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -53,7 +53,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsJspTagLabel extends BodyTagSupport {
             

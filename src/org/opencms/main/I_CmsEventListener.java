@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2004/01/25 12:42:45 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -77,7 +77,7 @@ public interface I_CmsEventListener {
     /** 
      * Event "user has logged in".<p>
      *
-     * @see com.opencms.file.CmsObject#loginUser(String, String) 
+     * @see org.opencms.file.CmsObject#loginUser(String, String) 
      */
     int EVENT_LOGIN_USER = 1;
 
@@ -89,7 +89,7 @@ public interface I_CmsEventListener {
      * <li>key "publishHistoryId" (mandatory): the ID of the publish task in the publish history</li>
      * <li>key "report" (optional): an I_CmsReport instance to print output messages</li>
      * </ul>
-     * @see com.opencms.file.CmsObject#publishProject()
+     * @see org.opencms.file.CmsObject#publishProject()
      */    
     int EVENT_PUBLISH_PROJECT = 2;
     
@@ -101,14 +101,14 @@ public interface I_CmsEventListener {
      * <li>key "resource": the published CmsResource</li>
      * </ul>
      * 
-     * @see com.opencms.file.CmsObject#publishResource(String, boolean, org.opencms.report.I_CmsReport)
+     * @see org.opencms.file.CmsObject#publishResource(String, boolean, org.opencms.report.I_CmsReport)
      */    
     int EVENT_PUBLISH_RESOURCE = 3;    
 
     /** 
      * Event "a resource in the COS was published".<p>
      * 
-     * @see com.opencms.defaults.master.CmsMasterContent#publishResource(com.opencms.file.CmsObject)
+     * @see com.opencms.defaults.master.CmsMasterContent#publishResource(org.opencms.file.CmsObject)
      */    
     int EVENT_PUBLISH_BO_RESOURCE = 4;    
         
@@ -248,7 +248,7 @@ public interface I_CmsEventListener {
      * <li>key "publishHistoryId" (mandatory): the ID of the publish task in the publish history</li>
      * <li>key "report" (optional): an I_CmsReport instance to print output messages</li>
      * </ul>
-     * @see com.opencms.file.CmsObject#publishProject()
+     * @see org.opencms.file.CmsObject#publishProject()
      */    
     int EVENT_CLUSTER_PUBLISH_PROJECT = 20;    
     

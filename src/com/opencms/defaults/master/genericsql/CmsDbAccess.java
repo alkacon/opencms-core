@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2004/02/13 11:27:46 $
-* Version: $Revision: 1.69 $
+* Date   : $Date: 2004/02/13 13:41:46 $
+* Version: $Revision: 1.70 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,16 +28,14 @@
 
 package com.opencms.defaults.master.genericsql;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
 import com.opencms.defaults.master.CmsMasterMedia;
-import com.opencms.file.CmsFolder;
-import com.opencms.file.CmsGroup;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsUser;
+import org.opencms.file.CmsFolder;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsUser;
 
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Constructor;
@@ -51,6 +49,8 @@ import java.util.Vector;
 
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsPublishedResource;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsUUID;

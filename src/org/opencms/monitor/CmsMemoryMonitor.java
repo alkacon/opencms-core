@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2004/02/11 16:12:05 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/02/13 13:41:46 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.cron.I_CmsCronJob;
 import org.opencms.flex.CmsFlexCache.CmsFlexCacheVariation;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionInfoManager;
 import org.opencms.main.I_CmsEventListener;
@@ -43,17 +44,16 @@ import org.opencms.main.OpenCmsCore;
 import org.opencms.main.OpenCmsSessionManager;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.util.CmsMail;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
 
-import com.opencms.core.CmsException;
-import com.opencms.defaults.CmsMail;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsGroup;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsProject;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsUser;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsUser;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -70,7 +70,7 @@ import org.apache.commons.collections.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.23 $ $Date: 2004/02/11 16:12:05 $
+ * @version $Revision: 1.24 $ $Date: 2004/02/13 13:41:46 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -519,7 +519,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
     }
     
     /**a
-     * @see org.opencms.cron.I_CmsCronJob#launch(com.opencms.file.CmsObject, java.lang.String)
+     * @see org.opencms.cron.I_CmsCronJob#launch(org.opencms.file.CmsObject, java.lang.String)
      */
     public String launch(CmsObject cms, String params) throws Exception {
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,15 +30,15 @@
  */
 package org.opencms.workplace;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsGroup;
-import com.opencms.file.CmsProject;
-import com.opencms.flex.jsp.CmsJspActionElement;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsProject;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 5.1
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTemplate.java,v $
- * Date   : $Date: 2003/11/14 10:09:15 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,11 @@
 package org.opencms.jsp;
 
 import org.opencms.loader.CmsJspLoader;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import com.opencms.template.CmsCacheDirectives;
 import com.opencms.template.CmsDumpTemplate;
 
@@ -49,7 +49,7 @@ import java.util.Hashtable;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.0 beta 1
  */
 public class CmsJspTemplate extends CmsDumpTemplate {
@@ -87,7 +87,7 @@ public class CmsJspTemplate extends CmsDumpTemplate {
         } catch (java.lang.ClassCastException e) {
             s = null;
             throw new CmsException("[CmsJspTemplate] " + jspFile + " is not a JSP");
-        } catch (com.opencms.core.CmsException e) {
+        } catch (org.opencms.main.CmsException e) {
             s = null;
             // File might not exist or no read permissions
             throw new CmsException("[CmsJspTemplate] Error while reading JSP " + jspFile + "\n" + e, e);

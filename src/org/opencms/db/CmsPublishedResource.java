@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2004/01/07 09:19:22 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,8 @@ package org.opencms.db;
 
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsResourceTypeFolder;
+import org.opencms.file.CmsResourceTypeFolder;
+import org.opencms.main.I_CmsConstants;
 
 import java.io.Serializable;
 
@@ -48,7 +48,7 @@ import java.io.Serializable;
  * that is written during each publishing process.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2004/01/07 09:19:22 $
+ * @version $Revision: 1.9 $ $Date: 2004/02/13 13:41:44 $
  * @since 5.1.11
  * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(int, CmsUUID)
  */

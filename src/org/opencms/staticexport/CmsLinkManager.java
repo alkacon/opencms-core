@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/02/12 16:54:20 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/02/13 13:41:46 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,12 @@
 
 package org.opencms.staticexport;
 
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.site.CmsSiteMatcher;
 
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -51,7 +51,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class CmsLinkManager {
     

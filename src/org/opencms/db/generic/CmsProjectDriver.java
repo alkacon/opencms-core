@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/01/28 11:53:52 $
- * Version: $Revision: 1.147 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.148 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,9 @@ import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
@@ -46,16 +48,14 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsFolder;
-import com.opencms.file.CmsGroup;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsProject;
-import com.opencms.file.CmsRequestContext;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsUser;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsFolder;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsUser;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -83,7 +83,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.147 $ $Date: 2004/01/28 11:53:52 $
+ * @version $Revision: 1.148 $ $Date: 2004/02/13 13:41:45 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -179,7 +179,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#createProject(com.opencms.file.CmsUser, com.opencms.file.CmsGroup, com.opencms.file.CmsGroup, org.opencms.workflow.CmsTask, java.lang.String, java.lang.String, int, int, java.lang.Object)
+     * @see org.opencms.db.I_CmsProjectDriver#createProject(org.opencms.file.CmsUser, org.opencms.file.CmsGroup, org.opencms.file.CmsGroup, org.opencms.workflow.CmsTask, java.lang.String, java.lang.String, int, int, java.lang.Object)
     */
     public CmsProject createProject(CmsUser owner, CmsGroup group, CmsGroup managergroup, CmsTask task, String name, String description, int flags, int type, Object reservedParam) throws CmsException {
         CmsProject project = null;
@@ -595,7 +595,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
     
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#publishDeletedFolder(com.opencms.file.CmsRequestContext, org.opencms.report.I_CmsReport, int, int, com.opencms.file.CmsProject, com.opencms.file.CmsFolder, boolean, long, org.opencms.util.CmsUUID, int, int)
+     * @see org.opencms.db.I_CmsProjectDriver#publishDeletedFolder(org.opencms.file.CmsRequestContext, org.opencms.report.I_CmsReport, int, int, org.opencms.file.CmsProject, org.opencms.file.CmsFolder, boolean, long, org.opencms.util.CmsUUID, int, int)
      */
     public void publishDeletedFolder(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder currentFolder, boolean backupEnabled, long publishDate, CmsUUID publishHistoryId, int backupTagId, int maxVersions) throws Exception {
         CmsFolder onlineFolder = null;
@@ -686,7 +686,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#publishFile(com.opencms.file.CmsRequestContext, org.opencms.report.I_CmsReport, int, int, com.opencms.file.CmsProject, com.opencms.file.CmsResource, java.util.Set, boolean, long, org.opencms.util.CmsUUID, int, int)
+     * @see org.opencms.db.I_CmsProjectDriver#publishFile(org.opencms.file.CmsRequestContext, org.opencms.report.I_CmsReport, int, int, org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.Set, boolean, long, org.opencms.util.CmsUUID, int, int)
      */
     public void publishFile(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsResource offlineFileHeader, Set publishedContentIds, boolean backupEnabled, long publishDate, CmsUUID publishHistoryId, int backupTagId, int maxVersions) throws Exception {    
         // CmsFile offlineFile = null;
@@ -1010,7 +1010,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
     
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#publishFileContent(com.opencms.file.CmsProject, com.opencms.file.CmsProject, com.opencms.file.CmsResource, java.util.Set)
+     * @see org.opencms.db.I_CmsProjectDriver#publishFileContent(org.opencms.file.CmsProject, org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.Set)
      */
     public CmsFile publishFileContent(CmsProject offlineProject, CmsProject onlineProject, CmsResource offlineFileHeader, Set publishedContentIds) throws Exception {
         CmsFile newFile = null;
@@ -1053,7 +1053,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#publishFolder(com.opencms.file.CmsRequestContext, org.opencms.report.I_CmsReport, int, int, com.opencms.file.CmsProject, com.opencms.file.CmsFolder, boolean, long, org.opencms.util.CmsUUID, int, int)
+     * @see org.opencms.db.I_CmsProjectDriver#publishFolder(org.opencms.file.CmsRequestContext, org.opencms.report.I_CmsReport, int, int, org.opencms.file.CmsProject, org.opencms.file.CmsFolder, boolean, long, org.opencms.util.CmsUUID, int, int)
      */
     public void publishFolder(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder offlineFolder, boolean backupEnabled, long publishDate, CmsUUID publishHistoryId, int backupTagId, int maxVersions) throws Exception {
         CmsFolder newFolder = null;
@@ -1193,7 +1193,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#publishProject(com.opencms.file.CmsRequestContext, org.opencms.report.I_CmsReport, com.opencms.file.CmsProject, org.opencms.db.CmsPublishList, boolean, int, int)
+     * @see org.opencms.db.I_CmsProjectDriver#publishProject(org.opencms.file.CmsRequestContext, org.opencms.report.I_CmsReport, org.opencms.file.CmsProject, org.opencms.db.CmsPublishList, boolean, int, int)
      */
     public synchronized void publishProject(CmsRequestContext context, I_CmsReport report, CmsProject onlineProject, CmsPublishList publishList, boolean backupEnabled, int backupTagId, int maxVersions) throws Exception {
         CmsFolder currentFolder = null;
@@ -1560,7 +1560,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#readProjectResources(com.opencms.file.CmsProject)
+     * @see org.opencms.db.I_CmsProjectDriver#readProjectResources(org.opencms.file.CmsProject)
      */
     public List readProjectResources(CmsProject project) throws CmsException {
         PreparedStatement stmt = null;
@@ -1876,7 +1876,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#unmarkProjectResources(com.opencms.file.CmsProject)
+     * @see org.opencms.db.I_CmsProjectDriver#unmarkProjectResources(org.opencms.file.CmsProject)
      */
     public void unmarkProjectResources(CmsProject project) throws CmsException {
         // finally remove the project id form all resources 
@@ -1897,7 +1897,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#writePublishHistory(com.opencms.file.CmsProject, org.opencms.util.CmsUUID, int, com.opencms.file.CmsResource)
+     * @see org.opencms.db.I_CmsProjectDriver#writePublishHistory(org.opencms.file.CmsProject, org.opencms.util.CmsUUID, int, org.opencms.file.CmsResource)
      */
     public void writePublishHistory(CmsProject currentProject, CmsUUID publishId, int tagId, CmsResource resource) throws CmsException {
         Connection conn = null;
@@ -1926,7 +1926,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
     
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#writePublishHistory(com.opencms.file.CmsProject, org.opencms.util.CmsUUID, int, java.lang.String, org.opencms.util.CmsUUID, int, int)
+     * @see org.opencms.db.I_CmsProjectDriver#writePublishHistory(org.opencms.file.CmsProject, org.opencms.util.CmsUUID, int, java.lang.String, org.opencms.util.CmsUUID, int, int)
      */
     public void writePublishHistory(CmsProject currentProject, CmsUUID publishId, int tagId, String contentDefinitionName, CmsUUID masterId, int subId, int state) throws CmsException {
         Connection conn = null;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/08/10 11:49:48 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,9 @@
 
 package com.opencms.template;
 
-import com.opencms.file.*;
+import org.opencms.file.*;
+import org.opencms.main.*;
+
 import com.opencms.core.*;
 import java.util.*;
 
@@ -48,7 +50,7 @@ import java.util.*;
  * of templates (eg. type I_CmsDumpTemplate) as subtemplate.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2003/08/10 11:49:48 $
+ * @version $Revision: 1.11 $ $Date: 2004/02/13 13:41:44 $
  */
 public interface I_CmsXmlTemplate extends I_CmsTemplate {
     

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementCache.java,v $
-* Date   : $Date: 2004/02/13 11:07:47 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2004/02/13 13:41:46 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,12 +29,12 @@
 package com.opencms.template.cache;
 
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
 
 import java.util.Hashtable;
 import java.util.Vector;

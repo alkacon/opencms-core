@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/02/05 22:27:14 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,10 @@
 package org.opencms.workplace.editor;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.security.CmsPermissionSet;
@@ -39,11 +42,8 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceAction;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
-import com.opencms.flex.jsp.CmsJspActionElement;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.IOException;
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.3.0
  */
@@ -69,7 +69,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
     }
     
     /**
-     * @see org.opencms.workplace.editor.I_CmsEditorActionHandler#editorAction(org.opencms.workplace.editor.CmsDefaultPageEditor, com.opencms.flex.jsp.CmsJspActionElement)
+     * @see org.opencms.workplace.editor.I_CmsEditorActionHandler#editorAction(org.opencms.workplace.editor.CmsDefaultPageEditor, CmsJspActionElement)
      */
     public void editorAction(CmsDefaultPageEditor editor, CmsJspActionElement jsp) throws IOException, JspException {
         // save the edited content
@@ -108,7 +108,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
     }
     
     /**
-     * @see org.opencms.workplace.editor.I_CmsEditorActionHandler#getButtonUrl(com.opencms.flex.jsp.CmsJspActionElement, java.lang.String)
+     * @see org.opencms.workplace.editor.I_CmsEditorActionHandler#getButtonUrl(CmsJspActionElement, java.lang.String)
      */
     public String getButtonUrl(CmsJspActionElement jsp, String resourceName) {
         // get the button image
@@ -121,7 +121,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
     }
     
     /**
-     * @see org.opencms.workplace.editor.I_CmsEditorActionHandler#isButtonActive(com.opencms.flex.jsp.CmsJspActionElement, java.lang.String)
+     * @see org.opencms.workplace.editor.I_CmsEditorActionHandler#isButtonActive(CmsJspActionElement, java.lang.String)
      */
     public boolean isButtonActive(CmsJspActionElement jsp, String resourceName) {
         try {
@@ -144,7 +144,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
     }
     
     /**
-     * @see org.opencms.workplace.editor.I_CmsEditorActionHandler#getEditMode(com.opencms.file.CmsObject, java.lang.String, org.opencms.page.CmsXmlPage, java.lang.String)
+     * @see org.opencms.workplace.editor.I_CmsEditorActionHandler#getEditMode(org.opencms.file.CmsObject, java.lang.String, org.opencms.page.CmsXmlPage, java.lang.String)
      */
     public String getEditMode(CmsObject cmsObject, String filename, CmsXmlPage page, String element) {
     
@@ -162,7 +162,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
             } else if (!cmsObject.getResourceType(res.getType()).isDirectEditable()) {
                 // don't render edit area for non-editable resources 
                 return null;
-            } else if (CmsResource.getName(filename).startsWith(com.opencms.core.I_CmsConstants.C_TEMP_PREFIX)) {
+            } else if (CmsResource.getName(filename).startsWith(org.opencms.main.I_CmsConstants.C_TEMP_PREFIX)) {
                 // don't show edit area on temporary file
                 return C_EDITMODE_INACTIVE;
             } else if (!cmsObject.isInsideCurrentProject(res)) {

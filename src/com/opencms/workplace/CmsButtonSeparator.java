@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsButtonSeparator.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,8 +29,9 @@
 
 package com.opencms.workplace;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
+
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.Hashtable;
@@ -42,7 +43,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;BUTTONSEPARATOR&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.15 $ $Date: 2004/02/13 13:41:44 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpElement.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,8 +29,9 @@
 
 package com.opencms.workplace;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
+
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.Hashtable;
@@ -45,7 +46,7 @@ import org.w3c.dom.Element;
  * has to implement this interface.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.15 $ $Date: 2004/02/13 13:41:44 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

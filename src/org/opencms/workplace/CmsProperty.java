@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2004/02/05 08:28:07 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,16 +30,16 @@
  */
 package org.opencms.workplace;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsPropertydefinition;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsResourceTypeXmlPage;
-import com.opencms.file.I_CmsResourceType;
-import com.opencms.flex.jsp.CmsJspActionElement;
+import org.opencms.file.CmsPropertydefinition;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypeXmlPage;
+import org.opencms.file.I_CmsResourceType;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import java.io.IOException;
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 5.1
  */
@@ -141,7 +141,7 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
     }
     
     /**
-     * @see org.opencms.workplace.I_CmsDialogHandler#getDialogUri(java.lang.String, com.opencms.flex.jsp.CmsJspActionElement)
+     * @see org.opencms.workplace.I_CmsDialogHandler#getDialogUri(java.lang.String, CmsJspActionElement)
      */
     public String getDialogUri(String resource, CmsJspActionElement jsp) {
         try {

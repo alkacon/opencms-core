@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2004/02/09 14:16:35 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,14 +29,14 @@
 package com.opencms.workplace;
 
 import org.opencms.i18n.CmsMessages;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRegistry;
-import com.opencms.file.CmsResourceTypeFolder;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRegistry;
+import org.opencms.file.CmsResourceTypeFolder;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.text.SimpleDateFormat;
@@ -312,7 +312,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
     /**
      * Insert the method's description here.
      * Creation date: (03.11.00 08:23:13)
-     * @param param com.opencms.file.CmsObject
+     * @param param org.opencms.file.CmsObject
      * @param folder java.lang.String
      * @param newFolder java.lang.String
      */

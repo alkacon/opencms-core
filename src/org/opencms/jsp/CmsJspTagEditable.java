@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEditable.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,9 @@
 package org.opencms.jsp;
 
 import org.opencms.flex.CmsFlexController;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.workplace.editor.I_CmsEditorActionHandler;
 
-import com.opencms.core.I_CmsConstants;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -45,7 +45,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 /**
  * Implementation of editor tag used to provide settings to include tag.<p>
  * 
- * @version $Revision: 1.5 $ $Date: 2004/02/05 08:28:08 $
+ * @version $Revision: 1.6 $ $Date: 2004/02/13 13:41:44 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsJspTagEditable extends BodyTagSupport {

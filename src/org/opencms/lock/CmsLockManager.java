@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2004/02/02 10:23:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/13 13:41:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,11 +34,11 @@ package org.opencms.lock;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsProject;
-import com.opencms.file.CmsRequestContext;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,11 +58,11 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1.4
  * 
- * @see com.opencms.file.CmsObject#getLock(CmsResource)
+ * @see org.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
  */
 public final class CmsLockManager extends Object {

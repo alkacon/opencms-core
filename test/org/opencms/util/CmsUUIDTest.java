@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/Attic/CmsUUIDTest.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 13:41:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,13 @@
  
 package org.opencms.util;
 
-import com.opencms.core.CmsException;
+import org.opencms.main.CmsException;
 
 import junit.framework.TestCase;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0
  */

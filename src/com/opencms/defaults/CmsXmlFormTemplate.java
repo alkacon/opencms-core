@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlFormTemplate.java,v $
-* Date   : $Date: 2003/07/14 12:49:07 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2004/02/13 13:41:46 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,9 @@
 
 package com.opencms.defaults;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
+
 import com.opencms.template.CmsXmlTemplate;
 import com.opencms.template.CmsXmlTemplateFile;
 
@@ -43,7 +44,7 @@ import java.util.Hashtable;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2003/07/14 12:49:07 $
+ * @version $Revision: 1.8 $ $Date: 2004/02/13 13:41:46 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlFormTemplate extends CmsXmlTemplate {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsNotImplementedException.java,v $
- * Date   : $Date: 2003/08/04 09:46:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,14 @@
  
 package org.opencms.db;
 
-import com.opencms.core.CmsException;
+import org.opencms.main.CmsException;
 
 /**
  * Signals that an attempt to call a method has failed since it is not implemented.
  * This exception may be thrown by various driver implementation classes. 
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/08/04 09:46:30 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/13 13:41:44 $
  * @since 5.1.2
  */
 public class CmsNotImplementedException extends CmsException {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2004/02/12 16:54:20 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2004/02/13 13:41:44 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,16 +28,16 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.threads.CmsModuleImportThread;
 import org.opencms.threads.CmsModuleReplaceThread;
 
-import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRegistry;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRegistry;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.io.File;
@@ -207,7 +207,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
     /**
      * Imports the file zipName.
      * Creation date: (05.09.00 10:17:56)
-     * @param reg com.opencms.file.I_CmsRegistry
+     * @param reg org.opencms.file.I_CmsRegistry
      * @param zipName the complete path and name of the zip-file to import.
      * @return the new templateSelector.
      */

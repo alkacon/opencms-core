@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsHtmlLinkValidatorThread.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,14 +36,14 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 
 /**
  * A report thread for the HTML link validator.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2004/02/06 20:52:43 $
+ * @version $Revision: 1.7 $ $Date: 2004/02/13 13:41:45 $
  */
 public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
     
@@ -71,7 +71,7 @@ public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
      * The generated Cms publish list is *NOT* saved in the current user's workplace settings.<p>
      * 
      * @param cms the current OpenCms context object
-     * @see com.opencms.file.CmsObject#getPublishList(org.opencms.report.I_CmsReport)
+     * @see org.opencms.file.CmsObject#getPublishList(org.opencms.report.I_CmsReport)
      */
     public CmsHtmlLinkValidatorThread(CmsObject cms) {
         super(cms, "OpenCms: validating HTML links in all unpublished resources of project " + cms.getRequestContext().currentProject().getName());
@@ -102,7 +102,7 @@ public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
      * @param directPublishResource the resource which will be directly published
      * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published
      * @param settings the current user's workplace settings
-     * @see com.opencms.file.CmsObject#getPublishList(CmsResource, boolean, org.opencms.report.I_CmsReport)
+     * @see org.opencms.file.CmsObject#getPublishList(CmsResource, boolean, org.opencms.report.I_CmsReport)
      */
     public CmsHtmlLinkValidatorThread(CmsObject cms, CmsResource directPublishResource, boolean directPublishSiblings, CmsWorkplaceSettings settings) {
         super(cms, "OpenCms: validating HTML links in unpublishe resource of project " + cms.getRequestContext().currentProject().getName());

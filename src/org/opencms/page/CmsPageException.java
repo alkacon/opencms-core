@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsPageException.java,v $
- * Date   : $Date: 2004/01/06 16:41:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,13 @@
  
 package org.opencms.page;
 
-import com.opencms.core.CmsException;
+import org.opencms.main.CmsException;
 
 /**
  * Signals that a particular action was invoked on resource with an insufficient lock state.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1.4
  */
 public class CmsPageException extends CmsException {

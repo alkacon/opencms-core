@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/02/11 11:07:28 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,16 +35,16 @@ import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsUserDriver;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsGroup;
-import com.opencms.file.CmsProject;
-import com.opencms.file.CmsUser;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsUser;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -69,7 +69,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.52 $ $Date: 2004/02/11 11:07:28 $
+ * @version $Revision: 1.53 $ $Date: 2004/02/13 13:41:45 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -98,7 +98,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#createAccessControlEntry(com.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, int, int, int)
+     * @see org.opencms.db.I_CmsUserDriver#createAccessControlEntry(org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, int, int, int)
      */
     public void createAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal, int allowed, int denied, int flags) throws CmsException {
 
@@ -175,7 +175,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#createUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, com.opencms.file.CmsGroup, java.lang.String, java.lang.String, int)
+     * @see org.opencms.db.I_CmsUserDriver#createUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, org.opencms.file.CmsGroup, java.lang.String, java.lang.String, int)
      */
     public CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
         //int id = m_sqlManager.nextPkId("C_TABLE_USERS");
@@ -258,7 +258,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#deleteAccessControlEntries(com.opencms.file.CmsProject, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsUserDriver#deleteAccessControlEntries(org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
      */
     public void deleteAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
 
@@ -399,7 +399,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#importUser(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, long, int, java.util.Hashtable, com.opencms.file.CmsGroup, java.lang.String, java.lang.String, int, java.lang.Object)
+     * @see org.opencms.db.I_CmsUserDriver#importUser(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, long, int, java.util.Hashtable, org.opencms.file.CmsGroup, java.lang.String, java.lang.String, int, java.lang.Object)
      */
     public CmsUser importUser(CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type, Object reservedParam) throws CmsException {
         Connection conn = null;
@@ -601,7 +601,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#publishAccessControlEntries(com.opencms.file.CmsProject, com.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsUserDriver#publishAccessControlEntries(org.opencms.file.CmsProject, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
      */
     public void publishAccessControlEntries(CmsProject offlineProject, CmsProject onlineProject, CmsUUID offlineId, CmsUUID onlineId) throws CmsException {
         PreparedStatement stmt = null;
@@ -635,7 +635,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#readAccessControlEntries(com.opencms.file.CmsProject, org.opencms.util.CmsUUID, boolean)
+     * @see org.opencms.db.I_CmsUserDriver#readAccessControlEntries(org.opencms.file.CmsProject, org.opencms.util.CmsUUID, boolean)
      */
     public Vector readAccessControlEntries(CmsProject project, CmsUUID resource, boolean inheritedOnly) throws CmsException {
 
@@ -710,7 +710,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }    
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#readAccessControlEntry(com.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsUserDriver#readAccessControlEntry(org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
      */
     public CmsAccessControlEntry readAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException {
 
@@ -1167,7 +1167,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#removeAccessControlEntries(com.opencms.file.CmsProject, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsUserDriver#removeAccessControlEntries(org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
      */
     public void removeAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
 
@@ -1190,7 +1190,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#removeAccessControlEntry(com.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsUserDriver#removeAccessControlEntry(org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
      */
     public void removeAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException {
 
@@ -1213,7 +1213,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#undeleteAccessControlEntries(com.opencms.file.CmsProject, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsUserDriver#undeleteAccessControlEntries(org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
      */
     public void undeleteAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
 
@@ -1278,7 +1278,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writeAccessControlEntry(com.opencms.file.CmsProject, org.opencms.security.CmsAccessControlEntry)
+     * @see org.opencms.db.I_CmsUserDriver#writeAccessControlEntry(org.opencms.file.CmsProject, org.opencms.security.CmsAccessControlEntry)
      */
     public void writeAccessControlEntry(CmsProject project, CmsAccessControlEntry acEntry) throws CmsException {
 
@@ -1319,7 +1319,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writeGroup(com.opencms.file.CmsGroup)
+     * @see org.opencms.db.I_CmsUserDriver#writeGroup(org.opencms.file.CmsGroup)
      */
     public void writeGroup(CmsGroup group) throws CmsException {
         PreparedStatement stmt = null;
@@ -1424,7 +1424,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writeUser(com.opencms.file.CmsUser)
+     * @see org.opencms.db.I_CmsUserDriver#writeUser(org.opencms.file.CmsUser)
      */
     public void writeUser(CmsUser user) throws CmsException {
         PreparedStatement stmt = null;

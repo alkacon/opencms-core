@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsDbUtil.java,v $
- * Date   : $Date: 2003/09/19 15:33:08 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,10 @@
 
 package org.opencms.db;
 
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -48,7 +48,7 @@ import java.util.Hashtable;
  * This class is used to create primary keys as integers for Cms database tables that
  * don't have a UUID primary key.<p>
  * 
- * @version $Revision: 1.5 $ $Date: 2003/09/19 15:33:08 $
+ * @version $Revision: 1.6 $ $Date: 2004/02/13 13:41:44 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1

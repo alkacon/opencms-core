@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,18 +34,18 @@ package org.opencms.workplace;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.I_CmsLocaleHandler;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
 import org.opencms.workplace.editor.CmsWorkplaceEditorManager;
 import org.opencms.workplace.editor.I_CmsEditorActionHandler;
 import org.opencms.workplace.editor.I_CmsEditorHandler;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsFolder;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsFolder;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.*;
@@ -62,7 +62,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.1
  */
@@ -189,7 +189,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
 
     /**
-     * @see org.opencms.i18n.I_CmsLocaleHandler#initHandler(com.opencms.file.CmsObject)
+     * @see org.opencms.i18n.I_CmsLocaleHandler#initHandler(org.opencms.file.CmsObject)
      */
     public void initHandler(CmsObject cms) {
         // initialize the workplace locale set
@@ -197,7 +197,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }    
     
     /**
-     * @see org.opencms.i18n.I_CmsLocaleHandler#getLocale(com.opencms.file.CmsRequestContext)
+     * @see org.opencms.i18n.I_CmsLocaleHandler#getLocale(org.opencms.file.CmsRequestContext)
      */
     public Locale getLocale(CmsRequestContext context) {
         

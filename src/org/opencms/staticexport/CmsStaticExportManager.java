@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/12/10 17:36:58 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/02/13 13:41:46 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,17 +38,17 @@ import org.opencms.loader.CmsPageLoader;
 import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -74,7 +74,7 @@ import org.apache.commons.collections.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     

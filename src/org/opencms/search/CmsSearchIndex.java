@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/02/13 11:27:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,17 +30,17 @@
  */
 package org.opencms.search;
 
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.search.documents.CmsHighlightExtractor;
 import org.opencms.search.documents.CmsHtmlHighlighter;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsProject;
-import com.opencms.file.CmsRequestContext;
-import com.opencms.file.CmsResource;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,7 +63,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 
 /**
- * @version $Revision: 1.5 $ $Date: 2004/02/13 11:27:46 $
+ * @version $Revision: 1.6 $ $Date: 2004/02/13 13:41:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsSearchIndex {

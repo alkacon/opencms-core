@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/01/06 16:51:37 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/13 13:41:46 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,16 +31,16 @@
 
 package org.opencms.db.mysql;
 
+import org.opencms.main.CmsException;
 import org.opencms.workflow.CmsTaskLog;
 
-import com.opencms.core.CmsException;
 
 import java.util.Vector;
 
 /**
  * MySQL implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.8 $ $Date: 2004/01/06 16:51:37 $
+ * @version $Revision: 1.9 $ $Date: 2004/02/13 13:41:46 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1

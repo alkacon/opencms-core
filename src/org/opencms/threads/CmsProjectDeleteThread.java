@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsProjectDeleteThread.java,v $
- * Date   : $Date: 2003/09/19 14:42:52 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,18 +31,18 @@
 
 package org.opencms.threads;
 
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 
-import com.opencms.core.CmsException;
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
 
 /**
  * Deletes a project.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.1.10
  */
 public class CmsProjectDeleteThread extends A_CmsReportThread {

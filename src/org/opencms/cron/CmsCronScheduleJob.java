@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cron/Attic/CmsCronScheduleJob.java,v $
- * Date   : $Date: 2003/11/13 16:32:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/13 13:41:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,13 +33,13 @@ package org.opencms.cron;
 
 import org.opencms.main.OpenCms;
 
-import com.opencms.file.CmsObject;
+import org.opencms.file.CmsObject;
 
 /**
  * This thread launches one job in its own thread.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.2 $ $Date: 2003/11/13 16:32:30 $
+ * @version $Revision: 1.3 $ $Date: 2004/02/13 13:41:46 $
  * @since 5.1.12
  */
 public class CmsCronScheduleJob extends Thread {

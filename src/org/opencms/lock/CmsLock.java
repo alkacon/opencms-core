@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2004/01/08 13:15:29 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/02/13 13:41:46 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,9 @@
 
 package org.opencms.lock;
 
+import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.I_CmsConstants;
 
 /**
  * Represents the lock state of a VFS resource.<p>
@@ -43,14 +43,14 @@ import com.opencms.core.I_CmsConstants;
  * 
  * Using old-style methods on CmsResource objects to prove the lock
  * state of a resource may result to incorrect lock states. Use 
- * {@link com.opencms.file.CmsObject#getLock(String)} to obtain a
+ * {@link org.opencms.file.CmsObject#getLock(String)} to obtain a
  * CmsLock object that represents the current lock state of a resource.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $ $Date: 2004/01/08 13:15:29 $
+ * @version $Revision: 1.17 $ $Date: 2004/02/13 13:41:46 $
  * @since 5.1.4
- * @see com.opencms.file.CmsObject#getLock(com.opencms.file.CmsResource)
+ * @see org.opencms.file.CmsObject#getLock(org.opencms.file.CmsResource)
  * @see org.opencms.lock.CmsLockManager
  */
 public class CmsLock extends Object implements Cloneable {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2004/01/06 09:46:26 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,11 @@
 package org.opencms.flex;
 
 import org.opencms.cache.I_CmsLruCacheObject;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.I_CmsMemoryMonitorable;
 
-import com.opencms.core.CmsException;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -66,7 +66,7 @@ import javax.servlet.ServletException;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see org.opencms.cache.I_CmsLruCacheObject
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_CmsMemoryMonitorable {
     
@@ -277,7 +277,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
                         if (DEBUG > 0) {
                             System.err.println(err);
                         }
-                        throw new com.opencms.core.CmsException(err + "\n" + e, e);
+                        throw new org.opencms.main.CmsException(err + "\n" + e, e);
                     }
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionSet.java,v $
- * Date   : $Date: 2004/02/09 12:25:56 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@
  */
 package org.opencms.security;
 
-import com.opencms.core.I_CmsConstants;
+import org.opencms.main.I_CmsConstants;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -45,7 +45,7 @@ import java.util.StringTokenizer;
  * <code>C_PERMISSION_VIEW</code> (v) the right to see a resource in listings (workplace)<br>
  * <code>C_PERMISSION_CONTROL</code> (c) the right to set permissions of a resource<br>
  * 
- * @version $Revision: 1.9 $ $Date: 2004/02/09 12:25:56 $
+ * @version $Revision: 1.10 $ $Date: 2004/02/13 13:41:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPermissionSet {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2004/02/09 13:05:37 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/02/13 13:41:44 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,17 +34,17 @@ package org.opencms.jsp;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexResponse;
 import org.opencms.loader.CmsXmlPageLoader;
-import org.opencms.loader.CmsXmlTemplateLoader;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.editor.I_CmsEditorActionHandler;
 
-import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsResourceTypePage;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypePage;
 import com.opencms.template.CmsXmlTemplate;
+import com.opencms.template.CmsXmlTemplateLoader;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.HashMap;
@@ -61,7 +61,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2004/02/13 11:27:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/13 13:41:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,12 +30,12 @@
  */
 package org.opencms.search;
 
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.I_CmsMemoryMonitorable;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 
-import com.opencms.core.CmsException;
 
 import java.util.Date;
 
@@ -44,7 +44,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2004/02/13 11:27:46 $
+ * @version $Revision: 1.3 $ $Date: 2004/02/13 13:41:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsSearchResult implements I_CmsMemoryMonitorable {
