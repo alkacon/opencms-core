@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
-* Date   : $Date: 2002/05/17 11:14:20 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2002/06/10 15:30:07 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Alexander Lucas
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.40 $ $Date: 2002/05/17 11:14:20 $
+ * @version $Revision: 1.41 $ $Date: 2002/06/10 15:30:07 $
  */
 
 public class CmsXmlWpConfigFile {
@@ -86,6 +86,16 @@ public class CmsXmlWpConfigFile {
     public String getPicGalleryPath() throws CmsException {
         return "/pics/";
     }
+
+    /**
+     * Gets the path at which the folders with the html galleries are
+     * @return Path for html galleries.
+     * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
+     */
+    public String getHtmlGalleryPath() throws CmsException {
+        return "/htmlgalleries/";
+    }
+
 
     /**
      * Gets the path for OpenCms language files.

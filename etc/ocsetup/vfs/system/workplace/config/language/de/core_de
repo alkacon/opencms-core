@@ -31,6 +31,7 @@
             <goto>Gehe zu</goto>
             <help>Hilfe</help>
             <hidedetails>Details verbergen</hidedetails>
+            <htmlgallery>HTML-Gallerie</htmlgallery>            
             <image>Bildparameter</image>
             <imagelist>Bilderliste</imagelist>
             <indentin>Einzug vergrößern</indentin>
@@ -188,6 +189,7 @@
                 <adduser> Leider konnte der Benutzer nicht angelegt werden.</adduser>
                 <addgroup>Die Gruppe konnte nicht angelegt werden.</addgroup>
                 <database>Leider konnte die Datenbank nicht exportiert oder importiert werden.</database>
+                <htmlbrowser>Sie können den HTML-Browser noch nicht benutzen.</htmlbrowser>                
                 <linkcheckerror>Zu der angegebenen URL konnte keine Verbindung aufgebaut werden. Sie haben die Möglichkeit, die Verknüpfung trotzdem speichern oder sie zu korrigieren.</linkcheckerror>
                 <linkbrowser>Sie können den Linkbrowser noch nicht benutzen.</linkbrowser>
                 <linkgallery>Leider trat ein Fehler beim Anlegen der neuen Galerie auf!</linkgallery>
@@ -249,6 +251,8 @@
                 <extNav3>Die Farbauswahl ist nicht im Format #000000 bis #FFFFFF angegeben.</extNav3>
                 <foldercreate>Eventuell haben Sie nicht die Berechtigung für diese Aktion oder es existiert schon ein Ordner mit diesem Namen.</foldercreate>
                 <gallerynoright>Sie haben in diesem Projekt keine Berechtigung die Galerie anzulegen</gallerynoright>
+                 <htmlnogallery>Es existiert noch keine HTML-Galerie.</htmlnogallery>
+                <htmlbrowser>Der Ordner für die Bildergalerien existiert noch nicht.</htmlbrowser>                               
                 <linknogallery>Es existiert noch keine Linkgalerie.</linknogallery>
 				<linkbrowser>Der Ordner für die Linkgalerien existiert noch nicht.</linkbrowser>
                 <lock>Entweder haben Sie nicht die Zugriffsrechte diese Datei zu sperren, oder die Körperdatei wurde von einer anderen Steuerdatei gesperrt.</lock>
@@ -310,6 +314,8 @@
                 <downbrowser>Legen sie den Ordner für die Downloadgalerien an oder kontaktieren Sie Ihren Systemadministrator.</downbrowser>
                 <downnogallery>Bitte legen Sie erst eine Galerie unter dem Menüpunkt Administration/Downloadgalerien an.</downnogallery>
                 <editorsave>Speichern Sie den Dateiinhalt in einem lokalen Editor zwischen, schließen Sie die Datei und überprüfen Sie die Sperrung.</editorsave>
+                <htmlbrowser>Legen sie den Ordner für die HTML-Galerien an oder kontaktieren Sie Ihren Systemadministrator.</htmlbrowser>
+                <htmlnogallery>Bitte legen Sie erst eine Galerie unter dem Menüpunkt Administration/HTML-Gallerie an.</htmlnogallery>                
                 <linkbrowser>Legen sie den Ordner für die Linkgalerien an oder kontaktieren Sie Ihren Systemadministrator.</linkbrowser>
                 <linknogallery>Bitte legen Sie erst eine Galerie unter dem Menüpunkt Administration/Externe Link-Verwaltung an.</linknogallery>
                 <lock></lock>
@@ -359,6 +365,7 @@
                 <downgallery>Neue Bildergalerie anlegen</downgallery>
                 <editorsave>Datei speichern</editorsave>
                 <foldercreate>Neues Verzeichnis anlegen</foldercreate>
+                <htmlbrowser>HTML-Galerie anlegen</htmlbrowser>                
                 <linkbrowser>Linkgalerie öffnen</linkbrowser>
 				<linkgallery>Linkgalerie anlegen</linkgallery>
                 <lock>Datei sperren</lock>
@@ -415,6 +422,7 @@
             <exportmoduledata>Export Moduldaten</exportmoduledata>
             <extlinkgallery>Externe Links<![CDATA[<br>]]>verwalten</extlinkgallery>
             <groups>Gruppe</groups>
+            <htmlgallery>HTML-Gallerie</htmlgallery>            
             <imagelist>Bilderliste</imagelist>
             <import>Import</import>
             <linkmanagement>Projekt prüfen</linkmanagement>
@@ -1152,6 +1160,7 @@ Für Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
             <newpropdeffor>Neue Eigenschaft für Dateityp</newpropdeffor>
             <newextension>Neue Dateiendung zuordnen</newextension>
             <newextensionfor>Neue Dateiendung für Dateityp</newextensionfor>
+            <newhtmlgal>HTML-Gallerie anlegen</newhtmlgal>                        
             <newpage>Neue Seite anlegen</newpage>
             <newtable>Tabelle anlegen</newtable>
             <owner>Eigentümer</owner>

@@ -31,6 +31,7 @@
             <goto>Vai</goto>
             <help>Aiuto</help>
             <hidedetails>Nascondi dettagli</hidedetails>
+            <htmlgallery>HTML-Gallerie</htmlgallery>                       
             <image>Inserisci Immagine</image>
             <imagelist>Lista Immagini</imagelist>
             <indentin>Aumenta rientro</indentin>
@@ -190,6 +191,7 @@
                 <adduser>Spiacente, l'utente non ha potuto essere creato.</adduser>
                 <addgroup>Spiacente, il gruppo non ha potuto essere creato.</addgroup>
                 <database>Spiacente, il database non ha potuto essere importato / esportato.</database>
+                <htmlbrowser>Sorry, you can't use the HTML browser yet.</htmlbrowser>                                                                
                 <linkcheckerror>The url could not be connected. You can store the link now or you can change it.</linkcheckerror>
                 <linkbrowser>Sorry, you can't use the link browser yet.</linkbrowser>
                 <linkgallery>You don't have permission to create a new gallery in this project.</linkgallery>
@@ -251,6 +253,8 @@
                 <extNav3>Il colore scelto non è nel formato da #000000 a #FFFFFF.</extNav3>
                 <foldercreate>Forse non hai i permessi necessari o questa cartella esiste già.</foldercreate>
                 <gallerynoright>Non hai i diritti per creare questa nuova galleria in questo progetto.</gallerynoright>
+                <htmlnogallery>There is no HTML gallery yet.</htmlnogallery>
+                <htmlbrowser>The folder for the HTML galleries doesn't exist.</htmlbrowser>                                   
                 <linknogallery>There is no link gallery yet.</linknogallery>
                 <linkbrowser>The folder for the link galleries doesn't exist.</linkbrowser>
                 <lock>O non hai i permessi necessari, o i contenuti di questo file sono bloccati da qualcun'altro.</lock>
@@ -310,6 +314,8 @@
                 <disadmin>Se vuoi disabilitare l'utente, rimuovilo prima dal gruppo degli Amministratori.</disadmin>
                 <downbrowser>Crea la cartella per le gallerie di download o contatta il tuo amministratore di sistema.</downbrowser>
                 <downnogallery>Per favore crea prima una galleria con la voce di menu Amministrazione/Gallerie di Download.</downnogallery>
+                <htmlbrowser>Create the folder for the HTML galleries or contact your system administrator.</htmlbrowser>
+                <htmlnogallery>Please first create a gallery with the menu item Administration/HTML Management.</htmlnogallery>                                                              
                 <editorsave>Salva il contenuto del file in un editor locale, chiudi il file e controlla lo stato di blocco.</editorsave>
                 <linkbrowser>Create the folder for the link galleries or contact your system administrator.</linkbrowser>
                 <linknogallery>Please first create a gallery with the menu item Administration/External Link Management.</linknogallery>
@@ -361,6 +367,7 @@
                 <downgallery>Creazione nuova Galleria di Download</downgallery>
                 <editorsave>Salva File</editorsave>
                 <foldercreate>Crea Cartella</foldercreate>
+                <htmlbrowser>Create new HTML-Galerie</htmlbrowser>                                        
                 <linkbrowser>Link Browser</linkbrowser>
                 <linkgallery>Creating new Link Gallery</linkgallery>
                 <lock>Blocca File</lock>
@@ -417,6 +424,7 @@
             <exportmoduledata>Esporta dati del Modulo</exportmoduledata>
             <extlinkgallery>External links<![CDATA[<br>]]>management</extlinkgallery>
             <groups>Modifica Gruppi</groups>
+            <htmlgallery>Gestione Gallerie<![CDATA[<BR>]]>di HTML</htmlgallery>                        
             <imagelist>lista immagini</imagelist>
             <import>Importa</import>
             <linkmanagement>Check Project</linkmanagement>
@@ -1152,6 +1160,7 @@ Un nuovo compito è stato riattivato per te o per il tuo ruolo.</content>
             <newpropdeffor>Nuova definizione di proprietà per il tipo di risorsa</newpropdeffor>
             <newextension>Associa nuova estensione di file</newextension>
             <newextensionfor>Nuova estensione di file per il tipo di risorsa</newextensionfor>
+            <newhtmlgal>Crea una nuova Galleria di HTML</newhtmlgal>                                    
             <newpage>Crea nuova Pagina</newpage>
             <newtable>Crea nuova Tabella</newtable>
             <owner>Proprietario</owner>

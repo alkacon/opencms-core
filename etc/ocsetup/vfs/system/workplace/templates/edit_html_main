@@ -76,6 +76,7 @@
 		<td class=menu>]]><BUTTON href="#" name="bt_imagelist" action="doEditHTML(43);" alt="imagelist"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_download" action="doEditHTML(44);" alt="downloadlist"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_extlinkgallery" action="window.open('linkbrowser.html?initial=true','LinkBrowser', 'width=550, height=500, resizable=yes, top=200, left=450');" alt="linklist"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_htmlgallery" action="window.open('htmlbrowser.html?initial=true','HtmlBrowser', 'width=550, height=500, resizable=yes, top=200, left=450');" alt="htmllist"/><![CDATA[</td>
 		
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_details" action="doEditHTML(47);" alt="toggledetails"/><![CDATA[</td>

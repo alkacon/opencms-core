@@ -197,6 +197,20 @@
             </properties>
         </file>
         <file>
+            <destination>htmlgalleries</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>export</name>
+                    <type>0</type>
+                    <value><![CDATA[true]]></value>
+                </property>
+            </properties>
+        </file>        
+        <file>
             <destination>moduledemos</destination>
             <type>folder</type>
             <user>Admin</user>
@@ -1075,6 +1089,33 @@
             <access>79</access>
             <properties/>
         </file>
+        <file>
+            <source>pics/system/bt_htmlgallery_off.gif</source>
+            <destination>pics/system/bt_htmlgallery_off.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/bt_htmlgallery_on.gif</source>
+            <destination>pics/system/bt_htmlgallery_on.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/bt_htmlgallery_push.gif</source>
+            <destination>pics/system/bt_htmlgallery_push.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>383</access>
+            <properties/>
+        </file>        
         <file>
             <source>pics/system/bt_imagelist_off.gif</source>
             <destination>pics/system/bt_imagelist_off.gif</destination>
@@ -2480,6 +2521,24 @@
             <properties/>
         </file>
         <file>
+            <source>pics/system/ic_htmlgallery.gif</source>
+            <destination>pics/system/ic_htmlgallery.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/ic_htmlgallery_in.gif</source>
+            <destination>pics/system/ic_htmlgallery_in.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>383</access>
+            <properties/>
+        </file>        
+        <file>
             <source>pics/system/ic_import.gif</source>
             <destination>pics/system/ic_import.gif</destination>
             <type>image</type>
@@ -3739,6 +3798,33 @@
             <properties/>
         </file>
         <file>
+            <source>system/workplace/action/htmlbrowser.html</source>
+            <destination>system/workplace/action/htmlbrowser.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/action/htmlctrl.html</source>
+            <destination>system/workplace/action/htmlctrl.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/action/htmllist.html</source>
+            <destination>system/workplace/action/htmllist.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>        
+        <file>
             <source>system/workplace/action/index.html</source>
             <destination>system/workplace/action/index.html</destination>
             <type>plain</type>
@@ -4926,6 +5012,131 @@
                 </property>
             </properties>
         </file>
+        <file>
+            <destination>system/workplace/administration/htmlgallery</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>activemethod</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.workplace.CmsAdminHtmlGalleries.isNotOnlineProject]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>0</type>
+                    <value><![CDATA[icon.htmlgallery]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>0</type>
+                    <value><![CDATA[ic_htmlgallery]]></value>
+                </property>
+                <property>
+                    <name>NavPos</name>
+                    <type>0</type>
+                    <value><![CDATA[8]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>system/workplace/administration/htmlgallery/administration_content_htmlgallery</source>
+            <destination>system/workplace/administration/htmlgallery/administration_content_htmlgallery</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>3</type>
+                    <value><![CDATA[]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>system/workplace/administration/htmlgallery/administration_content_htmlgallery_new</source>
+            <destination>system/workplace/administration/htmlgallery/administration_content_htmlgallery_new</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/administration/htmlgallery/administration_content_htmlgallery_new.html</source>
+            <destination>system/workplace/administration/htmlgallery/administration_content_htmlgallery_new.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/administration/htmlgallery/administration_content_htmlgallery_new_snippet</source>
+            <destination>system/workplace/administration/htmlgallery/administration_content_htmlgallery_new_snippet</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/administration/htmlgallery/administration_content_htmlgallery_new_snippet.html</source>
+            <destination>system/workplace/administration/htmlgallery/administration_content_htmlgallery_new_snippet.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/administration/htmlgallery/administration_head_htmlgalleries1</source>
+            <destination>system/workplace/administration/htmlgallery/administration_head_htmlgalleries1</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/administration/htmlgallery/administration_head_htmlgalleries1.html</source>
+            <destination>system/workplace/administration/htmlgallery/administration_head_htmlgalleries1.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/administration/htmlgallery/administration_head_htmlgalleries2</source>
+            <destination>system/workplace/administration/htmlgallery/administration_head_htmlgalleries2</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/administration/htmlgallery/administration_head_htmlgalleries2.html</source>
+            <destination>system/workplace/administration/htmlgallery/administration_head_htmlgalleries2.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/administration/htmlgallery/index.html</source>
+            <destination>system/workplace/administration/htmlgallery/index.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>        
         <file>
             <destination>system/workplace/administration/linkcheckviewer</destination>
             <type>folder</type>
@@ -10978,6 +11189,33 @@
             <access>79</access>
             <properties/>
         </file>
+        <file>
+            <source>system/workplace/templates/htmlbrowser</source>
+            <destination>system/workplace/templates/htmlbrowser</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/templates/htmlctrl</source>
+            <destination>system/workplace/templates/htmlctrl</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/templates/htmllist</source>
+            <destination>system/workplace/templates/htmllist</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>        
         <file>
             <source>system/workplace/templates/icontemplate</source>
             <destination>system/workplace/templates/icontemplate</destination>

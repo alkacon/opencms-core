@@ -31,6 +31,7 @@
             <goto>Goto</goto>
             <help>Help</help>
             <hidedetails>Hide details</hidedetails>
+            <htmlgallery>HTML-Gallery</htmlgallery>                        
             <image>Insert Image</image>
             <imagelist>Image List</imagelist>
             <indentin>Indent</indentin>
@@ -186,6 +187,7 @@
                 <editorsave>Sorry, the file could not be saved.</editorsave>
                 <foldercreate>Sorry, the new folder could not be created.</foldercreate>
                 <gallerynoright>Sorry, the new gallery could not be created.</gallerynoright>
+                <htmlbrowser>Sorry, you can't use the HTML browser yet.</htmlbrowser>                                
                 <changeuser>Sorry, the user data could not be changed.</changeuser>
                 <adduser> Sorry, the user could not be created.</adduser>
                 <addgroup>Sorry, the group could not be created..</addgroup>
@@ -251,6 +253,8 @@
                 <extNav3>The chosen colour is not in the format #000000 to #FFFFFF.</extNav3>
                 <foldercreate>Maybe you don't have the needed permissions or this folder already exist.</foldercreate>
                 <gallerynoright>You don't have the rights to create this new galery in this project.</gallerynoright>
+                <htmlnogallery>There is no HTML gallery yet.</htmlnogallery>
+                <htmlbrowser>The folder for the HTML galleries doesn't exist.</htmlbrowser>                                    
                 <linknogallery>There is no link gallery yet.</linknogallery>
                 <linkbrowser>The folder for the link galleries doesn't exist.</linkbrowser>
                 <lock>Either you don't have the needed permissions, or the contents of this file are locked by someone else.</lock>
@@ -311,6 +315,8 @@
                 <downbrowser>Create the folder for the download galleries or contact your system administrator.</downbrowser>
                 <downnogallery>Please first create a gallery with the menu item Administration/Download Galleries.</downnogallery> 
                 <editorsave>Save the filecontent into a local editor, close the file and check the lock state.</editorsave>
+                <htmlbrowser>Create the folder for the HTML galleries or contact your system administrator.</htmlbrowser>  
+                <htmlnogallery>Please first create a gallery with the menu item Administration/HTML Management.</htmlnogallery>                                                             
                 <linkbrowser>Create the folder for the link galleries or contact your system administrator.</linkbrowser>
 				<linknogallery>Please first create a gallery with the menu item Administration/External Link Management.</linknogallery>
                 <lock></lock>
@@ -361,6 +367,7 @@
                 <downgallery>Creating new Download Gallery</downgallery>
                 <editorsave>Save File</editorsave>
                 <foldercreate>Create Folder</foldercreate>
+                <htmlbrowser>Create new HTML-Galerie</htmlbrowser>                		
 				<linkbrowser>Link Browser</linkbrowser>
                 <linkgallery>Creating new Link Gallery</linkgallery>
                 <lock>Lock File</lock>
@@ -417,6 +424,7 @@
             <exportmoduledata>Export Moduldata</exportmoduledata>
             <extlinkgallery>External links<![CDATA[<br>]]>management</extlinkgallery>
             <groups>Edit Groups</groups> 
+            <htmlgallery>HTML-Gallery</htmlgallery>                        
             <imagelist>image list</imagelist>
             <import>Import</import>
             <linkmanagement>Check Project</linkmanagement>
@@ -1152,6 +1160,7 @@ A new task was reactivated for you or your role.</content>
             <newpropdeffor>New property definition for the resource type</newpropdeffor>
             <newextension>Associate new file extension</newextension>
             <newextensionfor>New file extension for resource type</newextensionfor>
+            <newhtmlgal>Create new HTML-Gallery</newhtmlgal>                        
             <newpage>Create new Page</newpage>
             <newtable>Create new Table</newtable>
             <owner>Owner</owner>
