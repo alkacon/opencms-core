@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.75 $
+* Date   : $Date: 2003/07/11 14:01:39 $
+* Version: $Revision: 1.76 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
+import com.opencms.launcher.CmsXmlLauncher;
 import com.opencms.workplace.I_CmsWpConstants;
 
 /**
@@ -84,7 +85,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.75 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.76 $ $Date: 2003/07/11 14:01:39 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels {
 
@@ -981,6 +982,21 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             m_filecache.put(currentProject + ":" + filename, parsedContent.cloneNode(true));
         }
         init(cms, parsedContent, filename);
+    }
+
+    /**
+     * Initialize the XML content class.
+     * Load and parse the content of the given String.
+     * 
+     * @param cms CmsObject Object for accessing resources.
+     * @param filename file name to use when storing the parsed XML in the cache
+     * @param content XMl content to parse
+     * @throws CmsException
+     */
+    public void init(CmsObject cms, String filename, String content) throws CmsException {
+        m_cms = cms;
+        m_filename = filename + CmsXmlLauncher.C_XML_CONTROL_FILE;  
+        init(cms, parse(content.getBytes()), filename);
     }
 
     /**

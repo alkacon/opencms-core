@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementCache.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/07/11 14:01:40 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.template.cache;
 
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
+import com.opencms.launcher.CmsXmlLauncher;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -97,9 +98,8 @@ public class CmsElementCache {
         if(changedResources != null){
             for(int i=0; i<changedResources.size(); i++){
                 String current = (String)changedResources.elementAt(i);
-                //int rootIndex = current.indexOf("/", current.indexOf("/",1)+1);
-                //resForUpdate.add(current.substring(rootIndex));
                 resForUpdate.add(current);
+                resForUpdate.add(current + CmsXmlLauncher.C_XML_CONTROL_FILE);
             }
         }
         m_uriLocator.deleteUris(resForUpdate);
@@ -150,4 +150,8 @@ public class CmsElementCache {
         return uri.callCanonicalRoot(this, cms, parameters);
     }
 
+    public byte[] callCanonicalRoot(CmsObject cms, Hashtable parameters, String uriParam) throws CmsException {
+        CmsUri uri = m_uriLocator.get(new CmsUriDescriptor(uriParam));
+        return uri.callCanonicalRoot(this, cms, parameters);
+    }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
-* Date   : $Date: 2003/07/08 15:55:28 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/07/11 14:01:39 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.w3c.dom.NodeList;
  * Content definition for "clickable" and user requestable XML body files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.30 $ $Date: 2003/07/08 15:55:28 $
+ * @version $Revision: 1.31 $ $Date: 2003/07/11 14:01:39 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
@@ -87,6 +87,19 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
         super();
         init(cms, filename);
     }
+    
+    /**
+     * Constructor for creating a new object containing the given content
+     * for the given filename.
+     *
+     * @param cms for accessing system resources
+     * @param filename name of the file that shoul be stored in this XML file cache
+     * @param content XML file to parse
+     */
+    public CmsXmlControlFile(CmsObject cms, String filename, String content) throws CmsException {
+        super();
+        init(cms, filename, content);
+    }    
 
     /**
      * Used for setting element definition values.

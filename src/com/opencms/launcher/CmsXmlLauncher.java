@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2003/07/03 13:29:45 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/07/11 14:01:40 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -69,13 +69,15 @@ import javax.servlet.http.HttpServletRequest;
  * be used to create output.<p>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.47 $ $Date: 2003/07/03 13:29:45 $
+ * @version $Revision: 1.48 $ $Date: 2003/07/11 14:01:40 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I_CmsConstants {
     
     /** Magic elemet replace name */
     public static final String C_ELEMENT_REPLACE = "_CMS_ELEMENTREPLACE";
 
+    public static final String C_XML_CONTROL_FILE = ".xmlcontrol";
+    
     /**
      * Starts generating the output.
      * Calls the canonical root with the appropriate template class.
@@ -90,11 +92,32 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
 
         // Hashtable for collecting all parameters.
         Hashtable newParameters = new Hashtable();
+        String uri = cms.getRequestContext().getUri();
 
+        // ladies and gentelman: and now for something completly different 
+        String absolutePath = cms.readAbsolutePath(file);
+        String templateProp = cms.readProperty(absolutePath, "template");
+        String xmlTemplateContent = null;
+        if (templateProp != null) {
+            // i got a black magic template, 
+            xmlTemplateContent = 
+                "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
+                + "<PAGE>\n<class>com.opencms.template.CmsXmlTemplate</class>\n"
+                + "<masterTemplate>"
+                // i got a black magic template,
+                + templateProp
+                + "</masterTemplate>\n<ELEMENTDEF name=\"body\">\n"
+                + "<CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\n<TEMPLATE>"
+                // i got a black magic template got me so blind I can't see,
+                + uri
+                + "</TEMPLATE>\n</ELEMENTDEF>\n</PAGE>\n";              
+            // i got a black magic template it's try'in to make a devil out of me...
+            uri += C_XML_CONTROL_FILE; 
+        }
+        
         // Parameters used for element cache
         boolean elementCacheEnabled = cms.getRequestContext().isElementCacheEnabled();
         CmsElementCache elementCache = null;
-        String uri = cms.getRequestContext().getUri();
         CmsUriDescriptor uriDesc = null;
         CmsUriLocator uriLoc = null;
         CmsUri cmsUri = null;
@@ -135,9 +158,12 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
 
             // Parse the page file
             try {
-                doc = new CmsXmlControlFile(cms, file);
-            }
-            catch(Exception e) {
+                if (xmlTemplateContent == null) {
+                    doc = new CmsXmlControlFile(cms, file);
+                } else {
+                    doc = new CmsXmlControlFile(cms, uri, xmlTemplateContent);
+                }
+            } catch(Exception e) {
                 // there was an error while parsing the document.
                 // No chance to go on here.
                 handleException(cms, e, "There was an error while parsing XML page file " + cms.readAbsolutePath(file));
@@ -189,7 +215,9 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
                     // need to check for the body template here so that non-XMLTemplate templates 
                     // like JSPs know where to find the body defined in the XMLTemplate
                     String template = doc.getElementTemplate(elementName);
-                    template = doc.validateBodyPath(cms, template, file);
+                    if (xmlTemplateContent == null) {
+                        template = doc.validateBodyPath(cms, template, file);
+                    }
                     if (I_CmsConstants.C_XML_BODY_ELEMENT.equalsIgnoreCase(elementName)) {
                         // found body element
                         if (template != null) {
@@ -284,7 +312,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
                 if(elementreplace){
                     output = cmsUri.callCanonicalRoot(elementCache, cms, newParameters);
                 }else{
-                    output = elementCache.callCanonicalRoot(cms, newParameters);
+                    output = elementCache.callCanonicalRoot(cms, newParameters, uri);
                 }
         } else {
             // ----- traditional stuff ------
