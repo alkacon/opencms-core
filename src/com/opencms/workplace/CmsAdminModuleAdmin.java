@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2004/07/18 16:27:12 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2004/12/16 14:34:50 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -372,6 +372,9 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
                     currentModule.getExportPoints(),
                     currentModule.getResources(),
                     parameters);
+            
+                updatedModule.setResourceTypes(currentModule.getResourceTypes());
+                updatedModule.setExplorerTypes(currentModule.getExplorerTypes());
             
             OpenCms.getModuleManager().updateModule(cms, updatedModule);
 
