@@ -301,8 +301,6 @@ ${opencms.inputlib.pdfbox}
     		</filterset>	   		
 	   	</copy>	   		   	
 
-    	<echo message="${opencms.input.default.system}" />
-        <echo message="${opencms.output.classes}/opencms-system.xml" />
 	   	<copy 
 	   		file="${opencms.input.default.system}" 
 	   		tofile="${opencms.output.classes}/opencms-system.xml" overwrite="true">	   		
