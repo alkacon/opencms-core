@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2003/11/06 15:09:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/06 16:37:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Map;
 import org.apache.commons.collections.LRUMap;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/11/06 15:09:31 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/06 16:37:41 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsMemoryMonitor implements I_CmsCronJob {
@@ -134,8 +134,9 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
     private void checkMemory() {
     
         long freeMemory = Runtime.getRuntime().freeMemory();
+        long totalMemory = Runtime.getRuntime().totalMemory();
         long maxMemory = Runtime.getRuntime().maxMemory();    
-        long usage = (freeMemory * 100) / maxMemory;
+        long usage = (totalMemory - freeMemory) * 100 / maxMemory;
         
         if (m_maxUsage > 0 && usage > m_maxUsage) {
              
