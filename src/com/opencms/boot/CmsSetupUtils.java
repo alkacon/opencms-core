@@ -38,14 +38,14 @@ import java.util.*;
  */
 public class CmsSetupUtils {
 
-    private String m_workFolder;
+    private String m_configFolder;
 
-    public CmsSetupUtils(String workFolder) {
-      m_workFolder = workFolder;
+    public CmsSetupUtils(String configFolder) {
+      m_configFolder = configFolder;
     }
 
     public void saveProperties(ExtendedProperties extProp, String originalFile)  {
-        if (new File(m_workFolder + originalFile).isFile()) {
+        if (new File(m_configFolder + originalFile).isFile()) {
             String backupFile = originalFile.substring(0,originalFile.lastIndexOf('.')) + ".ori";
             backup(originalFile, backupFile);
             save(extProp, backupFile, originalFile);
@@ -59,9 +59,9 @@ public class CmsSetupUtils {
 
     private void backup(String originalFile, String backupFile) {
         try {
-            LineNumberReader lnr = new LineNumberReader(new FileReader(new File(m_workFolder
+            LineNumberReader lnr = new LineNumberReader(new FileReader(new File(m_configFolder
                     + originalFile)));
-            FileWriter fw = new FileWriter(new File(m_workFolder + backupFile));
+            FileWriter fw = new FileWriter(new File(m_configFolder + backupFile));
             while (true)  {
                 String line = lnr.readLine();
                 if(line == null) break;
@@ -79,10 +79,10 @@ public class CmsSetupUtils {
 
     private void save(ExtendedProperties extProp, String source, String target) {
         try {
-            LineNumberReader lnr = new LineNumberReader(new FileReader(new File(m_workFolder
+            LineNumberReader lnr = new LineNumberReader(new FileReader(new File(m_configFolder
                     + source)));
 
-            FileWriter fw = new FileWriter(new File(m_workFolder + target));
+            FileWriter fw = new FileWriter(new File(m_configFolder + target));
 
             while(true) {
                 String line = lnr.readLine();
@@ -146,7 +146,7 @@ public class CmsSetupUtils {
           /* get and parse the setup script */
           try {
               String file = getSetupScript(resourceBroker);
-              LineNumberReader reader = new LineNumberReader(new FileReader(m_workFolder + file));
+              LineNumberReader reader = new LineNumberReader(new FileReader(m_configFolder + file));
 
               String line = null;
               String statement = "";
@@ -233,7 +233,7 @@ public class CmsSetupUtils {
 
         /* read and return everything */
         try {
-            LineNumberReader reader = new LineNumberReader(new FileReader(m_workFolder + file));
+            LineNumberReader reader = new LineNumberReader(new FileReader(m_configFolder + file));
             String stat = "";
             String line = null;
 
@@ -271,15 +271,14 @@ public class CmsSetupUtils {
     /** This function returns the matching setup script filename
      *  from "dbsetupscript.properties"
      *  @param resourceBroker Key for the properties
-     *  @param configFolder Absolute path to the OpenCms config folder
+     *  @return setup script filename for the given resource broker
      */
     private String getSetupScript(String resourceBroker) {
-        String file = m_workFolder + "dbsetupscripts.properties";
-        file = file.replace('\\','/').replace('/',File.separatorChar);
         /* open properties, get the value */
         try {
-            ExtendedProperties properties = new ExtendedProperties(file);
-            String value = properties.get(resourceBroker).toString();
+            Properties properties = new Properties();
+            properties.load(getClass().getClassLoader().getResourceAsStream("com/opencms/boot/dbsetupscripts.properties"));
+            String value = properties.getProperty(resourceBroker);
             return value;
         }
         catch (Exception e) {

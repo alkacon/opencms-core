@@ -46,9 +46,6 @@ public class CmsSetup {
   /** Contains the absolute path to the opencms home directory */
   private String m_basePath;
 
-  /** Contains the relative path frome the opencms home folder to the config folder */
-  private String m_configFolder;
-
   /** Indicates if the user has chosen standard (false)
    *  or advanced (true) setup
    */
@@ -83,7 +80,7 @@ public class CmsSetup {
    *  Setup Wizard is called, so the input fields of the wizard are pre-defined
    */
   public void initProperties(String props)  {
-    String path = getWorkFolder() + props;
+    String path = getConfigFolder() + props;
     try {
       m_extProp = new ExtendedProperties(path);
     }
@@ -143,6 +140,18 @@ public class CmsSetup {
   /** Gets the resource broker */
   public String getResourceBroker() {
     return m_extProp.get("resourcebroker").toString();
+  }
+
+  /** Returns all resource Broker found in 'dbsetupscripts.properties' */
+  public Enumeration getResourceBrokers() {
+      Properties props = new Properties();
+      try {
+          props.load(getClass().getClassLoader().getResourceAsStream("com/opencms/boot/dbsetupscripts.properties"));
+          return props.propertyNames();
+      }
+      catch (IOException e) {
+          return null;
+      }
   }
 
   /** Sets the connection string used by the setup to the given value */
@@ -314,14 +323,9 @@ public class CmsSetup {
     return errors;
   }
 
-  /** Sets the path to the opencms config folder to the given value */
-  public void setConfigFolder(String configFolder)  {
-    m_configFolder = configFolder;
-  }
-
   /** Returns the path to the opencms config folder */
-  public String getWorkFolder() {
-    return (m_basePath + m_configFolder).replace('\\','/').replace('/',File.separatorChar);
+  public String getConfigFolder() {
+    return (m_basePath + "WEB-INF/config/").replace('\\','/').replace('/',File.separatorChar);
   }
 
   /** Returns the database driver belonging to the resource broker */
