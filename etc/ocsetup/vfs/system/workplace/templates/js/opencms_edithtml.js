@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edithtml.js,v $
- * Date   : $Date: 2000/03/23 15:35:06 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/03/28 14:46:50 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -395,7 +395,7 @@ function setText()
 // Submitts the Document to the OpenCms System
 function doSubmit() 
 {
-   document.EDITOR.content.value = escape(document.EDITOR.EDIT_HTML.DocumentHTML);
+   document.EDITOR.content.value = escape(getChars(document.EDITOR.EDIT_HTML.filterSourceCode(document.EDITOR.EDIT_HTML.DOM.documentElement.outerHTML)));
 }
 
 
@@ -705,9 +705,16 @@ function DECMD_IMAGE_onclick()
   EDITOR.EDIT_HTML.focus();
 }
 
-
-
-
-
-
-
+function getChars(value) {
+	ret = "";
+	var num;
+	for(i=0;i<value.length;i++) {
+		num = value.charCodeAt(i);
+		if(num > 127) {
+			ret += "&#" + num.toString(10) + ";";
+		} else {
+			ret += value.charAt(i);
+		}
+	}
+	return ret + "";
+}
