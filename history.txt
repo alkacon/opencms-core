@@ -9,6 +9,9 @@ Legend:
 - General comment
 
 OpenCms 4.5.26 Chusuk       - 3 December 2001
+! Changes in picturegallery and downloadgallery: the resources can now be edited by the menu
+* Bugfix when reading module parameters from registry: now the given default value is returned if the
+  value can not be read from the registry.
 
 OpenCms 4.5si.25 Chusuk     - 27 November 2001
 * Bugfixing mastermodule.
