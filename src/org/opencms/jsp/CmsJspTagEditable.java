@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEditable.java,v $
- * Date   : $Date: 2004/02/19 11:46:11 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/19 19:14:03 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 /**
  * Implementation of editor tag used to provide settings to include tag.<p>
  * 
- * @version $Revision: 1.7 $ $Date: 2004/02/19 11:46:11 $
+ * @version $Revision: 1.8 $ $Date: 2004/02/19 19:14:03 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsJspTagEditable extends BodyTagSupport {
@@ -126,12 +126,12 @@ public class CmsJspTagEditable extends BodyTagSupport {
         try {
             CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);    
             if (controller.getCmsObject().getRequestContext().currentProject().getId() != I_CmsConstants.C_PROJECT_ONLINE_ID) {
-                if (context.getRequest().getAttribute(I_CmsEditorActionHandler.C_EDIT_AREA) == null) {                
+                if (context.getRequest().getAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDE_FILE_URI) == null) {                
                     if (filename == null) {
-                        filename = I_CmsEditorActionHandler.C_EDITAREA_DEFAULTS;
+                        filename = I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDE_FILE_URI_DEFAULT;
                     }
-                    context.getRequest().setAttribute(I_CmsEditorActionHandler.C_EDIT_AREA, filename);            
-                    CmsJspTagInclude.includeTagAction(context, filename, I_CmsEditorActionHandler.C_EDITAREA_INCLUDES, false, null, req, res);
+                    context.getRequest().setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDE_FILE_URI, filename);            
+                    CmsJspTagInclude.includeTagAction(context, filename, I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDES, false, null, req, res);
                 }
             }            
         } catch (Throwable t) {

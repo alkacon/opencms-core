@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2004/02/18 15:26:17 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/02/19 19:14:03 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
            
@@ -232,11 +232,11 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     }
 
     /** 
-     * Overloads the standard servlet API getRequestDispatcher() method,
-     * which is the main purpose of this wrapper implementation.<p>
+     * Allows requests to be dispatched to internal VFS resources or 
+     * external JSP pages, overloads the standard servlet API <code>getRequestDispatcher()</code> method.<p>
      *
      * @param target the target for the request dispatcher
-     * @return the constructed RequestDispatcher
+     * @return a special RequestDispatcher that allows access to VFS resources
      */    
     public javax.servlet.RequestDispatcher getRequestDispatcher(String target) {
         String absolutUri = CmsLinkManager.getAbsoluteUri(target, m_controller.getCurrentRequest().getElementUri());
@@ -354,10 +354,11 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     }
     
     /**
-     * Adds the specified Map to the paramters of the request.<p>
+     * Adds the specified Map to the paramters of the request,
+     * added parametes will not overwrite existing parameters in the 
+     * request.<p> 
      * 
-     * Added parametes will not overwrite existing parameters in the 
-     * request. Remember that the value for a parameter name in
+     * Remember that the value for a parameter name in
      * a HttpRequest is a String array. If a parameter name already
      * exists in the HttpRequest, the values will be added to the existing
      * value array. Multiple occurences of the same value for one 

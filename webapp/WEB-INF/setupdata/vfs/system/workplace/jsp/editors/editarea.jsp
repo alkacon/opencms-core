@@ -1,6 +1,7 @@
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%--
 --%><%@ page import="
 	org.opencms.workplace.*,
+	org.opencms.workplace.editor.*,
 	org.opencms.jsp.*"
 	buffer="none"
 	session="false"%><%
@@ -10,12 +11,12 @@ org.opencms.jsp.CmsJspActionElement cms = new CmsJspActionElement(pageContext, r
 String uri = cms.getRequestContext().getUri();
 CmsDialog wp = new CmsDialog(cms);
 
-String editTarget = (String)request.getAttribute("__editTarget");
-String editElement = (String)request.getAttribute("__editBody");
-String editLanguage = (String)request.getAttribute("__editLanguage");
+String editTarget = (String)request.getAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_TARGET);
+String editElement = (String)request.getAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_ELEMENT);
+String editLocale = (String)request.getAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_LOCALE);
 String editLink = cms.link("/system/workplace/jsp/editors/editor.html");
 
-String editId = "editarea";
+String editId = "directedit";
 
 if (editTarget != null) {
 	editId += "_" + editTarget.substring(editTarget.lastIndexOf("/")+1);
@@ -25,17 +26,17 @@ if (editElement != null) {
 }
 %><%--
 
---%><cms:template element="start_editarea_enabled">
+--%><cms:template element="start_directedit_enabled">
 <!-- EDIT BLOCK START -->
-<div id="<%= editId %>" class="editarea_norm">
+<div id="<%= editId %>" class="directedit_norm">
 <form name="form_<%= editId %>" method="post" action="<%= editLink %>" class="nomargin">
 <input type="hidden" name="resource" value="<%= editTarget %>">
 <input type="hidden" name="directedit" value="true">
-<input type="hidden" name="elementlanguage" value="<%= editLanguage %>">
+<input type="hidden" name="elementlanguage" value="<%= editLocale %>">
 <input type="hidden" name="elementname" value="<%= editElement %>">
 <input type="hidden" name="backlink" value="<%= uri %>">
 </form>
-<span class="editarea_button" onmouseover="activate('<%= editId %>');" onmouseout="deactivate('<%= editId %>');">
+<span class="directedit_button" onmouseover="activate('<%= editId %>');" onmouseout="deactivate('<%= editId %>');">
 <table border="0" cellpadding="1" cellspacing="0">
 <tr>
 	<%=wp.button("javascript:document.forms['form_" + editId + "'].submit();", null, "directedit", "editor.frontend.button.edit", 1)%></tr>
@@ -43,15 +44,15 @@ if (editElement != null) {
 </span>
 </cms:template><%--
 
---%><cms:template element="end_editarea_enabled">
+--%><cms:template element="end_directedit_enabled">
 </div>
 <!-- EDIT BLOCK END -->
 </cms:template><%--
 
---%><cms:template element="start_editarea_disabled">
+--%><cms:template element="start_directedit_disabled">
 <!-- EDIT BLOCK START -->
-<div id="<%= editId %>" class="editarea_norm">
-<span class="editarea_button" onmouseover="activate('<%=editId%>');" onmouseout="deactivate('<%=editId%>');">
+<div id="<%= editId %>" class="directedit_norm">
+<span class="directedit_button" onmouseover="activate('<%=editId%>');" onmouseout="deactivate('<%=editId%>');">
 <table border="0" cellpadding="1" cellspacing="0">
 <tr>
 	<%=wp.button(null, null, "directedit", "editor.frontend.button.locked", 1)%></tr>
@@ -59,20 +60,20 @@ if (editElement != null) {
 </span>
 </cms:template><%--
 
---%><cms:template element="end_editarea_disabled">
+--%><cms:template element="end_directedit_disabled">
 </div>
 <!-- EDIT BLOCK END -->
 </cms:template><%--
 
---%><cms:template element="start_editarea_inactive">
+--%><cms:template element="start_directedit_inactive">
 <!-- EDIT BLOCK START -->
 </cms:template><%--
 
---%><cms:template element="end_editarea_inactive">
+--%><cms:template element="end_directedit_inactive">
 <!-- EDIT BLOCK END -->
 </cms:template><%--
 
---%><cms:template element="editarea_includes">
+--%><cms:template element="directedit_includes">
 <style type="text/css">
 <!--
 a.button {
@@ -127,12 +128,12 @@ span.disabled {
 	border: 1px solid #c0c0c0;
 	color: #888888;
 }
-div.editarea_norm {
+div.directedit_norm {
 	width: 100%;
 	padding-top: 1px;
 	padding-bottom: 1px;
 }
-div.editarea_over {
+div.directedit_over {
 	width: 100%;
 	padding-top: 0;
 	padding-bottom: 0;
@@ -140,7 +141,7 @@ div.editarea_over {
 	border-top: 1px dotted #000000;
 	border-bottom: 1px dotted #000000;
 }
-span.editarea_button {
+span.directedit_button {
 	position: absolute;
 	z-index: 25;
 	background-color: #c0c0c0;
@@ -156,14 +157,14 @@ form.nomargin {
 <!--
 function activate(id) {
 	var el = document.getElementById(id);
-	if (el.className == "editarea_norm") {
-		el.className = "editarea_over";
+	if (el.className == "directedit_norm") {
+		el.className = "directedit_over";
 	}
 }
 function deactivate(id) {
 	var el = document.getElementById(id);
-	if (el.className == "editarea_over") {
-		el.className = "editarea_norm";
+	if (el.className == "directedit_over") {
+		el.className = "directedit_norm";
 	}
 }
 //-->

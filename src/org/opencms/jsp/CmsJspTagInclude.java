@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2004/02/19 11:46:11 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/02/19 19:14:03 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -334,18 +334,11 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     public static void includeTagAction(PageContext context, String target, String element, boolean editable, Map paramMap, ServletRequest req, ServletResponse res) 
     throws JspException {
         
-        if (DEBUG) {
-            System.err.println("includeTagAction/1: target=" + target);
-        }
-        
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
         
         if (target == null) {
             // set target to default
             target = controller.getCmsObject().getRequestContext().getUri();
-            if (DEBUG) {
-                System.err.println("includeTagAction/2: target=" + target);
-            }
         }
                 
         Map parameterMap = new HashMap();      
@@ -353,6 +346,13 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             // add all parameters 
             parameterMap.putAll(paramMap);
         }                    
+        
+        
+        
+        
+        
+        
+        // TODO: Remove dependencies from legacy OpenCms classes
         
         if (element != null) {            
             // add template element selector for JSP templates
@@ -409,49 +409,55 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             }
             // for other cases setting of "target" is fine             
         }          
-
-        if (DEBUG) {
-            System.err.println("includeTagAction/3: target=" + target + ", editable=" + editable);
-        }
+        
+        
+        
+        
+        
+        
        
         // save old parameters from request
         Map oldParameterMap = req.getParameterMap();
         
-        // check the edit mode
-        String editMode = null;
-        String editArea = null;
+        // check the "direct edit" mode
+        String directEditMode = null;
+        String directEditIncludeFile = null;
         
         if (editable) {
-            I_CmsEditorActionHandler actionClass = OpenCms.getWorkplaceManager().getEditorActionHandler();
-            editMode = actionClass.getEditMode(controller.getCmsObject(), target, (CmsXmlPage)req.getAttribute(CmsXmlPage.C_ATTRIBUTE_XMLPAGE_OBJECT), element);
-            editArea = (String)context.getRequest().getAttribute(I_CmsEditorActionHandler.C_EDIT_AREA);
+            directEditIncludeFile = (String)context.getRequest().getAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDE_FILE_URI);
+            if (directEditIncludeFile != null) {
+                directEditMode = OpenCms.getWorkplaceManager().getEditorActionHandler().getEditMode(controller.getCmsObject(), target, (CmsXmlPage)req.getAttribute(CmsXmlPage.C_ATTRIBUTE_XMLPAGE_OBJECT), element);
+            }
         }
 
-        try {         
-            
-            // Include editarea start element if enabled
-            if (editMode != null && editArea != null) {
-
-                req.setAttribute(I_CmsEditorActionHandler.C_EDIT_BODY, element);
-                req.setAttribute(I_CmsEditorActionHandler.C_EDIT_LANGUAGE, controller.getCmsObject().getRequestContext().getLocale().toString());
-                req.setAttribute(I_CmsEditorActionHandler.C_EDIT_TARGET, target);
-                includeElement(context, editArea, I_CmsEditorActionHandler.C_EDIT_STARTAREA + "_" + editMode, req, res);
+        try {                     
+            // include direct edit "start" element (if enabled)
+            if (directEditMode != null) {
+                
+                // set additional request parameters/attributes required for the included direct edit JSP 
+                req.setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_ELEMENT, element);
+                req.setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_LOCALE, controller.getCmsObject().getRequestContext().getLocale().toString());
+                req.setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_TARGET, target);            
+                
+                includeDirectEditElement(context, directEditIncludeFile, I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_START + "_" + directEditMode, req, res);
             }
             
             // add parameters (again) to set the correct element
             controller.getCurrentRequest().addParameterMap(parameterMap); 
             
-            // Write out a C_FLEX_CACHE_DELIMITER char on the page, this is used as a parsing delimeter later
+            // write out a C_FLEX_CACHE_DELIMITER char on the page, this is used as a parsing delimeter later
             context.getOut().print(CmsFlexResponse.C_FLEX_CACHE_DELIMITER);
             
-            // Add an element to the include list (will be initialized if empty)
+            // add the target to the include list (the list will be initialized if it is currently empty)
             controller.getCurrentResponse().addToIncludeList(target, parameterMap);
             
+            // now use the Flex dispatcher to include the target (this will also work for targets in the OpenCms VFS)
+            // TODO: check if the "req" dispatcher should be used insted the controller
             controller.getCurrentRequest().getRequestDispatcher(target).include(req, res); 
             
-            // Include editarea end element if enabled
-            if (editMode != null && editArea != null) {
-                includeElement(context, editArea, I_CmsEditorActionHandler.C_EDIT_ENDAREA + "_" + editMode, req, res);
+            // include direct edit "end" element (if enabled)
+            if (directEditMode != null) {
+                includeDirectEditElement(context, directEditIncludeFile, I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_END + "_" + directEditMode, req, res);
             }
             
         } catch (ServletException e) {
@@ -462,17 +468,10 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 t = e;
             }
             t = controller.setThrowable(t);
-            if (DEBUG) {
-                System.err.println("JspTagInclude: ServletException in Jsp 'include' tag processing: " + t);
-                e.printStackTrace(System.err);
-            }
             throw new JspException(imprintExceptionMessage(t, target), t);    
         } catch (IOException e) {
             Throwable t = controller.setThrowable(e);
-            if (DEBUG) {
-                System.err.println("JspTagInclude: IOException in Jsp 'include' tag processing: " + t);
-                e.printStackTrace(System.err);
-            }
+
             throw new JspException(imprintExceptionMessage(t, target), t);
         } finally {
             if (oldParameterMap != null) {
@@ -482,24 +481,21 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     }
 
     /**
-     * Includes additional elements.<p>
+     * Includes the "direct edit" element that add HTML for the editable area to 
+     * the output page.<p>
      * 
      * @param context the current JSP page context
      * @param target the source of the element
-     * @param element the editor element to include          
+     * @param element the editor element to include       
      * @param req the current request
      * @param res the current response
      * @throws JspException in case something goes wrong         
      */
-    private static void includeElement(PageContext context, String target, String element, ServletRequest req, ServletResponse res) 
+    private static void includeDirectEditElement(PageContext context, String target, String element, ServletRequest req, ServletResponse res) 
     throws JspException {
 
-        if (DEBUG) {
-            System.err.println("includeElement/1: target=" + target + ", element=" + element);
-        }
-
         CmsFlexController controller = (CmsFlexController) req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-
+        
         Map parameterMap = new HashMap();
         addParameter(parameterMap, CmsJspTagTemplate.C_TEMPLATE_ELEMENT, element, true);
         
@@ -518,17 +514,9 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 t = e;
             }
             t = controller.setThrowable(t);
-            if (DEBUG) {
-                System.err.println("JspTagInclude: ServletException in Jsp 'include' tag processing: " + t);
-                e.printStackTrace(System.err);
-            }
             throw new JspException(imprintExceptionMessage(t, target), t); 
         } catch (IOException e) {
             Throwable t = controller.setThrowable(e);
-            if (DEBUG) {
-                System.err.println("JspTagInclude: IOException in Jsp 'include' tag processing: " + t);
-                e.printStackTrace(System.err);
-            }
             throw new JspException(imprintExceptionMessage(t, target), t);
         }
     }

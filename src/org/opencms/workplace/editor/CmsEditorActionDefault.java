@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/02/19 19:14:03 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.3.0
  */
@@ -164,36 +164,36 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
                 return null;
             } else if (CmsResource.getName(filename).startsWith(org.opencms.main.I_CmsConstants.C_TEMP_PREFIX)) {
                 // don't show edit area on temporary file
-                return C_EDITMODE_INACTIVE;
+                return C_DIRECT_EDIT_MODE_INACTIVE;
             } else if (!cmsObject.isInsideCurrentProject(res)) {
                 // don't show edit area on files not belonging to the current project
-                return C_EDITMODE_INACTIVE;
+                return C_DIRECT_EDIT_MODE_INACTIVE;
             } else if (!cmsObject.hasPermissions(res, new CmsPermissionSet(I_CmsConstants.C_PERMISSION_WRITE))) {
                 // don't show edit area on files without write permissions
                 if (locked) {
-                    return C_EDITMODE_DISABLED;
+                    return C_DIRECT_EDIT_MODE_DISABLED;
                 } else {
-                    return C_EDITMODE_INACTIVE;
+                    return C_DIRECT_EDIT_MODE_INACTIVE;
                 }
             } else if (locked) {
-                return C_EDITMODE_DISABLED;
+                return C_DIRECT_EDIT_MODE_DISABLED;
             }
   
             // check if the desired element is available (in case of xml page)
             if (page != null && element != null) {
                 Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(null, OpenCms.getLocaleManager().getDefaultLocales(cmsObject, filename), page.getLocales());
                 if (!page.hasElement(element, locale) || !page.isEnabled(element, locale)) {
-                    return C_EDITMODE_INACTIVE;
+                    return C_DIRECT_EDIT_MODE_INACTIVE;
                 }
             }
 
             // otherwise the resource is editable
-            return C_EDITMODE_ENABLED;
+            return C_DIRECT_EDIT_MODE_ENABLED;
             
         }  catch (CmsException exc) {
             
             // something went wrong - so the resource seems not to be editable
-            return C_EDITMODE_INACTIVE;
+            return C_DIRECT_EDIT_MODE_INACTIVE;
         }
     }
 

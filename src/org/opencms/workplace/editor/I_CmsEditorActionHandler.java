@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/I_CmsEditorActionHandler.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/19 19:14:03 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,60 +47,44 @@ import javax.servlet.jsp.JspException;
  * The class you enter must implement this interface to perform the editor action.<p>  
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.0
  */
 public interface I_CmsEditorActionHandler {
     
-    /** Constant for: edit mode enabled */
-    String C_EDITMODE_ENABLED = "enabled";
+    /** Prefix for edit area end elements, used on JPS pages that supply the direct edit html */
+    String C_DIRECT_EDIT_AREA_END = "end_directedit";
     
-    /** Constant for: edit mode disabled */
-    String C_EDITMODE_DISABLED = "disabled";
+    /** Prefix for edit area start elements, used on JPS pages that supply the direct edit html */
+    String C_DIRECT_EDIT_AREA_START = "start_directedit";
     
-    /** Constant for: edit mode inactive */
-    String C_EDITMODE_INACTIVE = "inactive";
-    
-    /**
-     * Prefix for edit area start elements
-     */
-    String C_EDIT_STARTAREA = "start_editarea";
-    
-    /**
-     * Prefix for edit area end elements
-     */
-    String C_EDIT_ENDAREA = "end_editarea";
+    /** Key to identify the direct edit configuration file */
+    String C_DIRECT_EDIT_INCLUDE_FILE_URI = "__directEditIncludeFileUri";
 
-    /**
-     * Key to identify the edit area attribute
-     */
-    String C_EDIT_AREA = "__editArea";
-    
-    /**
-     * Key to identify the edit body
-     */  
-    String C_EDIT_BODY = "__editBody";
-    
-    /**
-     * Key to identify the edit language
-     */  
-    String C_EDIT_LANGUAGE = "__editLanguage";
-    
-    /**
-     * Key to identify the edit target
-     */
-    String C_EDIT_TARGET = "__editTarget";
+    /** Default direct edit include file URI */
+    String C_DIRECT_EDIT_INCLUDE_FILE_URI_DEFAULT = "/system/workplace/jsp/editors/editarea.jsp";
 
-    /**
-     * Default editarea elements
-     */
-    String C_EDITAREA_DEFAULTS = "/system/workplace/jsp/editors/editarea.jsp";
-
-    /**
-     * Element name for editarea includes
-     */
-    String C_EDITAREA_INCLUDES = "editarea_includes";
+    /** Element name for direct edit includes */
+    String C_DIRECT_EDIT_INCLUDES = "directedit_includes";
+    
+    /** Constant for: direct edit mode disabled */
+    String C_DIRECT_EDIT_MODE_DISABLED = "disabled";
+    
+    /** Constant for: direct edit mode enabled */
+    String C_DIRECT_EDIT_MODE_ENABLED = "enabled";
+    
+    /** Constant for: direct edit mode inactive */
+    String C_DIRECT_EDIT_MODE_INACTIVE = "inactive";
+    
+    /** Key to identify the edit element, used on JPS pages that supply the direct edit html */  
+    String C_DIRECT_EDIT_PARAM_ELEMENT = "__directEditElement";
+    
+    /** Key to identify the edit language, used on JPS pages that supply the direct edit html */  
+    String C_DIRECT_EDIT_PARAM_LOCALE = "__directEditLocale";
+    
+    /** Key to identify the edit target, used on JPS pages that supply the direct edit html */
+    String C_DIRECT_EDIT_PARAM_TARGET = "__directEditTarget";
     
     /**
      * Performs an action which is configurable in the implementation of the interface, e.g. save, exit, publish.<p>
@@ -129,15 +113,6 @@ public interface I_CmsEditorActionHandler {
     String getButtonUrl(CmsJspActionElement jsp, String resourceName);
     
     /**
-     * Returns true if the customized button should be active, otherwise false.<p>
-     * 
-     * @param jsp the JSP action element
-     * @param resourceName the name of the edited resource
-     * @return true if the customized button should be active, otherwise false
-     */
-    boolean isButtonActive(CmsJspActionElement jsp, String resourceName);
-    
-    /**
      * Checks the current edit mode.<p>
      * The mode is used to select the appropriate elements for displaying the edit area.
      * 
@@ -155,5 +130,14 @@ public interface I_CmsEditorActionHandler {
      * @return the current edit mode ( null | inactive | disabled | enabled )
      */
     String getEditMode(CmsObject cmsObject, String filename, CmsXmlPage page, String element);
+    
+    /**
+     * Returns true if the customized button should be active, otherwise false.<p>
+     * 
+     * @param jsp the JSP action element
+     * @param resourceName the name of the edited resource
+     * @return true if the customized button should be active, otherwise false
+     */
+    boolean isButtonActive(CmsJspActionElement jsp, String resourceName);
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/19 19:14:03 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.ServletRequest;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsFlexCacheKey {
     
@@ -95,8 +95,8 @@ public class CmsFlexCacheKey {
 
     /** The list of keywords of the Flex cache language */
     private static final List m_cacheCmds = Arrays.asList(new String[] {
-        "always", "never", "uri", "user", "params", "no-params", "timeout", "publish-clear", "schemes", "ports", "false", "parse-error", "true", "ip"});
-    //   0         1        2      3       4         5            6          7                8          9        10       11             12      13
+        "always", "never", "uri", "user", "params", "no-params", "timeout", "publish-clear", "schemes", "ports", "false", "parse-error", "true", "ip", "element", "locale"});
+    //   0         1        2      3       4         5            6          7                8          9        10       11             12      13    14         15
     
     /** Flag raised in case a key parse error occured */
     private boolean m_parseError;
@@ -566,7 +566,7 @@ public class CmsFlexCacheKey {
                     case 11: // previous parse error - ignore
                         break;
                     case 13: // ip
-                        m_ip = IS_USED; // marks m_ip as being used
+                        m_ip = IS_USED; // marks ip as being used
                         break;
                     default: // unknown directive, throw error
                         m_parseError = true;
