@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2003/02/21 15:18:23 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/03/07 10:01:15 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -142,7 +142,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 					// add each resource plus its equivalent at content/bodys to 
 					// the string array of all resources for the export
 					while (additionalResourceTokens.hasMoreTokens()) {
-						String currentResource = additionalResourceTokens.nextToken();
+						String currentResource = additionalResourceTokens.nextToken().trim();
 
 						if (DEBUG > 0) {
 							System.err.println("Adding resource: " + currentResource);
