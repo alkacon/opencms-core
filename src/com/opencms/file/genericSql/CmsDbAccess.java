@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/07/10 15:47:59 $
- * Version: $Revision: 1.204 $
+ * Date   : $Date: 2001/07/16 10:17:58 $
+ * Version: $Revision: 1.205 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.204 $ $Date: 2001/07/10 15:47:59 $ *
+ * @version $Revision: 1.205 $ $Date: 2001/07/16 10:17:58 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -215,7 +215,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		while ((exportpoint = config.getString(C_EXPORTPOINT + Integer.toString(i))) != null){
 			exportpath = config.getString(C_EXPORTPOINT_PATH + Integer.toString(i));
 			if (exportpath != null){
-				m_exportpointStorage.put(exportpoint, exportpath);
+				m_exportpointStorage.put(exportpoint, com.opencms.boot.CmsBase.getAbsoluteWebPath(exportpath));
 			}
 			i++;
 		}

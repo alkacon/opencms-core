@@ -108,36 +108,6 @@
             />
     </target>
 
-    <target name="setup" depends="copy">
-        <sql
-            classpath="${build.inputlib.mysql}"
-            driver="${db.driver}"
-            url="${db.setupurl}"
-            userid="${db.user}"
-            password="${db.password}"
-            autocommit="true"
-            onerror="continue"
-            src="${build.webinf}/ocsetup/create_mysql.sql"
-            />
-        <sql
-            classpath="${build.inputlib.mysql}"
-            driver="${db.driver}"
-            url="${db.url}"
-            userid="${db.user}"
-            password="${db.password}"
-            autocommit="true"
-            onerror="continue"
-            src="${build.webinf}/ocsetup/mysql.sql"
-            />
-        <java
-            classname="com.opencms.boot.CmsMain"
-            classpath="${build.lib}/opencmsboot.jar"
-            dir="${build.webinf}"
-            fork="true">
-            <arg value="-script=ocsetup/cmssetup.txt" />
-        </java>
-    </target>
-
     <target name="zip" depends="war">
         <zip
             zipfile="${zip.home}/opencms_build.zip"
@@ -161,6 +131,36 @@
         </copy>
         <copy file="etc/web.xml" todir="${tomcat.home}/webapps/${app.name}/web-inf"/>
         <copy file="${build.inputlib.oracle}" todir="${tomcat.home}/webapps/${app.name}/web-inf/oclib"/>
+    </target>
+
+    <target name="setup" depends="tomcat.dist">
+        <sql
+            classpath="${build.inputlib.mysql}"
+            driver="${db.driver}"
+            url="${db.setupurl}"
+            userid="${db.user}"
+            password="${db.password}"
+            autocommit="true"
+            onerror="continue"
+            src="${build.webinf}/ocsetup/create_mysql.sql"
+            />
+        <sql
+            classpath="${build.inputlib.mysql}"
+            driver="${db.driver}"
+            url="${db.url}"
+            userid="${db.user}"
+            password="${db.password}"
+            autocommit="true"
+            onerror="continue"
+            src="${build.webinf}/ocsetup/mysql.sql"
+            />
+        <java
+            classname="com.opencms.boot.CmsMain"
+            classpath="${tomcat.home}/webapps/${app.name}/web-inf/lib/opencmsboot.jar"
+            dir="${tomcat.home}/webapps/${app.name}/web-inf"
+            fork="true">
+            <arg value="-script=ocsetup/cmssetup.txt" />
+        </java>
     </target>
 
     <target name="tomcat.cleandist" depends="clean,tomcat.clean,tomcat.dist"/>

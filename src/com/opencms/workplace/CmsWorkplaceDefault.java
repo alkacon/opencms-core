@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2001/07/10 16:05:47 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2001/07/16 10:17:58 $
+* Version: $Revision: 1.40 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.39 $ $Date: 2001/07/10 16:05:47 $
+ * @version $Revision: 1.40 $ $Date: 2001/07/16 10:17:58 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -537,7 +537,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
             CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
             m_picsurl = configFile.getWpPicturePath();
         }
-        return cms.getManagedLink(m_picsurl + tagcontent);
+        return cms.getRequestContext().getRequest().getWebAppUrl() + m_picsurl + tagcontent;
     }
 
     /**

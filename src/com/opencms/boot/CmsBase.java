@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsBase.java,v $
-* Date   : $Date: 2001/04/04 12:17:54 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/07/16 10:17:58 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -37,7 +37,7 @@ import java.io.File;
  * and helper functions, e.g. OpenCms logging oder OpenCms base path.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2001/04/04 12:17:54 $
+ * @version $Revision: 1.2 $ $Date: 2001/07/16 10:17:58 $
  */
 public class CmsBase implements I_CmsLogChannels {
 
@@ -108,6 +108,28 @@ public class CmsBase implements I_CmsLogChannels {
     /** Get the OpenCms base path */
     public static String getBasePath() {
         return c_basePath;
+    }
+
+    /** Get the OpenCms web-base path */
+    public static String getWebBasePath() {
+        File basePath = new File(c_basePath);
+        return basePath.getParent();;
+    }
+
+    public static String getAbsoluteWebPath(String s) {
+        if(s == null) {
+            return null;
+        }
+
+        File f = new File(s);
+        if(! f.isAbsolute()) {
+            if(c_basePath == null) {
+                return null;
+            } else {
+                f = new File(getWebBasePath() + s);
+            }
+        }
+        return f.getAbsolutePath();
     }
 
     public static String getAbsolutePath(String s) {
