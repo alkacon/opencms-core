@@ -8,23 +8,28 @@
 
     /* true if properties are initialized */
     boolean setupOk = (Bean.getProperties()!=null);
-
-    /* check params */
-	boolean importWp = false;
-	String param = request.getParameter("importWorkplace");
-	if(param != null)   {
-		importWp = param.equals("true");
-	}
-
-	CmsSetupUtils Utils = new CmsSetupUtils(Bean.getBasePath());
-
-	Bean.checkEthernetAddress();
-
-	/* Save Properties to file "opencms.properties" the 2nd time */
-	Utils.saveProperties(Bean.getProperties(), "opencms.properties", true);
-
-	// Restore the registry.xml either to or from a backup file
-	Utils.backupRegistry("registry.xml", "registry.ori");
+    
+    boolean importWp = false;
+    
+    if (setupOk) {
+   	    /* check params */
+		String param = request.getParameter("importWorkplace");
+		if (param != null) {
+			importWp = param.equals("true");
+		}
+	
+		CmsSetupUtils Utils = new CmsSetupUtils(Bean.getBasePath());
+	
+		Bean.checkEthernetAddress();
+	
+		/* Save Properties to file "opencms.properties" the 2nd time */
+		Utils.saveProperties(Bean.getProperties(), "opencms.properties", true);
+	
+		// Restore the registry.xml either to or from a backup file
+		Utils.backupRegistry("registry.xml", "registry.ori");
+	} else {
+		Bean.initHtmlParts();
+    }
 
 	/* next page */
 	String nextPage = "step_9_browser_configuration_notes.jsp";
@@ -76,15 +81,9 @@ OpenCms Setup Wizard - Import workplace
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
 <% } else	{ %>
-<table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
-<tr>
-	<td align="center" valign="top">
-		<p><b>ERROR</b></p>
-		The setup wizard has not been started correctly!<br>
-		Please click <a href="">here</a> to restart the Wizard
-	</td>
-</tr>
-</table>
+
+<%@ include file="error.jsp" %>
+
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 <% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>

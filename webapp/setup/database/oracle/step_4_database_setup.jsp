@@ -7,7 +7,7 @@
 	boolean isFormSubmitted =( (request.getParameter("submit") != null) && (conStr != null));
 	String nextPage = "../../step_5_database_creation.jsp";
 
-	if(isSetupOk)	{
+	if (isSetupOk) {
 		String createDb = request.getParameter("createDb");
 		if(createDb == null) {
 			createDb = "";
@@ -18,7 +18,7 @@
 			createTables = "";
 		}
 
-		if(isFormSubmitted)	{
+		if (isFormSubmitted) {
 			Bean.setDbWorkConStr(conStr);
 
 			String dbCreateUser = request.getParameter("dbCreateUser");
@@ -53,6 +53,8 @@
 			// initialize the work user with the app name
 			Bean.setDbWorkUser(Bean.getAppName());
 		}
+	} else {
+		Bean.initHtmlParts();
 	}
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
@@ -106,10 +108,10 @@ OpenCms Setup Wizard
 //-->
 </script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
+
+<% if (isSetupOk) { %>
 OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database setup
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-<% if (isSetupOk) { %>
-
 <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 100%;">
 <tr><td style="vertical-align: top;">
 
@@ -222,15 +224,12 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
 <% } else	{ %>
-<table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
-<tr>
-	<td align="center" valign="top">
-		<p><b>ERROR</b></p>
-		The setup wizard has not been started correctly!<br>
-		Please click <a href="<%= request.getContextPath() %>/setup/">here</a> to restart the Wizard
-	</td>
-</tr>
-</table>
+OpenCms Setup Wizard - Database setup
+<%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
+
+<% request.setAttribute("pathPrefix", "../../"); %>
+<%@ include file="../../error.jsp" %>
+
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 <% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>

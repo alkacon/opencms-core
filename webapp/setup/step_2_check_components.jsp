@@ -43,7 +43,7 @@
 	/* true if properties are initialized */
 	boolean setupOk = (Bean.getProperties()!=null);
 
-	if(setupOk) {
+	if (setupOk) {
 
 		if(submited) {
 			nextPage = "step_3_database_selection.jsp";
@@ -58,6 +58,8 @@
 			supportedServletEngine = CmsSetupUtils.supportedServletEngine(servletEngine, supportedEngines);
 			unsupportedServletEngine = CmsSetupUtils.unsupportedServletEngine(servletEngine, unsupportedEngines);
 		}
+	} else {
+		Bean.initHtmlParts();
 	}
 
 %>
@@ -173,15 +175,9 @@ if(submited && info && !accepted) {
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
 <% } else	{ %>
-<table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
-<tr>
-	<td align="center" valign="top">
-		<p><b>ERROR</b></p>
-		The setup wizard has not been started correctly!<br>
-		Please click <a href="">here</a> to restart the Wizard
-	</td>
-</tr>
-</table>
+
+<%@ include file="error.jsp" %>
+
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 <% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>

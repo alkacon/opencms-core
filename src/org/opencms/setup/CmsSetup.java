@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetup.java,v $
- * Date   : $Date: 2004/02/19 11:58:51 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/02/19 14:12:24 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.dom4j.io.SAXReader;
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  */
 public class CmsSetup extends Object implements Serializable, Cloneable {
 
@@ -127,6 +127,20 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
         m_databaseProperties = null;
         errors = new Vector();
     }
+    
+    /** 
+     * This method reads the properties from the htmlmsg.property file
+     * and sets the HTML part properties with the matching values.<p>
+     */
+    public void initHtmlParts() {
+        try {
+            m_htmlProps = new Properties();
+            m_htmlProps.load(getClass().getClassLoader().getResourceAsStream(OpenCmsCore.C_FILE_HTML_MESSAGES));
+        } catch (Exception e) {
+            e.printStackTrace();
+            errors.add(e.toString());
+        }
+    }
 
     /** 
      * This method reads the properties from the opencms.property file
@@ -138,14 +152,11 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
      */
     public void initProperties(String props) {
         getDatabaseNames();
+        initHtmlParts();
         
         String path = getConfigFolder() + props;
         try {
             m_extProperties = CmsSetupUtils.loadProperties(path);
-            m_htmlProps = new Properties();
-            //FileInputStream input = new FileInputStream(new File(m_basePath + "setup/htmlmsg.properties"));
-            //m_htmlProps.load(input);
-            m_htmlProps.load(getClass().getClassLoader().getResourceAsStream(OpenCmsCore.C_FILE_HTML_MESSAGES));
         } catch (Exception e) {
             e.printStackTrace();
             errors.add(e.toString());

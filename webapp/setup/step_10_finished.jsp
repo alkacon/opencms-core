@@ -9,7 +9,7 @@
 	
 	String openLink = request.getContextPath() + "/opencms/index.jsp";
 
-	if (setupOk)	{
+	if (setupOk) {
 		/* lock the wizard for further use */
 		Bean.lockWizard();
 
@@ -19,6 +19,8 @@
 
 		/* invalidate the sessions */
 		request.getSession().invalidate();
+	} else {
+		Bean.initHtmlParts();
 	}
 
 %>
@@ -32,8 +34,9 @@ function openWin() {
 	var theWindow = window.open("<%= openLink %>", "OpenCms", "top=10,left=10,width=780,height=550,location=yes,menubar=yes,resizable=yes,scrollbars=yes,status=yes,toolbar=yes");
 	theWindow.focus();
 }
-
+<% if (setupOk) { %>
 openWin();
+<% } %>
 </script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 OpenCms Setup Wizard - Finished
@@ -89,15 +92,9 @@ OpenCms Setup Wizard - Finished
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
 <% } else	{ %>
-<table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
-<tr>
-	<td align="center" valign="top">
-		<p><b>ERROR</b></p>
-		The setup wizard has not been started correctly!<br>
-		Please click <a href="">here</a> to restart the Wizard
-	</td>
-</tr>
-</table>
+
+<%@ include file="error.jsp" %>
+
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 <% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>

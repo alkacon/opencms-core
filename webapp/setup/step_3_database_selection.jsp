@@ -2,7 +2,16 @@
 
 <jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
 <jsp:setProperty name="Bean" property="*" />
-
+<%
+	/* true if properties are initialized */
+	boolean setupOk = (Bean.getProperties()!=null);
+	
+	if (!setupOk) {
+		Bean.initHtmlParts();
+    }
+    
+    if (setupOk) {
+%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head>
@@ -13,3 +22,18 @@
 <body>
 </body>
 </html>
+<%	} else { %>
+<%= Bean.getHtmlPart("C_HTML_START") %>
+OpenCms Setup Wizard
+<%= Bean.getHtmlPart("C_HEAD_START") %>
+<%= Bean.getHtmlPart("C_STYLES") %>
+<%= Bean.getHtmlPart("C_STYLES_SETUP") %>
+<%= Bean.getHtmlPart("C_HEAD_END") %>
+OpenCms Setup Wizard - Database selection
+<%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
+
+<%@ include file="error.jsp" %>
+
+<%= Bean.getHtmlPart("C_CONTENT_END") %>
+<% } %>
+<%= Bean.getHtmlPart("C_HTML_END") %>

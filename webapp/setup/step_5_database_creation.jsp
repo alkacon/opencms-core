@@ -21,7 +21,7 @@
 	boolean dbExists = false;
 	boolean dropDb = false;
 
-	if(setupOk)	{
+	if (setupOk) {
 
 		String temp;
 		Object a;
@@ -63,6 +63,8 @@
 			  	}
 			}
 		}
+	} else {
+		Bean.initHtmlParts();
 	}
 
 	boolean enableContinue = false;
@@ -76,14 +78,13 @@ OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database setup
+OpenCms Setup Wizard - Create database & tables
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <% if (setupOk)	{ %>
 <form action="<%= nextPage %>" method="post" class="nomargin">
 <table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
 <tr>
 	<td style="vertical-align: middle;">
-
 				<%
 					if (!createDb && !createTables && !dbExists)	{
 						%>
@@ -294,15 +295,9 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 } %>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
 <% } else	{ %>
-<table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
-<tr>
-	<td align="center" valign="top">
-		<p><b>ERROR</b></p>
-		The setup wizard has not been started correctly!<br>
-		Please click <a href="">here</a> to restart the Wizard
-	</td>
-</tr>
-</table>
+
+<%@ include file="error.jsp" %>
+
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 <% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>

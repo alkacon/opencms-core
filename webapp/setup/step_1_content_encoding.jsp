@@ -8,11 +8,19 @@
 /* next page in the setup process */
 String nextPage = "step_2_check_components.jsp";
 
+/* true if properties are initialized */
+boolean setupOk = (Bean.getProperties()!=null);
+
 // Reading the system properties
 Properties vmProperties = System.getProperties();
-
 String vmEncoding = vmProperties.getProperty("file.encoding");
-boolean encodingOk = Bean.getDefaultContentEncoding().equalsIgnoreCase(vmEncoding);
+boolean encodingOk = false;
+
+if (setupOk) {
+	encodingOk = Bean.getDefaultContentEncoding().equalsIgnoreCase(vmEncoding);
+} else {
+	Bean.initHtmlParts();
+}
 
 if (encodingOk) {
 	response.sendRedirect(nextPage);
@@ -27,7 +35,7 @@ OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 OpenCms Setup Wizard - Wrong content encoding!
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-
+<% if (setupOk) { %>
 <table border="0" cellpadding="0" cellspacing="0" style="height: 100%;">
 <tr><td style="vertical-align: bottom;">
 
@@ -94,4 +102,10 @@ OpenCms Setup Wizard - Wrong content encoding!
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
+<% } else	{ %>
+
+<%@ include file="error.jsp" %>
+
+<%= Bean.getHtmlPart("C_CONTENT_END") %>
+<% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>

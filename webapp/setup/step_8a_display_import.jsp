@@ -5,6 +5,10 @@
 <%
     /* true if properties are initialized */
     boolean setupOk = (Bean.getProperties() != null);
+    
+    if (!setupOk) {
+		Bean.initHtmlParts();
+    }
 
     /* next page to be accessed */
     String nextPage = "step_9_browser_configuration_notes.jsp";
@@ -119,15 +123,9 @@ OpenCms Setup Wizard - Import workplace
 	enable();
 </script>
 <% } else { %>
-<table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
-<tr>
-	<td align="center" valign="top">
-		<p><b>ERROR</b></p>
-		The setup wizard has not been started correctly!<br>
-		Please click <a href="">here</a> to restart the Wizard
-	</td>
-</tr>
-</table>
+
+<%@ include file="error.jsp" %>
+
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 <% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>

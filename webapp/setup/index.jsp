@@ -54,29 +54,29 @@ OpenCms Setup Wizard - License Agreement
 <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 100%; padding-right: 3px;">
 	<% if (wizardEnabled && isInitialized)	{ 
 		showButtons = true; %>
-			<tr>
-				<td style="vertical-align: top;">
-					<div class="dialoginnerboxborder"><div class="dialoginnerbox">	
-					<iframe src="license.html" name="license" style="width: 100%; height: 310px; margin: 0; padding: 0; border-style: none;" frameborder="0"></iframe>
-					</div></div>
-				</td>
-			</tr>
-			<tr>
-				<td style="vertical-align: bottom;padding-top: 12px;">
-					<table border="0" cellpadding="0" cellspacing="0" style="vertical-align: bottom; height: 20px;">
-					<tr>
-						<td>Do you accept all the terms of the preceding license agreement?</td>
-						<td>&nbsp;&nbsp;</td>
-						<td style="width: 25px;"><input type="radio" name="agree" value="yes" onclick="toggleButton(false);"></td>
-						<td> yes</td>
-						<td>&nbsp;&nbsp;</td>
-						<td style="width: 25px;"><input type="radio" name="agree" value="no" onclick="toggleButton(true);" checked="checked"></td>
-						<td> no</td>
-					</tr>
-			
-					</table>
-				</td>
-			</tr>
+		<tr>
+			<td style="vertical-align: top;">
+				<div class="dialoginnerboxborder"><div class="dialoginnerbox">	
+				<iframe src="license.html" name="license" style="width: 100%; height: 310px; margin: 0; padding: 0; border-style: none;" frameborder="0"></iframe>
+				</div></div>
+			</td>
+		</tr>
+		<tr>
+			<td style="vertical-align: bottom;padding-top: 12px;">
+				<table border="0" cellpadding="0" cellspacing="0" style="vertical-align: bottom; height: 20px;">
+				<tr>
+					<td>Do you accept all the terms of the preceding license agreement?</td>
+					<td>&nbsp;&nbsp;</td>
+					<td style="width: 25px;"><input type="radio" name="agree" value="yes" onclick="toggleButton(false);"></td>
+					<td> yes</td>
+					<td>&nbsp;&nbsp;</td>
+					<td style="width: 25px;"><input type="radio" name="agree" value="no" onclick="toggleButton(true);" checked="checked"></td>
+					<td> no</td>
+				</tr>
+		
+				</table>
+			</td>
+		</tr>
 	<% } else if (! isInitialized) { %>
 		<tr>
 			<td style="vertical-align: middle;">
@@ -107,7 +107,7 @@ OpenCms Setup Wizard - License Agreement
 		</tr>
 	<% } else { %>
 		<tr>
-			<td style="vertical-align: middle;">
+			<td style="vertical-align: middle; height: 100%;">
 				<%= Bean.getHtmlPart("C_BLOCK_START", "Wizard locked") %>
 				<table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
 					<tr>
@@ -126,7 +126,6 @@ OpenCms Setup Wizard - License Agreement
 	<% } %>
 
 </table>
-
 
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 
