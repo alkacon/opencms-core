@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/04/05 05:40:34 $
- * Version: $Revision: 1.110 $
+ * Date   : $Date: 2004/04/10 12:47:25 $
+ * Version: $Revision: 1.111 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.110 $
+ * @version $Revision: 1.111 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1660,6 +1660,7 @@ public final class OpenCmsCore {
             errorHtml = CmsStringSubstitution.substitute(errorHtml, "${button_details}", htmlProps.getProperty("C_BUTTON_DETAILS"));
             errorHtml = CmsStringSubstitution.substitute(errorHtml, "${bt_details}", messages.key("button.detail"));
             exception = CmsStringSubstitution.substitute(exception, "\\", "\\\\");
+            exception = CmsStringSubstitution.substitute(exception, "\"", "\\\"");
             exception = CmsStringSubstitution.substitute(exception, "\r\n", "\\n");        
             exception = CmsStringSubstitution.substitute(exception, "\n", "\\n");
             details = "<html><body style='background-color: Window;'><pre>" + exception + "</pre></body></html>";
