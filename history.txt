@@ -8,6 +8,8 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.10 Bela Tegeuse - XXX
+- Second bodies are now called "body2" per default (instead of "body1").
 
 OpenCms 4.3.9 Bela Tegeuse - 30 April 2001
 ! Selecting a default-body for an new page is possible now. Thanks to Jeroen Habets.
