@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/12/14 10:18:33 $
- * Version: $Revision: 1.178 $
+ * Date   : $Date: 2001/01/04 09:49:13 $
+ * Version: $Revision: 1.179 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.178 $ $Date: 2000/12/14 10:18:33 $ * 
+ * @version $Revision: 1.179 $ $Date: 2001/01/04 09:49:13 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -6528,7 +6528,7 @@ public void updateLockstate(CmsResource res) throws CmsException {
 			if (group != null){
 				// create statement
 				statement=m_pool.getPreparedStatement(m_cq.C_GROUPS_WRITEGROUP_KEY);
-				statement.setString(1,group.getDescription());
+				statement.setString(1,checkNull(group.getDescription()));
 				statement.setInt(2,group.getFlags());
 				statement.setInt(3,group.getParentId());
 				statement.setInt(4,group.getId());
