@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.1.36 Arakis - 03 November 2000
+OpenCms 4.1.37 Arakis - 03 November 2000
 
 ! added module-cycle
 * removed a bug in the editor for selecting a mastertemplate
