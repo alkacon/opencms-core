@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChnav.java,v $
- * Date   : $Date: 2003/07/22 17:12:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/30 13:34:50 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
@@ -151,7 +151,7 @@ public class CmsChnav extends CmsDialog {
         } else {                        
             setAction(ACTION_DEFAULT);
             // build title for chnav dialog     
-            setParamTitle(key("explorer.context.chnav") + ": " + CmsResource.getName(getParamFile()));
+            setParamTitle(key("explorer.context.chnav") + ": " + CmsResource.getName(getParamResource()));
         }
     }
     
@@ -162,7 +162,7 @@ public class CmsChnav extends CmsDialog {
      */
     public String getCurrentNavText() {
         try {
-            String navText = getCms().readProperty(getParamFile(), I_CmsConstants.C_PROPERTY_NAVTEXT);
+            String navText = getCms().readProperty(getParamResource(), I_CmsConstants.C_PROPERTY_NAVTEXT);
             if (navText == null) {
                 navText = "";
             }
@@ -184,7 +184,7 @@ public class CmsChnav extends CmsDialog {
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         
         // get request parameters
-        String filename = getParamFile();
+        String filename = getParamResource();
         String newText = getParamNavtext();
         String selectedPosString = getParamNavpos();
         
@@ -227,7 +227,7 @@ public class CmsChnav extends CmsDialog {
         ArrayList values = new ArrayList();
         
         // get current file navigation element
-        String filename = getParamFile();
+        String filename = getParamResource();
         CmsJspNavElement curNav = CmsJspNavBuilder.getNavigationForResource(getCms(), filename);
         
         // get the parent folder of the current file

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/07/22 00:29:22 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/07/30 13:34:50 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.opencms.security.I_CmsPrincipal;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1
  */
@@ -200,7 +200,7 @@ public class CmsChacc extends CmsDialog {
         }
         
         // build the title for chacc dialog     
-        setParamTitle(key("title.chmod") + ": " + CmsResource.getName(getParamFile()));              
+        setParamTitle(key("title.chmod") + ": " + CmsResource.getName(getParamResource()));              
     }
     
     /**
@@ -224,10 +224,10 @@ public class CmsChacc extends CmsDialog {
                  
         try {      
             // get the current users' permissions
-            setCurPermissions(getCms().getPermissions(getParamFile(), userName));
+            setCurPermissions(getCms().getPermissions(getParamResource(), userName));
     
             // check if the current resource is a folder
-            CmsResource resource = getCms().readFileHeader(getParamFile());
+            CmsResource resource = getCms().readFileHeader(getParamResource());
             if (resource.isFolder()) {
                 setShowInherit(true);
             }
@@ -248,7 +248,7 @@ public class CmsChacc extends CmsDialog {
      * @return true if the ace was successfully removed, otherwise false
      */
     public boolean actionRemoveAce() {
-        String file = getParamFile();
+        String file = getParamResource();
         String name = getParamName();
         String type = getParamType();
         try {
@@ -266,7 +266,7 @@ public class CmsChacc extends CmsDialog {
      * @return true if a new ace was created, otherwise false
      */
     public boolean actionAddAce() {
-        String file = getParamFile();
+        String file = getParamResource();
         String name = getParamName();
         String type = getParamType();
         int arrayPosition = -1;
@@ -317,7 +317,7 @@ public class CmsChacc extends CmsDialog {
      * @return true if the modification worked, otherwise false 
      */
     public boolean actionModifyAce(HttpServletRequest request) {      
-        String file = getParamFile();  
+        String file = getParamResource();  
         
         // get request parameters
         String name = getParamName();
@@ -399,7 +399,7 @@ public class CmsChacc extends CmsDialog {
      * @return String with HTML code of the form
      */
     private StringBuffer buildPermissionEntryForm(CmsUUID id, CmsPermissionSet curSet, boolean editable, boolean showinherit, boolean extendedView) {
-        String fileName = getParamFile();
+        String fileName = getParamResource();
         int flags = 0;
         try {
             // TODO: a more elegant way to determine user/group of current id
@@ -602,7 +602,7 @@ public class CmsChacc extends CmsDialog {
             // show the short view, use an ACL to build the list
             try {
                 // get the inherited ACL of the parent folder 
-                String parentUri = com.opencms.file.CmsResource.getParent(getParamFile());
+                String parentUri = com.opencms.file.CmsResource.getParent(getParamResource());
                 CmsAccessControlList acList = getCms().getAccessControlList(parentUri, true);
                 Set principalSet = acList.getPrincipals();
                 i = principalSet.iterator();
@@ -695,12 +695,12 @@ public class CmsChacc extends CmsDialog {
         // get all access control entries of the current file
         Vector allEntries = new Vector();
         try {
-            allEntries = getCms().getAccessControlEntries(getParamFile(), true);
+            allEntries = getCms().getAccessControlEntries(getParamResource(), true);
         } catch (CmsException e) { }
         
         // store all parent folder ids together with path in a map
         Map parents = new HashMap();
-        String path = CmsResource.getParent(getParamFile());
+        String path = CmsResource.getParent(getParamResource());
         List parentResources = new ArrayList();
         try {
             // get all parent folders of the current file

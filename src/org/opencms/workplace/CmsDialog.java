@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/07/30 13:22:24 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/07/30 13:34:50 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1
  */
@@ -70,7 +70,7 @@ public class CmsDialog extends CmsWorkplace {
     public static final String PARAM_MESSAGE = "message";
 
     private String m_paramAction;
-    private String m_paramFile;
+    private String m_paramResource;
     private String m_paramDialogtype;
     private String m_paramErrorstack;
     private String m_paramMessage;
@@ -184,8 +184,8 @@ public class CmsDialog extends CmsWorkplace {
      * 
      * @return the value of the file parameter
      */    
-    public String getParamFile() {
-        return m_paramFile;
+    public String getParamResource() {
+        return m_paramResource;
     }
     
     /**
@@ -193,8 +193,8 @@ public class CmsDialog extends CmsWorkplace {
      * 
      * @param value the value to set
      */
-    public void setParamFile(String value) {
-        m_paramFile = value;
+    public void setParamResource(String value) {
+        m_paramResource = value;
     }
     
     /**
@@ -770,8 +770,8 @@ public class CmsDialog extends CmsWorkplace {
      * @throws CmsException if something goes wrong
      */
     public String getState() throws CmsException { 
-        if (getParamFile() != null) {        
-            CmsResource file = getCms().readFileHeader(getParamFile());
+        if (getParamResource() != null) {        
+            CmsResource file = getCms().readFileHeader(getParamResource());
             return getState(file);
         } else  {
             return "+++ file parameter not found +++";

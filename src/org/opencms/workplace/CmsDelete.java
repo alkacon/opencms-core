@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2003/07/28 16:29:42 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/30 13:34:50 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -100,7 +100,7 @@ public class CmsDelete extends CmsDialog {
         } else {                        
             setAction(ACTION_DEFAULT);
             // build title for delete dialog     
-            setParamTitle(key("title.delete") + ": " + CmsResource.getName(getParamFile()));
+            setParamTitle(key("title.delete") + ": " + CmsResource.getName(getParamResource()));
         }      
     } 
 
@@ -123,7 +123,7 @@ public class CmsDelete extends CmsDialog {
         } catch (CmsException e) {
             // prepare common message part
 
-            String message = "<p>\n" + key("title.delete") + ": " + getParamFile() + "\n</p>\n";                 
+            String message = "<p>\n" + key("title.delete") + ": " + getParamResource() + "\n</p>\n";                 
             
             setParamErrorstack(e.getStackTraceAsString());
             setParamMessage(message + key("error.message." + getParamDialogtype()));
@@ -148,7 +148,7 @@ public class CmsDelete extends CmsDialog {
         int deleteOption = -1;     
         
         // on folder copy display "please wait" screen, not for simple file copy
-        CmsResource sourceRes = getCms().readFileHeader(getParamFile());
+        CmsResource sourceRes = getCms().readFileHeader(getParamResource());
         if (sourceRes.isFolder() && ! DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
             return false;
@@ -162,7 +162,7 @@ public class CmsDelete extends CmsDialog {
         //}
          
         // delete the resource
-        getCms().deleteResource(getParamFile(), deleteOption);
+        getCms().deleteResource(getParamResource(), deleteOption);
         
         return true;
     }
@@ -174,7 +174,7 @@ public class CmsDelete extends CmsDialog {
      * @throws CmsException if something goes wrong
      */
     public boolean hasVfsLinks() throws CmsException {
-        return getCms().getAllVfsSoftLinks(getParamFile()).size() > 0;
+        return getCms().getAllVfsSoftLinks(getParamResource()).size() > 0;
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2003/07/22 17:12:01 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/30 13:34:50 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */
@@ -142,7 +142,7 @@ public class CmsCopy extends CmsDialog {
         } else {                        
             setAction(ACTION_DEFAULT);
             // build title for copy dialog     
-            setParamTitle(key("title.copy") + ": " + CmsResource.getName(getParamFile()));
+            setParamTitle(key("title.copy") + ": " + CmsResource.getName(getParamResource()));
         }      
     } 
 
@@ -156,7 +156,7 @@ public class CmsCopy extends CmsDialog {
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         CmsResource res = null;
         try {
-            res = getCms().readFileHeader(getParamFile());
+            res = getCms().readFileHeader(getParamResource());
             if (performCopyOperation())  {
                 // if no exception is caused and "true" is returned copy operation was successful
                 getJsp().include(C_FILE_EXPLORER_FILELIST);
@@ -167,7 +167,7 @@ public class CmsCopy extends CmsDialog {
         } catch (CmsException e) {
             // prepare common message part
             String message = "<p>\n" 
-                + key("source") + ": " + getParamFile() + "<br>\n" 
+                + key("source") + ": " + getParamResource() + "<br>\n" 
                 + key("target") + ": " + getParamTarget() + "\n</p>\n";
             // check if this exception requires a confirmation or error screen
             if ((e.getType() == CmsException.C_FILE_EXISTS) 
@@ -194,7 +194,7 @@ public class CmsCopy extends CmsDialog {
     private boolean performCopyOperation() throws CmsException {
 
         // on folder copy display "please wait" screen, not for simple file copy
-        CmsResource sourceRes = getCms().readFileHeader(getParamFile());
+        CmsResource sourceRes = getCms().readFileHeader(getParamResource());
         if (sourceRes.isFolder() && ! DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
             return false;
@@ -206,14 +206,14 @@ public class CmsCopy extends CmsDialog {
 
         if (! target.startsWith("/")) {
             // target is not an absolute path, add the current parent folder
-            target = CmsResource.getParent(getParamFile()) + target; 
+            target = CmsResource.getParent(getParamResource()) + target; 
         }
         try {
             CmsResource res = getCms().readFileHeader(target);
             if (res.isFolder()) {
                 // target folder already exists, so we add the current folder name
                 if (! target.endsWith("/")) target += "/";
-                target = target + CmsResource.getName(getParamFile());
+                target = target + CmsResource.getName(getParamResource());
             }
         } catch (CmsException e) {
             // target folder does not already exist, so target name is o.k.
@@ -228,7 +228,7 @@ public class CmsCopy extends CmsDialog {
         }            
         
         // copy the resource       
-        getCms().copyResource(getParamFile(), target, "true".equals(getParamKeeprights()), true);
+        getCms().copyResource(getParamResource(), target, "true".equals(getParamKeeprights()), true);
         return true;
     }
 }
