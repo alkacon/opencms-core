@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/11/01 13:38:43 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2000/11/03 16:03:56 $
+ * Version: $Revision: 1.58 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.57 $ $Date: 2000/11/01 13:38:43 $
+ * @version $Revision: 1.58 $ $Date: 2000/11/03 16:03:56 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -62,7 +62,12 @@ public class CmsShell implements I_CmsConstants {
 	/**
 	 * If this member is set to true, all commands are echoed
 	 */
-	private boolean m_echo = false;
+	static boolean m_echo = false;
+
+	/**
+	 * if m_shortException is true then print only the short version of the Exception in the commandshell
+	 */ 
+	static boolean m_shortException = false;
 	
 /**
  * Insert the method's description here.
@@ -104,15 +109,8 @@ private void call(Vector command)
 	if ((command == null) || (command.size() == 0))
 	{
 		return;
-	} else if(command.elementAt(0).equals("echo") && command.elementAt(1).equals("on")) {
-		// all commands should be echoed
-		m_echo = true;
-		return;
-	} else if(command.elementAt(0).equals("echo") && command.elementAt(1).equals("off")) {
-		// all commands should not be echoed (default)
-		m_echo = false;
-		return;
 	}
+	
 	String splittet[] = new String[command.size()];
 	String toCall;
 	command.copyInto(splittet);
@@ -208,14 +206,18 @@ public static void main(String[] args)
 		exc.printStackTrace();
 	}
 }
-	/**
-	 * Prints a exception with the stacktrace.
-	 * 
-	 * @param exc The exception to print.
-	 */
-	protected static void printException(Exception exc) {
+/**
+ * Prints a exception with the stacktrace.
+ * 
+ * @param exc The exception to print.
+ */
+protected static void printException(Exception exc) {
+	if (((CmsException) exc).getType() != 0 && CmsShell.m_shortException) {
+		System.out.println(((CmsException) exc).m_Type + " " + CmsException.C_EXTXT[ ((CmsException) exc).m_Type]);
+	} else {
 		exc.printStackTrace();
 	}
+}
 	/**
  * Prints the full name and signature of a method.<br>
  * Called by help-methods.

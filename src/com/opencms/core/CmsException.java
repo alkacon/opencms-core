@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
- * Date   : $Date: 2000/10/25 13:15:06 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/11/03 16:03:56 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import java.util.*;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2000/10/25 13:15:06 $
+ * @version $Revision: 1.32 $ $Date: 2000/11/03 16:03:56 $
  */
 public class CmsException extends Exception {
 	
@@ -265,6 +265,80 @@ public class CmsException extends Exception {
 							"Resourcebroker-init error",
 							"Registry error",
 };
+	/** 
+	 * Constructs a simple CmsException
+	 */
+	public CmsException() {
+		super();
+	}
+	 /** 
+	 * Contructs a CmsException with reserved error code
+	 * <p>
+	 * 
+	 * @param i Exception code
+	 */
+	public CmsException(int i) {
+		super("CmsException ID: " + i);
+		m_Type = i;
+	}
+	 /** 
+	 * Creates a CmsException with reserved error code and a forwarded other exception
+	 * <p>
+	 * 
+	 * @param i Exception code
+	 * @param e Forawarded general exception
+	 */
+	public CmsException(int i, Exception e)	{
+		super("CmsException ID: " + i);
+		m_Type = i;
+		m_Exception = e;
+	}
+	 /** 
+	 * Constructs a CmsException with a specified description.
+	 * 
+	 * @param s Exception description 
+	 */
+	public CmsException(String s) {
+		super(s);
+		m_message=s;
+	}
+	 /** 
+	 * Constructs a  CmsException with reserved error code and additional information
+	 * <p>
+	 * 
+	 * @param s Exception description
+	 * @param i Exception code
+	 */
+	public CmsException(String s, int i) {
+		super(s);
+		m_Type = i;
+		m_message=s;
+	}
+	 /** 
+	 * Creates a CmsException with reserved error code, a forwarded other exception and a detail message
+	 * <p>
+	 * 
+	 * @param s Exception description 
+	 * @param i Exception code
+	 * @param e Forawarded general exception
+	 */
+	public CmsException(String s, int i, Exception e) {
+		super(s);
+		m_Type = i;
+		m_Exception = e;
+		m_message=s;
+	}
+	/** 
+	 * Construtcs a CmsException  with a detail message and a forwarded other exception
+	 * 
+	 * @param s Exception description 
+	 * @param e Forwaarded general exception
+	 */
+	public CmsException(String s, Exception e){
+		super(s);
+		m_Exception = e;
+		m_message=s;
+	}
 	/**
 	 * Get the exeption.
 	 * 
@@ -318,74 +392,14 @@ public String getStackTrace()
 	public int getType() {
 		return m_Type;
 	}
-	 /** 
-	 * Creates a CmsException with reserved error code and a forwarded other exception
-	 * <p>
-	 * 
-	 * @param i Exception code
-	 * @param e Forawarded general exception
-	 */
-	public CmsException(int i, Exception e)	{
-		super("CmsException ID: " + i);
-		m_Type = i;
-		m_Exception = e;
-	}
-	 /** 
-	 * Contructs a CmsException with reserved error code
-	 * <p>
-	 * 
-	 * @param i Exception code
-	 */
-	public CmsException(int i) {
-		super("CmsException ID: " + i);
-		m_Type = i;
-	}
-	 /** 
-	 * Creates a CmsException with reserved error code, a forwarded other exception and a detail message
-	 * <p>
-	 * 
-	 * @param s Exception description 
-	 * @param i Exception code
-	 * @param e Forawarded general exception
-	 */
-	public CmsException(String s, int i, Exception e) {
-		super(s);
-		m_Type = i;
-		m_Exception = e;
-		m_message=s;
-	}
-	 /** 
-	 * Constructs a  CmsException with reserved error code and additional information
-	 * <p>
-	 * 
-	 * @param s Exception description
-	 * @param i Exception code
-	 */
-	public CmsException(String s, int i) {
-		super(s);
-		m_Type = i;
-		m_message=s;
-	}
-	/** 
-	 * Construtcs a CmsException  with a detail message and a forwarded other exception
-	 * 
-	 * @param s Exception description 
-	 * @param e Forwaarded general exception
-	 */
-	public CmsException(String s, Exception e){
-		super(s);
-		m_Exception = e;
-		m_message=s;
-	}
-	 /** 
-	 * Constructs a CmsException with a specified description.
-	 * 
-	 * @param s Exception description 
-	 */
-	public CmsException(String s) {
-		super(s);
-		m_message=s;
-	}
+/**
+ * Insert the method's description here.
+ * Creation date: (10/23/00 %r)
+ */
+public void printStackTrace()
+{
+	printStackTrace(System.out);
+}
 		/**
 	 * Prints this <code>Throwable</code> and its backtrace to the 
 	 * specified print stream. 
@@ -404,14 +418,6 @@ public String getStackTrace()
 	public void printStackTrace(java.io.PrintWriter s) { 
 		s.println(getStackTrace());
 	}
-/**
- * Insert the method's description here.
- * Creation date: (10/23/00 %r)
- */
-public void printStackTrace()
-{
-	printStackTrace(System.out);
-}
 	/**
 	 * Set an exception value.
 	 * 
@@ -438,10 +444,4 @@ public String toString()
 	}
 	return output.toString();
 }
-	/** 
-	 * Constructs a simple CmsException
-	 */
-	public CmsException() {
-		super();
-	}
 }

@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2000/11/03 14:55:00 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/11/03 16:03:56 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.15 $ $Date: 2000/11/03 14:55:00 $
+ * @version $Revision: 1.16 $ $Date: 2000/11/03 16:03:56 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -694,14 +694,20 @@ public void deleteWebUser(String userId) {
 		CmsShell.printException(exc);
 	}
 }
-	/**
-	 * Echos the input to output.
-	 * 
-	 * @param echo The echo to be written to output.
-	 */
-	public void echo(String echo) {
+/**
+ * Echos the input to output.
+ * 
+ * @param echo The echo to be written to output.
+ */
+public void echo(String echo) {
+	if (echo.toLowerCase().equals("on")) {
+		CmsShell.m_echo = true;
+	} else if (echo.toLowerCase().equals("off")) {
+		CmsShell.m_echo = false;
+	} else {
 		System.out.println(echo);
 	}
+}
 /**
  * Ends a task of the Cms.
  * 
@@ -2419,6 +2425,18 @@ public void setTimeout(String taskId, String timeout) {
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * Echos the input to output.
+ * 
+ * @param echo The echo to be written to output.
+ */
+public void shortException(String param) {
+	if (param.toLowerCase().equals("on")) {
+		CmsShell.m_shortException = true;
+	} else if (param.toLowerCase().equals("off")) {
+		CmsShell.m_shortException = false;
+	}
+}
 /**
  * Unlocks all resources of a project.
  * 
