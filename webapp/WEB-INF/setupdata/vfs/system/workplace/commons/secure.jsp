@@ -121,7 +121,7 @@ wp.setParamAction("secure");
       <tr>
         <td width="100pt"><%= wp.key("input.intern") %></td>
         <td style="padding-left:10px">
-          <input type="checkbox" id="intern" name="intern" value="true" style="text-align:left" onclick="checkNoSecureNorExport()" <%= Boolean.parseBoolean(wp.readInternProp()) ? "checked=\"checked\"" : "" %>>
+          <input type="checkbox" id="intern" name="intern" value="true" style="text-align:left" onclick="checkNoSecureNorExport()" <%= Boolean.valueOf(wp.readInternProp()).booleanValue() ? "checked=\"checked\"" : "" %>>
           </td>
          
       </tr>
