@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
+  <page language="en">
+    <element name="body">
+      <links>
+        <link name="link3" type="A" internal="false">
+          <target><![CDATA[mailto:contributions@opencms.org]]></target>
+        </link>
+        <link name="link5" type="A" internal="false">
+          <target><![CDATA[http://www.opencms.org/bugzilla/]]></target>
+        </link>
+        <link name="link2" type="A" internal="true">
+          <target><![CDATA[/sites/default/release/mailinglist.html]]></target>
+        </link>
+        <link name="link0" type="A" internal="true">
+          <target><![CDATA[/sites/default/release/mailinglist.html]]></target>
+        </link>
+        <link name="link4" type="A" internal="true">
+          <target><![CDATA[/sites/default/release/mailinglist.html]]></target>
+        </link>
+        <link name="link1" type="A" internal="false">
+          <target><![CDATA[http://www.opencms.org/bugzilla/]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<h2>Release Notes for OpenCms 6.0 alpha 2</h2>
+<p>10/25/2004: This is the second public binary alpha release of
+OpenCms 6.0. OpenCms 6.0 is a major upgrade, and it vastly expands
+the features of OpenCms 5.0. The alpha 2 release improves certain
+issues with alpha 1 that have been reported on the <A href=
+"${link0}" target=_self  mailinglist.html??
+ release="" opencms="">opencms-dev</A> mailing list. A couple of new
+features have also been added to the 6.0 alpha 2 release.</p>
+<p><strong>Who should use this 6.0 alpha&nbsp;2
+version?</strong></p>
+<p>This is an alpha version. Please don't expect it to be perfectly
+stable. One of the most important Open Source philosophies is
+"Release early, Release often", and this is what we intend to
+do&nbsp;with this and subsequent 6.0 releases. If and how you
+should use this version depends on what your goals are:</p>
+<ul>
+<li>If you are currently using any previous 6.0 
+  development release (e.g. 6.0 alpha 1), you should upgrade to this new 
+version.</li><li>If you are an IT&nbsp;professional or a company 
+  working with OpenCms on a regular basis, you should&nbsp;definitely&nbsp;check 
+  if and&nbsp;how your current websites, modules and functions can be ported to 
+  the new release. Even though changes on the Java API level and changes on the 
+  DB schema are to be expected until we reach the beta or even release candidate 
+  state of the development, most of the big changes have already been made.</li><li>If you start a new project that is expected to go 
+  live in about 3 months, you may use this version to build your project - but 
+  be prepared for some extra work to update when new releases become available, 
+  and also for some time figuring out the so far undocumented features if these 
+  are required.</li><li>If you are working on a project with OpenCms 5.0.x 
+  that has&nbsp;a delivery date soon, you should stick to the 5.0.x version 
+  unless you absolutely require a feature of the 6.0 version.</li><li>If you are running a website based on OpenCms, and you plan to
+implement some new features in the not so far future, you should
+install this version on a test machine and check out the new
+features.</li>
+</ul>
+<p><strong>When will the "final" release of OpenCms 6.0 be
+available?</strong></p>
+<p>This will greatly depend on the feedback for this release and
+the following releases, especially regarding bugs. In case you find
+any bug, please use the <a href="${link1}"
+ target="_self">OpenCms bugzilla</a> to document it, or at least
+post a note to the <A href=
+"${link2}" target=_self  mailinglist.html??
+ release="" opencms="">opencms-dev</A> mailing list. The more feedback and
+code contributions are made, the faster we can fix the issues and
+finish the development. Currently we expect the final release of
+OpenCms 6.0 in Q4/2004 or Q1/2005.</p>
+<p><strong>The most important new 
+features in&nbsp;this alpha 2 release&nbsp;compared
+to the
+alpha&nbsp;1&nbsp;version:</strong></p>
+<ul dir="ltr">
+<li>The release is the first that displays the new XML 
+  content features of OpenCms 6.0 by including a full demo for most of the new 
+  functions (the "templateone" frontend). Implemented new features for XML 
+  content in this release are: 
+  <UL>
+<li>XML content editor elements titles can be localized</li><li>XML content editor correctly supports locales, 
+    including locale switch</li><li>XML content editor supports optional "help bubbles" 
+    using special locale keys</li><li>XML content editor allows scrolling in case of many 
+    widgets on the screen</li><li>XML content editor now allows "direct publish" 
+    directly from the editor</li><li>XML content can be created with the "New" dialog 
+    wizard if properly configured</li><li>Made XML content types configurable in 
+    opencms-vfs.xml</li><li>Made XML content type filters configurable in 
+    opencms-vfs.xml</li><li>Added advanced XML content widgets: Boolean, 
+    Colorpicker, VfsFile</li><li>Added new tags "contentload", "contentcheck", "contentloop",
+"contentshow" to OpenCms JSP taglib for display of XML content in
+templates</li></UL></li><li>Other features of notice: 
+  <UL>
+<li>New "content-conversion" property allows automatic 
+    conversion of XML page HTML content to XHTML, also optionally corrects HTML 
+    errors etc.</li><li>Added option "clean up after Copy&amp;Paste from 
+    Word" to all XML page editors</li><LI>Added support for MySQL 4.1</LI><LI>Explorer "History" dialog with version information has been rebuild in 
+    JSP </LI></UL></li><li>
+<div>Fixed issues and minor improvements:</div>
+  <UL>
+<li>
+<div>Updated included libaries to their latest available release
+versions</div></li><li>
+<div>Split the CmsDriverManager into CmsSecurityManager and
+CmsDriverManager, for more efficient handling of permission checks
+during DB operations</div></li><li>Added feature to set web application context name 
+    in web.xml (required e.g. for Jboss)</li><li>New "displayresource.jsp" replaced XML template 
+    based "show resource" file</li><li>Locale handler for the workplace has been made 
+    configurable</li><li>Fixed issue with link replace mode in XML content 
+    editor operating in the roor site</li><li>Fixed issue with default XML default value creation 
+    not having an OpenCms context available</li><li>Fixed issue with translated module name not 
+    correctly written to log</li><li>Fixed issues with legacy master module permissions 
+    and history</li><li>Fixed issue with Lucene search query not working 
+    with "OR" logic</li><li>Fixed issue with old temporary file lock owned by 
+    wrong user</li><li>Fixed issue with cached page element in request 
+    attribute not being properly initialized</li><li>Added configurable password class encryption handler to
+opencms-system.xml</li></UL>
+</li>
+</ul>
+<p><strong>The most important new features in&nbsp;this release
+compared to the 5.0.x version:</strong></p>
+<ul>
+<li>Multiple websites can now be managed in one OpenCms 
+  installation</li><li>The&nbsp;"Direct Edit" feature allows users to open 
+  the editor directly from the websites front-end by pushing an "Edit" button 
+  that appears on elements on the page (if the user has the permissions to edit 
+  it)</li><li>Using the new resource type "XmlContent", buliding 
+  structured content (e.g. news articles, product descriptions etc.) is really 
+  easy and requires little or no programming</li><li>OpenCms now comes with a highly configurable template 
+  with many advanced functions as additional default module</li><li>Multi-language versions of the same page and improved 
+  support for managing multi language websites is integrated</li><li>Build-in support for full text search in HTML, PDF, 
+  Word, Excel and Plaintext&nbsp;documents (based on Apache Lucene)</li><li>All contents in the VFS can now have a "publication 
+  date" and an "expiration date" so they can&nbsp;appear / disappaer 
+  automatically from a website</li><li>Resource permissions in the VFS are now managed in 
+  ACLs instead of Unix - style</li><li>The OpenCms workplace has been rewritten in JSP, 
+  adding new features and much improved usability&nbsp;(this task is not fully 
+  finished)</li><li>Full support for multibyte languages (e.g. UTF-8)</li><li>Files in the VFS can now have multiple "siblings", 
+  this is comparable to a "hard link" in a Unix file system and prevents broken 
+  "VFS links" automatically</li><li>Properties on files can be "individual" or "shared" 
+  among siblings</li><li>Implement "plugin" mechanism for editors and make 
+  editors more configurable, so that other editor implementations (e.g. WYSIWYG 
+  Java Applet) can be easily integrated in the workplace</li><li>Added optional WYSIWYG editor implementation of the 
+  popular HtmlArea editor, this editor also works with Mozilla browsers</li><li>The setup wizard has been improved, also many "known 
+  issues" (e.g. regarding encoding setting and Xerces version) have been fixed</li><li>The module API has been rewritten from the ground up, 
+  now providing a clean interface to implement</li><li>Optimized the use of http headers, including use of 
+  "304 - not modified" for resources that have not been modified</li><li>The resource type API has been enhanced, so that 
+  resource types can be easily added without workarounds</li><li>The Workplace is now fully usable with Mozilla based 
+  browsers (e.g. Firefox)</li><li>It's not longer required to "lock" a resource in the 
+  Exlorer with the context menu manually, this is done automatically if the 
+  "autolock" feature is enabled (this is also the default)</li><li>The static export has been fully rewritten,&nbsp;is 
+  also features a new "on demand" mode for export of resources</li><li>Implement new,&nbsp;cleaned&nbsp;up&nbsp;XmlPage API 
+  that&nbsp;replaces the&nbsp;old XmlTemplate for page data storage</li><li>The XmlPage structure is always validated by a W3C 
+  XML Schema, to prevent creation form invalid content</li><li>The edited pages are now stored directly in the 
+  location where they have been edited, the /system/bodies/ folder is not longer 
+  required</li><li>The OpenCms VFS&nbsp;has been made much&nbsp;more 
+  scalable, bottlenecks like the slow Exlorer tree have been removed</li><li>The OpenCms user management has been made independent 
+  from the OpenCms VFS, so that other user directories can be "plugged" into the 
+  system as a separate module</li><li>Publishing has been rewritten and is now much faster 
+  especially with many resources</li><li>All resources in the OpenCms VFS now have a UUID</li><li>The database pooling has been replaced with DBCP from 
+  Apache Jarkarta</li><li>All known issues with Oracle 9.x that where present 
+  in 5.0.x have been solved</li><li>Logging now uses log4j from Apache Jarkarta</li><li>Heavily modified the database model and completely 
+  rewrote the database access class layer</li><li>The configuration is now based on a new XML structure 
+  that is read by Apache Digester (this task is not fully finished)</li><li>UTF-8 is now the default encoding</li>
+</ul>
+<p><strong>TODO list to be finished before OpenCms 6.0 is
+released:</strong></p>
+<ul>
+<li>The OpenCms workplace is still not fully implemented 
+  in JSP - all XmlTemplate using dialogs will be rewritten to JSP</li><li>We will write a "content relation 
+  engine"&nbsp;(CRE)&nbsp;for resources in the VFS - this replaces the old 
+  "channel" concept of the master module</li><li>More of the configuration will be transferred from 
+  opencms.properties to the new Digester XML based configuration file, the 
+  current opencms.properties will stay only for the database configuration - 
+  this configuration will be moved to the XML in a relase after 6.0.</li><li>The most important management functions (e.g. cache 
+  maintainance, system status) will be exposed to allow JMX containers to manage 
+  OpenCms</li><li>Documentation need to be revised for old functions 
+  and written for new functions</li><li>Testing and bug fixing - your feedback is required!</li>
+</ul>
+<p><strong>Regarding backward compatibility</strong></p>
+<p>OpenCms 6 will be as backward compatible as possible with the
+5.x releases. Existing content from 5.x will be easily importable,
+automatically converted to the new format and require almost
+no&nbsp;manual&nbsp;modification - at least if you
+didn't&nbsp;somehow change the structure&nbsp;of the XML control
+code of the 5.0.x&nbsp;page files.</p>
+<p>For the sake of a clean and structured API, we have decided to
+make improvements on the API level that will break existing
+code.&nbsp;This means&nbsp;changes of Java code in templates or
+custom classes&nbsp;will be necessary to upgrade from 5.x to 6.
+Most obvious will be renaming the packages from com.opencms.* to
+org.opencms.*. Making existing code work will hopefully be just a
+matter of exchanging these import statements and some minor
+adjustments.</p>
+<p>We will try to provide a more detailed documentation for the
+upgrade procedure from 5.0 to 6.0 as part of a later release. This
+is on the TODO list.</p>
+<p><strong>Regarding support for XmlTemplates and the "Master
+Module"</strong></p>
+<p>OpenCms 6 will have support for legacy XmlTemplates, but only
+with an additional <em>opencms-legacy.jar</em> that will not be
+installed by default. All classes dealing with XmlTemplates will
+stay in the com.opencms.* packages where they are now. We consider
+XmlTemplate a "dead" technology and will not support it past the
+6.0 release.</p>
+<p>The "master module" technology of 5.0.x will be replaced by the
+new XmlContent mechanism. Therefore all database tables that are
+used for the master module and some others (like the "webusers"
+table) have been moved to a separate module
+<em>org.opencms.legacy.compatibility</em> that installs these
+tables if required.</p>
+<p>The current 6.0&nbsp;development release still requires XmlTemplates
+because parts of the OpenCms Workplace are still not updated to
+JSP. Therefore <em>opencms-legacy.jar</em> is currently installed
+by default. This applies mostly to the "Administration" and the
+"Workflow" views. As soon as these are rewritten to JSP the
+<em>opencms-legacy.jar</em> will be moved to the optional
+<em>org.opencms.legacy.compatibility</em> module. This is on the
+TODO list.</p>
+<p><strong>Regarding version numbers and CVS build
+tags</strong></p>
+<p>In case you want to check out OpenCms&nbsp;from the
+CVS,&nbsp;please keep the following in mind: The CVS tag numbers
+for all OpenCms 6 alpha releases&nbsp;are&nbsp;"build_5_5_x", e.g.
+6.0 alpha 2 is "build_5_5_3". Until we finally publish OpenCms 6,
+we will continue to use 5.x as internal CVS build tag numbers. 6
+alpha will have CVS build tags 5.5.x, 6 beta will use 5.7.x,
+and&nbsp;6 release candidates will use 5.9.x.</p>
+<p><strong>Regarding compatibility&nbsp;with&nbsp;other JVMs /
+Servlet containers / Databases</strong></p>
+<p>OpenCms&nbsp;6.0&nbsp;alpha&nbsp;2&nbsp;requires Java 1.4.x. It won't
+work with Java 1.3.x. It has not been tested on Java 1.5.x&nbsp;so
+far, even though some variables called "enum" where renamed to
+avoid conflicts with Java 1.5.x.&nbsp;<em>Users of the 6.0 alpha 1
+release&nbsp;have reported that the current development version
+does not run with Java 1.5.x - we currently have not investigated
+if this is an issue in OpenCms or one of the many pre-build
+external libaries we use</em> . We have tested only with SUNs
+version of the JDK. However, we have removed the&nbsp;dependencies
+from all sun.* packages that were present in OpenCms 5.0.x so it
+should in theory run with all compliant JVMs.</p>
+<p>We have tested this release only on the Tomcat servlet engine.
+OpenCms 6.0 alpha&nbsp;2 works "out of the box" with Tomcat 4.1.x
+and Tomcat 5.0.x. No replacing of Xerces is required like in
+OpenCms 5.0.x. Others have reported deploying pre 6.0 alpha version
+successfully on other servlet containers like BEA Weblogic, SunONE
+and JBoss.</p>
+<p>On the database side, we have tested with MySQL 4.0.x and Oracle
+9.x. The MS SQL Server and the SAP DB port have not been updated to
+OpenCms 6.0 so far, and we still need volunteers for this task. For
+alpha 2, we also did some initial testing on MySQL 4.1.x and
+apparently it works fine. Since MySQL 4.1 has a slightly different
+syntax when creating tables with Unicode support, we have provided
+a new database setup driver for MySQL 4.1.x.</p>
+<p>In case you run OpenCms 6.0 on&nbsp;components different from or
+default components (SUN JDK 1.4.x. / Tomcat 4.1.x or 5.0.x / MySQL
+4.0.x / Oracle 9.x), please let us know by posting a message to the
+OpenCms mailing list. We intend to collect a list of "supported
+platforms". Also, if you had to patch some lines of code to make
+OpenCms 6.0 run on your platforms, please contribute these so they
+can be included in the official release.</p>
+<p><strong>How you can help</strong></p>
+<p>Contributions to the OpenCms core development are most welcome.
+Please contact <A href=
+"${link3}"  mailto:contributions@opencms.org??>contributions@opencms.org</A> in
+case you are interested in supporting the development of OpenCms 6,
+or give your feedback on the <A href=
+"${link4}" target=_self  mailinglist.html??
+ release="" opencms="">opencms-dev</A> mailing list.</p>
+<p>Please use our Bugzilla to report bugs in this release: <A href=
+"${link5}" target=_self  ??
+ bugzilla=
+"" www.opencms.org="" http:="">http://www.opencms.org/bugzilla/</A></p>
+<p>Thank you for using OpenCms and have fun with OpenCms 6.0
+alpha&nbsp;2 :-)</p>&nbsp;]]></content>
+    </element>
+  </page>
+</pages>

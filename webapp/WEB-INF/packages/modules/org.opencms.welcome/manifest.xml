@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.0 alpha 1 Caladan</opencms_version>
-		<createdate>8/27/04 5:47 PM</createdate>
+		<opencms_version>6.0 alpha 2 Caladan</opencms_version>
+		<createdate>10/25/04 7:33 PM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -12,13 +12,11 @@
 		<name>org.opencms.welcome</name>
 		<nicename><![CDATA[OpenCms 6.0 Welcome page and release notes]]></nicename>
 		<class/>
-		<description><![CDATA[
-<p>This module contains the OpenCms welcome page and release notes.</p>
+		<description><![CDATA[<p>This module contains the OpenCms welcome page and release notes.</p>
 <p>Install this module as a simple demonstration for the template capabilities of OpenCms 6.0.</p>
 <p><strong>Note:</strong> Deleting this module will remove the "/release" folder and all pages there. 
 It will also remove the "default" template.</p>
-<p><i>(c) 2004 by Alkacon Software (http://www.alkacon.com).</i></p>
-]]></description>
+<p><i>(c) 2004 by Alkacon Software (http://www.alkacon.com).</i></p>]]></description>
 		<version>3.9.0</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
@@ -40,7 +38,7 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>release</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 24 Feb 2004 10:51:41 CET</datelastmodified>
+			<datelastmodified>Mon, 25 Oct 2004 17:51:38 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Sat, 01 Mar 2003 01:29:49 CET</datecreated>
 			<usercreated>Admin</usercreated>
@@ -56,7 +54,7 @@ It will also remove the "default" template.</p>
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[notes_6.0a1.html]]></value>
+					<value><![CDATA[notes_6.0a2.html]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -286,7 +284,7 @@ It will also remove the "default" template.</p>
 			<destination>release/notes_6.0a1.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>1fd32591-6614-11d8-ab96-cbfb51df5f23</uuidresource>
-			<datelastmodified>Fri, 27 Aug 2004 17:46:44 CEST</datelastmodified>
+			<datelastmodified>Mon, 25 Oct 2004 16:43:40 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 23 Feb 2004 16:22:42 CET</datecreated>
 			<usercreated>Admin</usercreated>
@@ -306,7 +304,37 @@ It will also remove the "default" template.</p>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[6.0 a 1 release notes]]></value>
+					<value><![CDATA[6.0 alpha 1 release notes]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>release/notes_6.0a2.html</source>
+			<destination>release/notes_6.0a2.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>3110a51d-2694-11d9-ac66-05a14f60fff0</uuidresource>
+			<datelastmodified>Mon, 25 Oct 2004 17:55:12 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Oct 2004 16:43:10 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[0.25]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[6.0 a 2 notes]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[6.0 alpha 2 release notes]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -346,7 +374,7 @@ It will also remove the "default" template.</p>
 			<destination>release/welcome.html</destination>
 			<type>jsp</type>
 			<uuidresource>16f8ac22-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Tue, 24 Feb 2004 11:06:41 CET</datelastmodified>
+			<datelastmodified>Mon, 25 Oct 2004 19:12:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 06 Aug 2003 11:49:13 CEST</datecreated>
 			<usercreated>Admin</usercreated>
@@ -386,9 +414,9 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datelastmodified>Fri, 27 Aug 2004 11:02:49 CEST</datelastmodified>
+			<datelastmodified>Mon, 25 Oct 2004 16:35:59 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 27 Aug 2004 11:02:49 CEST</datecreated>
+			<datecreated>Mon, 25 Oct 2004 16:35:59 CEST</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -459,6 +487,32 @@ It will also remove the "default" template.</p>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.welcome/elements/checklibs.jsp</source>
+			<destination>system/modules/org.opencms.welcome/elements/checklibs.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>2150f2ca-26a6-11d9-ac66-05a14f60fff0</uuidresource>
+			<datelastmodified>Mon, 25 Oct 2004 19:32:25 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Oct 2004 18:51:34 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Checks for required libraries]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -678,7 +732,7 @@ It will also remove the "default" template.</p>
 			<destination>index.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>16f8ac22-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Tue, 24 Feb 2004 11:06:41 CET</datelastmodified>
+			<datelastmodified>Mon, 25 Oct 2004 19:12:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 06 Aug 2003 11:49:13 CEST</datecreated>
 			<usercreated>Admin</usercreated>
