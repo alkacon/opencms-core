@@ -115,20 +115,19 @@ function show_help()
 	return '5_2_1_2_1.html';
 }
 
-var charList="0123456789-._~abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 function checkFormData()
 {
 	var result=true;
 	var at_pos, entry, strLength;
-	
+
 	entry = document.GROUPNEW.GROUPDESC.value;
 	strLength=entry.length;
-	
-	for (i=0; i < strLength; i++) 
+
+	for (i=0; i < strLength; i++)
 	{
-		if (charList.indexOf(entry.charAt(i))==-1)
-		{	
+		if(entry.charAt(i)=="\"")
+		{
 			alert(']]><LABEL value="error.message.badcharacter" /><![CDATA[' + entry.charAt(i));
 			document.GROUPNEW.GROUPDESC.focus;
 			result= false;
