@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/11/22 18:03:06 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2004/11/25 13:16:52 $
+ * Version: $Revision: 1.88 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.87 $
+ * @version $Revision: 1.88 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -2861,43 +2861,49 @@ public class CmsObject {
     /**
      * Publishes the current project, printing messages to a shell report.<p>
      *
+     * @return the publish history id of the published project
      * @throws Exception if something goes wrong
      */
-    public void publishProject() throws Exception {
-        publishProject(new CmsShellReport());
+    public CmsUUID publishProject() throws Exception {
+
+        return publishProject(new CmsShellReport());
     }
 
     /**
      * Publishes the current project.<p>
      *
      * @param report an instance of I_CmsReport to print messages
+     * 
+     * @return the publish history id of the published project
      * @throws CmsException if something goes wrong
      */
-    public void publishProject(I_CmsReport report) throws CmsException {
-        publishProject(report, null, false);
+    public CmsUUID publishProject(I_CmsReport report) throws CmsException {
+
+        return publishProject(report, null, false);
     }
-    
+
     /**
      * Publishes the resources of a specified publish list.<p>
      * 
      * @param report an instance of I_CmsReport to print messages
      * @param publishList a publish list
      * 
+     * @return the publish history id of the published project
      * @throws CmsException if something goes wrong
      * 
      * @see #getPublishList()
      * @see #getPublishList(CmsResource, boolean)
      */
-    public void publishProject(I_CmsReport report, CmsPublishList publishList) throws CmsException {
+    public CmsUUID publishProject(I_CmsReport report, CmsPublishList publishList) throws CmsException {
 
-        synchronized (m_securityManager) {            
-            try {                                
-                m_securityManager.publishProject(this, publishList, report);
+        synchronized (m_securityManager) {
+            try {
+                return m_securityManager.publishProject(this, publishList, report);
             } catch (CmsException e) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
                     OpenCms.getLog(this).error(e);
                 }
-                
+
                 throw e;
             } catch (Exception e) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -2907,7 +2913,7 @@ public class CmsObject {
                 throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
             }
         }
-    }    
+    }
 
     /**
      * Direct publishes a specified resource.<p>
@@ -2915,23 +2921,33 @@ public class CmsObject {
      * @param report an instance of I_CmsReport to print messages
      * @param directPublishResource a CmsResource that gets directly published; or null if an entire project gets published
      * @param directPublishSiblings if a CmsResource that should get published directly is provided as an argument, all eventual siblings of this resource get publish too, if this flag is true
+     * 
+     * @return the publish history id of the published project
      * @throws CmsException if something goes wrong
+     * 
      * @see #publishResource(String)
      * @see #publishResource(String, boolean, I_CmsReport)
      */
-    public void publishProject(I_CmsReport report, CmsResource directPublishResource, boolean directPublishSiblings) throws CmsException {
+    public CmsUUID publishProject(I_CmsReport report, CmsResource directPublishResource, boolean directPublishSiblings)
+    throws CmsException {
+
         CmsPublishList publishList = getPublishList(directPublishResource, directPublishSiblings);
-        publishProject(report, publishList);
+        return publishProject(report, publishList);
     }
 
     /**
      * Publishes a single resource.<p>
+     * 
+     * The siblings of the resource will not be published.<p>
      *
      * @param resourcename the name of the resource to be published
+     * 
+     * @return the publish history id of the published project
      * @throws Exception if something goes wrong
      */
-    public void publishResource(String resourcename) throws Exception {
-        publishResource(resourcename, false, new CmsShellReport());
+    public CmsUUID publishResource(String resourcename) throws Exception {
+
+        return publishResource(resourcename, false, new CmsShellReport());
     }
 
     /**
@@ -2940,11 +2956,14 @@ public class CmsObject {
      * @param resourcename the name of the resource to be published
      * @param publishSiblings if true, all siblings of the resource are also published
      * @param report the report to write the progress information to
+     * 
+     * @return the publish history id of the published project
      * @throws Exception if something goes wrong
      */
-    public void publishResource(String resourcename, boolean publishSiblings, I_CmsReport report) throws Exception {
+    public CmsUUID publishResource(String resourcename, boolean publishSiblings, I_CmsReport report) throws Exception {
+
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        publishProject(report, resource, publishSiblings);
+        return publishProject(report, resource, publishSiblings);
     }
     
     /**

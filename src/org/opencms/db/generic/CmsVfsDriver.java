@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/11/22 20:45:49 $
- * Version: $Revision: 1.221 $
+ * Date   : $Date: 2004/11/25 13:16:52 $
+ * Version: $Revision: 1.222 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.221 $ $Date: 2004/11/22 20:45:49 $
+ * @version $Revision: 1.222 $ $Date: 2004/11/25 13:16:52 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -535,9 +535,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#createSibling(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.lang.String)
+     * @see org.opencms.db.I_CmsVfsDriver#createSibling(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.file.CmsResource)
      */
-    public void createSibling(CmsDbContext dbc, CmsProject project, CmsResource resource, String resourcename) throws CmsException {
+    public void createSibling(CmsDbContext dbc, CmsProject project, CmsResource resource) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
         int newState = 0;
@@ -953,7 +953,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 
                 // check if this resource is marked as deleted
                 if (file.getState() == org.opencms.main.I_CmsConstants.C_STATE_DELETED && !includeDeleted) {
-                    throw new CmsException("[" + this.getClass().getName() + ".readFile] " + file.getName(), CmsException.C_RESOURCE_DELETED);
+                    throw new CmsException("[" + this.getClass().getName() + ".readFile] " + file.getRootPath(), CmsException.C_RESOURCE_DELETED);
                 }
             } else {
                 throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readFile] " + structureId.toString());
@@ -1341,7 +1341,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 
                 // check if this resource is marked as deleted
                 if ((resource.getState() == org.opencms.main.I_CmsConstants.C_STATE_DELETED) && !includeDeleted) {
-                    throw new CmsException("[" + this.getClass().getName() + ".readResource/2] " + resource.getName(), CmsException.C_RESOURCE_DELETED);
+                    throw new CmsException("[" + this.getClass().getName() + ".readResource/2] " + resource.getRootPath(), CmsException.C_RESOURCE_DELETED);
                 }
             } else {                               
                 throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readResource/2] " + structureId);
@@ -1385,7 +1385,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
                 // check if this resource is marked as deleted
                 if ((resource.getState() == I_CmsConstants.C_STATE_DELETED) && !includeDeleted) {
-                    throw new CmsException("[" + this.getClass().getName() + ".readResource/3] " + resource.getName(), CmsException.C_RESOURCE_DELETED);
+                    throw new CmsException("[" + this.getClass().getName() + ".readResource/3] " + resource.getRootPath(), CmsException.C_RESOURCE_DELETED);
                 }
             } else {
                 throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readResource/3] " + path);
@@ -1686,7 +1686,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 
                 for (int i = 0, n = folders.size(); i < n; i++) {
                     CmsResource errorRes = (CmsResource)folders.get(i);
-                    errorResNames += "[" + errorRes.getName() + "]";
+                    errorResNames += "[" + errorRes.getRootPath() + "]";
                 }
                 
                 throw new CmsException("[" + this.getClass().getName() + "] " + resource.getName() + errorResNames, CmsException.C_NOT_EMPTY);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/11/22 18:03:05 $
- * Version: $Revision: 1.453 $
+ * Date   : $Date: 2004/11/25 13:16:52 $
+ * Version: $Revision: 1.454 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.453 $ $Date: 2004/11/22 18:03:05 $
+ * @version $Revision: 1.454 $ $Date: 2004/11/25 13:16:52 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -3543,7 +3543,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                         dbc,
                         currentFile,
                         publishList.getFolderList(),
-                        readSiblings(dbc, currentFile, CmsResourceFilter.ALL_MODIFIED)));
+                        readSiblings(
+                            dbc, 
+                            currentFile, 
+                            CmsResourceFilter.ALL_MODIFIED)));
                 }
             }
         }
@@ -3568,17 +3571,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public List getResourcesInTimeRange(CmsDbContext dbc, String folder, long starttime, long endtime)
     throws CmsException {
 
-        List extractedResources = null;
-        String cacheKey = null;
-
-        cacheKey = getCacheKey(
-            dbc.currentUser().getName() + "_SubtreeResourcesInTimeRange", 
-            dbc.currentProject(), 
-            folder + "_" + starttime + "_" + endtime);
-
-        if ((extractedResources = (List)m_resourceListCache.get(cacheKey)) == null) {
-
-            extractedResources = m_vfsDriver.readResourceTree(
+        List extractedResources = m_vfsDriver.readResourceTree(
                 dbc,
                 dbc.currentProject().getId(),
                 folder,
@@ -3587,7 +3580,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 starttime,
                 endtime,
                 I_CmsConstants.C_READMODE_INCLUDE_TREE);
-        }
 
         return extractedResources;
     }
@@ -7827,14 +7819,19 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             CmsResource res = (CmsResource)resourceList.get(i);
             try {
                 if (res.getStructureId().equals(currentResource.getStructureId())) {
+                    // don't add if sibling is equal to current resource
+                    // note: it's also required to check for sibling duplicates in the 
+                    // publish list itself
                     continue;
                 }
 
                 if (!getLock(dbc, res.getRootPath()).isNullLock()) {
+                    // don't add locked resources
                     continue;
                 }
 
                 if (!I_CmsConstants.C_ROOT.equals(res.getRootPath()) && !checkParentResource(dbc, folderList, res)) {
+                    // don't add resources that have no parent in the online project
                     continue;
                 }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2004/10/31 21:30:18 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/11/25 13:16:52 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -68,7 +68,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             resource.getStructureId(),
             resource.getResourceId(),
             CmsUUID.getNullUUID(),
-            resource.getName(),
+            resource.getRootPath(),
             resource.getTypeId(),
             resource.getFlags(),
             resource.getProjectLastModified(),

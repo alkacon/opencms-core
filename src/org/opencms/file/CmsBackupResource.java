@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupResource.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/11/25 13:16:52 $
+ * Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.io.Serializable;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsBackupResource extends CmsFile implements Cloneable, Serializable, Comparable {
 
@@ -81,7 +81,7 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
      * @param contentId the id of this resources content record
-     * @param name the filename of this resouce
+     * @param path the filename of this resouce
      * @param type the type of this resource
      * @param flags the flags of this resource
      * @param projectId the project id this resource was last modified in
@@ -104,7 +104,7 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
         CmsUUID structureId, 
         CmsUUID resourceId, 
         CmsUUID contentId,
-        String name, 
+        String path, 
         int type, 
         int flags,
         int projectId, 
@@ -125,7 +125,7 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
             structureId, 
             resourceId, 
             contentId,
-            name,
+            path,
             type,
             flags,
             projectId,
@@ -172,7 +172,7 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
            getStructureId(), 
            getResourceId(),
            getContentId(), 
-           getName(),
+           getRootPath(),
            getTypeId(), 
            getFlags(), 
            getProjectLastModified(),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/11/23 14:39:57 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/11/25 13:16:52 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * are granted, the security manager invokes a method on the OpenCms driver manager to access the database.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -2434,10 +2434,12 @@ public final class CmsSecurityManager {
      * @param publishList a Cms publish list
      * @param report a report object to provide the loggin messages
      * 
+     * @return the publish history id of the published project
      * @throws Exception if something goes wrong
+     * 
      * @see #getPublishList(CmsRequestContext, CmsResource, boolean)
      */
-    public synchronized void publishProject(CmsObject cms, CmsPublishList publishList, I_CmsReport report)
+    public synchronized CmsUUID publishProject(CmsObject cms, CmsPublishList publishList, I_CmsReport report)
     throws Exception {
 
         CmsRequestContext context = cms.getRequestContext();
@@ -2498,6 +2500,8 @@ public final class CmsSecurityManager {
                 + "] could not publish project "
                 + publishProjectId, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
+        
+        return publishList.getPublishHistoryId();
     }
 
     /**

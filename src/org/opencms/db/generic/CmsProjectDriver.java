@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/11/22 18:03:06 $
- * Version: $Revision: 1.201 $
+ * Date   : $Date: 2004/11/25 13:16:52 $
+ * Version: $Revision: 1.202 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.201 $ $Date: 2004/11/22 18:03:06 $
+ * @version $Revision: 1.202 $ $Date: 2004/11/25 13:16:52 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1036,7 +1036,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
         try {
             // binary content gets only published once while a project is published
-            // if (!offlineFile.getContentId().isNullUUID() && !publishedContentIds.contains(offlineFile.getContentId())) {
             if (!publishedResourceIds.contains(offlineFileHeader.getResourceId())) {    
                 // read the file content offline
                 offlineFile = m_driverManager.getVfsDriver().readFile(dbc, offlineProject.getId(), false, offlineFileHeader.getStructureId());
@@ -1059,7 +1058,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 m_driverManager.getVfsDriver().createSibling(
                     dbc, 
                     onlineProject, 
-                    offlineFileHeader, offlineFileHeader.getName());
+                    offlineFileHeader);
 
                 newFile = m_driverManager.getVfsDriver().readFile(dbc, onlineProject.getId(), false, offlineFileHeader.getStructureId());
             }

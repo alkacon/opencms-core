@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2004/11/25 13:04:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/11/25 13:16:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,8 +37,10 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
 import java.util.List;
@@ -52,7 +54,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -81,8 +83,9 @@ public class TestPublishIssues extends OpenCmsTestCase {
                 
         suite.addTest(new TestPublishIssues("testPublishScenarioA"));
         suite.addTest(new TestPublishIssues("testPublishScenarioB"));
-        suite.addTest(new TestPublishIssues("testPublishScenarioC"));
+        suite.addTest(new TestPublishIssues("testPublishScenarioC"));        
         suite.addTest(new TestPublishIssues("testMultipleProjectCreation"));
+        suite.addTest(new TestPublishIssues("testDirectPublishWithSiblings"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -370,4 +373,32 @@ public class TestPublishIssues extends OpenCmsTestCase {
         
     }
     
+    /**
+     * Tests publish scenario "publish all Siblings".<p>
+     * 
+     * This scenario is described as follows:
+     * If a direct publish is made, and the option "publish all siblings" is selected, 
+     * a file that contains siblings will be added multiple times to the publish list, 
+     * causing a primary key collision in the publish history table.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */    
+    public void testDirectPublishWithSiblings() throws Throwable {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing publish scenario using 'publish all Siblings'");
+        
+        cms.lockResource("/folder1/");
+        cms.touch("/folder1/", System.currentTimeMillis(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, true);
+        cms.unlockResource("/folder1/");
+        
+        // publish the project (this did cause an exception because of primary key violation!)
+        CmsUUID publishId = cms.publishResource("/folder1/", true, new CmsShellReport());
+        
+        // read the published resources from the history
+        List publishedResources = cms.readPublishedResources(publishId);
+        
+        // make sure the publish history contains the required amount of resources
+        assertEquals(34, publishedResources.size());
+    }    
 }

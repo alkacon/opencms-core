@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/11/22 18:03:05 $
- * Version: $Revision: 1.98 $
+ * Date   : $Date: 2004/11/25 13:16:52 $
+ * Version: $Revision: 1.99 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.List;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.98 $ $Date: 2004/11/22 18:03:05 $
+ * @version $Revision: 1.99 $ $Date: 2004/11/25 13:16:52 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -155,15 +155,13 @@ public interface I_CmsVfsDriver {
 
     /**
      * Creates a new sibling for a specified resource.<p>
-     * 
      * @param dbc the current database context
      * @param project the project where to create the link
      * @param resource the link prototype
-     * @param resourcename the name of the link
      * 
      * @throws CmsException if something goes wrong
      */
-    void createSibling(CmsDbContext dbc, CmsProject project, CmsResource resource, String resourcename)
+    void createSibling(CmsDbContext dbc, CmsProject project, CmsResource resource)
     throws CmsException;
 
     /**
