@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/07 11:01:45 $
- * Version: $Revision: 1.144 $
+ * Date   : $Date: 2003/08/07 12:35:04 $
+ * Version: $Revision: 1.145 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.144 $ $Date: 2003/08/07 11:01:45 $
+ * @version $Revision: 1.145 $ $Date: 2003/08/07 12:35:04 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -7055,7 +7055,9 @@ public class CmsDriverManager extends Object {
         if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             resource.setState(I_CmsConstants.C_STATE_CHANGED);
         }
-        m_vfsDriver.updateResourceState(context.currentProject(), resource, C_UPDATE_ALL);           
+        resource.setUserLastModified(context.currentUser().getId());
+        
+        m_vfsDriver.updateResourceState(context.currentProject(), resource, C_UPDATE_RESOURCE);        
 
         // clear the cache
         clearResourceCache();
