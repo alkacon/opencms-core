@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.254 $
+* Date   : $Date: 2003/01/23 10:44:10 $
+* Version: $Revision: 1.255 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.254 $
+ * @version $Revision: 1.255 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -1023,7 +1023,7 @@ protected CmsFile doCreateFile(String newFileName, byte[] contents, String type,
  */
 protected CmsFolder doCreateFolder(String folder, String newFolderName) throws CmsException {
     CmsFolder cmsFolder = m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(),
-                                            getSiteRoot(folder + newFolderName + C_FOLDER_SEPERATOR), new Hashtable());
+                                            getSiteRoot(folder + newFolderName + C_FOLDER_SEPARATOR), new Hashtable());
     return cmsFolder;
 }
 

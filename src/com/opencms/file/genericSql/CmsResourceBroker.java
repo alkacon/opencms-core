@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/01/20 23:59:31 $
-* Version: $Revision: 1.349 $
+* Date   : $Date: 2003/01/23 10:44:10 $
+* Version: $Revision: 1.350 $
 
 *
 * This library is part of OpenCms -
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.349 $ $Date: 2003/01/20 23:59:31 $
+ * @version $Revision: 1.350 $ $Date: 2003/01/23 10:44:10 $
 
  *
  */
@@ -1779,7 +1779,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
          throws CmsException {
 
         // extract folder information
-        String folderName = newFileName.substring(0, newFileName.lastIndexOf(C_FOLDER_SEPERATOR, newFileName.length())+1);
+        String folderName = newFileName.substring(0, newFileName.lastIndexOf(C_FOLDER_SEPARATOR, newFileName.length())+1);
         String resourceName = newFileName.substring(folderName.length(), newFileName.length());
 
         // checks, if the filename is valid, if not it throws a exception
@@ -1858,11 +1858,11 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
                                   Hashtable propertyinfos)
         throws CmsException {
             
-        // append C_FOLDER_SEPERATOR if required
-        if (! newFolderName.endsWith(C_FOLDER_SEPERATOR)) newFolderName += C_FOLDER_SEPERATOR;
+        // append C_FOLDER_SEPARATOR if required
+        if (! newFolderName.endsWith(C_FOLDER_SEPARATOR)) newFolderName += C_FOLDER_SEPARATOR;
         
         // extract folder information
-        String folderName = newFolderName.substring(0, newFolderName.lastIndexOf(C_FOLDER_SEPERATOR, newFolderName.length()-2)+1);
+        String folderName = newFolderName.substring(0, newFolderName.lastIndexOf(C_FOLDER_SEPARATOR, newFolderName.length()-2)+1);
         String resourceName = newFolderName.substring(folderName.length(), newFolderName.length()-1);
 
         // checks, if the filename is valid, if not it throws a exception
@@ -1955,13 +1955,13 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
 
         boolean isFolder = (resourceType == C_TYPE_FOLDER);
         if(isFolder){
-            // append C_FOLDER_SEPERATOR if required
-            if (! newResourceName.endsWith(C_FOLDER_SEPERATOR)) newResourceName += C_FOLDER_SEPERATOR;            
+            // append C_FOLDER_SEPARATOR if required
+            if (! newResourceName.endsWith(C_FOLDER_SEPARATOR)) newResourceName += C_FOLDER_SEPARATOR;            
             // extract folder information
-            folderName = newResourceName.substring(0, newResourceName.lastIndexOf(C_FOLDER_SEPERATOR, newResourceName.length()-2)+1);
+            folderName = newResourceName.substring(0, newResourceName.lastIndexOf(C_FOLDER_SEPARATOR, newResourceName.length()-2)+1);
             resourceName = newResourceName.substring(folderName.length(), newResourceName.length()-1);
         } else {
-            folderName = newResourceName.substring(0, newResourceName.lastIndexOf(C_FOLDER_SEPERATOR, newResourceName.length())+1);
+            folderName = newResourceName.substring(0, newResourceName.lastIndexOf(C_FOLDER_SEPARATOR, newResourceName.length())+1);
             resourceName = newResourceName.substring(folderName.length(), newResourceName.length());
         }
                     
@@ -5723,7 +5723,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
  * for this resource.
  */
 public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, String folder, boolean includeDeleted) throws CmsException {
-    if (! folder.endsWith(C_FOLDER_SEPERATOR)) folder += C_FOLDER_SEPERATOR;
+    if (! folder.endsWith(C_FOLDER_SEPARATOR)) folder += C_FOLDER_SEPARATOR;
     CmsFolder cmsFolder = null;
     // read the resource from the currentProject, or the online-project
     try {

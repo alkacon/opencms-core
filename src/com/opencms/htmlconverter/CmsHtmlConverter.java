@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverter.java,v $
-* Date   : $Date: 2003/01/20 17:57:52 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/01/23 10:44:10 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -354,7 +354,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
         /* convert htmlString in InputStream for parseDOM */
         InputStream in;
         try {
-            in = new ByteArrayInputStream(outString.getBytes("utf-8"));
+            in = new ByteArrayInputStream(outString.getBytes("UTF-8"));
             m_tidy.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
         } catch (UnsupportedEncodingException e) {
             in = new ByteArrayInputStream(outString.getBytes());

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2002/12/13 17:38:13 $
-* Version: $Revision: 1.212 $
+* Date   : $Date: 2003/01/23 10:44:10 $
+* Version: $Revision: 1.213 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ package com.opencms.core;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.212 $ $Date: 2002/12/13 17:38:13 $
+ * @version $Revision: 1.213 $ $Date: 2003/01/23 10:44:10 $
  */
 public interface I_CmsConstants {
 
@@ -539,12 +539,12 @@ public interface I_CmsConstants {
     /**
      * The folder - seberator in this system
      */
-    static final String C_FOLDER_SEPERATOR = "/";
+    static final String C_FOLDER_SEPARATOR = "/";
 
     /**
      * The name of the rood folder
      */
-    static final String C_ROOT = C_FOLDER_SEPERATOR;
+    static final String C_ROOT = C_FOLDER_SEPARATOR;
 
     /**
      * The name of the exportpath-systemproperty.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/01/20 23:59:20 $
-* Version: $Revision: 1.103 $
+* Date   : $Date: 2003/01/23 10:44:10 $
+* Version: $Revision: 1.104 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.103 $ $Date: 2003/01/20 23:59:20 $
+ * @version $Revision: 1.104 $ $Date: 2003/01/23 10:44:10 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
 
@@ -264,7 +264,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         String flexExportUrl = (String)conf.getString(CmsJspLoader.C_LOADER_JSPEXPORTURL, null);
         if (null != flexExportUrl) {
             // if JSP export URL is null it will be set in initStartupClasses()
-            if (flexExportUrl.endsWith(C_FOLDER_SEPERATOR)) {
+            if (flexExportUrl.endsWith(C_FOLDER_SEPARATOR)) {
                 flexExportUrl = flexExportUrl.substring(0, flexExportUrl.length()-1);
             }
             setRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL, flexExportUrl);
@@ -542,7 +542,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             url.append(req.getServletPath());        
             String flexExportUrl = new String(url);    
             // check if the URL ends with a "/", this is not allowed
-            if (flexExportUrl.endsWith(C_FOLDER_SEPERATOR)) {
+            if (flexExportUrl.endsWith(C_FOLDER_SEPARATOR)) {
                 flexExportUrl = flexExportUrl.substring(0, flexExportUrl.length()-1);
             }
             setRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL, flexExportUrl);
