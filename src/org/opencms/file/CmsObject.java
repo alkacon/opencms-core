@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/12/20 17:04:11 $
- * Version: $Revision: 1.101 $
+ * Date   : $Date: 2004/12/20 17:25:30 $
+ * Version: $Revision: 1.102 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.101 $
+ * @version $Revision: 1.102 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -213,7 +213,7 @@ public class CmsObject {
      * @param password the password for the user.
      * @param group the default groupname for the user.
      * @param description the description for the user.
-     * @param additionalInfos a <code>Map</code> with additional infos for the user.
+     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user.
      * 
      * @return the newly created user.
      * 
@@ -564,9 +564,9 @@ public class CmsObject {
      * @param name the name of the new group.
      * @param description the description of the new group.
      * @param flags the flags for the new group.
-     * @param parent the parent group.
+     * @param parent the parent group (or <code>null</code>).
      *
-     * @return a <code>CmsGroup</code> object representing the newly created group.
+     * @return a <code>{@link CmsGroup}</code> object representing the newly created group.
      *
      * @throws CmsException if operation was not successful.
      */
@@ -2693,7 +2693,7 @@ public class CmsObject {
     /**
      * Returns a user, if the password is correct.<p>
      * 
-     * If the user/pwd pair is not valid a <code>CmsException</code> is thrown.<p>
+     * If the user/pwd pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
      *
      * @param username the name of the user to be returned.
      * @param password the password of the user to be returned.

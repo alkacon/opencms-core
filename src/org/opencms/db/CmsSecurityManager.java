@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/12/20 17:04:11 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/12/20 17:25:30 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -291,13 +291,11 @@ public final class CmsSecurityManager {
     /**
      * Adds a user to a group.<p>
      *
-     * Only users, which are in the group "administrators" are granted.<p>
-     * 
-     * @param context the current request context
-     * @param username the name of the user that is to be added to the group
-     * @param groupname the name of the group
+     * @param context the current request context.
+     * @param username the name of the user that is to be added to the group.
+     * @param groupname the name of the group.
      *
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsException if operation was not succesfull.
      */
     public void addUserToGroup(CmsRequestContext context, String username, String groupname) throws CmsException {
 
@@ -312,19 +310,23 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Adds a web user to the Cms.<p>
-     *
+     * Creates a new web user.<p>
+     * 
      * A web user has no access to the workplace but is able to access personalized
-     * functions controlled by the OpenCms.<p>
+     * functions controlled by the OpenCms.<br>
      * 
-     * @param context the current request context
-     * @param name the new name for the user
-     * @param password the new password for the user
-     * @param group the default groupname for the user
-     * @param description the description for the user
-     * @param additionalInfos a Hashtable with additional infos for the user, these infos may be stored into the Usertables (depending on the implementation)
+     * Moreover, a web user can be created by any user, the intention being that
+     * a "Guest" user can create a personalized account for himself.<p>
      * 
-     * @return the new user will be returned
+     * @param context the current request context.
+     * @param name the new name for the user.
+     * @param password the new password for the user.
+     * @param group the default groupname for the user.
+     * @param description the description for the user.
+     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user.
+     * 
+     * @return the new user will be returned.
+     * 
      * @throws CmsException if operation was not succesfull.
      */
     public CmsUser addWebUser(CmsRequestContext context, String name, String password, String group, String description, Map additionalInfos)
@@ -518,13 +520,12 @@ public final class CmsSecurityManager {
 
     /**
      * Changes the user type of the user.<p>
-
-     * Only the administrator can change the type.<p>
      * 
-     * @param context the current request context
-     * @param userId the id of the user to change
-     * @param userType the new usertype of the user
-     * @throws CmsException if something goes wrong
+     * @param context the current request context.
+     * @param userId the id of the user to change.
+     * @param userType the new usertype of the user.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public void changeUserType(CmsRequestContext context, CmsUUID userId, int userType) throws CmsException {
 
@@ -844,16 +845,16 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Add a new group to the Cms.<p>
+     * Creates a new user group.<p>
      *
-     * Only the admin can do this.<p>
+     * @param context the current request context.
+     * @param name the name of the new group.
+     * @param description the description for the new group.
+     * @param flags the flags for the new group.
+     * @param parent the name of the parent group (or <code>null</code>).
      * 
-     * @param context the current request context
-     * @param name the name of the new group
-     * @param description the description for the new group
-     * @param flags the flags for the new group
-     * @param parent the name of the parent group (or null)
-     * @return new created group
+     * @return a <code>{@link CmsGroup}</code> object representing the newly created group.
+     * 
      * @throws CmsException if operation was not successfull.
      */
     public CmsGroup createGroup(CmsRequestContext context, String name, String description, int flags, String parent)
@@ -1373,10 +1374,10 @@ public final class CmsSecurityManager {
     /**
      * Deletes a user.<p>
      *
-     * @param context the current request context
-     * @param userId the Id of the user to be deleted
+     * @param context the current request context.
+     * @param userId the Id of the user to be deleted.
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
     public void deleteUser(CmsRequestContext context, CmsUUID userId) throws CmsException {
 
@@ -1387,10 +1388,10 @@ public final class CmsSecurityManager {
     /**
      * Deletes a user.<p>
      *
-     * @param context the current request context
-     * @param username the name of the user to be deleted
+     * @param context the current request context.
+     * @param username the name of the user to be deleted.
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
     public void deleteUser(CmsRequestContext context, String username) throws CmsException {
 
@@ -1401,10 +1402,10 @@ public final class CmsSecurityManager {
     /**
      * Deletes a web user.<p>
      *
-     * @param context the current request context
-     * @param userId the Id of the web user to be deleted
+     * @param context the current request context.
+     * @param userId the Id of the web user to be deleted.
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
     public void deleteWebUser(CmsRequestContext context, CmsUUID userId) throws CmsException {
 
@@ -1985,10 +1986,10 @@ public final class CmsSecurityManager {
     /**
      * Returns all users.<p>
      *
-     * All users are granted, except the anonymous user.<p>
-     *
-     * @param context the current request context
-     * @return a list of all existing users
+     * @param context the current request context.
+     * 
+     * @return a list of all <code>{@link CmsUser}</code> objects.
+     * 
      * @throws CmsException if operation was not succesful.
      */
     public List getUsers(CmsRequestContext context) throws CmsException {
@@ -2008,12 +2009,12 @@ public final class CmsSecurityManager {
     /**
      * Returns all users from a given type.<p>
      *
-     * All users are granted, except the anonymous user.<p>
-     *
-     * @param context the current request context
-     * @param type the type of the users
-     * @return a list of all existing users
-     * @throws CmsException if operation was not succesful
+     * @param context the current request context.
+     * @param type the type of the users.
+     * 
+     * @return a list of all <code>{@link CmsUser}</code> objects of the given type.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public List getUsers(CmsRequestContext context, int type) throws CmsException {
         
@@ -3767,13 +3768,12 @@ public final class CmsSecurityManager {
     /**
      * Returns a user object based on the id of a user.<p>
      *
-     * All users are granted.<p>
-     * 
-     * @param context the current request context
-     * @param id the id of the user to read
+     * @param context the current request context.
+     * @param id the id of the user to read.
      *
-     * @return the user read 
-     * @throws CmsException if something goes wrong
+     * @return the user read.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public CmsUser readUser(CmsRequestContext context, CmsUUID id) throws CmsException {
 
@@ -3792,14 +3792,13 @@ public final class CmsSecurityManager {
     /**
      * Returns a user object.<p>
      *
-     * All users are granted.<p>
-     * 
-     * @param context the current request context
-     * @param username the name of the user that is to be read
-     * @param type the type of the user
+     * @param context the current request context.
+     * @param username the name of the user that is to be read.
+     * @param type the type of the user.
      *
-     * @return user read form the cms
-     * @throws CmsException if operation was not succesful
+     * @return user read.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public CmsUser readUser(CmsRequestContext context, String username, int type) throws CmsException {
 
@@ -3818,13 +3817,15 @@ public final class CmsSecurityManager {
     /**
      * Returns a user object if the password for the user is correct.<p>
      *
-     * All users are granted.<p>
+     * If the user/pwd pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
      *
-     * @param context the current request context
-     * @param username the username of the user that is to be read
-     * @param password the password of the user that is to be read
-     * @return user read form the cms
-     * @throws CmsException if operation was not succesful
+     * @param context the current request context.
+     * @param username the username of the user that is to be read.
+     * @param password the password of the user that is to be read.
+     * 
+     * @return user read.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public CmsUser readUser(CmsRequestContext context, String username, String password) throws CmsException {
 
@@ -3843,12 +3844,11 @@ public final class CmsSecurityManager {
     /**
      * Returns a user object.<p>
      *
-     * All users are granted.<p>
-     * 
-     * @param username the name of the user that is to be read
+     * @param username the name of the user that is to be read.
      *
-     * @return user read form the cms
-     * @throws CmsException if operation was not succesful
+     * @return user read form the cms.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public CmsUser readUser(String username) throws CmsException {
 
@@ -3867,11 +3867,12 @@ public final class CmsSecurityManager {
     /**
      * Read a web user from the database.<p>
      * 
-     * @param context the current request context
-     * @param username the web user to read
+     * @param context the current request context.
+     * @param username the web user to read.
      * 
-     * @return the read web user
-     * @throws CmsException if the user could not be read 
+     * @return the read web user.
+     * 
+     * @throws CmsException if the user could not be read. 
      */
     public CmsUser readWebUser(CmsRequestContext context, String username) throws CmsException {
 
@@ -4611,14 +4612,17 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Updates the user information.<p>
-     *
-     * Only users, which are in the group "administrators" are granted.<p>
+     * Updates the user information. <p>
      * 
-     * @param context the current request context
-     * @param user The  user to be updated
+     * The user id has to be a valid OpenCms user id.<br>
+     * 
+     * The user with the given id will be completely overriden
+     * by the given data.<p>
      *
-     * @throws CmsException if operation was not succesful
+     * @param context the current request context.
+     * @param user the user to be updated.
+     *
+     * @throws CmsException if operation was not succesful.
      */
     public void writeUser(CmsRequestContext context, CmsUser user) throws CmsException {
 
@@ -4639,14 +4643,19 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Updates the user information of a web user.<p>
-     *
-     * Only users of the user type webuser can be updated this way.<p>
+     * Updates the user information of a web user.<br>
      * 
-     * @param context the current request context
-     * @param user the user to be updated
+     * Only a web user can be updated this way.<p>
      *
-     * @throws CmsException if operation was not succesful
+     * The user id has to be a valid OpenCms user id.<br>
+     * 
+     * The user with the given id will be completely overriden
+     * by the given data.<p>
+     * 
+     * @param context the current request context.
+     * @param user the user to be updated.
+     *
+     * @throws CmsException if operation was not succesful.
      */
     public void writeWebUser(CmsRequestContext context, CmsUser user) throws CmsException {
 
@@ -4950,10 +4959,10 @@ public final class CmsSecurityManager {
     /**
      * Deletes a user.<p>
      *
-     * @param context the current request context
-     * @param user the user to be deleted
+     * @param context the current request context.
+     * @param user the user to be deleted.
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */    
     private void deleteUser(CmsRequestContext context, CmsUser user) throws CmsException {
         

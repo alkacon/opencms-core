@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2004/12/20 17:04:25 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2004/12/20 17:25:31 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Map;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.42 $ $Date: 2004/12/20 17:04:25 $
+ * @version $Revision: 1.43 $ $Date: 2004/12/20 17:25:31 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -394,36 +394,41 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     /**
      * Reads a user based on the user id.<p>
      * 
-     * @param dbc the current database context
-     * @param id the id of the user to read
+     * @param dbc the current database context.
+     * @param id the id of the user to read.
      *
-     * @return the user that was read
-     * @throws CmsException if something goes wrong
+     * @return the user that was read.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     CmsUser readUser(CmsDbContext dbc, CmsUUID id) throws CmsException;
 
     /**
      * Reads a user based in the user name and user type.<p>
      * 
-     * @param dbc the current database context
-     * @param name the name of the user to read
-     * @param type the type of the user to read
+     * @param dbc the current database context.
+     * @param name the name of the user to read.
+     * @param type the type of the user to read.
      *
-     * @return the user that was read
-     * @throws CmsException if something goes wrong
+     * @return the user that was read.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     CmsUser readUser(CmsDbContext dbc, String name, int type) throws CmsException;
 
     /**
      * Reads a user from the database, only if the password is correct.<p>
      *
-     * @param dbc the current database context
-     * @param name the name of the user
-     * @param password the password of the user
-     * @param type the type of the user
+     * If the user/pwd pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
      * 
-     * @return the user that was read
-     * @throws CmsException if something goes wrong
+     * @param dbc the current database context.
+     * @param name the name of the user.
+     * @param password the password of the user.
+     * @param type the type of the user.
+     * 
+     * @return the user that was read.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     CmsUser readUser(CmsDbContext dbc, String name, String password, int type) throws CmsException;
 
@@ -445,11 +450,12 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     /**
      * Reads all existing users of the given type.<p>
      *
-     * @param dbc the current database context
-     * @param type the type to read the users for
+     * @param dbc the current database context.
+     * @param type the type to read the users for.
      * 
-     * @return all existing users of the given type
-     * @throws CmsException if something goes wrong
+     * @return a list of all <code>{@link CmsUser}</code> objects of the given type.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     List readUsers(CmsDbContext dbc, int type) throws CmsException;
 
@@ -552,12 +558,17 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     throws CmsException;
 
     /**
-     * Updates an already existing user.<p>
+     * Updates the user information. <p>
      * 
-     * @param dbc the current database context
-     * @param user the user to update
+     * The user id has to be a valid OpenCms user id.<br>
+     * 
+     * The user with the given id will be completely overriden
+     * by the given data.<p>
      *
-     * @throws CmsException if something goes wrong
+     * @param dbc the current database context.
+     * @param user the user to update.
+     *
+     * @throws CmsException if something goes wrong.
      */
     void writeUser(CmsDbContext dbc, CmsUser user) throws CmsException;
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/12/20 17:04:25 $
- * Version: $Revision: 1.461 $
+ * Date   : $Date: 2004/12/20 17:25:30 $
+ * Version: $Revision: 1.462 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -95,7 +95,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.461 $ $Date: 2004/12/20 17:04:25 $
+ * @version $Revision: 1.462 $ $Date: 2004/12/20 17:25:30 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -580,21 +580,19 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Adds a user to the Cms.<p>
+     * Creates a new user.<p>
      *
-     * Only a adminstrator can add users to the cms.
-     * Only users, which are in the group "administrators" are granted.
+     * @param dbc the current database context.
+     * @param name the new name for the user.
+     * @param password the new password for the user.
+     * @param group the default groupname for the user.
+     * @param description the description for the user.
+     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user, these
+     *        Infos may be stored into the Usertables (depending on the implementation).
+     *
+     * @return the new user will be returned.
      * 
-     * @param dbc the current database context
-     * @param name the new name for the user
-     * @param password the new password for the user
-     * @param group the default groupname for the user
-     * @param description the description for the user
-     * @param additionalInfos a Hashtable with additional infos for the user, these
-     *        Infos may be stored into the Usertables (depending on the implementation)
-     *
-     * @return the new user will be returned
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsException if operation was not succesfull.
      */
     public CmsUser addUser(
         CmsDbContext dbc,
@@ -639,14 +637,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Adds a user to a group.<p>
      *
-     * Only the admin can do this.
-     * Only users, which are in the group "administrators" are granted.
-     * 
-     * @param dbc the current database context
-     * @param username the name of the user that is to be added to the group
-     * @param groupname the name of the group
+     * @param dbc the current database context.
+     * @param username the name of the user that is to be added to the group.
+     * @param groupname the name of the group.
      *
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsException if operation was not succesfull.
      */
     public void addUserToGroup(
         CmsDbContext dbc,
@@ -694,20 +689,24 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Adds a web user to the Cms.<p>
-     *
-     * A web user has no access to the workplace but is able to access personalized
-     * functions controlled by the OpenCms.
+     * Creates a new web user.<p>
      * 
-     * @param dbc the current database context
-     * @param name the new name for the user
-     * @param password the new password for the user
-     * @param group the default groupname for the user
-     * @param description the description for the user
-     * @param additionalInfos a Hashtable with additional infos for the user, these
-     *        Infos may be stored into the Usertables (depending on the implementation)
+     * A web user has no access to the workplace but is able to access personalized
+     * functions controlled by the OpenCms.<br>
+     * 
+     * Moreover, a web user can be created by any user, the intention being that
+     * a "Guest" user can create a personalized account for himself.<p>
+     * 
+     * @param dbc the current database context.
+     * @param name the new name for the user.
+     * @param password the new password for the user.
+     * @param group the default groupname for the user.
+     * @param description the description for the user.
+     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user.
+     *        Infos may be stored into the Usertables (depending on the implementation).
      *
      * @return the new user will be returned.
+     * 
      * @throws CmsException if operation was not succesfull.
      */
     public CmsUser addWebUser(
@@ -956,14 +955,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
     /**
      * Changes the user type of the user.<p>
-
-     * Only the administrator can change the type.<p>
      * 
-     * @param dbc the current database context
-     * @param user the user to change
-     * @param userType the new usertype of the user
+     * @param dbc the current database context.
+     * @param user the user to change.
+     * @param userType the new usertype of the user.
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
     public void changeUserType(CmsDbContext dbc, CmsUser user, int userType) throws CmsException {
 
@@ -975,13 +972,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Changes the user type of the user.<p>
      * 
-     * Only the administrator can change the type.<p>
+     * @param dbc the current database context.
+     * @param userId the id of the user to change.
+     * @param userType the new usertype of the user.
      * 
-     * @param dbc the current database context
-     * @param userId the id of the user to change
-     * @param userType the new usertype of the user
-     * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
     public void changeUserType(CmsDbContext dbc, CmsUUID userId, int userType) throws CmsException {
 
@@ -1458,17 +1453,16 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Add a new group to the Cms.<p>
+     * Creates a new user group.<p>
      *
-     * Only the admin can do this.<p>
+     * @param dbc the current database context.
+     * @param name the name of the new group.
+     * @param description the description for the new group.
+     * @param flags the flags for the new group.
+     * @param parent the name of the parent group (or <code>null</code>).
      * 
-     * @param dbc the current database context
-     * @param name the name of the new group
-     * @param description the description for the new group
-     * @param flags the flags for the new group
-     * @param parent the name of the parent group (or null)
+     * @return a <code>{@link CmsGroup}</code> object representing the newly created group.
      * 
-     * @return new created group
      * @throws CmsException if operation was not successfull.
      */
     public CmsGroup createGroup(CmsDbContext dbc, String name, String description, int flags, String parent)
@@ -2779,17 +2773,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Deletes a user from the Cms.<p>
+     * Deletes a user.<p>
      *
-     * Only a adminstrator can do this.
+     * @param dbc the current database context.
+     * @param project the current project.
+     * @param userId the Id of the user to be deleted.
      * 
-     * Only users, which are in the group "administrators" are granted.<p>
-     * 
-     * @param dbc the current database context
-     * @param project the current project
-     * @param userId the Id of the user to be deleted
-     * 
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsException if operation was not succesfull.
      */
     public void deleteUser(CmsDbContext dbc, CmsProject project, CmsUUID userId) throws CmsException {
 
@@ -3663,8 +3653,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      *
      * All users are granted, except the anonymous user.
      *
-     * @param dbc the current database context
-     * @return a Vector of all existing users
+     * @param dbc the current database context.
+     * 
+     * @return a list of all <code>{@link CmsUser}</code> objects.
+     * 
      * @throws CmsException if operation was not succesful.
      */
     public List getUsers(CmsDbContext dbc) throws CmsException {
@@ -3682,12 +3674,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Returns all users from a given type.<p>
      *
-     * All users are granted, except the anonymous user.
-     *
-     * @param dbc the current database context
-     * @param type the type of the users
-     * @return a Vector of all existing users
-     * @throws CmsException if operation was not succesful
+     * @param dbc the current database context.
+     * @param type the type of the users.
+     * 
+     * @return a list of all <code>{@link CmsUser}</code> objects of the given type.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public List getUsers(CmsDbContext dbc, int type) throws CmsException {
 
@@ -6103,13 +6095,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Returns a user object based on the id of a user.<p>
      *
-     * All users are granted.
-     * 
-     * @param dbc the current database context
-     * @param id the id of the user to read
+     * @param dbc the current database context.
+     * @param id the id of the user to read.
      *
-     * @return the user read 
-     * @throws CmsException if something goes wrong
+     * @return the user read.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public CmsUser readUser(CmsDbContext dbc, CmsUUID id) throws CmsException {
 
@@ -6125,13 +6116,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Returns a user object.<p>
      *
-     * All users are granted.
-     * 
-     * @param dbc the current database context
-     * @param username the name of the user that is to be read
+     * @param dbc the current database context.
+     * @param username the name of the user that is to be read.
      *
-     * @return user read form the cms
-     * @throws CmsException if operation was not succesful
+     * @return user read.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public CmsUser readUser(CmsDbContext dbc, String username) throws CmsException {
 
@@ -6141,14 +6131,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Returns a user object.<p>
      *
-     * All users are granted.
-     * 
-     * @param dbc the current database context
-     * @param username the name of the user that is to be read
-     * @param type the type of the user
+     * @param dbc the current database context.
+     * @param username the name of the user that is to be read.
+     * @param type the type of the user.
      *
-     * @return user read form the cms
-     * @throws CmsException if operation was not succesful
+     * @return user read.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public CmsUser readUser(CmsDbContext dbc, String username, int type) throws CmsException {
 
@@ -6163,13 +6152,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Returns a user object if the password for the user is correct.<p>
      *
-     * All users are granted.
+     * If the user/pwd pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
      *
-     * @param dbc the current database context
-     * @param username the username of the user that is to be read
-     * @param password the password of the user that is to be read
-     * @return user read form the cms
-     * @throws CmsException if operation was not succesful
+     * @param dbc the current database context.
+     * @param username the username of the user that is to be read.
+     * @param password the password of the user that is to be read.
+     * 
+     * @return user read.
+     * 
+     * @throws CmsException if operation was not succesful.
      */
     public CmsUser readUser(CmsDbContext dbc, String username, String password) throws CmsException {
 
@@ -7571,14 +7562,17 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Updates the user information.<p>
-     *
-     * Only users, which are in the group "administrators" are granted.
+     * Updates the user information. <p>
      * 
-     * @param dbc the current database context
-     * @param user The  user to be updated
+     * The user id has to be a valid OpenCms user id.<br>
+     * 
+     * The user with the given id will be completely overriden
+     * by the given data.<p>
      *
-     * @throws CmsException if operation was not succesful
+     * @param dbc the current database context.
+     * @param user the user to be updated.
+     *
+     * @throws CmsException if operation was not succesful.
      */
     public void writeUser(CmsDbContext dbc, CmsUser user) throws CmsException {
 
@@ -7593,14 +7587,19 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Updates the user information of a web user.<p>
-     *
-     * Only users of the user type webuser can be updated this way.<p>
+     * Updates the user information of a web user.<br>
      * 
-     * @param dbc the current database context
-     * @param user the user to be updated
+     * Only a web user can be updated this way.<p>
      *
-     * @throws CmsException if operation was not succesful
+     * The user id has to be a valid OpenCms user id.<br>
+     * 
+     * The user with the given id will be completely overriden
+     * by the given data.<p>
+     * 
+     * @param dbc the current database context.
+     * @param user the user to be updated.
+     *
+     * @throws CmsException if operation was not succesful.
      */
     public void writeWebUser(CmsDbContext dbc, CmsUser user) throws CmsException {
 
