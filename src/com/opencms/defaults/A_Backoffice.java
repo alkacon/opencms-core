@@ -80,7 +80,7 @@ public abstract class A_Backoffice extends CmsWorkplaceDefaultNoCache {
  */
 
 public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-
+			
 	//return var
 	byte[] returnProcess = null;
 
@@ -190,7 +190,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 				//get marker for accessing the delete dialog
 				String iddeletesave = (String) session.getValue("iddelete");
 				//access delete dialog
-				if ((iddelete != null) || (iddeletesave != null)) {
+				if (((iddelete != null) || (iddeletesave != null)) && (idlock == null)) {
 					returnProcess = getContentDelete(cms, template, elementName, parameters, templateSelector);
 					return returnProcess;
 					
@@ -404,7 +404,7 @@ private byte[] getContentHead(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 
 	//if getCreateUrl equals null, the "create new entry" button 
 	//will not be displayed in the template
-	String createButton = (String) getCreateUrl(cms);
+	String createButton = (String) getCreateUrl();
 	if (createButton == null) {
 		String cb = template.getDataValue("nowand");
 		template.setData("createbutton", cb);
@@ -771,25 +771,35 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
  * Has to be overwritten in your backoffice class!
  */
 
-public abstract byte[] getContentNew(CmsObject cms, CmsXmlWpTemplateFile templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException;
+public byte[] getContentNew(CmsObject cms, CmsXmlWpTemplateFile templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+
+	parameters.put("id", "new");
+	return getContentNew(cms, templateFile, elementName, parameters, templateSelector);	
+}
 /**
  * gets the create url by using the cms object
  * @returns a string with the create url
  */
  
-public abstract String getCreateUrl(CmsObject cms);
+public abstract String getCreateUrl();
+/**
+ * gets the create url by using the cms object
+ * @returns a string with the create url
+ */
+ 
+public abstract String getCreateUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception;
 /**
  * gets the delete url by using the cms object
  * @returns a string with the delete url
  */
  
-public abstract String getDeleteUrl(CmsObject cms);
+public abstract String getDeleteUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception;
 /**
  * gets the edit url by using the cms object
  * @returns a string with the edit url
  */
  
-public abstract String getEditUrl(CmsObject cms);
+public abstract String getEditUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception;
 /**
  *set the lockstates in the list output 
  */
