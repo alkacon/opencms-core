@@ -1,8 +1,8 @@
 package com.opencms.file;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronizeList.java,v $
- * Date   : $Date: 2001/02/05 16:55:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/02/06 14:36:25 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -37,7 +37,7 @@ import com.opencms.util.*;
  * in the virtual filesystem (VFS) and the server filesystem (SFS)
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.2 $ $Date: 2001/02/05 16:55:59 $
+ * @version $Revision: 1.3 $ $Date: 2001/02/06 14:36:25 $
  */
 public class CmsSynchronizeList implements I_CmsConstants, Serializable {
 
@@ -255,9 +255,9 @@ public class CmsSynchronizeList implements I_CmsConstants, Serializable {
 			key = (String)enu.nextElement();
 			output.append(key+": VFS ");
 			value = (Hashtable)m_synchronizeList.get(key);
-			date = (String)value.get(C_VFS_DATE);
+			date = Utils.getNiceDate(Long.parseLong((String)value.get(C_VFS_DATE)));
 			output.append(date+", SFS ");
-			date = (String)value.get(C_SFS_DATE);
+			date = Utils.getNiceDate(Long.parseLong((String)value.get(C_SFS_DATE)));
 			output.append(date+"\n");
 		}
 		return output.toString();
