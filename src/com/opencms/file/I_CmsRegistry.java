@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2000/08/30 12:54:22 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/09/08 08:16:41 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/08/30 12:54:22 $
+ * @version $Revision: 1.7 $ $Date: 2000/09/08 08:16:41 $
  * 
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -394,12 +394,25 @@ public String[] getRepositories();
  */
 public int getViews(Vector views, Vector urls);
 /**
+ * Checks the dependencies for a new Module.
+ * @param moduleZip the name of the zipfile for the new module.
+ * @return a Vector with dependencies that are not fullfilled.
+ */
+public Vector importCheckDependencies(String moduleZip) throws CmsException;
+/**
  *  Checks for files that already exist in the system but should be replaced by the module.
  *
  *  @param moduleZip The name of the zip-file to import.
  *  @returns The complete paths to the resources that have conflicts.
  */
 public Vector importGetConflictingFileNames(String moduleZip) throws CmsException;
+/**
+ *  Returns the name of the module to be imported.
+ *
+ *  @param moduleZip the name of the zip-file to import from.
+ *  @return The name of the module to be imported.
+ */
+public String importGetModuleName(String moduleZip);
 /**
  *  Imports a module. This method is synchronized, so only one module can be imported at on time.
  *

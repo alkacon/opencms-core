@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/09/05 17:13:05 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/09/08 08:16:41 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/09/05 17:13:05 $
+ * @version $Revision: 1.8 $ $Date: 2000/09/08 08:16:41 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -137,11 +137,11 @@ private Vector checkDependencies(Element module) throws CmsException {
 			int currentVersion = getModuleVersion(name);
 
 			if( currentVersion == -1 ) {
-				retValue.addElement(name + " dosen't exists");
+				retValue.addElement("The needed module " + name + " dosen't exists");
 			} else if( currentVersion < minVersion ) {
-				retValue.addElement(name + " version is not high enougth" );
+				retValue.addElement("Module " + name + " version " + minVersion + " is not high enougth" );
 			} else if( ( maxVersion != C_ANY_VERSION ) && (currentVersion > maxVersion) ) {
-				retValue.addElement(name + " version is to high");
+				retValue.addElement("Module " + name + " version " + maxVersion + " is to high");
 			}
 		}
 	} catch (Exception exc) {
@@ -949,6 +949,15 @@ private boolean hasAccess() {
 	return retValue;
 }
 /**
+ * Checks the dependencies for a new Module.
+ * @param moduleZip the name of the zipfile for the new module.
+ * @return a Vector with dependencies that are not fullfilled.
+ */
+public Vector importCheckDependencies(String moduleZip) throws CmsException {
+	Element newModule = getModuleElementFromImport(moduleZip);
+	return checkDependencies(newModule);
+}
+/**
  *  Checks for files that already exist in the system but should be replaced by the module.
  *
  *  @param moduleZip The name of the zip-file to import.
@@ -963,13 +972,23 @@ public Vector importGetConflictingFileNames(String moduleZip) throws CmsExceptio
 	return cmsImport.getConflictingFilenames();
 }
 /**
+ *  Returns the name of the module to be imported.
+ *
+ *  @param moduleZip the name of the zip-file to import from.
+ *  @return The name of the module to be imported.
+ */
+public String importGetModuleName(String moduleZip) {
+	Element newModule = getModuleElementFromImport(moduleZip);
+	return newModule.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+}
+/**
  *  Imports a module. This method is synchronized, so only one module can be imported at on time.
  *
  *  @param moduleZip the name of the zip-file to import from.
  *  @param exclusion a Vector with resource-names that should be excluded from this import.
  */
 public synchronized void importModule(String moduleZip, Vector exclusion) throws CmsException {
-	// check if the user is allowed to set parameters
+	// check if the user is allowed to import a module.
 
 	if (!hasAccess()) {
 		throw new CmsException("No access to perform the action 'importModule'", CmsException.C_REGISTRY_ERROR);

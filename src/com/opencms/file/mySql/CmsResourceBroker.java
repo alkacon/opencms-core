@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/01 13:40:19 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/09/08 08:16:42 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,7 +50,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.31 $ $Date: 2000/09/01 13:40:19 $
+ * @version $Revision: 1.32 $ $Date: 2000/09/08 08:16:42 $
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -3297,50 +3297,6 @@ public CmsSite getSite(CmsUser user, CmsProject project, String siteName)
 				 CmsException.C_NO_ACCESS);
 		}
 	}
-	/**
-	 * Imports a module (a zip file) to the cms.
-	 * 
-	 * <B>Security:</B>
-	 * only Administrators can do this;
-	 * 
-	 * @param currentUser user who requestd themethod
-	 * @param currentProject current project of the user
-	 * @param importContent The modle content. 
-	 * @param cms the cms-object to use for the import.
-	 * 
-	 * @exception Throws CmsException if something goes wrong.
-	 */
-	public void importModule(CmsUser currentUser,  CmsProject currentProject, byte[] importContent, CmsObject cms)
-		throws CmsException {
-		if(isAdmin(currentUser, currentProject)) {
-			//new CmsModuleImport(importContent, cms);
-		} else {
-			 throw new CmsException("[" + this.getClass().getName() + "] importResources",
-				 CmsException.C_NO_ACCESS);
-		}
-	}
-	 /**
-	 * Imports a module (a zip file) to the cms.
-	 * 
-	 * <B>Security:</B>
-	 * only Administrators can do this;
-	 * 
-	 * @param currentUser user who requestd themethod
-	 * @param currentProject current project of the user
-	 * @param importFile the name (absolute Path) of the import resource. 
-	 * @param cms the cms-object to use for the import.
-	 * 
-	 * @exception Throws CmsException if something goes wrong.
-	 */
-	public void importModule(CmsUser currentUser,  CmsProject currentProject, String importFile, CmsObject cms)
-		throws CmsException {
-		if(isAdmin(currentUser, currentProject)) {
-			//new CmsModuleImport(importFile, importPath, cms);
-		} else {
-			 throw new CmsException("[" + this.getClass().getName() + "] importResources",
-				 CmsException.C_NO_ACCESS);
-		}
-	}
 	// Methods working with database import and export
 	
 	/**
@@ -3791,12 +3747,11 @@ public CmsSite getSite(CmsUser user, CmsProject project, String siteName)
  * @return the onlineproject object.
  * @exception CmsException Throws CmsException if something goes wrong.
  */
-public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) throws CmsException
-{
-	if (CmsConstants.USE_MULTISITE)
-		//lookup the currentProject in the CMS_SITE_PROJECT table, and in the same call return it.
-		return m_dbAccess.getOnlineProject(currentProject.getId());
-	else
+public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) throws CmsException {
+	// if (CmsConstants.USE_MULTISITE)
+		// lookup the currentProject in the CMS_SITE_PROJECT table, and in the same call return it.
+	//	return m_dbAccess.getOnlineProject(currentProject.getId());
+	// else
 		return readProject(currentUser, currentProject, C_PROJECT_ONLINE_ID);
 }
 	/**
