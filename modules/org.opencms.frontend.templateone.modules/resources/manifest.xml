@@ -698,14 +698,6 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[4.5]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[XML modules demo pages]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[XML modules demo pages]]></value>
 				</property>
