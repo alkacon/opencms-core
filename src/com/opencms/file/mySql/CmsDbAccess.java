@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/07/19 13:18:41 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2001/07/23 11:23:38 $
+ * Version: $Revision: 1.59 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -50,7 +50,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.58 $ $Date: 2001/07/19 13:18:41 $ *
+ * @version $Revision: 1.59 $ $Date: 2001/07/23 11:23:38 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -530,7 +530,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
     }
 
 	// read all folders in offlineProject
-	offlineFolders = readFolders(projectId);
+	offlineFolders = readFolders(projectId, false, true);
 	for (int i = 0; i < offlineFolders.size(); i++)
 	{
 		currentFolder = ((CmsFolder) offlineFolders.elementAt(i));
@@ -760,7 +760,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
 
 
 	// now read all FILES in offlineProject
-	offlineFiles = readFiles(projectId, false);
+	offlineFiles = readFiles(projectId, false, true);
 	for (int i = 0; i < offlineFiles.size(); i++)
 	{
 		currentFile = ((CmsFile) offlineFiles.elementAt(i));
@@ -1070,9 +1070,10 @@ public CmsFile readFile(int projectId, int onlineProjectId, String filename) thr
 			int resSize = res.getInt(m_cq.get("C_RESOURCES_SIZE"));
 			byte[] content = res.getBytes(m_cq.get("C_RESOURCES_FILE_CONTENT"));
             int resProjectId = res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
+            int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 			file = new CmsFile(resId, parentId, fileId, filename, resType, resFlags, userId,
                                groupId, resProjectId, accessFlags, state, lockedBy, launcherType,
-                               launcherClass, created, modified, modifiedBy, content, resSize);
+                               launcherClass, created, modified, modifiedBy, content, resSize, lockedInProject);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
 		}
