@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2002/06/10 09:53:22 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2002/06/10 13:42:05 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.19 $
- * $Date: 2002/06/10 09:53:22 $
+ * $Revision: 1.20 $
+ * $Date: 2002/06/10 13:42:05 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -852,26 +852,22 @@ public abstract class CmsMasterContent
     public static Vector getAllSubChannelsOf (CmsObject cms, String channel)
             throws CmsException {
         Vector allChannels = new Vector();
-        try {
-            cms.setContextToCos();
-            //Vector subChannels = cms.getSubFolders(channel);
-            Vector subChannels = cms.getResourcesInFolder(channel);
-            for (int i=0; i < subChannels.size(); i++) {
-                String folder = ((CmsResource)subChannels.elementAt(i)).getAbsolutePath();
-                Vector v = getAllSubChannelsOf(cms, folder);
-                if (v.size() == 0) {
-                    allChannels.addElement(folder);
-                }else {
-                    for (int j=0; j < v.size(); j++) {
-                        allChannels.addElement(v.elementAt(j));
-                    }
+        Vector subChannels = cms.getResourcesInFolder("//cos" + channel);
+        for (int i=0; i < subChannels.size(); i++) {
+            CmsResource resource = (CmsResource)subChannels.get(i);
+            String folder = resource.getAbsolutePath();
+            Vector v = getAllSubChannelsOf(cms, folder);
+            if (v.size() == 0 && hasWriteAccess(cms, resource)) {
+                allChannels.add(folder);
+            }else {
+                for (int j=0; j < v.size(); j++) {
+                    allChannels.add(v.get(j));
                 }
             }
-        } finally {
-            cms.setContextToVfs();
         }
         return allChannels;
     }
+
 
     /**
      * Get all subchannels of the module root channel without the root channel in the channel names
@@ -888,25 +884,20 @@ public abstract class CmsMasterContent
     public Vector getAllSubChannelsOfRootChannel (CmsObject cms)
             throws CmsException {
         Vector allChannels = new Vector();
-        try {
-            cms.setContextToCos();
-            String rootChannel = getDbAccessObject(this.getSubId()).getRootChannel();
-            //Vector subChannels = cms.getSubFolders(rootChannel);
-            Vector subChannels = cms.getResourcesInFolder(rootChannel);
-            int offset = rootChannel.length()-1;
-            for (int i=0; i < subChannels.size(); i++) {
-                String folder = ((CmsResource)subChannels.elementAt(i)).getAbsolutePath();
-                Vector v = getAllSubChannelsOf(cms, folder);
-                if (v.size() == 0) {
-                    allChannels.addElement(folder.substring(offset));
-                }else {
-                    for (int j=0; j < v.size(); j++) {
-                        allChannels.addElement(((String)v.elementAt(j)).substring(offset));
-                    }
+        String rootChannel = getDbAccessObject(this.getSubId()).getRootChannel();
+        Vector subChannels = cms.getResourcesInFolder("//cos" + rootChannel);
+        int offset = rootChannel.length()-1;
+        for (int i=0; i < subChannels.size(); i++) {
+            CmsResource resource = (CmsResource)subChannels.get(i);
+            String folder = resource.getAbsolutePath();
+            Vector v = getAllSubChannelsOf(cms, folder);
+            if (v.size() == 0 && hasWriteAccess(cms, resource)) {
+                allChannels.add(folder.substring(offset));
+            } else {
+                for (int j=0; j < v.size(); j++) {
+                    allChannels.add(((String)v.get(j)).substring(offset));
                 }
             }
-        } finally {
-            cms.setContextToVfs();
         }
         return allChannels;
     }
@@ -956,4 +947,86 @@ public abstract class CmsMasterContent
      public String getRootChannel() {
         return getDbAccessObject(this.getSubId()).getRootChannel();
      }
+
+    /**
+     * has the current user the right to write the resource
+     * @returns a boolean
+     */
+    protected static boolean hasWriteAccess(CmsObject cms, CmsResource resource) throws CmsException {
+        CmsUser currentUser = cms.getRequestContext().currentUser();
+
+        // check the rights for the current resource
+        if( ! ( accessOther(C_ACCESS_PUBLIC_WRITE, resource) ||
+                accessOwner(cms, currentUser, C_ACCESS_OWNER_WRITE, resource) ||
+                accessGroup(cms, currentUser, C_ACCESS_GROUP_WRITE, resource) ) ) {
+            // no write access to this resource!
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks, if the owner may access this resource.
+     *
+     * @param cms the cmsObject
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param flags The flags to check.
+     *
+     * @return wether the user has access, or not.
+     */
+    protected static boolean accessOwner(CmsObject cms, CmsUser currentUser,
+                                    int flags, CmsResource resource) throws CmsException {
+        // The Admin has always access
+        if( cms.isAdmin() ) {
+            return(true);
+        }
+        // is the resource owned by this user?
+        if(resource.getOwnerId() == currentUser.getId()) {
+            if( (resource.getAccessFlags() & flags) == flags ) {
+                return true ;
+            }
+        }
+        // the resource isn't accesible by the user.
+        return false;
+    }
+
+    /**
+     * Checks, if the group may access this resource.
+     *
+     * @param cms the cmsObject
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param flags The flags to check.
+     *
+     * @return wether the user has access, or not.
+     */
+    protected static boolean accessGroup(CmsObject cms, CmsUser currentUser,
+                                  int flags, CmsResource resource) throws CmsException {
+        // is the user in the group for the resource?
+        if(cms.userInGroup(currentUser.getName(), cms.readGroup(resource.getGroupId()).getName())) {
+            if( (resource.getAccessFlags() & flags) == flags ) {
+                return true;
+            }
+        }
+        // the resource isn't accesible by the user.
+        return false;
+    }
+
+    /**
+     * Checks, if others may access this resource.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param flags The flags to check.
+     *
+     * @return wether the user has access, or not.
+     */
+    protected static boolean accessOther( int flags, CmsResource resource) throws CmsException {
+        if ((resource.getAccessFlags() & flags) == flags) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
