@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/02/21 13:10:01 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/02/25 16:41:37 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -359,10 +359,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         }            
         if (stream != null) {
             if ("yes".equalsIgnoreCase(stream) || "true".equalsIgnoreCase(stream)) {
-                // streaming not allowed in export mode
                 streaming = true;
             } else if ("bypass".equalsIgnoreCase(stream) || "bypasscache".equalsIgnoreCase(stream)) {
-                // bypass not allowed in export mode
                 bypass = true;
             }
         }
@@ -396,7 +394,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                 System.err.println("JspLoader.load() bypassing cache for file " + cms.readAbsolutePath(file));
             }
             // Update the JSP first if neccessary            
-            String target = updateJsp(cms, file, f_req, controller, new HashSet(11));
+            String target = updateJsp(cms, file, f_req, controller, new HashSet());
             // Dispatch to external JSP
             req.getRequestDispatcher(target).forward(f_req, res);
             if (DEBUG > 1) {

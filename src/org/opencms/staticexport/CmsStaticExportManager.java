@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/02/23 15:15:21 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/02/25 16:39:45 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -180,7 +180,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         exportManager.setExportSuffixes(exportSuffixes);
         
         // set the path for the export
-        exportManager.setExportPath(CmsLinkManager.getAbsoluteUri(configuration.getString("staticexport.export_path", "export"), OpenCms.getSystemInfo().getContextPath()));
+        exportManager.setExportPath(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(configuration.getString("staticexport.export_path", "export")));
 
         // replace the "magic" names                 
         String servletName = OpenCms.getSystemInfo().getServletPath(); 
@@ -353,7 +353,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
 
         // make sure all required parent folder exist
-        String exportFolderName = getExportPath() + CmsResource.getFolderPath(rfsName).substring(1);
+        String exportFolderName = CmsLinkManager.normalizeRfsPath(getExportPath() + CmsResource.getFolderPath(rfsName).substring(1));
         File exportFolder = new File(exportFolderName);
         if (!exportFolder.exists()) {
             if (!exportFolder.mkdirs()) {
@@ -870,8 +870,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     private void setExportPath(String path) {
         m_staticExportPath = path;
-        if (! m_staticExportPath.endsWith("/")) {
-            m_staticExportPath += "/";
+        if (! m_staticExportPath.endsWith(File.separator)) {
+            m_staticExportPath += File.separator;
         }
     }
     
