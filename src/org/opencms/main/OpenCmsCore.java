@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/11/10 08:12:57 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2003/11/10 09:32:47 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,6 @@ import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.util.CmsResourceTranslator;
-import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.I_CmsDialogHandler;
 
@@ -101,7 +100,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -1171,8 +1170,6 @@ public class OpenCmsCore {
      * @throws Exception in case of problems initializing OpenCms, this is usually fatal 
      */
     protected void initConfiguration(ExtendedProperties configuration) throws Exception {
-        // save the configuration
-        m_configuration = configuration;
         // this will initialize the encoding with some default from the A_OpenCms
         m_defaultEncoding = getDefaultEncoding();
         // check the opencms.properties for a different setting
@@ -1611,21 +1608,21 @@ public class OpenCmsCore {
                 
         // set the path for the export
         m_exportProperties.setExportPath(com.opencms.boot.CmsBase.getAbsoluteWebPath(CmsBase.getAbsoluteWebPath(configuration.getString("staticexport.export_path"))));
-               
-        // get the export prefix variables for rfs and vfs
-        String rfsPrefix = configuration.getString("staticexport.prefix_rfs", "${CONTEXT_NAME}/export");
-        String vfsPrefix = configuration.getString("staticexport.prefix_vfs", "${CONTEXT_NAME}${SERVLET_NAME}");
 
         // replace the "magic" names                 
+        String servletName = configuration.getString("servlet.mapping"); 
         String contextName = "/" + CmsBase.getWebAppName(); 
         if ("/ROOT".equals(contextName)) {
             contextName = "";
         }
-        String servletName = configuration.getString("servlet.mapping"); 
-        rfsPrefix = CmsStringSubstitution.substitute(rfsPrefix, "${CONTEXT_NAME}", contextName);
-        rfsPrefix = CmsStringSubstitution.substitute(rfsPrefix, "${SERVLET_NAME}", servletName);
-        vfsPrefix = CmsStringSubstitution.substitute(vfsPrefix, "${CONTEXT_NAME}", contextName);
-        vfsPrefix = CmsStringSubstitution.substitute(vfsPrefix, "${SERVLET_NAME}", servletName);
+        
+        // set the "magic" names in the extended properties
+        configuration.setProperty("CONTEXT_NAME", contextName);
+        configuration.setProperty("SERVLET_NAME", servletName);
+                
+        // get the export prefix variables for rfs and vfs
+        String rfsPrefix = configuration.getString("staticexport.prefix_rfs", contextName + "/export");
+        String vfsPrefix = configuration.getString("staticexport.prefix_vfs", contextName + servletName);
                                         
         // set the export prefix variables for rfs and vfs
         m_exportProperties.setRfsPrefix(rfsPrefix);
@@ -1651,6 +1648,9 @@ public class OpenCmsCore {
         // set the property whether siblings should get published if a file gets published directly
         String directPublishSiblings = configuration.getString("workplace.directpublish.siblings", "false");
         setRuntimeProperty("workplace.directpublish.siblings", directPublishSiblings);
+        
+        // save the configuration
+        m_configuration = configuration;        
     }
 
     /**
@@ -1675,7 +1675,7 @@ public class OpenCmsCore {
                 throwInitException(new CmsInitException(C_ERRORMSG + "OpenCms base folder could not be guessed. Please define init parameter \"opencms.home\" in servlet engine configuration.\n\n"));
             }
         }
-        base = setBasePath(base);        
+        base = setBasePath(base);  
         
         // Collect the configurations 
         ExtendedProperties configuration = null;       
@@ -2174,6 +2174,7 @@ public class OpenCmsCore {
             m_basePath = currentInstance.getBasePath();
             m_log = currentInstance.getLog();
             m_memoryMonitor = currentInstance.getMemoryMonitor();
+            m_configuration = currentInstance.getConfiguration();
         }
         return this;
     }
@@ -2192,7 +2193,6 @@ public class OpenCmsCore {
         }
         m_runtimeProperties.put(key, value);
     }
-
     
     /**
      * Displays a resource from the OpenCms by writing the result to the provided 
