@@ -41,47 +41,5 @@
         <taglib-location>/WEB-INF/opencms.tld</taglib-location>
     </taglib>
 
-    <!-- Additional entrys to enable JSTL, can be removed if JSTL is not required: -->
-    <!--
-    <taglib>
-        <taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
-        <taglib-location>/WEB-INF/c.tld</taglib-location>
-    </taglib>
-
-    <taglib>
-        <taglib-uri>http://java.sun.com/jstl/core_rt</taglib-uri>
-        <taglib-location>/WEB-INF/c-rt.tld</taglib-location>
-    </taglib>
-
-    <taglib>
-        <taglib-uri>http://java.sun.com/jstl/xml</taglib-uri>
-        <taglib-location>/WEB-INF/x.tld</taglib-location>
-    </taglib>
-
-    <taglib>
-        <taglib-uri>http://java.sun.com/jstl/xml_rt</taglib-uri>
-        <taglib-location>/WEB-INF/x-rt.tld</taglib-location>
-    </taglib>
-
-    <taglib>
-        <taglib-uri>http://java.sun.com/jstl/fmt</taglib-uri>
-        <taglib-location>/WEB-INF/fmt.tld</taglib-location>
-    </taglib>
-
-    <taglib>
-        <taglib-uri>http://java.sun.com/jstl/fmt_rt</taglib-uri>
-        <taglib-location>/WEB-INF/fmt-rt.tld</taglib-location>
-    </taglib>
-
-    <taglib>
-        <taglib-uri>http://java.sun.com/jstl/sql</taglib-uri>
-        <taglib-location>/WEB-INF/sql.tld</taglib-location>
-    </taglib>
-
-    <taglib>
-        <taglib-uri>http://java.sun.com/jstl/sql_rt</taglib-uri>
-        <taglib-location>/WEB-INF/sql-rt.tld</taglib-location>
-    </taglib>   
-    -->
 </web-app>
 
