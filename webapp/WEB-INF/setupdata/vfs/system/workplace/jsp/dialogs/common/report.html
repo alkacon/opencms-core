@@ -34,6 +34,10 @@ function aO(message) {
 	parent.appendOk(message);
 }
 
+function aT(message) {
+	parent.appendThrowable(message);
+}
+
 function aB() {
 	parent.appendBr();
 }
@@ -117,6 +121,7 @@ var FORMAT_HEADLINE = 2;
 var FORMAT_NOTE = 3;
 var FORMAT_OK = 4;
 var FORMAT_NEWLINE = 5;
+var FORMAT_THROWABLE = 6;
 
 // saves the type of this report, which is either {simple|extended}
 var reportType = "<%= wp.getParamReportType() %>";
@@ -146,6 +151,11 @@ function appendNote(message) {
 
 function appendOk(message) {
 	reportOutputFormats.push(FORMAT_OK);
+	reportOutputMessages.push(message);
+}
+
+function appendThrowable(message) {
+	reportOutputFormats.push(FORMAT_THROWABLE);
 	reportOutputMessages.push(message);
 }
 
@@ -328,6 +338,11 @@ function getContentExtended() {
 			case FORMAT_NEWLINE :
 				htmlStr += "\n";
 				break;	
+			case FORMAT_THROWABLE :
+				htmlStr += "<span class='throw'>";
+				htmlStr += reportOutputMessages[i];
+				htmlStr += "</span>";			
+				break;
 			case FORMAT_DEFAULT :			
 			default :
 				htmlStr += "<span>";

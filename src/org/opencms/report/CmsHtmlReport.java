@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2004/01/21 15:02:09 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/01/21 16:57:00 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsHtmlReport extends A_CmsReport {
     
@@ -168,24 +168,50 @@ public class CmsHtmlReport extends A_CmsReport {
      */
     private StringBuffer getExceptionElement(Throwable throwable) {        
         StringBuffer buf = new StringBuffer();
-        if (m_showExceptionStackTracke) {
-            buf.append("<span class='throw'>");
-            buf.append(key("report.exception"));
-            String exception = Encoder.escapeXml(Utils.getStackTrace(throwable));
-            exception = CmsStringSubstitution.substitute(exception, "\\", "\\\\");
-            StringTokenizer tok = new StringTokenizer(exception, "\r\n");
-            while (tok.hasMoreTokens()) {
-                buf.append(tok.nextToken());
+        
+        if (!m_writeHtml) {
+            if (m_showExceptionStackTracke) {
+                buf.append("aT('");
+                buf.append(key("report.exception"));
+                String exception = Encoder.escapeXml(Utils.getStackTrace(throwable));
+                exception = CmsStringSubstitution.substitute(exception, "\\", "\\\\");
+                StringTokenizer tok = new StringTokenizer(exception, "\r\n");
+                while (tok.hasMoreTokens()) {
+                    buf.append(tok.nextToken());
+                    buf.append(getLineBreak());
+                }
+                buf.append("'); ");
                 buf.append(getLineBreak());
-            }            
-            buf.append("</span>");
+                m_content.add(buf);                
+            } else {
+                buf.append("aT('");
+                buf.append(key("report.exception"));
+                buf.append(throwable.toString());
+                buf.append("'); ");
+                buf.append(getLineBreak());
+                m_content.add(buf);                  
+            }
         } else {
-            buf.append("<span class='throw'>");
-            buf.append(key("report.exception"));
-            buf.append(throwable.toString());
-            buf.append("</span>");
-            buf.append(getLineBreak());
-        }        
+            if (m_showExceptionStackTracke) {
+                buf.append("<span class='throw'>");
+                buf.append(key("report.exception"));
+                String exception = Encoder.escapeXml(Utils.getStackTrace(throwable));
+                exception = CmsStringSubstitution.substitute(exception, "\\", "\\\\");
+                StringTokenizer tok = new StringTokenizer(exception, "\r\n");
+                while (tok.hasMoreTokens()) {
+                    buf.append(tok.nextToken());
+                    buf.append(getLineBreak());
+                }
+                buf.append("</span>");
+            } else {
+                buf.append("<span class='throw'>");
+                buf.append(key("report.exception"));
+                buf.append(throwable.toString());
+                buf.append("</span>");
+                buf.append(getLineBreak());
+            }
+        }
+
         return buf;
     }
     
@@ -197,16 +223,16 @@ public class CmsHtmlReport extends A_CmsReport {
      * @param link the link resource
      * @return the formatted StringBuffer
      */
-    private StringBuffer getLinkElement(String link) {
-        StringBuffer buf = new StringBuffer();
-        buf.append("<span class='link1'>");
-        buf.append(key("report.checking"));
-        buf.append("</span>");        
-        // TODO: Check for absolute path when link management is working again
-        buf.append(link);
-        buf.append(getLineBreak());
-        return buf;        
-    }
+//    private StringBuffer getLinkElement(String link) {
+//        StringBuffer buf = new StringBuffer();
+//        buf.append("<span class='link1'>");
+//        buf.append(key("report.checking"));
+//        buf.append("</span>");        
+//        // TODO: Check for absolute path when link management is working again
+//        buf.append(link);
+//        buf.append(getLineBreak());
+//        return buf;        
+//    }
     
     /**
      * Output helper method to format a reported <code>CmsPageLinks</code> element.<p>
@@ -216,16 +242,16 @@ public class CmsHtmlReport extends A_CmsReport {
      * @param target the link target resource
      * @return the formatted StringBuffer
      */    
-    private StringBuffer getLinkTargetElement(String target) {
-        StringBuffer buf = new StringBuffer("<span class='link2'>");
-        buf.append(key("report.broken_link_to"));
-        buf.append("<span class='link3'>");
-        // TODO: Check for absolute path when link management is working again
-        buf.append(target);
-        buf.append("</span></span>");        
-        buf.append(getLineBreak());
-        return buf;
-    }   
+//    private StringBuffer getLinkTargetElement(String target) {
+//        StringBuffer buf = new StringBuffer("<span class='link2'>");
+//        buf.append(key("report.broken_link_to"));
+//        buf.append("<span class='link3'>");
+//        // TODO: Check for absolute path when link management is working again
+//        buf.append(target);
+//        buf.append("</span></span>");        
+//        buf.append(getLineBreak());
+//        return buf;
+//    }   
     
     /**
      * Returns the corrent linebreak notation depending on the output style of thsi report.
@@ -244,13 +270,14 @@ public class CmsHtmlReport extends A_CmsReport {
         int indexEnd = m_content.size();
         for (int i=m_indexNext; i<indexEnd; i++) {
             Object obj = m_content.get(i);
-            if (obj instanceof CmsPageLinks) {
-                CmsPageLinks links = (CmsPageLinks)m_content.get(i);
-                result.append(getLinkElement(links.getResourceName()));                                
-                for (int index=0; index<links.getLinkTargets().size(); index++) {                    
-                    result.append(getLinkTargetElement((String)links.getLinkTargets().elementAt(index)));
-                }                                
-            } else if (obj instanceof String || obj instanceof StringBuffer) {
+//            if (obj instanceof CmsPageLinks) {
+//                CmsPageLinks links = (CmsPageLinks)m_content.get(i);
+//                result.append(getLinkElement(links.getResourceName()));                                
+//                for (int index=0; index<links.getLinkTargets().size(); index++) {                    
+//                    result.append(getLinkTargetElement((String)links.getLinkTargets().elementAt(index)));
+//                }                                
+//            } else 
+            if (obj instanceof String || obj instanceof StringBuffer) {
                 result.append(obj);
             } else if (obj instanceof Throwable) {
                 result.append(getExceptionElement((Throwable)obj));
