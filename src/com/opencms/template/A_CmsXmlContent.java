@@ -44,7 +44,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2000/01/27 10:10:43 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/04 09:40:03 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -132,17 +132,13 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      * If a previously cached parsed content exists, it will be re-used.
      * <P>
      * If no absolute file name ist given, 
-     * template files will be searched in the following hierachical order:
-     * <UL>
-     * <LI> (template path).(full classname).TemplateName.(Extension) </LI>
-     * <LI> (template path).(parent class).TemplateName.(Extension) </LI>
-     * <LI> ... </LI>
-     * <LI> (template path).TemplateName.(Extension) </LI>
-     * </UL>
+     * template files will be searched a hierachical order using
+     * <code>lookupAbsoluteFilename</code>.
      * 
      * @param cms A_CmsObject Object for accessing resources.
      * @param file CmsFile object of the file to be loaded and parsed.
      * @exception CmsException
+     * @see #lookupAbsoluteFilename
      */
     public void init(A_CmsObject cms, String filename) throws CmsException {
         if(filename.startsWith("/")) {
@@ -150,55 +146,96 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             CmsFile file = cms.readFile(filename);            
             init(cms, file);
         } else {
+            // no absolute filename given.
             String fullPath = lookupAbsoluteFilename(cms, filename, this);
             CmsFile file = cms.readFile(fullPath);
             init(cms, file);
         }
-        /*} else {
-            // no absolute filename given.
-            // we have to search for the file first.
-			Class actualClass = getClass();
-            Document retValue = null;
-			String completeFilename = null;
-
-            // we use this Vector for storing all tried filenames.
-            // so we can give detailled error messages if the 
-            // template file was not found.
-            Vector checkedFilenames = new Vector();
-            
-            // Now start the loop to search 
-            while(retValue == null) {
-				completeFilename = C_TEMPLATEPATH + actualClass.getName() + "." + filename + C_TEMPLATE_EXTENSION;            
-				checkedFilenames.addElement(completeFilename);
-                retValue = readTemplateFile(cms, completeFilename);
-                actualClass = actualClass.getSuperclass();
-                if(actualClass.getName().equals(C_MINIMUM_CLASSNAME)){ 
-					if(retValue == null) {
-                        // last chance to get the filename
-                        completeFilename = C_TEMPLATEPATH + filename + C_TEMPLATE_EXTENSION;
-                        checkedFilenames.addElement(completeFilename);
-                        retValue = readTemplateFile(cms, completeFilename);
-                        break;
-                    }
-                }
-            }
-            if(retValue != null) {
-                init(cms, retValue, completeFilename);
-            } else {
-                Enumeration checkedEnum = checkedFilenames.elements();
-                if(A_OpenCms.isLogging()) {
-                    while(checkedEnum.hasMoreElements()) {
-                        A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "checked: " + (String)checkedEnum.nextElement());
-                    }
-                }
-                throwException("Cannot find template file for request \"" + filename + "\". ", CmsException.C_NOT_FOUND);
-            } 
-        } */
     }
+            
+    /**
+     * Initialize the XML content class.
+     * Load and parse the content of the given CmsFile object.
+     * @param cms A_CmsObject Object for accessing resources.
+     * @param file CmsFile object of the file to be loaded and parsed.
+     * @exception CmsException
+     */    
+    public void init(A_CmsObject cms, CmsFile file) throws CmsException {
+        String filename = file.getAbsolutePath();
+        Document parsedContent = null;
+        parsedContent = loadCachedDocument(filename);
+        if(parsedContent == null) {            
+            m_filename = filename;            
+            parsedContent = parse(file);                
+            m_filecache.put(filename, parsedContent.cloneNode(true));
+        }    
+        init(cms, parsedContent, filename);
+    }                               
 
+    /**
+     * Initialize the class with the given parsed XML DOM document.
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param document DOM document object containing the parsed XML file.
+     * @param filename OpenCms filename of the XML file.
+     * @exception CmsException
+     */
+    public void init(A_CmsObject cms, Document content, String filename) throws CmsException {
+        m_cms = cms;
+        m_content = content;
+        m_filename = filename;
+        
+        // First check the document tag. Is this the right document type?
+        Element docRootElement = m_content.getDocumentElement();
+        String docRootElementName = docRootElement.getNodeName().toLowerCase();
+        if(! docRootElementName.equals(getXmlDocumentTagName().toLowerCase())) {
+            // Hey! This is a wrong XML document!
+            // We will throw an execption and the document away :-)
+            clearFileCache(this);
+            m_content = null;
+            String errorMessage = "XML document " + getAbsoluteFilename() + " is not of the expected type. This document is \"" 
+                    + docRootElementName + "\", but it should be \"" + getXmlDocumentTagName() + "\" (" + getContentDescription() + ").";
+            throwException(errorMessage, CmsException.C_XML_WRONG_CONTENT_TYPE);
+        }     
+
+        // OK. Document tag is fine. Now get the DATA tags and collect them
+        // in a Hashtable (still in DOM representation!)        
+        try {
+            processNode(m_content, m_firstRunTags,
+                    A_CmsXmlContent.class.getDeclaredMethod("handleDataTag", C_PARAMTYPES_HANDLING_METHODS),
+                    null, null);
+        } catch(CmsException e) {
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_INFO, "Error while scanning for DATA and INCLUDE tags in file " + getAbsoluteFilename() + ".");
+            }
+            throw e;
+        } catch(NoSuchMethodException e2) {
+            String errorMessage = "XML tag process method \"handleDataTag\" could not be found";
+            throwException(errorMessage, CmsException.C_XML_NO_PROCESS_METHOD);            
+        }
+    }
+    
+    /**
+     * Used by the init method to search a template file if only a filename 
+     * is given instead of a CmsFile Object. 
+     * Previously cached documents will be considered.
+     * <P>
+     * Template files will be searched in the following hierachical order:
+     * <UL>
+     * <LI> (template path)/(full classname).TemplateName.(Extension) </LI>
+     * <LI> (template path)/(parent class).TemplateName.(Extension) </LI>
+     * <LI> ... </LI>
+     * <LI> (template path)/TemplateName.(Extension) </LI>
+     * </UL>
+     * <P>
+     * The starting classname is determined by the class of the given <code>requestingObject</class>
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param filename Template file name to be loaded.
+     * @param requestingObject Object whose class hierarchy should be used for resolving file names.
+     * @return absolute path of the filename.
+     * @exception CmsException
+     */
     public static String lookupAbsoluteFilename(A_CmsObject cms, String filename, Object requestingObject) throws CmsException {
-        // no absolute filename given.
-        // we have to search for the file first.
         Class actualClass = requestingObject.getClass();
         A_CmsResource retValue = null;
 		String completeFilename = null;
@@ -248,67 +285,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         }
         }
         return completeFilename;
-    }
-            
-    /**
-     * Initialize the XML content class.
-     * Load and parse the content of the given CmsFile object.
-     * @param cms A_CmsObject Object for accessing resources.
-     * @param file CmsFile object of the file to be loaded and parsed.
-     * @exception CmsException
-     */    
-    public void init(A_CmsObject cms, CmsFile file) throws CmsException {
-        String filename = file.getAbsolutePath();
-        Document parsedContent = null;
-        parsedContent = loadCachedDocument(filename);
-        if(parsedContent == null) {            
-            m_filename = filename;            
-            parsedContent = parse(file);                
-            m_filecache.put(filename, parsedContent.cloneNode(true));
-        }    
-        init(cms, parsedContent, filename);
-    }                               
-
-    /**
-     * Initialize the class with the given parsed XML DOM document.
-     * @param cms A_CmsObject Object for accessing system resources.
-     * @param document DOM document object containing the parsed XML file.
-     * @param filename OpenCms filename of the XML file.
-     * @exception CmsException
-     */
-    public void init(A_CmsObject cms, Document content, String filename) throws CmsException {
-        m_cms = cms;
-        m_content = content;
-        m_filename = filename;
-        
-        // First check the document tag. Is this the right document type?
-        Element docRootElement = m_content.getDocumentElement();
-        String docRootElementName = docRootElement.getNodeName();
-        if(! docRootElementName.equals(getXmlDocumentTagName())) {
-            // Hey! This is a wrong XML document!
-            // We will throw an execption and the document away :-)
-            clearFileCache(this);
-            m_content = null;
-            String errorMessage = "XML document " + getAbsoluteFilename() + " is not of the expected type. This document is \"" 
-                    + docRootElementName + "\", but it should be \"" + getXmlDocumentTagName() + "\" (" + getContentDescription() + ").";
-            throwException(errorMessage, CmsException.C_XML_WRONG_CONTENT_TYPE);
-        }     
-
-        // OK. Document tag is fine. Now get the DATA tags and collect them
-        // in a Hashtable (still in DOM representation!)        
-        try {
-            processNode(m_content, m_firstRunTags,
-                    A_CmsXmlContent.class.getDeclaredMethod("handleDataTag", C_PARAMTYPES_HANDLING_METHODS),
-                    null, null);
-        } catch(CmsException e) {
-            if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_INFO, "Error while scanning for DATA and INCLUDE tags in file " + getAbsoluteFilename() + ".");
-            }
-            throw e;
-        } catch(NoSuchMethodException e2) {
-            String errorMessage = "XML tag process method \"handleDataTag\" could not be found";
-            throwException(errorMessage, CmsException.C_XML_NO_PROCESS_METHOD);            
-        }
     }
     
     /**
@@ -528,7 +504,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         }
 
         try {
-            selectedRun.put(tagname, c.getDeclaredMethod(methodName, C_PARAMTYPES_HANDLING_METHODS));
+            selectedRun.put(tagname.toLowerCase(), c.getDeclaredMethod(methodName, C_PARAMTYPES_HANDLING_METHODS));
         } catch(Exception e) {
             System.err.println(e);
         }        
@@ -543,8 +519,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      * @param tagname Tag name to register.
      */
     public void registerTag(String tagname) {
-        if(!(m_knownTags.contains(tagname))) {
-            m_knownTags.addElement(tagname);
+        if(!(m_knownTags.contains(tagname.toLowerCase()))) {
+            m_knownTags.addElement(tagname.toLowerCase());
         }
     }
 
@@ -604,6 +580,9 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
                                    Object callingObject, Object userObj) throws CmsException {
         // Node currently processed
         Node child = null;
+        
+        // Name of the currently processed child
+        String childName = null;
 
         // Node nextchild needed for the walk through the tree
         Node nextchild = null;
@@ -623,8 +602,9 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         // only start if there is something to process
         if(n != null && n.hasChildNodes()) {            
             child = n.getFirstChild();    
-    
+            
             while(child != null) {
+                childName = child.getNodeName().toLowerCase();
                 // Get the next node in the tree first                
                 nextchild = treeWalker(child);
     
@@ -633,10 +613,10 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
                 if(child.getNodeType()==Node.ELEMENT_NODE) {
                     newnodes = null;
                     callMethod = null;
-                    if(keys.containsKey(child.getNodeName())) {
+                    if(keys.containsKey(childName)) {
                         // name of this element found in keys Hashtable
-                        callMethod = (Method)keys.get(child.getNodeName());
-                    } else if (!m_knownTags.contains(child.getNodeName())){
+                        callMethod = (Method)keys.get(childName);
+                    } else if (!m_knownTags.contains(childName)){
                         // name was not found
                         // and even name is not known as tag
                         callMethod = defaultMethod;
@@ -645,7 +625,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
                         methodResult = null;
                         try {
                             if(C_DEBUG && A_OpenCms.isLogging()) {
-                                A_OpenCms.log(C_OPENCMS_DEBUG, "<" + child.getNodeName() + "> tag found. Value: " + child.getNodeValue());
+                                A_OpenCms.log(C_OPENCMS_DEBUG, "<" + childName + "> tag found. Value: " + child.getNodeValue());
                                 A_OpenCms.log(C_OPENCMS_DEBUG, "Tag will be handled by method [" + callMethod.getName() + "]. Invoking method NOW.");
                             }
                             // now invoke the tag processing method.
@@ -660,7 +640,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
                                 } else { 
                                     thrown.printStackTrace();
                                     throwException("processNode received an exception while handling XML tag \"" 
-                                            + child.getNodeName() + "\" by \"" + callMethod.getName() + "\" for file " 
+                                            + childName + "\" by \"" + callMethod.getName() + "\" for file " 
                                             + getFilename() + ": " + e, CmsException.C_XML_PROCESS_ERROR);
                                 }
                             } else {
@@ -829,7 +809,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 	 */
 	protected Element getProcessedData(String tag, Object callingObject, Object userObj) 
             throws CmsException {
-        Element dBlock = (Element)((Element)m_blocks.get(tag.toLowerCase())).cloneNode(true);
+        Element dBlock = getData(tag);
         processNode(dBlock, m_mainProcessTags, null, callingObject, userObj);
         return dBlock;
 	}
@@ -997,6 +977,14 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             throws CmsException {
         Object[] params = new Object[] {m_cms, parameter, this, userObj};
         Object result = null;
+        
+        // Check if the user selected a object where to look for the user method.
+        if(callingObject == null) {
+            throwException("You are trying to call the user method \"" + methodName + "\" without giving an object containing this method. "
+                    + "Please select a callingObject in your getProcessedData or getProcessedDataValue call.", CmsException.C_XML_NO_USER_METHOD);
+        }
+        
+        // OK. We have a calling object. Now try to invoke the method
         try {
             // try to invoke the method 'methodName'
             result = getUserMethod(methodName, callingObject).invoke(callingObject, params);
