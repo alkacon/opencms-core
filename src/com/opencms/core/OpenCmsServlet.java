@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/07/19 16:13:13 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2000/07/27 11:34:42 $
+ * Version: $Revision: 1.50 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.49 $ $Date: 2000/07/19 16:13:13 $  
+* @version $Revision: 1.50 $ $Date: 2000/07/27 11:34:42 $  
 * 
 * */
 
@@ -106,6 +106,12 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
       * Storage for redirect locations.
       */
      private Vector m_redirectlocation=new Vector();
+     
+     
+     /**
+      * Storage for the clusterurl
+      */
+     private String m_clusterurl=null;
      
  	 /**
 	 * Initialization of the OpenCms servlet.
@@ -147,7 +153,13 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] redirect-rule: " + redirect + " -> " + redirectlocation);
 			}
-        }                                                                                                      
+        } 
+        
+        m_clusterurl = (String)m_configurations.getString(C_CLUSTERURL,"");
+        if(A_OpenCms.isLogging()) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] Clusterurl: "+m_clusterurl);
+		}
+        
 
 		try {
 			// invoke the OpenCms
@@ -184,7 +196,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
         CmsObject cms=null;
         
         CmsRequestHttpServlet cmsReq= new CmsRequestHttpServlet(req);
-        CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(req,res);
+        CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(req,res,m_clusterurl);
 
         try {
            cms=initUser(cmsReq,cmsRes);
@@ -221,7 +233,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		 }
          
          CmsRequestHttpServlet cmsReq= new CmsRequestHttpServlet(req);
-         CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(req,res);
+         CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(req,res,m_clusterurl);
          
         try {
             cms=initUser(cmsReq,cmsRes);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
- * Date   : $Date: 2000/07/21 09:48:38 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/07/27 11:34:42 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import javax.servlet.http.*;
  * CmsResponseHttpServlet.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/07/21 09:48:38 $  
+ * @version $Revision: 1.8 $ $Date: 2000/07/27 11:34:42 $  
  */
 public class CmsResponseHttpServlet implements I_CmsConstants,  
                                                I_CmsResponse{ 
@@ -58,6 +58,11 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
     private HttpServletRequest m_req;
     
     /**
+     * The clusterurl.
+     */
+    private String m_clusterurl=null;;
+    
+    /**
      * The type of this CmsResponset.
      */
     private int m_type=C_RESPONSE_HTTP;
@@ -70,10 +75,13 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
      * 
      * @param req The original HttpServletRequest used to create this CmsRequest.
      * @param res The original HttpServletResponse used to create this CmsResponse.
+     * @param clusterurl The clusterurl.
      */
-     CmsResponseHttpServlet (HttpServletRequest req, HttpServletResponse res) {
+     CmsResponseHttpServlet (HttpServletRequest req, HttpServletResponse res,
+                             String clusterurl) {
         m_res=res;
         m_req=req;
+        m_clusterurl=clusterurl;
     }
 
     /**
@@ -142,7 +150,12 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
      */
     public void sendCmsRedirect(String location)
         throws IOException {
-        String hostName = m_req.getScheme() + "://" + m_req.getHeader("HOST");       
+        String hostName;
+        if ((m_clusterurl == null) || (m_clusterurl.length()<1)) {
+            hostName = m_req.getScheme() + "://" + m_req.getHeader("HOST");   
+        } else {
+            hostName = m_req.getScheme() + m_clusterurl;  
+        }
         String servlet = m_req.getServletPath();
         m_res.sendRedirect(hostName + servlet + location);
     }
