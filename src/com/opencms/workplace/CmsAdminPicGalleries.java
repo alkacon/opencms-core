@@ -1,7 +1,7 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2001/01/24 09:43:26 $
+* Date   : $Date: 2001/01/25 16:51:47 $
 * Version: $ $
 *
 * Copyright (C) 2000  The OpenCms Group 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <p> 
  * 
  * @author Mario Stanke
- * @version $Revision: 1.11 $ $Date: 2001/01/24 09:43:26 $
+ * @version $Revision: 1.12 $ $Date: 2001/01/25 16:51:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -299,8 +299,10 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
         values.addElement("Aufforderung"); // without significance for the user
         for(int z = 0;z < groups.size();z++) {
             String name = ((CmsGroup)groups.elementAt(z)).getName();
-            names.addElement(name);
-            values.addElement(name);
+            if(! C_GROUP_GUEST.equals(name)){
+	            names.addElement(name);
+		        values.addElement(name);
+		    }
         }
         return new Integer(retValue);
     }
