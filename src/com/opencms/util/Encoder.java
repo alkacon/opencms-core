@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2002/09/05 12:51:52 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2002/11/02 10:33:25 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -85,6 +85,7 @@ public class Encoder {
      * @return The encoded source String
      */
     public static String encode(String source, String encoding, boolean fallbackToDefaultEncoding) {
+        if (source == null) return null;
         if (encoding != null) {
             if (C_NEW_ENCODING_SUPPORTED) {
                 try {
@@ -121,6 +122,7 @@ public class Encoder {
      * @return The decoded source String
      */
     public static String decode(String source, String encoding, boolean fallbackToDefaultDecoding) {
+        if (source == null) return null;
         if (encoding != null) {
             if (C_NEW_DECODING_SUPPORTED) {
                 try {
