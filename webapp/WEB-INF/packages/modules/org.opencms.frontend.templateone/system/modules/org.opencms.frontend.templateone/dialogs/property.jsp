@@ -2,10 +2,31 @@
 
 	// initialize the workplace class
 	CmsPropertyTemplateOne wp = new CmsPropertyTemplateOne(pageContext, request, response);
+	String additionalScript = "";
 	
 	// start of switch statement 
 	
 	switch (wp.getAction()) {
+	
+	case CmsPropertyTemplateOne.ACTION_CLOSEPOPUP_SAVE:
+	//////////////////// ACTION: save edited properties for the current resource type and close the popup window
+
+	wp.actionEdit(request);
+
+
+	case CmsPropertyTemplateOne.ACTION_CLOSEPOPUP:
+	//////////////////// ACTION: close the popup window
+	%>
+	
+	<html><head></head>
+	<script type="text/javascript">
+		<%= additionalScript %>
+		window.close();
+	</script>
+	</head></html>
+	
+	<%
+	break;
 
 	case CmsPropertyTemplateOne.ACTION_CANCEL:
 	//////////////////// ACTION: cancel button pressed, close dialog
