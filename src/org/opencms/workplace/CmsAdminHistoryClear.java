@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2003/09/11 12:04:49 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/11 13:49:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,11 +55,13 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
 public class CmsAdminHistoryClear extends CmsDialog {
+    
+    public static final int DEBUG = 0;
     
     public static final int ACTION_SAVE_EDIT = 300;
     
@@ -243,7 +245,7 @@ public class CmsAdminHistoryClear extends CmsDialog {
         try {
             versions = getCms().getRegistry().getMaximumBackupVersions();
         } catch (CmsException e) { }
-        return buildSelectNumbers("versions", attributes, 1 , versions);
+        return buildSelectNumbers("versions", attributes, 0 , versions);
     }
     
     /**
@@ -284,10 +286,8 @@ public class CmsAdminHistoryClear extends CmsDialog {
         // check the submitted values        
         int versions = 0;
         long timeStamp = 0;
-        boolean useVersions = false;
         try {
             versions = Integer.parseInt(paramVersions);
-            useVersions = true;
         } catch (NumberFormatException e) {
             // no int value submitted, check date fields
             try {
@@ -303,9 +303,7 @@ public class CmsAdminHistoryClear extends CmsDialog {
             }
         }
         
-        if (!useVersions) {
-            versions = getCms().getRegistry().getMaximumBackupVersions();
-        }
+        if (DEBUG > 0) System.err.println("Versions: "+versions+"\nDate: "+timeStamp);
         
         // delete the backup files
         getCms().deleteBackups(timeStamp, versions);
