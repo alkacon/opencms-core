@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/modules/searchform/src/com/opencms/modules/search/form/Attic/CmsSearchForm.java,v $
-* Date   : $Date: 2002/02/19 13:21:44 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/02/19 13:23:46 $
+* Version: $Revision: 1.4 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,7 +44,7 @@ import java.lang.reflect.*;
  * of the Module.
  *
  * @author    Markus Fabritius
- * @version $Revision: 1.3 $ $Date: 2002/02/19 13:21:44 $
+ * @version $Revision: 1.4 $ $Date: 2002/02/19 13:23:46 $
  */
 public class CmsSearchForm extends com.opencms.defaults.CmsXmlFormTemplate implements I_CmsSearchConstant {
 
@@ -55,6 +55,7 @@ public class CmsSearchForm extends com.opencms.defaults.CmsXmlFormTemplate imple
 	public static String c_configFile = null;
 	public static String c_areaSection = null;
 	public static String c_match = null;
+	public static String c_parsingUrl = null;
 
 	static {
 		try {
@@ -135,6 +136,8 @@ public class CmsSearchForm extends com.opencms.defaults.CmsXmlFormTemplate imple
 			C_PARAM_MODULE_NAME, C_PARAM_AREA_FIELD);
 		c_match = OpenCms.getRegistry().getModuleParameterString(
 			C_PARAM_MODULE_NAME, C_PARAM_MATCH_PER_PAGE);
+		c_parsingUrl = OpenCms.getRegistry().getModuleParameterString(
+			C_PARAM_MODULE_NAME, C_PARAM_PARSING_EXCERPT_URL);
 		c_navigationRange = OpenCms.getRegistry().getModuleParameterInteger(
 			C_PARAM_MODULE_NAME, C_PARAM_NAVIGATION_RANGE);
 		if (c_configFile.equals("")) {
@@ -153,7 +156,8 @@ public class CmsSearchForm extends com.opencms.defaults.CmsXmlFormTemplate imple
 		/*
 		 *  System.out.println("Init Parameter:\n----------------\nc_contentDefinition: "+c_contentDefinition+
 		 *  "\nc_configFile: "+c_configFile+"\nc_areaField: "+c_areaField+"\nc_match: "+c_match+
-		 *  "\nc_navigationRange: "+String.valueOf(c_navigationRange)+"\nc_areaSection: "+c_areaSection);
+		 *  "\nc_navigationRange: "+String.valueOf(c_navigationRange)+"\nc_areaSection: "+c_areaSection+
+		 *  "\nc_parsingUrl: "+c_parsingUrl);
 		 */
 	}
 
@@ -219,6 +223,8 @@ public class CmsSearchForm extends com.opencms.defaults.CmsXmlFormTemplate imple
 	 */
 	public void setSearchResultBody(CmsObject cms, Object cd, Class searchModul, Vector getResult, CmsXmlTemplateFile template, Hashtable parameters, String page) {
 		String list = "";
+		String parsingUrl = "";
+		String tempParsing = "";
 		String format = (String) parameters.get(C_PARAM_SEARCHFORM_FORMAT);
 		String match = (String) parameters.get(C_PARAM_SEARCHFORM_MATCH_PER_PAGE);
 		int matchPerPage = 0;
@@ -253,11 +259,23 @@ public class CmsSearchForm extends com.opencms.defaults.CmsXmlFormTemplate imple
 			for (int i = 1; i < getResult.size(); i++) {
 				cd = searchModul.newInstance();
 				cd = (I_CmsSearchEngine) getResult.elementAt(i);
+				parsingUrl = ((I_CmsSearchEngine) cd).getUrl();
+				try {
+					if ((c_parsingUrl != null) && (!c_parsingUrl.equals(""))) {
+						tempParsing = parsingUrl.substring(0, c_parsingUrl.length());
+						if (tempParsing.equalsIgnoreCase(c_parsingUrl)) {
+							parsingUrl = parsingUrl.substring(c_parsingUrl.length());
+						}
+					}
+				} catch (Exception e) {
+					System.out.println("Error in setSearchResultBody, parsing Excerpt Url print Stack Trace ...");
+					e.printStackTrace();
+				}
 				// check for format ( long ) fill template body
 				if ((format == null) || format.equals("long")) {
 					template.setData("number", counter + "");
 					template.setData("url", ((I_CmsSearchEngine) cd).getUrl());
-					template.setData("url_description", ((I_CmsSearchEngine) cd).getUrl());
+					template.setData("url_description", parsingUrl);
 					template.setData("title", ((I_CmsSearchEngine) cd).getTitle());
 					template.setData("percent", String.valueOf(((I_CmsSearchEngine) cd).getPercentMatch()));
 					template.setData("excerpt", ((I_CmsSearchEngine) cd).getExcerpt());
@@ -269,6 +287,7 @@ public class CmsSearchForm extends com.opencms.defaults.CmsXmlFormTemplate imple
 				} else {
 					template.setData("number", counter + "");
 					template.setData("url", ((I_CmsSearchEngine) cd).getUrl());
+					template.setData("url_description", parsingUrl);
 					template.setData("title", ((I_CmsSearchEngine) cd).getTitle());
 					template.setData("percent", String.valueOf(((I_CmsSearchEngine) cd).getPercentMatch()));
 					String shortrow = template.getProcessedDataValue("shortrow");
