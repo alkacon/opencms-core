@@ -1,0 +1,4 @@
+
+DROP DATABASE opencms;
+
+CREATE DATABASE opencms;

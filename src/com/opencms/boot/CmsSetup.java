@@ -43,6 +43,9 @@ public class CmsSetup {
   /** Contains the properties from the opencms.properties file */
   private ExtendedProperties m_extProp;
 
+  /** properties from dbsetup.properties */
+  private Properties m_dbSetupProps;
+
   /** Contains the absolute path to the opencms home directory */
   private String m_basePath;
 
@@ -67,11 +70,9 @@ public class CmsSetup {
    */
   private String m_dbSetupPwd;
 
-  /** Indicates if the database work connection is different (true)
-   *  or equal (false) to the database setup connection
-   */
-  private boolean m_extraWork;
 
+  private String m_dbCreateUser;
+  private String m_dbCreatePwd;
 
 
   /** This method reads the properties from the opencms.propertie file
@@ -83,9 +84,12 @@ public class CmsSetup {
     String path = getConfigFolder() + props;
     try {
       m_extProp = new ExtendedProperties(path);
+      m_dbSetupProps = new Properties();
+      m_dbSetupProps.load(getClass().getClassLoader().getResourceAsStream("com/opencms/boot/dbsetup.properties"));
     }
     catch (Exception e) {
-      errors.add(e.toString());
+        e.printStackTrace();
+        errors.add(e.toString());
     }
   }
 
@@ -143,103 +147,95 @@ public class CmsSetup {
   }
 
   /** Returns all resource Broker found in 'dbsetupscripts.properties' */
-  public Enumeration getResourceBrokers() {
-      Properties props = new Properties();
-      try {
-          props.load(getClass().getClassLoader().getResourceAsStream("com/opencms/boot/dbsetupscripts.properties"));
-          return props.propertyNames();
+  public Vector getResourceBrokers() {
+      Vector values = new Vector();
+
+      String value = m_dbSetupProps.getProperty("resourceBrokers");
+      StringTokenizer tokenizer = new StringTokenizer(value,",");
+      while(tokenizer.hasMoreTokens())  {
+          values.add(tokenizer.nextToken());
       }
-      catch (IOException e) {
-          return null;
-      }
+      return values;
   }
 
   /** Sets the connection string used by the setup to the given value */
   public void setDbSetupConStr(String dbSetupConStr)  {
-    m_dbSetupConStr = dbSetupConStr;
-    // Properties
-    setProperties("pool." + getResourceBroker() + ".url",dbSetupConStr);
+      m_dbSetupConStr = dbSetupConStr;
   }
 
-  /** Returns the connection string to the database used by the setup
-   *  either from the properties or from the string.
-   *  @param fromProperties indicates if it should be read from the properties
-   *  or from the String
+  /**
+   * Returns a connection string to the database used by the setup
    */
-  public String getDbSetupConStr(boolean fromProperties)  {
-    if(fromProperties)  {
-      Object ConStr =  m_extProp.get("pool." + getResourceBroker() + ".url");
-      if(ConStr != null)  {
-        return m_extProp.get("pool." + getResourceBroker() + ".url").toString();
+  public String getDbSetupConStr()  {
+      if (m_dbSetupConStr != null)  {
+          return m_dbSetupConStr;
       }
       else  {
-        return "";
+          Object pwd =  m_extProp.get("pool." + getResourceBroker() + ".url");
+          if(pwd != null)  {
+              return m_extProp.get("pool." + getResourceBroker() + ".url").toString();
+          }
+          else  {
+            return "";
+          }
       }
-    }
-    else  {
-      return m_dbSetupConStr;
-    }
   }
+
 
   /** Sets the user of the database used by the setup to the given value */
   public void setDbSetupUser(String dbSetupUser)  {
     // String
     m_dbSetupUser = dbSetupUser;
-    // Properties
-    setProperties("pool." + getResourceBroker() + ".user",dbSetupUser);
   }
 
-  /** Returns the user of the database used by the setup
-   *  either from the properties or from the string.
-   *  @param fromProperties indicates if it should be read from the properties
-   *  or from the String
+  /**
+   * Returns the user of the database used by the setup
    */
-  public String getDbSetupUser(boolean fromProperties) {
-    if(fromProperties)  {
-      Object User =  m_extProp.get("pool." + getResourceBroker() + ".user");
-      if(User != null)  {
-        return m_extProp.get("pool." + getResourceBroker() + ".user").toString();
+  public String getDbSetupUser() {
+      if (m_dbSetupUser != null)  {
+          return m_dbSetupUser;
       }
       else  {
-        return "";
+          Object pwd =  m_extProp.get("pool." + getResourceBroker() + ".user");
+          if(pwd != null)  {
+              return m_extProp.get("pool." + getResourceBroker() + ".user").toString();
+          }
+          else  {
+            return "";
+          }
       }
-    }
-    else  {
-      return m_dbSetupUser;
-    }
   }
 
   /** Sets the password of the database used by the setup to the given value */
   public void setDbSetupPwd(String dbSetupPwd)  {
     // String
     m_dbSetupPwd = dbSetupPwd;
-    // Properties
-    setProperties("pool." + getResourceBroker() + ".password",dbSetupPwd);
   }
 
-  /** Returns the password of the database used by the setup
-   *  either from the properties or from the string.
-   *  @param fromProperties indicates if it should be read from the properties
-   *  or from the String
+  /**
+   * Returns the password of the database used by the setup
    */
-  public String getDbSetupPwd(boolean fromProperties) {
-    if(fromProperties)  {
-      Object Pwd =  m_extProp.get("pool." + getResourceBroker() + ".password");
-      if (Pwd != null)  {
-        return m_extProp.get("pool." + getResourceBroker() + ".password").toString();
+  public String getDbSetupPwd() {
+      if (m_dbSetupPwd != null)  {
+          return m_dbSetupPwd;
       }
       else  {
-        return "";
+          Object pwd =  m_extProp.get("pool." + getResourceBroker() + ".password");
+          if(pwd != null)  {
+              return m_extProp.get("pool." + getResourceBroker() + ".password").toString();
+          }
+          else  {
+            return "";
+          }
       }
-    }
-    else  {
-      return m_dbSetupPwd;
-    }
   }
+
 
   /** Sets the connection string to the database to the given value */
   public void setDbWorkConStr(String dbWorkConStr)  {
     setProperties("pool." + getResourceBroker() + ".url",dbWorkConStr);
+    setProperties("pool." + getResourceBroker() + "backup.url",dbWorkConStr);
+    setProperties("pool." + getResourceBroker() + "online.url",dbWorkConStr);
   }
 
   /** Returns the connection string to the database from the properties */
@@ -256,6 +252,8 @@ public class CmsSetup {
   /** Sets the user of the database to the given value */
   public void setDbWorkUser(String dbWorkUser)  {
     setProperties("pool." + getResourceBroker() + ".user",dbWorkUser);
+    setProperties("pool." + getResourceBroker() + "backup.user",dbWorkUser);
+    setProperties("pool." + getResourceBroker() + "online.user",dbWorkUser);
   }
 
   /** Returns the user of the database from the properties */
@@ -272,6 +270,8 @@ public class CmsSetup {
   /** Sets the password of the database to the given value */
   public void setDbWorkPwd(String dbWorkPwd)  {
     setProperties("pool." + getResourceBroker() + ".password",dbWorkPwd);
+    setProperties("pool." + getResourceBroker() + "backup.password",dbWorkPwd);
+    setProperties("pool." + getResourceBroker() + "online.password",dbWorkPwd);
   }
 
   /** Returns the password of the database from the properties */
@@ -285,27 +285,6 @@ public class CmsSetup {
     }
   }
 
-  /** Sets the flag to true if there is an extra work connection
-   *  or false if the database work connection is equal to the
-   *  database setup connection. If false, the connection string,
-   *  user and password of the work connection are set like the setup
-   *  connection
-   */
-   public void setExtraWork(boolean extraWork) {
-    m_extraWork = extraWork;
-    if (!extraWork)  {
-      setDbWorkConStr(getDbSetupConStr(false));
-      setDbWorkUser(getDbSetupUser(false));
-      setDbWorkPwd(getDbSetupPwd(false));
-    }
-  }
-
-  /** Returns true if an extra Work Connection has been selected
-   *  or false if not
-   */
-   public boolean getExtraWork()  {
-    return m_extraWork;
-  }
 
   /** Returns the extended properties */
   public ExtendedProperties getProperties() {
@@ -590,13 +569,13 @@ public class CmsSetup {
   }
 
   /** Sets the value for deleting published project parameters to the given value */
-  public void setDelPubProParameters(String delPubProParameters)  {
-    setProperties("publishproject.delete",delPubProParameters);
+  public void setHistoryEnabled(String historyEnabled)  {
+    setProperties("history.enabled",historyEnabled);
   }
 
   /** Returns the value for deleting published project parameters */
-  public String getDelPubProParameters()  {
-    Object temp =  m_extProp.get("publishproject.delete");
+  public String getHistoryEnabled()  {
+    Object temp =  m_extProp.get("history.enabled");
     if(temp != null)  {
       return temp.toString();
     }
@@ -1004,4 +983,103 @@ public class CmsSetup {
       return "";
     }
   }
+
+
+  public void setElementCache(String elementCache)  {
+      setProperties("elementcache.enabled",elementCache);
+  }
+
+  public String getElementCache() {
+      Object temp = m_extProp.get("elementcache.enabled");
+      if(temp!=null)  {
+          return temp.toString();
+      }
+      else  {
+         return "";
+      }
+  }
+
+  public void setElementCacheURI(String elementCacheURI)  {
+      setProperties("elementcache.uri",elementCacheURI);
+  }
+
+  public String getElementCacheURI() {
+      Object temp = m_extProp.get("elementcache.uri");
+      if(temp!=null)  {
+          return temp.toString();
+      }
+      else  {
+         return "";
+      }
+  }
+
+  public void setElementCacheElements(String elementCacheElements)  {
+      setProperties("elementcache.elements",elementCacheElements);
+  }
+
+  public String getElementCacheElements() {
+      Object temp = m_extProp.get("elementcache.elements");
+      if(temp!=null)  {
+          return temp.toString();
+      }
+      else  {
+         return "";
+      }
+  }
+
+  public void setElementCacheVariants(String elementCacheVariants)  {
+      setProperties("elementcache.variants",elementCacheVariants);
+  }
+
+  public String getElementCacheVariants() {
+      Object temp = m_extProp.get("elementcache.variants");
+      if(temp!=null)  {
+          return temp.toString();
+      }
+      else  {
+         return "";
+      }
+  }
+
+  public String getDbCreateConStr()   {
+      Object constr = m_dbSetupProps.get(getResourceBroker()+".constr").toString();
+      if(constr != null)  {
+          return constr.toString();
+      }
+      else  {
+          return "";
+      }
+  }
+
+  public void setDbCreateConStr(String dbCreateConStr)  {
+      m_dbSetupProps.put(getResourceBroker()+".constr",dbCreateConStr);
+  }
+
+  public String getDbCreateUser()   {
+      if(m_dbCreateUser != null)  {
+          return m_dbCreateUser;
+      }
+      else  {
+          return "";
+      }
+  }
+
+  public void setDbCreateUser(String dbCreateUser)  {
+      m_dbCreateUser = dbCreateUser;
+  }
+
+  public String getDbCreatePwd()   {
+      if(m_dbCreatePwd != null)  {
+          return m_dbCreatePwd;
+      }
+      else  {
+          return "";
+      }
+  }
+
+  public void setDbCreatePwd(String dbCreatePwd)  {
+      m_dbCreatePwd = dbCreatePwd;
+  }
+
+
 }

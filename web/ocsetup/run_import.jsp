@@ -1,5 +1,7 @@
 <!-- ------------------------------------------------- JSP DECLARATIONS ------------------------------------------------ -->
-	
+<% /* Initialize the Bean */ %>
+<jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" />
+
 <% /* Initialize Thread */ %>
 <jsp:useBean id="Thread" class="com.opencms.boot.CmsSetupThread" scope="session"/>
 <% Thread.setBasePath(config.getServletContext().getRealPath("/")); %>
@@ -12,10 +14,16 @@
 <%@ page import="java.util.*" %>
 
 <%
-	if(!Thread.isAlive())	{	
-		Thread.start();
+	Vector messages = new Vector();
+	/* true if properties are initialized */
+	boolean setupOk = (Bean.getProperties()!=null);
+	
+	if(setupOk)	{
+		if(!Thread.isAlive())	{	
+			Thread.start();
+		}
+		messages = com.opencms.boot.CmsSetupLoggingThread.getMessages();
 	}
-	Vector messages = com.opencms.boot.CmsSetupLoggingThread.getMessages();
 %>
 <!-- ------------------------------------------------------------------------------------------------------------------- -->
 
@@ -24,7 +32,7 @@
 	<title>OpenCms Setup Wizard</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 	
-	<% 	if(!Thread.notRunning())	{
+	<% 	if(!Thread.finished() && setupOk)	{
 			out.println("<meta http-equiv='refresh' content='5'>");
 		}
 	%>
@@ -47,14 +55,13 @@
 			<tr>
 				<td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0"></td>
 			</tr>
+			<% if(setupOk)	{ %>
 			<tr>
 				<td height="375" align="center" valign="top">
 				<% 
-						if(Thread.notRunning())	{
-						/* invalidate session */
-						request.getSession().invalidate();
+						if(Thread.finished())	{
 				%>
-						<strong>Setup finished. If no major errors have occured (see output below) the OpenCms is ready to use. Click <a target="_blank" href="<%= request.getContextPath() %>/engine/system/workplace/action/login.html">here</a> to start.</strong><br>
+							<strong>Setup finished. If no major errors have occured (see output below) the OpenCms is ready to use.<br>Click 'Finish' to end the wizard an start OpenCms.
 				<%		}
 						else	{
 							out.println("Running...");
@@ -75,9 +82,15 @@
 							<td width="200" align="right">
 								<input type="button" class="button" disabled style="width:150px;" width="150" width="150" value="&#060;&#060; Back">
 							</td>
+							<% if(Thread.finished())	{ %>
 							<td width="200" align="left">
-								<input type="button" disabled class="button" style="width:150px;" width="150" width="150" value="Continue &#062;&#062;">
+								<input type="button" class="button" style="width:150px;" width="150" width="150" value="Finish" onclick="location.href='finished.jsp'">
+							</td>							
+							<%	}	else	{ %>
+							<td width="200" align="left">
+								<input type="button" disabled class="button" style="width:150px;" width="150" width="150" value="Finish">
 							</td>
+							<% } %>
 							<td width="200" align="center">
 								<input type="button" class="button" style="width:150px;" width="150" width="150" value="Cancel" onclick="location.href='cancel.jsp'">
 							</td>
@@ -85,6 +98,15 @@
 					</table>
 				</td>
 			</tr>
+			<% } else	{ %>
+			<tr>
+				<td align="center" valign="top">
+					<p><b>ERROR</b></p>
+					The setup wizard has not been started correctly!<br>
+					Please click <a href="">here</a> to restart the Wizard
+				</td>
+			</tr>				
+			<% } %>	
 			</form>
 			</table>
 		</td>

@@ -53,7 +53,7 @@ public class CmsSetupThread extends Thread {
     private PrintStream m_tempOut;
 
     /** Gets the System.err stream so it can be restored */
-    private PrintStream m_tempErr;
+    public static PrintStream m_tempErr;
 
     /** Constructor */
     public CmsSetupThread() {
@@ -84,8 +84,14 @@ public class CmsSetupThread extends Thread {
             m_lt.stopThread();
             m_pipedOut.close();
         }
-        catch (InterruptedException e)  {}
-        catch (IOException e)  {}
+        catch (InterruptedException e)  {
+            m_lt.stopThread();
+            e.printStackTrace(m_tempErr);
+        }
+        catch (IOException e)  {
+            m_lt.stopThread();
+            e.printStackTrace(m_tempErr);
+        }
 
         /* restore to the old streams */
         System.setOut(m_tempOut);
@@ -100,7 +106,7 @@ public class CmsSetupThread extends Thread {
     }
 
     /** Returns the status of the logging thread */
-    public boolean notRunning() {
+    public boolean finished() {
         return m_lt.getStopThread();
     }
 

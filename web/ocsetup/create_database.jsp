@@ -8,16 +8,41 @@
 <% /* Import packages */ %>
 <%@ page import="com.opencms.boot.*" %>
 
-<%	
-	/* Save Properties to file "opencms.properties" */
-	CmsSetupUtils Utils = new CmsSetupUtils(Bean.getBasePath());
-	Utils.saveProperties(Bean.getProperties(),"opencms.properties");
-			  	 		
-	/* true if there are errors */
-	boolean error = (Bean.getErrors().size() > 0);
-
+<%
+	
 	/* next page to be accessed */
 	String nextPage = "import_workplace.jsp";
+	
+	/* true if properties are initialized */
+	boolean setupOk = (Bean.getProperties()!=null);
+
+	if(setupOk)	{
+		/* Set user and passwords manually. This is necessary because
+		   jsp:setProperty does not set empty strings ("") :( */
+		String dbCreateUser = 	request.getParameter("dbCreateUser");
+		String dbSetupUser = 	request.getParameter("dbSetupUser");
+		String dbWorkUser =		request.getParameter("dbWorkUser");
+
+		String dbCreatePwd = 	request.getParameter("dbCreatePwd");
+		String dbSetupPwd = 	request.getParameter("dbSetupPwd");
+		String dbWorkPwd =		request.getParameter("dbWorkPwd");
+
+		Bean.setDbCreateUser(dbCreateUser);
+		Bean.setDbSetupUser(dbSetupUser);
+		Bean.setDbWorkUser(dbWorkUser);
+
+		Bean.setDbCreatePwd(dbCreatePwd);
+		Bean.setDbSetupPwd(dbSetupPwd);
+		Bean.setDbWorkPwd(dbWorkPwd);
+		
+		/* Save Properties to file "opencms.properties" */
+		CmsSetupUtils Utils = new CmsSetupUtils(Bean.getBasePath());
+		Utils.saveProperties(Bean.getProperties(),"opencms.properties");
+
+	}
+	/* true if there are errors */
+	boolean error = (Bean.getErrors().size() > 0);			
+
 %>
 <!-- ------------------------------------------------------------------------------------------------------------------- -->
 
@@ -43,6 +68,7 @@
 			<tr>
 				<td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0"></td>
 			</tr>
+			<% if(setupOk)	{ %>
 			<tr>
 				<td height="375" align="center" valign="top">
 
@@ -50,7 +76,7 @@
 						<tr>
 							<td align="center" valign="top" height="125" class="bold">
 								Saving properties...
-								<%											
+								<%										
 									if(error)	{
 										out.print("ERROR<br>");
 										out.println("<textarea rows='10' cols='50'>");
@@ -69,8 +95,7 @@
 						</tr>
 						<tr>
 							<td align="center">
-								<b>Do you want to setup the database tables now ?</b><br>
-								(Make sure you have created the database)
+								<b>Do you want to create the database tables now ?</b><br>
 							</td>
 						</tr>
 						<tr>
@@ -99,6 +124,15 @@
 					</table>
 				</td>
 			</tr>
+			<% } else	{ %>
+			<tr>
+				<td align="center" valign="top">
+					<p><b>ERROR</b></p>
+					The setup wizard has not been started correctly!<br>
+					Please click <a href="">here</a> to restart the Wizard
+				</td>
+			</tr>				
+			<% } %>					
 			</form>
 			</table>
 		</td>

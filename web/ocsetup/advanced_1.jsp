@@ -5,6 +5,31 @@
 <% /* Set all given Properties */%>
 <jsp:setProperty name="Bean" property="*" />
 
+<%	
+	/* true if properties are initialized */
+	boolean setupOk = (Bean.getProperties()!=null);
+
+	if(setupOk)	{
+		/* Set user and passwords manually. This is necessary because
+		   jsp:setProperty does not set empty strings ("") :( */
+		String dbCreateUser = 	request.getParameter("dbCreateUser");
+		String dbSetupUser = 	request.getParameter("dbSetupUser");
+		String dbWorkUser =		request.getParameter("dbWorkUser");
+
+		String dbCreatePwd = 	request.getParameter("dbCreatePwd");
+		String dbSetupPwd = 	request.getParameter("dbSetupPwd");
+		String dbWorkPwd =		request.getParameter("dbWorkPwd");
+
+		Bean.setDbCreateUser(dbCreateUser);
+		Bean.setDbSetupUser(dbSetupUser);
+		Bean.setDbWorkUser(dbWorkUser);
+
+		Bean.setDbCreatePwd(dbCreatePwd);
+		Bean.setDbSetupPwd(dbSetupPwd);
+		Bean.setDbWorkPwd(dbWorkPwd);
+	}
+%>
+
 <%	/* next page to be accessed */
 	String nextPage = "advanced_2.jsp";
 %>
@@ -33,12 +58,14 @@
 				<td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0"></td>
 			</tr>
 			
+			<% if(setupOk)	{ %>			
+			
 			<tr>
 				<td height="375" align="center" valign="top">									
 					<table border="1" cellpadding="5">
 						<tr>
 							<td valign="top" align="center">
-								<table width="220" border="0" valign="top">
+								<table width="220" border="0" valign="top"  cellspacing="0">
 									<tr>
 										<td colspan="2" align="center" class="header">
 											Database
@@ -87,7 +114,7 @@
 								</table>
 							</td>
 							<td rowspan="2" align="center" valign="top" >
-								<table width="220" border="0">
+								<table width="250" border="0" cellspacing="0" cellpadding="0">
 									<tr>
 										<td colspan="2" align="center" class="header">
 											Cache parameters
@@ -172,13 +199,46 @@
 										<td align="right">
 											<input type="text" size="10" name="cachePropertyDefVector" value="<%= Bean.getCachePropertyDefVector() %>">
 										</td>
-									</tr>												
+									</tr>
+									<tr>
+										<td class="bold">
+											Element cache
+										</td>
+										<td>
+											<input type="radio" name="elementCache" value="true" <% if(Bean.getElementCache().equals("true")) {out.print("checked");} %>> enabled
+											<input type="radio" name="elementCache" value="false" <% if(Bean.getElementCache().equals("false")) {out.print("checked");} %>> disabled
+										</td>
+									</tr>									
+									<tr>
+										<td>
+											Cache URI
+										</td>
+										<td align="right">
+											<input type="text" size="10" name="elementCacheURI" value="<%= Bean.getElementCacheURI() %>">
+										</td>
+									</tr>
+									<tr>
+										<td>
+											Cache elements
+										</td>
+										<td align="right">
+											<input type="text" size="10" name="elementCacheElements" value="<%= Bean.getElementCacheElements() %>">
+										</td>
+									</tr>
+									<tr>
+										<td>
+											Cache variants
+										</td>
+										<td align="right">
+											<input type="text" size="10" name="elementCacheVariants" value="<%= Bean.getElementCacheVariants() %>">
+										</td>
+									</tr>									
 								</table>
 							</td>
 						</tr>
 						<tr>
 							<td align="center" valign="top">
-								<table width="220" border="0">
+								<table width="220" border="0" cellspacing="0">
 									<tr>
 										<td align="center" class="header" colspan="2">
 											Session failover
@@ -199,15 +259,15 @@
 									</tr>													
 									<tr>
 										<td align="center" class="header" colspan="2">
-											Delete published project parameters
+											Backup published resources
 										</td>
 									</tr>
 									<tr>
 										<td align="right">
-											<input type="radio" name="delPubProParameters" value="true" <% if(Bean.getDelPubProParameters().equals("true")) {out.print("checked");} %>> Yes
+											<input type="radio" name="historyEnabled" value="true" <% if(Bean.getHistoryEnabled().equals("true")) {out.print("checked");} %>> Yes
 										</td>
 										<td align="left">
-											<input type="radio" name="delPubProParameters" value="false" <% if(Bean.getDelPubProParameters().equals("false")) {out.print("checked");} %>> No
+											<input type="radio" name="historyEnabled" value="false" <% if(Bean.getHistoryEnabled().equals("false")) {out.print("checked");} %>> No
 										</td>
 									</tr>
 									<tr>
@@ -251,6 +311,15 @@
 						</table>
 					</td>
 				</tr>
+				<% } else	{ %>
+				<tr>
+					<td align="center" valign="top">
+						<p><b>ERROR</b></p>
+						The setup wizard has not been started correctly!<br>
+						Please click <a href="">here</a> to restart the Wizard
+					</td>
+				</tr>				
+				<% } %>
 				</form>
 				</table>
 			</td>

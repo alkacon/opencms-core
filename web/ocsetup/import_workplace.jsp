@@ -9,22 +9,30 @@
 <%@ page import="com.opencms.boot.*" %>
 
 <%	
-	if((request.getParameter("createDb") != null) && request.getParameter("createDb").equals("true"))	{
-	
-		/* clear Vector */
-		Bean.getErrors().clear();
-		
-		/* Create Database */
-		CmsSetupUtils Utils = new CmsSetupUtils(Bean.getBasePath());
-		Utils.createDatabase(Bean.getDbDriver(), Bean.getDbSetupConStr(false), Bean.getDbSetupUser(false),
-				Bean.getDbSetupPwd(false), Bean.getResourceBroker());			
-	}		
+	/* true if properties are initialized */
+	boolean setupOk = (Bean.getProperties()!=null);
 
+	if(setupOk)	{
+		if((request.getParameter("createDb") != null) && request.getParameter("createDb").equals("true"))	{
+		
+			/* clear Vector */
+			Bean.getErrors().clear();
+			
+			/* Create Database */
+			CmsSetupUtils Utils = new CmsSetupUtils(Bean.getBasePath());
+			Utils.createDatabase(Bean.getDbDriver(), Bean.getDbCreateConStr(), Bean.getDbCreateUser(),
+					Bean.getDbCreatePwd(), Bean.getResourceBroker());			
+			/* Create Tables */
+			Utils.createTables(Bean.getDbDriver(), Bean.getDbSetupConStr(), Bean.getDbSetupUser(),
+					Bean.getDbSetupPwd(), Bean.getResourceBroker());
+		}				
+	}
+	
 	/* true if there are errors */
-	boolean error = (Bean.getErrors().size() > 0);
+	boolean error = (Bean.getErrors().size() > 0);	
 	
 	/* next page to be accessed */
-	String nextPage = "run_import.jsp";
+	String nextPage = "run_import.jsp";	
 %>
 <!-- ------------------------------------------------------------------------------------------------------------------- -->
 
@@ -50,6 +58,7 @@
 			<tr>
 				<td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0"></td>
 			</tr>
+			<% if(setupOk)	{ %>
 			<tr>
 				<td height="375" align="center" valign="top">
 					<table border="0" width="600" cellpadding="5">
@@ -60,7 +69,7 @@
 									out.println("Database has not been created");
 								}
 								else {	
-									out.print("Creating Database...");
+									out.print("Creating database and tables...");
 									if(error)	{
 										out.println("ERROR<br>");
 										out.println("<textarea rows='10' cols='50' style='width:600px;height:200px;' readonly wrap='off'>");
@@ -82,7 +91,7 @@
 						<tr>
 							<td align="center" class="bold">
 								To complete the setup you have to import the workplace.<br><br>
-								Click 'Finish' to import the workplace.
+								Click 'Continue' to import the workplace.
 							</td>
 						</tr>						
 					</table>										
@@ -96,7 +105,7 @@
 								<input type="button" class="button" style="width:150px;" width="150" value="&#060;&#060; Back" onclick="history.back()">
 							</td>
 							<td width="200" align="left">
-								<input type="button" class="button" style="width:150px;" width="150" value="Finish" onclick="location.href='run_import.jsp'">
+								<input type="button" class="button" style="width:150px;" width="150" value="Continue &#062;&#062;" onclick="location.href='run_import.jsp'">
 							</td>
 							<td width="200" align="center">
 								<input type="button" class="button" style="width:150px;" width="150" value="Cancel" onclick="location.href='cancel.jsp'">
@@ -105,6 +114,15 @@
 					</table>
 				</td>
 			</tr>
+			<% } else	{ %>
+			<tr>
+				<td align="center" valign="top">
+					<p><b>ERROR</b></p>
+					The setup wizard has not been started correctly!<br>
+					Please click <a href="">here</a> to restart the Wizard
+				</td>
+			</tr>				
+			<% } %>								
 			</form>
 			</table>
 		</td>

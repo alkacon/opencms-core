@@ -81,7 +81,9 @@ public class CmsSetupLoggingThread extends Thread  {
         try {
             m_pipedIn.close();
         }
-        catch(IOException e)  {};
+        catch(IOException e)  {
+            e.printStackTrace();
+        };
     }
 
     /** Returns a vector containing messages */

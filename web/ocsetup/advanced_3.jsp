@@ -5,7 +5,11 @@
 <% /* Set all given Properties */%>
 <jsp:setProperty name="Bean" property="*" />
 
-<%	/* next page to be accessed */
+<%	
+	/* true if properties are initialized */
+	boolean setupOk = (Bean.getProperties()!=null);
+	
+	/* next page to be accessed */
 	String nextPage = "create_database.jsp";
 %>
 <!-- ------------------------------------------------------------------------------------------------------------------- -->
@@ -32,6 +36,7 @@
 			<tr>
 				<td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0"></td>
 			</tr>
+			<% if(setupOk)	{ %>
 			<tr>
 				<td height="375" align="center" valign="top">
 					<table border="1">
@@ -276,6 +281,15 @@
 						</table>
 					</td>
 				</tr>
+				<% } else	{ %>
+				<tr>
+					<td align="center" valign="top">
+						<p><b>ERROR</b></p>
+						The setup wizard has not been started correctly!<br>
+						Please click <a href="">here</a> to restart the Wizard
+					</td>
+				</tr>				
+				<% } %>					
 				</form>
 				</table>
 			</td>

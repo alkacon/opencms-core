@@ -2,6 +2,10 @@
 <% /* Initialize the Bean */ %>
 <jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" />
 
+<%	/* true if properties are initialized */
+	boolean setupOk = (Bean.getProperties()!=null);
+%>
+
 <% /* Import packages */ %>
 <%@ page import="java.util.*" %>
 
@@ -9,16 +13,16 @@
 <jsp:setProperty name="Bean" property="*" />
 
 <% 
-	/* get all available resource brokers */
-	Enumeration resourceBrokers = Bean.getResourceBrokers();
-	
+
 	/* next page to be accessed */
-	String nextPage;
-	if(Bean.getSetupType())	{
-		nextPage= "advanced_1.jsp";
-	}
-	else	{
-		nextPage= "create_database.jsp";
+	String nextPage ="";
+	if(setupOk)	{
+		if(Bean.getSetupType())	{
+			nextPage= "advanced_1.jsp";
+		}
+		else	{
+			nextPage= "create_database.jsp";
+		}
 	}
 %>
 <!-- ------------------------------------------------------------------------------------------------------------------- -->
@@ -26,18 +30,7 @@
 <head> 
 	<title>OpenCms Setup Wizard</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<link rel="Stylesheet" type="text/css" href="style.css">
-	
-	<script language="Javascript">	
-	<!--
-		function disable()  {
-		  	disabled = window.document.forms[0].extraWork[0].checked;	  	
-	  		window.document.forms[0].dbWorkConStr.disabled = disabled;
-	  		window.document.forms[0].dbWorkUser.disabled = disabled;
-	  		window.document.forms[0].dbWorkPwd.disabled = disabled;
-		}
-	-->
-	</script>
+	<link rel="Stylesheet" type="text/css" href="style.css">	
 	
 </head>
 
@@ -56,13 +49,15 @@
 			<tr>
 				<td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0"></td>
 			</tr>
-
+			
+			<% if(setupOk)	{ %>
+			
 			<tr>
-				<td height="375" align="center">
+				<td height="375" align="center" valign="top">				
 					<table border="0">
 						<tr>
-							<td colspan="2" valign="top">
-								<table border="0" cellpadding="2" class="header">
+							<td align="center">
+								<table border="0" cellpadding="2">
 									<tr>
 										<td width="150" class="bold">
 											Resource Broker
@@ -71,16 +66,17 @@
 											<select name="resourceBroker" style="width:250px;" size="1" width="250" onchange="location.href='database_connection.jsp?resourceBroker='+this.options[this.selectedIndex].value;">
 											<!-- --------------------- JSP CODE --------------------------- -->
 											<%
-												/* 	List all resource broker found 
-													in the dbsetupscripts.properties */
-												if (resourceBrokers !=null)	{
-													while(resourceBrokers.hasMoreElements())	{
-														String key = resourceBrokers.nextElement().toString();
+												/* get all available resource brokers */
+												Vector resourceBrokers = Bean.getResourceBrokers();
+												/* 	List all resource broker found in the dbsetup.properties */
+												if (resourceBrokers !=null && resourceBrokers.size() > 0)	{
+													for(int i=0;i<resourceBrokers.size();i++)	{
+														String rb = resourceBrokers.elementAt(i).toString();
 														String selected = "";													
-														if(Bean.getResourceBroker().equals(key))	{
+														if(Bean.getResourceBroker().equals(rb))	{
 															selected = "selected";
 														}
-														out.println("<option value='"+key+"' "+selected+">"+key);
+														out.println("<option value='"+rb+"' "+selected+">"+rb);
 													}
 												}
 												else	{
@@ -94,73 +90,33 @@
 								</table>
 							</td>
 						</tr>
-						<tr><td colspan="2">&nbsp;</td></tr>
+						<tr><td>&nbsp;</td></tr>
+						
 						<tr>
-							<td colspan="2">
-								<table border="0" cellpadding="2" class="header">
+							<td>
+								<table border="0" cellpadding="5" class="header">
+									<tr><td>&nbsp;</td><td>Conncection String</td><td>User</td><td>Password</td></tr>
 									<tr>
-										<td colspan="2" align="center">Database Setup Connection</td>
+										<td>Create Database Connection</td><td><input type="text" name="dbCreateConStr" size="22" style="width:250px;" value='<%= Bean.getDbCreateConStr() %>'></td>
+										<td><input type="text" name="dbCreateUser" size="10" style="width:100px;" value='<%= Bean.getDbCreateUser() %>'></td>
+										<td><input type="text" name="dbCreatePwd" size="10" style="width:100px;" value='<%= Bean.getDbCreatePwd() %>'></td>
+									</tr>									
+									<tr>
+										<td>Create Tables Connection</td><td><input type="text" name="dbSetupConStr" size="22" style="width:250px;" value='<%= Bean.getDbSetupConStr() %>'></td>
+										<td><input type="text" name="dbSetupUser" size="10" style="width:100px;" value='<%= Bean.getDbSetupUser() %>'></td>
+										<td><input type="text" name="dbSetupPwd" size="10" style="width:100px;" value='<%= Bean.getDbSetupPwd() %>'></td>
 									</tr>
 									<tr>
-										<td width="150" class="bold">Conncection String:</td>
-										<td width="250"><input type="text" name="dbSetupConStr" size="22" style="width:250px;" value='<%= Bean.getDbSetupConStr(true) %>'></td>
-									</tr>
-									<tr>
-										<td class="bold">User:</td>
-										<td><input type="text" name="dbSetupUser" size="22" style="width:250px;" value='<%= Bean.getDbSetupUser(true) %>'></td>
-									</tr>
-									<tr>
-										<td class="bold">Password:</td>
-										<td width="250"><input type="text" name="dbSetupPwd" size="22" style="width:250px;" value='<%= Bean.getDbSetupPwd(true) %>'></td>
-									</tr>
+										<td>OpenCms Work Connection</td><td><input type="text" name="dbWorkConStr" size="22" style="width:250px;" value='<%= Bean.getDbWorkConStr() %>'></td>
+										<td><input type="text" name="dbWorkUser" size="10" style="width:100px;" value='<%= Bean.getDbWorkUser() %>'></td>
+										<td><input type="text" name="dbWorkPwd" size="10" style="width:100px;" value='<%= Bean.getDbWorkPwd() %>'></td>
+									</tr>									
 								</table>
 							</td>
 						</tr>
-						<tr><td colspan="2">&nbsp;</td></tr>						
-						<tr>
-							<td colspan="2">
-								<table border="0" cellpadding="2">
-									<tr>
-										<td class="bold">
-											Use setup conncetion as work connection ?
-										</td>
-									
-										<td class="bold">
-											<input type="radio" name="extraWork" value="false" <% if(!Bean.getExtraWork())	{ out.print("checked");} %> onclick="disable()"> YES
-										</td>											
-										<td class="bold">
-											<input type="radio" name="extraWork" value="true"  <% if(Bean.getExtraWork())	{ out.print("checked");} %> onclick="disable()"> NO
-										</td>
-									
-									</tr>
-								</table>
-							</td>
-						</tr>						
-						<tr>
-							<td colspan="2">
-								<table border="0" cellpadding="2" class="header">
-									<tr>
-										<td colspan="2" align="center">Database Work Connection</td>
-									</tr>
-									<tr>
-										<td width="150" class="bold">Conncection String:</td>
-										<td width="250"><input type="text" name="dbWorkConStr" size="22" style="width:250px;" value='<%= Bean.getDbWorkConStr() %>' disabled></td>
-									</tr>
-									<tr>
-										<td class="bold">User:</td>
-										<td><input type="text" name="dbWorkUser" size="22" style="width:250px;" value='<%= Bean.getDbWorkUser() %>' disabled></td>
-									</tr>
-									<tr>
-										<td class="bold">Password:</td>
-										<td width="250"><input type="text" name="dbWorkPwd" size="22" style="width:250px;" value='<%= Bean.getDbWorkPwd() %>' disabled></td>
-									</tr>
-								</table>
-							</td>
-						</tr>						
 					</table>
 				</td>
-			</tr>
-			
+			</tr>			
 			<tr>
 				<td height="50" align="center">
 					<table border="0">
@@ -178,6 +134,15 @@
 					</table>
 				</td>
 			</tr>							
+			<% } else	{ %>
+			<tr>
+				<td align="center" valign="top">
+					<p><b>ERROR</b></p>
+					The setup wizard has not been started correctly!<br>
+					Please click <a href="">here</a> to restart the Wizard
+				</td>
+			</tr>			
+			<% } %>
 			</form>
 			</table>
 		</td>

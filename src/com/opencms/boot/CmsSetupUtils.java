@@ -44,6 +44,8 @@ public class CmsSetupUtils {
 
     private String m_basePath;
 
+    private boolean m_errorLogging = true;
+
 
     public CmsSetupUtils(String basePath) {
       m_basePath = basePath;
@@ -143,21 +145,59 @@ public class CmsSetupUtils {
 
         Connection con;
 
+        try   {
+            Class.forName(DbDriver);
+            con = DriverManager.getConnection(DbConStr,DbUser,DbPwd);
+
+            String file = getScript(resourceBroker+".createdb");
+            if (file != null) {
+                m_errorLogging = false;
+                parseScript(con,file);
+                m_errorLogging = true;
+            }
+        }
+        catch (SQLException e)  {
+            CmsSetup.setErrors(e.toString() + "\n");
+            e.printStackTrace();
+        }
+        catch (ClassNotFoundException e)  {
+            CmsSetup.setErrors(e.toString() + "\n");
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public void createTables(String DbDriver, String DbConStr,
+            String DbUser, String DbPwd, String resourceBroker) {
+
+        Connection con;
+
+        try   {
+            Class.forName(DbDriver);
+            con = DriverManager.getConnection(DbConStr,DbUser,DbPwd);
+
+            String file = getScript(resourceBroker+".createtables");
+            parseScript(con,file);
+        }
+        catch (SQLException e)  {
+            CmsSetup.setErrors(e.toString() + "\n");
+            e.printStackTrace();
+        }
+        catch (ClassNotFoundException e)  {
+            CmsSetup.setErrors(e.toString() + "\n");
+            e.printStackTrace();
+        }
+    }
+
+    private void parseScript(Connection con, String file)   {
+
         /* indicates if the setup script contains included files (oracle) */
         boolean includedFile = false;
 
-        /* get connection */
+        /* get and parse the setup script */
         try {
-/*            CmsClassLoader loader = new CmsClassLoader();
-            CmsMain.collectRepositories(m_basePath+"WEB-INF/",loader);
-            loader.loadClass(DbDriver);*/
-            Class.forName(DbDriver);
-            con = DriverManager.getConnection(DbConStr, DbUser, DbPwd);
-
-          /* get and parse the setup script */
-          try {
-              String file = getSetupScript(resourceBroker);
-              LineNumberReader reader = new LineNumberReader(new FileReader(m_ocsetupFolder + file));
+            LineNumberReader reader = new LineNumberReader(new FileReader(m_ocsetupFolder + file));
 
               String line = null;
               String statement = "";
@@ -198,13 +238,14 @@ public class CmsSetupUtils {
                           /* there is an included File. Get it and execute it */
                           if (includedFile) {
                               ExecuteStatement(con, getIncludedFile(statement));
-                              //reset the flag
+                              //reset
                               includedFile = false;
                           }
                           /* normal statement. Execute it */
                           else  {
                               ExecuteStatement(con, statement);
                           }
+                          //reset
                           statement = "";
                       }
                   }
@@ -216,11 +257,6 @@ public class CmsSetupUtils {
               e.printStackTrace();
           }
       }
-      catch (Exception e) {
-          CmsSetup.setErrors(e.toString() + "\n");
-          e.printStackTrace();
-      }
-  }
 
     /** This function is called every time a file is included in the setup script.
     *  The sql statement from the setup script in fact contains the relative
@@ -276,22 +312,24 @@ public class CmsSetupUtils {
                 stat.executeUpdate(statement);
             }
             catch (Exception e)  {
-                CmsSetup.setErrors(e.toString() + "\n");
+                if(m_errorLogging)  {
+                  CmsSetup.setErrors(e.toString() + "\n");
+                }
             }
         }
     }
 
-    /** This function returns the matching setup script filename
-     *  from "dbsetupscript.properties"
-     *  @param resourceBroker Key for the properties
-     *  @return setup script filename for the given resource broker
+    /** This function returns the matching script filename
+     *  from "dbsetup.properties"
+     *  @param key Key for the properties
+     *  @return script filename for the given key
      */
-    private String getSetupScript(String resourceBroker) {
+    private String getScript(String key) {
         /* open properties, get the value */
         try {
             Properties properties = new Properties();
-            properties.load(getClass().getClassLoader().getResourceAsStream("com/opencms/boot/dbsetupscripts.properties"));
-            String value = properties.getProperty(resourceBroker);
+            properties.load(getClass().getClassLoader().getResourceAsStream("com/opencms/boot/dbsetup.properties"));
+            String value = properties.getProperty(key);
             return value;
         }
         catch (Exception e) {
