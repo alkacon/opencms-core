@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2001/08/03 13:17:53 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2001/08/03 13:29:54 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2001/08/03 13:17:53 $
+ * @version $Revision: 1.15 $ $Date: 2001/08/03 13:29:54 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -843,7 +843,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
                   cms.doChmod(newfolder.getAbsolutePath(),folder.getAccessFlags());
                   cms.doChown(newfolder.getAbsolutePath(),cms.readOwner(folder).getName());
                   try{
-                    CmsFolder correspondingFolder = cms.readFolder(foldername);
+                    CmsFolder correspondingFolder = cms.readFolder("/"+foldername+"/");
                     if(!correspondingFolder.isLocked()){
                         cms.doUnlockResource(newfolder.getAbsolutePath());
                     }
