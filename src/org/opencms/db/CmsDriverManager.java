@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/11/14 10:09:12 $
- * Version: $Revision: 1.297 $
+ * Date   : $Date: 2003/11/21 14:04:05 $
+ * Version: $Revision: 1.298 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.297 $ $Date: 2003/11/14 10:09:12 $
+ * @version $Revision: 1.298 $ $Date: 2003/11/21 14:04:05 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -7789,7 +7789,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_BAD_NAME);
         }
 
-        int l = filename.trim().length();
+        int l = filename.length();
 
         // if (l == 0 || filename.startsWith(".")) {
         if (l == 0) {
