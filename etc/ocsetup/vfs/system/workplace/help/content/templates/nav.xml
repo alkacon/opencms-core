@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<XMLTEMPLATE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<head><link rel=stylesheet type="text/css" href="/servlets/opencms/system/workplace/css/help.css"></head><body>
+]]>
+<element name="nav"/>
+<![CDATA[</body></html> ]]>
+</TEMPLATE>
+
+<ELEMENTDEF name="nav">
+   <CLASS>com.opencms.defaults.CmsXmlNav</CLASS>
+   <TEMPLATE>/system/workplace/help/de/nav</TEMPLATE>
+</ELEMENTDEF>
+
+</XMLTEMPLATE>

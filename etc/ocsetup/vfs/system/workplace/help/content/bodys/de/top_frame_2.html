@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<XMLTEMPLATE>
+<TEMPLATE>
+
+<![CDATA[
+
+
+<SCRIPT language="JavaScript">
+
+
+
+var imgEndOn = "_on.gif";
+var imgEndOff = "_off.gif";
+var pfad="/pics/system/";
+
+
+function ChOn(imgID) //changes a imageobject on mouseover
+{
+ document.images[imgID].src = pfad + imgID + imgEndOn;
+}
+
+function ChOff(imgID) //changes a imageobject on mouseout
+{
+document.images[imgID].src = pfad + imgID + imgEndOff;
+}
+
+
+function ChImg(imgID,src)
+{
+document.images[imgID].src = src;
+}
+
+</SCRIPT>
+
+<body>
+<P>
+<TABLE border=0 width="100%" style="position:absolute; left:0px; top:0px;" >
+
+ <TR>
+
+  <TD width=27>
+    <a href="JavaScript:history.back();" onMouseover="ChOn('bt_back')" onMouseout="ChOff('bt_back')">
+    <IMG border=0 alt="Zurück" name="bt_back" src="/pics/system/bt_back_off.gif"></a>
+  </TD>
+  
+  <TD width=27>
+    <a href="JavaScript:history.forward();" onMouseover="ChOn('bt_forward')" onMouseout="ChOff('bt_forward')">
+    <IMG border=0 alt="Vor" name="bt_forward" src="/pics/system/bt_forward_off.gif"></a>
+  </TD>
+  
+  <TD width=27>
+    <a target="contentFrame" href="Navigation.html" onMouseover="ChOn('bt_help_content')" onMouseout="ChOff('bt_help_content')">
+    <IMG border=0 alt="Index" name="bt_help_content" src="/pics/system/bt_help_content_off.gif"></a>
+  </TD>
+
+  <TD width=27>
+    <a href="javascript:top.close();" onMouseover="ChOn('bt_close')" onMouseout="ChOff('bt_close')">
+    <IMG border=0 alt="Schliessen" name="bt_close" src="/pics/system/bt_close_off.gif"></a>
+  </TD>
+  
+  <TD width="*"></TD> 
+ </TR>
+
+</TABLE>
+</P>
+
+<P>&nbsp;</P>
+
+</body>
+
+]]>
+
+</TEMPLATE>
+</XMLTEMPLATE>
