@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/security/Attic/CmsPermissionSet.java,v $
- * Date   : $Date: 2003/06/12 15:16:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/06/12 16:42:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.core.I_CmsConstants;
 /**
  * A permission set contains both allowed and denied permissions as bitsets.
  * 
- * @version $Revision: 1.3 $ $Date: 2003/06/12 15:16:32 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/12 16:42:57 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPermissionSet {
@@ -234,14 +234,14 @@ public class CmsPermissionSet {
 		
 		StringBuffer p = new StringBuffer("");
 		
-		if ((m_allowed & I_CmsConstants.C_PERMISSION_READ)>0)		p.append("+r");
-		else if ((m_denied  & I_CmsConstants.C_PERMISSION_READ)>0)	p.append("-r");
+		if ((m_denied & I_CmsConstants.C_PERMISSION_READ)>0)		p.append("-r");
+		else if ((m_allowed & I_CmsConstants.C_PERMISSION_READ)>0)	p.append("+r");
 			
-		if ((m_allowed & I_CmsConstants.C_PERMISSION_WRITE)>0) 		p.append("+w");
-		else if ((m_denied  & I_CmsConstants.C_PERMISSION_WRITE)>0)	p.append("-w");
+		if ((m_denied & I_CmsConstants.C_PERMISSION_WRITE)>0) 		p.append("-w");
+		else if ((m_allowed & I_CmsConstants.C_PERMISSION_WRITE)>0)	p.append("+w");
 			
-		if ((m_allowed & I_CmsConstants.C_PERMISSION_VIEW)>0) 		p.append("+v");
-		else if ((m_denied  & I_CmsConstants.C_PERMISSION_VIEW)>0)	p.append("-v");
+		if ((m_denied & I_CmsConstants.C_PERMISSION_VIEW)>0) 		p.append("-v");
+		else if ((m_allowed & I_CmsConstants.C_PERMISSION_VIEW)>0)	p.append("+v");
 			
 		return p.toString();			
 	}

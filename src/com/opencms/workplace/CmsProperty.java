@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/06/12 16:44:35 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsPropertydefinition;
 import com.opencms.file.CmsResource;
-import com.opencms.file.CmsUser;
 import com.opencms.file.I_CmsResourceType;
 import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
@@ -52,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.36 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.37 $ $Date: 2003/06/12 16:44:35 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
@@ -272,11 +271,12 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         if(title == null) {
             title = "";
         }
-        CmsUser owner = cms.readOwner(file);
+        // TODO: remove this later
+        // CmsUser owner = cms.readOwner(file);
         xmlTemplateDocument.setData("TITLE", Encoder.escapeXml(title));
         xmlTemplateDocument.setData("STATE", getState(cms, file, lang));
-        xmlTemplateDocument.setData("OWNER", owner.getFirstname() + " " + owner.getLastname() + "(" + owner.getName() + ")");
-        xmlTemplateDocument.setData("GROUP", cms.readGroup(file).getName());
+        xmlTemplateDocument.setData("OWNER", "" /* owner.getFirstname() + " " + owner.getLastname() + "(" + owner.getName() + ")" */);
+        xmlTemplateDocument.setData("GROUP", "" /* cms.readGroup(file).getName() */);
         xmlTemplateDocument.setData("FILENAME", file.getName());
         xmlTemplateDocument.setData("lasturl", lasturl);
 
