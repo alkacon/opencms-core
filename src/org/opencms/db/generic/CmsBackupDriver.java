@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/11/13 10:29:26 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2003/11/14 10:09:10 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.74 $ $Date: 2003/11/13 10:29:26 $
+ * @version $Revision: 1.75 $ $Date: 2003/11/14 10:09:10 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -407,6 +407,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt.setString(5, backupId.toString());
 
             stmt.executeUpdate();
+            fileContent = null;
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
@@ -1056,6 +1057,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
+        content = null;
         // TODO: use this in later versions
         //return this.readBackupFileHeader(tagId, resource.getResourceId());
     }
@@ -1076,9 +1078,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         if (!this.internalValidateBackupResource(resource, backupResource.getTagId())) {
             // internalWriteBackupFileContent(backupResource.getBackupId(), resource.getFileId(), offlineFile.getContents(), backupResource.getTagId(), backupResource.getVersionId());
             internalWriteBackupFileContent(backupResource.getBackupId(), resource, content, backupResource.getTagId(), backupResource.getVersionId());
-
         }
-
+        content = null;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2003/09/25 14:39:00 $
-* Version: $Revision: 1.96 $
+* Date   : $Date: 2003/11/14 10:09:09 $
+* Version: $Revision: 1.97 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.96 $ $Date: 2003/09/25 14:39:00 $
+ * @version $Revision: 1.97 $ $Date: 2003/11/14 10:09:09 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
@@ -969,6 +969,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                 parsedContent = parse(fileContent);
             }
             m_filecache.put(currentProject + ":" + cms.getRequestContext().addSiteRoot(filename), parsedContent.cloneNode(true));
+            fileContent = null;
         }
         init(cms, parsedContent, filename);
     }
@@ -2057,6 +2058,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         // Set the new content and write the file
         file.setContents(xmlContent);
         m_cms.writeFile(file);
+        xmlContent = null;
 
         // update the internal parsed content cache with the new file data.
         String currentProject = m_cms.getRequestContext().currentProject().getName();

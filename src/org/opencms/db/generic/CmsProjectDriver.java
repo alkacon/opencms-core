@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/11/13 10:29:26 $
- * Version: $Revision: 1.135 $
+ * Date   : $Date: 2003/11/14 10:09:10 $
+ * Version: $Revision: 1.136 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.135 $ $Date: 2003/11/13 10:29:26 $
+ * @version $Revision: 1.136 $ $Date: 2003/11/14 10:09:10 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -370,6 +370,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         } catch (IOException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } finally {
+            value = null;
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -2406,6 +2407,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         } catch (ClassNotFoundException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_CLASSLOADER_ERROR, e, false);
         } finally {
+            value = null;
             m_sqlManager.closeAll(conn, stmt, res);
         }
         return property;
@@ -2548,6 +2550,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         } catch (IOException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } finally {
+            value = null;
             m_sqlManager.closeAll(conn, stmt, null);
         }
 

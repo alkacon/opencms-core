@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
-* Date   : $Date: 2003/11/03 10:01:33 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/11/14 10:09:09 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * the content of a master template.<p>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.47 $ $Date: 2003/11/03 10:01:33 $
+ * @version $Revision: 1.48 $ $Date: 2003/11/14 10:09:09 $
  */
 public class CmsRootTemplate {
 
@@ -101,8 +101,7 @@ public class CmsRootTemplate {
                 }
 
 
-           }
-            else {
+           } else {
                 // set the http-header to pragma no-cache.
                 //HTTP 1.1
                 resp.setHeader("Cache-Control", "no-cache");
@@ -113,8 +112,7 @@ public class CmsRootTemplate {
 
         if(cacheable && cache.has(cacheKey) && !templateClass.shouldReload(cms, masterTemplateUri, I_CmsConstants.C_ROOT_TEMPLATE_NAME, parameters, null)) {
             result = cache.get(cacheKey);
-        }
-        else {
+        } else {
             try {
                 result = templateClass.getContent(cms, masterTemplateUri, I_CmsConstants.C_ROOT_TEMPLATE_NAME, parameters);
             }

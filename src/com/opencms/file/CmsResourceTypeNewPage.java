@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeNewPage.java,v $
- * Date   : $Date: 2003/08/14 15:37:26 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/11/14 10:09:09 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.1
  */
 public class CmsResourceTypeNewPage extends A_CmsResourceType {
@@ -94,6 +94,7 @@ public class CmsResourceTypeNewPage extends A_CmsResourceType {
             CmsPageLinks linkObject = cms.getPageLinks(resourcename);
             cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
         }
+        contents = null;
         return file;
     }  
     

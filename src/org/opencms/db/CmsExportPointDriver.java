@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsExportPointDriver.java,v $
- * Date   : $Date: 2003/11/03 09:05:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/11/14 10:09:12 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsExportPointDriver {
 
@@ -116,5 +116,6 @@ public class CmsExportPointDriver {
         } catch (Exception e) {
             // do nothing        
         }
+        content = null;
     }
 }

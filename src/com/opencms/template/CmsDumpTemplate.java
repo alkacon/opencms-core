@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2003/09/25 14:39:00 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/11/14 10:09:10 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Hashtable;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.50 $ $Date: 2003/09/25 14:39:00 $
+ * @version $Revision: 1.51 $ $Date: 2003/11/14 10:09:10 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
@@ -106,14 +106,14 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
         	}
         }
         catch(Exception e) {
+            s = null;
             String errorMessage = "Error while reading file " + templateFile + ": " + e;
             if(OpenCms.getLog(this).isErrorEnabled() ) {
                 OpenCms.getLog(this).error(errorMessage, e);
             }
             if(e instanceof CmsException) {
                 throw (CmsException)e;
-            }
-            else {
+            } else {
                 throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
             }
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/11/14 10:09:15 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
         
@@ -303,7 +303,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                 System.err.println("Non-display include call - Result of include is:\n" + new String(result));
             }
             CmsFlexResponse.processHeaders(headers, f_res);
-            f_res.addToIncludeResults(result);                    
+            f_res.addToIncludeResults(result); 
+            result = null;
         }              
 
         // Indicate to response that include is finished

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeCompatiblePlain.java,v $
- * Date   : $Date: 2003/09/12 10:01:54 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/11/14 10:09:09 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Map;
  * some very old OpenCms version).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsResourceTypeCompatiblePlain extends A_CmsResourceType {
 
@@ -86,6 +86,7 @@ public class CmsResourceTypeCompatiblePlain extends A_CmsResourceType {
      */
     public CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException {
         CmsResource res = cms.doCreateFile(resourcename, contents, getResourceTypeName(), properties);
+        contents = null;
         // TODO: Move locking of resource to CmsObject or CmsDriverManager
         cms.doLockResource(cms.readAbsolutePath(res), false);
         return res;

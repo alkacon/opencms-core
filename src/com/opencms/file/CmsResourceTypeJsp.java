@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2003/08/10 11:49:48 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/11/14 10:09:09 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Map;
  * file properties are attached to new JSPs.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsResourceTypeJsp extends A_CmsResourceType {
 
@@ -87,6 +87,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
      */
     public CmsResource createResource(CmsObject cms, String newResourceName, Map properties, byte[] contents, Object parameter) throws CmsException {
         com.opencms.file.CmsResource res = cms.doCreateFile(newResourceName, contents, getResourceTypeName(), properties);
+        contents = null;
         // Lock the new file
         cms.lockResource(newResourceName);
         // Attach default JSP properties

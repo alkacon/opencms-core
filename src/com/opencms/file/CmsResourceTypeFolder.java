@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/11/08 10:32:43 $
-* Version: $Revision: 1.96 $
+* Date   : $Date: 2003/11/14 10:09:09 $
+* Version: $Revision: 1.97 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.96 $
+ * @version $Revision: 1.97 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -264,6 +264,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
      * @see com.opencms.file.I_CmsResourceType#createResource(com.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
      */
     public CmsResource createResource(CmsObject cms, String newFolderName, Map properties, byte[] contents, Object parameter) throws CmsException {
+        contents = null;
         if (!newFolderName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
             newFolderName += I_CmsConstants.C_FOLDER_SEPARATOR;
         }
@@ -388,6 +389,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         //try to create the resource
         try {
             importedResource = cms.doImportResource(resource, content, properties, destination);
+            content = null;
             if (importedResource != null) {
                 changed = false;
             }

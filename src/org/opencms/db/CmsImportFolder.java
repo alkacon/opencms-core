@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2003/11/08 10:32:43 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/11/14 10:09:12 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsImportFolder {
 
@@ -152,6 +152,7 @@ public class CmsImportFolder {
             charsRead += fileStream.read(buffer, charsRead, size - charsRead);
         }
         fileStream.close();
+        fileStream = null;
         return buffer;
     }
 
@@ -228,6 +229,7 @@ public class CmsImportFolder {
                 byte[] content = getFileBytes(currentFile);
                 // create the file
                 m_cms.createResource(importPath, currentFile.getName(), type, null, content);
+                content = null;
             }
         }
     }

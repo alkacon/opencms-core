@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeLink.java,v $
- * Date   : $Date: 2003/11/08 10:32:43 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/11/14 10:09:09 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * All resource types are created by the factory getResourceType() in CmsObject.
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsResourceTypeLink extends A_CmsResourceType {
 
@@ -99,6 +99,7 @@ public class CmsResourceTypeLink extends A_CmsResourceType {
 
         // create the new link
         CmsResource res = cms.doCreateFile(resourcename, contents, getResourceTypeName(), properties);
+        contents = null;
 
         // lock the new file
         cms.lockResource(resourcename);

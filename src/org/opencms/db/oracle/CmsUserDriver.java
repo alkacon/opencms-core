@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/11/14 10:09:15 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.22 $ $Date: 2003/11/08 10:32:44 $
+ * @version $Revision: 1.23 $ $Date: 2003/11/14 10:09:15 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -253,6 +253,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             OutputStream output = ((oracle.sql.BLOB)userInfo).getBinaryOutputStream();
             output.write(value);
             output.close();
+            value = null;
                          
             commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
             commit.execute();

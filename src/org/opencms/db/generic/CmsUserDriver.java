@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/11/13 10:29:26 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2003/11/14 10:09:10 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.46 $ $Date: 2003/11/13 10:29:26 $
+ * @version $Revision: 1.47 $ $Date: 2003/11/14 10:09:10 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -171,7 +171,6 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @see org.opencms.db.I_CmsUserDriver#createUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, com.opencms.file.CmsGroup, java.lang.String, java.lang.String, int)
      */
     public CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
-        byte[] value = null;
         //int id = m_sqlManager.nextPkId("C_TABLE_USERS");
         CmsUUID id = new CmsUUID();
 
@@ -179,8 +178,6 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         PreparedStatement stmt = null;
 
         try {
-            value = internalSerializeAdditionalUserInfo(additionalInfos);
-
             // write data to database
 
             conn = m_sqlManager.getConnection();
@@ -198,12 +195,12 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             stmt.setTimestamp(9, new Timestamp(lastlogin));
             stmt.setTimestamp(10, new Timestamp(0));
             stmt.setInt(11, flags);
-            m_sqlManager.setBytes(stmt, 12, value);
+            m_sqlManager.setBytes(stmt, 12, internalSerializeAdditionalUserInfo(additionalInfos));
             stmt.setString(13, defaultGroup.getId().toString());
             stmt.setString(14, m_sqlManager.validateNull(address));
             stmt.setString(15, m_sqlManager.validateNull(section));
             stmt.setInt(16, type);
-            stmt.executeUpdate();
+            stmt.executeUpdate();            
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
@@ -355,8 +352,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         // is there a valid digest?
         if (m_digest != null) {
             try {
-                byte[] bytesForDigest = value.getBytes(m_digestFileEncoding);
-                byte[] bytesFromDigest = m_digest.digest(bytesForDigest);
+                byte[] bytesFromDigest = m_digest.digest(value.getBytes(m_digestFileEncoding));
                 // to get a String out of the bytearray we translate every byte
                 // in a hex value and put them together
                 StringBuffer result = new StringBuffer();
@@ -368,6 +364,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
                     }
                     result.append(addZerro);
                 }
+                bytesFromDigest = null;
                 return result.toString();
             } catch (UnsupportedEncodingException exc) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -398,14 +395,10 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @see org.opencms.db.I_CmsUserDriver#importUser(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, long, int, java.util.Hashtable, com.opencms.file.CmsGroup, java.lang.String, java.lang.String, int)
      */
     public CmsUser importUser(CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type, Object reservedParam) throws CmsException {
-        byte[] value = null;
-
         Connection conn = null;
         PreparedStatement stmt = null;
 
         try {
-            value = internalSerializeAdditionalUserInfo(additionalInfos);
-
             if (reservedParam == null) {
                 // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
                 conn = m_sqlManager.getConnection();
@@ -427,7 +420,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             stmt.setTimestamp(9, new Timestamp(lastlogin));
             stmt.setTimestamp(10, new Timestamp(lastused));
             stmt.setInt(11, flags);
-            m_sqlManager.setBytes(stmt, 12, value);
+            m_sqlManager.setBytes(stmt, 12, internalSerializeAdditionalUserInfo(additionalInfos));
             stmt.setString(13, defaultGroup.getId().toString());
             stmt.setString(14, m_sqlManager.validateNull(address));
             stmt.setString(15, m_sqlManager.validateNull(section));
@@ -559,8 +552,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         // this method is final to allow the java compiler to inline this code!
 
         // deserialize the additional userinfo hash
-        byte[] value = m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_USERS_USER_INFO"));
-        ByteArrayInputStream bin = new ByteArrayInputStream(value);
+        ByteArrayInputStream bin = new ByteArrayInputStream(m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_USERS_USER_INFO")));
         ObjectInputStream oin = new ObjectInputStream(bin);
         Hashtable info = (Hashtable)oin.readObject();
 
@@ -1401,16 +1393,12 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @see org.opencms.db.I_CmsUserDriver#writeUser(com.opencms.file.CmsUser)
      */
     public void writeUser(CmsUser user) throws CmsException {
-        byte[] value = null;
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_WRITE");
-
-            value = internalSerializeAdditionalUserInfo(user.getAdditionalInfo());
-
             // write data to database
             stmt.setString(1, m_sqlManager.validateNull(user.getDescription()));
             stmt.setString(2, m_sqlManager.validateNull(user.getFirstname()));
@@ -1419,7 +1407,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             stmt.setTimestamp(5, new Timestamp(user.getLastlogin()));
             stmt.setTimestamp(6, new Timestamp(0));
             stmt.setInt(7, user.getFlags());
-            m_sqlManager.setBytes(stmt, 8, value);
+            m_sqlManager.setBytes(stmt, 8, internalSerializeAdditionalUserInfo(user.getAdditionalInfo()));
             stmt.setString(9, user.getDefaultGroupId().toString());
             stmt.setString(10, m_sqlManager.validateNull(user.getAddress()));
             stmt.setString(11, m_sqlManager.validateNull(user.getSection()));

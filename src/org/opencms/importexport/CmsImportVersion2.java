@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/11/14 10:09:12 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -253,6 +253,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                     ByteArrayInputStream bin = new ByteArrayInputStream(value);
                     ObjectInputStream oin = new ObjectInputStream(bin);
                     userInfo = (Hashtable)oin.readObject();
+                    value = null;
                 } catch (IOException ioex) {
                     m_report.println(ioex);
                 }

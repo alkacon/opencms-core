@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/11/10 08:12:58 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/11/14 10:09:15 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.16 $ $Date: 2003/11/10 08:12:58 $
+ * @version $Revision: 1.17 $ $Date: 2003/11/14 10:09:15 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -117,6 +117,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
             OutputStream output = ((oracle.sql.BLOB)propertyValue).getBinaryOutputStream();
             output.write(value);
             output.close();
+            value = null;
                          
             commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
             commit.execute();
@@ -315,6 +316,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
             OutputStream output = ((oracle.sql.BLOB)propertyValue).getBinaryOutputStream();
             output.write(value);
             output.close();
+            value = null;
                          
             commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
             commit.execute();

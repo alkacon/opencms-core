@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsUserDriver.java,v $
- * Date   : $Date: 2003/10/10 11:43:46 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/11/14 10:09:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
 /**
  * MySQL implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.13 $ $Date: 2003/10/10 11:43:46 $
+ * @version $Revision: 1.14 $ $Date: 2003/11/14 10:09:16 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -102,13 +102,10 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     public CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
         //int id = m_sqlManager.nextPkId("C_TABLE_USERS");
         CmsUUID id = new CmsUUID();
-        byte[] value = null;
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
-            value = internalSerializeAdditionalUserInfo(additionalInfos);
-
             // user data is project independent- use a "dummy" project ID to receive
             // a JDBC connection from the offline connection pool
             conn = m_sqlManager.getConnection();
@@ -128,7 +125,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setTimestamp(9, new Timestamp(lastlogin));
             stmt.setTimestamp(10, new Timestamp(0));
             stmt.setInt(11, flags);
-            stmt.setBytes(12, value);
+            stmt.setBytes(12, internalSerializeAdditionalUserInfo(additionalInfos));
             stmt.setString(13, defaultGroup.getId().toString());
             stmt.setString(14, address);
             stmt.setString(15, section);
@@ -157,16 +154,12 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
      * @see org.opencms.db.I_CmsUserDriver#writeUser(com.opencms.file.CmsUser)
      */
     public void writeUser(CmsUser user) throws CmsException {
-        byte[] value = null;
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_WRITE");
-
-            value = internalSerializeAdditionalUserInfo(user.getAdditionalInfo());
-
             // write data to database
             stmt.setString(1, user.getDescription());
             stmt.setString(2, user.getFirstname());
@@ -175,7 +168,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setTimestamp(5, new Timestamp(user.getLastlogin()));
             stmt.setTimestamp(6, new Timestamp(0));
             stmt.setInt(7, user.getFlags());
-            stmt.setBytes(8, value);
+            stmt.setBytes(8, internalSerializeAdditionalUserInfo(user.getAdditionalInfo()));
             stmt.setString(9, (user.getDefaultGroupId() != null) ? user.getDefaultGroupId().toString() : "");
             stmt.setString(10, user.getAddress());
             stmt.setString(11, user.getSection());

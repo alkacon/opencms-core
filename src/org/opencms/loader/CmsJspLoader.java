@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2003/11/10 08:12:58 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/11/14 10:09:15 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -277,6 +277,9 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                 res.getOutputStream().flush();                
             }
         }
+        
+        result = null;
+        
         if (exportStream != null) {
             exportStream.write(file.getContents());
         }
@@ -634,6 +637,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                         CmsFlexResponse.processHeaders(f_res.getHeaders(), res);
                         res.getOutputStream().write(result);
                         res.getOutputStream().flush();
+                        
+                        result = null;
                     } else if (DEBUG > 1) {
                         System.err.println("JspLoader.load() resource is already commited!");
                     }
@@ -992,6 +997,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                 }                                         
                 fs.write(contents);                
                 fs.close();
+                contents = null;
                 
                 if (OpenCms.getLog(this).isInfoEnabled()) {
                     OpenCms.getLog(this).info("Updated JSP file \"" + jspfilename + "\" for resource \"" + cms.readAbsolutePath(file) + "\"");

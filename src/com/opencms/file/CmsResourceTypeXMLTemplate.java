@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeXMLTemplate.java,v $
- * Date   : $Date: 2003/07/30 17:02:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/11/14 10:09:09 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  * Describes the resource type "XMLTemplate".
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsResourceTypeXMLTemplate extends A_CmsResourceType {
 
@@ -77,6 +77,7 @@ public class CmsResourceTypeXMLTemplate extends A_CmsResourceType {
      */
     public CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException {
         CmsResource res = cms.doCreateFile(resourcename, contents, getResourceTypeName(), properties);
+        contents = null;
         // TODO: Move locking of resource to CmsObject or CmsDriverManager
         cms.doLockResource(cms.readAbsolutePath(res), false);
         return res;

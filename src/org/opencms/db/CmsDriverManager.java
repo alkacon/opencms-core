@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/11/13 10:29:26 $
- * Version: $Revision: 1.296 $
+ * Date   : $Date: 2003/11/14 10:09:12 $
+ * Version: $Revision: 1.297 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.296 $ $Date: 2003/11/13 10:29:26 $
+ * @version $Revision: 1.297 $ $Date: 2003/11/14 10:09:12 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1618,6 +1618,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), newFile, newFile.getType(), false);
         m_propertyCache.clear();
 
+        contents = null;
         clearResourceCache();
 
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", newFile)));
@@ -4343,6 +4344,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         CmsResource newResource = m_vfsDriver.importResource(context.currentProject(), parentFolder.getStructureId(), resource, filecontent, context.currentUser().getId(), resource.isFolder());
         newResource.setFullResourceName(newResourceName);
 
+        filecontent = null;
         clearResourceCache();
 
         // write metainfos for the folder
@@ -7093,7 +7095,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
 
         newResource.setFullResourceName(resourcename);
-
+        contents = null;
+        
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", newResource)));
 
         return newResource;
@@ -7261,6 +7264,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         // clear the cache
         clearResourceCache();
+        newResourceContent = null;
 
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
 
@@ -8227,7 +8231,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // update the cache
         //clearResourceCache(resource.getResourceName(), context.currentProject(), context.currentUser());
         clearResourceCache();
-
+        filecontent = null;
+        
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
     }
 
@@ -8575,7 +8580,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             }
             
             throw new CmsException("Error writing export point of " + file.toString(), e);
-        }        
+        }    
+        contents = null;
     }
     
     /**

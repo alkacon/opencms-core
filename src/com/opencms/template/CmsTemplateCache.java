@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateCache.java,v $
-* Date   : $Date: 2003/11/06 15:09:31 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/11/14 10:09:09 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -85,8 +85,7 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
         }
         if(key instanceof String) {
             return (byte[])templateCache.get(key);
-        }
-        else {
+        } else {
             if(OpenCms.getLog(this).isInfoEnabled()) {
                 OpenCms.getLog(this).info("Getting " + key + " from cache failed");
             }
@@ -119,8 +118,7 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
     public void put(Object key, byte[] content) {
         if(key instanceof String) {
             templateCache.put(key, content);
-        }
-        else {
+        } else {
             if(OpenCms.getLog(this).isWarnEnabled()) {
                 OpenCms.getLog(this).warn(key + " is not instanceof String");
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2003/11/13 17:32:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/11/14 10:09:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
     
@@ -914,7 +914,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             m_stream.write(b);
             if (m_servletStream != null) {
                 m_servletStream.write(b);
-            }
+            }            
         }
         
         /**

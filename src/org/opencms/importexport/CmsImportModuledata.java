@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/11/03 09:05:52 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/11/14 10:09:12 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.16 $ $Date: 2003/11/03 09:05:52 $
+ * @version $Revision: 1.17 $ $Date: 2003/11/14 10:09:12 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -517,6 +517,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             m_report.println(e);
         }
         newMedia.setMedia(mediacontent);
+        mediacontent = null;
         return newMedia;
     }
 

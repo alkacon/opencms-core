@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePointer.java,v $
- * Date   : $Date: 2003/11/08 10:32:43 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/11/14 10:09:09 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * Implementation of a resource type for external links
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsResourceTypePointer extends A_CmsResourceType {
 
@@ -89,6 +89,7 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
 
         // create the new link
         CmsResource res = cms.doCreateFile(resourcename, contents, getResourceTypeName(), properties);
+        contents = null;
 
         // lock the new file
         cms.lockResource(resourcename);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2003/10/28 13:28:41 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/11/14 10:09:15 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpSession;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * 
- * @version $Revision: 1.44 $ $Date: 2003/10/28 13:28:41 $
+ * @version $Revision: 1.45 $ $Date: 2003/11/14 10:09:15 $
  */
 public class CmsRequestHttpServlet implements I_CmsRequest {
 
@@ -312,9 +312,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
      * @return The selected uploaded file content.
      */
     public byte[] getFile(String name) {
-        byte[] content = null;
-        content = (byte[])m_files.get(name);
-        return content;
+        return (byte[])m_files.get(name);
     }
 
     /**
@@ -616,12 +614,9 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
             m_parameters.put(name, value);
         }
         else {
-
-            // This is a file
-            byte[] value = readAndSaveFile(in, boundary);
             filecounter++;
             // stroe the filecontent
-            m_files.put(filename, value);
+            m_files.put(filename, readAndSaveFile(in, boundary));
             // store the name of the file to the parameters
             m_parameters.put(name, filename);
         }
