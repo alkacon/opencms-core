@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2004/07/05 14:32:44 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/11/19 09:09:12 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.apache.lucene.document.Document;
 /**
  * Implementation interface for lucene document factories used in OpenCms.<p>
  * 
- * @version $Revision: 1.9 $ $Date: 2004/07/05 14:32:44 $
+ * @version $Revision: 1.10 $ $Date: 2004/11/19 09:09:12 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  */
@@ -71,11 +71,9 @@ public interface I_CmsDocumentFactory {
      * 
      * @param resourceType the resource type to get the document key for
      * @return the document key for the search manager
-     * @throws InstantiationException if something goes wrong
-     * @throws IllegalAccessException if something goes wrong
-     * @throws ClassNotFoundException if something goes wrong
+     * @throws CmsException if something goes wrong
      */
-    String getDocumentKey(String resourceType) throws InstantiationException, IllegalAccessException, ClassNotFoundException;
+    String getDocumentKey(String resourceType) throws CmsException;
     
     /**
      * Returns the name of the documenttype.<p>
