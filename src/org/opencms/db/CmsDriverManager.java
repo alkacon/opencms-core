@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/08/27 12:11:24 $
- * Version: $Revision: 1.415 $
+ * Date   : $Date: 2004/09/01 15:10:15 $
+ * Version: $Revision: 1.416 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.415 $ $Date: 2004/08/27 12:11:24 $
+ * @version $Revision: 1.416 $ $Date: 2004/09/01 15:10:15 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2501,7 +2501,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         }
 
         // read the result form the database
-        subResources = m_vfsDriver.readResources(
+        subResources = m_vfsDriver.readResourceTree(
             context.currentProject().getId(), 
             parent.getRootPath(), 
             filter.getType(), 
@@ -4299,22 +4299,231 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * 
      * @param context the current request context
      * @param directPublishResource a Cms resource to be published directly (in case 2), or null (in case 1)
-     * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published (in case 2)
+     * @param publishSiblings true, if all eventual siblings of the direct published resource should also get published (in case 2)
      * @param report an instance of I_CmsReport to print messages
      * @return a publish list with all new/changed/deleted files from the current (offline) project that will be published actually
      * @throws CmsException if something goes wrong
      * @see org.opencms.db.CmsPublishList
-     */    
-    public synchronized CmsPublishList getPublishList(CmsRequestContext context, CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws CmsException {
+     */   
+    public synchronized CmsPublishList getPublishList(CmsRequestContext context, CmsResource directPublishResource, boolean publishSiblings, I_CmsReport report) throws CmsException {
+    
+        CmsPublishList publishList = new CmsPublishList(directPublishResource);
+        
+        if (directPublishResource == null) {
+            // when publishing a project, 
+            // all modified resources with the last change done in the current project are candidates if unlocked
+            publishList.addFolders(
+                filterResources(context, null,
+                    m_vfsDriver.readResourceTree(
+                        context.currentProject().getId(), 
+                        I_CmsConstants.C_READ_IGNORE_PARENT,
+                        CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
+                        I_CmsConstants.C_STATE_UNCHANGED,
+                        I_CmsConstants.C_READ_IGNORE_TIME, 
+                        I_CmsConstants.C_READ_IGNORE_TIME,
+                        I_CmsConstants.C_READMODE_INCLUDE_TREE
+                        | I_CmsConstants.C_READMODE_INCLUDE_PROJECT
+                        | I_CmsConstants.C_READMODE_EXCLUDE_STATE
+                )));             
+            publishList.addFiles(
+                filterResources(context, publishList.getFolderList(),
+                    m_vfsDriver.readResourceTree(
+                        context.currentProject().getId(), 
+                        I_CmsConstants.C_READ_IGNORE_PARENT, 
+                        CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, 
+                        I_CmsConstants.C_STATE_UNCHANGED, 
+                        I_CmsConstants.C_READ_IGNORE_TIME, 
+                        I_CmsConstants.C_READ_IGNORE_TIME,
+                        I_CmsConstants.C_READMODE_INCLUDE_TREE
+                        | I_CmsConstants.C_READMODE_INCLUDE_PROJECT
+                        | I_CmsConstants.C_READMODE_EXCLUDE_TYPE 
+                        | I_CmsConstants.C_READMODE_EXCLUDE_STATE      
+                )));            
+        } else if (directPublishResource.isFolder()) { 
+            // when publishing a folder directly, 
+            // the folder and all modified resources within the tree below this folder 
+            // and with the last change done in the current project are candidates if unlocked           
+            publishList.addFolders(
+                filterResources(context, null,
+                    m_vfsDriver.readResourceTree(
+                        context.currentProject().getId(), 
+                        directPublishResource.getRootPath(),
+                        CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
+                        I_CmsConstants.C_STATE_UNCHANGED,
+                        I_CmsConstants.C_READ_IGNORE_TIME, 
+                        I_CmsConstants.C_READ_IGNORE_TIME,
+                        I_CmsConstants.C_READMODE_INCLUDE_TREE
+                        | I_CmsConstants.C_READMODE_INCLUDE_PROJECT
+                        | I_CmsConstants.C_READMODE_EXCLUDE_STATE
+                )));            
+            publishList.addFiles(
+                filterResources(context, publishList.getFolderList(),
+                    m_vfsDriver.readResourceTree(
+                        context.currentProject().getId(), 
+                        directPublishResource.getRootPath(), 
+                        CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, 
+                        I_CmsConstants.C_STATE_UNCHANGED, 
+                        I_CmsConstants.C_READ_IGNORE_TIME, 
+                        I_CmsConstants.C_READ_IGNORE_TIME,
+                        I_CmsConstants.C_READMODE_INCLUDE_TREE
+                        | I_CmsConstants.C_READMODE_INCLUDE_PROJECT
+                        | I_CmsConstants.C_READMODE_EXCLUDE_TYPE 
+                        | I_CmsConstants.C_READMODE_EXCLUDE_STATE      
+                )));
+        } else if (directPublishResource.isFile() && I_CmsConstants.C_STATE_UNCHANGED != directPublishResource.getState()) {
+            // when publishing a file directly this file is the only candidate
+            // if it is modified and unlocked
+            if (getLock(context, directPublishResource.getRootPath()).isNullLock()) {
+                publishList.addFile(directPublishResource);
+            }
+        }
+                
+        // Step 2: if desired, extend the list of files to publish with related siblings
+        if (publishSiblings) {
+            List publishFiles = publishList.getFileList();
+            int size = publishFiles.size();
+            for (int i = 0; i < size; i++) {
+                CmsResource currentFile = (CmsResource)publishFiles.get(i);
+                if (currentFile.getSiblingCount() > 1) {
+                    publishList.addFiles(
+                        filterSiblings(
+                            context,
+                            currentFile,
+                            publishList.getFolderList(),
+                            readSiblings(context, currentFile.getRootPath(), CmsResourceFilter.ALL_MODIFIED)
+                    ));
+                }    
+            }
+        }
+        
+        return publishList;
+    }
+    
+    /**
+     * Returns a filtered list of resources for publishing.<p>
+     * Contains all resources, which are not locked 
+     * and which have a parent folder that is already published or will be published, too.
+     * 
+     * @param context the current request context
+     * @param folderList the list of folders that will be published
+     * @param resourceList the list of resources to filter
+     * @return a filtered list of resources
+     */
+    private List filterResources(CmsRequestContext context, List folderList, List resourceList) {
+        
+        List result = new ArrayList();
+        
+        if (folderList == null) {
+            folderList = result;
+        }
+        
+        for (int i = 0; i < resourceList.size(); i++) {
+            CmsResource res = (CmsResource)resourceList.get(i);
+            try {
+                if (!getLock(context, res.getRootPath()).isNullLock()) {
+                    continue;
+                }
+                
+                if (!I_CmsConstants.C_ROOT.equals(res.getRootPath()) && !checkParentResource(context, folderList, res)) {
+                    continue;
+                }
+
+                result.add(res);
+
+            } catch (Exception e) {
+                // noop
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns a filtered list of sibling resources for publishing.<p>
+     * Contains all other siblings of the given resources, which are not locked
+     * and which have a parent folder that is already published or will be published, too.
+     * 
+     * @param context the current request context
+     * @param currentResource the resource to lookup siblings 
+     * @param folderList the list of folders that will be published
+     * @param resourceList 
+     * @return
+     */
+    private List filterSiblings(CmsRequestContext context, CmsResource currentResource, List folderList, List resourceList) {
+        
+        List result = new ArrayList();
+        
+        for (int i = 0; i < resourceList.size(); i++) {
+            CmsResource res = (CmsResource)resourceList.get(i);
+            try {  
+                if (res.getStructureId().equals(currentResource.getStructureId())) {
+                    continue;
+                }
+                
+                if (!getLock(context, res.getRootPath()).isNullLock()) {
+                    continue;
+                }
+                
+                if (!I_CmsConstants.C_ROOT.equals(res.getRootPath()) && !checkParentResource(context, folderList, res)) {
+                    continue;
+                }                
+                        
+                result.add(res);
+               
+            } catch (Exception e) {
+                // noop
+            }
+        }
+        return result;
+    }   
+    
+    /**
+     * @param context the current request context
+     * @param folderList
+     * @param res
+     * @return
+     */
+    private boolean checkParentResource(CmsRequestContext context, List folderList, CmsResource res) {
+    
+        String parentPath = CmsResource.getParentFolder(res.getRootPath());
+        CmsResource parent;
+        
+        if (parentPath == null) {
+            // resource has no parent
+            return true;
+        }
+        
+        try {
+            parent = readResource(context, parentPath, CmsResourceFilter.ALL);
+        } catch (Exception e) {
+            // failure: if we cannot read the parent, we should not publish the resource
+            return false;
+        }
+        
+        
+        if (parent.getState() != I_CmsConstants.C_STATE_NEW) {
+            // parent is already published
+            return true;
+        }
+        
+        for (int j = 0; j < folderList.size(); j++) {
+            if (((CmsResource)folderList.get(j)).getStructureId().equals(parent.getStructureId())) {
+                // parent will be published
+                return true;
+            }
+        }
+        
+        // parent is new, but will not be published
+        return false;
+    } 
+    
+    public synchronized CmsPublishList xgetPublishList(CmsRequestContext context, CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws CmsException {
         CmsPublishList publishList = null;
         List offlineFiles = null;
         List siblings = null;
-        List projectResources = null;
-        List offlineFolders = null;
-        List sortedFolderList = null;
+
         Iterator i = null;
         Iterator j = null;
-        Map sortedFolderMap = null;
+        
         CmsResource currentSibling = null;
         CmsResource currentFileHeader = null;
         boolean directPublish = false;
@@ -4323,8 +4532,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         String currentResourceName = null;
         String currentSiblingName = null;
         CmsLock currentLock = null;
-        CmsFolder currentFolder = null;
-        List deletedFolders = null;
+        
         CmsProperty property = null;
         
         try {
@@ -4335,133 +4543,16 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             // read the project resources of the project that gets published
             // (= folders that belong to the current project)            
             report.print(report.key("report.publish_read_projectresources") + report.key("report.dots"));
-            projectResources = readProjectResources(context.currentProject());
-            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);            
+            List projectResources = readProjectResources(context.currentProject());
+            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);           
             
             ////////////////////////////////////////////////////////////////////////////////////////
             
             // construct a publish list
             directPublish = directPublishResource != null;
             directPublishFile = directPublish && directPublishResource.isFile();
+            publishList = preparePublishList(context, directPublishResource, projectResources, report);         
             
-            if (directPublishFile) {
-                // a file resource gets published directly
-                publishList = new CmsPublishList(directPublishResource, directPublishFile);
-            } else {
-                if (directPublish) {
-                    // a folder resource gets published directly
-                    publishList = new CmsPublishList(directPublishResource, directPublishFile);
-                } else {
-                    // a project gets published directly
-                    publishList = new CmsPublishList();
-                }
-            }            
-            
-            ////////////////////////////////////////////////////////////////////////////////////////
-
-            // identify all new/changed/deleted Cms folder resources to be published        
-            // don't select and sort unpublished folders if a file gets published directly
-            if (!directPublishFile) {
-                report.println(report.key("report.publish_prepare_folders"), I_CmsReport.C_FORMAT_HEADLINE);
-
-                sortedFolderMap = new HashMap();
-                deletedFolders = new ArrayList();
-
-                // read all changed/new/deleted folders
-                report.print(report.key("report.publish_read_projectfolders") + report.key("report.dots"));
-                offlineFolders = getVfsDriver().readFolders(context.currentProject().getId());
-                report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-
-                // sort out all folders that will not be published
-                report.print(report.key("report.publish_filter_folders") + report.key("report.dots"));
-                i = offlineFolders.iterator();
-                while (i.hasNext()) {
-                    publishCurrentResource = false;
-
-                    currentFolder = (CmsFolder) i.next();
-                    currentResourceName = currentFolder.getRootPath();
-                    currentLock = getLock(context, currentResourceName);
-
-                    // the resource must have either a new/deleted state in the link or a new/delete state in the resource record
-                    publishCurrentResource = currentFolder.getState() > I_CmsConstants.C_STATE_UNCHANGED;
-
-                    if (directPublish) {
-                        // the resource must be a sub resource of the direct-publish-resource in case of a "direct publish"
-                        publishCurrentResource = publishCurrentResource && currentResourceName.startsWith(publishList.getDirectPublishResourceName());
-                    } else {
-                        // the resource must have a changed state and must be changed in the project that is currently published
-                        publishCurrentResource = publishCurrentResource && currentFolder.getProjectLastModified() == context.currentProject().getId();
-
-                        // the resource must be in one of the paths defined for the project            
-                        publishCurrentResource = publishCurrentResource && CmsProject.isInsideProject(projectResources, currentFolder);
-                    }
-
-                    // the resource must be unlocked
-                    publishCurrentResource = publishCurrentResource && currentLock.isNullLock();
-
-                    if (publishCurrentResource) {
-                        sortedFolderMap.put(currentResourceName, currentFolder);
-                    }
-                }
-
-                // ensure that the folders appear in the correct (DFS) top-down tree order
-                sortedFolderList = new ArrayList(sortedFolderMap.keySet());
-                Collections.sort(sortedFolderList);
-
-                // split the folders up into new/changed folders and deleted folders
-                i = sortedFolderList.iterator();
-                while (i.hasNext()) {
-                    currentResourceName = (String) i.next();
-                    currentFolder = (CmsFolder) sortedFolderMap.get(currentResourceName);
-
-                    if (currentFolder.getState() == I_CmsConstants.C_STATE_DELETED) {
-                        deletedFolders.add(currentResourceName);
-                    } else {
-                        publishList.addFolder(currentFolder);
-                    }
-                }
-
-                if (deletedFolders.size() > 0) {
-                    // ensure that the deleted folders appear in the correct (DFS) bottom-up tree order
-                    Collections.sort(deletedFolders);
-                    Collections.reverse(deletedFolders);
-                    i = deletedFolders.iterator();
-                    while (i.hasNext()) {
-                        currentResourceName = (String) i.next();
-                        currentFolder = (CmsFolder) sortedFolderMap.get(currentResourceName);
-
-                        publishList.addDeletedFolder(currentFolder);
-                    }
-                }
-
-                // clean up any objects that are not needed anymore instantly
-                if (sortedFolderList != null) {
-                    sortedFolderList.clear();
-                    sortedFolderList = null;
-                }
-
-                if (sortedFolderMap != null) {
-                    sortedFolderMap.clear();
-                    sortedFolderMap = null;
-                }
-
-                if (offlineFolders != null) {
-                    offlineFolders.clear();
-                    offlineFolders = null;
-                }
-
-                if (deletedFolders != null) {
-                    deletedFolders.clear();
-                    deletedFolders = null;
-                }
-
-                report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-                report.println(report.key("report.publish_prepare_folders_finished"), I_CmsReport.C_FORMAT_HEADLINE);
-
-            } else {
-                // a file gets published directly- the list of unpublished folders remain empty
-            }
-
             ///////////////////////////////////////////////////////////////////////////////////////////
 
             // identify all new/changed/deleted Cms file resources to be published        
@@ -4632,6 +4723,131 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         return publishList;
     }
+
+    private CmsPublishList preparePublishList(CmsRequestContext context, CmsResource directPublishResource, List projectResources, I_CmsReport report) throws CmsException {
+
+        CmsPublishList publishList;
+        Map sortedFolderMap;
+        List deletedFolders;
+        List offlineFolders;
+        List sortedFolderList;
+
+        boolean directPublish = directPublishResource != null;
+        boolean directPublishFile = directPublish && directPublishResource.isFile();
+        if (directPublishFile) {
+            // a file resource gets published directly
+            return new CmsPublishList(directPublishResource);
+        } 
+                  
+        if (directPublishResource != null) {
+            // a folder resource gets published directly
+            publishList = new CmsPublishList(directPublishResource);
+        } else {
+            // a project gets published directly
+            publishList = new CmsPublishList();
+        } 
+        
+        // identify all new/changed/deleted Cms folder resources to be published        
+        // don't select and sort unpublished folders if a file gets published directly
+            report.println(report.key("report.publish_prepare_folders"), I_CmsReport.C_FORMAT_HEADLINE);
+
+            sortedFolderMap = new HashMap();
+            deletedFolders = new ArrayList();
+
+            
+            // read all changed/new/deleted folders
+            report.print(report.key("report.publish_read_projectfolders") + report.key("report.dots"));
+            offlineFolders = getVfsDriver().readFolders(context.currentProject().getId());
+            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+
+            // sort out all folders that will not be published
+            report.print(report.key("report.publish_filter_folders") + report.key("report.dots"));
+            Iterator i = offlineFolders.iterator();
+            while (i.hasNext()) {
+                boolean publishCurrentResource = false;
+
+                CmsFolder currentFolder = (CmsFolder) i.next();
+                String currentResourceName = currentFolder.getRootPath();
+                CmsLock currentLock = getLock(context, currentResourceName);
+
+                // the resource must have either a new/deleted state in the link or a new/delete state in the resource record
+                publishCurrentResource = currentFolder.getState() > I_CmsConstants.C_STATE_UNCHANGED;
+
+                if (directPublishResource != null) {
+                    // the resource must be a sub resource of the direct-publish-resource in case of a "direct publish"
+                    publishCurrentResource = publishCurrentResource && currentResourceName.startsWith(publishList.getDirectPublishResource().getRootPath());
+                } else {
+                    // the resource must have a changed state and must be changed in the project that is currently published
+                    publishCurrentResource = publishCurrentResource && currentFolder.getProjectLastModified() == context.currentProject().getId();
+
+                    // the resource must be in one of the paths defined for the project            
+                    publishCurrentResource = publishCurrentResource && CmsProject.isInsideProject(projectResources, currentFolder);
+                }
+
+                // the resource must be unlocked
+                publishCurrentResource = publishCurrentResource && currentLock.isNullLock();
+
+                if (publishCurrentResource) {
+                    sortedFolderMap.put(currentResourceName, currentFolder);
+                }
+            }
+
+            // ensure that the folders appear in the correct (DFS) top-down tree order
+            sortedFolderList = new ArrayList(sortedFolderMap.keySet());
+            Collections.sort(sortedFolderList);
+
+            // split the folders up into new/changed folders and deleted folders
+            i = sortedFolderList.iterator();
+            while (i.hasNext()) {
+                String currentResourceName = (String) i.next();
+                CmsFolder currentFolder = (CmsFolder) sortedFolderMap.get(currentResourceName);
+
+                if (currentFolder.getState() == I_CmsConstants.C_STATE_DELETED) {
+                    deletedFolders.add(currentResourceName);
+                } else {
+                    publishList.addFolder(currentFolder);
+                }
+            }
+
+            if (deletedFolders.size() > 0) {
+                // ensure that the deleted folders appear in the correct (DFS) bottom-up tree order
+                Collections.sort(deletedFolders);
+                Collections.reverse(deletedFolders);
+                i = deletedFolders.iterator();
+                while (i.hasNext()) {
+                    String currentResourceName = (String) i.next();
+                    CmsFolder currentFolder = (CmsFolder) sortedFolderMap.get(currentResourceName);
+
+                    publishList.addFolder(currentFolder);
+                }
+            }
+
+            // clean up any objects that are not needed anymore instantly
+            if (sortedFolderList != null) {
+                sortedFolderList.clear();
+                sortedFolderList = null;
+            }
+
+            if (sortedFolderMap != null) {
+                sortedFolderMap.clear();
+                sortedFolderMap = null;
+            }
+
+            if (offlineFolders != null) {
+                offlineFolders.clear();
+                offlineFolders = null;
+            }
+
+            if (deletedFolders != null) {
+                deletedFolders.clear();
+                deletedFolders = null;
+            }
+
+            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            report.println(report.key("report.publish_prepare_folders_finished"), I_CmsReport.C_FORMAT_HEADLINE);
+            
+            return publishList;
+    }
     
     /**
      * Returns a list with all sub resources of a given folder that have benn modified in a given time range.<p>
@@ -4655,7 +4871,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         cacheKey = getCacheKey(context.currentUser().getName() + "_SubtreeResourcesInTimeRange", context.currentProject(), folder + "_" + starttime + "_" + endtime);
         if ((extractedResources = (List)m_resourceListCache.get(cacheKey)) == null) {
             
-            extractedResources = m_vfsDriver.readResources(
+            extractedResources = m_vfsDriver.readResourceTree(
                 context.currentProject().getId(), 
                 folder, 
                 I_CmsConstants.C_READ_IGNORE_TYPE, 
@@ -5524,7 +5740,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         hasPublishPermissions |= isManagerOfProject(context);
         
         if (publishList.isDirectPublish()) {
-            directPublishResource = readResource(context, publishList.getDirectPublishResourceName(), CmsResourceFilter.ALL);
+            directPublishResource = publishList.getDirectPublishResource();
             // or he has the explicit permission to direct publish a resource
             hasPublishPermissions |= (PERM_ALLOWED == hasPermissions(context, directPublishResource, CmsPermissionSet.ACCESS_DIRECT_PUBLISH, true, CmsResourceFilter.ALL));
         }
@@ -5549,9 +5765,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 if (publishList.isDirectPublish()) {
                     try {
                         getVfsDriver().readFolder(I_CmsConstants.C_PROJECT_ONLINE_ID, 
-                            CmsResource.getParentFolder(publishList.getDirectPublishResourceName()));
+                            CmsResource.getParentFolder(publishList.getDirectPublishResource().getRootPath()));
                     } catch (CmsException e) {
-                        report.println("Parent folder not published for resource " + publishList.getDirectPublishResourceName(), I_CmsReport.C_FORMAT_ERROR);
+                        report.println("Parent folder not published for resource " + publishList.getDirectPublishResource().getRootPath(), I_CmsReport.C_FORMAT_ERROR);
                         return;
                     }
                 }

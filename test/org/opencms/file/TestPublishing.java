@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2004/08/10 15:42:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/09/01 15:10:51 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,8 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.report.CmsShellReport;
@@ -46,7 +48,7 @@ import org.opencms.test.OpenCmsTestResourceFilter;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestPublishing extends OpenCmsTestCase {
   
@@ -70,8 +72,11 @@ public class TestPublishing extends OpenCmsTestCase {
         suite.setName(TestPublishing.class.getName());
         
         suite.addTest(new TestPublishing("testPublishNewFiles"));
+        suite.addTest(new TestPublishing("testPublishNewFilesInNewFolder"));
         suite.addTest(new TestPublishing("testPublishChangedFiles"));
+        suite.addTest(new TestPublishing("testPublishLockedFiles"));
         suite.addTest(new TestPublishing("testPublishDeletedFiles"));
+        suite.addTest(new TestPublishing("testPublishProjectLastmodified"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -86,7 +91,7 @@ public class TestPublishing extends OpenCmsTestCase {
         
         return wrapper;
     }     
-    
+     
     /**
      * Test publishing new files.<p>
      * 
@@ -97,7 +102,6 @@ public class TestPublishing extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();     
         echo("Testing publish new files");
         
-        
         String source = "/folder2/subfolder21/image1.gif";
         String destination1 = "/folder2/image1_new.gif";
         String destination2 = "/folder2/image1_sibling1.gif";
@@ -106,9 +110,7 @@ public class TestPublishing extends OpenCmsTestCase {
         
         CmsProject onlineProject  = cms.readProject("Online");
         CmsProject offlineProject  = cms.readProject("Offline");
-        
 
-        
         // make four copies of a file to be published later
         cms.copyResource(source, destination1, I_CmsConstants.C_COPY_AS_NEW);
         cms.copyResource(source, destination2, I_CmsConstants.C_COPY_AS_SIBLING);
@@ -129,7 +131,7 @@ public class TestPublishing extends OpenCmsTestCase {
         //
         cms.publishResource(destination1);
 
-        // the file must be no available in the online project
+        // the file must be now available in the online project
         cms.getRequestContext().setCurrentProject(onlineProject);
         try {
             cms.readResource(destination1);
@@ -203,6 +205,84 @@ public class TestPublishing extends OpenCmsTestCase {
         assertState(cms, destination3, I_CmsConstants.C_STATE_UNCHANGED);
         assertState(cms, destination4, I_CmsConstants.C_STATE_UNCHANGED);
     }  
+    
+    /**
+     * Test publishing files within a new unpublished folder.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishNewFilesInNewFolder() throws Throwable {
+        
+        CmsObject cms = getCmsObject();     
+        echo("Testing publishing new files in new folder");
+        
+        String source = "/folder1/image1.gif";
+        String newFolder = "/new_folder/";
+        String newFile = newFolder + "new_file";
+        String newSibling = newFolder + "new_sibling";
+        
+        cms.createResource(newFolder, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        cms.unlockResource(newFolder);
+        storeResources(cms, newFolder);
+        
+        // change to test project
+        CmsProject project = getTestProject(cms);
+        cms.getRequestContext().setCurrentProject(project);
+        
+        cms.copyResource(source, newFile, I_CmsConstants.C_COPY_AS_NEW);
+        cms.unlockResource(newFile);
+        
+        cms.copyResource(source, newSibling, I_CmsConstants.C_COPY_AS_SIBLING);
+        cms.unlockResource(newSibling);
+        
+        // direct publish of the new file will not publish the new file
+        echo ("Publishing the resource directly");
+        
+        storeResources(cms, newFile);
+        cms.publishResource(newFile);
+        assertFilter(cms, newFile, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        
+        // direct publish of another sibling will not publish the new sibling
+        echo ("Publishing another sibling");
+        cms.lockResource(source);
+        cms.touch(source, System.currentTimeMillis(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
+        cms.unlockResource(source);
+        
+        storeResources(cms, newSibling);
+        cms.publishResource(source, true, new CmsShellReport());
+        assertFilter(cms, newSibling, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        
+        // publishing the test project will not publish the new file or the new sibling
+        echo ("Publishing the test project");
+        cms.publishProject();
+        
+        assertFilter(cms, newFile, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        assertFilter(cms, newSibling, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        
+        // publishing the offline project will publish the folder but not the resources
+        echo ("Publishing the offline project");
+        
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        cms.publishProject();
+        
+        assertFilter(cms, newFolder, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);
+        assertState(cms, newFolder, I_CmsConstants.C_STATE_UNCHANGED);
+        
+        assertFilter(cms, newFile, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        assertFilter(cms, newSibling, OpenCmsTestResourceFilter.FILTER_EQUAL);        
+        
+        // publishing the test proejct again will now publish the resources
+        echo ("Publishing the test project again");
+        cms.getRequestContext().setCurrentProject(project);
+        cms.publishProject();
+        
+        assertFilter(cms, newFile, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);
+        assertState(cms, newFile, I_CmsConstants.C_STATE_UNCHANGED);
+        
+        assertFilter(cms, newSibling, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);
+        assertState(cms, newSibling, I_CmsConstants.C_STATE_UNCHANGED);
+        
+    }   
     
     /**
      * Test publishing changed files.<p>
@@ -319,6 +399,67 @@ public class TestPublishing extends OpenCmsTestCase {
         assertState(cms, resource3, I_CmsConstants.C_STATE_UNCHANGED);
         assertState(cms, resource4, I_CmsConstants.C_STATE_UNCHANGED);
     }  
+
+    /**
+     * Test publishing changed files.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishLockedFiles() throws Throwable {
+        
+        CmsObject cms = getCmsObject();     
+        echo("Testing publish locked files");
+        
+        String source = "/folder2/subfolder21/image1.gif";
+        String resource1 = "/folder2/image1_new.gif";
+        String resource2 = "/folder2/image1_sibling1.gif";
+        
+        CmsProject onlineProject  = cms.readProject("Online");
+        
+        CmsProperty prop0;
+        CmsProperty prop1;
+        CmsProperty prop2;
+  
+        // make changes to the resources 
+        // do not need to make any changes to resource3 and resource4 as they are
+        // siblings of resource2!
+ 
+        cms.lockResource(source);
+        cms.lockResource(resource1);
+        cms.lockResource(resource2);
+        
+        cms.writePropertyObject(source, new CmsProperty("Title", source + " modified", null));
+        cms.writePropertyObject(resource1, new CmsProperty("Title", resource1 + " modified", null));
+        cms.writePropertyObject(resource2, new CmsProperty("Title", resource2 + " modified", null));
+
+        storeResources(cms, source);
+        storeResources(cms, resource1);
+        storeResources(cms, resource2);
+       
+        // publish a modified resource without siblings
+        cms.publishProject();
+
+        // ensure that all changed resources are still changed in the offline project
+        assertState(cms, source, I_CmsConstants.C_STATE_CHANGED);
+        assertState(cms, resource1, I_CmsConstants.C_STATE_CHANGED);
+        assertState(cms, resource2, I_CmsConstants.C_STATE_CHANGED);
+                
+        // ensure that all changed resources are NOT published
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        prop0 = cms.readPropertyObject(source, "Title", false);
+        prop1 = cms.readPropertyObject(resource1, "Title", false);
+        prop2 = cms.readPropertyObject(resource2, "Title", false);
+        
+        if (prop0.getValue().equals((source + " modified"))) {
+            fail("Property published for " + source);
+        }
+        if (prop1.getValue().equals((resource1 + " modified"))) {
+            fail("Property published for " + resource1);
+        }        
+        if (prop2.getValue().equals((resource2 + " modified"))) {
+            fail("Property published for " + resource2);
+        }
+    }  
     
     /**
      * Test publishing deelted files.<p>
@@ -361,15 +502,16 @@ public class TestPublishing extends OpenCmsTestCase {
        
        cms.getRequestContext().setCurrentProject(offlineProject);
              
-       // publish a deleted resource with siblings, preserve the siblings
-       //
+       // publish a deleted resource with siblings, 
+       // delete the siblings also, but publish only the resource itself
        
        // delete the resources 
        cms.lockResource(resource2);
        cms.deleteResource(resource2, I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
        cms.unlockResource(resource2);
-      
-       cms.publishResource(resource2);
+       
+       // this test makes only sense when siblings are published
+       cms.publishResource(resource2, false, new CmsShellReport());
 
        // the online file must be deleted
        cms.getRequestContext().setCurrentProject(onlineProject);
@@ -423,5 +565,111 @@ public class TestPublishing extends OpenCmsTestCase {
       
       cms.getRequestContext().setCurrentProject(offlineProject);
 
-    }  
+    }
+    
+    /**
+     * Tests publishing resources within a distinct project.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishProjectLastmodified() throws Throwable {
+
+        CmsObject cms = getCmsObject();     
+        echo("Testing publishing a distinct project");
+        
+        String path = "/folder1";
+        String res1 = path + "/page1.html";
+        String res2 = path + "/page2.html";
+        
+        long timestamp = System.currentTimeMillis();
+
+        cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
+        storeResources(cms, res1);
+        
+        // change first resource in the offline project
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        cms.lockResource(res1);
+        cms.touch(res1, timestamp, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
+        
+        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        
+        // create a new project
+        CmsProject project = getTestProject(cms);
+        cms.getRequestContext().setCurrentProject(project);
+        cms.copyResourceToProject(path);
+        
+        // and change another resource in this project
+        cms.lockResource(res2);
+        cms.touch(res2, timestamp, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
+        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        storeResources(cms, res2);
+        
+        // when the project is published, only the second resource will be published
+        cms.publishProject();
+        
+        cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
+        this.assertFilter(cms, res1, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        this.assertFilter(cms, res2, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);
+        this.assertDateLastModified(cms, res2, timestamp);
+        
+        echo("Testing publishing in different projects");
+        
+        // change back to the test project, create a new resource
+        String res3 = path + "/testPublishProjectLastmodified.txt";
+        cms.getRequestContext().setCurrentProject(project);
+        cms.createResource(res3, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        
+        // change to offline project, copy resource as sibling
+        // this will also change the project in which the source was lastmodified (now "Offline")
+        String res4 = "/testPublishProjectLastmodified.txt";
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        cms.copyResource(res3, res4, I_CmsConstants.C_COPY_AS_SIBLING);
+        
+        // check the current state of the resources
+        assertState(cms, res3, I_CmsConstants.C_STATE_NEW);
+        assertState(cms, res4, I_CmsConstants.C_STATE_NEW);
+        
+        // publish the test project
+        cms.getRequestContext().setCurrentProject(project);
+        cms.unlockProject(project.getId());
+        cms.publishProject();
+        
+        // the resource inside the test project must not be published (not in test project)
+        assertState(cms, res3, I_CmsConstants.C_STATE_NEW);
+        
+        // the sibling outside the test project must not be published (not in test project)
+        assertState(cms, res4, I_CmsConstants.C_STATE_NEW);
+        
+        // publish the root folder of the test project within the test project
+        cms.publishResource(path, true, new CmsShellReport());
+        
+        // the resource inside the test project must not be published (still not in test project)
+        assertState(cms, res3, I_CmsConstants.C_STATE_NEW);
+        
+        // the sibling outside the test project must not be published (still not in test project)
+        assertState(cms, res4, I_CmsConstants.C_STATE_NEW);        
+    }
+    
+    /**
+     * Returns a project for testing purposes.<p>
+     * 
+     * @param cms the cms object
+     * @return a project for testing purposes
+     */
+    CmsProject getTestProject(CmsObject cms) {
+        
+        CmsProject project = null;
+        
+        try {
+            project = cms.readProject("Test");
+        } catch (Exception e) {
+            try {
+                project = cms.createProject("Test", "", "Users", "Administrators");
+            } catch (Exception ee) {
+                // noop
+            }
+        }
+        
+        return project;
+    }
 }

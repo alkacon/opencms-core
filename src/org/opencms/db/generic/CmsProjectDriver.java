@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/08/27 12:11:56 $
- * Version: $Revision: 1.187 $
+ * Date   : $Date: 2004/09/01 15:10:26 $
+ * Version: $Revision: 1.188 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.187 $ $Date: 2004/08/27 12:11:56 $
+ * @version $Revision: 1.188 $ $Date: 2004/09/01 15:10:26 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1149,7 +1149,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @see org.opencms.db.I_CmsProjectDriver#publishProject(org.opencms.file.CmsRequestContext, org.opencms.report.I_CmsReport, org.opencms.file.CmsProject, org.opencms.db.CmsPublishList, boolean, int, int)
      */
     public synchronized void publishProject(CmsRequestContext context, I_CmsReport report, CmsProject onlineProject, CmsPublishList publishList, boolean backupEnabled, int backupTagId, int maxVersions) throws Exception {
-        CmsFolder currentFolder = null;
+        
         CmsResource currentFileHeader = null;
         long publishDate = System.currentTimeMillis();
         Iterator i = null;
@@ -1182,16 +1182,16 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             }
 
             while (i.hasNext()) {
-                currentFolder = (CmsFolder) i.next();
+                CmsResource currentFolder = (CmsResource) i.next();
 
                 if (currentFolder.getState() == I_CmsConstants.C_STATE_NEW) {
                     // bounce the current publish task through all project drivers
-                    m_driverManager.getProjectDriver().publishFolder(context, report, ++publishedFolderCount, n, onlineProject, currentFolder, backupEnabled, publishDate, publishList.getPublishHistoryId(), backupTagId, maxVersions);
+                    m_driverManager.getProjectDriver().publishFolder(context, report, ++publishedFolderCount, n, onlineProject, new CmsFolder(currentFolder), backupEnabled, publishDate, publishList.getPublishHistoryId(), backupTagId, maxVersions);
                     // reset the resource state to UNCHANGED and the last-modified-in-project-ID to 0
                     internalResetResourceState(context, currentFolder);
                 } else if (currentFolder.getState() == I_CmsConstants.C_STATE_CHANGED) {
                     // bounce the current publish task through all project drivers
-                    m_driverManager.getProjectDriver().publishFolder(context, report, ++publishedFolderCount, n, onlineProject, currentFolder, backupEnabled, publishDate, publishList.getPublishHistoryId(), backupTagId, maxVersions);
+                    m_driverManager.getProjectDriver().publishFolder(context, report, ++publishedFolderCount, n, onlineProject, new CmsFolder(currentFolder), backupEnabled, publishDate, publishList.getPublishHistoryId(), backupTagId, maxVersions);
                     // reset the resource state to UNCHANGED and the last-modified-in-project-ID to 0
                     internalResetResourceState(context, currentFolder);
                 }
@@ -1234,23 +1234,23 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             ////////////////////////////////////////////////////////////////////////////////////////
 
             // publish deleted folders
-            
-            if (publishList.getDeletedFolderList().isEmpty()) {
+            List deletedFolders = publishList.getDeletedFolderList();
+            if (deletedFolders.isEmpty()) {
                 return;
             }
 
             deletedFolderCount = 0;
-            n = publishList.getDeletedFolderList().size();
-            i = publishList.getDeletedFolderList().iterator();
+            n = deletedFolders.size();
+            i = deletedFolders.iterator();
 
             if (n > 0) {
                 report.println(report.key("report.publish_delete_folders_begin"), I_CmsReport.C_FORMAT_HEADLINE);
             }
 
             while (i.hasNext()) {
-                currentFolder = (CmsFolder) i.next();               
+                CmsResource currentFolder = (CmsResource) i.next();               
                 // bounce the current publish task through all project drivers
-                m_driverManager.getProjectDriver().publishDeletedFolder(context, report, ++deletedFolderCount, n, onlineProject, currentFolder, backupEnabled, publishDate, publishList.getPublishHistoryId(), backupTagId, maxVersions);
+                m_driverManager.getProjectDriver().publishDeletedFolder(context, report, ++deletedFolderCount, n, onlineProject, new CmsFolder(currentFolder), backupEnabled, publishDate, publishList.getPublishHistoryId(), backupTagId, maxVersions);
             }
 
             if (n > 0) {
@@ -1284,7 +1284,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             throw o;
         } finally {
             currentFileHeader = null;
-            currentFolder = null;
 
             StringBuffer stats = new StringBuffer();
             stats.append(report.key("report.publish_stats"));

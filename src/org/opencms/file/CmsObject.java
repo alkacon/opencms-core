@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2004/09/01 15:10:36 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.71 $
+ * @version $Revision: 1.72 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -2947,14 +2947,14 @@ public class CmsObject {
      * Publishes a single resource.<p>
      * 
      * @param resourcename the name of the resource to be published
-     * @param directPublishSiblings if true, all siblings of the resource are also published
+     * @param publishSiblings if true, all siblings of the resource are also published
      * @param report the report to write the progress information to
      * @throws Exception if something goes wrong
      */
-    public void publishResource(String resourcename, boolean directPublishSiblings, I_CmsReport report) throws Exception {
+    public void publishResource(String resourcename, boolean publishSiblings, I_CmsReport report) throws Exception {
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-            publishProject(report, resource, directPublishSiblings);
-        }
+        publishProject(report, resource, publishSiblings);
+    }
     
     /**
      * Returns a list with all project resources for a given project.<p>

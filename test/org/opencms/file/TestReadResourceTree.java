@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestReadResources.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestReadResourceTree.java,v $
+ * Date   : $Date: 2004/09/01 15:10:51 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,16 +46,16 @@ import junit.framework.TestSuite;
  * Unit test for the "readResources" method of the CmsObject to test reading resource lists within a subtree.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  */
-public class TestReadResources extends OpenCmsTestCase {
+public class TestReadResourceTree extends OpenCmsTestCase {
   
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
      */    
-    public TestReadResources(String arg0) {
+    public TestReadResourceTree(String arg0) {
         super(arg0);       
     }
     
@@ -67,14 +67,14 @@ public class TestReadResources extends OpenCmsTestCase {
     public static Test suite() {
         
         TestSuite suite = new TestSuite();
-        suite.setName(TestReadResources.class.getName());
+        suite.setName(TestReadResourceTree.class.getName());
         
-        suite.addTest(new TestReadResources("testReadSubtree"));
-        suite.addTest(new TestReadResources("testReadChildren"));
-        suite.addTest(new TestReadResources("testReadFolders"));
-        suite.addTest(new TestReadResources("testReadFiles"));
-        suite.addTest(new TestReadResources("testReadModifiedResources"));
-        suite.addTest(new TestReadResources("testReadResourcesInTimerange"));
+        suite.addTest(new TestReadResourceTree("testReadSubtree"));
+        suite.addTest(new TestReadResourceTree("testReadChildren"));
+        suite.addTest(new TestReadResourceTree("testReadFolders"));
+        suite.addTest(new TestReadResourceTree("testReadFiles"));
+        suite.addTest(new TestReadResourceTree("testReadModifiedResources"));
+        suite.addTest(new TestReadResourceTree("testReadResourcesInTimerange"));
          
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -105,6 +105,7 @@ public class TestReadResources extends OpenCmsTestCase {
         String path = "/sites/default/folder1/subfolder12";
         
         // store all resources of the expected result
+        // storeResources(cms, path, false);
         storeResources(cms, path + "/subsubfolder121", false);
         storeResources(cms, path + "/subsubfolder121/image1.gif", false);
         storeResources(cms, path + "/subsubfolder121/index.html", false);
@@ -141,6 +142,7 @@ public class TestReadResources extends OpenCmsTestCase {
         String path = "/sites/default/folder1/subfolder12";
         
         // store all resources of the expected result
+        // storeResources(cms, path, false);
         storeResources(cms, path + "/subsubfolder121", false);
         storeResources(cms, path + "/index.html", false);
         storeResources(cms, path + "/page1.html", false);
@@ -174,6 +176,7 @@ public class TestReadResources extends OpenCmsTestCase {
         String path = "/sites/default/folder2";
         
         // store all resources of the expected result
+        // storeResources(cms, path, false);
         storeResources(cms, path + "/subfolder21", false);
         storeResources(cms, path + "/subfolder21/subsubfolder211", false);
         storeResources(cms, path + "/subfolder22", false);

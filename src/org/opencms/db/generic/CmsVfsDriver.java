@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/08/27 08:57:21 $
- * Version: $Revision: 1.204 $
+ * Date   : $Date: 2004/09/01 15:10:26 $
+ * Version: $Revision: 1.205 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.204 $ $Date: 2004/08/27 08:57:21 $
+ * @version $Revision: 1.205 $ $Date: 2004/09/01 15:10:26 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1142,13 +1142,13 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readResources(int, java.lang.String, int, int, long, long, int)
+     * @see org.opencms.db.I_CmsVfsDriver#readResourceTree(int, java.lang.String, int, int, long, long, int)
      */
-    public List readResources (int projectId, String parentPath, int type, int state, long startTime, long endTime, int mode) throws CmsException {
+    public List readResourceTree (int projectId, String parentPath, int type, int state, long startTime, long endTime, int mode) throws CmsException {
 
         List result = new ArrayList();
         
-        String query;
+        String query, order;
         StringBuffer conditions = new StringBuffer();
         List params = new ArrayList(5);
         
@@ -1166,8 +1166,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         try {
             conn = m_sqlManager.getConnection();
-            query = m_sqlManager.readQuery(projectId, "C_RESOURCES_READ_SUBTREE"); 
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, query + conditions);
+            query = m_sqlManager.readQuery(projectId, "C_RESOURCES_READ_TREE");
+            order = m_sqlManager.readQuery(projectId, "C_RESOURCES_ORDER_BY_PATH");
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, query + conditions + order);
             
             for (int i = 0; i < params.size(); i++) {
                 stmt.setString(i+1, (String)params.get(i));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2004/09/01 15:10:15 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.90 $ $Date: 2004/08/25 07:47:21 $
+ * @version $Revision: 1.91 $ $Date: 2004/09/01 15:10:15 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -364,7 +364,7 @@ public interface I_CmsVfsDriver {
      * @return a list of CmsResource objects matching the given criteria
      * @throws CmsException if something geos wrong
      */
-    List readResources(int projectId, String parentPath, int type, int state, long startTime, long endTime, int mode) throws CmsException;
+    List readResourceTree(int projectId, String parentPath, int type, int state, long startTime, long endTime, int mode) throws CmsException;
         
     /**
      * Reads all resources inside a given project and with a given state.<p>
