@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.36 Chusuk - xx March 2001
+OpenCms 4.5.36 Chusuk - 05 March 2001
 ! New function for HTML-Editor: inserting internal links
 ! Added menu entry for folders, pages and links: changing the navigation informations (Navigation Text and Position)
 ! Now navigation information can be inserted when creating a link. You need to add the required propertydefinitions
