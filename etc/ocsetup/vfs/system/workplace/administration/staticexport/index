@@ -46,7 +46,7 @@ top.help_url='Administration/statischerExport.html';
             <!-- Ende Leerzeile-->
             
             <!-- Beginn Inhalt-->
-                            <td class=formular>]]><LABEL value="input.exportadd" /><![CDATA[</td>
+                            <td class=formular>]]><LABEL value="staticexport.label.exportadd" /><![CDATA[</td>
             <tr><td class=dialogtxt>
                 <table border=1 width=100%>
                     <tr><td class=dialogtxt>

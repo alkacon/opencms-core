@@ -116,6 +116,7 @@
 
         <staticexport>
             <label>
+                <exportadd>This will start the static export with these configuration made in the opencms.properties.</exportadd>
                 <titleexport>Static Export</titleexport>
                 <filename>Export to</filename>
                 <testtitle>This is just for testing the regular expressions</testtitle>
@@ -461,7 +462,7 @@
             <editpropertyinfo>Change value to</editpropertyinfo>
             <editor>Editor</editor>
             <email>Email</email>
-            <exportadd>This will start the static export with these configuration made in the opencms.properties.</exportadd>
+            <exportadd>add</exportadd>
             <exportresources>resources to export</exportresources> 
             <filter>Filter</filter>
             <firstelement>at the first position</firstelement>

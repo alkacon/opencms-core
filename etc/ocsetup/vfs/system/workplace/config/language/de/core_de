@@ -116,6 +116,7 @@
         </database>
         <staticexport>
             <label>
+                <exportadd>Wollen Sie den Export mit diesen in den opencms.properties konfigurierten Daten starten?</exportadd>
                 <titleexport>Statischer Export</titleexport>
                 <filename>Exportieren nach</filename>
                 <testtitle>Hier können die Regulären Ausdrücke getestet werden</testtitle>
@@ -460,7 +461,7 @@
             <editpropertyinfo>Wert ändern in</editpropertyinfo>
             <editor>Editor</editor>
             <email>EMail</email>
-            <exportadd>Wollen Sie den Export mit diesen in den opencms.properties konfigurierten Daten starten?</exportadd>
+            <exportadd>hinzufügen</exportadd>
             <exportresources>zu exportierende Ressourcen</exportresources>
             <exportfilename>Name der Exportdatei</exportfilename>
             <filter>Filter</filter>
