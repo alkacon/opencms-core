@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/09/17 08:31:28 $
-* Version: $Revision: 1.124 $
+* Date   : $Date: 2003/09/17 14:30:13 $
+* Version: $Revision: 1.125 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.124 $ $Date: 2003/09/17 08:31:28 $
+ * @version $Revision: 1.125 $ $Date: 2003/09/17 14:30:13 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -552,10 +552,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
                     cms.getRequestContext().setCurrentProject(curProject);
                 }catch(CmsException e) {
                     cms.getRequestContext().setCurrentProject(curProject);
-                    if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled() ) {
-                        OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(getClassName()
-                                + "Could not write property " + C_PROPERTY_TITLE + " for file " + file + ".");
-                        OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(getClassName() + e);
+                    if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isErrorEnabled() ) {
+                        OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).error("Could not write property " + C_PROPERTY_TITLE + " for file " + file, e);
                     }
                 }
             }
@@ -937,9 +935,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
 
         // Check the existance of the "file" parameter
         if(!existsContentParam) {
-            String errorMessage = getClassName() + "No content found.";
             if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled() ) {
-                OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(errorMessage);
+                OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn("No content found");
             }
             content = "";
         }

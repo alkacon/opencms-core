@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/17 09:30:16 $
-* Version: $Revision: 1.411 $
+* Date   : $Date: 2003/09/17 14:30:14 $
+* Version: $Revision: 1.412 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.411 $
+ * @version $Revision: 1.412 $
  */
 public class CmsObject {
 
@@ -2712,8 +2712,7 @@ public class CmsObject {
             }
             if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
                 OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(stamp1);
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(stamp2);
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[" + this.getClass().getName() + ".publishProject()/1] Exception: " + e);
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(stamp2, e);
             }
         } finally {
             if (changedResources == null || changedResources.size() < 1) {

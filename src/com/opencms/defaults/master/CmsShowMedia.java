@@ -172,23 +172,23 @@ public class CmsShowMedia extends CmsXmlTemplate {
         Constructor c = cdClass.getConstructor(new Class[] {CmsObject.class, Integer.class});
         o = c.newInstance(new Object[] {cms, id});
       } catch (InvocationTargetException ite) {
-        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(getClassName() + ": content definitionConstructor: Invocation target exception!");
+        if (OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).info("Content definition constructor: Invocation target exception!");
         }
       } catch (NoSuchMethodException nsm) {
-        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
-          OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(getClassName() + ":  content definitionConstructor: Requested method was not found!");
+        if (OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isInfoEnabled()) {
+          OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).info("Content definition constructor: Requested method was not found!");
         }
       } catch (InstantiationException e) {
-        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(getClassName() + ": content definition constructor: the reflected class is abstract!");
+        if (OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).info("Content definition constructor: the reflected class is abstract!");
         }
       } catch (Exception e) {
-        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(getClassName() + ": content definitionConstructor: Other exception! " + e);
+        if (OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).info("Content definition constructor: Other exception! " + e);
         }
-        if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
-         OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(e.getMessage() );
+        if(OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isInfoEnabled()) {
+         OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).info(e.getMessage() );
         }
       }
     return o;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2003/09/17 08:31:29 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/09/17 14:30:14 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -155,9 +155,8 @@ public class CmsElementLocator {
                              CmsXmlTemplateLoader.getElementCache(cms).getVariantCachesize());
                     put(desc, result);
                 } catch(Throwable e) {
-                    if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(toString() + " Could not initialize method element for class \"" + className  + "\". ");
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(e.toString());
+                    if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled()) {
+                        OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error("Could not initialize method element for class \"" + className  + "\"", e);
                         return null;
                     }
                 }
@@ -167,9 +166,8 @@ public class CmsElementLocator {
                     result = cmsTemplate.createElement(cms, desc.getTemplateName(), parameters);
                     put(desc, result);
                 } catch(Throwable e) {
-                    if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(toString() + " Could not initialize (sub-)element for class \"" + desc.getClassName() + "\". ");
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(e.toString());
+                    if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled()) {
+                        OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error("Could not initialize (sub-)element for class \"" + desc.getClassName() + "\"", e);
                         throw new CmsException("Could not initialize (sub-)element for class \"" +
                                              desc.getClassName() + "\". " +e.toString() , CmsException.C_XML_WRONG_TEMPLATE_CLASS);
                     }

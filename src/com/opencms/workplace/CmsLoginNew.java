@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2003/09/17 08:31:28 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/09/17 14:30:13 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -120,7 +120,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
 
         if (DEBUG > 1) System.err.println("CmsLoginNew: name=" + name + " password=" + password + " task=" + startTaskId + " project=" + startProjectId);
 
-        if((name != null) && (password != null)) {
+        if ((name != null) && (password != null)) {
             if (DEBUG > 1) System.err.println("CmsLoginNew: trying to log in");
             // user and password have been submitted, try to log in the user        
             boolean validLogin;
@@ -128,13 +128,13 @@ public class CmsLoginNew extends CmsXmlTemplate {
                 username = cms.loginUser(name, password);
                 validLogin = true;
                 if (DEBUG > 1) System.err.println("CmsLoginNew: cms.loginUser() successfull");
-            } catch(CmsException e) {
+            } catch (CmsException e) {
                 // invalid login
                 validLogin = false;
                 if (DEBUG > 1) System.err.println("CmsLoginNew: cms.loginUser() failed");
             }
 
-            if((username != null) && (username.equals(OpenCms.getDefaultUsers().getUserGuest()))) {
+            if ((username != null) && (username.equals(OpenCms.getDefaultUsers().getUserGuest()))) {
                 // please no Guest user in the workplace
                 // use the same behaviour as if the access was unauthorized
                 validLogin = false;
@@ -150,6 +150,9 @@ public class CmsLoginNew extends CmsXmlTemplate {
             }
             
             if (! validLogin) {
+                if (OpenCms.getLog(CmsLog.CHANNEL_USER).isInfoEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_USER).info("Failed login attempt for user '" + name + "'");
+                }                
                 throw new CmsException("[OpenCms login failed]", CmsException.C_NO_USER);
             }
             if (DEBUG > 0) System.err.println("CmsLoginNew: user " + username + " logged in");
@@ -157,8 +160,8 @@ public class CmsLoginNew extends CmsXmlTemplate {
             // get a session for this user so that he is authentificated at the
             // end of this request
             session = cms.getRequestContext().getSession(true);
-            if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn("[CmsLogin] Login user " + username);
+            if (OpenCms.getLog(CmsLog.CHANNEL_USER).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_USER).info("Login of user '" + username + "'");
             }
 
             // read the user data from the databsse
@@ -173,7 +176,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
             // set the additional user preferences
             Hashtable preferences = (Hashtable)user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_PREFERENCES);
             // check if preferences are existing, otherwise use defaults
-            if(preferences == null) {
+            if (preferences == null) {
                 preferences = getDefaultPreferences();
             }
             // check of the users language setting (if he has one)
@@ -240,7 +243,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
         } else {    
             // check out the user information if a default project is stored there.
             Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);
-            if(startSettings != null) {
+            if (startSettings != null) {
                 Integer i = (Integer)startSettings.get(I_CmsConstants.C_START_PROJECT);
                 if (i != null) currentProject = i.intValue();
             }
@@ -252,7 +255,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
                 // user has no access to the project
                 currentProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             // project will default to online project
             currentProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         }
@@ -277,8 +280,8 @@ public class CmsLoginNew extends CmsXmlTemplate {
         // this will initialize the Vectors with the values from the registry.xml
         cms.getRegistry().getViews(viewNames, viewLinks);
         String link = "";
-        for(int i = 0;i < viewNames.size();i++) {
-            if(((String)viewNames.elementAt(i)).equals("select.tasks")) {
+        for (int i = 0; i < viewNames.size(); i++) {
+            if (((String)viewNames.elementAt(i)).equals("select.tasks")) {
                 link = (String)viewLinks.elementAt(i);
                 break;
             }
@@ -316,7 +319,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
     public Object getTitle(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
     throws CmsException {
         String title = (String)super.getTitle(cms, tagcontent, doc, userObject);
-        if(title == null) title = "";
+        if (title == null) title = "";
         title += " - " + OpenCms.getVersionName();
         return title;
     }

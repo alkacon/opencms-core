@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2003/09/17 08:31:28 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/09/17 14:30:14 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -70,10 +70,10 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault {
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(this.getClassName()+"getting content of element "+((elementName == null) ? "<root>" : elementName));
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(this.getClassName()+"template file is: " + templateFile);
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(this.getClassName()+"selected template section is: "+((templateSelector == null) ? "<default>" : templateSelector));
+        if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isDebugEnabled() && C_DEBUG) {
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Template file is: " + templateFile);
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsResourceTranslator.java,v $
- * Date   : $Date: 2003/09/17 08:31:30 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/09/17 14:30:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.oro.text.regex.MalformedPatternException;
  * </pre><p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.0 beta 2
  */
 public class CmsResourceTranslator {
@@ -119,7 +119,7 @@ public class CmsResourceTranslator {
                 m_perlPatternCache.addPattern(m_translations[i]);
             } catch (MalformedPatternException e) {
                 if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("["+this.getClass().getName()+"] Malformed resource translation rule:\""+m_translations[i]+"\"");
+                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Malformed resource translation rule: \"" + m_translations[i] + "\"");
                 }
             }
         }        
@@ -166,7 +166,7 @@ public class CmsResourceTranslator {
                 }
             } catch (MalformedPerl5PatternException e) {
                 if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("["+this.getClass().getName()+"] Malformed resource translation rule:\""+m_translations[i]+"\"");
+                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Malformed resource translation rule:\"" + m_translations[i] + "\"");
                 }
             }
         }

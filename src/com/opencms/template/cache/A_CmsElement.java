@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2003/09/17 08:31:29 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2003/09/17 14:30:14 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -160,49 +160,6 @@ public abstract class A_CmsElement {
      */
     public void checkReadAccess(CmsObject cms) throws CmsException{
         return;
-//        if (m_readAccessGroup == null || "".equals(m_readAccessGroup )){
-//            // everyone can read this
-//            return;
-//        }
-//        CmsGroup currentGroup = cms.getRequestContext().currentGroup();
-//        if (m_readAccessGroup.equals(currentGroup.getName())){
-//            // easy: same group; access granted
-//            return;
-//        }
-//        // maybe it is an Admin
-//        if(currentGroup.getName().equals(I_CmsConstants.C_GROUP_ADMIN)){
-//            // ok Admins can read everything
-//            return;
-//        }
-//        // limited access and not the same group, but maybe parentgroup?
-//        CmsGroup group1 = currentGroup;
-//        CmsGroup group2 = cms.readGroup(m_readAccessGroup);
-//        do{
-//            group1 = cms.getParent(group1.getName());
-//            if(group1 != null && group1.getId() == group2.getId()){
-//                // is parent; access granted
-//                return;
-//            }
-//        }while(group1 != null);
-//
-//        // ok. last chance. It could be the owner of the file
-//        boolean readError = false;
-//        try{
-//            //if(m_templateName == null){then the readAccessGroup should be null, so we dont have to care here
-//            cms.readFileHeader(m_templateName);
-//        }catch(CmsException e){
-//            readError = true;
-//        }
-//        if ( !readError){
-//            return;
-//        }
-//
-//        // no way to read this sorry
-//        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-//            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, toString() + " no read access. ");
-//        }
-//        throw new CmsException(currentGroup.getName()+" has no read access to "+m_templateName+". ",
-//                                CmsException.C_ACCESS_DENIED);
     }
 
     /**
@@ -467,22 +424,20 @@ public abstract class A_CmsElement {
                                 if(e instanceof CmsException) {
                                     CmsException ce = (CmsException)e;
                                     if(ce instanceof CmsSecurityException) {
-                                        if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(toString() + " Access denied in element " + lookupName);
+                                        if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled()) {
+                                            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error("Access denied in element " + lookupName, ce);
                                         }
                                         throw ce;
                                     } else {
                                         // Any other CmsException. This may be critical
-                                        if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(toString() + " Error in element " + lookupName);
-                                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(toString() + e);
+                                        if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled()) {
+                                            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error("Error in element " + lookupName, e);
                                         }
                                     }
                                 } else {
                                     // Any other Non-CmsException.
-                                    if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(toString() + " Non-CmsException in element " + lookupName);
-                                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(toString() + e);
+                                    if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled()) {
+                                        OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error("Non-CmsException in element " + lookupName, e);
                                     }
                                 }
                             }
@@ -531,15 +486,13 @@ public abstract class A_CmsElement {
                             buffer = metEle.getContent(elementCache, cms, elDefs, null,parameters, methodParameter);
                         }catch(Exception e){
                             if(e instanceof CmsException) {
-                                if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(toString() + " Error in method " + methodName );
-                                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(toString() + e);
+                                if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled()) {
+                                    OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error("Error in method " + methodName, e);
                                 }
                             }else{
                                 // Any other Non-CmsException.
-                                if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(toString() + " Non-CmsException in method " + methodName);
-                                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(toString() + e);
+                                if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled()) {
+                                    OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error("Non-CmsException in method " + methodName, e);
                                 }
                             }
                         }
@@ -560,8 +513,8 @@ public abstract class A_CmsElement {
             return baos.toByteArray();
         } catch(IOException e) {
             // Something went wrong while writing to the OutputStream
-            if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(toString() + " Critical: IOException while writing to OutputStream. ");
+            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error("IOException while writing to XMl template OutputStream", e);
             }
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
         }

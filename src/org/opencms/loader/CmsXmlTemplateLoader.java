@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/09/17 08:31:30 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2003/09/17 14:30:44 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -380,7 +380,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
                         newParameters.put(elementName + "." + paramName, paramValue);
                     } else {
                         if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
-                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(getClassName() + "Empty parameter \"" + paramName + "\" found.");
+                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("Empty parameter \"" + paramName + "\" found.");
                         }
                     }
                 }
@@ -409,7 +409,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
                 }
             } else {
                 if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(getClassName() + "Empty URL parameter \"" + pname + "\" found.");
+                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("Empty URL parameter \"" + pname + "\" found.");
                 }
             }
         }
@@ -446,7 +446,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
                 if (!(tmpl instanceof I_CmsXmlTemplate)) {
                     String errorMessage = "Error in " + cms.readAbsolutePath(file) + ": " + templateClass + " is not a XML template class.";
                     if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(getClassName() + errorMessage);
+                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(errorMessage);
                     } 
                     throw new CmsException(errorMessage, CmsException.C_XML_WRONG_TEMPLATE_CLASS);
                 }
@@ -463,17 +463,6 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             }
         }
         return output;
-    }
-
-    /**
-     * Returns the name of the class in the form "[ClassName] ",
-     * to be used for error logging purposes.<p>
-     * 
-     * @return name of this class
-     */
-    private String getClassName() {
-        String name = getClass().getName();
-        return "[" + name.substring(name.lastIndexOf(".") + 1) + "] ";
     }
     
     /**
@@ -507,7 +496,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
      */
     private I_CmsTemplate getTemplateClass(String classname) throws CmsException {
         if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isDebugEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug(getClassName() + "Getting start template class " + classname + ". ");
+            OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug("Getting start template class: " + classname);
         }
         Object o = CmsTemplateClassManager.getClassInstance(classname);
 
@@ -515,9 +504,9 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
 
         // This is done be checking the implemented interface.
         if (!(o instanceof I_CmsTemplate)) {
-            String errorMessage = "Class " + classname + " is no OpenCms template class.";
+            String errorMessage = "Class " + classname + " is not an OpenCms template class.";
             if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[CmsTemplateClassManager] " + errorMessage);
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(errorMessage);
             }
             throw new CmsException(errorMessage, CmsException.C_XML_NO_TEMPLATE_CLASS);
         }
@@ -547,11 +536,11 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
      */
     private void handleException(CmsObject cms, Exception e, String errorText) throws CmsException {
 
-        // Print out some error messages
-        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(getClassName() + errorText);
-            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(getClassName() + "--> Exception: " + com.opencms.util.Utils.getStackTrace(e));
-            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(getClassName() + "--> Cannot create output for this file. Must send error. Sorry.");
+        // log the error if it is no CmsException
+        if (! (e instanceof CmsException)) {
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(errorText, e);
+            }
         }
 
         // if the user is a guest (and it's not a login exception) we send an servlet error,
@@ -640,8 +629,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     private void processXmlTemplate(CmsObject cms, CmsFile file) throws CmsException {
 
         // first some debugging output.
-        if ((DEBUG > 0) && OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(getClassName() + "Loader started for " + file.getName());
+        if ((DEBUG > 0) && OpenCms.getLog(CmsLog.CHANNEL_MAIN).isDebugEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug("Loader started for " + file.getName());
         }
 
         // check all values to be valid
@@ -654,7 +643,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
         }
         if (errorMessage != null) {
             if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(getClassName() + errorMessage);
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(errorMessage);
             } 
             throw new CmsException(errorMessage, CmsException.C_LOADER_ERROR);
         }
@@ -770,8 +759,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             }
         } catch (IOException ioe) {
             if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isDebugEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug(getClassName() + "IO error while writing to response stream for " + cms.getRequestContext().getFileUri());
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug(getClassName() + ioe);
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug("IO error while writing to response stream for " + cms.getRequestContext().getFileUri(), ioe);
             }
         } catch (Exception e) {
             String errorMessage = "Cannot write output to HTTP response stream";

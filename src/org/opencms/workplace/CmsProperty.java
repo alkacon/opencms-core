@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/09/17 08:31:28 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/09/17 14:30:44 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.opencms.main.OpenCms;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1
  */
@@ -380,7 +380,7 @@ public class CmsProperty extends CmsDialog {
             lock = CmsLock.getNullLock();
         
             if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) { 
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(this.getClass().getName() + " error getting lock state for resource " + resourceName + " " + e.getMessage());
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error getting lock state for resource " + resourceName, e);
             }             
         }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/09/17 08:31:30 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2003/09/17 14:30:14 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,15 @@
 
 package com.opencms.flex.jsp;
 
-import org.opencms.jsp.*;
+import org.opencms.flex.CmsFlexController;
+import org.opencms.jsp.CmsJspTagInclude;
+import org.opencms.jsp.CmsJspTagInfo;
+import org.opencms.jsp.CmsJspTagLabel;
+import org.opencms.jsp.CmsJspTagLink;
+import org.opencms.jsp.CmsJspTagProperty;
+import org.opencms.jsp.CmsJspTagTemplate;
+import org.opencms.jsp.CmsJspTagUser;
+import org.opencms.jsp.CmsJspTemplate;
 import org.opencms.loader.CmsDumpLoader;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsPointerLoader;
@@ -46,10 +54,8 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
-import org.opencms.flex.CmsFlexController;
 import com.opencms.flex.util.CmsMessages;
 import com.opencms.template.CmsXmlTemplate;
-import com.opencms.util.Utils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -81,7 +87,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 5.0 beta 2
  */
@@ -756,7 +762,7 @@ public class CmsJspActionElement {
      */
     private void handleException(Throwable t) {
         if (OpenCms.getLog(CmsLog.CHANNEL_FLEX).isErrorEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_FLEX).error(Utils.getStackTrace(t));
+            OpenCms.getLog(CmsLog.CHANNEL_FLEX).error("Error in JSP action element", t);
         } 
         if (! (m_handleExceptions || getRequestContext().currentProject().isOnlineProject())) {    
             if (DEBUG > 0) {        

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/09/17 13:01:30 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/09/17 14:30:44 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the generic (ANSI-SQL) driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.20 $ $Date: 2003/09/17 13:01:30 $
+ * @version $Revision: 1.21 $ $Date: 2003/09/17 14:30:44 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -303,7 +303,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
         String value = null;
         if ((value = c_queries.getProperty(queryKey)) == null) {
             if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[" + this.getClass().getName() + "] query '" + queryKey + "' not found in " + C_PROPERTY_FILENAME);
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Query '" + queryKey + "' not found in " + C_PROPERTY_FILENAME);
             }
         }
 
@@ -569,14 +569,9 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
 
         try {
             properties.load(getClass().getClassLoader().getResourceAsStream(propertyFilename));
-        } catch (NullPointerException exc) {
+        } catch (Throwable t) {
             if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[" + this.getClass().getName() + "] error loading " + propertyFilename);
-            }
-            properties = null;
-        } catch (java.io.IOException exc) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[" + this.getClass().getName() + "] error loading " + propertyFilename);
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error loading " + propertyFilename, t);
             }
             properties = null;
         }

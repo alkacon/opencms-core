@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsWpElement.java,v $
-* Date   : $Date: 2003/09/17 08:31:28 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/09/17 14:30:13 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import com.opencms.file.CmsObject;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.41 $ $Date: 2003/09/17 08:31:28 $
+ * @version $Revision: 1.42 $ $Date: 2003/09/17 14:30:13 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -191,16 +191,6 @@ public abstract class A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants
     }
 
     /**
-     * Help method to print nice classnames in error messages
-     * @return class name in [ClassName] format
-     */
-
-    protected String getClassName() {
-        String name = getClass().getName();
-        return "[" + name.substring(name.lastIndexOf(".") + 1) + "] ";
-    }
-
-    /**
      * Gets a reference to the default config file.
      * The path to this file ist stored in <code>C_WORKPLACE_INI</code>
      *
@@ -208,9 +198,7 @@ public abstract class A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants
      * @return Reference to the config file.
      * @throws CmsException
      */
-
     public CmsXmlWpConfigFile getConfigFile(CmsObject cms) throws CmsException {
-
         m_configFile = new CmsXmlWpConfigFile(cms);
         return m_configFile;
     }
@@ -221,9 +209,7 @@ public abstract class A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants
      * @return Reference to the list defintion file.
      * @throws CmsException
      */
-
     public CmsXmlWpTemplateFile getContextmenueDefinitions(CmsObject cms) throws CmsException {
-
         m_contextdef = new CmsXmlWpTemplateFile(cms, C_VFS_PATH_DEFAULT_INTERNAL + C_CONTEXTMENUE_TEMPLATEFILE);
         return m_contextdef;
     }
@@ -387,7 +373,7 @@ public abstract class A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants
 
     protected void throwException(String errorMessage, int type) throws CmsException {
         if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled() ) {
-            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(getClassName() + errorMessage);
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(errorMessage);
         }
         throw new CmsException(errorMessage, type);
     }

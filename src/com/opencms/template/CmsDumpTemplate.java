@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2003/09/17 08:31:29 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/09/17 14:30:14 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Hashtable;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.46 $ $Date: 2003/09/17 08:31:29 $
+ * @version $Revision: 1.47 $ $Date: 2003/09/17 14:30:14 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
@@ -88,8 +88,8 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
      * @throws CmsException
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
-        if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isDebugEnabled() && C_DEBUG) {
-            OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug("[CmsDumpTemplate] Now dumping contents of file " + templateFile);
+        if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isDebugEnabled() && C_DEBUG) {
+            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).debug("[CmsDumpTemplate] Now dumping contents of file " + templateFile);
         }
         byte[] s = null;
         try {
@@ -108,8 +108,8 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
         }
         catch(Exception e) {
             String errorMessage = "Error while reading file " + templateFile + ": " + e;
-            if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled() ) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[CmsDumpTemplate] " + errorMessage);
+            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled() ) {
+                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error(errorMessage, e);
             }
             if(e instanceof CmsException) {
                 throw (CmsException)e;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2003/09/17 08:31:29 $
-* Version: $Revision: 1.80 $
+* Date   : $Date: 2003/09/17 14:30:14 $
+* Version: $Revision: 1.81 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.80 $ $Date: 2003/09/17 08:31:29 $
+ * @version $Revision: 1.81 $ $Date: 2003/09/17 14:30:14 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -206,8 +206,8 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             result = getData("bodytag");
         }
         else {
-            if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isDebugEnabled() ) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug(getClassName() + "Cannot find \"bodytag\" tag in XML template file " + getFilename() + ".");
+            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isDebugEnabled() ) {
+                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).debug("Cannot find \"bodytag\" tag in XML template file " + getFilename());
             }
         }
         return result;
@@ -353,10 +353,10 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                     if(unnamedAllowed) {
                         name = "(default)";
                     }else {
-                        if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled() ) {
-                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[CmsXmlControlFile] unnamed <" + n.getNodeName() + "> found in OpenCms control file " + getAbsoluteFilename() + ".");
+                        if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled() ) {
+                            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error("Unnamed <" + n.getNodeName() + "> found in OpenCms control file " + getAbsoluteFilename());
                         }
-                        throw new CmsException("Unnamed \"" + n.getNodeName() + "\" found in OpenCms control file " + getAbsoluteFilename() + ".", CmsException.C_XML_TAG_MISSING);
+                        throw new CmsException("Unnamed \"" + n.getNodeName() + "\" found in OpenCms control file " + getAbsoluteFilename(), CmsException.C_XML_TAG_MISSING);
                     }
                 }
                 collectNames.addElement(name);
@@ -554,7 +554,9 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             return "";
         }
 
-        OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug("DAO [" + getClassName() + "][getProcessedTemplateContent()] templateSelector=" + templateSelector);
+        if (OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isDebugEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).debug("TemplateSelector is " + templateSelector);
+        }
         return getProcessedDataValue(datablockName, callingObject, parameters, os);
     }
 
@@ -709,8 +711,8 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             if(hasData("template." + templateSelector)) {
                 templateDatablockName = "template." + templateSelector;
             }else {
-                if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isDebugEnabled() && (!"script".equals(templateSelector))) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug(getClassName() + "cannot load selected template file section " + templateSelector + " in template file " + getFilename() + ". Fallback to default section.");
+                if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isDebugEnabled() && (!"script".equals(templateSelector))) {
+                    OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).debug("Cannot load selected template file section " + templateSelector + " in template file " + getFilename() + ", fallback to default section");
                 }
             }
         }
@@ -721,10 +723,10 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                 if(hasData("TEMPLATE.default")) {
                     templateDatablockName = "TEMPLATE.default";
                 }else {
-                    if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled() ) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(getClassName() + "template definition file " + getAbsoluteFilename() + " is corrupt. cannot find default section.");
+                    if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled() ) {
+                        OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error("Template definition file " + getAbsoluteFilename() + " is corrupt, cannot find default section");
                     }
-                    throw new CmsException("Corrupt template file " + getAbsoluteFilename() + ". Cannot find default section.", CmsException.C_XML_TAG_MISSING);
+                    throw new CmsException("Corrupt template file " + getAbsoluteFilename() + ", cannot find default section", CmsException.C_XML_TAG_MISSING);
                 }
             }
         }
@@ -747,8 +749,8 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             if(hasData(C_EDIT_TEMPLATE + "." + templateSelector)) {
                 templateDatablockName = C_EDIT_TEMPLATE + "." + templateSelector;
             }else {
-                if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isDebugEnabled() && (!"script".equals(templateSelector))) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug(getClassName() + "cannot load selected template file section " + templateSelector + " in template file " + getFilename() + ". Fallback to default section.");
+                if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isDebugEnabled() && (!"script".equals(templateSelector))) {
+                    OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).debug("Cannot load selected template file section " + templateSelector + " in template file " + getFilename() + ", fallback to default section");
                 }
             }
         }
@@ -904,8 +906,8 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     }
     public void renameSection(String oldName, String newName) throws CmsException {
         if(!hasData("template." + newName)) {
-            if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled() ) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(getClassName() + "datablock TEMPLATE." + newName + " not found. creating.");
+            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isInfoEnabled() ) {
+                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).info("Datablock TEMPLATE." + newName + " not found, creating it");
             }
             Element newData = (Element)getData("template." + oldName).cloneNode(true);
             newData.setAttribute("name", newName);
@@ -1086,8 +1088,8 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         catch(Exception e) {
 
             // The given section doesn't exist. Ignore.
-            if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled() ) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("Cannot set title for template section \"" + sectionName + "\" in file " + getAbsoluteFilename() + ". Section doesn't exist.");
+            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isInfoEnabled() ) {
+                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).info("Cannot set title for template section \"" + sectionName + "\" in file " + getAbsoluteFilename() + ". Section doesn't exist.");
             }
             return ;
         }

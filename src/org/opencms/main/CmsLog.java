@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2003/09/17 10:58:39 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/09/17 14:30:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsLog implements Log {
 
@@ -67,6 +67,9 @@ public class CmsLog implements Log {
     /** Module messsages */
     public static final String CHANNEL_MODULE = "org.opencms.module";
     
+    /** Module messages from the master module */
+    public static final String CHANNEL_MODULE_MASTER = "org.opencms.module.master";
+    
     /** Messages of the static export */
     public static final String CHANNEL_STATICEXPORT = "org.opencms.staticexport";
 
@@ -78,24 +81,9 @@ public class CmsLog implements Log {
 
     /** Messages of the xml template mechanism */
     public static final String CHANNEL_TEMPLATE_XML = "org.opencms.template.xml";        
-
-    /** Debug log level (2 - between trace and info) */
-    public static final int LEVEL_DEBUG = 2;
-
-    /** Error log level (5 - between warn and fatal) */
-    public static final int LEVEL_ERROR = 5;
-
-    /** Fatal log level (6 - the least verbost level) */
-    public static final int LEVEL_FATAL = 6;
-
-    /** Info log level (2 - between debug and warn) */
-    public static final int LEVEL_INFO = 3;
     
-    /** Trace log level (1 - the most verbose level) */
-    public static final int LEVEL_TRACE = 1;
-
-    /** Warn log level (4 - between info and error) */
-    public static final int LEVEL_WARN  = 4;
+    /** Messages about user loggin in (and out) */
+    public static final String CHANNEL_USER = "org.opencms.user";
 
     /** Map that contains the different loggers */
     private Map m_loggers;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsModuleDeleteThread.java,v $
- * Date   : $Date: 2003/09/17 08:31:28 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/09/17 14:30:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.1.10
  */
 public class CmsModuleDeleteThread extends A_CmsReportThread {
@@ -137,7 +137,7 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
         } catch (CmsException e) {
             getReport().println(e);
             if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(e.getMessage());
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error deleting module " + m_moduleName, e);
             }
             if (DEBUG) {
                 System.err.println("CmsAdminModuleDeleteThread() Exception:" + e.getMessage());

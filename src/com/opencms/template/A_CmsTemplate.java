@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsTemplate.java,v $
-* Date   : $Date: 2003/09/17 08:31:29 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/09/17 14:30:14 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,18 +45,9 @@ import javax.servlet.http.HttpServletRequest;
  * Abstract template class. Contains all commonly used methods for handling cache properties.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.18 $ $Date: 2003/09/17 08:31:29 $
+ * @version $Revision: 1.19 $ $Date: 2003/09/17 14:30:14 $
  */
 public abstract class A_CmsTemplate implements I_CmsTemplate {
-
-    /**
-     * Help method to print nice classnames in error messages
-     * @return class name in [ClassName] format
-     */
-    protected String getClassName() {
-        String name = getClass().getName();
-        return "[" + name.substring(name.lastIndexOf(".") + 1) + "] ";
-    }
 
     /**
      * Indicates if the results of this class are cacheable in the internal caches.
@@ -269,8 +260,8 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
      * @throws CmsException
      */
     protected void throwException(String errorMessage, int type) throws CmsException {
-        if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled() ) {
-            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(getClassName() + errorMessage);
+        if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled() ) {
+            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error(errorMessage);
         }
         throw new CmsException(errorMessage, type);
     }
@@ -284,9 +275,8 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
      * @throws CmsException
      */
     protected void throwException(String errorMessage, Exception e) throws CmsException {
-        if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled() ) {
-            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(getClassName() + errorMessage);
-            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(getClassName() + "Exception: " + e);
+        if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled() ) {
+            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error(errorMessage, e);
         }
         if(e instanceof CmsException) {
             throw (CmsException)e;

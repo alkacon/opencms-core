@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2003/09/17 08:31:28 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/09/17 14:30:13 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -79,11 +79,11 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault {
 	 * @param templateSelector template section that should be processed.
 	 */
 	public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-		if (OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled() && C_DEBUG) {
-			OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(this.getClassName() + "getting content of element " + ((elementName == null) ? "<root>" : elementName));
-			OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(this.getClassName() + "template file is: " + templateFile);
-			OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
-		}
+        if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isDebugEnabled() && C_DEBUG) {
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Template file is: " + templateFile);
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
+        }
         
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         CmsRegistry reg = cms.getRegistry();
@@ -191,8 +191,8 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault {
 				}
 				catch (CmsException e) {
                     // resource did not exist / could not be read
-					if (OpenCms.getLog(CmsLog.CHANNEL_MODULE).isWarnEnabled()) {
-						OpenCms.getLog(CmsLog.CHANNEL_MODULE).warn("error exporting module: couldn't add " + res + " to Module\n" + Utils.getStackTrace(e));
+					if (OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isErrorEnabled()) {
+						OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).error("Error exporting module: couldn't add " + res + " to Module", e);
 					}
                     if (DEBUG > 0) {
                         System.err.println("couldn't add " + res);

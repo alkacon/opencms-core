@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2003/09/17 08:31:29 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/09/17 14:30:14 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -132,9 +132,8 @@ public class CmsElementXml extends A_CmsElement {
             try {
                 templateClass = getTemplateClass(cms, m_className);
             } catch(Throwable e) {
-                if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(toString() + " Could not load my template class \"" + m_className + "\". ");
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(e.toString());
+                if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error("Could not load my template class \"" + m_className + "\"", e);
                     return e.toString().getBytes();
                 }
             }
@@ -163,8 +162,8 @@ public class CmsElementXml extends A_CmsElement {
                         try{
                             theTemplate = mergedElDefs.get("body").getTemplateName();
                         }catch(Exception exc){
-                            if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(toString() + " could not find the body element to get the default templatefile for " + this.toString() );
+                            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled()) {
+                                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error("Could not find the body element to get the default template file for " + this.toString(), exc);
                             }
                         }
                     }
@@ -175,21 +174,21 @@ public class CmsElementXml extends A_CmsElement {
                         if(ce instanceof CmsSecurityException) {
                             // This was an access denied exception.
                             // This is not very critical at the moment.
-                            if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isDebugEnabled()) {
-                                OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug(toString() + " Access denied in getContent for template class " + m_className);
+                            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isDebugEnabled()) {
+                                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).debug("Access denied in getContent for template class " + m_className);
                             }
                         } else {
                             // Any other CmsException.
                             // This could be more critical.
-                            if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isDebugEnabled()) {
-                                OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(toString() + " Error in getContent for template class " + m_className);
+                            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isWarnEnabled()) {
+                                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn("Error in getContent() for template class " + m_className, e);
                             }
                         }
                         throw ce;
                     } else {
                         // No CmsException. This is really, really bad!
-                        if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(toString() + " Non OpenCms error occured in getContent for template class " + m_className);
+                        if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isErrorEnabled()) {
+                            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).error("Non OpenCms error occured in getContent for template class " + m_className, e);
                         }
                         throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
                     }
