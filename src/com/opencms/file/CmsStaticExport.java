@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/02/05 14:55:57 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2002/02/05 16:34:18 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.17 $ $Date: 2002/02/05 14:55:57 $
+ * @version $Revision: 1.18 $ $Date: 2002/02/05 16:34:18 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -425,8 +425,8 @@ public class CmsStaticExport implements I_CmsConstants{
             Vector linksToAdd = cmsForStaticExport.getRequestContext().getLinkVector();
             for(int i=0; i<linksToAdd.size(); i++){
                 if(!allLinks.contains(linksToAdd.elementAt(i))){
-                    if(!m_afterPublish
-                        || (m_cms.readExportLinkHeader((String)linksToAdd.elementAt(i)) == null)){
+                    CmsExportLink lookup = m_cms.readExportLinkHeader((String)linksToAdd.elementAt(i));
+                    if(!m_afterPublish || (lookup == null) || (lookup.getLastExportDate() == 0)){
                             // after publish we only add this link if it is was
                             // not exported befor.
                             allLinks.add(linksToAdd.elementAt(i));
