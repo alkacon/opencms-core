@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestRestoreFromHistory.java,v $
- * Date   : $Date: 2004/08/18 08:46:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/08/27 14:44:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit tests for the history restore method.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestRestoreFromHistory extends OpenCmsTestCase {
     
@@ -70,7 +70,8 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         suite.setName(TestRestoreFromHistory.class.getName());
         
         suite.addTest(new TestRestoreFromHistory("testRestoreResource"));       
-        suite.addTest(new TestRestoreFromHistory("testRestoreDeletedResource")); 
+        suite.addTest(new TestRestoreFromHistory("testRestoreDeletedResource"));
+        suite.addTest(new TestRestoreFromHistory("testHistoryOverflow"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -79,13 +80,71 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
             }
             
             protected void tearDown() {
-                // removeOpenCms();
+                removeOpenCms();
             }
         };
         
         return wrapper;
     }
 
+    public void testHistoryOverflow() throws Throwable {
+        
+        final int C_MAX_VERSIONS = 10;
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing history overflow");
+        
+        String resourcename ="/test-overflow1.txt";
+        String contentStr = "1";
+        
+        cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, contentStr.getBytes(), null);        
+        this.storeResources(cms, resourcename);
+        
+        // publish the project
+        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.publishProject();
+        
+        int version;
+        for (version = 1; version < 20; version++) {
+            
+            if (version == 10) {
+                System.err.println("");
+            }
+            
+            cms.lockResource(resourcename);
+            
+            // check that there is the appropriate number of backup files
+            List allFiles = cms.readAllBackupFileHeaders(resourcename);
+            if (version <= C_MAX_VERSIONS) {
+                if (allFiles.size() != version) {
+                    fail("Number of backup files found = " + allFiles.size() + " != " + version + " expected");
+                }
+            } else {
+                if (allFiles.size() != C_MAX_VERSIONS) {
+                    fail("Number of backup files found = " + allFiles.size() + " != " + C_MAX_VERSIONS + " expected");
+                }
+            }
+            
+            // now check the previous version if available
+            if (version > 1) {
+                CmsBackupResource backup = (CmsBackupResource)allFiles.get(1);
+                cms.restoreResourceBackup(resourcename, backup.getTagId());
+            
+                // check the content - must be version-1
+                assertContent(cms, resourcename, Integer.toString(version-1).getBytes());
+            }
+            
+            // change to content of the file to next version and publish it again
+            contentStr = Integer.toString(version+1);
+            CmsFile update = cms.readFile(resourcename);
+            update.setContents(contentStr.getBytes());
+            cms.writeFile(update);
+            this.storeResources(cms, resourcename);
+            cms.unlockProject(cms.getRequestContext().currentProject().getId());
+            cms.publishProject();
+        }
+    }   
+            
     /**
      * Test the restore resource method.<p>
      * 
