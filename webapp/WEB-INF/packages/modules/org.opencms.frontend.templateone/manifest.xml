@@ -15,7 +15,7 @@
 		<description><![CDATA[This module contains the highly configurable OpenCms frontend template one. This template can easily be used to display website contents.
 (c) 2004 by Alkacon Software (http://www.alkacon.com).
 ]]></description>
-		<version>0.9.5</version>
+		<version>0.9.6</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Tue, 26 Oct 2004 17:12:52 CEST</datecreated>
