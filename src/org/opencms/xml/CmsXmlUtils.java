@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2004/12/07 13:43:59 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/12/11 12:33:00 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.xml;
 
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -62,7 +63,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.3.5
  */
 public final class CmsXmlUtils {
@@ -73,6 +74,45 @@ public final class CmsXmlUtils {
     private CmsXmlUtils() {
 
         // noop
+    }
+
+    /**
+     * Concats two Xpath expressions, ensuring that exactly one slash "/" is between them.<p>  
+     * 
+     * Use this method if it's uncertain if the given arguments are starting or ending with 
+     * a slash "/".<p>
+     * 
+     * Examples:<br> 
+     * <code>"title", "subtitle"</code> becomes <code>title/subtitle</code><br>
+     * <code>"title[1]/", "subtitle"</code> becomes <code>title[1]/subtitle</code><br>
+     * <code>"title[1]/", "/subtitle[1]"</code> becomes <code>title[1]/subtitle[1]</code><p>
+     * 
+     * @param prefix the prefix Xpath
+     * @param suffix the suffix Xpath
+     * 
+     * @return the concated Xpath build from prefix and suffix
+     */
+    public static String concatXpath(String prefix, String suffix) {
+
+        if (suffix == null) {
+            // ensure suffix is not null
+            suffix = "";
+        } else {
+            if ((suffix.length() > 0) && (suffix.charAt(0) == '/')) {
+                // remove leading '/' form suffix
+                suffix = suffix.substring(1);
+            }
+        }
+        if (prefix != null) {
+            StringBuffer result = new StringBuffer(32);
+            result.append(prefix);
+            if (!CmsResource.isFolder(prefix)) {
+                result.append('/');
+            }
+            result.append(suffix);
+            return result.toString();
+        }
+        return suffix;
     }
 
     /**
@@ -104,7 +144,7 @@ public final class CmsXmlUtils {
             int end = elements.size() - 1;
             for (int i = 0; i <= end; i++) {
                 // append [i] to path element if required 
-                result.append(createXpathElementCheck((String)elements.get(i), (i == end)?index:1));
+                result.append(createXpathElementCheck((String)elements.get(i), (i == end) ? index : 1));
                 if (i < end) {
                     // append path delimiter if not final path element
                     result.append('/');
@@ -527,8 +567,8 @@ public final class CmsXmlUtils {
     throws CmsXmlException {
 
         // generate bytes from document
-        byte[] xmlData = 
-            ((ByteArrayOutputStream)marshal(document, new ByteArrayOutputStream(512), encoding)).toByteArray();
+        byte[] xmlData = ((ByteArrayOutputStream)marshal(document, new ByteArrayOutputStream(512), encoding))
+            .toByteArray();
         validateXmlStructure(xmlData, encoding, resolver);
     }
 }
