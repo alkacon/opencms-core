@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
- * Date   : $Date: 2000/04/20 08:11:55 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/04/27 16:11:19 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,6 +34,7 @@ import com.opencms.util.*;
 import com.opencms.template.*;
 
 import java.util.*;
+import java.io.*;
 
 import javax.servlet.http.*;
 
@@ -42,7 +43,8 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2000/04/20 08:11:55 $
+ * @author Mario Stanke
+ * @version $Revision: 1.13 $ $Date: 2000/04/27 16:11:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -90,6 +92,18 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 		A_CmsTask task;
 		int taskid = -1;
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		
+		// getting the URL to which we need to return when we're done
+		String lastUrl;
+		String lastRelUrl = (String) parameters.get("lastrelurl");
+		if (lastRelUrl != null) {
+			// have a URL relative to the workplace action path (when clicking on the task name)
+			lastUrl = getConfigFile(cms).getWorkplaceActionPath()+lastRelUrl;
+			session.putValue("lasturl", lastUrl);
+		} else {
+			// have the complete path (when using the context menu)
+			lastUrl=this.getLastUrl(cms, parameters);
+		} 
 		
 		try {
 			Integer sessionTaskid = (Integer)session.getValue("taskid");
@@ -252,7 +266,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 			isInRole = cms.userInGroup(context.currentUser().getName(), roleName);
 		} catch(Exception exc) {
 			// ignore the exception
-		}
+		} 
 		
 		// choose the right style and buttons
 		if(task.getState() == C_TASK_STATE_ENDED) {
@@ -327,7 +341,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 				button4 = getButton(xmlTemplateDocument, "button_priority", false);
 				button5 = getButton(xmlTemplateDocument, "button_comment", false);
 				button6 = getButton(xmlTemplateDocument, "button_ok", false);
-			} else {
+			} else { 
 				// all other users
 				button1 = getButton(xmlTemplateDocument, "button_query", false);
 				button2 = getButton(xmlTemplateDocument, "button_take", false);
@@ -407,8 +421,24 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 		xmlTemplateDocument.setData("button3", button3);
 		xmlTemplateDocument.setData("button4", button4);
 		xmlTemplateDocument.setData("button5", button5);
-		xmlTemplateDocument.setData("button6", button6);
+		xmlTemplateDocument.setData("button6", button6); 
 		
+		// now check where to go back
+		if ((templateSelector == null || templateSelector=="") && lastUrl != null) {   
+			// tasks either completed or aborted, go back
+			try { 
+				if (lastUrl.startsWith("http:")) {
+					// complete path 
+					((HttpServletResponse) context.getResponse().getOriginalResponse()).sendRedirect(lastUrl);
+				} else {
+					// relative to the opencms path
+					context.getResponse().sendCmsRedirect(lastUrl);	
+				}
+				session.removeValue("lasturl");
+			} catch(IOException exc) {
+				throw new CmsException("Could not redirect to " + lastUrl, exc);
+			}
+		}
 		// Now load the template file and start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }

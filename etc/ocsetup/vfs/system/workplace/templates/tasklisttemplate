@@ -5,7 +5,7 @@
 	<tr>
 		<td nowrap>]]><PROCESS>stateicon</PROCESS><![CDATA[</td>
 		<td nowrap>]]><PROCESS>priority</PROCESS><![CDATA[</td>
-		<td nowrap class=]]><PROCESS>style</PROCESS><![CDATA[ ><p class=einzug > <a class=]]><PROCESS>style</PROCESS><![CDATA[ href="tasks_content_detail.html?taskid=]]><PROCESS>taskid</PROCESS><![CDATA[" class=task> ]]><PROCESS>task</PROCESS><![CDATA[ </a></p></td>
+		<td nowrap class=]]><PROCESS>style</PROCESS><![CDATA[ ><p class=einzug > <a class=]]><PROCESS>style</PROCESS><![CDATA[ href="tasks_content_detail.html?lastrelurl=tasks_content_detail.html&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[" class=task> ]]><PROCESS>task</PROCESS><![CDATA[ </a></p></td>
 		<td nowrap class=]]><PROCESS>style</PROCESS><![CDATA[ ><p class=einzug > ]]><PROCESS>foruser</PROCESS><![CDATA[</p></td>
 		<td nowrap class=]]><PROCESS>style</PROCESS><![CDATA[ ><p class=einzug > ]]><PROCESS>forrole</PROCESS><![CDATA[</p></td>
 		<td nowrap class=]]><PROCESS>style</PROCESS><![CDATA[ ><p class=einzug > ]]><PROCESS>actuator</PROCESS><![CDATA[</p></td>
@@ -25,14 +25,14 @@
 	
 	
 	
-	<!-- States -->
-	<!--<new><![CDATA[<A href="javascript:showkontext('task_new','aaa',1);"><img src="]]><METHOD name="picsUrl">ic_task_new.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.new" /><![CDATA["></a>]]></new>-->
-	<new><![CDATA["<img src="]]><METHOD name="picsUrl">ic_task_new.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.new" /><![CDATA[">]]></new>
-	<activ><![CDATA[<img src="]]><METHOD name="picsUrl">ic_task_activ.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.activ" /><![CDATA[">]]></activ>
-	<alert><![CDATA[<img src="]]><METHOD name="picsUrl">ic_task_alert.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.alert" /><![CDATA[">]]></alert>
-	<ok><![CDATA[<img src="]]><METHOD name="picsUrl">ic_task_ok.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.ok" /><![CDATA[">]]></ok>
-	<alertok><![CDATA[<img src="]]><METHOD name="picsUrl">ic_task_alertok.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.alertok" /><![CDATA[">]]></alertok>
-	
+	<!-- States --> 
+	<new><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="picsUrl">ic_task_new.gif  </METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.new"/><![CDATA[">]]></new>  
+	<activ><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="picsUrl">ic_task_activ.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.activ" /><![CDATA[">]]></activ>
+	<alert><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="picsUrl">ic_task_alert.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.alert" /><![CDATA[">]]></alert>
+	<ok><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="picsUrl">ic_task_ok.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.ok" /><![CDATA[">]]></ok>
+	<alertok><![CDATA[<A href="javascript:showkontext(']]><PROCESS>contextmenu</PROCESS><![CDATA[',']]><PROCESS>taskid</PROCESS><![CDATA[',]]><PROCESS>count</PROCESS><![CDATA[);"><img src="]]><METHOD name="picsUrl">ic_task_alertok.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.state.alertok" /><![CDATA[">]]></alertok>
+ 
+ 
 	<!-- style classes -->
 	<style_new>einzug</style_new>
 	<style_activ>einzug</style_activ>

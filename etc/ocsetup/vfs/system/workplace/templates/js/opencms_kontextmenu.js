@@ -8,6 +8,7 @@ function start() {
 //------------------------------------------
 // global variables and global functions
 // m.schleich 03.01.2000
+// m.stanke 26.04.2000
 //------------------------------------------
 var shown = false;
 var letztelyr='null';
@@ -66,8 +67,19 @@ var DO_TASK=99;
 
 var DO_PREACT=20;
 
+//=======================================
+var DO_TQUERY=1;
+var DO_TACCEPT=2;
+var DO_TDUE=3;
+var DO_TPRIORITY=4;
+var DO_TCOMMENT=5;
+var DO_TFORWARD=6;
+var DO_TOK=7;
+var DO_TMESSAGE=8;
+var DO_TREAKT=9;
+var DO_TTAKE=10;
 
-// mousekoordinates on click
+// mouse coordinates on click
 function mouseClicked(e)
 {
 		if (ie) {x=event.x; y=event.y;}
@@ -80,7 +92,7 @@ function mouseClicked(e)
 // parameters:
 // welche: layer name
 // parameter: parameter for menu
-// id: each link for layer must have a unic id number
+// id: each link for layer must have a unique id number
 // m.schleich 03.12.1999
 //----------------------------------------
 function showkontext(welche, parameter, id)
@@ -327,5 +339,65 @@ function doPAction(action) // which action on layer Project is clicked
 			location.href='tasks_content_new_forfile.html';
 			break;
 		}
+	}
+}
+
+function doTAction(action) // which action on layer Task is clicked
+{
+	hidemenu(letztelyr);
+	var encLasturl = simpleEscape(location.href);
+	
+	switch(action)
+	{
+		case 1:
+		{
+			location.href='tasks_content_dialogquery.html?lasturl=' + encLasturl + '&action=query&taskid='+ kontextparam;
+			break;
+		}
+		case 2:
+		{ 
+			location.href='tasks_content_detail.html?lasturl=' + encLasturl + '&action=accept&taskid='+ kontextparam; 
+			break;
+		}
+		case 3:
+		{
+			location.href='tasks_content_detail.html?lasturl=' + encLasturl + '&action=due&taskid='+ kontextparam;
+			break;
+		}
+		case 4:
+		{
+			location.href='tasks_content_dialogpriority.html?lasturl=' + encLasturl + '&taskid='+ kontextparam;
+			break;
+		}
+		case 5:
+		{
+			location.href='tasks_content_dialogcomment.html?lasturl=' + encLasturl + '&taskid='+ kontextparam;
+			break;
+		}
+		case 6:
+		{
+			location.href='tasks_content_dialogforward.html?lasturl=' + encLasturl + '&taskid='+ kontextparam;
+			break;
+		} 
+		case 7:
+		{
+			location.href='tasks_content_detail.html?lasturl=' + encLasturl + '&action=ok&taskid='+ kontextparam; 
+			break;
+		} 
+		case 8:
+		{
+			location.href='tasks_content_dialogmsg.html?lasturl=' + encLasturl + '&action=message&taskid='+ kontextparam; 
+			break;
+		}
+		case 9:
+		{
+			location.href='tasks_content_dialogreakt.html?lasturl=' + encLasturl + '&taskid='+ kontextparam; 
+			break;
+		}
+		case 10:
+		{
+			location.href='tasks_content_detail.html?lasturl=' + encLasturl + '&action=take&taskid='+ kontextparam;
+			break;
+		} 
 	}
 }

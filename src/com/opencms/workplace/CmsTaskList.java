@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskList.java,v $
- * Date   : $Date: 2000/04/20 08:11:55 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/04/27 16:11:19 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,8 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;tasklist&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/04/20 08:11:55 $
+ * @author Mario Stanke
+ * @version $Revision: 1.12 $ $Date: 2000/04/27 16:11:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants, I_CmsConstants {
@@ -81,9 +82,11 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      * @exception CmsException
      */    
     public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
-        
+         
+		
         // Get list definition values
         CmsXmlWpTemplateFile listdef = getTaskListDefinitions(cms);
+		A_CmsRequestContext context = cms.getRequestContext();
 		
         String listMethod = n.getAttribute("method");
 
@@ -118,6 +121,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 		String projectname;
 		String stateIcon;
 		String style;
+		String contextmenu;
 		long startTime;
 		long timeout;
 	    GregorianCalendar cal = new GregorianCalendar();
@@ -145,16 +149,76 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 			startTime = task.getStartTime().getTime();
 			timeout = task.getTimeOut().getTime();
 			
-			// choose the right state-icon
+			listdef.setData("taskid", task.getId() + "");
+			listdef.setData("count", i + "");
+			
+			 
+			// making the context menus depending on the state of the task and 
+			// the role of the user
+			
+			A_CmsUser owner = null;
+			String ownerName = "";
+			try {
+				owner = cms.readOwner(task);
+				ownerName = owner.getName();
+			} catch(Exception exc) {
+				// ignore the exception
+			}
+
+			A_CmsUser editor = null;
+			String editorName = "";
+			try {
+				editor = cms.readAgent(task);
+				editorName = editor.getName();
+			} catch(Exception exc) {
+				// ignore the exception
+			}
+			
+			A_CmsGroup role = null;
+			String roleName = "";
+			try {
+				role = cms.readGroup(task);
+				roleName = role.getName();
+			} catch(Exception exc) {
+				// ignore the exception
+			}
+			
+			boolean isOwner = context.currentUser().equals(owner);
+			boolean isEditor = context.currentUser().equals(editor);
+			boolean isInRole = false;
+			try {
+				isInRole = cms.userInGroup(context.currentUser().getName(), roleName);
+			} catch(Exception exc) {
+				// ignore the exception
+			}
+			// now decide which contex menu is appropriate
 			if(task.getState() == C_TASK_STATE_ENDED) {
-				if(timeout < now ) {
-					stateIcon = listdef.getProcessedDataValue("ok", callingObject);
-					style = listdef.getProcessedDataValue("style_ok", callingObject);
+				if(isOwner) {
+					contextmenu = "task1";
+				} else if(isEditor) {
+					contextmenu = "task2";
+				} else if(isInRole) {
+					contextmenu = "task3";
 				} else {
-					stateIcon = listdef.getProcessedDataValue("ok", callingObject);
-					style = listdef.getProcessedDataValue("style_ok", callingObject);
+					contextmenu = "task3";
 				}
-			} else if(task.getPercentage() == 0) {
+				listdef.setData("contextmenu", contextmenu);
+				stateIcon = listdef.getProcessedDataValue("ok", callingObject);
+				style = listdef.getProcessedDataValue("style_ok", callingObject);
+			 
+			} else if(task.getPercentage() == 0) { 
+				if(isOwner && isEditor) {
+					contextmenu = "task4"; 
+				} else if(isOwner) {
+					contextmenu = "task5"; 
+				} else if(isEditor) {
+					contextmenu = "task6";
+				} else if(isInRole) {
+					contextmenu = "task7"; 
+				} else {
+					contextmenu = "task8"; 
+				}
+				listdef.setData("contextmenu", contextmenu); 
 				if(timeout < now ) {
 					stateIcon = listdef.getProcessedDataValue("alert", callingObject);
 					style = listdef.getProcessedDataValue("style_alert", callingObject);
@@ -162,7 +226,19 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 					stateIcon = listdef.getProcessedDataValue("new", callingObject);
 					style = listdef.getProcessedDataValue("style_new", callingObject);
 				}
-			} else {
+			} else { 
+				if(isOwner && isEditor) {
+					contextmenu = "task9"; 
+				} else if(isOwner) {
+					contextmenu = "task10"; 
+				} else if(isEditor) {
+					contextmenu = "task11"; 
+				} else if(isInRole) {
+					contextmenu = "task12"; 
+				} else {
+					contextmenu = "task13"; 
+				}
+				listdef.setData("contextmenu", contextmenu);
 				if(timeout < now ) {
 					stateIcon = listdef.getProcessedDataValue("alert", callingObject);
 					style = listdef.getProcessedDataValue("style_alert", callingObject);
@@ -170,11 +246,10 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 					stateIcon = listdef.getProcessedDataValue("activ", callingObject);
 					style = listdef.getProcessedDataValue("style_activ", callingObject);
 				}
-			}
+			} 
 			
 			String agent = "";
-			String group = "";
-			String owner = "";
+			String group = ""; 
 			String due = "";
 			String from = "";
 			try {
@@ -184,11 +259,6 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 			}
 			try {
 				group = cms.readGroup(task).getName();
-			} catch(Exception exc) {
-				// ignore the exception
-			}
-			try {
-				owner = cms.readOwner(task).getName();
 			} catch(Exception exc) {
 				// ignore the exception
 			}
@@ -203,20 +273,20 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 				// ignore the exception
 			}
 			// get the processed list.
-			listdef.setData("stateicon", stateIcon);
-			listdef.setData("style", style);
+			listdef.setData("stateicon", stateIcon); 
+			listdef.setData("style", style); 
 			listdef.setData("priority", priority);
 			listdef.setData("taskid", task.getId() + "");
 			listdef.setData("task", task.getName());
 			listdef.setData("foruser", agent);
 			listdef.setData("forrole", group);
-			listdef.setData("actuator", owner);
+			listdef.setData("actuator", ownerName);
 			listdef.setData("due", due);
 			listdef.setData("from", from);
 			listdef.setData("project", projectname);
 			
 			result.append(listdef.getProcessedDataValue("defaulttasklist", callingObject, parameters));
-		}		
+		}		 
 		return result.toString();
     }
 }
