@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/12/19 08:19:40 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2000/12/21 16:48:29 $
+ * Version: $Revision: 1.65 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -19,7 +19,7 @@ package com.opencms.core;
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * For further information about OpenCms, please see the
  * OpenCms Website: http://www.opencms.com
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.64 $ $Date: 2000/12/19 08:19:40 $  
+* @version $Revision: 1.65 $ $Date: 2000/12/21 16:48:29 $  
 * 
 * */
 
@@ -451,9 +451,13 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 			 	  
 		   checkRelocation(cms);
 		   CmsFile file=m_opencms.initResource(cms); 
-		   m_opencms.setResponse(cms,file);
-		   m_opencms.showResource(cms,file);
-		   updateUser(cms,cmsReq,cmsRes);
+           if(file != null) {
+               // If the CmsFile object is null, the resource could not be found.
+               // Stop processing in this case to avoid NullPointerExceptions
+		       m_opencms.setResponse(cms,file);
+		       m_opencms.showResource(cms,file);
+		       updateUser(cms,cmsReq,cmsRes);
+           }
 		} catch (CmsException e) {
 			errorHandling(cms,cmsReq,cmsRes,e);
 		} 
@@ -487,9 +491,13 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 			cms=initUser(cmsReq,cmsRes);			 	  
 			checkRelocation(cms);
 			CmsFile file=m_opencms.initResource(cms); 
-			m_opencms.setResponse(cms,file);
-			m_opencms.showResource(cms,file);
-			updateUser(cms,cmsReq,cmsRes);
+            if(file != null) {
+                // If the CmsFile object is null, the resource could not be found.
+                // Stop processing in this case to avoid NullPointerExceptions
+	    		m_opencms.setResponse(cms,file);
+    			m_opencms.showResource(cms,file);
+		    	updateUser(cms,cmsReq,cmsRes);
+            }
 		} catch (CmsException e) {
 		   errorHandling(cms,cmsReq,cmsRes,e);
 		} 
@@ -516,7 +524,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 			// access denied error - display login dialog
 			case CmsException.C_ACCESS_DENIED: 
 				requestAuthorization(req,res); 
-				e.printStackTrace();
+				// e.printStackTrace();
 				break;
 			// file not found - display 404 error.
 			case CmsException.C_NOT_FOUND:
@@ -529,8 +537,11 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 				break;
 			default:
 				res.setContentType("text/HTML");
-				e.printStackTrace();
-				res.getWriter().print(createErrorBox(e));
+				//e.printStackTrace();
+                // set some HTTP headers preventing proxy servers from caching the error box                
+                res.setHeader("Cache-Control", "no-cache");
+                res.setHeader("Pragme", "no-cache");
+                res.getWriter().print(createErrorBox(e));
 				//res.sendError(res.SC_INTERNAL_SERVER_ERROR);
 			}
 		} catch (IOException ex) {
@@ -805,7 +816,6 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 				    oldData = new Hashtable();
 				}
 				sessionData.put(C_SESSION_DATA, oldData);
-
 
 				// was there any change on current-user, current-group or current-project?
 				boolean dirty = false;
