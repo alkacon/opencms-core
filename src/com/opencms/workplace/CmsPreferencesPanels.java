@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2001/07/19 19:11:50 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2001/07/19 19:13:20 $
+* Version: $Revision: 1.30 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  *
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2001/07/19 19:11:50 $
+ * @version $Revision: 1.30 $ $Date: 2001/07/19 19:13:20 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -199,9 +199,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             session.removeValue(C_PARA_OLDPANEL);
             session.removeValue("lasturl");
             panel="explorer";
-            session.putValue(C_PARA_OLDPANEL, panel);
-            parameters.put(C_PARA_OLDPANEL, panel);
-            parameters.put("panel", panel);
         }else{
             // get the active panel value. This indicates which panel to be displayed.
             panel = (String)parameters.get(C_PARA_PANEL);
