@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/09/17 14:30:44 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2003/09/17 18:08:32 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -454,9 +454,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
                 clearLoaderCache(true, true);
                 output = callCanonicalRoot(cms, tmpl, masterTemplate, newParameters);
             } catch (CmsException e) {
-                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("[CmsXmlLoader] There were exceptions while generating output for " + cms.readAbsolutePath(file));
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("[CmsXmlLoader] Clearing template file cache for this file.");
+                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isWarnEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).warn("Exceptions generating output for " + cms.readAbsolutePath(file) + ", clearing this file from XML template cache", e);
                 }
                 doc.removeFromFileCache();
                 throw e;
@@ -572,8 +571,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             try {
                 m_elementCache = new CmsElementCache(conf.getInteger("elementcache.uri", 10000), conf.getInteger("elementcache.elements", 50000), conf.getInteger("elementcache.variants", 100));
             } catch (Exception e) {
-                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled())
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Element cache        : non-critical error " + e.toString());
+                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled())
+                    OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(". Element cache        : non-critical error " + e.toString());
             }
             m_variantDeps = new Hashtable();
             m_elementCache.getElementLocator().setExternDependencies(m_variantDeps);
@@ -582,7 +581,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
         }
         
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) { 
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : " + this.getClass().getName() + " initialized!");
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : " + this.getClass().getName() + " initialized");
         }             
     }
     

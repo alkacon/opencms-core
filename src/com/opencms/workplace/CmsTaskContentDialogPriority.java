@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogPriority.java,v $
-* Date   : $Date: 2003/09/17 14:30:13 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/09/17 18:08:07 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.29 $ $Date: 2003/09/17 14:30:13 $
+ * @version $Revision: 1.30 $ $Date: 2003/09/17 18:08:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -374,7 +374,7 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault {
         }
         catch(CmsException exc) {
             if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled() ) {
-                OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn("Couldn't get xml datablocks for CmsTaskNew");
+                OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn("Couldn't get xml datablocks for CmsTaskNew", exc);
             }
         }
     }

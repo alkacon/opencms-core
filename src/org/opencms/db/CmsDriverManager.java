@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/17 16:15:06 $
- * Version: $Revision: 1.235 $
+ * Date   : $Date: 2003/09/17 18:08:33 $
+ * Version: $Revision: 1.236 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.235 $ $Date: 2003/09/17 16:15:06 $
+ * @version $Revision: 1.236 $ $Date: 2003/09/17 18:08:33 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -5110,13 +5110,13 @@ public class CmsDriverManager extends Object {
                         Class.forName((String)publishModules.elementAt(i)).getMethod("publishProject", new Class[] { CmsObject.class, Boolean.class, Integer.class, Integer.class, Long.class, Vector.class, Vector.class }).invoke(null, new Object[] { cms, new Boolean(isHistoryEnabled(cms)), new Integer(publishProjectId), new Integer(tagId), new Long(publishDate), changedResources, changedModuleMasters });
                     } catch (ClassNotFoundException ec) {
                         report.println(report.key("report.publish_class_for_module_does_not_exist_1") + (String)publishModules.elementAt(i) + report.key("report.publish_class_for_module_does_not_exist_2"), I_CmsReport.C_FORMAT_WARNING);
-                        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
-                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("Error calling publish class of module " + (String)publishModules.elementAt(i) + "!: " + ec.getMessage());
+                        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error calling publish class of module " + (String)publishModules.elementAt(i), ec);
                         }
                     } catch (Exception ex) {
                         report.println(ex);
-                        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
-                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("Error when publish data of module " + (String)publishModules.elementAt(i) + "!: " + ex.getMessage());
+                        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error while publishing data of module " + (String)publishModules.elementAt(i), ex);
                         }
                     }
                 }

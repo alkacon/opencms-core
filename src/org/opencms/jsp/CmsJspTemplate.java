@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTemplate.java,v $
- * Date   : $Date: 2003/09/17 14:30:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/09/17 18:08:33 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Hashtable;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.0 beta 1
  */
 public class CmsJspTemplate extends CmsDumpTemplate {
@@ -77,7 +77,7 @@ public class CmsJspTemplate extends CmsDumpTemplate {
      */
     public byte[] getContent(CmsObject cms, String jspFile, String elementName, Hashtable parameters) throws CmsException {
         if (OpenCms.getLog(CmsLog.CHANNEL_FLEX).isDebugEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_FLEX).debug("[CmsJspTemplate] Now loading contents of file " + jspFile);
+            OpenCms.getLog(CmsLog.CHANNEL_FLEX).debug("Loading contents of file " + jspFile);
         }
 
         byte[] s = null;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2003/09/17 14:30:14 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/09/17 18:08:07 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Hashtable;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.47 $ $Date: 2003/09/17 14:30:14 $
+ * @version $Revision: 1.48 $ $Date: 2003/09/17 18:08:07 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
@@ -89,7 +89,7 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
         if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isDebugEnabled() && C_DEBUG) {
-            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).debug("[CmsDumpTemplate] Now dumping contents of file " + templateFile);
+            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).debug("Dumping contents of file " + templateFile);
         }
         byte[] s = null;
         try {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/17 10:05:32 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2003/09/17 18:08:33 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.56 $ $Date: 2003/09/17 10:05:32 $
+ * @version $Revision: 1.57 $ $Date: 2003/09/17 18:08:33 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -281,8 +281,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         }
 
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(this.getClass().toString() + " does not support successive drivers.");
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(this.getClass().toString() + " does not support successive drivers");
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2003/09/17 14:30:14 $
-* Version: $Revision: 1.92 $
+* Date   : $Date: 2003/09/17 18:08:07 $
+* Version: $Revision: 1.93 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.92 $ $Date: 2003/09/17 14:30:14 $
+ * @version $Revision: 1.93 $ $Date: 2003/09/17 18:08:07 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
@@ -251,8 +251,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * Deletes all files from the file cache.
      */
     public static void clearFileCache() {
-        if (OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isWarnEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn("[A_CmsXmlContent] clearing XML file cache.");
+        if (OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).info("Clearing XML file cache.");
         }
         m_filecache.clear();
     }
@@ -1179,8 +1179,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             processNode(m_content, m_firstRunTags, A_CmsXmlContent.class.getDeclaredMethod("handleDataTag", C_PARAMTYPES_HANDLING_METHODS), null, null);
         }
         catch (CmsException e) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).info("Error while scanning for DATA and INCLUDE tags in file " + getAbsoluteFilename() + ".");
+            if (OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isWarnEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn("Error while scanning for DATA and INCLUDE tags in file " + getAbsoluteFilename(), e);
             }
             throw e;
         }
@@ -1774,7 +1774,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         }
         catch (Exception e) {
             if (OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn("[A_CmsXmlContent] Exception in register tag: " + e.getMessage());
+                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn("Exception in register tag ", e);
             }
         }
         registerTag(tagname);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2003/09/17 14:30:14 $
-* Version: $Revision: 1.81 $
+* Date   : $Date: 2003/09/17 18:08:07 $
+* Version: $Revision: 1.82 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.81 $ $Date: 2003/09/17 14:30:14 $
+ * @version $Revision: 1.82 $ $Date: 2003/09/17 18:08:07 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -1088,8 +1088,8 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         catch(Exception e) {
 
             // The given section doesn't exist. Ignore.
-            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isInfoEnabled() ) {
-                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).info("Cannot set title for template section \"" + sectionName + "\" in file " + getAbsoluteFilename() + ". Section doesn't exist.");
+            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isWarnEnabled() ) {
+                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn("Cannot set title for template section \"" + sectionName + "\" in file " + getAbsoluteFilename() + ", section doesn't exist");
             }
             return ;
         }

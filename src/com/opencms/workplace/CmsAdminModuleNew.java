@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2003/09/17 14:30:14 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/09/17 18:08:07 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -127,8 +127,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                 boolean success = modulefolder.mkdir();
                 if (OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled()
                     && (!success)) {
-                    OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn("Could not create folder "
-                            + modulefolder.getAbsolutePath());
+                    OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn("Could not create folder " + modulefolder.getAbsolutePath());
                 }
             }
             String listentrys = "";
@@ -173,8 +172,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                 boolean success = discFolder.mkdir();
                 if (OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled()
                     && (!success)) {
-                    OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn("Could not create folder "
-                            + discFolder.getAbsolutePath());
+                    OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn("Could not create folder " + discFolder.getAbsolutePath());
                 }
             }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2003/09/17 14:30:44 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/09/17 18:08:32 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -504,7 +504,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". JSP Loader           : JSP repository (absolute path): " + m_jspRepository);        
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". JSP Loader           : JSP repository (web application path): " + m_jspWebAppRepository);              
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". JSP Loader           : JSP export URL: " + m_jspExportUrl);
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : " + this.getClass().getName() + " initialized!");   
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : " + this.getClass().getName() + " initialized");   
         }
         // Get the "error pages are commited or not" flag from the runtime properties
         Boolean errorPagesAreNotCommited = (Boolean)OpenCms.getRuntimeProperty(C_LOADER_ERRORPAGECOMMIT);

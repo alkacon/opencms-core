@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/09/17 14:30:44 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/09/17 18:08:33 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -487,7 +487,7 @@ public class OpenCmsCore {
                     // http page and https request - display 404 error.
                     status = HttpServletResponse.SC_NOT_FOUND;
                     if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("[OpenCms] Trying to get a http page with a https request. " + e.getMessage());
+                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("Trying to get a http page with a https request", e);
                     }
                     break;                                       
 
@@ -495,7 +495,7 @@ public class OpenCmsCore {
                     // https request and http page - display 404 error.
                     status = HttpServletResponse.SC_NOT_FOUND;
                     if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("[OpenCms] Trying to get a https page with a http request. " + e.getMessage());
+                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("Trying to get a https page with a http request", e);
                     }
                     break;
 
@@ -1098,8 +1098,8 @@ public class OpenCmsCore {
                 getLog(CmsLog.CHANNEL_INIT).info(". Flex cache init      : finished");
             }
         } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Flex cache init      : non-critical error " + e.toString());
+            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).warn(". Flex cache init      : non-critical error " + e.toString());
             }
         }
         
@@ -1113,8 +1113,8 @@ public class OpenCmsCore {
                 getLog(CmsLog.CHANNEL_INIT).info(". ResourceLoader init  : finished");
             }
         } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". ResourceLoader init  : non-critical error " + e.toString());
+            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).warn(". ResourceLoader init  : non-critical error " + e.toString());
             }
         }
 
@@ -1130,8 +1130,8 @@ public class OpenCmsCore {
                 m_directoryTranslator = new CmsResourceTranslator(translations, false);
             }
         } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Directory translation: non-critical error " + e.toString());
+            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).warn(". Directory translation: non-critical error " + e.toString());
             }
         }
         // make sure we always have at least an empty array      
@@ -1150,8 +1150,8 @@ public class OpenCmsCore {
                 m_fileTranslator = new CmsResourceTranslator(translations, true);
             }
         } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Filename translation : non-critical error " + e.toString());
+            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).warn(". Filename translation : non-critical error " + e.toString());
             }
         }
         // make sure we always have at last an emtpy array      
@@ -1170,8 +1170,8 @@ public class OpenCmsCore {
                 }
             }
         } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Default file         : non-critical error " + e.toString());
+            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).warn(". Default file         : non-critical error " + e.toString());
             }
         }
         // make sure we always have at last an emtpy array      
@@ -1207,8 +1207,8 @@ public class OpenCmsCore {
                 getLog(CmsLog.CHANNEL_INIT).info(". User data init       : Default language is '" + m_userDefaultLanguage + "'");
             }
         } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". User data init       : non-critical error " + e.toString());
+            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).warn(". User data init       : non-critical error " + e.toString());
             }
         }
                 
@@ -1244,14 +1244,14 @@ public class OpenCmsCore {
                         getLog(CmsLog.CHANNEL_INIT).info(". Resource init class  : " + currentClass + " instanciated");
                     }
                 } catch (Exception e1) {
-                    if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                        getLog(CmsLog.CHANNEL_INIT).info(". Resource init class  : non-critical error " + e1.toString());
+                    if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                        getLog(CmsLog.CHANNEL_INIT).warn(". Resource init class  : non-critical error " + e1.toString());
                     }
                 }
             }
         } catch (Exception e2) {
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Resource init class  : non-critical error " + e2.toString());
+            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).warn(". Resource init class  : non-critical error " + e2.toString());
             }
         }   
         
@@ -1263,8 +1263,8 @@ public class OpenCmsCore {
                 getLog(CmsLog.CHANNEL_INIT).info(". Property dialog class: " + propertyDialogHandler);
             }    
         } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Property dialog class: non-critical error " + e.toString());
+            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).warn(". Property dialog class: non-critical error " + e.toString());
             }   
         }
         
@@ -1731,15 +1731,15 @@ public class OpenCmsCore {
                                 getLog(CmsLog.CHANNEL_INIT).info(". Startup class init   : " + currentClass + " instanciated");
                             }
                         } catch (Exception e1) {
-                            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                                getLog(CmsLog.CHANNEL_INIT).info(". Startup class init   : non-critical error " + e1.toString());
+                            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                                getLog(CmsLog.CHANNEL_INIT).warn(". Startup class init   : non-critical error " + e1.toString());
                             }
                         }
                     }
                 }
             } catch (Exception e2) {
-                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).info(". Startup class init   : non-critical error " + e2.toString());
+                if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                    getLog(CmsLog.CHANNEL_INIT).warn(". Startup class init   : non-critical error " + e2.toString());
                 }
             }
 
@@ -2086,8 +2086,8 @@ public class OpenCmsCore {
             CmsCronScheduleJob job = new CmsCronScheduleJob(cms, entry);
             job.start();
         } catch (Exception exc) {
-            if (getLog(CmsLog.CHANNEL_CRON).isWarnEnabled()) {
-                getLog(CmsLog.CHANNEL_CRON).warn("Error initialising job for " + entry + " Error: " + Utils.getStackTrace(exc));
+            if (getLog(CmsLog.CHANNEL_CRON).isErrorEnabled()) {
+                getLog(CmsLog.CHANNEL_CRON).error("Error initialising job for " + entry, exc);
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/09/17 14:30:14 $
-* Version: $Revision: 1.133 $
+* Date   : $Date: 2003/09/17 18:08:07 $
+* Version: $Revision: 1.134 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.133 $ $Date: 2003/09/17 14:30:14 $
+ * @version $Revision: 1.134 $ $Date: 2003/09/17 18:08:07 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -792,9 +792,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         try{
             value = cms.readProperty(requestedUri, tagcontent);
         }catch(Exception e){
-            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).info("[CmsXmlTemplate] usermethod getProperty throwed an Exception getting "+
-                        tagcontent+": "+e.toString());
+            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isWarnEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn("Usermethod getProperty throwed an Exception getting " + tagcontent, e);
             }
         }
         if(value == null) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2003/09/17 08:31:30 $
- * Version: $Revision: 1.99 $
+ * Date   : $Date: 2003/09/17 18:08:07 $
+ * Version: $Revision: 1.100 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.99 $
+ * @version $Revision: 1.100 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -1543,15 +1543,15 @@ public class CmsRegistry extends A_CmsXmlContent {
                         String className = ((Element)resTypes.item(x)).getFirstChild().getNodeValue();
                         result.add(className);
                     } catch (Exception exc) {
-                        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled())
-                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(". Error getting registry node "+node);
+                        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isWarnEnabled())
+                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).warn("Error getting registry node " + node, exc);
                     }
                 }
             }
         } catch (Exception e) {
             // no returnvalues
             if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled())
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(". Error getting registry node "+node);
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("Error getting registry node " + node, e);
         }
         return result;
     }
@@ -1573,8 +1573,8 @@ public class CmsRegistry extends A_CmsXmlContent {
                 if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled())
                     OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(". CmsSyncModification init : " + classname + " instanciated");
             } catch (Exception e1) {
-                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled())
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(". CmsSyncModification init : non-critical error " + e1.toString());
+                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isWarnEnabled())
+                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).warn(". CmsSyncModification init : non-critical error" + e1.toString());
             }
         }
         return result;

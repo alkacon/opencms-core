@@ -162,37 +162,35 @@ public class CmsShowMedia extends CmsXmlTemplate {
     }
 
 
- /**
-  * Gets the content definition class method constructor
-  * @return content definition object
-  */
-  protected Object getContentDefinition(CmsObject cms, Class cdClass, Integer id) {
-    Object o = null;
-      try {
-        Constructor c = cdClass.getConstructor(new Class[] {CmsObject.class, Integer.class});
-        o = c.newInstance(new Object[] {cms, id});
-      } catch (InvocationTargetException ite) {
-        if (OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).info("Content definition constructor: Invocation target exception!");
+     /**
+      * Gets the content definition class method constructor
+      * @return content definition object
+      */
+    protected Object getContentDefinition(CmsObject cms, Class cdClass, Integer id) {
+        Object o = null;
+        try {
+            Constructor c = cdClass.getConstructor(new Class[] { CmsObject.class, Integer.class });
+            o = c.newInstance(new Object[] { cms, id });
+        } catch (InvocationTargetException ite) {
+            if (OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isWarnEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).warn("Invocation target exception", ite);
+            }
+        } catch (NoSuchMethodException nsm) {
+            if (OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isWarnEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).warn("Requested method was not found", nsm);
+            }
+        } catch (InstantiationException e) {
+            if (OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isWarnEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).warn("The reflected class is abstract", e);
+            }
+        } catch (Exception e) {
+            if (OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isWarnEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).warn("Other exception", e);
+            }
+    
         }
-      } catch (NoSuchMethodException nsm) {
-        if (OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isInfoEnabled()) {
-          OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).info("Content definition constructor: Requested method was not found!");
-        }
-      } catch (InstantiationException e) {
-        if (OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).info("Content definition constructor: the reflected class is abstract!");
-        }
-      } catch (Exception e) {
-        if (OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).info("Content definition constructor: Other exception! " + e);
-        }
-        if(OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).isInfoEnabled()) {
-         OpenCms.getLog(CmsLog.CHANNEL_MODULE_MASTER).info(e.getMessage() );
-        }
-      }
-    return o;
-  }
+        return o;
+    }
 
    /**
      * gets the caching information from the current template class.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateCache.java,v $
-* Date   : $Date: 2003/09/17 08:31:30 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/09/17 18:08:07 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,15 +41,15 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
     
     /** Default constructor to create a template cache */
     public CmsTemplateCache() {
-        if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isWarnEnabled() ) {
-            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn(". Template cache       : Initialized successfully");
+        if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isInfoEnabled() ) {
+            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).info(". Template cache       : Initialized successfully");
         }
     }
     
     /** Deletes all documents from the template cache. */
     public void clearCache() {
-        if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isWarnEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn("[CmsTemplateCache] clearing template cache.");
+        if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).info("Clearing template cache");
         }
         templateCache.clear();
     }
@@ -64,8 +64,8 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
             templateCache.remove(key);
         }
         else {
-            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn("[CmsTemplateCache] clearCache failed: " + key);
+            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).info("Could not clear key from cache: " + key);
             }
         }
     }
@@ -76,15 +76,15 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
      * @return byte array with the cached template content or null if no cached value was found.
      */
     public byte[] get(Object key) {
-        if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isWarnEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn("[CmsTemplateCache] Getting " + key + " from cache.");
+        if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).info("Getting " + key + " from cache");
         }
         if(key instanceof String) {
             return (byte[])templateCache.get(key);
         }
         else {
-            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn("[CmsTemplateCache] Getting " + key + " from cache failed.");
+            if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).info("Getting " + key + " from cache failed");
             }
             return null;
         }
@@ -99,10 +99,9 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
     public boolean has(Object key) {
         if(key instanceof String) {
             return templateCache.get(key) != null;
-        }
-        else {
+        } else {
             if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn("[CmsTemplateCache] " + key + " is not instanceof String.");
+                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn(key + " is not instanceof String");
             }
             return false;
         }
@@ -119,7 +118,7 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
         }
         else {
             if(OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn("[CmsTemplateCache] " + key + " is not instanceof String.");
+                OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn(key + " is not instanceof String");
             }
         }
     }

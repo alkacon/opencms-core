@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2003/09/17 14:30:14 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/09/17 18:08:07 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault {
@@ -98,7 +98,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         if(!discFolder.exists()) {
             boolean success = discFolder.mkdir();
             if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled() && (!success)) {
-                OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn("Couldn't create folder " + discFolder.getAbsolutePath() + ".");
+                OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn("Couldn't create folder " + discFolder.getAbsolutePath());
             }
         }
 
