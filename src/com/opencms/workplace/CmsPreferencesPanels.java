@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
- * Date   : $Date: 2000/03/16 19:26:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/03/17 13:29:01 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,18 +41,91 @@ import java.util.*;
  * Template class for displaying the preference panels screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
- * TODO: use predefined constants in this class.
+ * TODO: use predefined constants in this class, clean up this class and add more comments!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/03/16 19:26:44 $
+ * @version $Revision: 1.6 $ $Date: 2000/03/17 13:29:01 $
  */
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,
-                                                             I_CmsConstants {
+                                                                         I_CmsConstants {
            
-     /** Datablock value for checked */    
-	 private static final String C_CHECKED = "CHECKED";
+    /** Datablock value for checked */    
+	private static final String C_CHECKED = "CHECKED";
      
-     /** Constant for filter */
+    /** Datablock value for checkbox title */    
+	private static final String C_CHECKTITLE = "CHECKTITLE";
+    
+    /** Datablock value for checkbox type */    
+	private static final String C_CHECKTYPE = "CHECKTYPE";
+   
+    /** Datablock value for checkbox changed */    
+	private static final String C_CHECKCHANGED = "CHECKCHANGED";
+    
+    /** Datablock value for checkbox size */    
+	private static final String C_CHECKSIZE = "CHECKSIZE";
+    
+    /** Datablock value for checkbox state */    
+	private static final String C_CHECKSTATE = "CHECKSTATE";
+    
+    /** Datablock value for checkbox owner */    
+	private static final String C_CHECKOWNER = "CHECKOWNER";
+    
+    /** Datablock value for checkbox group */    
+	private static final String C_CHECKGROUP = "CHECKGROUP";
+    
+    /** Datablock value for checkbox access */    
+	private static final String C_CHECKACCESS = "CHECKACCESS";
+    
+    /** Datablock value for checkbox lockedby */    
+	private static final String C_CHECKLOCKEDBY = "CHECKLOCKEDBY";
+  
+    /** Datablock value for checkbox view all */    
+	private static final String C_CHVIEWALL = "CHVIEWALL";
+    
+    /** Datablock value for checkbox message accepted */    
+	private static final String C_CHMESSAGEACCEPTED = "CHMESSAGEACCEPTED";
+  
+    /** Datablock value for checkbox message forwared */    
+	private static final String C_CHMESSAGEFORWARDED = "CHMESSAGEFORWARDED";
+    
+    /** Datablock value for checkbox message completed */    
+	private static final String C_CHMESSAGECOMPLETED = "CHMESSAGECOMPLETED";
+      
+    /** Datablock value for checkbox message memebers */    
+	private static final String C_CHMESSAGEMEMEBERS = "CHMESSAGEMEMEBERS";
+   
+    /** Datablock value for checkbox user read */    
+	private static final String C_CHECKUR = "CHECKUR";
+   
+     /** Datablock value for checkbox user write */    
+	private static final String C_CHECKUW = "CHECKUW";
+    
+    /** Datablock value for checkbox user visible */    
+	private static final String C_CHECKUV = "CHECKUV";
+    
+    /** Datablock value for checkbox group read */    
+	private static final String C_CHECKGR = "CHECKGR";
+   
+    /** Datablock value for checkbox group write */    
+	private static final String C_CHECKGW = "CHECKGW";
+    
+    /** Datablock value for checkbox group visible */    
+	private static final String C_CHECKGV = "CHECKGV";
+    
+    /** Datablock value for checkbox public read */    
+	private static final String C_CHECKPR = "CHECKPR";
+   
+    /** Datablock value for checkbox public write */    
+	private static final String C_CHECKPW = "CHECKPW";
+    
+    /** Datablock value for checkbox public visible */    
+	private static final String C_CHECKPV = "CHECKPV";
+    
+    /** Datablock value for checkbox internal flag */    
+	private static final String C_CHECKIF = "CHECKIF";
+    
+    
+    /** Constant for filter */
 	private static final String C_TASK_FILTER = "task.filter.";
 
 	/** Constant for filter */
@@ -93,350 +166,119 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                              Hashtable parameters, String templateSelector)
         throws CmsException {
         
+        // get request context and session
         A_CmsRequestContext reqCont = cms.getRequestContext();     
-        
         HttpSession session= ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(true);   
         
+        // define varialbes to store template and panel
         String template="";
         String panel;
         String oldPanel;
         
-        int explorerSettingsValue;
-        
-        // test values
-        Enumeration keys = parameters.keys();
-        String key;
-        System.err.println("#####");
-        while(keys.hasMoreElements()) {
-	        key = (String) keys.nextElement();
-	        System.err.print(key);
-	        System.err.print(":");
-	        System.err.println(parameters.get(key));
-        }
-        System.err.println("같같�");
-        // test values end
-     
-           // test values
-                        
-        String[] skeys = session.getValueNames();
-        System.err.println("++++++SESSIONVALUES");
-        for (int i=0;i<skeys.length;i++) {
-	        key = (String) skeys[i];
-	        System.err.print(key);
-	        System.err.print(":");
-	        System.err.println(session.getValue(key));
-        }
-        System.err.println("같같�");
-        // test values end
-        
+        int explorerSettingsValue;            
         
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
-        //CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);
         
         // get the active panel value. This indicates which panel to be displayed.
-        panel=(String)parameters.get("panel");  
+        panel=(String)parameters.get( C_PARA_PANEL);  
         
         // check if the submit or ok button is selected. If so, update all values
-        if ((parameters.get("SUBMIT") != null) || (parameters.get("OK") != null) ){
-            // set settings for explorer panel if nescessary
+        if ((parameters.get(C_PARA_SUBMIT) != null) || (parameters.get(C_PARA_OK) != null) ){
+            
+            // get the data values form the active panel and store them in the session.
+            // this is nescessary to save this data in the next step.
             if (panel!= null) {
-                // the active panel are the explorer settings, save its data
-                if (panel.equals("explorer")) {
+                
+                // the active panel is the explorer settings, save its data
+                if (panel.equals(C_PANEL_EXPLORER)) {
                     int explorerSettings=getExplorerSettings(parameters);
                   
-                    session.putValue("EXPLORERSETTINGS",new Integer(explorerSettings).toString());        
+                    session.putValue(C_PARA_EXPLORERSETTINGS,new Integer(explorerSettings).toString());        
                 }
-                // the active panel are the task settings, save its data
-                if (panel.equals("task")) {
+                
+                // the active panel is the task settings, save its data
+                if (panel.equals(C_PANEL_TASK)) {
                     Hashtable taskSettings=getTaskSettings(parameters,session);
                     if (taskSettings != null) {
                       
-                        session.putValue("TASKSETTINGS",taskSettings);
+                        session.putValue(C_PARA_TASKSETTINGS,taskSettings);
                     }
                 }
-                 // the active panel are the user settings, save its data
-                if (panel.equals("user")) {
+                
+                // the active panel is the starup settings, save its data
+                if (panel.equals(C_PANEL_START)) {
+                    Hashtable startSettings=getStartSettings(cms,parameters);
+                    if (startSettings != null) {
+                        session.putValue(C_PARA_STARTSETTINGS,startSettings);
+                    }
+                }
+                
+                // the active panel is the user settings, save its data
+                if (panel.equals(C_PANEL_USER)) {
                     String userSettings=getUserSettings(parameters);
                     if (userSettings != null) {
                        
-                        session.putValue("USERSETTINGS",userSettings);
+                        session.putValue(C_PARA_USERSETTINGS,userSettings);
                     }
-                }
-                
-                // the active panel are the starup settings, save its data
-                if (panel.equals("start")) {
-                    Hashtable startSettings=getStartSettings(cms,parameters);
-                    if (startSettings != null) {
-                        session.putValue("STARTSETTINGS",startSettings);
-                    }
-                }
+                }                       
             }
-            // now update the user settings
-            String explorerSettings=(String)session.getValue("EXPLORERSETTINGS");
+            
+            // update the actual user data with those values taken from the preferences
+            // panles. All data set in the panels is now available in the session, so
+            // check which data is available and set it.
+            
+            // now update the explorer settings
+            String explorerSettings=(String)session.getValue(C_PARA_EXPLORERSETTINGS);
             if (explorerSettings != null) {
-                cms.getRequestContext().currentUser().setAdditionalInfo(C_ADDITIONAL_INFO_EXPLORERSETTINGS,explorerSettings);
+                reqCont.currentUser().setAdditionalInfo(C_ADDITIONAL_INFO_EXPLORERSETTINGS,explorerSettings);
             }
-            
-            Hashtable taskSettings=(Hashtable)session.getValue("TASKSETTINGS");
+         
+            // now update the task settings
+            Hashtable taskSettings=(Hashtable)session.getValue(C_PARA_TASKSETTINGS);
             if (taskSettings != null) {
-                cms.getRequestContext().currentUser().setAdditionalInfo(C_ADDITIONAL_INFO_TASKSETTINGS,taskSettings);
+                reqCont.currentUser().setAdditionalInfo(C_ADDITIONAL_INFO_TASKSETTINGS,taskSettings);
             }
             
-            String userSettings=(String)session.getValue("USERSETTINGS");
-            if (userSettings!= null) {
-                cms.getRequestContext().setCurrentGroup(userSettings);
-            }
-            
-            Hashtable startSettings=(Hashtable)session.getValue("STARTSETTINGS");
+            // now update the start settings
+            Hashtable startSettings=(Hashtable)session.getValue(C_PARA_STARTSETTINGS);
             if (startSettings != null) {
                 cms.getRequestContext().currentUser().setAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS,startSettings);
                 String defaultGroup=(String)startSettings.get(C_START_DEFAULTGROUP);
-                cms.getRequestContext().currentUser().setDefaultGroup(cms.readGroup(defaultGroup));
+                reqCont.currentUser().setDefaultGroup(cms.readGroup(defaultGroup));
             }
             
-            // write the user data to the database
-            cms.writeUser(cms.getRequestContext().currentUser());
+            // now update the user settings
+            String userSettings=(String)session.getValue(C_PARA_USERSETTINGS);
+            if (userSettings!= null) {
+                reqCont.setCurrentGroup(userSettings);
+            }
+            
+            // finally store the updated user object in the database  
+            cms.writeUser(reqCont.currentUser());
         }
-                          
-        // get the data from the displayed panel
+
+        // check wich panel of the preferences should be displayed and update the
+        // data on this pannel with the default values or values already set in the
+        // preferences before.
         if (panel != null) {
+            
+            // set the template to the active panel.
+            // by doing this, the correct panel will be displayed when the template 
+            // is processed.
             template=panel;
             
-            // this is the panel for setting the explorer preferences
-            if (panel.equals("explorer")) { 
-                
-                //get the actual user settings  
-                // first try to read them from the session
-                String explorerSettings=null;
-                explorerSettings=(String)session.getValue("EXPLORERSETTINGS");
-                
-                // if this fails, get the settings from the user obeject
-                if (explorerSettings== null) {
-                    explorerSettings=(String)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_EXPLORERSETTINGS);
-                }
-                
-                //check if the default button was selected.
-                // if so, reset the values to the default settings
-                if (parameters.get("DEFAULT") !=null) {
-                    explorerSettings=null;
-                }
-                
-                // set them to default
-                // default values are:
-                // Filetitle, Filetype and Date of last change
-                if (explorerSettings!= null) {
-                    explorerSettingsValue=new Integer(explorerSettings).intValue();
-                } else {
-                    explorerSettingsValue=C_FILELIST_TITLE+C_FILELIST_TYPE+C_FILELIST_CHANGED;
-                }
-                             
-                
-                // now update the data in the template
-                if ((explorerSettingsValue & C_FILELIST_TITLE) >0) {
-                    xmlTemplateDocument.setXmlData("CHECKTITLE",C_CHECKED);
-                } else {
-                    xmlTemplateDocument.setXmlData("CHECKTITLE"," ");
-                }
-                
-                if ((explorerSettingsValue & C_FILELIST_TYPE) >0) {
-                    xmlTemplateDocument.setXmlData("CHECKTYPE",C_CHECKED);
-                } else {
-                    xmlTemplateDocument.setXmlData("CHECKTYPE"," ");
-                }
-               
-                if ((explorerSettingsValue & C_FILELIST_CHANGED) >0) {
-                    xmlTemplateDocument.setXmlData("CHECKCHANGED",C_CHECKED);
-                } else {
-                    xmlTemplateDocument.setXmlData("CHECKCHANGED"," ");
-                }
-                
-                if ((explorerSettingsValue & C_FILELIST_SIZE) >0) {
-                    xmlTemplateDocument.setXmlData("CHECKSIZE",C_CHECKED);
-                } else {
-                    xmlTemplateDocument.setXmlData("CHECKSIZE"," ");
-                }
-               
-                if ((explorerSettingsValue & C_FILELIST_STATE) >0) {
-                    xmlTemplateDocument.setXmlData("CHECKSTATE",C_CHECKED);
-                } else {
-                    xmlTemplateDocument.setXmlData("CHECKSTATE"," ");
-                }
-              
-                if ((explorerSettingsValue & C_FILELIST_OWNER) >0) {
-                    xmlTemplateDocument.setXmlData("CHECKOWNER",C_CHECKED);
-                } else {
-                    xmlTemplateDocument.setXmlData("CHECKOWNER"," ");
-                }
-               
-                if ((explorerSettingsValue & C_FILELIST_GROUP) >0) {
-                    xmlTemplateDocument.setXmlData("CHECKGROUP",C_CHECKED);
-                } else {
-                    xmlTemplateDocument.setXmlData("CHECKGROUP"," ");
-                }
-               
-                if ((explorerSettingsValue & C_FILELIST_ACCESS) >0) {
-                    xmlTemplateDocument.setXmlData("CHECKACCESS",C_CHECKED);
-                } else {
-                    xmlTemplateDocument.setXmlData("CHECKACCESS"," ");
-                }
-               
-                if ((explorerSettingsValue & C_FILELIST_LOCKED) >0) {
-                    xmlTemplateDocument.setXmlData("CHECKLOCKEDBY",C_CHECKED);
-                } else {
-                    xmlTemplateDocument.setXmlData("CHECKLOCKEDBY"," ");
-                }
-            } else if (panel.equals("task")) {     
-                // this is the panel for setting the task preferences
-                //get the actual user settings  
-                // first try to read them from the session
-                Hashtable taskSettings=null;
-                taskSettings=(Hashtable)session.getValue("TASKSETTINGS");
-                // if this fails, get the settings from the user obeject
-                if (taskSettings== null) {
-                    taskSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_TASKSETTINGS);                    
-                }
-                
-                // if the settings are still empty, set them to default
-                // default values are:
-                // View all tasks set to false.
-                // All task messages are enabled.
-                // Task filer is new tasks for the actual user.
-                if (taskSettings== null) {
-                    taskSettings=new Hashtable();
-                    
-                    taskSettings.put(C_TASK_VIEW_ALL,new Boolean(false));
-           
-                    taskSettings.put(C_TASK_MESSAGES,new Integer(C_TASK_MESSAGES_ACCEPTED+
-                                                                 C_TASK_MESSAGES_FORWARDED+
-                                                                 C_TASK_MESSAGES_COMPLETED+
-                                                                 C_TASK_MESSAGES_MEMBERS));
-                 
-                    taskSettings.put(C_TASK_FILTER,new String("a1"));  
-                 }
-                
-                // now update the data in the template
-                if (((Boolean)taskSettings.get(C_TASK_VIEW_ALL)).booleanValue()) {
-                    xmlTemplateDocument.setXmlData("CHVIEWALL",C_CHECKED);
-                } else {
-                    xmlTemplateDocument.setXmlData("CHVIEWALL"," ");
-                }
-                
-                int taskMessages=((Integer)taskSettings.get(C_TASK_MESSAGES)).intValue();
-                
-                if ((taskMessages & C_TASK_MESSAGES_ACCEPTED) >0){
-                    xmlTemplateDocument.setXmlData("CHMESSAGEACCEPTED",C_CHECKED);
-                } else {
-                    xmlTemplateDocument.setXmlData("CHMESSAGEACCEPTED"," ");
-                }
-             
-                if ((taskMessages & C_TASK_MESSAGES_FORWARDED) >0){
-                    xmlTemplateDocument.setXmlData("CHMESSAGEFORWARDED",C_CHECKED);
-                } else {
-                    xmlTemplateDocument.setXmlData("CHMESSAGEFORWARDED"," ");
-                }
-                
-                if ((taskMessages & C_TASK_MESSAGES_COMPLETED) >0){
-                    xmlTemplateDocument.setXmlData("CHMESSAGECOMPLETED",C_CHECKED);
-                } else {
-                    xmlTemplateDocument.setXmlData("CHMESSAGECOMPLETED"," ");
-                }
-                
-                if ((taskMessages & C_TASK_MESSAGES_MEMBERS) >0){
-                    xmlTemplateDocument.setXmlData("CHMESSAGEMEMEBERS",C_CHECKED);
-                } else {
-                    xmlTemplateDocument.setXmlData("CHMESSAGEMEMEBERS"," ");
-                }          
-                
-            } else if (panel.equals("start")) {     
-                // this is the panel for setting the start preferences
-                Hashtable startSettings=null;
-              
-                startSettings=(Hashtable)session.getValue("STARTSETTINGS");
-        
-                // if this fails, get the settings from the user obeject
-                if (startSettings== null) {
-                   startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
-                }                 
-                                   
-                // if the settings are still empty, set them to default
-                if (startSettings== null) {
-                    startSettings=new Hashtable();
-                 
-                    startSettings.put(C_START_LANGUAGE,C_DEFAULT_LANGUAGE);
-                    startSettings.put(C_START_PROJECT,reqCont.currentProject().getName()); 
-                    String currentView = (String)session.getValue(C_PARA_VIEW);
-                    if (currentView == null) {
-                        currentView="explorer.html";
-                    }        
-                    startSettings.put(C_START_VIEW,currentView);           
-                    startSettings.put(C_START_DEFAULTGROUP,reqCont.currentGroup().getName());            
-                    startSettings.put(C_START_ACCESSFLAGS,new Integer(C_ACCESS_DEFAULT_FLAGS));
-                }
-                
-                // now update the data in the template                                    
-                int flags=((Integer)startSettings.get(C_START_ACCESSFLAGS)).intValue();
-                if ((flags & C_ACCESS_OWNER_READ) >0 ) {
-                    xmlTemplateDocument.setXmlData("CHECKUR","CHECKED");    
-                } else {
-                    xmlTemplateDocument.setXmlData("CHECKUR"," ");    
-                }
-                if ((flags & C_ACCESS_OWNER_WRITE) >0 ) {
-                    xmlTemplateDocument.setXmlData("CHECKUW","CHECKED");    
-                } else {
-                    xmlTemplateDocument.setXmlData("CHECKUW"," ");    
-                }
-                if ((flags & C_ACCESS_OWNER_VISIBLE) >0 ) {
-                    xmlTemplateDocument.setXmlData("CHECKUV","CHECKED");    
-                } else {
-                    xmlTemplateDocument.setXmlData("CHECKUV"," ");    
-                }     
-                if ((flags & C_ACCESS_GROUP_READ) >0 ) {
-                    xmlTemplateDocument.setXmlData("CHECKGR","CHECKED");    
-                } else {
-                    xmlTemplateDocument.setXmlData("CHECKGR"," ");    
-                }
-                if ((flags & C_ACCESS_GROUP_WRITE) >0 ) {
-                    xmlTemplateDocument.setXmlData("CHECKGW","CHECKED");    
-                } else {
-                    xmlTemplateDocument.setXmlData("CHECKGW"," ");    
-                }
-                if ((flags & C_ACCESS_GROUP_VISIBLE) >0 ) {
-                    xmlTemplateDocument.setXmlData("CHECKGV","CHECKED");    
-                } else {
-                    xmlTemplateDocument.setXmlData("CHECKGV"," ");    
-                }  
-                if ((flags & C_ACCESS_PUBLIC_READ) >0 ) {
-                    xmlTemplateDocument.setXmlData("CHECKPR","CHECKED");    
-                } else {
-                    xmlTemplateDocument.setXmlData("CHECKPR"," ");    
-                }
-                if ((flags & C_ACCESS_PUBLIC_WRITE) >0 ) {
-                    xmlTemplateDocument.setXmlData("CHECKPW","CHECKED");    
-                } else {
-                    xmlTemplateDocument.setXmlData("CHECKPW"," ");    
-                }
-                if ((flags & C_ACCESS_PUBLIC_VISIBLE) >0 ) {
-                    xmlTemplateDocument.setXmlData("CHECKPV","CHECKED");    
-                } else {
-                    xmlTemplateDocument.setXmlData("CHECKPV"," ");    
-                }  
-                if ((flags & C_ACCESS_INTERNAL_READ) >0 ) {
-                    xmlTemplateDocument.setXmlData("CHECKIF","CHECKED");    
-                } else {
-                    xmlTemplateDocument.setXmlData("CHECKIF"," ");    
-                }  
-                
-            } else if (panel.equals("user")) { 
-                // this is the panel for setting the user preferences
-                A_CmsUser user=cms.getRequestContext().currentUser();
-                
-                xmlTemplateDocument.setXmlData("USER",user.getName());
-                xmlTemplateDocument.setXmlData("FIRSTNAME",user.getFirstname());
-                xmlTemplateDocument.setXmlData("LASTNAME",user.getLastname());
-                xmlTemplateDocument.setXmlData("DESCRIPTION",user.getDescription());
-                xmlTemplateDocument.setXmlData("EMAIL",user.getEmail());
-                xmlTemplateDocument.setXmlData("ADRESS",user.getAddress());
-                
+            if (panel.equals(C_PANEL_EXPLORER)) { 
+               // this is the panel for setting the explorer preferences
+               setExplorerSettings(session,parameters,reqCont,xmlTemplateDocument);         
+            } else if (panel.equals(C_PANEL_TASK)) {     
+               // this is the panel for setting the task preferences
+               setTaskSettings(session,parameters,reqCont,xmlTemplateDocument);                     
+            } else if (panel.equals(C_PANEL_START)) {     
+               // this is the panel for setting the start preferences
+               setStartSettings(session,parameters,reqCont,xmlTemplateDocument);                            
+            } else if (panel.equals(C_PANEL_USER)) { 
+               // this is the panel for setting the user preferences
+               setUserSettings(session,parameters,reqCont,xmlTemplateDocument);                  
             }
                 // finally store the given data into the session
                 oldPanel=(String)session.getValue(C_PARA_OLDPANEL);
@@ -496,6 +338,98 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
     }
 	
+    
+    /**
+     * Sets all data in the preference panel explorer settings.
+     * Data is either taken form the default values, the current user or the current session.
+     * @param session The current session.
+     * @param parameters  Hashtable containing all request parameters.
+     * @param reqCont The request context.
+     * @param xmlTemplateDocument The template in which all data is added.
+     */    
+    private void setExplorerSettings(HttpSession session, Hashtable parameters,
+                                     A_CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
+             
+        //get the actual user settings  
+        // first try to read them from the session
+        String explorerSettings=null;
+        int explorerSettingsValue=0;
+        explorerSettings=(String)session.getValue(C_PARA_EXPLORERSETTINGS);
+                
+        // if this fails, get the settings from the user obeject
+        if (explorerSettings== null) {
+            explorerSettings=(String)reqCont.currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_EXPLORERSETTINGS);
+        }
+                
+        //check if the default button was selected.
+        // if so, delete all user settings so that they are set to the defaults later.
+        if (parameters.get(C_PARA_DEFAULT) !=null) {
+                    explorerSettings=null;
+        }
+                
+        // if the settings are still empty, set them to default
+        if (explorerSettings!= null) {
+            explorerSettingsValue=new Integer(explorerSettings).intValue();
+        } else {
+            explorerSettingsValue=C_FILELIST_TITLE+C_FILELIST_TYPE+C_FILELIST_CHANGED;
+        }
+                                             
+        // now update the datablocks in the template
+        if ((explorerSettingsValue & C_FILELIST_TITLE) >0) {
+            xmlTemplateDocument.setXmlData(C_CHECKTITLE,C_CHECKED);
+        } else {
+            xmlTemplateDocument.setXmlData(C_CHECKTITLE," ");
+        }
+                
+        if ((explorerSettingsValue & C_FILELIST_TYPE) >0) {
+            xmlTemplateDocument.setXmlData(C_CHECKTYPE,C_CHECKED);
+        } else {
+            xmlTemplateDocument.setXmlData(C_CHECKTYPE," ");
+        }
+               
+        if ((explorerSettingsValue & C_FILELIST_CHANGED) >0) {
+            xmlTemplateDocument.setXmlData(C_CHECKCHANGED,C_CHECKED);
+        } else {
+            xmlTemplateDocument.setXmlData(C_CHECKCHANGED," ");
+        }
+                
+        if ((explorerSettingsValue & C_FILELIST_SIZE) >0) {
+            xmlTemplateDocument.setXmlData(C_CHECKSIZE,C_CHECKED);
+        } else {
+            xmlTemplateDocument.setXmlData(C_CHECKSIZE," ");
+        }
+               
+        if ((explorerSettingsValue & C_FILELIST_STATE) >0) {
+            xmlTemplateDocument.setXmlData(C_CHECKSTATE,C_CHECKED);
+        } else {
+            xmlTemplateDocument.setXmlData(C_CHECKSTATE," ");
+        }
+              
+        if ((explorerSettingsValue & C_FILELIST_OWNER) >0) {
+            xmlTemplateDocument.setXmlData(C_CHECKOWNER,C_CHECKED);
+        } else {
+            xmlTemplateDocument.setXmlData(C_CHECKOWNER," ");
+        }
+               
+        if ((explorerSettingsValue & C_FILELIST_GROUP) >0) {
+            xmlTemplateDocument.setXmlData(C_CHECKGROUP,C_CHECKED);
+        } else {
+            xmlTemplateDocument.setXmlData(C_CHECKGROUP," ");
+        }
+               
+        if ((explorerSettingsValue & C_FILELIST_ACCESS) >0) {
+            xmlTemplateDocument.setXmlData(C_CHECKACCESS,C_CHECKED);
+        } else {
+            xmlTemplateDocument.setXmlData(C_CHECKACCESS," ");
+        }
+               
+        if ((explorerSettingsValue & C_FILELIST_LOCKED) >0) {
+            xmlTemplateDocument.setXmlData(C_CHECKLOCKEDBY,C_CHECKED);
+        } else {
+            xmlTemplateDocument.setXmlData(C_CHECKLOCKEDBY," ");
+        }
+    }
+                                         
     /**
      * Calculates the settings for the explorer filelist from the data submitted in
      * the preference explorer panel.
@@ -533,6 +467,72 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         }
         return explorerSettings;
     }
+    
+    
+    /**
+     * Sets all data in the preference panel task settings.
+     * Data is either taken form the default values, the current user or the current session.
+     * @param session The current session.
+     * @param parameters  Hashtable containing all request parameters.
+     * @param reqCont The request context.
+     * @param xmlTemplateDocument The template in which all data is added.
+     */    
+    private void setTaskSettings(HttpSession session, Hashtable parameters,
+                                 A_CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
+        // get the actual user settings  
+        // first try to read them from the session
+        Hashtable taskSettings=null;
+        taskSettings=(Hashtable)session.getValue(C_PARA_TASKSETTINGS);
+        // if this fails, get the settings from the user obeject
+        if (taskSettings== null) {
+            taskSettings=(Hashtable)reqCont.currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_TASKSETTINGS);                    
+         }
+                
+        // if the settings are still empty, set them to default
+        if (taskSettings== null) {
+            taskSettings=new Hashtable();
+            taskSettings.put(C_TASK_VIEW_ALL,new Boolean(false));
+            taskSettings.put(C_TASK_MESSAGES,new Integer(C_TASK_MESSAGES_ACCEPTED+
+                                                         C_TASK_MESSAGES_FORWARDED+
+                                                         C_TASK_MESSAGES_COMPLETED+
+                                                         C_TASK_MESSAGES_MEMBERS));
+            taskSettings.put(C_TASK_FILTER,new String("a1"));  
+       }
+                
+       //now update the data in the template
+       if (((Boolean)taskSettings.get(C_TASK_VIEW_ALL)).booleanValue()) {
+            xmlTemplateDocument.setXmlData(C_CHVIEWALL,C_CHECKED);
+       } else {
+            xmlTemplateDocument.setXmlData(C_CHVIEWALL," ");
+       }
+       
+       int taskMessages=((Integer)taskSettings.get(C_TASK_MESSAGES)).intValue();
+               
+       if ((taskMessages & C_TASK_MESSAGES_ACCEPTED) >0){
+            xmlTemplateDocument.setXmlData(C_CHMESSAGEACCEPTED,C_CHECKED);
+       } else {
+            xmlTemplateDocument.setXmlData(C_CHMESSAGEACCEPTED," ");
+       }
+           
+       if ((taskMessages & C_TASK_MESSAGES_FORWARDED) >0){
+            xmlTemplateDocument.setXmlData(C_CHMESSAGEFORWARDED,C_CHECKED);
+       } else {
+            xmlTemplateDocument.setXmlData(C_CHMESSAGEFORWARDED," ");
+       }
+                
+       if ((taskMessages & C_TASK_MESSAGES_COMPLETED) >0){
+            xmlTemplateDocument.setXmlData(C_CHMESSAGECOMPLETED,C_CHECKED);
+       } else {
+            xmlTemplateDocument.setXmlData(C_CHMESSAGECOMPLETED," ");
+       }
+                
+       if ((taskMessages & C_TASK_MESSAGES_MEMBERS) >0){
+            xmlTemplateDocument.setXmlData(C_CHMESSAGEMEMEBERS,C_CHECKED);
+       } else {
+            xmlTemplateDocument.setXmlData(C_CHMESSAGEMEMEBERS," ");
+       }                          
+    }
+     
     
      /**
      * Calculates the task settings from the data submitted in
@@ -585,6 +585,96 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
 
         return taskSettings;
     }
+    
+    
+     /**
+     * Sets all data in the preference panel start settings.
+     * Data is either taken form the default values, the current user or the current session.
+     * @param session The current session.
+     * @param parameters  Hashtable containing all request parameters.
+     * @param reqCont The request context.
+     * @param xmlTemplateDocument The template in which all data is added.
+     */    
+    private void setStartSettings(HttpSession session, Hashtable parameters,
+                                 A_CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
+           
+        // get the actual user settings  
+        // first try to read them from the session
+        Hashtable startSettings=null;
+        startSettings=(Hashtable)session.getValue(C_PARA_STARTSETTINGS);
+        // if this fails, get the settings from the user obeject
+        if (startSettings== null) {
+            startSettings=(Hashtable)reqCont.currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+        }                 
+        // if the settings are still empty, set them to default
+        if (startSettings== null) {
+            startSettings=new Hashtable();
+                 
+            startSettings.put(C_START_LANGUAGE,C_DEFAULT_LANGUAGE);
+            startSettings.put(C_START_PROJECT,reqCont.currentProject().getName()); 
+            String currentView = (String)session.getValue(C_PARA_VIEW);
+            if (currentView == null) {
+                currentView="explorer.html";
+            }        
+            startSettings.put(C_START_VIEW,currentView);           
+            startSettings.put(C_START_DEFAULTGROUP,reqCont.currentGroup().getName());            
+            startSettings.put(C_START_ACCESSFLAGS,new Integer(C_ACCESS_DEFAULT_FLAGS));
+        }
+                
+        // now update the data in the template                                    
+        int flags=((Integer)startSettings.get(C_START_ACCESSFLAGS)).intValue();
+        if ((flags & C_ACCESS_OWNER_READ) >0 ) {
+            xmlTemplateDocument.setXmlData(C_CHECKUR,C_CHECKED);    
+        } else {
+            xmlTemplateDocument.setXmlData(C_CHECKUR," ");    
+        }
+        if ((flags & C_ACCESS_OWNER_WRITE) >0 ) {
+            xmlTemplateDocument.setXmlData(C_CHECKUW,C_CHECKED);    
+        } else {
+            xmlTemplateDocument.setXmlData(C_CHECKUW," ");    
+        }
+        if ((flags & C_ACCESS_OWNER_VISIBLE) >0 ) {
+            xmlTemplateDocument.setXmlData(C_CHECKUV,C_CHECKED);    
+        } else {
+            xmlTemplateDocument.setXmlData(C_CHECKUV," ");    
+        }     
+        if ((flags & C_ACCESS_GROUP_READ) >0 ) {
+            xmlTemplateDocument.setXmlData(C_CHECKGR,C_CHECKED);    
+        } else {
+            xmlTemplateDocument.setXmlData(C_CHECKGR," ");    
+        }
+        if ((flags & C_ACCESS_GROUP_WRITE) >0 ) {
+            xmlTemplateDocument.setXmlData(C_CHECKGW,C_CHECKED);    
+        } else {
+            xmlTemplateDocument.setXmlData(C_CHECKGW," ");    
+        }
+        if ((flags & C_ACCESS_GROUP_VISIBLE) >0 ) {
+            xmlTemplateDocument.setXmlData(C_CHECKGV,C_CHECKED);    
+        } else {
+            xmlTemplateDocument.setXmlData(C_CHECKGV," ");    
+        }  
+        if ((flags & C_ACCESS_PUBLIC_READ) >0 ) {
+            xmlTemplateDocument.setXmlData(C_CHECKPR,C_CHECKED);    
+        } else {
+            xmlTemplateDocument.setXmlData(C_CHECKPR," ");    
+        }
+        if ((flags & C_ACCESS_PUBLIC_WRITE) >0 ) {
+            xmlTemplateDocument.setXmlData(C_CHECKPW,C_CHECKED);    
+        } else {
+            xmlTemplateDocument.setXmlData(C_CHECKPW," ");    
+        }
+        if ((flags & C_ACCESS_PUBLIC_VISIBLE) >0 ) {
+            xmlTemplateDocument.setXmlData(C_CHECKPV,C_CHECKED);    
+        } else {
+            xmlTemplateDocument.setXmlData(C_CHECKPV," ");    
+        }  
+        if ((flags & C_ACCESS_INTERNAL_READ) >0 ) {
+            xmlTemplateDocument.setXmlData(C_CHECKIF,C_CHECKED);    
+        } else {
+            xmlTemplateDocument.setXmlData(C_CHECKIF," ");    
+        }  
+    }
+    
     
     /**
     * Calculates the start settings from the data submitted in
@@ -670,7 +760,32 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
            startSettings.put(C_START_ACCESSFLAGS,new Integer(flag));
        return startSettings;
     }
-              
+           
+     
+     /**
+     * Sets all data in the preference panel user settings.
+     * Data is either taken form the default values, the current user or the current session.
+     * @param session The current session.
+     * @param parameters  Hashtable containing all request parameters.
+     * @param reqCont The request context.
+     * @param xmlTemplateDocument The template in which all data is added.
+     */    
+    private void setUserSettings(HttpSession session, Hashtable parameters,
+                                 A_CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
+        
+        // get the current user
+        A_CmsUser user=reqCont.currentUser();
+
+        //set the required datablocks
+        xmlTemplateDocument.setXmlData("USER",user.getName());
+        xmlTemplateDocument.setXmlData("FIRSTNAME",user.getFirstname());
+        xmlTemplateDocument.setXmlData("LASTNAME",user.getLastname());
+        xmlTemplateDocument.setXmlData("DESCRIPTION",user.getDescription());
+        xmlTemplateDocument.setXmlData("EMAIL",user.getEmail());
+        xmlTemplateDocument.setXmlData("ADRESS",user.getAddress());                
+    }
+           
+    
     
      /**
      * Calculates the settings for the user filelist from the data submitted in

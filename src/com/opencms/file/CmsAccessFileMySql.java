@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/03/17 08:23:00 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2000/03/17 13:29:00 $
+ * Version: $Revision: 1.41 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.40 $ $Date: 2000/03/17 08:23:00 $
+ * @version $Revision: 1.41 $ $Date: 2000/03/17 13:29:00 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -822,23 +822,15 @@ import com.opencms.util.*;
                 statementResourceUpdate.setInt(4,file.getGroupId());
                 //ACCESS_FLAGS
                 statementResourceUpdate.setInt(5,file.getAccessFlags());
-                //STATE
-                System.err.println("");
-                System.err.println("WRITE FIELE HEADER FOR "+file.getAbsolutePath());
-           
+                //STATE       
                 int state=file.getState();
-                System.err.println("State :"+state);
-                System.err.println("Forceflag :"+changed);
                 if ((state == C_STATE_NEW) || (state == C_STATE_CHANGED)) {
                     statementResourceUpdate.setInt(6,state);
-                    System.err.println("The file was new or already changed");
                 } else {                                                                       
                     if (changed==true) {
                         statementResourceUpdate.setInt(6,C_STATE_CHANGED);
-                        System.err.println("The file state was forced");
                     } else {
                         statementResourceUpdate.setInt(6,file.getState());
-                        System.err.println("The file state was unchanged");
                     }
                 }
                 //LOCKED_BY

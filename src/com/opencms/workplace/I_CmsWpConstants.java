@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/03/16 20:14:08 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2000/03/17 13:29:01 $
+ * Version: $Revision: 1.66 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.65 $ $Date: 2000/03/16 20:14:08 $
+ * @version $Revision: 1.66 $ $Date: 2000/03/17 13:29:01 $
  */
 public interface I_CmsWpConstants {
 
@@ -153,6 +153,27 @@ public interface I_CmsWpConstants {
     
     /** Parameter for the password repead */
     public static final String C_PARA_NEWPWDREPEAT = "newpwdrepeat";
+    
+    /** Parameter for submitting data */
+    public static final String C_PARA_SUBMIT = "SUBMIT";
+
+    /** Parameter for the ok value */
+    public static final String C_PARA_OK = "OK";
+
+    /** Parameter for the default value */
+    public static final String C_PARA_DEFAULT= "DEFAULT";   
+    
+    /** Parameter for the explorersettings value */
+    public static final String C_PARA_EXPLORERSETTINGS = "EXPLORERSETTINGS";
+
+    /** Parameter for the tasksettings value */
+    public static final String C_PARA_TASKSETTINGS = "TASKSETTINGS";
+
+    /** Parameter for the startsettings value */
+    public static final String C_PARA_STARTSETTINGS = "STARTSETTINGS";
+
+    /** Parameter for the usersettings value */
+    public static final String C_PARA_USERSETTINGS = "USERSETTINGS";
     
     // Filenames of workplace files
         
@@ -534,6 +555,18 @@ public interface I_CmsWpConstants {
     /** Text for each panel */
     public static final String C_PANEL_NAME = "panelname";
     
+    
+    /** Panel defintion for explorer settings */
+    public static final String C_PANEL_EXPLORER = "explorer";
+
+    /** Panel defintion for task settings */
+    public static final String C_PANEL_TASK = "task";
+  
+    /** Panel defintion for start settings */
+    public static final String C_PANEL_START = "start";
+    
+    /** Panel defintion for user settings */
+    public static final String C_PANEL_USER = "user";
     
     // Parameters for file list
     
