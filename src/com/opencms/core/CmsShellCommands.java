@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2000/11/22 17:09:47 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/12/21 08:49:21 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.22 $ $Date: 2000/11/22 17:09:47 $
+ * @version $Revision: 1.23 $ $Date: 2000/12/21 08:49:21 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -1594,7 +1594,7 @@ public void lockResource(String resource, String force) {
 	 * @param password The password.
 	 */
 	public void loginUser(String username, String password) {
-		loginUser(username, password);
+		login(username, password);
 	}
 /**
  * Logs a web user into the Cms, if the password is correct.
