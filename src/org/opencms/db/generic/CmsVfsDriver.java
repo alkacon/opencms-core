@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/08 11:50:44 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/07/08 13:27:51 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2003/07/08 11:50:44 $
+ * @version $Revision: 1.14 $ $Date: 2003/07/08 13:27:51 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -3068,7 +3068,14 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(1, newname);
             stmt.setTimestamp(2, new Timestamp(dateModified));
             stmt.setString(3, currentUser.getId().toString());
-            stmt.setInt(4, I_CmsConstants.C_STATE_CHANGED);
+            int state = resource.getState();
+            if ((state == I_CmsConstants.C_STATE_NEW) || (state == I_CmsConstants.C_STATE_CHANGED)) {
+                stmt.setInt(4, state);
+            } else if (state == I_CmsConstants.C_STATE_UNCHANGED) {
+                stmt.setInt(4, I_CmsConstants.C_STATE_CHANGED);
+            } else {
+                stmt.setInt(4, state);
+            }
             stmt.setString(5, resource.getId().toString());
             count = stmt.executeUpdate();
         } catch (SQLException e) {
@@ -3861,7 +3868,14 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setInt(1, newResType.getResourceType());
             stmt.setTimestamp(2, new Timestamp(dateModified));
             stmt.setString(3, currentUser.getId().toString());
-            stmt.setInt(4, I_CmsConstants.C_STATE_CHANGED);     
+            int state = res.getState();
+            if ((state == I_CmsConstants.C_STATE_NEW) || (state == I_CmsConstants.C_STATE_CHANGED)) {
+                stmt.setInt(4, state);
+            } else if (state == I_CmsConstants.C_STATE_UNCHANGED) {
+                stmt.setInt(4, I_CmsConstants.C_STATE_CHANGED);
+            } else {
+                stmt.setInt(4, state);
+            }    
             stmt.setString(5, res.getId().toString());
             stmt.executeUpdate();            
         } catch (SQLException e) {
