@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2004/01/16 09:34:50 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/01/20 09:54:55 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.htmlparser.visitors.NodeVisitor;
 /**
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.3
  */
 public class CmsLinkProcessor extends NodeVisitor {
@@ -157,15 +157,17 @@ public class CmsLinkProcessor extends NodeVisitor {
         switch (m_mode) {
             case C_REPLACE_LINKS:
 
-                String targetUri = linkTag.extractLink();                
-                String internalUri = CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
+                String targetUri = linkTag.extractLink(); 
+                if (!"".equals(targetUri)) {
                 
-                if (internalUri != null) {
-                    linkTag.setLink(replaceLink(m_linkTable.addLink(linkTag.getTagName(), internalUri, true)));
-                } else {
-                    linkTag.setLink(replaceLink(m_linkTable.addLink(linkTag.getTagName(), targetUri, false)));
+                    String internalUri = CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
+                    if (internalUri != null) {
+                        linkTag.setLink(replaceLink(m_linkTable.addLink(linkTag.getTagName(), internalUri, true)));
+                    } else {
+                        linkTag.setLink(replaceLink(m_linkTable.addLink(linkTag.getTagName(), targetUri, false)));
+                    }
                 }
-
+                
                 break;
                 
             case C_PROCESS_LINKS:
