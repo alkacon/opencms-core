@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/06 15:01:32 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/06/06 16:19:06 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -31,6 +31,7 @@ package com.opencms.file.genericSql;
 import javax.servlet.http.*;
 import java.util.*;
 import java.sql.*;
+import java.io.*;
 import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
 
@@ -46,7 +47,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.10 $ $Date: 2000/06/06 15:01:32 $ * 
+ * @version $Revision: 1.11 $ $Date: 2000/06/06 16:19:06 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -264,6 +265,160 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
          return group;
      } 
     
+    
+    // methods working with systemproperties
+    
+    /**
+	 * Deletes a serializable object from the systempropertys.
+	 * 
+	 * @param name The name of the property.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void deleteProperty(String name)
+        throws CmsException {
+        
+        PreparedStatement statementPropertyDelete = null;
+		try	{
+           statementPropertyDelete = m_pool.getPreparedStatement(C_SYSTEMPROPERTIES_DELETE_KEY);
+           statementPropertyDelete.setString(1,name);
+           statementPropertyDelete.executeUpdate();   
+           m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_DELETE_KEY, statementPropertyDelete);   
+		}catch (SQLException e){
+			m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_DELETE_KEY, statementPropertyDelete);   
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+    }
+    
+     /**
+	 * Creates a serializable object in the systempropertys.
+	 * 
+	 * @param name The name of the property.
+	 * @param object The property-object.
+	 * 
+	 * @return object The property-object.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public Serializable addProperty(String name, Serializable object)
+         throws CmsException {
+         
+        byte[] value;
+        PreparedStatement statementPropertyWrite=null;
+         try	{			
+            // serialize the object
+            ByteArrayOutputStream bout= new ByteArrayOutputStream();            
+            ObjectOutputStream oout=new ObjectOutputStream(bout);
+            oout.writeObject(object);
+            oout.close();
+            value=bout.toByteArray();
+            
+            // create the object
+                statementPropertyWrite=m_pool.getPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY);
+                statementPropertyWrite.setString(1,name);
+                statementPropertyWrite.setBytes(2,value);
+                statementPropertyWrite.executeUpdate();
+                m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY,statementPropertyWrite);
+        } catch (SQLException e){
+			m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY,statementPropertyWrite);
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		} catch (IOException e){
+			m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY,statementPropertyWrite);
+            throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
+		}
+        return readProperty(name);
+     }
+     
+     /**
+	 * Reads a serializable object from the systempropertys.
+	 * 
+	 * @param name The name of the property.
+	 * 
+	 * @return object The property-object.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public Serializable readProperty(String name)
+        throws CmsException {
+        
+        Serializable property=null;
+        byte[] value;
+        ResultSet res = null;
+        PreparedStatement statementPropertyRead = null;
+            
+        // create get the property data from the database
+    	try {
+          statementPropertyRead=m_pool.getPreparedStatement(C_SYSTEMPROPERTIES_READ_KEY);
+          statementPropertyRead.setString(1,name);
+          res = statementPropertyRead.executeQuery();
+          m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_READ_KEY,statementPropertyRead);
+       		
+          if(res.next()) {
+				value = res.getBytes(C_SYSTEMPROPERTY_VALUE);
+                // now deserialize the object
+                ByteArrayInputStream bin= new ByteArrayInputStream(value);
+                ObjectInputStream oin = new ObjectInputStream(bin);
+                property=(Serializable)oin.readObject();                
+			}	
+		}
+		catch (SQLException e){
+			 m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_READ_KEY,statementPropertyRead);
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}	
+        catch (IOException e){
+			 m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_READ_KEY,statementPropertyRead);
+            throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
+		}
+	    catch (ClassNotFoundException e){
+			 m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_READ_KEY,statementPropertyRead);
+            throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
+		}	
+        return property;
+    }
+   
+	/**
+	 * Writes a serializable object to the systemproperties.
+	 * 
+	 * @param name The name of the property.
+	 * @param object The property-object.
+	 * 
+	 * @return object The property-object.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public Serializable writeProperty(String name, Serializable object)
+        throws CmsException {
+        
+        byte[] value=null;
+        PreparedStatement statementPropertyUpdate = null;
+        
+        try	{			
+            // serialize the object
+            ByteArrayOutputStream bout= new ByteArrayOutputStream();            
+            ObjectOutputStream oout=new ObjectOutputStream(bout);
+            oout.writeObject(object);
+            oout.close();
+            value=bout.toByteArray();   
+            
+            statementPropertyUpdate=m_pool.getPreparedStatement(C_SYSTEMPROPERTIES_UPDATE_KEY);
+            statementPropertyUpdate.setBytes(1,value);
+            statementPropertyUpdate.setString(2,name);
+		    statementPropertyUpdate.executeUpdate();
+		    m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_UPDATE_KEY,statementPropertyUpdate);
+        }
+        catch (SQLException e){
+			m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_UPDATE_KEY,statementPropertyUpdate);
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+        catch (IOException e){
+			m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_UPDATE_KEY,statementPropertyUpdate);
+            throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
+		}
+
+          return readProperty(name);
+    }
+
+    
 	/**
 	 * Private method to init all statements in the pool.
 	 */
@@ -273,6 +428,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         m_pool.initPreparedStatement(C_GROUPS_READGROUP_KEY,C_GROUPS_READGROUP);
 		
 		m_pool.initPreparedStatement(C_PROJECTS_MAXID_KEY, C_PROJECTS_MAXID);
+		
+		m_pool.initPreparedStatement(C_SYSTEMPROPERTIES_MAXID_KEY, C_SYSTEMPROPERTIES_MAXID);
+		m_pool.initPreparedStatement(C_SYSTEMPROPERTIES_READ_KEY,C_SYSTEMPROPERTIES_READ);
+		m_pool.initPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY,C_SYSTEMPROPERTIES_WRITE);
+		m_pool.initPreparedStatement(C_SYSTEMPROPERTIES_UPDATE_KEY,C_SYSTEMPROPERTIES_UPDATE);
+		m_pool.initPreparedStatement(C_SYSTEMPROPERTIES_DELETE_KEY,C_SYSTEMPROPERTIES_DELETE);
+		
 	}
 	
 	/**
@@ -293,6 +455,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		m_maxIds = new int[C_MAX_TABLES];
 		
 		m_maxIds[C_TABLE_PROJECTS] = initMaxId(C_PROJECTS_MAXID_KEY);
+		
+		m_maxIds[C_TABLE_SYSTEMPROPERTIES] = initMaxId(C_SYSTEMPROPERTIES_MAXID_KEY);
 	}
 	
 	/**

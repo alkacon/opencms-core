@@ -1,6 +1,7 @@
-create table CMS_PROPERTIES             (PROPERTY_NAME VARCHAR(40) not null, 
-                                         PROPERTY_VALUE blob,
-                                         primary key(PROPERTY_NAME));
+create table CMS_SYSTEMPROPERTIES       (SYSTEMPROPERTY_ID int not null
+					 SYSTEMPROPERTY_NAME VARCHAR(40) not null, 
+                                         SYSTEMPROPERTY_VALUE blob,
+                                         primary key(SYSTEMPROPERTY_ID));
 
 create table CMS_USERS                  (USER_ID int not null auto_increment,
                                          USER_NAME VARCHAR(32) not null,
