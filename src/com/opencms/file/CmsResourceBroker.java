@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/05/03 08:41:38 $
- * Version: $Revision: 1.116 $
+ * Date   : $Date: 2000/05/09 11:46:50 $
+ * Version: $Revision: 1.117 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.116 $ $Date: 2000/05/03 08:41:38 $
+ * @version $Revision: 1.117 $ $Date: 2000/05/09 11:46:50 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3179,13 +3179,17 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				// lock all files in this folder
 				for(int i = 0; i < files.size(); i++ ) {
 					currentResource = (A_CmsResource)files.elementAt(i);
-					lockResource(currentUser, currentProject, currentResource.getAbsolutePath(), true);
+                    if (currentResource.getState() != C_STATE_DELETED) {
+					    lockResource(currentUser, currentProject, currentResource.getAbsolutePath(), true);
+                    }
 				}
 
 				// lock all files in this folder
 				for(int i = 0; i < folders.size(); i++) {
 					currentResource = (A_CmsResource)folders.elementAt(i);
-					lockResource(currentUser, currentProject, currentResource.getAbsolutePath(), true);
+                    if (currentResource.getState() != C_STATE_DELETED) {
+					    lockResource(currentUser, currentProject, currentResource.getAbsolutePath(), true);
+                    }
 				}
 			}
 		} else {
@@ -3242,15 +3246,19 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				A_CmsResource currentResource;
 					
 				// lock all files in this folder
-				for(int i = 0; i < files.size(); i++ ) {
+				for(int i = 0; i < files.size(); i++ ) {                    
 					currentResource = (A_CmsResource)files.elementAt(i);
-					unlockResource(currentUser, currentProject, currentResource.getAbsolutePath());
+                    if (currentResource.getState() != C_STATE_DELETED) {
+					    unlockResource(currentUser, currentProject, currentResource.getAbsolutePath());
+                    }
 				}
 
 				// lock all files in this folder
 				for(int i = 0; i < folders.size(); i++) {
 					currentResource = (A_CmsResource)folders.elementAt(i);
-					unlockResource(currentUser, currentProject, currentResource.getAbsolutePath());
+                    if (currentResource.getState() != C_STATE_DELETED) {
+					    unlockResource(currentUser, currentProject, currentResource.getAbsolutePath());
+                    }
 				}
 			}
 		} else {
