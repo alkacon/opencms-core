@@ -61,8 +61,7 @@ function show_help()
 								<td class=formular valign=top>]]><LABEL value="label.description" /><![CDATA[:</td>
 								<td class=dialogtxt>
 
-									<TEXTAREA rows=2 cols=20 style="width:150px" id=DESCRIPTION name=DESCRIPTION>
-									</TEXTAREA>
+									<TEXTAREA class="textfeld" rows=2 cols=20 id=DESCRIPTION name=DESCRIPTION></TEXTAREA>
 								</td>
 								<td class=formular>]]><LABEL value="label.groupsprojectmanager" /><![CDATA[:</td>
 								<td class=dialogtxt>
@@ -116,11 +115,7 @@ function show_help()
 
 <TEMPLATE name="error">
 <![CDATA[
-<HTML>
-<BODY bgcolor="#ffffff"  background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.admincontenturl='administration_content_project.html';">
-<H1>Error!</H1>
-</BODY>
-</html>
+]]><ERRORPAGE title="error.title.newproject" message="error.message.newproject" reason="error.reason.newproject" suggestion="error.suggestion.newproject" ref="administration_content_projectnew.html" /><![CDATA[
 ]]>
 </TEMPLATE>
 
