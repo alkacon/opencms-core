@@ -664,7 +664,7 @@ This is the content of the body template file:
 \begin{xml}
 <?xml version="1.0"?>\\
 <XMLTEMPLATE>\\
-<LINK1>www.opencms.com</LINK1>\\
+<LINK1>www.opencms.org</LINK1>\\
 <LINK2>www.yahoo.de</LINK2>\\
 <TEMPLATE>\\
 <![CDATA[\\
@@ -1429,15 +1429,15 @@ Every template class has to implement the method {\meth getCacheDirectives()}:
 \index{getCacheDirectives()}
 \begin{java}
 public  CmsCacheDirectives getCacheDirectives(CmsObjet cms,\\
-\jtabb		String templateFile, String elementName,\\
-\jtabb 		Hashtable parameters, String templateSelector) \{\\
-\jtaba 		// create a CmsCacheDirectives object:\\
-\jtaba 		CmsCacheDirectives cd = \\
-\jtabb 			new CmsCacheDirectives(true, false, false, false, true);\\
-\jtaba		// adding the group to the cache key:\\
-\jtaba		cd.setCacheGroups(true);\\
-\jtaba		// return the CacheDirectives:\\
-\jtaba		return cd;\\
+\jtabb      String templateFile, String elementName,\\
+\jtabb      Hashtable parameters, String templateSelector) \{\\
+\jtaba      // create a CmsCacheDirectives object:\\
+\jtaba      CmsCacheDirectives cd = \\
+\jtabb          new CmsCacheDirectives(true, false, false, false, true);\\
+\jtaba      // adding the group to the cache key:\\
+\jtaba      cd.setCacheGroups(true);\\
+\jtaba      // return the CacheDirectives:\\
+\jtaba      return cd;\\
 \}\\
 \end{java}
 
@@ -1457,7 +1457,7 @@ The class {\class CmsCacheDirectives} provides three different constructors:
 \item 
 \begin{java}
 CmsCacheDirectives(boolean internal, boolean proxyPriv,\\
-\jtabb		boolean proxyPub, boolean export, boolean stream)\\
+\jtabb      boolean proxyPub, boolean export, boolean stream)\\
 \end{java}
 
 This constructor sets the values for:
@@ -1492,7 +1492,7 @@ The values that are not set are determined at runtime by using the following tab
 internal cacheable & x & x & x \\
 no parameters in the key & & & x \\
 user/group not in the key & x & x & x \\
-readable for guest-user	& x & & x \\
+readable for guest-user & x & & x \\
 no timeout & & & x \\
 no internal flag & x & x & x \\
 \end{tabular}
@@ -2358,7 +2358,7 @@ Here you can see the controlling Java method that stores the data in the
 session and switches between the pages by setting the template selector.
 In the session statement, a new session is created, or an existing one is
 fetched. The color that was selected is attached to the HTTP request as
-follows: http://www.opencms.com/sessionexample?colorvalue. To get the
+follows: http://www.opencms.org/sessionexample?colorvalue. To get the
 query string that is attached to the HTTP link, the method
 {\meth "getQueryString"} is called. If a color was saved in the previous session,
 it is fetched again, and displayed on the first page as the last color
@@ -2917,7 +2917,7 @@ same as seen in the previous examples:
 \jtabd                String email = ((String) parameters.get("email"));\\
 \jtabd                String tel = ((String) parameters.get("tel"));\\
 \jtabd                // set the fields with the given input in any case \\
-\jtabd		      // (even if empty String)\\
+\jtabd            // (even if empty String)\\
 \jtabd                template.setData("last\_name", lastName);\\
 \jtabd                template.setData("first\_name", firstName);\\
 \jtabd                template.setData("email", email);\\
@@ -3016,9 +3016,9 @@ private boolean validEmail(String email) \{\\
 \jtabf                        \}\\
 \jtabf                        length = server.length();\\
 \jtabf                        // first character not a dot '.'\\ 
-\jtabf		              // and at least two characters after last dot\\
+\jtabf                    // and at least two characters after last dot\\
 \jtabf                        if ((server.charAt(0) != '.')\\
-\jtabf			      \&\& server.lastIndexOf('.') < length - 2) \{\\
+\jtabf                \&\& server.lastIndexOf('.') < length - 2) \{\\
 \jtabf                                indexOfPoint = -1;\\
 \jtabf                                for (int i = 1; i < length - 2; i++) \{\\
 \jtabf                                        if (server.charAt(i) == '.') \{\\
@@ -3030,10 +3030,10 @@ private boolean validEmail(String email) \{\\
 \jtabf                                                \}\\
 \jtabf                                        \}\\
 \jtabe                                \}\\
-\jtabf 					// at least one '.' in server name and no more than\\
-\jtabf 					// three characters after the last dot\\
+\jtabf                  // at least one '.' in server name and no more than\\
+\jtabf                  // three characters after the last dot\\
 \jtabe                                if ((indexOfPoint != -1)\\
-\jtabe				      \&\& (indexOfPoint >= length - 4)) \{\\
+\jtabe                    \&\& (indexOfPoint >= length - 4)) \{\\
 \jtabf                                        retVal = true;\\
 \jtabe                                \}\\
 \jtabd                        \}\\
@@ -3179,20 +3179,20 @@ readable error message:
 \jtabc                        // create a list for more than one entry\\
 \jtabc                        if (count > 1) \{\\
 \jtabd                           improveText.append(\\
-\jtabf					template.getDataValue("improve\_list\_begin"));\\
+\jtabf                  template.getDataValue("improve\_list\_begin"));\\
 \jtabd                           for (int j = 0; j < count; j++) \{\\
 \jtabd                             template.setData("item",\\ 
-\jtabf					template.getDataValue(improveWhat[j]));\\
+\jtabf                  template.getDataValue(improveWhat[j]));\\
 \jtabe                             improveText.append(\\
-\jtabf					template.getProcessedDataValue("list\_item"));\\
+\jtabf                  template.getProcessedDataValue("list\_item"));\\
 \jtabd                          \}\\
-\jtabd			      improveText.append(template.getDataValue("improve\_list\_end"));\\
+\jtabd                improveText.append(template.getDataValue("improve\_list\_end"));\\
 \jtabc                        \}\\
 \jtabc                        // create a sentence if only one entry\\
 \jtabc                        if (count == 1) \{\\
-\jtabd				template.setData("improve\_only\_what",\\
-\jtabd				template.getDataValue(improveWhat[0]));\\
-\jtabd				improveText.append(template.getProcessedDataValue("improve\_only"));\\
+\jtabd              template.setData("improve\_only\_what",\\
+\jtabd              template.getDataValue(improveWhat[0]));\\
+\jtabd              improveText.append(template.getProcessedDataValue("improve\_only"));\\
 \jtabc                        \}\\
 \jtabc                        template.setData("rating", rating);\\
 \jtabc                        template.setData("improvement", improveText.toString());\\
