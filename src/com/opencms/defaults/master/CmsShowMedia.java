@@ -69,6 +69,12 @@ public class CmsShowMedia extends CmsXmlTemplate {
 
         }
 
+        // enable caching for this variant ...
+        Vector cosDeps = new Vector();
+        cosDeps.add(cd);
+        registerVariantDeps(cms, templateFile, null, null, parameters, null,
+                            cosDeps, null);
+
         // read the media object ...
         if(cd != null){
             Vector vec = cd.getMedia();
@@ -167,8 +173,9 @@ public class CmsShowMedia extends CmsXmlTemplate {
 
         CmsCacheDirectives ret = new CmsCacheDirectives(true, false, false, true, true);
         Vector params = new Vector();
-        params.addElement("action");
-        params.addElement("merit");
+        params.addElement("id");
+        params.addElement("pos");
+        params.addElement("cd");
         ret.setNoCacheParameters(params);
         return ret;
     }
