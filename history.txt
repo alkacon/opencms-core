@@ -8,6 +8,18 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.5.5  Com Jabbar   - XX XXXXX 2001
+! When creating a new page in the templateselectbox only templates with the 
+  v-flag are shown.
+* The way opencms dealed elements when the template was not given was not 
+  correct.
+* When an element throwed an Exception the Exceptiontext is printed in addition
+  to [elementname]???
+* Import folder now looks the folder only if the properties or the access stuff 
+  is different to an already existing folder.
+* Create Folder in extended navigation works again, it was not possible to 
+  insert an logo via the picgallerywindow.
+
 OpenCms 4.5.4  Com Jabbar   - 19 August 2001
 * Added missing element._TEMPLATE_, element._TEMPLATECLASS_, and 
   element._TEMPLATESELECTOR_ - parameters.
