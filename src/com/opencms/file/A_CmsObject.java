@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/03/15 14:32:14 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2000/03/22 14:19:17 $
+ * Version: $Revision: 1.55 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.54 $ $Date: 2000/03/15 14:32:14 $ 
+ * @version $Revision: 1.55 $ $Date: 2000/03/22 14:19:17 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -204,6 +204,16 @@ public abstract class A_CmsObject {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	abstract public Vector publishProject(String name)
+		throws CmsException;
+	
+	/**
+	 * Deletes a project.
+	 * 
+	 * @param name The name of the project to be published.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	abstract public void deleteProject(String name)
 		throws CmsException;
 	
 	/**

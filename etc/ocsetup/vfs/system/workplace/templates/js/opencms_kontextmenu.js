@@ -57,6 +57,7 @@ var DO_HISTVIEW=41;
 var DO_PUNLOCK=1;
 var DO_PONLINELOCK=2;
 var DO_PONLINE=3;
+var DO_PDELETE=4
 
 var DO_PTASK=10;
 var DO_TASK=99;
@@ -293,6 +294,11 @@ function doPAction(action) // which action on layer Project is clicked
 		case 3:
 		{
 			location.href='administration_content_publish_project.html?projectname=' + kontextparam;
+			break;
+		}
+		case 4:
+		{
+			location.href='administration_content_delete_project.html?projectname=' + kontextparam;
 			break;
 		}
 		case 10:

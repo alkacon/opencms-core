@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/03/22 09:22:34 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2000/03/22 14:19:17 $
+ * Version: $Revision: 1.85 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.84 $ $Date: 2000/03/22 09:22:34 $
+ * @version $Revision: 1.85 $ $Date: 2000/03/22 14:19:17 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -394,6 +394,40 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 	}
 
+	/**
+	 * Deletes a project.
+	 * 
+	 * <B>Security</B>
+	 * Only the admin or the owner of the project can do this.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param name The name of the project to be published.
+	 * @return A Vector of files, that were changed in the onlineproject.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void deleteProject(A_CmsUser currentUser, A_CmsProject currentProject,
+							  String name)
+		throws CmsException {
+		// read the project that should be deleted.
+		A_CmsProject deleteProject = m_projectRb.readProject(name);
+		
+		if( isAdmin(currentUser, currentProject) || 
+			isManagerOfProject(currentUser, deleteProject) || 
+			(deleteProject.getFlags() == C_PROJECT_STATE_UNLOCKED )) {
+			 
+			 // delete the project
+			 // the project-state will be set to "deleted".
+			 // the project must be written to the cms.
+			 deleteProject.setFlags(C_PROJECT_STATE_DELETED);
+			 m_projectRb.writeProject(deleteProject);
+		} else {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + name, 
+				CmsException.C_NO_ACCESS);
+		}
+	}
+	
 	// Metainfos, Metadefinitions
 	/**
 	 * Reads a metadefinition for the given resource type.

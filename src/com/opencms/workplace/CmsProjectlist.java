@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjectlist.java,v $
- * Date   : $Date: 2000/02/22 11:22:42 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/03/22 14:19:17 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/02/22 11:22:42 $
+ * @version $Revision: 1.9 $ $Date: 2000/03/22 14:19:17 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
@@ -136,7 +136,9 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
 			// state = ???;
 			  
 			// get the processed list.
-			listdef.setXmlData(C_PROJECTLIST_NAME, project.getName());
+			
+			setListEntryData(cms, lang, listdef, project);
+
 			if( state.equals(C_PROJECTLIST_STATE_UNLOCKED) ) {
 				listdef.setXmlData(C_PROJECTLIST_LOCKSTATE, "");
 				listdef.setXmlData(C_PROJECTLIST_MENU, C_PROJECT_UNLOCK);
@@ -144,15 +146,32 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
 				listdef.setXmlData(C_PROJECTLIST_LOCKSTATE, snaplock);
 				listdef.setXmlData(C_PROJECTLIST_MENU, C_PROJECT_LOCK);
 			}
+
 			listdef.setXmlData(C_PROJECTLIST_IDX, new Integer(i).toString());
-			listdef.setXmlData(C_PROJECTLIST_DESCRIPTION, project.getDescription());
-			listdef.setXmlData(C_PROJECTLIST_STATE, lang.getLanguageValue(state));
-			listdef.setXmlData(C_PROJECTLIST_PROJECTMANAGER, cms.readManagerGroup(project).getName());
-			listdef.setXmlData(C_PROJECTLIST_PROJECTWORKER, cms.readGroup(project).getName());
-			listdef.setXmlData(C_PROJECTLIST_DATECREATED, Utils.getNiceDate(project.getCreateDate()) );
-			listdef.setXmlData(C_PROJECTLIST_OWNER, cms.readOwner(project).getName());
 			result.append(listdef.getProcessedXmlDataValue(C_TAG_PROJECTLIST_DEFAULT, callingObject, parameters));
 		}		
 		return result.toString();
     }
+
+	/**
+	 * Method to set details about a project into xml-datas.
+	 * @param cms The cms-object.
+	 * @param lang The language-file.
+	 * @param xmlFile The file to set the xml-data into.
+	 * @param project The project to get the data from.
+	 * @exception CmsException is thrown if something goes wrong.
+	 */
+	public static void setListEntryData(A_CmsObject cms, CmsXmlLanguageFile lang, 
+										CmsXmlWpTemplateFile xmlFile, A_CmsProject project)
+		throws CmsException {
+		
+		String state = C_PROJECTLIST_STATE_UNLOCKED;
+		xmlFile.setXmlData(C_PROJECTLIST_NAME, project.getName());
+		xmlFile.setXmlData(C_PROJECTLIST_DESCRIPTION, project.getDescription());
+		xmlFile.setXmlData(C_PROJECTLIST_STATE, lang.getLanguageValue(state));
+		xmlFile.setXmlData(C_PROJECTLIST_PROJECTMANAGER, cms.readManagerGroup(project).getName());
+		xmlFile.setXmlData(C_PROJECTLIST_PROJECTWORKER, cms.readGroup(project).getName());
+		xmlFile.setXmlData(C_PROJECTLIST_DATECREATED, Utils.getNiceDate(project.getCreateDate()) );
+		xmlFile.setXmlData(C_PROJECTLIST_OWNER, cms.readOwner(project).getName());
+	}
 }

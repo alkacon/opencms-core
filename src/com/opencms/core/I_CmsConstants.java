@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/03/22 10:29:03 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2000/03/22 14:19:17 $
+ * Version: $Revision: 1.59 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.58 $ $Date: 2000/03/22 10:29:03 $
+ * @version $Revision: 1.59 $ $Date: 2000/03/22 14:19:17 $
  */
 public interface I_CmsConstants
 {
@@ -297,6 +297,13 @@ public interface I_CmsConstants
 	 static final int C_PROJECT_STATE_ARCHIVE			= 2;
 
 	/**
+	 * This constant defines a deleted project.
+	 * Resources can't be changed in this project. Its state will never
+	 * go back to the previos one. Resource of a deleted project are not
+	 */
+	 static final int C_PROJECT_STATE_DELETED			= 3;
+
+	 /**
 	 * This id will be returned for resources with no id.
 	 * (filesystem resources)
 	 */

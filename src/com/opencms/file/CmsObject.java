@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/03/15 14:32:14 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2000/03/22 14:19:17 $
+ * Version: $Revision: 1.56 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.55 $ $Date: 2000/03/15 14:32:14 $ 
+ * @version $Revision: 1.56 $ $Date: 2000/03/22 14:19:17 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -255,6 +255,18 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		throws CmsException { 
 		 return( c_rb.publishProject(m_context.currentUser(), 
 									 m_context.currentProject(), name) );
+	}
+	
+	/**
+	 * Deletes a project.
+	 * 
+	 * @param name The name of the project to be published.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void deleteProject(String name)
+		throws CmsException {
+		c_rb.deleteProject(m_context.currentUser(), m_context.currentProject(), name);
 	}
 	
 	/**
