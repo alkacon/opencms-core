@@ -17,11 +17,19 @@
 			<xsd:element name="Option" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="VfsLink" type="OpenCmsVfsFile" maxOccurs="5" default="/system/modules/index.html" />
 		</xsd:sequence>
-		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>
 
 	<xsd:annotation>
-		<xsd:appinfo/>
+		<xsd:appinfo>
+			<validationrules>
+				<rule element="Html" regex="!.*err.*" />
+				<rule element="VfsLink" regex="!/system/workplace/.*" type="warning" />
+			</validationrules>
+			<defaults>					
+				<default element="Option" value="Default value from the appinfos" />
+			</defaults>
+		</xsd:appinfo>
 		<xsd:appinfo>
 			<handler class="org.opencms.xml.content.TestXmlContentHandler" />
 		</xsd:appinfo>

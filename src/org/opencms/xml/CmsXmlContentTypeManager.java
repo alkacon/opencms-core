@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2004/11/30 14:23:51 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/12/03 18:40:22 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.0
  */
 public class CmsXmlContentTypeManager {
@@ -306,18 +306,18 @@ public class CmsXmlContentTypeManager {
             throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
         }
 
-        String name = typeElement.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_NAME);
-        String type = typeElement.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_TYPE);
+        String elementName = typeElement.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_NAME);
+        String typeName = typeElement.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_TYPE);
         String defaultValue = typeElement.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_DEFAULT);
         String maxOccrs = typeElement.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_MAX_OCCURS);
         String minOccrs = typeElement.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_MIN_OCCURS);
 
-        if (CmsStringUtil.isEmpty(name) || CmsStringUtil.isEmpty(type)) {
+        if (CmsStringUtil.isEmpty(elementName) || CmsStringUtil.isEmpty(typeName)) {
             throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
         }
 
         boolean simpleType = true;
-        I_CmsXmlSchemaType schemaType = (I_CmsXmlSchemaType)m_registeredTypes.get(type);
+        I_CmsXmlSchemaType schemaType = (I_CmsXmlSchemaType)m_registeredTypes.get(typeName);
         if (schemaType == null) {
 
             // the name is not a simple type, try to resolve from the nested schemas
@@ -325,22 +325,22 @@ public class CmsXmlContentTypeManager {
             while (i.hasNext()) {
 
                 CmsXmlContentDefinition cd = (CmsXmlContentDefinition)i.next();
-                if (type.equals(cd.getTypeName())) {
+                if (typeName.equals(cd.getTypeName())) {
 
                     simpleType = false;
-                    return new CmsXmlNestedContentDefinition(cd, name, minOccrs, maxOccrs);
+                    return new CmsXmlNestedContentDefinition(cd, elementName, minOccrs, maxOccrs);
                 }
             }
 
             if (simpleType) {
                 throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Schema type '"
-                    + type
+                    + typeName
                     + "' unknown");
             }
         }
 
         if (simpleType) {
-            schemaType = schemaType.newInstance(name, minOccrs, maxOccrs);
+            schemaType = schemaType.newInstance(elementName, minOccrs, maxOccrs);
 
             if (CmsStringUtil.isNotEmpty(defaultValue)) {
                 schemaType.setDefault(defaultValue);

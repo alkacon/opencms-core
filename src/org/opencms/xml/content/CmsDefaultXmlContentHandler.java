@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/02 10:43:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/12/03 18:40:22 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,12 +44,12 @@ import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.dom4j.Element;
 
@@ -59,68 +59,86 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
-    /** The element mappings (defined in the annotations). */
+    /** Constant for the "element" appinfo attribute name. */
+    public static final String APPINFO_ATTR_ELEMENT = "element";
+
+    /** Constant for the "mapto" appinfo attribute name. */
+    public static final String APPINFO_ATTR_MAPTO = "mapto";
+
+    /** Constant for the "regex" appinfo attribute name. */
+    public static final String APPINFO_ATTR_REGEX = "regex";
+
+    /** Constant for the "type" appinfo attribute name. */
+    public static final String APPINFO_ATTR_TYPE = "type";
+
+    /** Constant for the "warning" appinfo attribute value. */
+    public static final String APPINFO_ATTR_TYPE_WARNING = "warning";
+
+    /** Constant for the "uri" appinfo attribute name. */
+    public static final String APPINFO_ATTR_URI = "uri";
+
+    /** Constant for the "value" appinfo attribute name. */
+    public static final String APPINFO_ATTR_VALUE = "value";
+
+    /** Constant for the "widget" appinfo attribute name. */
+    public static final String APPINFO_ATTR_WIDGET = "widget";
+
+    /** Constant for the "default" appinfo element name. */
+    public static final String APPINFO_DEFAULT = "default";
+
+    /** Constant for the "defaults" appinfo element name. */
+    public static final String APPINFO_DEFAULTS = "defaults";
+
+    /** Constant for the "layout" appinfo element name. */
+    public static final String APPINFO_LAYOUT = "layout";
+
+    /** Constant for the "layouts" appinfo element name. */
+    public static final String APPINFO_LAYOUTS = "layouts";
+
+    /** Constant for the "mapping" appinfo element name. */
+    public static final String APPINFO_MAPPING = "mapping";
+
+    /** Constant for the "mappings" appinfo element name. */
+    public static final String APPINFO_MAPPINGS = "mappings";
+
+    /** Constant for the "preview" appinfo element name. */
+    public static final String APPINFO_PREVIEW = "preview";
+
+    /** Constant for the "rule" appinfo element name. */
+    public static final String APPINFO_RULE = "rule";
+
+    /** Constant for the "validationrules" appinfo element name. */
+    public static final String APPINFO_VALIDATIONRULES = "validationrules";
+
+    /** The default values for the elements (as defined in the annotations). */
+    protected Map m_defaultValues;
+
+    /** The element mappings (as defined in the annotations). */
     protected Map m_elementMappings;
 
-    /** The widgets used for the elements (defined in the annotations). */
+    /** The widgets used for the elements (as defined in the annotations). */
     protected Map m_elementWidgets;
 
-    /** Indicates if <code>{@link #freeze()}</code> has alreaby been called on this instance. */
-    protected boolean m_frozen;
+    /** The preview location (as defined in the annotations). */
+    protected String m_previewLocation;
+
+    /** The validation rules that cause an error (as defined in the annotations). */
+    protected Map m_validationErrorRules;
+
+    /** The validation rules that cause a warning (as defined in the annotations). */
+    protected Map m_validationWarningRules;
 
     /**
      * Creates a new instance of the default XML content handler.<p>  
      */
     public CmsDefaultXmlContentHandler() {
 
-        m_elementMappings = new HashMap();
-        m_elementWidgets = new HashMap();
-    }
-
-    /**
-     * Adds an element mapping.<p>
-     * 
-     * @param contentDefinition the XML content definition this XML content handler belongs to
-     * @param elementName the element name to map
-     * @param mapping the mapping to use
-     * 
-     * @throws CmsXmlException in case an unknown element name is used
-     */
-    public void addMapping(CmsXmlContentDefinition contentDefinition, String elementName, String mapping)
-    throws CmsXmlException {
-
-        if (contentDefinition.getSchemaType(elementName) == null) {
-            throw new CmsXmlException("Unregistered XML content type used for mapping");
-        }
-
-        m_elementMappings.put(elementName, mapping);
-    }
-
-    /**
-     * Adds a GUI widget for a soecified element.<p> 
-     * 
-     * @param elementName the element name to map
-     * @param className the name of the widget class to use as GUI for the element
-     * 
-     * @throws CmsXmlException in case an unknown element name is used
-     */
-    public void addWidget(String elementName, String className) throws CmsXmlException {
-
-        I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidgetByClassName(className);
-
-        if (widget == null) {
-            throw new CmsXmlException("Unregistered XML widget '"
-                + className
-                + "'configureed as GUI for element "
-                + elementName);
-        }
-
-        m_elementWidgets.put(elementName, widget);
+        init();
     }
 
     /**
@@ -129,51 +147,49 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public synchronized void analyzeAppInfo(Element appInfoElement, CmsXmlContentDefinition contentDefinition)
     throws CmsXmlException {
 
-        if (m_frozen || appInfoElement == null) {
-            // already frozen, or no appinfo provided, so no mapping is required
+        if (appInfoElement == null) {
+            // no appinfo provided, so no mapping is required
             return;
         }
+
+        // re-initialize the local variables
+        init();
 
         Iterator i = appInfoElement.elements().iterator();
         while (i.hasNext()) {
             // iterate all elements in the appinfo node
-            Element appinfo = (Element)i.next();
-            String nodeName = appinfo.getName();
-            if (nodeName.equals("mapping")) {
-                // this is a mapping node
-                String elementName = appinfo.attributeValue("element");
-                String value = appinfo.attributeValue("mapto");
-                if ((elementName != null) && (value != null)) {
-                    // add the element mapping 
-                    addMapping(contentDefinition, elementName, value);
-                }
-            } else if (nodeName.equals("gui")) {
-                // this is a gui widget node
-                String elementName = appinfo.attributeValue("element");
-                String className = appinfo.attributeValue("widget");
-                if ((elementName != null) && (className != null)) {
-                    // add the GUI widget
-                    addWidget(elementName, className);
-                }
+            Element element = (Element)i.next();
+            String nodeName = element.getName();
+            if (nodeName.equals(APPINFO_MAPPINGS)) {
+                initMappings(element, contentDefinition);
+            } else if (nodeName.equals(APPINFO_LAYOUTS)) {
+                initLayouts(element, contentDefinition);
+            } else if (nodeName.equals(APPINFO_VALIDATIONRULES)) {
+                initValidationRules(element, contentDefinition);
+            } else if (nodeName.equals(APPINFO_DEFAULTS)) {
+                initDefaultValues(element, contentDefinition);
+            } else if (nodeName.equals(APPINFO_PREVIEW)) {
+                initPreview(element, contentDefinition);
             }
         }
-    }
-
-    /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#freeze()
-     */
-    public synchronized void freeze() {
-
-        // indicate this XML content handler is already frozen
-        m_frozen = true;
-        // make the element mappings unmodifiable
-        m_elementMappings = Collections.unmodifiableMap(m_elementMappings);
     }
 
     /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefaultValue(org.opencms.xml.types.I_CmsXmlSchemaType, java.util.Locale)
      */
     public String getDefaultValue(I_CmsXmlSchemaType type, Locale locale) {
+
+        String defaultValue = (String)m_defaultValues.get(type.getElementName());
+        if (defaultValue != null) {
+            // this value uses a special default mapping
+            // TODO: add more "magic" default value names, e.g. key lookup etc.
+            if ("${currenttime}".equals(defaultValue)) {
+                return String.valueOf(System.currentTimeMillis());
+            }
+
+            // if no "magic" name matches, just return the string set in the appinfo
+            return defaultValue;
+        }
 
         // default implementation currently just uses the "getDefault" mehod of the given value
         return type.getDefault(locale);
@@ -210,9 +226,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     public String getPreviewUri(CmsObject cms, CmsXmlContent content, String resourcename) {
 
-        // the default implementation currently does not support a preview URI
-        // TODO: read some node from schema appinfo and create a link based on that information
-        return null;
+        return m_previewLocation;
     }
 
     /**
@@ -247,7 +261,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 if (CmsStringUtil.isNotEmpty(mapping)) {
 
                     // this value is mapped (the mapping is set in the XML schema)                    
-                    I_CmsXmlContentValue value = content.getValue(nodeName, locale, 0);
+                    I_CmsXmlContentValue value = content.getValue(nodeName, locale);
                     // get the string value of the current node
                     String stringValue = value.getStringValue(cms);
 
@@ -295,12 +309,311 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         I_CmsXmlContentValue value,
         CmsXmlContentErrorHandler errorHandler) {
 
-        // the default implementation currently just returns an empty error handler (i.e. indicated no errors)
-        // TODO: read some node from schema appinfo and create validation rules for this (regex - based)
-        // TODO: use same regex logic for XML schema and editor validation if possible        
         if (errorHandler == null) {
-            return new CmsXmlContentErrorHandler();
+            // init new error handler if required
+            errorHandler = new CmsXmlContentErrorHandler();
         }
+
+        String valueStr = null;
+
+        String regex = (String)m_validationErrorRules.get(value.getElementName());
+        if (regex != null) {
+
+            Pattern pattern;
+            boolean matchResult = true;
+            if (regex.charAt(0) == '!') {
+                // negate the pattern
+                matchResult = false;
+                regex = regex.substring(1);
+            }
+            try {
+                valueStr = value.getStringValue(cms);
+                pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+            } catch (Exception e) {
+                // if the value can not be accessed it's useless to continue
+                errorHandler.addError(value, e.getMessage());
+                return errorHandler;
+            }
+
+            // this value uses a special validation pattern
+            if (matchResult != pattern.matcher(valueStr).matches()) {
+                // the value does not match the given regular expression
+                errorHandler.addError(value, "Invalid value '"
+                    + valueStr
+                    + "' according to regex '"
+                    + (matchResult ? "" : "!")
+                    + regex
+                    + "'");
+            }
+        }
+
+        regex = (String)m_validationWarningRules.get(value.getElementName());
+        if (regex != null) {
+
+            Pattern pattern;
+            boolean matchResult = true;
+            if (regex.charAt(0) == '!') {
+                // negate the pattern
+                matchResult = false;
+                regex = regex.substring(1);
+            }
+            try {
+                valueStr = value.getStringValue(cms);
+                pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+            } catch (Exception e) {
+                // if the value can not be accessed it's useless to continue
+                errorHandler.addError(value, e.getMessage());
+                return errorHandler;
+            }
+
+            // this value uses a special validation pattern
+            if (matchResult != pattern.matcher(valueStr).matches()) {
+                // the value does not match the given regular expression
+                errorHandler.addWarning(value, "Bad value '"
+                    + valueStr
+                    + "' according to regex '"
+                    + (matchResult ? "" : "!")
+                    + regex
+                    + "'");
+            }
+        }
+
         return errorHandler;
+    }
+
+    /**
+     * Adds a default value for an element.<p>
+     * 
+     * @param contentDefinition the XML content definition this XML content handler belongs to
+     * @param elementName the element name to map
+     * @param defaultValue the default value to use
+     * 
+     * @throws CmsXmlException in case an unknown element name is used
+     */
+    protected void addDefault(CmsXmlContentDefinition contentDefinition, String elementName, String defaultValue)
+    throws CmsXmlException {
+
+        if (contentDefinition.getSchemaType(elementName) == null) {
+            throw new CmsXmlException("Unregistered XML content type " + elementName + " used for default value");
+        }
+
+        m_defaultValues.put(elementName, defaultValue);
+    }
+
+    /**
+     * Adds an element mapping.<p>
+     * 
+     * @param contentDefinition the XML content definition this XML content handler belongs to
+     * @param elementName the element name to map
+     * @param mapping the mapping to use
+     * 
+     * @throws CmsXmlException in case an unknown element name is used
+     */
+    protected void addMapping(CmsXmlContentDefinition contentDefinition, String elementName, String mapping)
+    throws CmsXmlException {
+
+        if (contentDefinition.getSchemaType(elementName) == null) {
+            throw new CmsXmlException("Unregistered XML content type " + elementName + " used for mapping");
+        }
+
+        m_elementMappings.put(elementName, mapping);
+    }
+
+    /**
+     * Adds a validation rule for a soecified element.<p> 
+     * 
+     * @param contentDefinition the XML content definition this XML content handler belongs to
+     * @param elementName the element name to add the rule to 
+     * @param regex the validation rule regular expression
+     * @param isWarning if true, this rule is used for warnings, otherwise it's an error
+     * 
+     * @throws CmsXmlException in case an unknown element name is used
+     */
+    protected void addValidationRule(
+        CmsXmlContentDefinition contentDefinition,
+        String elementName,
+        String regex,
+        boolean isWarning) throws CmsXmlException {
+
+        if (contentDefinition.getSchemaType(elementName) == null) {
+            throw new CmsXmlException("Unregistered XML content type " + elementName + " used for validation ruls");
+        }
+
+        if (isWarning) {
+            m_validationWarningRules.put(elementName, regex);
+        } else {
+            m_validationErrorRules.put(elementName, regex);
+        }
+    }
+
+    /**
+     * Adds a GUI widget for a soecified element.<p> 
+     * 
+     * @param contentDefinition the XML content definition this XML content handler belongs to
+     * @param elementName the element name to map
+     * @param className the name of the widget class to use as GUI for the element
+     * 
+     * @throws CmsXmlException in case an unknown element name is used
+     */
+    protected void addWidget(CmsXmlContentDefinition contentDefinition, String elementName, String className)
+    throws CmsXmlException {
+
+        if (contentDefinition.getSchemaType(elementName) == null) {
+            throw new CmsXmlException("Unregistered XML content type " + elementName + " used for layout widget");
+        }
+
+        I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getEditorWidgetByClassName(className);
+
+        if (widget == null) {
+            throw new CmsXmlException("Unregistered XML widget '"
+                + className
+                + "' configureed as GUI for element "
+                + elementName
+                + " in content definition "
+                + contentDefinition.getSchemaLocation());
+        }
+        m_elementWidgets.put(elementName, widget);
+    }
+
+    /**
+     * Called when this content handler is initialized.<p> 
+     */
+    protected void init() {
+
+        m_elementMappings = new HashMap();
+        m_elementWidgets = new HashMap();
+        m_validationErrorRules = new HashMap();
+        m_validationWarningRules = new HashMap();
+        m_defaultValues = new HashMap();
+        m_previewLocation = null;
+    }
+
+    /**
+     * Initializes the default values for this content handler.<p>
+     * 
+     * Using the default values from the appinfo node, it's possible to have more 
+     * sophisticated logic for generating the defaults then just using the XML schema "default"
+     * attribute.<p> 
+     * 
+     * @param root the "defaultvalues" element from the appinfo node of the XML content definition
+     * @param contentDefinition the content definition the validation rules belong to
+     * @throws CmsXmlException if something goes wrong
+     */
+    protected void initDefaultValues(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
+
+        Iterator i = root.elementIterator(APPINFO_DEFAULT);
+        while (i.hasNext()) {
+            // iterate all "default" elements in the "defaults" node
+            Element element = (Element)i.next();
+            String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
+            String defaultValue = element.attributeValue(APPINFO_ATTR_VALUE);
+            if ((elementName != null) && (defaultValue != null)) {
+                // add a widget mapping for the element
+                addDefault(contentDefinition, elementName, defaultValue);
+            }
+        }
+    }
+
+    /**
+     * Initializes the layout for this content handler.<p>
+     * 
+     * Unless otherwise instructed, the editor uses one specific GUI widget for each 
+     * XML value schema type. For example, for a {@link org.opencms.xml.types.CmsXmlStringValue} 
+     * the default widget is the {@link org.opencms.workplace.xmlwidgets.CmsXmlStringWidget}.
+     * However, certain values can also use more then one widget, for example you may 
+     * also use a {@link org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget} for a String value,
+     * and as a result the Strings possible values would be eithe "false" or "true",
+     * bit nevertheless be a String.<p>
+     * 
+     * @param root the "layouts" element from the appinfo node of the XML content definition
+     * @param contentDefinition the content definition the layout belings to
+     * @throws CmsXmlException if something goes wrong
+     */
+    protected void initLayouts(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
+
+        Iterator i = root.elementIterator(APPINFO_LAYOUT);
+        while (i.hasNext()) {
+            // iterate all "layout" elements in the "layouts" node
+            Element element = (Element)i.next();
+            String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
+            String widgetClass = element.attributeValue(APPINFO_ATTR_WIDGET);
+            if ((elementName != null) && (widgetClass != null)) {
+                // add a widget mapping for the element
+                addWidget(contentDefinition, elementName, widgetClass);
+            }
+        }
+    }
+
+    /**
+     * Initializes the element mappings for this content handler.<p>
+     * 
+     * Element mappings allow storing values from the XML content in other locations.
+     * For example, if you have an elemenet called "Title", it's likley a good idea to 
+     * store the value of this element also in the "Title" property of a XML content resource.<p>
+     * 
+     * @param root the "mappings" element from the appinfo node of the XML content definition
+     * @param contentDefinition the content definition the mappings belong to
+     * @throws CmsXmlException if something goes wrong
+     */
+    protected void initMappings(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
+
+        Iterator i = root.elementIterator(APPINFO_MAPPING);
+        while (i.hasNext()) {
+            // iterate all "mapping" elements in the "mappings" node
+            Element element = (Element)i.next();
+            // this is a mapping node
+            String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
+            String maptoName = element.attributeValue(APPINFO_ATTR_MAPTO);
+            if ((elementName != null) && (maptoName != null)) {
+                // add the element mapping 
+                addMapping(contentDefinition, elementName, maptoName);
+            }
+        }
+    }
+
+    /**
+     * Initializes the preview locaion for this content handler.<p>
+     * 
+     * @param root the "preview" element from the appinfo node of the XML content definition
+     * @param contentDefinition the content definition the validation rules belong to
+     * @throws CmsXmlException if something goes wrong
+     */
+    protected void initPreview(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
+
+        String preview = root.attributeValue(APPINFO_ATTR_URI);
+        if (preview == null) {
+            throw new CmsXmlException("Missing preview uri for element "
+                + root.getName()
+                + " in content definition "
+                + contentDefinition.getSchemaLocation());
+        }
+        m_previewLocation = preview;
+    }
+
+    /**
+     * Initializes the validation rules this content handler.<p>
+     * 
+     * OpenCms always performs XML schema validation for all XML contents. However,
+     * for most projects in the real world a more fine-grained control over the validation process is
+     * required. For these cases, individual validation rules can be defined for the appinfo node.<p>
+     * 
+     * @param root the "validationrules" element from the appinfo node of the XML content definition
+     * @param contentDefinition the content definition the validation rules belong to
+     * @throws CmsXmlException if something goes wrong
+     */
+    protected void initValidationRules(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
+
+        Iterator i = root.elementIterator(APPINFO_RULE);
+        while (i.hasNext()) {
+            // iterate all "layout" elements in the "layouts" node
+            Element element = (Element)i.next();
+            String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
+            String regex = element.attributeValue(APPINFO_ATTR_REGEX);
+            String type = element.attributeValue(APPINFO_ATTR_TYPE);
+            if ((elementName != null) && (regex != null)) {
+                // add a validation ruls for the element
+                addValidationRule(contentDefinition, elementName, regex, APPINFO_ATTR_TYPE_WARNING.equals(type));
+            }
+        }
     }
 }

@@ -21,7 +21,9 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<gui element="Title" widget="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" />
+			<layouts>
+				<layout element="Title" widget="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" />
+			</layouts>
 		</xsd:appinfo>
 		<xsd:appinfo>
 			<handler class="org.opencms.xml.content.TestXmlContentHandler" />

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2004/12/01 17:36:03 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/12/03 18:40:22 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
 
 import java.util.Locale;
@@ -49,7 +50,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -74,6 +75,9 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
 
     /** The configured XML node name of this value. */
     protected String m_name;
+
+    /** The content definition this schema type belongs to. */
+    private CmsXmlContentDefinition m_contentDefinition;
 
     /**
      * Default constructor for a xml content type 
@@ -101,6 +105,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
         m_locale = locale;
         m_minOccurs = type.getMinOccurs();
         m_maxOccurs = type.getMaxOccurs();
+        m_contentDefinition = type.getContentDefinition();
     }
 
     /**
@@ -207,6 +212,14 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     }
 
     /**
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#getContentDefinition()
+     */
+    public CmsXmlContentDefinition getContentDefinition() {
+
+        return m_contentDefinition;
+    }
+
+    /**
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#getDefault(java.util.Locale)
      */
     public String getDefault(Locale locale) {
@@ -277,6 +290,20 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     }
 
     /**
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getPath()
+     */
+    public String getPath() {
+
+        String path = m_element.getUniquePath();
+        // must remove the first 2 nodes because these are not required for XML content values
+        int pos = path.indexOf('/', path.indexOf('/', 1) + 1) + 1;
+        path = path.substring(pos);
+
+        // ensure all path elements have an index, even though this may not be required
+        return CmsXmlUtils.createXpath(path, 1);
+    }
+
+    /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject)
      */
     public String getPlainText(CmsObject cms) {
@@ -299,6 +326,14 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
 
         // the abstract base type should be used for simple types only
         return true;
+    }
+
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#setContentDefinition(org.opencms.xml.CmsXmlContentDefinition)
+     */
+    public void setContentDefinition(CmsXmlContentDefinition contentDefinition) {
+
+        m_contentDefinition = contentDefinition;
     }
 
     /**

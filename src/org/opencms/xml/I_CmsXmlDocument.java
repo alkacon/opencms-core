@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/I_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/12/03 18:40:22 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.xml;
 import org.opencms.file.CmsObject;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
+import org.opencms.xml.content.CmsXmlContentErrorHandler;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.List;
@@ -44,7 +45,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.0
  */
 public interface I_CmsXmlDocument {
@@ -93,7 +94,7 @@ public interface I_CmsXmlDocument {
     /**
      * Returns a link processor for the values of this XML document.<p>
      * 
-     * @param cms an initialized CmsObject that provides the context for the link processor
+     * @param cms the current OpenCms user context that provides access to the link processor
      * @param linkTable the table with the links to process
      * 
      * @return a link processor for the values of this XML document
@@ -134,7 +135,7 @@ public interface I_CmsXmlDocument {
      * Returns the first content value for the given key name as a String,
      * or <code>null</code> if no such value exists.<p>.<p>
      * 
-     * @param cms an initialized instance of a CmsObject
+     * @param cms the current OpenCms user context
      * @param name the key to get the content value for
      * @param locale the locale to get the content value for
      * 
@@ -148,7 +149,7 @@ public interface I_CmsXmlDocument {
      * Returns the content value for the given key name from the selected index as a String,
      * or <code>null</code> if no such value exists.<p>
      * 
-     * @param cms an initialized instance of a CmsObject
+     * @param cms the current OpenCms user context
      * @param name the key to get the content value for
      * @param locale the locale to get the content value for
      * @param index the index position to get the value from
@@ -285,5 +286,14 @@ public interface I_CmsXmlDocument {
      * @throws CmsXmlException in case the locale did not exist in the document, or if something else goes wrong
      */
     void removeLocale(Locale locale) throws CmsXmlException;
+
+    /**
+     * Validates the content of this XML document.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * 
+     * @return an error handler instance that provides information about the errors or warnings that have been found
+     */
+    CmsXmlContentErrorHandler validate(CmsObject cms);
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/12/03 18:40:22 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,6 @@ import org.dom4j.DocumentException;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
-import org.dom4j.util.XMLErrorHandler;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -63,7 +62,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.3.5
  */
 public final class CmsXmlUtils {
@@ -81,10 +80,10 @@ public final class CmsXmlUtils {
      * the internal bookmarks.<p>
      * 
      * Examples:<br> 
-     * <code>title</code> becomes <code>title[0]</code><br>
+     * <code>title</code> becomes <code>title[1]</code><br>
      * <code>title[1]</code> is left untouched<br>
-     * <code>title/subtitle</code> becomes <code>title[0]/subtitle[0]</code><br>
-     * <code>title/subtitle[1]</code> becomes <code>title[0]/subtitle[1]</code><p>
+     * <code>title/subtitle</code> becomes <code>title[1]/subtitle[1]</code><br>
+     * <code>title/subtitle[1]</code> becomes <code>title[1]/subtitle[1]</code><p>
      * 
      * Note: If the name already has the format <code>title[1]</code> then provided index parameter 
      * is ignored.<p> 
@@ -105,7 +104,7 @@ public final class CmsXmlUtils {
             int end = elements.size() - 1;
             for (int i = 0; i <= end; i++) {
                 // append [i] to path element if required 
-                result.append(createXpathElementCheck((String)elements.get(i), 0));
+                result.append(createXpathElementCheck((String)elements.get(i), 1));
                 if (i < end) {
                     // append path delimiter if not final path element
                     result.append('/');
@@ -141,12 +140,12 @@ public final class CmsXmlUtils {
     }
 
     /**
-     * Ensures that a provided simplified Xpath has the format <code>title[0]</code>.<p>
+     * Ensures that a provided simplified Xpath has the format <code>title[1]</code>.<p>
      * 
      * This method is used if it's uncertain if some path does have 
      * a square bracket already appended or not.<p>
      * 
-     * Note: If the name already has the format <code>title[0]</code>, then provided index parameter 
+     * Note: If the name already has the format <code>title[1]</code>, then provided index parameter 
      * is ignored.<p> 
      * 
      * @param path the path to get the simplified Xpath for
@@ -465,7 +464,7 @@ public final class CmsXmlUtils {
         }
 
         // add an error handler which turns any errors into XML
-        XMLErrorHandler errorHandler = new XMLErrorHandler();
+        CmsXmlValidationErrorHandler errorHandler = new CmsXmlValidationErrorHandler();
         reader.setErrorHandler(errorHandler);
 
         if (resolver != null) {
@@ -496,6 +495,7 @@ public final class CmsXmlUtils {
             XMLWriter writer = new XMLWriter(out, format);
             try {
                 writer.write(errorHandler.getErrors());
+                writer.write(errorHandler.getWarnings());
                 writer.close();
             } catch (IOException e) {
                 // should not happen since we write to a StringWriter

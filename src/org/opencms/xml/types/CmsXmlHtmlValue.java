@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/12/03 18:40:22 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,14 +56,14 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
 
     /** The name of this type as used in the XML schema. */
     public static final String C_TYPE_NAME = "OpenCmsHtml";
-    
+
     /** Base type for single type instances, required for XML pages. */
     private static final I_CmsXmlSchemaType m_baseType = new CmsXmlHtmlValue("base", "1", "1");
 
@@ -80,7 +80,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
 
         // empty constructor is required for class registration
     }
-    
+
     /**
      * Creates a new XML content value of type "OpenCmsHtml".<p>
      * 
@@ -92,7 +92,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
 
         super(document, element, locale, m_baseType);
     }
-    
+
     /**
      * Creates a new XML content value of type "OpenCmsHtml".<p>
      * 

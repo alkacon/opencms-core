@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<OpenCmsModcastests
+<Modcastests
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:noNamespaceSchemaLocation="http://www.opencms.org/test7.xsd">
   
-	<OpenCmsModcastest language="en">
+	<Modcastest language="en">
 		<Test><![CDATA[Another Test]]></Test>
 		<Cascade>
 			<Test><![CDATA[Test]]></Test>
@@ -12,5 +12,5 @@
 			<Toast><![CDATA[Toast]]></Toast>
 		</Cascade>
 		<Toast><![CDATA[Another Toast]]></Toast>
-	</OpenCmsModcastest>
-</OpenCmsModcastests>
+	</Modcastest>
+</Modcastests>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlSchemaType.java,v $
- * Date   : $Date: 2004/12/01 17:36:03 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/12/03 18:40:22 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.xml.types;
 
+import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.I_CmsXmlDocument;
 
 import java.util.Locale;
@@ -57,7 +58,7 @@ import org.dom4j.QName;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.5.0
  * 
  * @see org.opencms.xml.types.I_CmsXmlContentValue
@@ -106,6 +107,19 @@ public interface I_CmsXmlSchemaType extends Comparable {
      * @return the created XML content value object
      */
     I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale);
+
+    /**
+     * Returns the content definition this schema type belongs to.<p> 
+     * 
+     * Note that for nested schemas, the content definition of a nested 
+     * value is not neccessarily equal to the content defintion of the document
+     * returned by {@link I_CmsXmlContentValue#getDocument()}. If the value belongs to a nested
+     * content, then the content definiton of the value also is the nested 
+     * content defintion.<p>
+     * 
+     * @return the content definition this schema type belongs to
+     */
+    CmsXmlContentDefinition getContentDefinition();
 
     /**
      * Returns the default value for a node of this type in the current schema.<p>
@@ -182,9 +196,21 @@ public interface I_CmsXmlSchemaType extends Comparable {
      * @param name the name to use in the xml document
      * @param minOccurs minimum number of occurences
      * @param maxOccurs maximum number of occurences
+     * 
      * @return a new instance of this XML content type initialized with the given values
      */
     I_CmsXmlSchemaType newInstance(String name, String minOccurs, String maxOccurs);
+
+    /**
+     * Sets the content definition this schema type belongs to.<p>
+     * 
+     * This is done automatically when the scheme type is added
+     * to a content definition. Usually there is no need to call this 
+     * method from the application.<p>
+     * 
+     * @param contentDefinition the content definition to set
+     */
+    void setContentDefinition(CmsXmlContentDefinition contentDefinition);
 
     /**
      * Sets the default value for a node of this type in the current schema.<p>

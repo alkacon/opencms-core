@@ -19,12 +19,7 @@
 			<xsd:element name="Option" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="Toast" type="OpenCmsString" />
 		</xsd:sequence>
-		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>
 
-	<xsd:annotation>
-		<xsd:appinfo>
-			<handler class="org.opencms.xml.content.TestXmlContentHandler" />
-		</xsd:appinfo>
-	</xsd:annotation>  
 </xsd:schema>

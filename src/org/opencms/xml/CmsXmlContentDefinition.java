@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2004/12/01 17:36:03 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/12/03 18:40:22 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
@@ -96,6 +96,9 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /** Constant for the XML schema attribute value "language". */
     public static final String XSD_ATTRIBUTE_VALUE_LANGUAGE = "language";
+
+    /** Constant for the XML schema attribute value "optional". */
+    public static final String XSD_ATTRIBUTE_VALUE_OPTIONAL = "optional";
 
     /** Constant for the XML schema attribute value "qualified". */
     public static final String XSD_ATTRIBUTE_VALUE_QUALIFIED = "qualified";
@@ -232,8 +235,6 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         // TODO: why not use a XML schmema for the validation?
 
-        document.hashCode();
-        
         // now analyze the document and generate the XML content type definition        
         Element root = document.getRootElement();
         if (!XSD_NODE_SCHEMA.equals(root.getQName())) {
@@ -358,7 +359,8 @@ public class CmsXmlContentDefinition implements Cloneable {
         if (!CmsXmlLocaleValue.C_TYPE_NAME.equals(typeAttribute.attributeValue(XSD_ATTRIBUTE_TYPE))) {
             throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
         }
-        if (!XSD_ATTRIBUTE_VALUE_REQUIRED.equals(typeAttribute.attributeValue(XSD_ATTRIBUTE_USE))) {
+        if (!XSD_ATTRIBUTE_VALUE_REQUIRED.equals(typeAttribute.attributeValue(XSD_ATTRIBUTE_USE))
+            && !XSD_ATTRIBUTE_VALUE_OPTIONAL.equals(typeAttribute.attributeValue(XSD_ATTRIBUTE_USE))) {
             throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
         }
 
@@ -535,8 +537,12 @@ public class CmsXmlContentDefinition implements Cloneable {
             throw new CmsXmlException("Unregistered XML content type '" + type.getTypeName() + "' added");
         }
 
+        // add the type to the internal type sequence and lookup table
         m_typeSequence.add(type);
         m_types.put(type.getElementName(), type);
+
+        // store reference to the content definition in the type
+        type.setContentDefinition(this);
     }
 
     /**
@@ -636,7 +642,6 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         m_types = Collections.unmodifiableMap(m_types);
         m_typeSequence = Collections.unmodifiableList(m_typeSequence);
-        m_contentHandler.freeze();
     }
 
     /**
@@ -757,19 +762,16 @@ public class CmsXmlContentDefinition implements Cloneable {
         String path = CmsXmlUtils.getFirstXpathElement(elementPath);
 
         // check if recursion is required to get value from a nested schema
-        I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)m_types.get(path);      
-        if (type == null) {
-            System.out.print("hier");
-        }
+        I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)m_types.get(path);
         if (type.isSimpleType() || !CmsXmlUtils.isDeepXpath(elementPath)) {
             // no recusion required
-            return type;            
+            return type;
         }
-        
+
         // recusion required since the path is an Xpath
-        CmsXmlNestedContentDefinition nestedDefinition = (CmsXmlNestedContentDefinition)type;        
-        path = CmsXmlUtils.removeFirstXpathElement(elementPath);        
-        return nestedDefinition.getContentDefinition().getSchemaType(path);
+        CmsXmlNestedContentDefinition nestedDefinition = (CmsXmlNestedContentDefinition)type;
+        path = CmsXmlUtils.removeFirstXpathElement(elementPath);
+        return nestedDefinition.getNestedContentDefinition().getSchemaType(path);
     }
 
     /**

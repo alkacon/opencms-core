@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/12/03 17:03:18 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/12/03 18:40:22 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.JspException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -626,7 +626,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     result.append("</tr>\n");
                     
                     if (getErrorHandler().hasErrors() || getErrorHandler().hasWarnings()) {
-                        String key = value.getElementName() + "_" + j;
+                        String key = value.getPath();
                         if (getErrorHandler().getErrors().containsKey(key)) {
                             // show error message
                             result.append("<tr><td></td><td><img src=\"");
@@ -635,7 +635,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                             result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdError\">");
                             result.append(getErrorHandler().getErrors().get(key));
                             result.append("</td><td colspan=\"2\"></td></tr>\n");
-                        } else if (getErrorHandler().getWarnings().containsKey(key)) {
+                        }
+                        // warnings can be additional to errors
+                        if (getErrorHandler().getWarnings().containsKey(key)) {
                             // show warning message
                             result.append("<tr><td></td><td><img src=\"");
                             result.append(getEditorResourceUri());
@@ -1051,11 +1053,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         
         if (m_errorHandler == null) {
             // errors were not yet checked, do this now and store result in member
-            m_errorHandler = new CmsXmlContentErrorHandler();
-            
-            // validation has to be done here
-            int warning = 0;
-            
+            m_errorHandler = m_content.validate(getCms());             
         }    
         return m_errorHandler;
     }

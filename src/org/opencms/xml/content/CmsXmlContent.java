@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2004/12/01 17:36:03 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/12/03 18:40:22 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,7 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -71,7 +72,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -156,10 +157,10 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * @return the created XML content value
      */
     public I_CmsXmlContentValue addValue(String path, Locale locale, int index) {
-        
+
         // get the schema type of the requested path           
         I_CmsXmlSchemaType type = m_contentDefinition.getSchemaType(path);
-        
+
         Element parentElement;
         String elementName;
         CmsXmlContentDefinition contentDefinition;
@@ -172,15 +173,15 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             }
             CmsXmlNestedContentDefinition parentValue = (CmsXmlNestedContentDefinition)o;
             parentElement = parentValue.getElement();
-            elementName = CmsXmlUtils.getLastXpathElement(path);   
-            contentDefinition = parentValue.getContentDefinition();
+            elementName = CmsXmlUtils.getLastXpathElement(path);
+            contentDefinition = parentValue.getNestedContentDefinition();
         } else {
             // the parent element is the locale element
             parentElement = getLocaleNode(locale);
             elementName = CmsXmlUtils.removeXpathIndex(path);
             contentDefinition = m_contentDefinition;
         }
-                
+
         List values = getValues(path, locale);
 
         int insertIndex;
@@ -188,7 +189,11 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
             if (values.size() >= type.getMaxOccurs()) {
                 // must not allow adding an element if max occurs would be violated
-                throw new RuntimeException("Element '" + elementName + "' can occur at maximum " + type.getMaxOccurs() + " times");
+                throw new RuntimeException("Element '"
+                    + elementName
+                    + "' can occur at maximum "
+                    + type.getMaxOccurs()
+                    + " times");
             }
 
             // iterate all elements of the parent node            
@@ -257,12 +262,12 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
         return newValue;
     }
-    
+
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#getContentDefinition()
      */
     public CmsXmlContentDefinition getContentDefinition() {
-        
+
         return m_contentDefinition;
     }
 
@@ -314,7 +319,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
         // re-initialize this XML content 
         initDocument(m_document, m_encoding, m_contentDefinition);
-        
+
     }
 
     /**
@@ -328,6 +333,40 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
         // call the appinfo resolver of the configured XML content handler
         m_contentDefinition.getContentHandler().resolveAppInfo(cms, this);
+    }
+
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#validate(org.opencms.file.CmsObject)
+     */
+    public CmsXmlContentErrorHandler validate(CmsObject cms) {
+
+        // iterate through all initialized value nodes in this XML content
+        CmsXmlContentValidationVisitor visitor = new CmsXmlContentValidationVisitor(cms);
+        visitAllValuesWith(visitor);
+
+        return visitor.getErrorHandler();
+    }
+
+    /**
+     * Visists all values of this XML content with the given value visitor.<p>
+     * 
+     * Please note that the order in which the values are visited may NOT be the
+     * order they apper in the XML document. It is ensured that the the parent 
+     * of a nested value is visited before the element it contains.<p>
+     * 
+     * @param visitor the value visitor implementation to visit the values with
+     */
+    public void visitAllValuesWith(I_CmsXmlContentValueVisitor visitor) {
+
+        List bookmarks = new ArrayList(getBookmarks());
+        Collections.sort(bookmarks);
+
+        for (int i = 0; i < bookmarks.size(); i++) {
+
+            String key = (String)bookmarks.get(i);
+            I_CmsXmlContentValue value = (I_CmsXmlContentValue)getBookmark(key);
+            visitor.visit(value);
+        }
     }
 
     /**
@@ -369,7 +408,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         m_elementNames = new HashMap();
         m_locales = new HashSet();
         clearBookmarks();
-        
+
         // initialize the bookmarks
         for (Iterator i = m_document.getRootElement().elementIterator(); i.hasNext();) {
             Element node = (Element)i.next();
@@ -394,7 +433,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
         m_file = file;
     }
-    
+
     /**
      * Adds a new XML schema type with the default value to the given parent node.<p>
      * 
@@ -405,11 +444,16 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * 
      * @return the created XML content value
      */
-    private I_CmsXmlContentValue addValue(CmsXmlContentDefinition contentDefinition, Element parent, I_CmsXmlSchemaType type, Locale locale, int insertIndex) {
-        
+    private I_CmsXmlContentValue addValue(
+        CmsXmlContentDefinition contentDefinition,
+        Element parent,
+        I_CmsXmlSchemaType type,
+        Locale locale,
+        int insertIndex) {
+
         // now generate the default value for the content definition
-        Element element = contentDefinition.createDefaultXml(this, type.getElementName(), locale);       
-        
+        Element element = contentDefinition.createDefaultXml(this, type.getElementName(), locale);
+
         List parentContent = parent.content();
         parentContent.add(insertIndex, element);
 
@@ -446,15 +490,15 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         if (schema == null) {
             throw new RuntimeException("No XML schema set for content definition");
         }
-        
-        CmsXmlContentDefinition result = null; 
+
+        CmsXmlContentDefinition result = null;
         CmsXmlEntityResolver cmsResolver = null;
         if (resolver instanceof CmsXmlEntityResolver) {
             // check for a cached version of this content definition
             cmsResolver = (CmsXmlEntityResolver)resolver;
             result = cmsResolver.getCachedContentDefinition(schema);
         }
-        
+
         if (result == null) {
             // result was not already cached
             InputSource source;
@@ -473,7 +517,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
                 throw new RuntimeException("Unable to unmarshal XML content definition schema", e);
             }
         }
-        
+
         return result;
     }
 
@@ -488,7 +532,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      */
     private void processSchemaNode(Element root, String rootPath, Locale locale, CmsXmlContentDefinition definition) {
 
-        int count = 0;
+        int count = 1;
         String previousName = null;
 
         // first remove all non-element node (i.e. white space text nodes)
@@ -511,7 +555,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             String name = element.getName();
             if ((previousName == null) || !previousName.equals(name)) {
                 previousName = name;
-                count = 0;
+                count = 1;
             }
 
             // build the Xpath expression for the current node
@@ -528,15 +572,15 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
             // create a XML content value element
             I_CmsXmlSchemaType schemaType = definition.getSchemaType(name);
-                       
+
             // directly add simple type to schema
             I_CmsXmlContentValue value = schemaType.createValue(this, element, locale);
             addBookmark(path, locale, true, value);
-            
-            if (! schemaType.isSimpleType()) {
+
+            if (!schemaType.isSimpleType()) {
                 // recurse for nested schema
                 CmsXmlNestedContentDefinition nestedSchema = (CmsXmlNestedContentDefinition)schemaType;
-                processSchemaNode(element, path, locale, nestedSchema.getContentDefinition());
+                processSchemaNode(element, path, locale, nestedSchema.getNestedContentDefinition());
             }
 
             // increase the node counter

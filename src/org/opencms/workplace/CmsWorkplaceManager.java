@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/11/29 14:44:19 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/12/03 18:40:22 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsI18nInfo;
+import org.opencms.i18n.CmsLocaleComparator;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.I_CmsLocaleHandler;
 import org.opencms.main.CmsException;
@@ -59,15 +60,6 @@ import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -79,28 +71,11 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 5.3.1
  */
 public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
-    
-    /**
-     * Simple comparator implementation for locales, that compares the String value of the locales.<p>
-     */
-    private static class CmsLocaleComparator implements Comparator {
-        
-        /**
-         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-         */
-        public int compare(Object o1, Object o2) {
-
-            if ((o1 instanceof Locale) && (o2 instanceof Locale)) {
-                return o1.toString().compareTo(o2.toString());
-            }
-            return 0;
-        }
-    }
 
     /** The default encoding for the workplace (UTF-8). */
     // TODO: Encoding feature of the workplace is not active 
@@ -111,9 +86,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
     /** The name of the temp file project. */
     public static final String C_TEMP_FILE_PROJECT_NAME = "tempFileProject";
-    
-    /** Static locale comparator. */
-    private static final Comparator m_localeComparator = new CmsLocaleComparator();
 
     /** Indicates if auto-locking of resources is enabled or disabled. */
     private boolean m_autoLockResources;
@@ -238,7 +210,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Adding type setting  : " + settings.getName());
         }
     }
- 
+
     /** 
      * Adds a list of explorer type settings to the list of all type settings.<p>
      * 
@@ -248,25 +220,26 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      * @param explorerTypes the list of explorer type settings to be added
      */
     public void addExplorerTypeSettings(CmsObject cms, List explorerTypes) {
-        
+
         Iterator i = explorerTypes.iterator();
         while (i.hasNext()) {
             CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
             try {
                 m_explorerTypeSettings.add(settings);
                 m_explorerTypeSettingsMap.put(settings.getName(), settings);
-                settings.getAccess().createAccessControlList(cms);              
+                settings.getAccess().createAccessControlList(cms);
                 if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                     OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Adding type setting  : " + settings.getName());
                 }
             } catch (CmsException e) {
                 if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". could not add type setting  : " + settings.getName() + ":" + e);
+                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                        ". could not add type setting  : " + settings.getName() + ":" + e);
                 }
             }
         }
     }
-    
+
     /**
      * Adds newly created export point to the workplace configuration.<p>
      * 
@@ -622,22 +595,22 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                 "Workplace manager initialization can only be done by an OpenCms Administrator",
                 CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
-        
+
         // set the workplace encoding
-        m_defaultEncoding = OpenCms.getSystemInfo().getDefaultEncoding();      
-        
+        m_defaultEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
+
         // add the additional explorer types found in the modules
         CmsModuleManager moduleManager = OpenCms.getModuleManager();
         Iterator j = moduleManager.getModuleNames().iterator();
         while (j.hasNext()) {
-            CmsModule module = moduleManager.getModule((String)j.next());           
+            CmsModule module = moduleManager.getModule((String)j.next());
             List explorerTypes = module.getExplorerTypes();
             Iterator l = explorerTypes.iterator();
             while (l.hasNext()) {
                 CmsExplorerTypeSettings explorerType = (CmsExplorerTypeSettings)l.next();
                 addExplorerTypeSetting(explorerType);
             }
-        }                
+        }
         // initialize the workplace views
         initWorkplaceViews(cms);
         // initialize the workplace editor manager
@@ -689,8 +662,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
         return m_enableAdvancedPropertyTabs;
     }
-    
-    
+
     /** 
      * Removes a list of explorer type settings from the list of all type settings.<p>
      * 
@@ -699,10 +671,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      * @param explorerTypes the list of explorer type settings to be removed
      */
     public void removeExplorerTypeSettings(List explorerTypes) {
+
         Iterator i = explorerTypes.iterator();
         while (i.hasNext()) {
             CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
-            if (m_explorerTypeSettings.contains(settings)) {        
+            if (m_explorerTypeSettings.contains(settings)) {
                 m_explorerTypeSettings.remove(settings);
                 if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                     OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Remove type setting  : " + settings.getName());
@@ -922,14 +895,13 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             // add even less specialized locale            
             locales.add(new Locale(locale.getLanguage()));
         }
-        
+
         // sort the result
         ArrayList result = new ArrayList();
         result.addAll(locales);
-        Collections.sort(result, m_localeComparator);
+        Collections.sort(result, CmsLocaleComparator.getComparator());
         return result;
     }
-    
 
     /**
      * Initializes the available workplace views.<p>
@@ -1007,5 +979,4 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         Collections.sort(m_views);
         return m_views;
     }
-
 }

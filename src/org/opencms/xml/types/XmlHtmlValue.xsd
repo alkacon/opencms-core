@@ -3,7 +3,7 @@
 		<xsd:element name="links" type="OpenCmsLinkTable" />
 		<xsd:element name="content" type="OpenCmsHtmlContent" />
 	</xsd:sequence>
-	<xsd:attribute name="name" type="xsd:string" use="required" />
+	<xsd:attribute name="name" type="xsd:string" use="optional" />
 	<xsd:attribute name="enabled" type="xsd:boolean" use="optional" />
 </xsd:complexType>   
 

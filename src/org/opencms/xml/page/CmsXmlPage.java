@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/12/03 18:40:22 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.content.CmsXmlContentErrorHandler;
 import org.opencms.xml.types.CmsXmlHtmlValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
@@ -76,7 +77,7 @@ import org.xml.sax.InputSource;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class CmsXmlPage extends A_CmsXmlDocument {
 
@@ -240,7 +241,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         CmsXmlHtmlValue value = new CmsXmlHtmlValue(this, element, locale);
 
         // bookmark the element
-        addBookmark(CmsXmlUtils.createXpathElement(name, 0), locale, true, value);
+        addBookmark(CmsXmlUtils.createXpathElement(name, 1), locale, true, value);
     }
 
     /**
@@ -349,7 +350,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      */
     public void removeValue(String name, Locale locale) {
 
-        I_CmsXmlContentValue value = removeBookmark(CmsXmlUtils.createXpath(name, 0), locale);
+        I_CmsXmlContentValue value = removeBookmark(CmsXmlUtils.createXpath(name, 1), locale);
         if (value != null) {
             Element element = value.getElement();
             element.detach();
@@ -410,6 +411,15 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     }
 
     /**
+     * @see org.opencms.xml.I_CmsXmlDocument#validate(org.opencms.file.CmsObject)
+     */
+    public CmsXmlContentErrorHandler validate(CmsObject cms) {
+
+        // XML pages currently do not support validation
+        return new CmsXmlContentErrorHandler();
+    }
+
+    /**
      * @see org.opencms.xml.A_CmsXmlDocument#initDocument(org.dom4j.Document, java.lang.String, org.opencms.xml.CmsXmlContentDefinition)
      */
     protected void initDocument(Document document, String encoding, CmsXmlContentDefinition definition) {
@@ -443,7 +453,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
                     CmsXmlHtmlValue value = new CmsXmlHtmlValue(this, element, locale);
 
                     // add the element type bookmark
-                    addBookmark(CmsXmlUtils.createXpathElement(name, 0), locale, enabled, value);
+                    addBookmark(CmsXmlUtils.createXpathElement(name, 1), locale, enabled, value);
                 }
             }
         } catch (NullPointerException e) {

@@ -27,6 +27,16 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
+			<validationrules>
+				<rule element="Test" regex="!.*err.*" />
+				<rule element="Test" regex="!.*warn.*" type="warning" />
+				<rule element="Toast" regex="!.*warn.*" type="warning" />
+			</validationrules>
+			<defaults>					
+				<default element="Option" value="Default value from the appinfos" />
+			</defaults>
+		</xsd:appinfo>
+		<xsd:appinfo>
 			<handler class="org.opencms.xml.content.TestXmlContentHandler" />
 		</xsd:appinfo>
 	</xsd:annotation>  

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlContentValue.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/12/03 18:40:22 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.0
  */
 public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
@@ -57,9 +57,9 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
     I_CmsXmlDocument getDocument();
 
     /**
-     * Returns the original XML element of this XML content node.<p>
+     * Returns the original XML element of this XML content value.<p>
      * 
-     * @return the original XML element of this XML content node
+     * @return the original XML element of this XML content value
      */
     Element getElement();
 
@@ -80,6 +80,13 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
      * @return the locale of this XML content value was generated for
      */
     Locale getLocale();
+
+    /**
+     * Returns the path of this XML content value in the source document.<p>
+     * 
+     * @return the path of this XML content value in the source document
+     */
+    String getPath();
 
     /**
      * Returns the value of this XML content node as a plain text String.<p>

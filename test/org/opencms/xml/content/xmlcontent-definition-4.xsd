@@ -18,7 +18,7 @@
 			<xsd:element name="Title" type="OpenCmsString" />
 			<xsd:element name="Cascade" type="OpenCmsHandlertest" maxOccurs="5" />
 		</xsd:sequence>
-		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>
 
 	<xsd:annotation>

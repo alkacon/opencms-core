@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/12/03 18:40:22 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.3.5
  */
 public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -209,7 +209,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public List getLocales(String name) {
 
-        Object result = m_elementLocales.get(CmsXmlUtils.createXpath(name, 0));
+        Object result = m_elementLocales.get(CmsXmlUtils.createXpath(name, 1));
         if (result == null) {
             return Collections.EMPTY_LIST;
         }
@@ -233,7 +233,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public String getStringValue(CmsObject cms, String name, Locale locale) throws CmsXmlException {
 
-        I_CmsXmlContentValue value = getValueInternal(CmsXmlUtils.createXpath(name, 0), locale);
+        I_CmsXmlContentValue value = getValueInternal(CmsXmlUtils.createXpath(name, 1), locale);
         if (value != null) {
             return value.getStringValue(cms);
         }
@@ -247,7 +247,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
         // directly calling getValueInternal() is more efficient then calling getStringValue(CmsObject, String, Locale)
         // since the most costs are generated in resolving the Xpath name
-        I_CmsXmlContentValue value = getValueInternal(CmsXmlUtils.createXpath(name, index), locale);
+        I_CmsXmlContentValue value = getValueInternal(CmsXmlUtils.createXpath(name, index + 1), locale);
         if (value != null) {
             return value.getStringValue(cms);
         }
@@ -259,7 +259,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public I_CmsXmlContentValue getValue(String name, Locale locale) {
 
-        return getValueInternal(CmsXmlUtils.createXpath(name, 0), locale);
+        return getValueInternal(CmsXmlUtils.createXpath(name, 1), locale);
     }
 
     /**
@@ -267,7 +267,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public I_CmsXmlContentValue getValue(String name, Locale locale, int index) {
 
-        return getValueInternal(CmsXmlUtils.createXpath(name, index), locale);
+        return getValueInternal(CmsXmlUtils.createXpath(name, index + 1), locale);
     }
 
     /**
@@ -301,7 +301,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     public List getValues(String name, Locale locale) {
 
         List result = new ArrayList();
-        int count = 0;
+        int count = 1;
         Object o;
         name = CmsXmlUtils.removeXpathIndex(name);
         do {
@@ -333,7 +333,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public boolean hasValue(String name, Locale locale) {
 
-        return null != getBookmark(CmsXmlUtils.createXpath(name, 0), locale);
+        return null != getBookmark(CmsXmlUtils.createXpath(name, 1), locale);
     }
 
     /**
@@ -341,7 +341,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public boolean hasValue(String name, Locale locale, int index) {
 
-        return null != getBookmark(CmsXmlUtils.createXpath(name, index), locale);
+        return null != getBookmark(CmsXmlUtils.createXpath(name, index + 1), locale);
     }
 
     /**
@@ -488,6 +488,20 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     protected void clearBookmarks() {
 
         m_bookmarks.clear();
+    }
+
+    /**
+     * Returns the bookmarked value for the given bookmark,
+     * which must be a valid bookmark name. 
+     * 
+     * Use {@link #getBookmarks()} to get the list of all valid bookmark names.<p>
+     * 
+     * @param bookmark the bookmark name to look up 
+     * @return the bookmarked value for the given bookmark
+     */
+    protected Object getBookmark(String bookmark) {
+
+        return m_bookmarks.get(bookmark);
     }
 
     /**

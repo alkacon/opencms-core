@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/02 10:43:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/12/03 18:40:22 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.4
  */
 public interface I_CmsXmlContentHandler {
@@ -77,14 +77,6 @@ public interface I_CmsXmlContentHandler {
      * @throws CmsXmlException if something goes wrong
      */
     void analyzeAppInfo(Element appInfoElement, CmsXmlContentDefinition contentDefinition) throws CmsXmlException;
-
-    /**
-     * Freezes this XML content handler.<p>
-     *
-     * Will be called once after the instance class of the content handler was created and 
-     * <code>{@link #analyzeAppInfo(Element, CmsXmlContentDefinition)}</code> has been called once.<p>
-     */
-    void freeze();
 
     /**
      * Returns the default String value for the given XML content schema type object.<p> 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoop.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/12/03 18:40:22 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.0
  */
 public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagContentContainer {
@@ -54,12 +54,12 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
     /** Reference to the looped content element. */
     private A_CmsXmlDocument m_content;
 
+    /** Name of the current element (including the index). */
+    private String m_currentElement;
+
     /** Name of the content node element to show. */
     private String m_element;
 
-    /** Name of the current element (including the index). */
-    private String m_currentElement;
-    
     /** Index of the content node element to show. */
     private int m_index = -1;
 
@@ -76,7 +76,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
 
         if (m_content.hasValue(m_element, m_locale, m_index + 1)) {
             m_index++;
-            m_currentElement = CmsXmlUtils.createXpath(m_element, m_index);
+            m_currentElement = CmsXmlUtils.createXpath(m_element, m_index + 1);
             // one more element with the same name is available, loop again
             return EVAL_BODY_AGAIN;
         } else {
@@ -104,7 +104,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
 
         if (m_content.hasValue(m_element, m_locale)) {
             // selected element is available at last once in content
-            m_currentElement = CmsXmlUtils.createXpath(m_element, m_index);
+            m_currentElement = CmsXmlUtils.createXpath(m_element, m_index + 1);
             return EVAL_BODY_INCLUDE;
         } else {
             // no value available for the selected element name, so we skip the whole body

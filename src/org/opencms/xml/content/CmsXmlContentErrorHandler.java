@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentErrorHandler.java,v $
- * Date   : $Date: 2004/12/01 17:36:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/12/03 18:40:22 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,20 +31,26 @@
 
 package org.opencms.xml.content;
 
+import org.opencms.main.OpenCms;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Handler for issues found during XML content validation.<p> 
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.4
  */
 public class CmsXmlContentErrorHandler {
+
+    /** Static reference to the log. */
+    private static Log m_log = OpenCms.getLog(CmsXmlContentErrorHandler.class);
 
     /** The list of validation errors. */
     private Map m_errors;
@@ -78,9 +84,10 @@ public class CmsXmlContentErrorHandler {
     public void addError(I_CmsXmlContentValue value, String message) {
 
         m_hasErrors = true;
-        int todo = 0;
-        // TODO: this will not work for nested schemas, must add a "getPath()" method to the value interface
-        m_errors.put(value.getElementName(), message);
+        m_errors.put(value.getPath(), message);
+        if (m_log.isDebugEnabled()) {
+            m_log.debug("Validation error " + value.getPath() + ": " + message);
+        }
     }
 
     /**
@@ -93,9 +100,10 @@ public class CmsXmlContentErrorHandler {
     public void addWarning(I_CmsXmlContentValue value, String message) {
 
         m_hasWarnings = true;
-        int todo = 0;
-        // TODO: this will not work for nested schemas, must add a "getPath()" method to the value interface
-        m_warnings.put(value.getElementName(), message);
+        m_warnings.put(value.getPath(), message);
+        if (m_log.isDebugEnabled()) {
+            m_log.debug("Validation warning " + value.getPath() + ": " + message);
+        }
     }
 
     /**

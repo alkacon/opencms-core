@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlNestedContentDefinition.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/12/03 18:40:22 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,13 +45,13 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.4
  */
 public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implements I_CmsXmlSchemaType {
 
     /** The nested content definition. */
-    private CmsXmlContentDefinition m_contentDefinition;
+    private CmsXmlContentDefinition m_nestedContentDefinition;
 
     /**
      * Creates a new XML content value for the nested content definition.<p> 
@@ -70,7 +70,7 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implemen
         I_CmsXmlSchemaType type) {
 
         super(document, element, locale, type);
-        m_contentDefinition = contentDefinition;
+        m_nestedContentDefinition = contentDefinition;
     }
 
     /**
@@ -88,7 +88,7 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implemen
         String maxOccurs) {
 
         super(name, minOccurs, maxOccurs);
-        m_contentDefinition = contentDefinition;
+        m_nestedContentDefinition = contentDefinition;
     }
 
     /**
@@ -97,7 +97,7 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implemen
     public void appendDefaultXml(I_CmsXmlDocument document, Element root, Locale locale) {
 
         // create a default XML document for the nested content definition
-        Document doc = m_contentDefinition.createDocument(document, Locale.ENGLISH);
+        Document doc = m_nestedContentDefinition.createDocument(document, Locale.ENGLISH);
         // the first language nod contains the created values        
         Element element = (Element)doc.getRootElement().elements().get(0);
         // detach the created element
@@ -115,7 +115,7 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implemen
      */
     public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        return new CmsXmlNestedContentDefinition(m_contentDefinition, document, element, locale, this);
+        return new CmsXmlNestedContentDefinition(m_nestedContentDefinition, document, element, locale, this);
     }
 
     /**
@@ -123,9 +123,9 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implemen
      *
      * @return the nested content definition
      */
-    public CmsXmlContentDefinition getContentDefinition() {
+    public CmsXmlContentDefinition getNestedContentDefinition() {
 
-        return m_contentDefinition;
+        return m_nestedContentDefinition;
     }
 
     /**
@@ -149,7 +149,7 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implemen
      */
     public String getTypeName() {
 
-        return m_contentDefinition.getTypeName();
+        return m_nestedContentDefinition.getTypeName();
     }
 
     /**
