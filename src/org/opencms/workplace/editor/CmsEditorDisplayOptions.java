@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorDisplayOptions.java,v $
- * Date   : $Date: 2003/12/04 11:21:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/12/04 13:19:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Properties;
  * /system/workplace/jsp/editors/edit_options.properties.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.14
  */
@@ -62,12 +62,10 @@ public class CmsEditorDisplayOptions {
      * 
      * @param cms the CmsObject
      */
-    public CmsEditorDisplayOptions(CmsObject cms) {
-        synchronized (m_displayOptions) {
-            if (m_displayOptions == null) {
-                // display options were not read, so initialize them
-                init(cms);
-            }
+    public CmsEditorDisplayOptions(CmsObject cms) {      
+        if (m_displayOptions == null) {
+            // display options were not read, so initialize them
+            init(cms);
         }
     }
     
@@ -78,11 +76,9 @@ public class CmsEditorDisplayOptions {
      * @param forceInit if true, display options will always be read new
      */
     public CmsEditorDisplayOptions(CmsObject cms, boolean forceInit) {
-        synchronized (m_displayOptions) {
-            if (forceInit || m_displayOptions == null) {
-                // display options were not read or forced to be read, so initialize them
-                init(cms);
-            }
+        if (forceInit || m_displayOptions == null) {
+            // display options were not read or forced to be read, so initialize them
+            init(cms);
         }
     }
     
@@ -92,18 +88,20 @@ public class CmsEditorDisplayOptions {
      * @param cms the CmsObject
      */
     private void init(CmsObject cms) {
-        try {
-            CmsFile optionFile = cms.readFile(C_PROPERTY_FILE);
-            InputStream in = new ByteArrayInputStream(optionFile.getContents());
-            m_displayOptions = new Properties();
-            m_displayOptions.load(in);
-            
-        } catch (CmsException e) {
-            // set display options to null
-            m_displayOptions = null;
-        } catch (IOException e) {
-            // set display options to null
-            m_displayOptions = null;
+        m_displayOptions = new Properties();
+        synchronized (m_displayOptions) {
+            try {
+                CmsFile optionFile = cms.readFile(C_PROPERTY_FILE);
+                InputStream in = new ByteArrayInputStream(optionFile.getContents());
+                m_displayOptions.load(in);
+                
+            } catch (CmsException e) {
+                // set display options to null
+                m_displayOptions = null;
+            } catch (IOException e) {
+                // set display options to null
+                m_displayOptions = null;
+            }
         }
     }
     
