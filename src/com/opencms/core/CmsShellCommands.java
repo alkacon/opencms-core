@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2002/10/18 16:56:31 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2002/10/30 10:13:09 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,31 +35,35 @@ import java.lang.reflect.*;
 import source.org.apache.java.util.*;
 
 /**
- * This class is a commadnlineinterface for the opencms. It can be used to test
- * the opencms, and for the initial setup. It uses the OpenCms-Object.
+ * This class is a commad line interface to OpenCms which 
+ * can be used for the initial setup and to test the system.<p>
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.54 $ $Date: 2002/10/18 16:56:31 $
+ * 
+ * @version $Revision: 1.55 $ $Date: 2002/10/30 10:13:09 $
+ * 
+ * @see com.opencms.file.CmsObject
  */
-public class CmsShellCommands implements I_CmsConstants {
+class CmsShellCommands implements I_CmsConstants {
 
     /**
-     * The resource broker to get access to the cms.
+     * The CmsObject object which provides access to the VFS..
      */
     private CmsObject m_cms;
 
     /**
-     * The open-cms.
+     * The wrapped OpenCms object which provides the system environment.
      */
-    private A_OpenCms m_openCms;
+    private OpenCms m_openCms;
 
     /**
-     * Insert the method's description here.
-     * Creation date: (10/05/00 %r)
-     * @author:
+     * Generate a new instance of CmsShellCommands.<p>
+     * 
+     * @param openCms an initialized OpenCms object (i.e. "operating system")
+     * @param cms an initialized CmsObject (i.e. "command shell")
      */
-    public CmsShellCommands(A_OpenCms openCms, CmsObject cms) throws Exception {
+    public CmsShellCommands(OpenCms openCms, CmsObject cms) throws Exception {
         m_openCms = openCms;
         m_cms = cms;
         m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID, null);
@@ -203,7 +207,7 @@ public class CmsShellCommands implements I_CmsConstants {
      *
      * @param name The name of the new group.
      * @param description The description for the new group.
-     * @int flags The flags for the new group.
+     * @param flags The flags for the new group.
      * @param name The name of the parent group (or null).
      */
     public void addGroup(String name, String description, String flags, String parent) {
@@ -1545,11 +1549,12 @@ public class CmsShellCommands implements I_CmsConstants {
     }
 
     /**
-     * Returns a value for a system-key.
+     * Returns a value for a system-key.<p>
+     * 
      * E.g. <code>&lt;system&gt;&lt;mailserver&gt;mail.server.com&lt;/mailserver&gt;&lt;/system&gt;</code>
      * can be requested via <code>getSystemValue("mailserver");</code> and returns "mail.server.com.
      *
-     * @parameter String the key of the system-value.
+     * @param String the key of the system-value.
      */
     public void getSystemValue(String key) {
         try {
@@ -1564,7 +1569,7 @@ public class CmsShellCommands implements I_CmsConstants {
     /**
      * Returns all values for a system-key.
      *
-     * @parameter String the key of the system-value.
+     * @param String the key of the system-value.
      */
     public void getSystemValues(String sysKey) {
         try {
@@ -1759,7 +1764,6 @@ public class CmsShellCommands implements I_CmsConstants {
      * Prints signature of all possible commands containing a certain string.<br>
      * May also be used to print signature of a specific command by giving full command name.
      *
-     * @author Jan Krag
      * @param String The String to search for in the commands
      */
     public void help(String searchString) {
@@ -2117,8 +2121,6 @@ public class CmsShellCommands implements I_CmsConstants {
 
     /**
      * Prints help text when Shell is startet.
-     * Creation date: (09/29/00)
-     * @author Jan Krag
      */
     public void printHelpText() {
         System.out.println("help              Gives a list of available commands with signature");
@@ -2676,7 +2678,7 @@ public class CmsShellCommands implements I_CmsConstants {
      * Reads all tasks for a project.
      *
      * @param projectId the id of the project in which the tasks are defined. Can be null to select all tasks.
-     * @tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
+     * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
      * @param orderBy specifies how to order the tasks.
      * @param sort sort order: C_SORT_ASC, C_SORT_DESC, or null.
      */

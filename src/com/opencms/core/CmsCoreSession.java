@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCoreSession.java,v $
-* Date   : $Date: 2001/10/05 07:33:07 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/10/30 10:12:05 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,18 +33,24 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 /**
- * This class implements a session storage. It is required for user authentification to the
- * OpenCms.
+ * This class implements a session storage which is mainly used to count the
+ * currently logged in OpenCms users.<p> 
+ * 
+ * It is required for user authentification of OpenCms. 
+ * For each active user, its name and other additional information 
+ * (like the current user group) are stored in a hashtable, useing the session 
+ * Id as key to them.<p>
  *
- * For each active user, its name and other additional information (like the current user
- * group) are stored in a hashtable, useing the session Id as key to them.
+ * When the session gets destroyed, the user will removed from the storage.<p>
  *
- * When the session gets destroyed, the user will removed from the storage.
- *
- * ToDo: Removal of unused sessions!
+ * One of the main purposes of this stored user session list is the 
+ * <code>sendBroadcastMessage()</code> method.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2001/10/05 07:33:07 $
+ * 
+ * @version $Revision: 1.8 $ $Date: 2002/10/30 10:12:05 $
+ * 
+ * @see #sendBroadcastMessage(String message)
  */
 public class CmsCoreSession implements I_CmsConstants {
 
@@ -113,10 +119,10 @@ public class CmsCoreSession implements I_CmsConstants {
     }
 
     /**
-     * Gets the complete userinformation of a user from the session storage.
+     * Gets the complete user information of a user from the session storage.
      *
-     * @param sessionID The actual session Id.
-     * @return Hashtable with userinformation or null;
+     * @param sessionId A currently valid session id.
+     * @return table with user information or null
      */
     public Hashtable getUser(String sessionId) {
         Hashtable userinfo = null;
@@ -125,10 +131,10 @@ public class CmsCoreSession implements I_CmsConstants {
     }
 
     /**
-     * Gets the  username of a user from the session storage.
+     * Gets the username of a user from the session storage.
      *
-     * @param sessionID The actual session Id.
-     * @return The name of the requested user or null;
+     * @param sessionId A currently valid session id.
+     * @return The name of the requested user or null.
      */
     public String getUserName(String sessionId) {
         Hashtable userinfo = null;
@@ -143,11 +149,12 @@ public class CmsCoreSession implements I_CmsConstants {
     }
 
     /**
-     * Puts a new user into the sesstion storage. A user is stored with its actual
-     * session Id after a positive authentification.
+     * Puts a new user into the sesstion storage.<p>
+     * 
+     * A user is stored with its current
+     * session id after a positive authentification.
      *
-     *
-     * @param session  The actual user session Id.
+     * @param sessionId  A currently valid session id.
      * @param username The name of the user to be stored.
      */
     public void putUser(String sessionId, String username) {
@@ -157,14 +164,15 @@ public class CmsCoreSession implements I_CmsConstants {
     }
 
     /**
-     * Puts a new user into the sesstion storage. A user is stored with its actual
-     * session Id after a positive authentification.
+     * Puts a new user into the sesstion storage.<p>
+     * 
+     * A user is stored with its current
+     * session id after a positive authentification.
      *
-     *
-     * @param session  The actual user session Id.
+     * @param sessionId  A currently valid session id.
      * @param username The name of the user to be stored.
-     * @param group The name of the actual group.
-     * @param project The id of the actual project.
+     * @param group The name of the users current group.
+     * @param project The id of the users current project.
      */
     public void putUser(String sessionId, String username, String group, Integer project) {
         Hashtable userinfo = new Hashtable();
@@ -175,34 +183,32 @@ public class CmsCoreSession implements I_CmsConstants {
     }
 
     /**
-     * Puts a new user into the sesstion storage. A user is stored with its actual
-     * session Id after a positive authentification.
+     * Puts a new user into the sesstion storage, 
+     * this method also stores a complete hashtable with additional 
+     * user information.<p>
+     * 
+     * A user is stored with its current
+     * session id after a positive authentification.
      *
-     * This method stores a complete hashtable with additional user information in the
-     * session storage.
-     *
-     *
-     * @param session  The actual user session Id.
-     * @param userinfo A Hashtable containing informaion (including the name) about the user.
+     * @param session  A currently valid session id.
+     * @param userinfo A Hashtable containing information (including the name) about the user.
      */
     public void putUser(String sessionId, Hashtable userinfo) {
-
-        // store the userinfo
         m_sessions.put(sessionId, userinfo);
     }
 
     /**
-     * Counts the amount of currentUsers in the system.
+     * Returns the number of current sessions in the system.
      *
-     * @return the size of the hashtable with current users.
+     * @return the number of current sessions in the system
      */
     public int size() {
         return m_sessions.size();
     }
 
     /**
-     * Returns a string-representation for this object.
-     * This can be used for debugging.
+     * Returns a string-representation for this object which
+     * can be used for debugging.
      *
      * @return string-representation for this object.
      */
@@ -224,9 +230,13 @@ public class CmsCoreSession implements I_CmsConstants {
     }
 
     /**
-     * Returns all currently logged in users.
+     * Returns a Vector with all currently logged in users.<p>
+     * 
+     * The Vector elements are <code>Hashtables</code> with the users name, 
+     * the current project, the current group a Boolean if current messages
+     * are pending.
      *
-     * @return a Vector with strings of all logged in users.
+     * @return a Vector with all currently logged in users
      */
     public Vector getLoggedInUsers() {
         Vector output = new Vector();
@@ -252,7 +262,9 @@ public class CmsCoreSession implements I_CmsConstants {
     }
 
     /**
-     * Sends a broadcastmessage to all logged in users
+     * Sends a broadcast message to all logged in users.
+     * 
+     * @param message the message to send to all users.
      */
     public void sendBroadcastMessage(String message) {
         Vector output = new Vector();

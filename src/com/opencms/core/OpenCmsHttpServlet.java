@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2002/10/22 12:39:03 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2002/10/30 10:15:32 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,37 +35,38 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.boot.*;
 import com.opencms.file.*;
 import com.opencms.util.*;
 
 /**
- * This class is the main servlet of the OpenCms system.
- * <p>
+ * This the main servlet of the OpenCms system.<p>
+ * 
  * From here, all other operations are invoked.
- * It initializes the Servlet and processes all requests send to the OpenCms.
  * Any incoming request is handled in multiple steps:
- * <ul>
- * <li>The requesting user is authenticated and a CmsObject with the user information
- * is created. The CmsObject is needed to access all functions of the OpenCms, limited by
- * the actual user rights. If the user is not identified, it is set to the default (guest)
- * user. </li>
- * <li>The requested document is loaded into the OpenCms and depending on its type and the
- * users rights to display or modify it, it is send to one of the OpenCms launchers do
- * display it. </li>
+ * 
+ * <ol><li>The requesting user is authenticated and a CmsObject with the user information
+ * is created. The CmsObject is used to access all functions of OpenCms, limited by
+ * the authenticated users permissions. If the user is not identified, it is set to the default (guest)
+ * user.</li>
+ * 
+ * <li>The requested document is loaded into OpenCms and depending on its type 
+ * (and the users persmissions to display or modify it), 
+ * it is send to one of the OpenCms launchers do be processed.</li>
+ * 
  * <li>
- * The document is forwared to a template class which is selected by the launcher and the
- * output is generated.
- * </li>
- * </ul>
- * <p>
- * The class overloades the standard Servlet methods doGet and doPost to process
- * Http requests.
+ * The loaded launcher will then decide what to do with the contents of the 
+ * requested document. In case of an XMLTemplate the template mechanism will 
+ * be started, in case of a JSP the JSP handling mechanism is invoked, 
+ * in case of an image (or other static file) this will simply be returned etc.
+ * </li></ol>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.33 $ $Date: 2002/10/22 12:39:03 $
- *
- * */
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * 
+ * @version $Revision: 1.34 $ $Date: 2002/10/30 10:15:32 $
+ */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
 
     /**
@@ -104,25 +105,181 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
     private Vector m_redirectlocation = new Vector();
 
     /**
-     * Storage for the clusterurl
+     * Storage for the clusterurl.
      */
     private String m_clusterurl = null;
     
     /**
-     * Flag to indicate if basic or form based authentication is used
+     * Flag to indicate if basic or form based authentication is used.
      */
     private boolean m_UseBasicAuthentication;
     
     /**
-     * URI of the authentication form (read from properties)
+     * URI of the authentication form (read from properties).
      */
     private String m_AuthenticationFormURI;
     
     /**
-     * Flag for debugging
+     * Flag for debugging.
      */
     private static final boolean DEBUG = false;
 
+    /**
+     * Initialization of the OpenCms servlet (overloaded Servlet API method).<p>
+     *
+     * The connection information for the database is read 
+     * from the <code>opencms.properties</code> configuration file and all 
+     * resource brokers are initialized via the initalizer, 
+     * which usually will be an instance of a <code>OpenCms</code> class.
+     *
+     * @param config configuration of OpenCms from <code>web.xml</code>
+     * @throws ServletException when sevlet initalization fails
+     */
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        
+        // Check for OpenCms home (base) directory path
+        String base = config.getInitParameter("opencms.home");
+        if (DEBUG) System.err.println("BASE: " + config.getServletContext().getRealPath("/"));
+        if (DEBUG) System.err.println("BASE2: " + System.getProperty("user.dir"));
+        if(base == null || "".equals(base)) {
+            if (DEBUG) System.err.println("No OpenCms home folder given. Trying to guess...");
+            base = CmsMain.searchBaseFolder(config.getServletContext().getRealPath("/"));
+            if(base == null || "".equals(base)) {
+                throw new ServletException("OpenCms base folder could not be guessed. Please define init parameter \"opencms.home\" in servlet engine configuration.");
+            }
+        }
+        base = CmsBase.setBasePath(base);        
+        
+        String logFile;
+        ExtendedProperties extendedProperties;
+        
+        // Collect the configurations        
+        try {
+            extendedProperties = new ExtendedProperties(CmsBase.getPropertiesPath(true));
+        }
+        catch(Exception e) {
+            throw new ServletException(e.getMessage() + ". Property file is: " + CmsBase.getPropertiesPath(true));
+        }
+        
+        // Change path to log file, if given path is not absolute
+        logFile = (String)extendedProperties.get("log.file");
+        if(logFile != null) {
+            extendedProperties.put("log.file", CmsBase.getAbsolutePath(logFile));
+        }
+
+        // Create the configurations object
+        m_configurations = new Configurations(extendedProperties);        
+
+        // Initialize the logging
+        A_OpenCms.initializeServletLogging(m_configurations);
+        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) {
+            A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] Startup time: " + (new Date(System.currentTimeMillis())));        
+            A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] Server info: " + config.getServletContext().getServerInfo());        
+            A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] Base path: " + CmsBase.getBasePath());        
+            A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] Property file: " + CmsBase.getPropertiesPath(true));        
+            A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] Logfile: " + CmsBase.getAbsolutePath(logFile));        
+        }
+
+        // initialize the redirect information
+        int count = 0;
+        String redirect;
+        String redirectlocation;
+        while((redirect = (String)m_configurations.getString(C_PROPERTY_REDIRECT + "." + count)) != null) {
+            redirectlocation = (String)m_configurations.getString(C_PROPERTY_REDIRECTLOCATION + "." + count);
+            redirectlocation = Utils.replace(redirectlocation, C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
+            m_redirect.addElement(redirect);
+            m_redirectlocation.addElement(redirectlocation);
+            count++;
+            if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] redirect-rule: " + redirect + " -> " + redirectlocation);
+        }
+        
+        // check cluster configuration
+        m_clusterurl = (String)m_configurations.getString(C_CLUSTERURL, "");
+        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] Clusterurl: " + m_clusterurl);                
+
+        try {
+            // create the OpenCms object
+            m_opencms = new OpenCms(m_configurations);
+        } catch(Exception exc) {
+            throw new ServletException(Utils.getStackTrace(exc));
+        }
+
+        // initalize the session storage
+        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] initializing session storage");
+        m_sessionStorage = new CmsCoreSession();
+        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] initializing... DONE");
+
+        // check if basic or form based authentication should be used      
+        this.m_UseBasicAuthentication = m_configurations.getBoolean( "auth.basic", true );        
+        this.m_AuthenticationFormURI = m_configurations.getString( "auth.form_uri" , "/system/workplace/action/authenticate.html" );               
+    }
+
+    /**
+     * Destroys all running threads before closing the VM.
+     */
+    public void destroy() {
+        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO)) A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Performing Shutdown....");
+        try {
+            m_opencms.destroy();
+        }catch(CmsException e) {
+            if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL)) A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet]" + e.toString());
+        }
+        try{
+            Utils.getModulShutdownMethods(OpenCms.getRegistry());
+        }catch (CmsException e){
+            // log exception since we are about to shutdown anyway
+            if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL)) A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet] Module shutdown exception: " + e);
+        }
+        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL)) A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet] Shutdown Completed");
+    }
+
+    /**
+     * Method invoked on each HTML GET request.
+     * <p>
+     * (Overloaded Servlet API method, requesting a document).
+     * Reads the URI received from the client and invokes the appropiate action.
+     *
+     * @param req   The clints request.
+     * @param res   The servlets response.
+     * @throws ServletException if request fails
+     * @throws IOException if the user authentication fails
+     */
+    public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {         
+        CmsObject cms = null;
+        CmsRequestHttpServlet cmsReq = new CmsRequestHttpServlet(req, m_opencms.getFileTranslator());
+        CmsResponseHttpServlet cmsRes = new CmsResponseHttpServlet(req, res, m_clusterurl);
+        try {
+            m_opencms.initStartupClasses();
+            cms = initUser(cmsReq, cmsRes);
+            // no redirect was done - deliver the ressource normally
+            CmsFile file = m_opencms.initResource(cms);
+            if(file != null) {
+                // a file was read, go on process it
+                m_opencms.setResponse(cms, file);
+                m_opencms.showResource(cms, file);
+                updateUser(cms, cmsReq, cmsRes);
+            }
+        }
+        catch(CmsException e) {
+            errorHandling(cms, cmsReq, cmsRes, e);
+        }
+    }
+
+    /**
+     * Method invoked on each HTML POST request.
+     * <p>
+     * (Overloaded Servlet API method, posting a document)
+     * The OpenCmsMultipartRequest is invoked to upload a new document into OpenCms.
+     *
+     * @param req   The clints request.
+     * @param res   The servlets response.
+     * @exception ServletException Thrown if request fails.
+     * @exception IOException Thrown if user autherization fails.
+     */
+    public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {            
+        doGet(req, res);
+    }
     /**
      * Checks if the requested resource must be redirected to the server docroot and
      * excecutes the redirect if nescessary.
@@ -184,77 +341,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         output.append(this.getErrormsg("C_ERRORPART_3"));
         return output.toString();
     }
-
-    /**
-     * Destroys all running threads before closing the VM.
-     */
-    public void destroy() {
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Performing Shutdown....");
-        }
-        try {
-            m_opencms.destroy();
-        }catch(CmsException e) {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet]" + e.toString());
-            }
-        }
-        try{
-            Utils.getModulShutdownMethods(OpenCms.getRegistry());
-        }catch (CmsException e){
-        }
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet] Shutdown Completed");
-        }
-    }
-
-    /**
-     * Method invoked on each HTML GET request.
-     * <p>
-     * (Overloaded Servlet API method, requesting a document).
-     * Reads the URI received from the client and invokes the appropiate action.
-     *
-     * @param req   The clints request.
-     * @param res   The servlets response.
-     * @exception ServletException Thrown if request fails.
-     * @exception IOException Thrown if user autherization fails.
-     */
-    public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {         
-        CmsObject cms = null;
-        CmsRequestHttpServlet cmsReq = new CmsRequestHttpServlet(req, m_opencms.getFileTranslator());
-        CmsResponseHttpServlet cmsRes = new CmsResponseHttpServlet(req, res, m_clusterurl);
-        try {
-            m_opencms.initStartupClasses();
-            cms = initUser(cmsReq, cmsRes);
-            // no redirect was done - deliver the ressource normally
-            CmsFile file = m_opencms.initResource(cms);
-            if(file != null) {
-                // a file was read, go on process it
-                m_opencms.setResponse(cms, file);
-                m_opencms.showResource(cms, file);
-                updateUser(cms, cmsReq, cmsRes);
-            }
-        }
-        catch(CmsException e) {
-            errorHandling(cms, cmsReq, cmsRes, e);
-        }
-    }
-
-    /**
-     * Method invoked on each HTML POST request.
-     * <p>
-     * (Overloaded Servlet API method, posting a document)
-     * The OpenCmsMultipartRequest is invoked to upload a new document into OpenCms.
-     *
-     * @param req   The clints request.
-     * @param res   The servlets response.
-     * @exception ServletException Thrown if request fails.
-     * @exception IOException Thrown if user autherization fails.
-     */
-    public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {            
-        doGet(req, res);
-    }
-
+    
     /**
      * This method performs the error handling for the OpenCms.
      * All CmsExetions throns in the OpenCms are forwared to this method and are
@@ -276,7 +363,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
               // access denied error - display login dialog
               case CmsException.C_ACCESS_DENIED:
                   if(canWrite) {
-                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                    if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO)) {
                         A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Access denied. "+e.getStackTraceAsString());
                     }
                     requestAuthorization(req, res);
@@ -303,7 +390,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
               // https page and http request - display 404 error.
               case CmsException.C_HTTPS_PAGE_ERROR:
                   if(canWrite) {
-                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                    if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO)) {
                         A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Trying to get a http page with a https request. "+e.getMessage());
                     }
                     res.setContentType("text/HTML");
@@ -313,7 +400,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
 
               // https request and http page - display 404 error.
               case CmsException.C_HTTPS_REQUEST_ERROR:
-                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                    if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO)) {
                         A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Trying to get a https page with a http request. "+e.getMessage());
                     }
                   if(canWrite) {
@@ -338,93 +425,6 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         catch(IOException ex) {
 
         }
-    }
-
-    /**
-     * Initialization of the OpenCms servlet.
-     * Used instead of a constructor (Overloaded Servlet API method)
-     * <p>
-     * The connection information for the property database is read from the configuration
-     * file and all resource brokers are initialized via the initalizer.
-     *
-     * @param config Configuration of OpenCms.
-     * @exception ServletException Thrown when sevlet initalization fails.
-     */
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        
-        String base = config.getInitParameter("opencms.home");
-        if (DEBUG) System.err.println("BASE: " + config.getServletContext().getRealPath("/"));
-        if (DEBUG) System.err.println("BASE2: " + System.getProperty("user.dir"));
-        if(base == null || "".equals(base)) {
-            if (DEBUG) System.err.println("No OpenCms home folder given. Trying to guess...");
-            base = CmsMain.searchBaseFolder(config.getServletContext().getRealPath("/"));
-            if(base == null || "".equals(base)) {
-                throw new ServletException("OpenCms base folder could not be guessed. Please define init parameter \"opencms.home\" in servlet engine configuration.");
-            }
-        }
-        base = CmsBase.setBasePath(base);        
-        
-        // Collect the configurations
-        try {
-            ExtendedProperties p = new ExtendedProperties(CmsBase.getPropertiesPath(true));
-
-            // Change path to log file, if given path is not absolute
-            String logFile = (String)p.get("log.file");
-            if(logFile != null) {
-                p.put("log.file", CmsBase.getAbsolutePath(logFile));
-            }
-
-            m_configurations = new Configurations(p);
-        }
-        catch(Exception e) {
-            throw new ServletException(e.getMessage() + ".  Properties file is: " + CmsBase.getBasePath() + "opencms.properties");
-        }
-
-        // Initialize the logging
-        A_OpenCms.initializeServletLogging(m_configurations);
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] Server Info: " + config.getServletContext().getServerInfo());
-        }
-
-        // initialize the redirect information
-        int count = 0;
-        String redirect;
-        String redirectlocation;
-        while((redirect = (String)m_configurations.getString(C_PROPERTY_REDIRECT + "." + count)) != null) {
-            redirectlocation = (String)m_configurations.getString(C_PROPERTY_REDIRECTLOCATION + "." + count);
-            redirectlocation = Utils.replace(redirectlocation, C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
-            m_redirect.addElement(redirect);
-            m_redirectlocation.addElement(redirectlocation);
-            count++;
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] redirect-rule: " + redirect + " -> " + redirectlocation);
-            }
-        }
-        m_clusterurl = (String)m_configurations.getString(C_CLUSTERURL, "");
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] Clusterurl: " + m_clusterurl);
-        }
-        
-        try {
-            // invoke the OpenCms
-            m_opencms = new OpenCms(m_configurations);
-        } catch(Exception exc) {
-            throw new ServletException(Utils.getStackTrace(exc));
-        }
-
-        // initalize the session storage
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing session storage");
-        }
-        m_sessionStorage = new CmsCoreSession();
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing... DONE");
-        }
-
-        source.org.apache.java.util.Configurations openCmsConfig = m_opencms.getConfiguration();
-        this.m_UseBasicAuthentication = openCmsConfig.getBoolean( "auth.basic", true );        
-        this.m_AuthenticationFormURI = openCmsConfig.getString( "auth.form_uri" , "/system/workplace/action/authenticate.html" );		        
     }
 
     /**
@@ -498,8 +498,8 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                         sessionData = m_opencms.restoreSession(oldSessionId);
                     }
                     catch(CmsException exc) {
-                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[OpenCmsServlet] cannot restore session: " + com.opencms.util.Utils.getStackTrace(exc));
+                        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO)) {
+                            A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] cannot restore session: " + com.opencms.util.Utils.getStackTrace(exc));
                         }
                     }
 
@@ -669,8 +669,8 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                         m_opencms.storeSession(session.getId(), sessionData);
                     }
                     catch(CmsException exc) {
-                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[OpenCmsServlet] cannot store session: " + com.opencms.util.Utils.getStackTrace(exc));
+                        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO)) {
+                            A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] cannot store session: " + com.opencms.util.Utils.getStackTrace(exc));
                         }
                     }
                 }
@@ -706,12 +706,12 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         try {
             props.load(getClass().getClassLoader().getResourceAsStream("com/opencms/core/errormsg.properties"));
         } catch(NullPointerException exc) {
-            if(A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCmsHttpServlet] cannot get com/opencms/core/errormsg.properties");
+            if(A_OpenCms.isLogging(C_OPENCMS_CRITICAL) && C_LOGGING) {
+                A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsHttpServlet] cannot get com/opencms/core/errormsg.properties");
             }
         } catch(java.io.IOException exc) {
-            if(A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCmsHttpServlet] cannot get com/opencms/core/errormsg.properties");
+            if(A_OpenCms.isLogging(C_OPENCMS_CRITICAL) && C_LOGGING) {
+                A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsHttpServlet] cannot get com/opencms/core/errormsg.properties");
             }
         }
         String value = props.getProperty(part);

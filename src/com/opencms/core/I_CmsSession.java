@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsSession.java,v $
-* Date   : $Date: 2002/10/21 15:25:43 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2002/10/30 10:14:04 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,13 +33,13 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 /**
- * This class implements a cms-session. This session should be used instead of 
- * the HttpSession. In this session there will be implemented some mechanism for
- * session-failover in distributed-server environments.
+ * This interface defines an OpenCms session, a generic session object 
+ * that is used by OpenCms and provides methods to access the current users
+ * session data.
  * 
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.13 $ $Date: 2002/10/21 15:25:43 $  
+ * @version $Revision: 1.14 $ $Date: 2002/10/30 10:14:04 $  
  */
 public interface I_CmsSession {
     

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServletNotify.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2002/10/30 10:14:14 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,9 +39,9 @@ import javax.servlet.http.*;
  * and must be removed from the CmsCoreSession storage.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2001/07/31 15:50:13 $  
+ * @version $Revision: 1.11 $ $Date: 2002/10/30 10:14:14 $  
  */
-public class OpenCmsServletNotify implements HttpSessionBindingListener {
+class OpenCmsServletNotify implements HttpSessionBindingListener {
     String m_id = null;
     CmsCoreSession m_sessionStorage = null;
     

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsRequest.java,v $
-* Date   : $Date: 2002/10/18 16:56:31 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2002/10/30 10:10:11 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,17 +31,17 @@ package com.opencms.core;
 import java.util.*;
 
 /**
- * This interface defines a CmsRequest.
+ * This interface defines an OpenCms request, a generic request object that is used 
+ * by OpenCms and provides methods to read the data included in the request.<p>
  *
- * The CmsRequest is a genereic request object that is used in the CmsObject provinding
- * methods to read the data included in the request.
- *
- * Implementations of this interface use an existing request (e.g. HttpServletRequest) to
- * initialize a CmsRequest.
+ * Implementations of this interface use an existing request 
+ * (e.g. HttpServletRequest) to
+ * initialize an I_CmsRequest.
  *
  * @author Michael Emmerich
  * @author Alexander Kandzior
- * @version $Revision: 1.10 $ $Date: 2002/10/18 16:56:31 $
+ * 
+ * @version $Revision: 1.11 $ $Date: 2002/10/30 10:10:11 $
  */
 public interface I_CmsRequest {
 
@@ -89,7 +89,7 @@ public interface I_CmsRequest {
      * exists but without a value.
      *
      * @param name The name of the parameter.
-     * @returns The value of the parameter.
+     * @return The value of the parameter.
      */
     public String getParameter(String name);
 

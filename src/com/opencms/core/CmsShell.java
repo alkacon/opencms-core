@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
-* Date   : $Date: 2001/10/05 07:33:07 $
-* Version: $Revision: 1.70 $
+* Date   : $Date: 2002/10/30 10:12:47 $
+* Version: $Revision: 1.71 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,12 +46,13 @@ import FESI.Data.*;
 import FESI.Interpreter.*;
 
 /**
- * This class is a commadnlineinterface for the opencms. It can be used to test
- * the opencms, and for the initial setup. It uses the OpenCms-Object.
+ * This class is a commad line interface to OpenCms which 
+ * can be used for the initial setup and to test the system.<p>
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.70 $ $Date: 2001/10/05 07:33:07 $
+ * 
+ * @version $Revision: 1.71 $ $Date: 2002/10/30 10:12:47 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -63,7 +64,7 @@ public class CmsShell implements I_CmsConstants {
     /**
      * The open-cms.
      */
-    private A_OpenCms m_openCms;
+    private OpenCms m_openCms;
 
     /** Comment Char. */
     public static final String COMMENT_CHAR = "#";
@@ -261,9 +262,9 @@ public class CmsShell implements I_CmsConstants {
     /**
      * the ecmascript interpreter
      *
-     * @fis the file input stream for commands
+     * @param fis the file input stream for commands
      */
-    public void ecmacommands(FileInputStream fis)throws Exception {
+    public void ecmacommands(FileInputStream fis) throws Exception {
 
       boolean lineMode=true;
       boolean continueReading=true;

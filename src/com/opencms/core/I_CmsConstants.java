@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2002/10/18 16:56:31 $
-* Version: $Revision: 1.207 $
+* Date   : $Date: 2002/10/30 10:13:33 $
+* Version: $Revision: 1.208 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,15 +29,16 @@
 package com.opencms.core;
 
 /**
- * This interface is a pool for cms-constants. All classes may implement this
- * class to get access to this contsnats.
+ * This interface is a pool for constants in OpenCms.<p>
+ * 
+ * Other classes may implement this class to get easy access to this constants.
  *
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.207 $ $Date: 2002/10/18 16:56:31 $
+ * @version $Revision: 1.208 $ $Date: 2002/10/30 10:13:33 $
  */
 public interface I_CmsConstants {
 
@@ -1168,7 +1169,7 @@ public interface I_CmsConstants {
      * A string in the configuration-file.
      */
     public static String C_CLUSTERURL = "clusterurl";
-
+    
     /**
      * wasLoggedIn
      */

@@ -1,8 +1,8 @@
 package com.opencms.core;
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsStaticExportProperties.java,v $
-* Date   : $Date: 2002/04/10 08:22:11 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2002/10/30 10:13:21 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,12 +30,12 @@ package com.opencms.core;
 import java.util.*;
 
 /**
- * Title:        OpenCms
- * Description: This Class stores the properties from the opencms.property file for the
- *              static export.
+ * This class provides a special data structure to access the static 
+ * export properties read from <code>opencms.properties</code>.
  *
  * @author Hanjo Riege
- * @version 1.0
+ * 
+ * @version $Revision: 1.2 $ $Date: 2002/10/30 10:13:21 $
  */
 
 public class CmsStaticExportProperties implements I_CmsConstants{
