@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2004/11/17 16:11:54 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/11/22 08:50:28 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.List;
  * creates Cms publish lists.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2004/11/17 16:11:54 $
+ * @version $Revision: 1.15 $ $Date: 2004/11/22 08:50:28 $
  * @since 5.3.0
  * @see org.opencms.db.CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean)
  */
@@ -191,11 +191,13 @@ public class CmsPublishList extends Object {
     }
 
     /**
-     * Returns a list of folder resources with the given state.<p>
+     * Returns the list of deleted folders resources in reversed order.<p>
      * 
-     * @return a list of folder resources with the desired state
+     * @return the list of deleted folders
      */
     public List getDeletedFolderList() {
+        
+        Collections.sort(m_deletedFolderList, Collections.reverseOrder());
         return m_deletedFolderList;
     }
     
