@@ -9,6 +9,8 @@ Legend:
 - General comment
 
 OpenCms 4.5.35 Chusuk       - XX February 2001
+* When static export was disabled the servletpath was not configurable. Now it can be 
+  changed using the url_prefix_http variable in the opencms.properties.
 - Removed old Usermanual. The usermanual is now part of the complete OpenCms documentation.
 
 OpenCms 4.5.34 Chusuk       - 05 February 2001
