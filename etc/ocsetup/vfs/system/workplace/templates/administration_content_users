@@ -199,12 +199,7 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
  								]]><LABEL value="input.newpwdrepeat"/><![CDATA[:</td>
  								<td class=dialogtxt><input type="password" value="]]><PROCESS>PWD2</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="PWD2" id="PWD2"></td>
  							</tr>
-							
-							
-							
-							
-							
-							
+							 
 						</table>
 								 							
 						<table border=0 width=100%>
@@ -216,8 +211,23 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
 							</tr>
 							<tr>
 								<td class=dialogtxt valign=top>
-								]]><SELECT class="textfeld" name="selectgroup" size="10" width="150" 
-								method="getSelectedGroups" onchange=""/><![CDATA[
+									<table border=0 width=100%>
+										<tr>
+											<td>
+											]]><SELECT class="textfeld" name="selectgroup" size="6" width="150" 
+											method="getSelectedGroups" onchange=""/><![CDATA[</td>
+										</tr>
+										<tr>
+											<td class=formular>
+											]]><LABEL value="input.useralsoin"/><![CDATA[:</td>
+										</tr>
+										<tr>
+											<td>
+											]]><SELECT class="textfeld" name="selectgroup" size="4" width="150" 
+											method="getIndirectGroups" onchange=""/><![CDATA[</td>
+										</tr>
+										
+									</table>
 								</td>
 								<td class=dialogtxt valign=top>
 								<INPUT  class="button" name="ADD" id="ADD" type="submit"
@@ -227,35 +237,30 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
 						 		value="]]><LABEL value="button.remove"/>"<![CDATA[ width="100" type="button">
 								</td>
 								<td class=dialogtxt valign=top>]]>
-								<SELECT class="textfeld" name="notselectgroup" size="10" width="150" 
+								<SELECT class="textfeld" name="notselectgroup" size="12" width="150" 
 								method="getNotSelectedGroups" onchange=""/><![CDATA[
 								</td>
 							</tr>
-						</table>		
-						
-						<table border=0 width=100%>
 							<tr>
-								<td class=formular width=20%>
-								]]><LABEL value="input.defaultgroup"/><![CDATA[:</td>
-								<td class=dialogtxt align=left valign=top>]]>
-								<SELECT class="textfeld" name="DEFAULTGROUP" width="150" 
-								method="getSelectedGroups" onchange=""/><![CDATA[
-								</td>
+								<td class=formular>
+			 					]]><LABEL value="input.defaultgroup"/><![CDATA[:</td>
+								<td></td>
+								<td></td>
 							</tr>
-							<!-- Beginn Leerzeile-->
 							<tr> 
-								<td class="leerzeile" colspan=2>&nbsp;</td>
-						    </tr>
-		      				<!-- Ende Leerzeile-->
-						 
-							<tr>
-								<td class=dialogtxt colspan=2>
-								<INPUT type="checkbox" id="LOCK" name="LOCK" ]]><PROCESS>DISABLED</PROCESS><![CDATA[
-								value="DISABLED">]]><LABEL value="input.lockuser"/><![CDATA[
+									<td class=dialogtxt align=left valign=top>
+									]]><SELECT class="textfeld" name="DEFAULTGROUP" width="150" 
+									method="getSelectedGroups" onchange=""/><![CDATA[
+									</td>
+									<td></td>
+									<td class=dialogtxt>
+									<INPUT type="checkbox" id="LOCK" name="LOCK" ]]><PROCESS>DISABLED</PROCESS><![CDATA[
+									value="DISABLED">]]><LABEL value="input.lockuser"/><![CDATA[
 								</td>
 							</tr>
-	
-						</table>
+							
+						</table>		
+						 
 				</td></tr>
 			
 			<!-- Beginn Buttonleiste-->
@@ -312,7 +317,8 @@ function show_help()
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 
-</HEAD> <BODY bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.admincontenturl='administration_content_users.html';">  <!-- Tabelle um vertikal und horizontal zu zentrieren-->
+</HEAD> 
+<BODY bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.admincontenturl='administration_content_users.html';">  <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
@@ -383,46 +389,63 @@ function show_help()
  								]]><LABEL value="input.newpwdrepeat"/><![CDATA[:</td>
  								<td class=dialogtxt><input type="password" value="]]><PROCESS>PWD2</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="PWD2" id="PWD2"></td>
  							</tr>
- 							</table>
- 							
- 							<table border=0 width=100%>
- 							<tr>
- 								<td class=formular colspan=2>
- 								]]><LABEL value="input.userbelongstogroup"/><![CDATA[:</td>
- 								<td class=formular>
- 								]]><LABEL value="input.allgroups"/><![CDATA[:</td>
- 							</tr>
- 							<tr>
- 							<td class=dialogtxt valign=top>
- 							]]><SELECT class="textfeld" name="selectgroup" size="10" width="150" 
- 								method="getSelectedGroups" onchange=""/><![CDATA[
- 							
- 							</td>
- 							<td class=dialogtxt valign=top>
- 								<INPUT  class="button" name="ADD" id="ADD" type="submit"
- 								value="]]><LABEL value="button.add"/>"<![CDATA[ width="100" type="button">
- 								<br>&nbsp;<br>
- 								<INPUT  class="button" name="REMOVE" id="REMOVE" type="submit"
- 								 		value="]]><LABEL value="button.remove"/>"<![CDATA[ width="100" type="button">
- 							</td>
- 							<td class=dialogtxt valign=top>]]>
- 							<SELECT class="textfeld" name="notselectgroup" size="10" width="150" 
- 								method="getNotSelectedGroups" onchange=""/><![CDATA[
- 							</td>
- 							</tr>
- 						</table>		
- 						<table border=0 width=100%>
- 							<tr>
- 								<td class=formular width=20%>
- 								]]><LABEL value="input.defaultgroup"/><![CDATA[:</td>
- 								<td class=dialogtxt align=left valign=top>]]>
- 								<SELECT class="textfeld" name="DEFAULTGROUP" width="150" 
- 								method="getSelectedGroups" onchange=""/><![CDATA[
- 								</td>
- 							</tr>
  						</table>
- 					</td></tr>
- 				</table>
+ 							
+						<table border=0 width=100%>
+						 	<tr>
+								<td class=formular colspan=2>
+								]]><LABEL value="input.userbelongstogroup"/><![CDATA[:</td>
+								<td class=formular>
+							 	]]><LABEL value="input.allgroups"/><![CDATA[:</td>
+							</tr>
+							<tr>
+								<td class=dialogtxt valign=top>
+									<table border=0 width=100%>
+										<tr>
+											<td>
+											]]><SELECT class="textfeld" name="selectgroup" size="6" width="150" 
+											method="getSelectedGroups" onchange=""/><![CDATA[</td>
+										</tr>
+										<tr>
+											<td class=formular>
+											]]><LABEL value="input.useralsoin"/><![CDATA[:</td>
+										</tr>
+										<tr>
+											<td>
+											]]><SELECT class="textfeld" name="selectgroup" size="4" width="150" 
+											method="getIndirectGroups" onchange=""/><![CDATA[</td>
+										</tr>
+										
+									</table>
+								</td>
+								<td class=dialogtxt valign=top>
+								<INPUT  class="button" name="ADD" id="ADD" type="submit"
+								value="]]><LABEL value="button.add"/>"<![CDATA[ width="100" type="button">
+								<br>&nbsp;<br>
+								<INPUT  class="button" name="REMOVE" id="REMOVE" type="submit"
+						 		value="]]><LABEL value="button.remove"/>"<![CDATA[ width="100" type="button">
+								</td>
+								<td class=dialogtxt valign=top>]]>
+								<SELECT class="textfeld" name="notselectgroup" size="12" width="150" 
+								method="getNotSelectedGroups" onchange=""/><![CDATA[
+								</td>
+							</tr>
+							<tr>
+								<td class=formular>
+			 					]]><LABEL value="input.defaultgroup"/><![CDATA[:</td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr> 
+									<td class=dialogtxt align=left valign=top>
+									]]><SELECT class="textfeld" name="DEFAULTGROUP" width="150" 
+									method="getSelectedGroups" onchange=""/><![CDATA[
+									</td>
+									<td></td>
+									<td></td>
+							</tr>
+							
+						</table>	 
  			</td></tr>
  			
  			<!-- Beginn Buttonleiste-->
@@ -440,6 +463,8 @@ function show_help()
  			</table>
  	</td></tr>
 </table>
+</td></tr>
+</table> 
 </form>
     
 </td></tr>
@@ -449,8 +474,8 @@ function show_help()
 </html>
 ]]>
 </TEMPLATE>
- 
-<TEMPLATE name="deleteuser">
+
+<TEMPLATE name="RUsureDelete">
 <![CDATA[ 
  
 <HTML>
@@ -474,9 +499,64 @@ function show_help()
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 
-</HEAD> <BODY bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.admincontenturl='administration_content_users.html';">  <!-- Tabelle um vertikal und horizontal zu zentrieren-->
- 
-wirklich loeschen?
+</HEAD> 
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="parent.frames[0].admincontenturl='administration_content_users.html';">
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<form id=DELETE name=DELETE>
+<input type=hidden name="USER" value="]]><PROCESS>USER</PROCESS><![CDATA[">
+<input type=hidden name="perspective" value="reallydeleteuser">
+<table cellspacing=0 cellpadding=0 border=2 width=300>
+	<tr><td>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			
+			<!-- Beginn Tabellenkopf blau-->
+			<tr> 
+           		<td colspan=2 class="head">]]><LABEL value="title.deleteuser"/><![CDATA[:  ]]><PROCESS>USER</PROCESS><![CDATA[</td>
+			</tr>
+			<!-- Ende Tabellenkopf blau-->
+			
+			<!-- Beginn Leerzeile-->
+			<tr> 
+           		<td colspan=2 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			
+			<tr>
+				<td class=dialogtxt colspan=2>
+				]]><LABEL value="messagebox.message6"/><![CDATA[
+					 
+				</td>
+			</tr>
+			
+			<!-- Beginn Leerzeile-->
+			<tr> 
+           		<td colspan=2 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			
+			<!-- Beginn Buttonleisete-->
+			<tr><td class=dialogtxt colspan=2>
+				<table cellspacing=0 cellpadding=5 width=100%>
+				<tr>
+ 					<td class=formular align=right width=50%><INPUT class=button width = 100 type="submit" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK></td>
+					<td class=formular align=left width=50%><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.cancel"/><![CDATA[" id=CANCEL name=CANCEL onClick="location.href='administration_content_users.html?perspective='"></td>
+	 			</tr>
+				</table>
+			</td>
+			</tr>
+			<!-- Ende Buttonleisete-->
+			
+			</table>
+	</td></tr>
+</table>
+</form> 
+</td></tr>
+</table>
 
 </BODY>
 </html>

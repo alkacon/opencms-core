@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/19 10:15:59 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2000/05/02 16:13:19 $
+ * Version: $Revision: 1.64 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.63 $ $Date: 2000/04/19 10:15:59 $
+ * @version $Revision: 1.64 $ $Date: 2000/05/02 16:13:19 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -803,7 +803,23 @@ interface I_CmsResourceBroker {
 	public Vector getGroupsOfUser(A_CmsUser currentUser, A_CmsProject currentProject, 
 								  String username)
 		throws CmsException;
-
+	
+	/**
+	 * Returns the list of groups to which the user directly belongs to<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The name of the user.
+	 * @return Vector of groups
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public Vector getDirectGroupsOfUser(A_CmsUser currentUser, A_CmsProject currentProject, 
+										String username)
+		throws CmsException;
+	
 	/**
 	 * Returns a group object.<P/>
 	 * 

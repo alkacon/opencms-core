@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbUserGroup.java,v $
- * Date   : $Date: 2000/03/29 15:13:12 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/05/02 16:13:19 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class has package visibility for security reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2000/03/29 15:13:12 $
+ * @version $Revision: 1.23 $ $Date: 2000/05/02 16:13:19 $
  */
  class CmsRbUserGroup implements I_CmsRbUserGroup, I_CmsConstants {
 
@@ -150,6 +150,23 @@ import com.opencms.core.*;
 			 }   
          }
          return allGroups;
+       }
+	 
+	 /**
+	 * Returns the list of groups, which the user directly belongs to<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param username The name of the user.
+	 * @return Vector of groups
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 public Vector getDirectGroupsOfUser(String username)
+         throws CmsException { 
+		 Vector groups=null;
+		 groups = m_accessUserGroup.getGroupsOfUser(username); 
+		 return groups;
        }
      
 
@@ -495,7 +512,7 @@ import com.opencms.core.*;
                 }       
             }
         }
-        return allChilds;
+        return allChilds; 
      }
      
      /**

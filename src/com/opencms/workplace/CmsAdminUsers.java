@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
- * Date   : $Date: 2000/04/20 08:11:54 $
- * Version: $Revision: 1.4 $Selector
+ * Date   : $Date: 2000/05/02 16:13:19 $
+ * Version: $Revision: 1.5 $Selector
 
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.4 $ $Date: 2000/04/20 08:11:54 $
+ * @version $Revision: 1.5 $ $Date: 2000/05/02 16:13:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -85,7 +85,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
     
 		boolean userYetChanged=true;
 		boolean userYetEstablished=true;
-		// find out which template (=perspective) should be used
+		// find out which template (=perspective) should be used 
 		
 		String perspective = (String) parameters.get("perspective");
 		if (perspective != null && perspective.equals("user")){
@@ -96,7 +96,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 				userYetChanged=false;
 			} else if (reqCont.getRequest().getParameter("DELETE") != null) {
 				// delete the selected user
-				perspective="deleteuser";	
+				perspective="deleteuser";
 			}  else if (reqCont.getRequest().getParameter("NEW") != null) {
 				// establish a new user
 				perspective="newuser";	
@@ -319,11 +319,11 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 					town = (String) theUser.getAdditionalInfo(C_ADDITIONAL_INFO_TOWN);
 	 				defaultGroup= theUser.getDefaultGroup().getName();
 					
-					Vector groups = cms.getGroupsOfUser(user);
+					Vector groups = cms.getDirectGroupsOfUser(user);
 					if (groups != null) {
 						selectedGroups = new Vector();
-						for (int z=0; z < groups.size(); z++) {
-							selectedGroups.addElement(((CmsGroup) groups.elementAt(z)).getName());
+						for (int z=0; z < groups.size(); z++) { 
+							selectedGroups.addElement(((CmsGroup) groups.elementAt(z)).getName());		
 						}
 					} else {
 						throw new CmsException(CmsException.C_NO_GROUP);
@@ -487,7 +487,11 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 			xmlTemplateDocument.setData("ZIP", zipcode);
 			xmlTemplateDocument.setData("EMAIL", email);
 		} // belongs to: 'if perspective is newuser or changeuser'
-		else if (perspective.equals("deleteuser")){
+		else if (perspective.equals("deleteuser")) {
+			String user = (String) parameters.get("USER");
+			xmlTemplateDocument.setData("USER", user);
+			templateSelector="RUsureDelete";	
+		} else if (perspective.equals("reallydeleteuser")){
 			// deleting a user
 			String user = (String) parameters.get("USER");
 			try {
@@ -646,6 +650,59 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 			selectedGroups = new Vector();
 		}	
         return new Integer(retValue);
+    }
+	
+	 /**
+     * Gets all groups in which the user is but not the direct ones
+     * <P>
+     * The given vectors <code>names</code> and <code>values</code> will 
+     * be filled with the appropriate information to be used for building
+     * a select box.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return Index representing the default Group of the user
+     * @exception CmsException
+     */
+	
+	public Integer getIndirectGroups(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+		throws CmsException { 
+		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+       	
+		Vector selectedGroups =(Vector) session.getValue("selectedGroups");
+		Vector indirectGroups = new Vector();
+		String groupname, superGroupName;
+		A_CmsGroup superGroup; 
+		
+		if (selectedGroups != null) { 
+			// get all parents of the groups
+			Enumeration enu = selectedGroups.elements();
+			while (enu.hasMoreElements()) {
+			    groupname = (String) enu.nextElement();
+			    superGroup = cms.getParent(groupname);
+				while(superGroup != null) { 
+					superGroupName = superGroup.getName();
+					if(!indirectGroups.contains(superGroupName)) { 
+						 indirectGroups.addElement(superGroupName);
+					}
+					// read next super group
+					superGroup = cms.getParent(superGroupName);
+				}   
+			} 
+			// now remove the direct groups off the list
+			for(int z = 0; z < selectedGroups.size(); z++) {
+				String name =  (String) selectedGroups.elementAt(z); 
+				indirectGroups.removeElement(name);
+			}  
+		}
+		for(int z = 0; z < indirectGroups.size(); z++) {
+				String name =  (String) indirectGroups.elementAt(z); 
+				names.addElement(name);
+				values.addElement(name);
+			}  
+        return new Integer(-1); // none preselected
     }
 	
 	 /**

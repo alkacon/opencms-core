@@ -32,7 +32,7 @@ function show_help()
 	</tr>
 	<tr valign=top align=center>
 		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=120></td>
-		<td>]]><ICON name="ic_newproject" label="newproject" action="location.href='#';" href="administration_content_projectnew.html?inital=true" target=""/><![CDATA[</td>
+		<td>]]><ICON name="ic_newproject" label="newproject" action="location.href='#';" href="administration_content_projectnew.html?initial=true" target=""/><![CDATA[</td>
 		<td>]]><ICON name="ic_closeproject" label="currentprojects" action="location.href='administration_content_project.html';" href="administration_content_projectresent.html" target=""/><![CDATA[</td>
 <!--		<td>]]><ICON name="ic_historyproject" label="projecthistory" action="notImplemented('Projekt Historie');" href="#" target=""/><![CDATA[</td> -->
 		<td>&nbsp;</td>

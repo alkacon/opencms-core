@@ -320,8 +320,8 @@
 			<adress>Location</adress>
 			<alignment>Aligment</alignment>
 			<allprojects>Show all Projects</allprojects>
-			<allgroups>All other Groups</allgroups>
-			<allusers>All other Users</allusers>
+			<allgroups>possible groups</allgroups>
+			<allusers>All other users</allusers>
 			<body>Body</body>
 			<border>Border</border>
 			<borderinfo>in Pixels</borderinfo>
@@ -335,7 +335,7 @@
 			<copyto>Copy to</copyto>
 			<currentgroup>Current Group</currentgroup>
 			<defaulttasks>Defaults for new Tasks:</defaulttasks>
-			<defaultgroup>Default Group</defaultgroup>
+			<defaultgroup>start with group</defaultgroup>
 			<description>Description</description>
 			<editpropertyinfo>Change value to</editpropertyinfo>
 			<editor>Editor</editor>
@@ -405,7 +405,8 @@
 			<unknown>Others</unknown>
 			<user>User</user>
 			<username>Username</username>
-			<userbelongstogroup>User belongs to Groups</userbelongstogroup>
+			<useralsoin>indirectly in the groups</useralsoin>
+			<userbelongstogroup>User directly in the groups</userbelongstogroup>
 			<usersingroup>Members of this Group</usersingroup>
 			<width>Width</width>
 			<zipcode>ZIP</zipcode>			
@@ -525,7 +526,9 @@
 				<deleteextension1>Do you really want to delete the association of </deleteextension1>
 				<deleteextension2>to the resource type </deleteextension2>
 				<deleteextension3>?</deleteextension3>
-			</message4>			
+			</message4>
+			<message5>Do you really want to delete this group?</message5>
+			<message6>Do you really want to delete this user?</message6>
 		</messagebox>
 		
 		<panel>
@@ -767,9 +770,11 @@ A new task was reactivated for you or your role.</content>
 			<chtype>Change File type</chtype>
 			<copy>Copy File</copy>
 			<copyfolder>Copy Folder</copyfolder>
+			<deletegroup>Delete group</deletegroup>
 			<deleteproject>Delete project</deleteproject>
 			<deletepropdef>Delete the property definition</deletepropdef>
 			<deleteextension>Delete the association of file extension</deleteextension>
+			<deleteuser>Delete user</deleteuser>
 			<editpropertyinfo>Edit Property of</editpropertyinfo>
 			<move>Move File</move>
 			<movefolder>Move Folder</movefolder>

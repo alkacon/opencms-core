@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/04/19 10:15:59 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2000/05/02 16:13:19 $
+ * Version: $Revision: 1.68 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.67 $ $Date: 2000/04/19 10:15:59 $ 
+ * @version $Revision: 1.68 $ $Date: 2000/05/02 16:13:19 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1149,6 +1149,17 @@ public abstract class A_CmsObject {
 	 */
 	abstract public Vector getGroupsOfUser(String username)
 		throws CmsException;
+	
+	/**
+	 * Gets all groups to which the user directly belongs to
+	 * 
+	 * @param username The name of the user to get all groups from.
+	 * @return all groups of a user.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	abstract public Vector getDirectGroupsOfUser(String username)
+		throws CmsException; 
 	
     /**
 	 * Returns all child groups of a group<P/>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGroups.java,v $
- * Date   : $Date: 2000/04/20 08:11:54 $
- * Version: $Revision: 1.4 $Selector
+ * Date   : $Date: 2000/05/02 16:13:19 $
+ * Version: $Revision: 1.5 $Selector
 
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.4 $ $Date: 2000/04/20 08:11:54 $
+ * @version $Revision: 1.5 $ $Date: 2000/05/02 16:13:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -90,6 +90,18 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
         A_CmsRequestContext reqCont = cms.getRequestContext();   	
 		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
 		
+		
+		System.err.println("******");
+        Enumeration enu=parameters.keys();
+        while (enu.hasMoreElements()) {
+            String key=(String)enu.nextElement();
+            String values=(String)parameters.get(key);
+            System.err.println(key+" : "+values);
+        }
+        System.err.println("******");
+
+		
+		
 		boolean groupYetChanged=true;
 		boolean groupYetEstablished=true;
 		// find out which template (=perspective) should be used
@@ -101,10 +113,10 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 				// change data of selected user
 				perspective="changegroup";
 				groupYetChanged=false;
-			} else if (reqCont.getRequest().getParameter("DELETE") != null) {
+			} else if (parameters.get("DELETE") != null) {
 				// delete the selected user
 				perspective="deletegroup";	
-			}  else if (reqCont.getRequest().getParameter("NEW") != null) {
+			}  else if (parameters.get("NEW") != null) {
 				// establish new group
 				perspective="newgroup";	
 				groupYetEstablished=false;
@@ -136,6 +148,10 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 				projectManager = (session.getValue("PROJECTMANAGER") != null);
 				projectCoWorker = (session.getValue("PROJECTCOWORKER") != null);
 				role = (session.getValue("ROLE") != null);
+				// remove the data from parameters
+				parameters.remove("ADD");  
+				parameters.remove("REMOVE");
+				parameters.remove("OK");
 				session.removeValue("ERROR");
 			}
 			
@@ -164,8 +180,10 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 					session.putValue("selectedUsers", selectedUsers);
 					session.putValue("notSelectedUsers", notSelectedUsers);
 				}
-		 
-				if (reqCont.getRequest().getParameter("ADD") != null){
+				System.err.println("reqCont:" + parameters.get("ADD"));
+				System.err.println("parameters:" + parameters.get("ADD"));
+				if (parameters.get("ADD") != null){
+					System.err.println("----ADD");
 					// add a new group to selectedGroups 
 					String username = (String)parameters.get("NOTSELECTEDUSERS");
 					if (username != null) {
@@ -174,7 +192,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 					}
 					session.putValue("selectedUsers", selectedUsers);
 					session.putValue("notSelectedUsers", notSelectedUsers);
-				} else if (reqCont.getRequest().getParameter("REMOVE")!= null){
+				} else if (parameters.get("REMOVE")!= null){
 					// delete a new group from selectedGroups 
 					// and move it to notSelectedGroups
 					String username = (String)parameters.get("SELECTEDUSERS");
@@ -184,7 +202,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 					}
 					session.putValue("selectedUsers", selectedUsers);
 					session.putValue("notSelectedUsers", notSelectedUsers);
-				} else if (reqCont.getRequest().getParameter("OK") != null){
+				} else if (parameters.get("OK") != null){
 					// form submitted, try to establish new group
 					try {
 						if (groupname == null || groupname.equals("")) {
@@ -280,14 +298,14 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 					}
 				} else {
 					
-					if (reqCont.getRequest().getParameter("ADD")!=null){
+					if (parameters.get("ADD")!=null){
 						// add a new user to selectedUsers 
 						String username = (String)parameters.get("NOTSELECTEDUSERS");
 						if (username != null) {
 							selectedUsers.addElement(username);
 							notSelectedUsers.removeElement(username);
 						}
-					} else if (reqCont.getRequest().getParameter("REMOVE")!= null){
+					} else if (parameters.get("REMOVE")!= null){
 						// delete a group from selectedUsers 
 						// and move it to notSelectedUsers
 						String username = (String)parameters.get("SELECTEDUSERS");
@@ -295,7 +313,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 							notSelectedUsers.addElement(username);
 							selectedUsers.removeElement(username);
 						}
-					} else if (reqCont.getRequest().getParameter("OK") != null){
+					} else if (parameters.get("OK") != null){
 						// form submitted, try to change the group data 
 						try { 
 							CmsGroup theGroup = (CmsGroup) cms.readGroup(groupname);
@@ -387,9 +405,13 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 			xmlTemplateDocument.setData("PRCHECKED", role? "checked" : "");
 					
 		} // belongs to: 'if perspective is newgroup or changegroup'
-		else if (perspective.equals("deletegroup")){
+		else if (perspective.equals("deletegroup")) {
+			String groupname = (String) parameters.get("GROUPNAME");
+			xmlTemplateDocument.setData("GROUPNAME", groupname);
+			templateSelector="RUsureDelete";	
+		} else if (perspective.equals("reallydeletegroup")){
 			// deleting the group
-			try {
+			try { 
 				String groupname = (String) parameters.get("GROUPNAME");
 				cms.deleteGroup(groupname);
 				templateSelector="";
@@ -552,5 +574,5 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 			selectedUsers = new Vector();
 		}	
         return new Integer(-1);
-    }
+    } 
 }

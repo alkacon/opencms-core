@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/04/28 13:47:07 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2000/05/02 16:13:19 $
+ * Version: $Revision: 1.71 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.70 $ $Date: 2000/04/28 13:47:07 $ 
+ * @version $Revision: 1.71 $ $Date: 2000/05/02 16:13:19 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -1425,6 +1425,20 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		throws CmsException { 
 		return( c_rb.getGroupsOfUser(m_context.currentUser(), 
 									 m_context.currentProject(), username ));
+	}
+	
+	/**
+	 * Gets all groups to which the user directly belongs to
+	 * 
+	 * @param username The name of the user to get all groups from.
+	 * @return all groups of a user.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public Vector getDirectGroupsOfUser(String username)
+		throws CmsException { 
+		return( c_rb.getDirectGroupsOfUser(m_context.currentUser(),
+										   m_context.currentProject(), username ));
 	}
 	
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
- * Date   : $Date: 2000/04/28 13:47:07 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/05/02 16:13:19 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/04/28 13:47:07 $
+ * @version $Revision: 1.14 $ $Date: 2000/05/02 16:13:19 $
  */
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                          I_CmsConstants {
@@ -268,8 +268,8 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             cms.writeUser(reqCont.currentUser());
         }
 
-        // check wich panel of the preferences should be displayed and update the
-        // data on this pannel with the default values or values already set in the
+        // check which panel of the preferences should be displayed and update the
+        // data on this panel with the default values or values already set in the
         // preferences before.
         if (panel != null) {
             
@@ -612,9 +612,11 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         // first try to read them from the session
         Hashtable startSettings=null;
         startSettings=(Hashtable)session.getValue(C_PARA_STARTSETTINGS);
-        // if this fails, get the settings from the user obeject
+        // if this fails, get the settings from the user object
         if (startSettings== null) {
-            startSettings=(Hashtable)reqCont.currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+            startSettings=(Hashtable)reqCont.currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
+			startSettings.put(C_START_DEFAULTGROUP,
+							  reqCont.currentUser().getDefaultGroup().getName());    
         }                 
         // if the settings are still empty, set them to default
         if (startSettings== null) {
@@ -627,7 +629,8 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                 currentView="explorer.html";
             }        
             startSettings.put(C_START_VIEW,currentView);           
-            startSettings.put(C_START_DEFAULTGROUP,reqCont.currentGroup().getName());            
+            startSettings.put(C_START_DEFAULTGROUP,
+							  reqCont.currentUser().getDefaultGroup().getName());            
             startSettings.put(C_START_ACCESSFLAGS,new Integer(C_ACCESS_DEFAULT_FLAGS));
         }
                 
@@ -1224,7 +1227,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         }      
         if (startSettings != null) {
             group = (String)startSettings.get(C_START_DEFAULTGROUP);
-        }            
+        }
         if (group == null) {
                group=currentGroup.getName();
         }
