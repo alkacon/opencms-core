@@ -360,7 +360,7 @@
             <datatypes>Dateityp- verwaltung</datatypes>
             <downloadgallery>Downloadgalerien<![CDATA[<br>]]>verwalten</downloadgallery>
             <export>Export</export>
-			<exportmoduledata>Export Moduldaten</exportmoduledata>
+            <exportmoduledata>Export Moduldaten</exportmoduledata>
             <groups>Gruppe</groups>
             <imagelist>Bilderliste</imagelist>
             <import>Import</import>
@@ -491,6 +491,7 @@
             <lastname>Name</lastname>
             <left>Links</left>
             <linkto>Verknüpfung</linkto>
+            <nolinkvalue>Bitte geben Sie die Verknüpfung an!</nolinkvalue>
             <lockedby>Gesperrt durch</lockedby>
             <lockuser>Benutzer sperren</lockuser>
             <messageaccept>Benachrichtigung bei Annahme</messageaccept>

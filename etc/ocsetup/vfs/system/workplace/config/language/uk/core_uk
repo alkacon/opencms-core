@@ -361,7 +361,7 @@
             <datatypes>Resource type- management</datatypes>
             <downloadgallery>Download galleries<![CDATA[<br>]]>management</downloadgallery>
             <export>Export</export>
-			<exportmoduledata>Export Moduldata</exportmoduledata>
+            <exportmoduledata>Export Moduldata</exportmoduledata>
             <groups>Edit Groups</groups> 
             <imagelist>image list</imagelist>
             <import>Import</import>
@@ -491,6 +491,7 @@
             <lastname>Name</lastname>
             <left>Left</left>
             <linkto>Link</linkto>
+            <nolinkvalue>Please insert the link!</nolinkvalue>
             <lockedby>Locked by</lockedby>
             <lockuser>Disable User</lockuser>
             <messageaccept>Message when accepted</messageaccept>
