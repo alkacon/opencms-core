@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2004/03/16 11:19:16 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/05/14 15:59:19 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,10 +30,17 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsAccessControlList;
+import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,12 +54,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
-import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.CmsAccessControlList;
-import org.opencms.security.CmsPermissionSet;
-import org.opencms.security.I_CmsPrincipal;
-import org.opencms.util.CmsUUID;
-
 /**
  * Provides methods for building the permission settings dialog.<p> 
  * 
@@ -62,7 +63,7 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 5.1
  */
@@ -75,11 +76,16 @@ public class CmsChacc extends CmsDialog {
     public static final String DIALOG_DELETE = "delete";
     /** Request parameter value for the action: add an access control entry */
     public static final String DIALOG_ADDACE = "addace";
+
+    /** Request parameter value for the action: set the internaluse flag */
+    public static final String DIALOG_INTERNALUSE = "internaluse";
     
     /** Value for the action: delete the permissions */
     public static final int ACTION_DELETE = 200;
     /** Value for the action: add an access control entry */
     public static final int ACTION_ADDACE = 300;
+    /** Value for the action: add an access control entry */
+    public static final int ACTION_INTERNALUSE = 400;
     
     private String m_paramType;
     private String m_paramName;
@@ -201,13 +207,14 @@ public class CmsChacc extends CmsDialog {
             setAction(ACTION_ADDACE);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {          
             setAction(ACTION_CANCEL);
+        } else if (DIALOG_INTERNALUSE.equals(getParamAction())) {          
+            setAction(ACTION_INTERNALUSE);            
         } else {                        
             setAction(ACTION_DEFAULT);
             // build the title for chacc dialog     
             setParamTitle(key("title.chmod") + ": " + CmsResource.getName(getParamResource()));
         }
-        
-                      
+            
     }
     
     /**
@@ -272,6 +279,45 @@ public class CmsChacc extends CmsDialog {
             return false;
         }
     }
+    
+    /**
+     * Modified the INternal Use flag of a resource.<p>
+     * @param request the Http servlet request
+     * 
+     * @return true if the operation was was successfully removed, otherwise false
+     */
+    public boolean actionInternalUse(HttpServletRequest request) {
+        String internal = request.getParameter("internal");
+       
+        CmsFile resource;
+        boolean internalValue = false;
+        if (internal != null) {
+            internalValue = true;
+        }     
+        try { 
+            resource = (CmsFile)getCms().readFileHeader(getParamResource());
+          
+            int flags = resource.getFlags();
+             
+            if (internalValue) {
+                if ((flags & I_CmsConstants.C_ACCESS_INTERNAL_READ) == 0) {
+                    flags += I_CmsConstants.C_ACCESS_INTERNAL_READ;
+                }
+            } else {
+                if ((flags & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0) {
+                    flags -= I_CmsConstants.C_ACCESS_INTERNAL_READ;
+                }
+            }               
+            resource.setFlags(flags);
+            getCms().writeFileHeader(resource);
+
+        } catch (CmsException e) {       
+              m_errorMessages.add(key("dialog.permission.error.internal"));
+              return false;
+        }
+        return true;
+    }
+    
     
     /**
      * Adds a new access control entry to the resource.<p>
@@ -688,7 +734,7 @@ public class CmsChacc extends CmsDialog {
      */
     public String buildRightsList() {
         StringBuffer retValue = new StringBuffer(2048);
-        
+         
         // create headline for inherited entries
         retValue.append(dialogSubheadline(key("dialog.permission.headline.inherited")));
         
@@ -767,6 +813,9 @@ public class CmsChacc extends CmsDialog {
         retValue.append(buildInheritedList(inheritedEntries, parents));       
         retValue.append(dialogWhiteBox(HTML_END));
         
+        // create the internal form
+        retValue.append(buildInternalForm());        
+        
         // create the add user/group form
         retValue.append(buildAddForm());
 
@@ -775,6 +824,57 @@ public class CmsChacc extends CmsDialog {
         
         return retValue.toString();
     }
+    
+    /**
+     * Builds a String with HTML code to display the form to add a new access control entry for the current resource.<p>
+     * 
+     * @return HTML String with the form
+     */
+    private String buildInternalForm() {
+        StringBuffer retValue = new StringBuffer(256);    
+ 
+        CmsResource resource;
+        boolean internal = false;
+        
+        // try to read the internal flag from the resource
+        try { 
+            resource = getCms().readFileHeader(getParamResource());
+            internal = ((resource.getFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0);
+        } catch (CmsException e) {
+            // an error occured reading the resource
+            if (OpenCms.getLog(this).isErrorEnabled()) { 
+                OpenCms.getLog(this).error(". Accessing resource: " + getParamResource() + " : " + e);
+            }  
+        }
+ 
+        retValue.append(dialogSpacer());
+        retValue.append("<form action=\""+getDialogUri()+"\" method=\"post\" name=\"internal\" class=\"nomargin\">\n");        
+        retValue.append("<table border=\"0\" width=\"100%\">\n");
+        retValue.append("<tr>\n");
+        retValue.append("\t<td class=\"dialogpermissioncell textcenter\">"+key("dialog.permission.internal"));
+        retValue.append(" <input type=\"checkbox\" name=\"internal\" value=\"true\"");
+        if (internal) {
+            retValue.append(" checked=\"checked\"");
+        }
+        if (!getEditable()) {
+            retValue.append(" disabled=\"disabled\"");            
+        }
+        retValue.append(" ></td>\n");
+        if (getEditable()) { 
+            retValue.append("<td><input  type=\"submit\" class=\"dialogbutton\" value=\""+key("button.submit")+"\">");
+        }
+        retValue.append("</td>\n");
+        retValue.append("</tr>\n");
+        retValue.append("</table>\n"); 
+        setParamAction(DIALOG_INTERNALUSE);
+        setParamType(null);
+        setParamName(null);
+        retValue.append(paramsAsHidden());
+        retValue.append("</form>\n");
+        return retValue.toString();
+        
+    }
+    
     
     /**
      * Builds a String with HTML code to display the form to add a new access control entry for the current resource.<p>
