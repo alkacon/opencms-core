@@ -1,9 +1,9 @@
 package com.opencms.workplace;
 
 /**
- * Insert the type's description here.
+ * The class is used to handle the template for the new site functionallity
  * Creation date: (25-09-2000 12:29:08)
- * @author: Administrator
+ * @author: Martin Langelund
  */
 import com.opencms.file.*;
 import com.opencms.core.*;
@@ -17,15 +17,18 @@ import javax.servlet.http.*;
 
 public class CmsAdminSiteNew extends CmsWorkplaceDefault implements com.opencms.core.I_CmsConstants {
 /**
- * Insert the method's description here.
- * Creation date: (26-09-2000 08:46:46)
- * @return java.lang.Integer
- * @param cms com.opencms.file.CmsObject
- * @param lang com.opencms.workplace.CmsXmlLanguageFile
- * @param names java.util.Vector
- * @param values java.util.Vector
- * @param parameters java.util.Hashtable
- * @exception com.opencms.core.CmsException The exception description.
+ * Gets all available categories
+ * <P>
+ * The given vectors <code>names</code> and <code>values</code> will 
+ * be filled with the appropriate information to be used for building
+ * a select box.
+ * 
+ * @param cms CmsObject Object for accessing system resources.
+ * @param names Vector to be filled with the appropriate values in this method.
+ * @param values Vector to be filled with the appropriate values in this method.
+ * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+ * @return Index representing the current value in the vectors.
+ * @exception CmsException
  */
 public Integer getCategories(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws com.opencms.core.CmsException
 {
@@ -39,23 +42,22 @@ public Integer getCategories(CmsObject cms, CmsXmlLanguageFile lang, Vector name
 	return new Integer(0);
 }
 /**
- * Insert the method's description here.
- * Creation date: (25-09-2000 12:30:52)
- * @return byte[]
- * @param cms com.opencms.file.CmsObject
- * @param templateFile java.lang.String
- * @param elementName java.lang.String
- * @param parameters java.util.Hashtable
- * @param templateSelector java.lang.String
- * @exception com.opencms.core.CmsException The exception description.
+ * Gets the content of a defined section in a given template file and its subtemplates
+ * with the given parameters. 
+ * 
+ * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+ * @param cms CmsObject Object for accessing system resources.
+ * @param templateFile Filename of the template file.
+ * @param elementName Element name of this template in our parent template.
+ * @param parameters Hashtable with all template class parameters.
+ * @param templateSelector template section that should be processed.
  */
 public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws com.opencms.core.CmsException
 {
 	CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-	
 	if (parameters.get("submitform") != null)
 	{
-		System.err.println("***********************************************");
+		//System.err.println("***********************************************");
 		if (((String) parameters.get("NAME")).equals("") || ((String) parameters.get("DOMAINNAME")).equals("") || ((String) parameters.get("DESCRIPTION")).equals(""))
 		{
 			templateSelector = "datamissing";
@@ -63,23 +65,24 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 		else
 		{
 			cms.newSite((String) parameters.get("NAME"), (String) parameters.get("DESCRIPTION"), Integer.parseInt((String) parameters.get("CATEGORY")), Integer.parseInt((String) parameters.get("LANGUAGE")), Integer.parseInt((String) parameters.get("DOMAIN")), (String) parameters.get("DOMAINNAME"), (String) parameters.get("MANAGERGROUP"), (String) parameters.get("GROUP"));
-
 			templateSelector = "wait";
 		}
 	}
-	
 	return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
 }
 /**
- * Insert the method's description here.
- * Creation date: (26-09-2000 08:45:54)
- * @return java.lang.Integer
- * @param cms com.opencms.file.CmsObject
- * @param lang com.opencms.workplace.CmsXmlLanguageFile
- * @param names java.util.Vector
- * @param values java.util.Vector
- * @param parameters java.util.Hashtable
- * @exception com.opencms.core.CmsException The exception description.
+ * Gets all available domains
+ * <P>
+ * The given vectors <code>names</code> and <code>values</code> will 
+ * be filled with the appropriate information to be used for building
+ * a select box.
+ * 
+ * @param cms CmsObject Object for accessing system resources.
+ * @param names Vector to be filled with the appropriate values in this method.
+ * @param values Vector to be filled with the appropriate values in this method.
+ * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+ * @return Index representing the current value in the vectors.
+ * @exception CmsException
  */
 public Integer getDomains(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws com.opencms.core.CmsException
 {
@@ -93,7 +96,7 @@ public Integer getDomains(CmsObject cms, CmsXmlLanguageFile lang, Vector names, 
 	return new Integer(0);
 }
 /**
- * Gets all groups, that may work for a project.
+ * Gets all available groups
  * <P>
  * The given vectors <code>names</code> and <code>values</code> will 
  * be filled with the appropriate information to be used for building
@@ -138,29 +141,31 @@ public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, V
 	return new Integer(retValue);
 }
 /**
- * Insert the method's description here.
- * Creation date: (26-09-2000 08:46:30)
- * @return java.lang.Integer
- * @param cms com.opencms.file.CmsObject
- * @param lang com.opencms.workplace.CmsXmlLanguageFile
- * @param names java.util.Vector
- * @param values java.util.Vector
- * @param parameters java.util.Hashtable
- * @exception com.opencms.core.CmsException The exception description.
+ * Gets all available languages
+ * <P>
+ * The given vectors <code>names</code> and <code>values</code> will 
+ * be filled with the appropriate information to be used for building
+ * a select box.
+ * 
+ * @param cms CmsObject Object for accessing system resources.
+ * @param names Vector to be filled with the appropriate values in this method.
+ * @param values Vector to be filled with the appropriate values in this method.
+ * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+ * @return Index representing the current value in the vectors.
+ * @exception CmsException
  */
 public Integer getLanguages(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws com.opencms.core.CmsException
 {
 	Vector languages = cms.getAllLanguages();
-
 	for (int z = 0; z < languages.size(); z++)
 	{
 		names.addElement(((CmsLanguage) languages.elementAt(z)).getName());
-		values.addElement(new String(""+((CmsLanguage) languages.elementAt(z)).getLanguageId()));
+		values.addElement(new String("" + ((CmsLanguage) languages.elementAt(z)).getLanguageId()));
 	}
 	return new Integer(0);
 }
 /**
- * Gets all groups, that may manage a project.
+ * Gets all available groups.
  * <P>
  * The given vectors <code>names</code> and <code>values</code> will 
  * be filled with the appropriate information to be used for building
@@ -206,16 +211,17 @@ public Integer getManagerGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector n
 	return new Integer(retValue);
 }
 /**
- * Insert the method's description here.
- * Creation date: (25-09-2000 12:31:11)
- * @return boolean
- * @param cms com.opencms.file.CmsObject
- * @param templateFile java.lang.String
- * @param elementName java.lang.String
- * @param parameters java.util.Hashtable
- * @param templateSelector java.lang.String
+ * Indicates if the results of this class are cacheable.
+ * 
+ * @param cms CmsObject Object for accessing system resources
+ * @param templateFile Filename of the template file 
+ * @param elementName Element name of this template in our parent template.
+ * @param parameters Hashtable with all template class parameters.
+ * @param templateSelector template section that should be processed.
+ * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
  */
-public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector)
+{
 	return false;
 }
 }
