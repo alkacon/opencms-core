@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2003/02/02 15:59:52 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/10/24 15:05:08 $
+* Version: $Revision: 1.42.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package com.opencms.workplace;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
@@ -50,7 +51,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.42 $ $Date: 2003/02/02 15:59:52 $
+ * @version $Revision: 1.42.2.1 $ $Date: 2003/10/24 15:05:08 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -122,7 +123,27 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
             if(!"error_no_gallery".equals(templateSelector)) {
                 String pageText = (String)parameters.get(C_PARA_PAGE);
                 String filter = (String)parameters.get(C_PARA_FILTER);
-
+                
+                // check if the user requested a file deletion
+                String deleteAction = (String)parameters.get("action");
+                if ("delete".equals(deleteAction)) {
+                    String deleteResource = (String)parameters.get("resource");
+                    if (deleteResource != null && !"".equals(deleteResource)) {
+                        try {
+                            // lock and delete the resource
+                            CmsResource res = cms.readFileHeader(deleteResource);
+                            if (!res.isLocked()) {
+                                cms.lockResource(deleteResource, true);
+                            }
+                            cms.deleteResource(deleteResource);
+                        } catch (CmsException e) {
+                            xmlTemplateDocument.setData("ERRORDETAILS", Utils.getStackTrace(e));
+                            templateSelector = "error";
+                            return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
+                        }
+                    }
+                }
+                
                 // Check if the user requested a special page
                 if(pageText == null || "".equals(pageText)) {
                     pageText = "1";
@@ -176,12 +197,14 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         Vector filteredPics = new Vector();
         for(int i = 0;i < allPics.size();i++) {
             CmsFile file = (CmsFile)allPics.elementAt(i);
-            String filename = file.getName();
-            String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
-            boolean filenameFilter = inFilter(filename, filter);
-            boolean titleFilter = ((title == null) || ("".equals(title))) ? false : inFilter(title, filter);
-            if((filenameFilter || titleFilter) && isImage(filename)) {
-                filteredPics.addElement(file);
+            if (file.getState() != I_CmsConstants.C_STATE_DELETED) {
+                String filename = file.getName();
+                String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
+                boolean filenameFilter = inFilter(filename, filter);
+                boolean titleFilter = ((title == null) || ("".equals(title))) ? false : inFilter(title, filter);
+                if((filenameFilter || titleFilter) && isImage(filename)) {
+                    filteredPics.addElement(file);
+                }
             }
         }
         return filteredPics;
@@ -359,6 +382,11 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
             xmlTemplateDocument.setData("filename", filename);
             xmlTemplateDocument.setData("size", file.getLength() + " Byte");
             xmlTemplateDocument.setData("type", type);
+            if (cms.accessLock(file.getAbsolutePath())) {
+                xmlTemplateDocument.setData("delete", xmlTemplateDocument.getProcessedDataValue("deleteentry", this));
+            } else {
+                xmlTemplateDocument.setData("delete", "&nbsp;");
+            }
             // look if the onclick event must be set
             //String paraSetOnClick = (String)parameters.get("setonclick");
             String paraSetOnClick = (String)session.getValue("picBrowser_for_ext_nav");

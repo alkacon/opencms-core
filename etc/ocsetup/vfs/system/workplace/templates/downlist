@@ -24,7 +24,17 @@
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_kontextmenu.js</method><![CDATA["></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms_edithtml.js</method><![CDATA["></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+<!--
 var disableKontext = true;
+
+function deleteDownload(resourceName) {
+	var checkDelete = confirm("]]><LABEL value="messagebox.downgallery.delete" /><![CDATA[");
+	if (checkDelete == true) {
+		document.location.href="]]><LINK><METHOD name="getFileUri" /></LINK><![CDATA[?action=delete&resource=" + resourceName;
+	}
+}
+
+//-->
 </SCRIPT>
 <!-- Ende Script -->
 
@@ -36,7 +46,7 @@ var disableKontext = true;
 <table cellspacing=1 cellpadding=1 border=0>
 ]]><FILELIST method="getFiles" template="/system/workplace/templates/explorerFilelistTemplate" customtemplate="/system/workplace/templates/downBrowserTemplate"/><![CDATA[
 </table>
-<!-- end Inhalt Aufgaben Projektbezogen -->
+<!-- end content list with galleries -->
 
 </body>
 </html>
