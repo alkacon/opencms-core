@@ -388,7 +388,7 @@ private byte[] getContentHead(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 	CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
 	//set labels in the template
 	template.setData("filter", lang.getLanguageValue(moduleName + ".label.filter"));
-	template.setData("filterparameter", lang.getLanguageValue(moduleName + ".label.filterparameter"));
+	template.setData("filterparameterlabel", lang.getLanguageValue(moduleName + ".label.filterparameter"));
 
 	//get vector of filter names from the content definition
 	Vector filterMethods = new Vector();
@@ -426,6 +426,7 @@ private byte[] getContentHead(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		template.setData("selectnumber", "" + i);
 		//add additional inputfield, if filter allows parameters
 		template.setData("selectparameter", "" + currentFilter.hasUserParameter());
+		template.setData("filterparameter", filterParam);
 		//get processed data from the template
 		try {
 			singleSelection = template.getProcessedDataValue("singleselection", this);
@@ -623,9 +624,17 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 
 		//set data of single row
 		for (int j = 0; j < columns; j++) {
-			// call the field methods  
-			Method getMethod = (Method) fieldMethods.elementAt(j);
+			// call the field methods
+			Method getMethod = null;
 			try {
+				getMethod = (Method) fieldMethods.elementAt(j);
+			} catch (Exception e) {
+				if (A_OpenCms.isLogging()) {
+					A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Could not get field method!");
+				}
+			}							
+			try {
+				//apply methods on content definition object
 				fieldEntry = (String) getMethod.invoke(entryObject, new Object[0]);
 			} catch (InvocationTargetException ite) {
 				if (A_OpenCms.isLogging()) {
@@ -938,8 +947,17 @@ private void setLockstates(CmsXmlWpTemplateFile template, Class cdClass, Object 
 
 	//cast the returned object to a string
 	la = (String) laObject.toString();
-	//if the cd is lockable...
-	if (la.equals("true")) {
+	if (la.equals("false")) {
+		try{
+			//the entry is not lockable: use standard contextmenue
+			template.setData("backofficecontextmenue", "backofficeedit");
+			template.setData("lockedby", template.getDataValue("nolock"));
+		} catch  (Exception e) {
+			if (A_OpenCms.isLogging()) {
+				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates:'not lockable' section hrowed an exception!");
+			}
+		}	
+	} else {
 		//...get the lockstate of an entry		
 		try {
 			//get the method lockstate
@@ -961,30 +979,27 @@ private void setLockstates(CmsXmlWpTemplateFile template, Class cdClass, Object 
 				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method getLockstate throwed an exception!");
 			}
 		}
-	} else {
-		//the entry is not lockable: use standard contextmenue
-		template.setData("backofficecontextmenue", "backofficeedit");
-	}
-	try {
-		//show the possible cases of a lockstate in the template
-		if (ls.equals("lockuser")) {
-			ls = template.getDataValue("lockuser");
-			template.setData("lockedby", ls);
-			template.setData("backofficecontextmenue", "backofficelockuser");
-		} else {
-			if (ls.equals("lock")) {
-				ls = template.getDataValue("lock");
+		try {
+			//show the possible cases of a lockstate in the template
+			if (ls.equals("lockuser")) {
+				ls = template.getDataValue("lockuser");
 				template.setData("lockedby", ls);
-				template.setData("backofficecontextmenue", "backofficelock");
+				template.setData("backofficecontextmenue", "backofficelockuser");
 			} else {
-				ls = template.getDataValue("nolock");
-				template.setData("lockedby", ls);
-				template.setData("backofficecontextmenue", "backofficenolock");
+				if (ls.equals("lock")) {
+					ls = template.getDataValue("lock");
+					template.setData("lockedby", ls);
+					template.setData("backofficecontextmenue", "backofficelock");
+				} else {
+					ls = template.getDataValue("nolock");
+					template.setData("lockedby", ls);
+					template.setData("backofficecontextmenue", "backofficenolock");
+				}
 			}
-		}
-	} catch (Exception e) {
-		if (A_OpenCms.isLogging()) {
-			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates throwed an exception!");
+		} catch (Exception e) {
+			if (A_OpenCms.isLogging()) {
+				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates throwed an exception!");
+			}
 		}
 	}
 }

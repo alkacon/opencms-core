@@ -50,29 +50,27 @@ public static Vector applyFilter(CmsObject cms, FilterMethod filterMethod) throw
  * @returns a vector with the filtered content 
  */
 public static Vector applyFilter(CmsObject cms, FilterMethod filterMethod, String userParameter) throws Exception {
-	
+
 	Vector retValue = new Vector();
-	//try {
-		Method method = filterMethod.getFilterMethod();
-		Object[] params;
-		if( userParameter != null ) {
-			int defaultParameterLength = filterMethod.getDefaultParameter().length;
-			Object[] allParams = new Object[defaultParameterLength + 1];
-			System.arraycopy(filterMethod.getDefaultParameter(), 0, allParams, 0, defaultParameterLength);
-			allParams[defaultParameterLength] = userParameter;
-			params = allParams;
-		} else {
-			params = filterMethod.getDefaultParameter();
-		}
-		return (Vector) method.invoke(null,params);
-/*	} catch (InvocationTargetException ite) {
-		System.err.println("A_ContentDefinition applyFilter: InvocationTargetException!");
-		ite.getTargetException().printStackTrace();
-	} catch (Exception e) {
-		System.err.println("A_ContentDefinition applyFilter: Other Exception!");
-		e.printStackTrace();
-	}	
-	return retValue;*/
+
+	//System.err.println("UserParameter:" + userParameter);
+	Method method = filterMethod.getFilterMethod();
+	Object[] params;
+	if (userParameter != null) {
+		int defaultParameterLength = filterMethod.getDefaultParameter().length;
+		Object[] allParams = new Object[defaultParameterLength + 1];
+		System.arraycopy(filterMethod.getDefaultParameter(), 0, allParams, 0, defaultParameterLength);
+		allParams[defaultParameterLength] = userParameter;
+		params = allParams;
+	} else {
+		params = filterMethod.getDefaultParameter();
+	}
+	//System.err.println("has userparam:" + filterMethod.hasUserParameter());
+	if (filterMethod.hasUserParameter() == true) {
+		return (Vector) method.invoke(null, new Object[] {cms, userParameter});
+	} else {
+		return (Vector) method.invoke(null, new Object[] {cms});
+	}		
 }
 /**
  * abstract delete method
