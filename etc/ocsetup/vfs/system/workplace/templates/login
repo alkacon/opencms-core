@@ -14,8 +14,10 @@
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 
 <SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
-document.LOGIN.NAME.focus();
-]]><PROCESS>STARTUP</PROCESS><![CDATA[
+	if(navigator.appName.substring(0,9) == "Microsoft")
+		document.LOGIN.NAME.focus();
+	
+	]]><PROCESS>STARTUP</PROCESS><![CDATA[
 </SCRIPT>
 
 <!-- End Styles and Scripts -->
