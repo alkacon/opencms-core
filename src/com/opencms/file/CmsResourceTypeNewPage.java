@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeNewPage.java,v $
- * Date   : $Date: 2003/07/18 19:03:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/30 17:02:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.1
  */
 public class CmsResourceTypeNewPage extends A_CmsResourceType {
@@ -86,7 +86,7 @@ public class CmsResourceTypeNewPage extends A_CmsResourceType {
         }
 
         CmsFile file = cms.doCreateFile(resourcename, contents, C_RESOURCE_TYPE_NAME, properties);
-        cms.doLockResource(resourcename, true);
+        cms.doLockResource(resourcename, false);
 
         // linkmanagement: create the links of the new page (for the case that the content was not empty
         if (contents.length > 1) {

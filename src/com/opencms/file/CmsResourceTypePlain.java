@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2003/07/18 19:03:49 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/07/30 17:02:24 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     public CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException {
         CmsResource res = cms.doCreateFile(resourcename, contents, getResourceTypeName(), properties);
         // TODO: Move locking of resource to CmsObject or CmsDriverManager
-        cms.doLockResource(cms.readAbsolutePath(res), true);
+        cms.doLockResource(cms.readAbsolutePath(res), false);
         return res;
     }    
 }

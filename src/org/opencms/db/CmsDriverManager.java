@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/30 14:34:18 $
- * Version: $Revision: 1.105 $
+ * Date   : $Date: 2003/07/30 17:02:24 $
+ * Version: $Revision: 1.106 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.105 $ $Date: 2003/07/30 14:34:18 $
+ * @version $Revision: 1.106 $ $Date: 2003/07/30 17:02:24 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4397,16 +4397,15 @@ public class CmsDriverManager extends Object {
         
         resource = readFileHeader(context, resourcename);
         
-        // check a few abort conditions first
-        
-        if (!forceLock) {
-            // check if the user has write access to the resource
-            checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);            
-        }        
+        // check a few abort conditions first               
         
         if (forceLock) {
-            m_lockDispatcher.removeResource(this, context, resource.getFullResourceName(), true);
-        }        
+            //m_lockDispatcher.removeResource(this, context, resource.getFullResourceName(), true);
+            unlockResource(context, resourcename, true);
+        }    
+ 
+        // check if the user has write access to the resource
+        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);                
         
         m_lockDispatcher.addResource(this, context, resource.getFullResourceName(), context.currentUser().getId(), context.currentProject().getId());
 
@@ -7455,10 +7454,12 @@ public class CmsDriverManager extends Object {
             throw new CmsLockException("Unlocking resources in locked folders is not allowed!", CmsLockException.C_RESOURCE_LOCKED_INHERITED);
         }
         
+        /*
         if (!forceUnlock) {
             // check if the user has write access to the resource
             checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
-        }        
+        } 
+        */       
         
         m_lockDispatcher.removeResource(this, context, resource.getFullResourceName(), forceUnlock);        
         
@@ -7469,7 +7470,6 @@ public class CmsDriverManager extends Object {
         Iterator i = null;
         CmsLock currentLock = null;
         CmsUUID currentLockUserId = null;
-        
         
         currentLock = m_lockDispatcher.getLock(this, context, resourcename);
         
