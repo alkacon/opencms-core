@@ -32,12 +32,12 @@ function copySelection() {
 
 	if (link.charAt(link.length-1)!="/") {
 		document.getElementById("name"+visibleForm).value = link.substring( link.lastIndexOf("/")+1, link.length );
-		document.getElementById("WEITER").disabled = false;
 	}
 	else {
 		document.getElementById("name"+visibleForm).value = "";
-		document.getElementById("WEITER").disabled = true;
 	}
+	
+	checkValues();
 }
 
     function checkForm(whichone){
@@ -78,6 +78,7 @@ function copySelection() {
                 var re='explorer_files_new_link.html?step=1&file='+
                     escape(document.getElementById("name"+whichone).value)+
                     '&link='+escape(document.getElementById("neulink"+whichone).value)+
+                    '&addtonav='+document.getElementById("addtonav"+whichone).checked+
                     '&keepproperties='+document.getElementById("keepproperties"+whichone).checked;
                 //alert(re);
                 document.location.href=re;
@@ -89,6 +90,7 @@ function copySelection() {
                        '&link='+escape(document.getElementById("neulink"+whichone).value)+
                        '&navtitle='+escape(document.getElementById("navtext").value)+
                        '&navpos='+ document.getElementById("linkPos").value+
+                       '&addtonav='+document.getElementById("addtonav"+whichone).checked+
                        '&keepproperties='+document.getElementById("keepproperties"+whichone).checked;
 
                 //alert(re);
@@ -105,9 +107,8 @@ function copySelection() {
         document.getElementById("name"+to).value=temp1;
         document.getElementById("neulink"+to).value=temp2;
         document.getElementById("keepproperties"+to).checked=temp3;
-        if(temp1.length > 0){
-        	document.getElementById("WEITER").disabled=false;
-        }
+        
+        checkValues();
     }
 
     function switchlyr(show, hide){
@@ -124,14 +125,14 @@ function copySelection() {
     } 
     
     function switchLayer2(t){
-        switchLayerData(2,1);
         switchlyr('isInNav','notInNav');
+        switchLayerData(2,1);
         t.checked=false;
     }
 
     function switchLayer1(t){
-        switchLayerData(1,2);
         switchlyr('notInNav','isInNav');
+        switchLayerData(1,2);
         t.checked=true;
     }
     
@@ -140,22 +141,64 @@ function copySelection() {
 		var theValue = ']]><process>LINKVALUE</process><![CDATA[';
 		var theNavtitle = ']]><process>NAVTITLE</process><![CDATA[';
 		var keepProperties = ]]><process>KEEPPROPERTIES</process><![CDATA[;
+		var addToNav = ]]><process>ADDTONAV</process><![CDATA[;
 		
 		document.getElementById("name1").value = theName;
 		document.getElementById("neulink1").value = theValue;
-		document.getElementById("keepproperties1").value = keepProperties;
 		document.getElementById("navtext").value = theNavtitle;
 		document.getElementById("name2").value = theName;
 		document.getElementById("neulink2").value = theValue;
-		document.getElementById("keepproperties2").value = keepProperties;
-		if((theName != null) && (theName != '')){
-			if(document.getElementById('isInNav').style.visibility = "visible"){
-				document.getElementById("name1").focus();
-			} else {
-				document.getElementById("name2").focus();
-			}
+		
+		if (theName.length==0 && theValue.length==0) {
+			addToNav = false;
+			keepProperties = true;
 		}
-	}   
+		
+		if (addToNav) {
+			document.getElementById('isInNav').style.visibility = "visible";
+			document.getElementById('notInNav').style.visibility = "hidden";
+			document.getElementById("keepproperties1").checked = keepProperties;		
+		}
+		else  {
+			document.getElementById('isInNav').style.visibility = "hidden";
+			document.getElementById('notInNav').style.visibility = "visible";		
+			document.getElementById("keepproperties2").checked = keepProperties;		
+		}
+		
+		checkValues();
+	}  
+	
+function checkValues() {
+	var name = "";
+	var link = "";
+	var navtext = "";
+	
+	if(document.getElementById('isInNav').style.visibility=="visible") {
+		name += document.getElementById("name1").value;
+		link += document.getElementById("neulink1").value;	
+		navtext += document.getElementById("navtext").value;
+		
+		if (name.length>0 && link.length>0 && navtext.length>0) {
+			document.forms.NEU1.WEITER.disabled = false;
+		}
+		else {
+			document.forms.NEU1.WEITER.disabled = true;
+		}
+	} 
+	else {
+		name += document.getElementById("name2").value;
+		link += document.getElementById("neulink2").value;	
+		
+		if (name.length>0 && link.length>0) {
+			document.forms.NEU2.WEITER.disabled = false;
+		}
+		else {
+			document.forms.NEU2.WEITER.disabled = true;
+		}	
+	}
+	
+	return true;	
+} 	 
 //-->
 </script>
 
@@ -186,17 +229,17 @@ function copySelection() {
             <td class=formular>]]><LABEL value="input.linkto" /><![CDATA[:</td>
             
             <td class=dialogtxt>
-                <input type="text" name="neulink2" class="textfeld3" size="31" />   
+                <input type="text" name="neulink2" class="textfeld3" size="31" onKeyup="checkValues()" />   
             </td>
             <td class=formular><a href="javascript:treewin=opensmallwin('folder_tree.html?foldertree=/&formname=NEU2&variable=neulink2&onlineselect=yes&viewfile=yes', 'explorer_viewer', 150, 300),treewin.focus();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
     </tr>    
     <tr>
         	<td class=formular width=35%>]]><LABEL value="input.name" /><![CDATA[:</td>
-        	<td colspan=2 class=dialogtxt> ]]><INPUTFIELD name="name2" class="textfeld3" size="31" length="40" method="setValue" action="onfocus='NEU2.WEITER.disabled=false;'"/><![CDATA[</td>
+        	<td colspan=2 class=dialogtxt> ]]><INPUTFIELD name="name2" class="textfeld3" size="31" length="40" method="setValue" action="onKeyup='checkValues()'"/><![CDATA[</td>
     </tr>
     <tr>
-            <td class="dialogtxt"><input type="checkbox" onClick="javascript:switchLayer2(this);" >&nbsp;&nbsp;]]><LABEL value="input.addtonav" /><![CDATA[</td>
-			<td colspan="2" class="dialogtxt"><INPUT type="checkbox" id="keepproperties2" name="keepproperties2" checked>&nbsp;&nbsp;]]><LABEL value="input.keepproperties" /><![CDATA[</td>            
+            <td class="dialogtxt"><input type="checkbox" name="addtonav2" onClick="javascript:switchLayer2(this);" >&nbsp;&nbsp;]]><LABEL value="input.addtonav" /><![CDATA[</td>
+			<td colspan="2" class="dialogtxt"><INPUT type="checkbox" id="keepproperties2" name="keepproperties2" >&nbsp;&nbsp;]]><LABEL value="input.keepproperties" /><![CDATA[</td>            
     </tr>
     <tr>
             <td class=formular>
@@ -257,10 +300,10 @@ function copySelection() {
     </tr>    
     <tr>
         	<td class=formular width=35%>]]><LABEL value="input.name" /><![CDATA[:</td>
-        	<td colspan=2 class=dialogtxt> ]]><INPUTFIELD name="name1" class="textfeld3" size="31" length="40" method="setValue" action="onfocus='NEU1.WEITER.disabled=false;'"/><![CDATA[</td>
+        	<td colspan=2 class=dialogtxt> ]]><INPUTFIELD name="name1" class="textfeld3" size="31" length="40" method="setValue" action="onKeyup='checkValues()'"/><![CDATA[</td>
     </tr>
     <tr>
-            <td class="dialogtxt"><input type="checkbox" onClick="javascript:switchLayer1(this);" checked>&nbsp;&nbsp;]]><LABEL value="input.addtonav" /><![CDATA[</td>
+            <td class="dialogtxt"><input type="checkbox" name="addtonav1" onClick="javascript:switchLayer1(this);" checked>&nbsp;&nbsp;]]><LABEL value="input.addtonav" /><![CDATA[</td>
 			<td colspan="2" class="dialogtxt"><INPUT type="checkbox" id="keepproperties1" name="keepproperties1">&nbsp;&nbsp;]]><LABEL value="input.keepproperties" /><![CDATA[</td>            
     </tr>
     <tr>
@@ -268,7 +311,7 @@ function copySelection() {
                 ]]><LABEL value="input.navtitle" /><![CDATA[:
             </td>
             <td colspan=2 class=dialogtxt>
-                ]]><INPUTFIELD name="navtext" class="textfeld3" size="31" length="100"  /><![CDATA[
+                ]]><INPUTFIELD name="navtext" class="textfeld3" size="31" length="100" action="onKeyup='checkValues()'" /><![CDATA[
             </td>
     </tr>
     <tr>

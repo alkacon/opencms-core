@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2002/10/23 17:40:05 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2002/10/24 13:59:33 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,13 +41,14 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.24 $ $Date: 2002/10/23 17:40:05 $
+ * @version $Revision: 1.25 $ $Date: 2002/10/24 13:59:33 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
     
     private static final String C_PARA_KEEP_PROPERTIES = "keepproperties";
-    private static final int DEBUG = 0;
+    private static final String C_PARA_ADD_TO_NAV = "addtonav";
+    private static final int DEBUG = 1;
 
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
@@ -128,7 +129,25 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         
         String dummy = (String)parameters.get(CmsNewResourceLink.C_PARA_KEEP_PROPERTIES);
         if (DEBUG>0) System.out.println( "parameter " + CmsNewResourceLink.C_PARA_KEEP_PROPERTIES + ": " + dummy );
-        boolean keepTargetProperties = dummy!=null ? dummy.trim().equalsIgnoreCase("true") : false;
+        boolean keepTargetProperties = false;
+        if (dummy!=null) {
+        	session.putValue(CmsNewResourceLink.C_PARA_KEEP_PROPERTIES, dummy);
+        }
+        else {
+        	dummy = (String)session.getValue(CmsNewResourceLink.C_PARA_KEEP_PROPERTIES)!=null?(String)session.getValue(CmsNewResourceLink.C_PARA_KEEP_PROPERTIES):"true";
+        }
+		keepTargetProperties = dummy.trim().equalsIgnoreCase("true");
+        
+        dummy = (String)parameters.get(CmsNewResourceLink.C_PARA_ADD_TO_NAV);
+        if (DEBUG>0) System.out.println( "parameter " + CmsNewResourceLink.C_PARA_ADD_TO_NAV + ": " + dummy );
+        boolean addToNav = false;
+        if (dummy!=null) {
+        	session.putValue(CmsNewResourceLink.C_PARA_ADD_TO_NAV, dummy);
+        }
+        else {
+        	dummy = (String)session.getValue(CmsNewResourceLink.C_PARA_ADD_TO_NAV)!=null?(String)session.getValue(CmsNewResourceLink.C_PARA_ADD_TO_NAV):"false";
+        }
+		addToNav = dummy.trim().equalsIgnoreCase("true");        
         
         String notChange = (String)parameters.get("newlink");
         
@@ -140,6 +159,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         xmlTemplateDocument.setData("LINKVALUE", link);
         xmlTemplateDocument.setData("NAVTITLE", navtitle);
         xmlTemplateDocument.setData("KEEPPROPERTIES", keepTargetProperties==true ? "true" : "false" );
+        xmlTemplateDocument.setData("ADDTONAV", addToNav==true ? "true" : "false" );
 
         // if an existing link should be edited show the change page
         if(notChange != null && notChange.equals("false") && step == null) {
