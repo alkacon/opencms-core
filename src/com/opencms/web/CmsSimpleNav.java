@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsSimpleNav.java,v $
- * Date   : $Date: 2000/02/17 18:41:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/02/19 10:15:18 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * used for the CeBIT online application form.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/02/17 18:41:16 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/19 10:15:18 $
  */
 public class CmsSimpleNav extends CmsXmlTemplate implements I_CmsConstants {
     
@@ -147,10 +147,6 @@ public class CmsSimpleNav extends CmsXmlTemplate implements I_CmsConstants {
                 
             }            
         }                        
-        
-        result.append(xmlTemplateDocument.getCurrentNavEntry("Titel alleine"));
-        result.append(xmlTemplateDocument.getOtherNavEntry("newlink", "Title mit Link"));
-                
         return result.toString().getBytes();            
     }        
 }
