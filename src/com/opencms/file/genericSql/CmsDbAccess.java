@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/09 15:19:09 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2000/06/09 15:50:22 $
+ * Version: $Revision: 1.52 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,9 +48,9 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.51 $ $Date: 2000/06/09 15:19:09 $ * 
+ * @version $Revision: 1.52 $ $Date: 2000/06/09 15:50:22 $ * 
  */
-public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
+public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
 	/**
 	 * The maximum amount of tables.
@@ -3173,6 +3173,99 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         return folder;
     }
 	
+	 /**
+	 * Writes the fileheader to the Cms.
+     * 
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param filename The complete name of the new file (including pathinformation).
+	 * @param changed Flag indicating if the file state must be set to changed.
+	 *
+     * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void writeFileHeader(CmsProject project,
+                                 CmsProject onlineProject,
+                                 CmsFile file,boolean changed)
+         throws CmsException {
+         
+           ResultSet res;
+           ResultSet tmpres;
+           byte[] content;
+           PreparedStatement statementFileRead = null;  
+           PreparedStatement statementResourceUpdate = null;
+           try {  
+                // check if the file content for this file is already existing in the
+                // offline project. If not, load it from the online project and add it
+                // to the offline project.
+                  
+               if ((file.getState() == C_STATE_UNCHANGED) && (changed == true) ) {
+                    // read file content form the online project
+                    statementFileRead = m_pool.getPreparedStatement(C_FILE_READ_KEY);
+                    statementFileRead.setInt(1,file.getFileId());     
+                    res = statementFileRead.executeQuery();
+                    if (res.next()) {
+                       content=res.getBytes(C_FILE_CONTENT);
+                    } else {
+                        throw new CmsException("["+this.getClass().getName()+"]"+file.getAbsolutePath(),CmsException.C_NOT_FOUND);  
+                    }
+                    res.close();
+                    // add the file content to the offline project.
+					PreparedStatement statementFileWrite = null; 
+                    try {
+						file.setFileId(nextId(C_TABLE_FILES));
+                        statementFileWrite = m_pool.getPreparedStatement(C_FILES_WRITE_KEY);
+                        statementFileWrite.setInt(1,file.getFileId());     
+                        statementFileWrite.setBytes(2,content);
+                        statementFileWrite.executeUpdate();
+                     } catch (SQLException se) {
+                        if(A_OpenCms.isLogging()) {
+                            A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsAccessFileMySql] " + se.getMessage());
+                            se.printStackTrace();
+                            }                            
+                        }finally {
+							if( statementFileWrite != null) {
+								m_pool.putPreparedStatement(C_FILES_WRITE_KEY, statementFileWrite);
+							}
+						} 
+                }             
+                // update resource in the database
+                statementResourceUpdate = m_pool.getPreparedStatement(C_RESOURCES_UPDATE_KEY);
+                statementResourceUpdate.setInt(1,file.getType());
+                statementResourceUpdate.setInt(2,file.getFlags());
+                statementResourceUpdate.setInt(3,file.getOwnerId());
+                statementResourceUpdate.setInt(4,file.getGroupId());
+                statementResourceUpdate.setInt(5,file.getProjectId());
+                statementResourceUpdate.setInt(6,file.getAccessFlags());
+                //STATE       
+                int state=file.getState();
+                if ((state == C_STATE_NEW) || (state == C_STATE_CHANGED)) {
+                    statementResourceUpdate.setInt(7,state);
+                } else {                                                                       
+                    if (changed==true) {
+                        statementResourceUpdate.setInt(7,C_STATE_CHANGED);
+                    } else {
+                        statementResourceUpdate.setInt(7,file.getState());
+                    }
+                }
+                statementResourceUpdate.setInt(8,file.isLockedBy());
+                statementResourceUpdate.setInt(9,file.getLauncherType());
+                statementResourceUpdate.setString(10,file.getLauncherClassname());
+                statementResourceUpdate.setTimestamp(11,new Timestamp(System.currentTimeMillis()));
+                statementResourceUpdate.setInt(12,file.getResourceLastModifiedBy());
+                statementResourceUpdate.setInt(13,file.getLength());
+                statementResourceUpdate.setInt(14,file.getResourceId());
+                statementResourceUpdate.executeUpdate();    
+                } catch (SQLException e){
+					throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+				}finally {
+				if( statementFileRead != null) {
+					m_pool.putPreparedStatement(C_FILE_READ_KEY, statementFileRead);
+				}
+				if( statementResourceUpdate != null) {
+					m_pool.putPreparedStatement(C_RESOURCES_UPDATE_KEY, statementResourceUpdate);
+				}
+			 }	 
+     }
 
 
      /**
