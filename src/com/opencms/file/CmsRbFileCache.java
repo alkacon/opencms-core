@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFileCache.java,v $
- * Date   : $Date: 2000/03/28 08:12:55 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/03/28 09:04:58 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/03/28 08:12:55 $
+ * @version $Revision: 1.11 $ $Date: 2000/03/28 09:04:58 $
  */
  class CmsRbFileCache extends CmsRbFile {
      
@@ -275,7 +275,6 @@ import com.opencms.core.*;
 	public CmsFolder readFolder(A_CmsProject project, String folder)
 		throws CmsException{
          CmsFolder res=null;
-         System.err.println("Read from cache "+folder);
          String key=C_FOLDER+project.getId()+folder;
          // try to read folder from cache
          res=(CmsFolder)m_filecache.get(key);
