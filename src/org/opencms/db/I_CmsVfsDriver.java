@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/04 15:00:33 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2003/09/05 08:24:00 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.46 $ $Date: 2003/09/04 15:00:33 $
+ * @version $Revision: 1.47 $ $Date: 2003/09/05 08:24:00 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -319,18 +319,27 @@ public interface I_CmsVfsDriver {
      * 
      * @throws Throwable if something goes wrong
      */      
-    void destroy() throws Throwable;
-    
+    void destroy() throws Throwable;   
     
     /**
-     * Tests if a resource with the given resourceId does already exist in the Database.<p>
+     * Tests if a resource with the given resourceId does already exist in the database.<p>
      * 
      * @param projectId the project id
      * @param resourceId the resource id to test for
      * @return true if a resource with the given id was found, false otherweise
      * @throws CmsException if something goes wrong
      */
-    boolean existsResourceId (int projectId, CmsUUID resourceId) throws CmsException;    
+    boolean existsResourceId(int projectId, CmsUUID resourceId) throws CmsException;  
+    
+    /**
+     * Proves if the specified structure ID in the tables of the specified project {offline|online} exists.<p>
+     * 
+     * @param projectId the ID of current project
+     * @param structureId
+     * @return true, if the specified structure ID in the tables of the specified project {offline|online} exists
+     * @throws CmsException if something goes wrong
+     */   
+    boolean existsStructureId(int projectId, CmsUUID structureId) throws CmsException;      
     
     /**
      * Returns the date of the last modification of a resource.<p>
