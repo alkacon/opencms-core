@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/10/03 13:12:25 $
- * Version: $Revision: 1.126 $
+ * Date   : $Date: 2000/10/04 14:17:08 $
+ * Version: $Revision: 1.127 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.126 $ $Date: 2000/10/03 13:12:25 $ 
+ * @version $Revision: 1.127 $ $Date: 2000/10/04 14:17:08 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -67,18 +67,6 @@ public class CmsObject implements I_CmsConstants {
 	 */
 	private CmsCoreSession m_sessionStorage = null;
 
-	/**
-	 * The default constructor.
-	 */
-	public CmsObject () {
-	}
-/**
- * Constructor 
- * @param storage The reference to the session storage.
- */
-public CmsObject(CmsCoreSession storage) {
-	m_sessionStorage = storage;
-}
 /**
  * Accept a task from the Cms.
  * 
@@ -731,17 +719,6 @@ public void deleteProject(int id) throws CmsException {
 	m_rb.deleteProject(m_context.currentUser(), m_context.currentProject(), id);
 }
 /**
- * Deletes a property for a file or folder.
- * 
- * @param resourcename the name of a resource for which the property should be deleted.
- * @param property the name of the property. 
- * 
- * @exception CmsException Throws if operation was not successful.
- */
-public void deleteProperty(String resourcename, String property) throws CmsException {
-	m_rb.deleteProperty(m_context.currentUser(), m_context.currentProject(), resourcename, property);
-}
-/**
  * Deletes the property-definition for a resource type.
  * 
  * @param name the name of the property-definition to delete.
@@ -751,6 +728,17 @@ public void deleteProperty(String resourcename, String property) throws CmsExcep
  */
 public void deletePropertydefinition(String name, String resourcetype) throws CmsException {
 	m_rb.deletePropertydefinition(m_context.currentUser(), m_context.currentProject(), name, resourcetype);
+}
+/**
+ * Deletes a property for a file or folder.
+ * 
+ * @param resourcename the name of a resource for which the property should be deleted.
+ * @param property the name of the property. 
+ * 
+ * @exception CmsException Throws if operation was not successful.
+ */
+public void deleteProperty(String resourcename, String property) throws CmsException {
+	m_rb.deleteProperty(m_context.currentUser(), m_context.currentProject(), resourcename, property);
 }
 /**
  * Marks a site deleted
@@ -917,13 +905,27 @@ public Hashtable getAllResourceTypes() throws CmsException {
 	return (m_rb.getAllResourceTypes(m_context.currentUser(), m_context.currentProject()));
 }
 /**
- * Returns all site urls
- * @return java.util.Vector site urls
- * @exception com.opencms.core.CmsException The exception description.
+ * Returns a vector containing all sites with the specified category id.
+ *
+ * @author Jesper Holme
+ * @author Jan Krag
+ *
+ * @return vector containing all sites with specified category-id
+ * @exception CmsException if operation was not successful.
  */
-public Vector getAllSiteUrls() throws com.opencms.core.CmsException
+public Vector getAllSitesInCategory(int category) throws CmsException
 {
-	return m_rb.getAllSiteUrls(m_context.currentUser(), m_context.currentProject());
+	Enumeration sites = m_rb.getAllSites(m_context.currentUser(), m_context.currentProject()).elements();
+	Vector filteredSites = new Vector();
+	while (sites.hasMoreElements())
+	{
+		CmsSite site = (CmsSite) sites.nextElement();
+		if (site.getCategoryId() == category)
+		{
+			filteredSites.addElement(site);
+		}
+	}
+	return filteredSites;
 }
 /**
  * Returns a vector containing all sites of the current project.
@@ -933,6 +935,15 @@ public Vector getAllSiteUrls() throws com.opencms.core.CmsException
  */
 public Vector getAllSites() throws CmsException {
 	return m_rb.getAllSites(m_context.currentUser(), m_context.currentProject());
+}
+/**
+ * Returns all site urls
+ * @return java.util.Vector site urls
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public Vector getAllSiteUrls() throws com.opencms.core.CmsException
+{
+	return m_rb.getAllSiteUrls(m_context.currentUser(), m_context.currentProject());
 }
 /**
 * Gets information about the cache size.
@@ -1026,17 +1037,6 @@ public Vector getDirectGroupsOfUser(String username) throws CmsException {
 	return (m_rb.getDirectGroupsOfUser(m_context.currentUser(), m_context.currentProject(), username));
 }
 /**
- * This method can be called, to determine if the file-system was changed in the past.
- * <br>
- * A module can compare its previously stored number with the returned number. 
- * If they differ, the file system has been changed.
- * 
- * @return the number of file-system-changes.
- */
-public long getFileSystemChanges() {
-	return (m_rb.getFileSystemChanges(m_context.currentUser(), m_context.currentProject()));
-}
-/**
  * Returns a Vector with all files of a given folder.
  * <br>
  * Files of a folder can be read from an offline Project and the online Project.
@@ -1062,6 +1062,17 @@ public Vector getFilesInFolder(String foldername) throws CmsException {
  */
 public Vector getFilesWithProperty(String propertyDefinition, String propertyValue) throws CmsException {
 	return m_rb.getFilesWithProperty(m_context.currentUser(), m_context.currentProject(), propertyDefinition, propertyValue);
+}
+/**
+ * This method can be called, to determine if the file-system was changed in the past.
+ * <br>
+ * A module can compare its previously stored number with the returned number. 
+ * If they differ, the file system has been changed.
+ * 
+ * @return the number of file-system-changes.
+ */
+public long getFileSystemChanges() {
+	return (m_rb.getFileSystemChanges(m_context.currentUser(), m_context.currentProject()));
 }
 /**
  * Returns all groups in the Cms.
@@ -1162,19 +1173,30 @@ public CmsCoreSession getSessionStorage() {
  */
 
 
-public CmsSite getSite(int projectId) throws CmsException {
-	return m_rb.getSite(m_context.currentUser(), m_context.currentProject(), projectId);
+public CmsSite getSiteBySiteId(int siteId) throws CmsException {
+	return m_rb.getSiteBySiteId(m_context.currentUser(), m_context.currentProject(), siteId);
 }
 /**
- * Get the site based on the name of the site.
+ * Get the site based on the url
  *
  * @return com.opencms.file.CmsSite the site found.
- * @param url java.lang.String the name of the site to find.
+ * @param url java.lang.StringBuffer the Url on wn which the lookup should be based.
  * @exception com.opencms.core.CmsException if an error occurs. The CmsException should be specialized.
  */
+public CmsSite getSiteFromUrl(StringBuffer url) throws com.opencms.core.CmsException
+{
+	return m_rb.getSiteFromUrl(m_context.currentUser(),m_context.currentProject(),url);
+}
+/**
+ * Return the online site of the project (the base project)
+ * @return com.opencms.file.CmsSite the site for the project.
+ * @param projectId int the project to be used in the lookup.
+ * @throws CmsException If any error occured when looking up the site.
+ */
 
-public CmsSite getSite(String siteName) throws CmsException {
-	return m_rb.getSite(m_context.currentUser(), m_context.currentProject(), siteName);
+
+public CmsSite getSite(int projectId) throws CmsException {
+	return m_rb.getSite(m_context.currentUser(), m_context.currentProject(), projectId);
 }
 /**
  * Get the site based on the url
@@ -1200,26 +1222,15 @@ public CmsSite getSite(StringBuffer url) throws com.opencms.core.CmsException
 	return getSite(host);
 }
 /**
- * Return the online site of the project (the base project)
- * @return com.opencms.file.CmsSite the site for the project.
- * @param projectId int the project to be used in the lookup.
- * @throws CmsException If any error occured when looking up the site.
- */
-
-
-public CmsSite getSiteBySiteId(int siteId) throws CmsException {
-	return m_rb.getSiteBySiteId(m_context.currentUser(), m_context.currentProject(), siteId);
-}
-/**
- * Get the site based on the url
+ * Get the site based on the name of the site.
  *
  * @return com.opencms.file.CmsSite the site found.
- * @param url java.lang.StringBuffer the Url on wn which the lookup should be based.
+ * @param url java.lang.String the name of the site to find.
  * @exception com.opencms.core.CmsException if an error occurs. The CmsException should be specialized.
  */
-public CmsSite getSiteFromUrl(StringBuffer url) throws com.opencms.core.CmsException
-{
-	return m_rb.getSiteFromUrl(m_context.currentUser(),m_context.currentProject(),url);
+
+public CmsSite getSite(String siteName) throws CmsException {
+	return m_rb.getSite(m_context.currentUser(), m_context.currentProject(), siteName);
 }
 /**
  * Returns a vector containing all sites of the current project.
@@ -1278,16 +1289,6 @@ public int getTaskType(String taskname) throws CmsException {
 	return m_rb.getTaskType(taskname);
 }
 /**
- * Returns all users in the Cms.
- *  
- * @return a Vector of all users in the Cms.
- * 
- * @exception CmsException if operation was not successful.
- */
-public Vector getUsers() throws CmsException {
-	return (m_rb.getUsers(m_context.currentUser(), m_context.currentProject()));
-}
-/**
  * Returns all users of the given type in the Cms.
  * 
  * @param type the type of the users.
@@ -1298,6 +1299,16 @@ public Vector getUsers() throws CmsException {
  */
 public Vector getUsers(int type) throws CmsException {
 	return (m_rb.getUsers(m_context.currentUser(), m_context.currentProject(), type));
+}
+/**
+ * Returns all users in the Cms.
+ *  
+ * @return a Vector of all users in the Cms.
+ * 
+ * @exception CmsException if operation was not successful.
+ */
+public Vector getUsers() throws CmsException {
+	return (m_rb.getUsers(m_context.currentUser(), m_context.currentProject()));
 }
 /**
  * Gets all users of a group.
@@ -1339,16 +1350,6 @@ public void importResources(String importFile, String importPath) throws CmsExce
 	clearcache();
 }
 /**
- * Initializes the CmsObject without a request-context (current-user, 
- * current-group, current-project).
- * 
- * @param broker the resourcebroker to access the database.
- * @exception CmsException if operation was not successful.
- */
-public void init(I_CmsResourceBroker broker) throws CmsException {
-	m_rb = broker;
-}
-/**
  * Initializes the CmsObject for each request.
  * 
  * @param broker the resourcebroker to access the database.
@@ -1366,6 +1367,16 @@ public void init(I_CmsResourceBroker broker, I_CmsRequest req, I_CmsResponse res
 	m_context.init(m_rb, req, resp, user, currentGroup, currentProjectId);
 }
 /**
+ * Initializes the CmsObject without a request-context (current-user, 
+ * current-group, current-project).
+ * 
+ * @param broker the resourcebroker to access the database.
+ * @exception CmsException if operation was not successful.
+ */
+public void init(I_CmsResourceBroker broker) throws CmsException {
+	m_rb = broker;
+}
+/**
  * Checks, if the users current group is the admin-group.
  * 
  * 
@@ -1374,6 +1385,43 @@ public void init(I_CmsResourceBroker broker, I_CmsRequest req, I_CmsResponse res
  */
 public boolean isAdmin() throws CmsException {
 	return m_rb.isAdmin(getRequestContext().currentUser(), getRequestContext().currentProject());
+}
+/**
+ * Constructor 
+ * @param storage The reference to the session storage.
+ */
+public CmsObject(CmsCoreSession storage) {
+	m_sessionStorage = storage;
+}
+/**
+ * Returns the user, who has locked a given resource.
+ * <br>
+ * A user can lock a resource, so he is the only one who can write this 
+ * resource. This methods checks, who has locked a resource.
+ * 
+ * @param resource the resource to check.
+ * 
+ * @return the user who has locked the resource.
+ * 
+ * @exception CmsException if operation was not successful.
+ */
+public CmsUser lockedBy(CmsResource resource) throws CmsException {
+	return (m_rb.lockedBy(m_context.currentUser(), m_context.currentProject(), resource));
+}
+/**
+ 	* Returns the user, who has locked a given resource.
+ 	* <br>
+ 	* A user can lock a resource, so he is the only one who can write this 
+ 	* resource. This methods checks, who has locked a resource.
+ 	* 
+ 	* @param resource The complete path to the resource.
+ 	* 
+ 	* @return the user who has locked a resource.
+ 	* 
+ 	* @exception CmsException if operation was not successful.
+ 	*/
+public CmsUser lockedBy(String resource) throws CmsException {
+	return (m_rb.lockedBy(m_context.currentUser(), m_context.currentProject(), resource));
 }
 /**
  * Locks the given resource.
@@ -1405,36 +1453,6 @@ public void lockResource(String resource) throws CmsException {
  */
 public void lockResource(String resource, boolean force) throws CmsException {
 	m_rb.lockResource(m_context.currentUser(), m_context.currentProject(), resource, force);
-}
-/**
- * Returns the user, who has locked a given resource.
- * <br>
- * A user can lock a resource, so he is the only one who can write this 
- * resource. This methods checks, who has locked a resource.
- * 
- * @param resource the resource to check.
- * 
- * @return the user who has locked the resource.
- * 
- * @exception CmsException if operation was not successful.
- */
-public CmsUser lockedBy(CmsResource resource) throws CmsException {
-	return (m_rb.lockedBy(m_context.currentUser(), m_context.currentProject(), resource));
-}
-/**
- 	* Returns the user, who has locked a given resource.
- 	* <br>
- 	* A user can lock a resource, so he is the only one who can write this 
- 	* resource. This methods checks, who has locked a resource.
- 	* 
- 	* @param resource The complete path to the resource.
- 	* 
- 	* @return the user who has locked a resource.
- 	* 
- 	* @exception CmsException if operation was not successful.
- 	*/
-public CmsUser lockedBy(String resource) throws CmsException {
-	return (m_rb.lockedBy(m_context.currentUser(), m_context.currentProject(), resource));
 }
 /**
  * Logs a user into the Cms, if the password is correct.
@@ -1598,20 +1616,6 @@ public Vector readAllPropertydefinitions(int id, int type) throws CmsException {
 /**
  * Reads all property-definitions for the given resource type.
  * 
- * @param resourcetype the name of the resource type to read the 
- * property-definitions for.
- * 
- * @return a Vector with property-defenitions for the resource type.
- * The Vector may be empty.
- * 
- * @exception CmsException if operation was not successful.
- */
-public Vector readAllPropertydefinitions(String resourcetype) throws CmsException {
-	return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), resourcetype));
-}
-/**
- * Reads all property-definitions for the given resource type.
- * 
  * @param resourcetype The name of the resource type to read the 
  * property-definitions for.
  * @param type the type of the property-definition (normal|mandatory|optional).
@@ -1625,6 +1629,20 @@ public Vector readAllPropertydefinitions(String resourcetype, int type) throws C
 	return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), resourcetype, type));
 }
 /**
+ * Reads all property-definitions for the given resource type.
+ * 
+ * @param resourcetype the name of the resource type to read the 
+ * property-definitions for.
+ * 
+ * @return a Vector with property-defenitions for the resource type.
+ * The Vector may be empty.
+ * 
+ * @exception CmsException if operation was not successful.
+ */
+public Vector readAllPropertydefinitions(String resourcetype) throws CmsException {
+	return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), resourcetype));
+}
+/**
  * Reads the export-path of the system.
  * This path is used for db-export and db-import.
  * 
@@ -1633,33 +1651,6 @@ public Vector readAllPropertydefinitions(String resourcetype, int type) throws C
  */
 public String readExportPath() throws CmsException {
 	return m_rb.readExportPath(m_context.currentUser(), m_context.currentProject());
-}
-/**
- * Reads a file from the Cms.
- * 
- * @param filename the complete path to the file.
- * 
- * @return file the read file.
- * 
- * @exception CmsException if the user has not the rights to read this resource,
- * or if the file couldn't be read. 
- */
-public CmsFile readFile(String filename) throws CmsException {
-	return (m_rb.readFile(m_context.currentUser(), m_context.currentProject(), filename));
-}
-/**
- * Reads a file from the Cms.
- * 
- * @param folder the complete path to the folder from which the file will be read.
- * @param filename the name of the file to be read.
- * 
- * @return file the read file.
- * 
- * @exception CmsException , if the user has not the rights 
- * to read this resource, or if the file couldn't be read. 
- */
-public CmsFile readFile(String folder, String filename) throws CmsException {
-	return (m_rb.readFile(m_context.currentUser(), m_context.currentProject(), folder + filename));
 }
 /**
  * Gets the known file extensions (=suffixes). 
@@ -1715,6 +1706,33 @@ public CmsResource readFileHeader(String folder, String filename) throws CmsExce
  */
 public Vector readFileHeaders(int projectId) throws CmsException {
 	return (m_rb.readFileHeaders(m_context.currentUser(), m_context.currentProject(), projectId));
+}
+/**
+ * Reads a file from the Cms.
+ * 
+ * @param filename the complete path to the file.
+ * 
+ * @return file the read file.
+ * 
+ * @exception CmsException if the user has not the rights to read this resource,
+ * or if the file couldn't be read. 
+ */
+public CmsFile readFile(String filename) throws CmsException {
+	return (m_rb.readFile(m_context.currentUser(), m_context.currentProject(), filename));
+}
+/**
+ * Reads a file from the Cms.
+ * 
+ * @param folder the complete path to the folder from which the file will be read.
+ * @param filename the name of the file to be read.
+ * 
+ * @return file the read file.
+ * 
+ * @exception CmsException , if the user has not the rights 
+ * to read this resource, or if the file couldn't be read. 
+ */
+public CmsFile readFile(String folder, String filename) throws CmsException {
+	return (m_rb.readFile(m_context.currentUser(), m_context.currentProject(), folder + filename));
 }
 /**
  * Reads a folder from the Cms.
@@ -1912,6 +1930,18 @@ public Vector readProjectLogs(int projectId) throws CmsException {
 	return m_rb.readProjectLogs(m_context.currentUser(), m_context.currentProject(), projectId);
 }
 /**
+ * Reads the property-definition for the resource type.
+ * 
+ * @param name the name of the property-definition to read.
+ * @param resourcetype the name of the resource type for the property-definition.
+ * @return the property-definition.
+ * 
+ * @exception CmsException if operation was not successful.
+ */
+public CmsPropertydefinition readPropertydefinition(String name, String resourcetype) throws CmsException {
+	return (m_rb.readPropertydefinition(m_context.currentUser(), m_context.currentProject(), name, resourcetype));
+}
+/**
  * Returns a Property of a file or folder.
  * 
  * @param name the resource-name for which the property will be read.
@@ -1923,18 +1953,6 @@ public Vector readProjectLogs(int projectId) throws CmsException {
  */
 public String readProperty(String name, String property) throws CmsException {
 	return (m_rb.readProperty(m_context.currentUser(), m_context.currentProject(), name, property));
-}
-/**
- * Reads the property-definition for the resource type.
- * 
- * @param name the name of the property-definition to read.
- * @param resourcetype the name of the resource type for the property-definition.
- * @return the property-definition.
- * 
- * @exception CmsException if operation was not successful.
- */
-public CmsPropertydefinition readPropertydefinition(String name, String resourcetype) throws CmsException {
-	return (m_rb.readPropertydefinition(m_context.currentUser(), m_context.currentProject(), name, resourcetype));
 }
 /**
  * Reads the task with the given id.
@@ -2010,17 +2028,6 @@ public CmsUser readUser(int id) throws CmsException {
  * Returns a user in the Cms.
  * 
  * @param username the name of the user to be returned.
- * @return a user in the Cms.
- * 
- * @exception CmsException if operation was not successful
- */
-public CmsUser readUser(String username) throws CmsException {
-	return m_rb.readUser(m_context.currentUser(), m_context.currentProject(), username);
-}
-/**
- * Returns a user in the Cms.
- * 
- * @param username the name of the user to be returned.
  * @param type the type of the user.
  * @return a user in the Cms.
  * 
@@ -2028,6 +2035,17 @@ public CmsUser readUser(String username) throws CmsException {
  */
 public CmsUser readUser(String username, int type) throws CmsException {
 	return (m_rb.readUser(m_context.currentUser(), m_context.currentProject(), username, type));
+}
+/**
+ * Returns a user in the Cms.
+ * 
+ * @param username the name of the user to be returned.
+ * @return a user in the Cms.
+ * 
+ * @exception CmsException if operation was not successful
+ */
+public CmsUser readUser(String username) throws CmsException {
+	return m_rb.readUser(m_context.currentUser(), m_context.currentProject(), username);
 }
 /**
  * Returns a user in the Cms, if the password is correct.
@@ -2124,17 +2142,6 @@ public void setParentGroup(String groupName, String parentGroupName) throws CmsE
  * Sets the password for a user.
  * 
  * @param username the name of the user.
- * @param newPassword the new password.
- * 
- * @exception CmsException if operation was not successful.
- */
-public void setPassword(String username, String newPassword) throws CmsException {
-	m_rb.setPassword(m_context.currentUser(), m_context.currentProject(), username, newPassword);
-}
-/** 
- * Sets the password for a user.
- * 
- * @param username the name of the user.
  * @param oldPassword the old password.
  * @param newPassword the new password.
  * 
@@ -2142,6 +2149,17 @@ public void setPassword(String username, String newPassword) throws CmsException
  */
 public void setPassword(String username, String oldPassword, String newPassword) throws CmsException {
 	m_rb.setPassword(m_context.currentUser(), m_context.currentProject(), username, oldPassword, newPassword);
+}
+/** 
+ * Sets the password for a user.
+ * 
+ * @param username the name of the user.
+ * @param newPassword the new password.
+ * 
+ * @exception CmsException if operation was not successful.
+ */
+public void setPassword(String username, String newPassword) throws CmsException {
+	m_rb.setPassword(m_context.currentUser(), m_context.currentProject(), username, newPassword);
 }
 /**
  * Sets the priority of a task.
@@ -2246,6 +2264,11 @@ public void updateSite(int siteId, String name, String description, int category
 public boolean userInGroup(String username, String groupname) throws CmsException {
 	return (m_rb.userInGroup(m_context.currentUser(), m_context.currentProject(), username, groupname));
 }
+	/**
+	 * The default constructor.
+	 */
+	public CmsObject () {
+	}
 /**
  * Returns a String containing version information for this OpenCms.
  * 
@@ -2265,18 +2288,6 @@ public String version() {
  */
 public void writeExportPath(String path) throws CmsException {
 	m_rb.writeExportPath(m_context.currentUser(), m_context.currentProject(), path);
-}
-/**
- * Writes a file to the Cms.
- * 
- * @param file the file to write.
- * 
- * @exception CmsException if mandatory property-definitions for this resource are missing,
- * or if resourcetype is set to folder. The CmsException will also be thrown, 
- * if the user has not the rights write the file.
- */
-public void writeFile(CmsFile file) throws CmsException {
-	m_rb.writeFile(m_context.currentUser(), m_context.currentProject(), file);
 }
 /**
  * Writes the file extensions. 
@@ -2303,6 +2314,18 @@ public void writeFileHeader(CmsFile file) throws CmsException {
 	m_rb.writeFileHeader(m_context.currentUser(), m_context.currentProject(), file);
 }
 /**
+ * Writes a file to the Cms.
+ * 
+ * @param file the file to write.
+ * 
+ * @exception CmsException if mandatory property-definitions for this resource are missing,
+ * or if resourcetype is set to folder. The CmsException will also be thrown, 
+ * if the user has not the rights write the file.
+ */
+public void writeFile(CmsFile file) throws CmsException {
+	m_rb.writeFile(m_context.currentUser(), m_context.currentProject(), file);
+}
+/**
  * Writes an already existing group to the Cms.
  * 
  * @param group the group that should be written to the Cms.
@@ -2323,6 +2346,16 @@ public void writeProperties(String name, Hashtable properties) throws CmsExcepti
 	m_rb.writeProperties(m_context.currentUser(), m_context.currentProject(), name, properties);
 }
 /**
+ * Writes the property-definition for the resource type.
+ * 
+ * @param propertydef the property-definition to be written.
+ * 
+ * @exception CmsException if operation was not successful.
+ */
+public CmsPropertydefinition writePropertydefinition(CmsPropertydefinition definition) throws CmsException {
+	return (m_rb.writePropertydefinition(m_context.currentUser(), m_context.currentProject(), definition));
+}
+/**
  * Writes a property for a file or folder.
  * 
  * @param name the resource-name for which the property will be set.
@@ -2335,14 +2368,16 @@ public void writeProperty(String name, String property, String value) throws Cms
 	m_rb.writeProperty(m_context.currentUser(), m_context.currentProject(), name, property, value);
 }
 /**
- * Writes the property-definition for the resource type.
+ * Writes a new user tasklog for a task.
  * 
- * @param propertydef the property-definition to be written.
+ * @param taskid the Id of the task .
+ * @param comment the description for the log
+ * @param tasktype the type of the tasklog. User tasktypes must be greater than 100.
  * 
  * @exception CmsException if operation was not successful.
  */
-public CmsPropertydefinition writePropertydefinition(CmsPropertydefinition definition) throws CmsException {
-	return (m_rb.writePropertydefinition(m_context.currentUser(), m_context.currentProject(), definition));
+public void writeTaskLog(int taskid, String comment, int taskType) throws CmsException {
+	m_rb.writeTaskLog(m_context.currentUser(), m_context.currentProject(), taskid, comment, taskType);
 }
 /**
  * Writes a new user tasklog for a task.
@@ -2354,18 +2389,6 @@ public CmsPropertydefinition writePropertydefinition(CmsPropertydefinition defin
  */
 public void writeTaskLog(int taskid, String comment) throws CmsException {
 	m_rb.writeTaskLog(m_context.currentUser(), m_context.currentProject(), taskid, comment);
-}
-/**
- * Writes a new user tasklog for a task.
- * 
- * @param taskid the Id of the task .
- * @param comment the description for the log
- * @param tasktype the type of the tasklog. User tasktypes must be greater than 100.
- * 
- * @exception CmsException if operation was not successful.
- */
-public void writeTaskLog(int taskid, String comment, int taskType) throws CmsException {
-	m_rb.writeTaskLog(m_context.currentUser(), m_context.currentProject(), taskid, comment, taskType);
 }
 /**
  * Updates the user information.
