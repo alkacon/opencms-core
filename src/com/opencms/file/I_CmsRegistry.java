@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
-* Date   : $Date: 2002/10/11 15:12:31 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2002/12/12 18:55:21 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,13 +30,14 @@ package com.opencms.file;
 
 import java.util.*;
 import com.opencms.core.*;
+import com.opencms.report.I_CmsReport;
 
 /**
  * This interface describes the registry for OpenCms.
  *
  * @author Andreas Schouten
  * @author Thomas Weckert
- * @version $Revision: 1.31 $ $Date: 2002/10/11 15:12:31 $
+ * @version $Revision: 1.32 $ $Date: 2002/12/12 18:55:21 $
  *
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -103,7 +104,7 @@ public void deleteGetConflictingFileNames(String modulename, Vector filesWithPro
  *  @param module-name the name of the module that should be deleted.
  *  @param exclusion a Vector with resource-names that should be excluded from this deletion.
  */
-public void deleteModule(String module, Vector exclusion) throws CmsException;
+public void deleteModule(String module, Vector exclusion, I_CmsReport report) throws CmsException;
 /**
  * Deletes the view for a module.
  *
@@ -117,7 +118,7 @@ public void deleteModuleView(String modulename) throws CmsException;
  * @param String[] an array of resources to be exported.
  * @param fileName the name of the file to write the export to.
  */
-public void exportModule(String moduleName, String[] resources, String fileName) throws CmsException;
+public void exportModule(String moduleName, String[] resources, String fileName, I_CmsReport report) throws CmsException;
 /**
  * This method returns the author of the module.
  *
@@ -570,7 +571,7 @@ public Vector importGetResourcesForProject(String moduleZip) throws CmsException
  *  @param moduleZip the name of the zip-file to import from.
  *  @param exclusion a Vector with resource-names that should be excluded from this import.
  */
-public void importModule(String moduleZip, Vector exclusion) throws CmsException;
+public void importModule(String moduleZip, Vector exclusion, I_CmsReport report) throws CmsException;
 /**
  * Checks if the module exists already in the repository.
  *
