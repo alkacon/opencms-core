@@ -44,7 +44,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2000/02/14 18:42:40 $
+ * @version $Revision: 1.13 $ $Date: 2000/02/15 13:08:30 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -1409,8 +1409,22 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      * @param data DOM element node for this datablock.
      */
     private void insertNewDatablock(String tag, Element data) {
+        // First check, if this is an extended datablock
+        // in <NAME1 name="name2>... format, that has to be inserted
+        // as name1.name2
+        String nameAttr = data.getAttribute("name");
+        String workTag = null;
+        if((!data.getNodeName().toLowerCase().equals("data")) && 
+                nameAttr != null && (!"".equals(nameAttr))) {
+            // this is an extended datablock
+            workTag = tag.substring(0, tag.lastIndexOf("."));
+        } else {
+            workTag = tag;
+        }
+        
+        
         // Check, if this is a simple datablock without hierarchy.
-        if(tag.indexOf(".") == -1) {
+        if(workTag.indexOf(".") == -1) {
             // Fine. We can insert the new Datablock at the of the document
             m_content.getDocumentElement().appendChild(parser.importNode(m_content, data));
             m_blocks.put(tag, parser.importNode(m_content, data));
@@ -1418,12 +1432,11 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             // This is a hierachical datablock tag. We have to search for
             // an appropriate place to insert first.
             boolean found = false;
-            String match = "." + tag;
-            String oldMatch = match;
+            String match = "." + workTag;
             int dotIndex = match.lastIndexOf(".");
             Vector newBlocks = new Vector();
             
-            while((!found) && (dotIndex != -1)) {
+            while((!found) && (dotIndex > 1)) {
                 match = match.substring(0, dotIndex);
                 if(hasData(match.substring(1))) {
                     found = true;
