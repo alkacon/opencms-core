@@ -37,7 +37,7 @@
             <indentout>Riduci rientro</indentout>
             <italic>Italico</italic>
             <linkto>Collegamento</linkto>
-			<linkinternal>Collegamento Interno</linkinternal>
+            <linkinternal>Collegamento Interno</linkinternal>
             <linklist>Galleria di link esterni</linklist>
             <login>Login</login>
             <new>Nuovo</new>
@@ -113,7 +113,7 @@
                 <filename>Nome del file di esportazione</filename>
                 <files>files esistenti</files>
                 <titleexport>Esporta Database</titleexport>
-				<titleexportmoduledata>Esporta dati del Modulo</titleexportmoduledata>
+                <titleexportmoduledata>Esporta dati del Modulo</titleexportmoduledata>
                 <titleimport>Importa Database</titleimport>
             </label>
         </database>
@@ -144,7 +144,7 @@
                 <badcharacter>carattere non valido : </badcharacter>
                 <chgrp>Spiacente, il gruppo non ha potuto essere modificato.</chgrp>
                 <chmod>Spiacente, i permessi non hanno potuto essere modificati.</chmod>
-				<chnav>Spiacente, la posizione non ha potuto essere cambiata.</chnav>
+                <chnav>Spiacente, la posizione non ha potuto essere cambiata.</chnav>
                 <chown>Spiacente, il proprietario non ha potuto essere modificato.</chown>
                 <chpwd>Spiacente, la password non ha potuto essere modificata.</chpwd>
                 <chtype>Spiacente, il tipo di file non ha potuto essere modificato.</chtype>
@@ -158,7 +158,7 @@
                 <deletegroup>Spiacente, il gruppo non ha potuto essere cancellato.</deletegroup>
                 <downbrowser>Spiacente, non puoi usare la ricerca download.</downbrowser>
                 <editorsave>Spiacente, il file non ha potuto essere salvato.</editorsave>
-				<foldercreate>Spiacente, la nuova cartella non ha potuto essere creata.</foldercreate>
+                <foldercreate>Spiacente, la nuova cartella non ha potuto essere creata.</foldercreate>
                 <gallerynoright>Spiacente, la nuova galleria non ha potuto essere creata.</gallerynoright>
                 <changeuser>Spiacente, i dati dell'utente non hanno potuto essere modificati.</changeuser>
                 <adduser>Spiacente, l'utente non ha potuto essere creato.</adduser>
@@ -194,10 +194,10 @@
                 <accessdenied>O non hai i diritti di accesso per l'operazione selezionata o la cartella è bloccata.</accessdenied>
                 <addgroup>Il nome del gruppo deve essere inserito.</addgroup>
                 <channelsmissing>Per favore seleziona almeno un canale.</channelsmissing>
-				<chgrp>Non hai i permessi necessari.</chgrp>
+                <chgrp>Non hai i permessi necessari.</chgrp>
                 <chmod>Non hai i permessi necessari.</chmod>
                 <chnav>Forse non hai i permessi necessari.</chnav>
-				<chown>Non hai i permessi necessari.</chown>
+                <chown>Non hai i permessi necessari.</chown>
                 <chpwd>Le password non corrispondono.</chpwd>
                 <chpwd2>La vecchia password non è corretta.</chpwd2>
                 <chpwd3>La password deve avere almeno 4 caratteri.</chpwd3>
@@ -214,7 +214,7 @@
                 <downbrowser>La cartella per le gallerie di download non esiste.</downbrowser>
                 <downnogallery>Non c'è ancora una galleria di download.</downnogallery>
                 <editorsave>Forse il file è stato bloccato da un altro utente nel frattempo.</editorsave>
-				<extinuse>Questa estensione è già stata assegnata ad un tipo di risorsa.</extinuse>
+                <extinuse>Questa estensione è già stata assegnata ad un tipo di risorsa.</extinuse>
                 <extNav1>Il logo scelto non è un file immagine valido oppure il percorso non esiste.</extNav1>
                 <extNav2>Per creare un collegamento nella navigazione statica, sono necessari un percorso ed un testo.</extNav2>
                 <extNav3>Il colore scelto non è nel formato da #000000 a #FFFFFF.</extNav3>
@@ -277,7 +277,7 @@
                 <downbrowser>Crea la cartella per le gallerie di download o contatta il tuo amministratore di sistema.</downbrowser>
                 <downnogallery>Per favore crea prima una galleria con la voce di menu Amministrazione/Gallerie di Download.</downnogallery>
                 <editorsave>Salva il contenuto del file in un editor locale, chiudi il file e controlla lo stato di blocco.</editorsave>
-				<lock></lock>
+                <lock></lock>
                 <lockchange>Per favore riprova più tardi, o contatta il tuo amministratore di sistema.</lockchange>
                 <login>Per favore controlla i dati introdotti o contatta il tuo amministratore di sistema.</login>
                 <picnogallery>Per favore crea prima una galleria con la voce di menu Amministrazione/Gallerie di Immagini.</picnogallery>
@@ -309,7 +309,7 @@
                 <changeuser>Cambia Utente</changeuser>
                 <chgrp>Cambia Gruppo</chgrp>
                 <chmod>Cambia Permessi</chmod>
-				<chnav>Cambia Posizione</chnav>
+                <chnav>Cambia Posizione</chnav>
                 <chown>Cambia Proprietario</chown>
                 <chpwd>Cambia Password</chpwd>
                 <chtype>Cambia Tipo di File</chtype>
@@ -323,7 +323,7 @@
                 <downbrowser>Navigatore dei Download</downbrowser>
                 <downgallery>Creazione nuova Galleria di Download</downgallery>
                 <editorsave>Salva File</editorsave>
-				<foldercreate>Crea Cartella</foldercreate>
+                <foldercreate>Crea Cartella</foldercreate>
                 <lock>Blocca File</lock>
                 <lockchange>Ruba Blocco</lockchange>
                 <login>Errore di Accesso</login>
@@ -371,8 +371,8 @@
             <database>Gestione Database</database>
             <datatypes>Gestione tipi<![CDATA[<BR>]]>di risorsa</datatypes>
             <downloadgallery>Gestione Gallerie<![CDATA[<BR>]]>di Download</downloadgallery>
-			<export>Esporta</export>
-			<exportmoduledata>Esporta dati del Modulo</exportmoduledata>
+            <export>Esporta</export>
+            <exportmoduledata>Esporta dati del Modulo</exportmoduledata>
             <groups>Modifica Gruppi</groups>
             <imagelist>lista immagini</imagelist>
             <import>Importa</import>
@@ -421,7 +421,7 @@
             <context>
                 <access>Cambia Permessi</access>
                 <chgrp>Cambia Gruppo</chgrp>
-				<chnav>Cambia Navigazione</chnav>
+                <chnav>Cambia Navigazione</chnav>
                 <chown>Cambia Proprietario</chown>
                 <copy>Copia</copy>
                 <copytoproject>Copia nel Progetto</copytoproject>
@@ -479,8 +479,8 @@
             <editor>Editor</editor>
             <email>Email</email>
             <exportadd>aggiungi</exportadd>
-			<exportchannels>Canali da esportare</exportchannels>
-			<exportmodules>Moduli da esportare</exportmodules>
+            <exportchannels>Canali da esportare</exportchannels>
+            <exportmodules>Moduli da esportare</exportmodules>
             <exportresources>risorse da esportare</exportresources>
             <filter>Filtro</filter>
             <firstelement>in prima posizione</firstelement>
@@ -519,16 +519,16 @@
             <newpropertydef>Nuova Proprietà</newpropertydef>
             <name>Nome</name>
             <navtext>Testo della Navigazione</navtext>
-			<navtitle>Testo nella Navigazione</navtitle>
+            <navtitle>Testo nella Navigazione</navtitle>
             <newfileothertype>Crea nuovo File di tipo</newfileothertype>
             <newgroup>Nuovo Gruppo</newgroup>
             <newowner>Nuovo Proprietario</newowner>
             <newposition>Nuova Posizione</newposition>
-			<newpwd>Nuova Password</newpwd>
+            <newpwd>Nuova Password</newpwd>
             <newpwdrepeat>Conferma Password</newpwdrepeat>
             <next>successivo</next>
             <nolinkvalue>Per favore inserisci il collegamento!</nolinkvalue>
-			<none>-- nessuno --</none>
+            <none>-- nessuno --</none>
             <oldpwd>Password Attuale</oldpwd>
             <owner>Proprietario</owner>
             <padding>Distanziamento</padding>
@@ -871,49 +871,49 @@
         <task>
             <email>
                 <create>
-                    <subject>Gestione compiti OpenCms: nuovo compito</subject>
+                    <subject>Gestione compiti OpenCms: nuovo compito per</subject>
                     <content>Messaggio automatico dalla gestione compiti di OpenCms:
 
 Un nuovo compito è stato creato per te o per il tuo ruolo.</content>
                 </create>
                 <accept>
-                    <subject>Gestione compiti OpenCms: compito accettato</subject>
+                    <subject>Gestione compiti OpenCms: compito accettato da</subject>
                     <content>Messaggio automatico dalla gestione compiti di OpenCms:
 
 Uno dei compiti da te creati è stato accettato dal redattore.</content>
                 </accept>
                 <forward>
-                    <subject>Gestione compiti OpenCms: compito inoltrato</subject>
+                    <subject>Gestione compiti OpenCms: compito inoltrato a</subject>
                     <content>Messaggio automatico dalla gestione compiti di OpenCms:
 
 Uno dei tuoi compiti è stato inoltrato.</content>
                 </forward>
                 <end>
-                    <subject>Gestione compiti OpenCms: compito completato</subject>
+                    <subject>Gestione compiti OpenCms: compito completato da</subject>
                     <content>Messaggio automatico dalla gestione compiti di OpenCms:
 
 Uno dei compiti da te creati è stato completato dal redattore.</content>
                 </end>
                 <message>
-                    <subject>Gestione compiti OpenCms: messaggio ricevuto</subject>
+                    <subject>Gestione compiti OpenCms: messaggio ricevuto da</subject>
                     <content>Messaggio automatico dalla gestione compiti di OpenCms:
 
 Hai ricevuto un nuovo messaggio riguardante uno dei tuoi compiti.</content>
                 </message>
                 <query>
-                    <subject>Gestione compiti OpenCms: richiesta ricevuta</subject>
+                    <subject>Gestione compiti OpenCms: domanda ricevuta da</subject>
                     <content>Messaggio automatico dalla gestione compiti di OpenCms:
 
 Hai ricevuto una richiesta riguardante uno dei compiti da te creati.</content>
                 </query>
                 <take>
-                    <subject>Gestione compiti OpenCms: task take-over</subject>
+                    <subject>Gestione compiti OpenCms: compito preso in carico da</subject>
                     <content>Messaggio automatico dalla gestione compiti di OpenCms:
 
 Uno dei compiti da te creati è stato accettato da una terza parte.</content>
                 </take>
                 <reakt>
-                    <subject>Gestione compiti OpenCms: compito riattivato</subject>
+                    <subject>Gestione compiti OpenCms: compito riattivato per</subject>
                     <content>Messaggio automatico dalla gestione compiti di OpenCms:
 
 Un nuovo compito è stato riattivato per te o per il tuo ruolo.</content>
