@@ -18,6 +18,7 @@ cms.createPropertydefinition("NavPos","folder");
 cms.createPropertydefinition("Title","folder");
 cms.createPropertydefinition("Description","folder");
 cms.createPropertydefinition("Keywords","folder");
+cms.createPropertydefinition("ChannelId","folder");
 cms.createPropertydefinition("Title","pdfpage");
 cms.createPropertydefinition("NavText","pdfpage");
 cms.createPropertydefinition("NavPos","pdfpage");

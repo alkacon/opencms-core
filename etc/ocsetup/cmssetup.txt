@@ -18,6 +18,7 @@ createPropertydefinition NavPos folder
 createPropertydefinition Title folder
 createPropertydefinition Description folder
 createPropertydefinition Keywords folder
+createPropertydefinition ChannelId folder
 createPropertydefinition Title pdfpage
 createPropertydefinition NavText pdfpage
 createPropertydefinition NavPos pdfpage
