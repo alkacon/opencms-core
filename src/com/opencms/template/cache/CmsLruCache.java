@@ -1,8 +1,8 @@
 package com.opencms.template.cache;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsLruCache.java,v $
- * Date   : $Date: 2001/05/29 08:17:30 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2001/05/29 11:09:25 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -26,7 +26,7 @@ package com.opencms.template.cache;
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
+import com.opencms.template.CmsCacheDirectives;
 
 /**
  * This class implements a LRU cache. It uses a Hashtable algorithm with the
@@ -291,7 +291,9 @@ public class CmsLruCache {
     public void deleteElementsAfterPublish(){
         CacheItem item = head;
         while (item != null){
-
+            if (((A_CmsElement)item.value).getCacheDirectives().shouldRenew()){
+                removeItem(item);
+            }
             item = item.next;
         }
     }

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsCacheDirectives.java,v $
-* Date   : $Date: 2001/05/29 08:17:30 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2001/05/29 11:09:25 $
+* Version: $Revision: 1.9 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -39,7 +39,7 @@ import java.util.*;
  * used keys.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2001/05/29 08:17:30 $
+ * @version $Revision: 1.9 $ $Date: 2001/05/29 11:09:25 $
  */
 public class CmsCacheDirectives implements I_CmsLogChannels {
 
@@ -229,10 +229,11 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
     }
 
     /**
-     * @returns the renewAfterEveryPublish value.
+     * returns true if this element has to be deleted from cache every time a project
+     * is published. This is when the uri is part of the cacheKey or if the user says so.
      */
     public boolean shouldRenew(){
-        return renewAfterEveryPublish;
+        return renewAfterEveryPublish || m_uri;
     }
 
     /**
