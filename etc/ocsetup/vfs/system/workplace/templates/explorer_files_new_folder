@@ -308,7 +308,7 @@ function closeAllWindows(){
 											</td>
 											<td width="30">&nbsp;</td>
 											<td align="left" class="dialogtxt" width="135" valign="middle">
-												<input type="text" class="textfeld" size="10" style="width:100px" maxlength="12" name="statnav" id="statnav" value ="]]><PROCESS>statnav</PROCESS><![CDATA[">
+												<input type="text" class="textfeld" size="10" style="width:100px" maxlength="50" name="statnav" id="statnav" value ="]]><PROCESS>statnav</PROCESS><![CDATA[">
 											</td>
 											<td width="30">&nbsp;</td>
 											<td class="dialogtxt" width="135" valign="middle">
