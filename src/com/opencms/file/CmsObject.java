@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/04 16:00:24 $
-* Version: $Revision: 1.298 $
+* Date   : $Date: 2003/07/08 10:16:54 $
+* Version: $Revision: 1.299 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.298 $
+ * @version $Revision: 1.299 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -2611,8 +2611,8 @@ public CmsUser readAgent(CmsTask task) throws CmsException {
  *
  * @throws CmsException  if operation was not successful.
  */
-public Vector readAllFileHeadersForHist(String filename) throws CmsException {
-    return (m_driverManager.readAllFileHeadersForHist(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename)));
+public Vector readAllBackupFileHeaders(String filename) throws CmsException {
+    return (m_driverManager.readAllBackupFileHeaders(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename)));
 }
 
     /**

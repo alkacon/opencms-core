@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/07/08 10:16:53 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.27 $ $Date: 2003/07/08 10:16:53 $
  */
 
 public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -161,7 +161,7 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String filename = (String)session.getValue(C_PARA_FILE);
         if(filename != null) {
-            Vector allFiles = cms.readAllFileHeadersForHist(filename);
+            Vector allFiles = cms.readAllBackupFileHeaders(filename);
             // vector is already sorted by version id
             //if(allFiles.size() > 0) {
             //    allFiles = sort(allFiles, Utils.C_SORT_PUBLISHED_DOWN);

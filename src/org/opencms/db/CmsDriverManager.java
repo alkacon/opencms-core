@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/07 18:27:51 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/07/08 10:16:53 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.25 $ $Date: 2003/07/07 18:27:51 $
+ * @version $Revision: 1.26 $ $Date: 2003/07/08 10:16:53 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -4486,7 +4486,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
     *
     * @throws CmsException  Throws CmsException if operation was not succesful.
     */
-    public Vector readAllFileHeadersForHist(CmsUser currentUser, CmsProject currentProject, String filename) throws CmsException {
+    public Vector readAllBackupFileHeaders(CmsUser currentUser, CmsProject currentProject, String filename) throws CmsException {
         CmsResource cmsFile = readFileHeader(currentUser, currentProject, filename);
 
         // check if the user has read access
@@ -6300,7 +6300,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
                     backupFile.getLength(),
                     currentProject.getId());
             writeFile(currentUser, currentProject, newFile);
-            clearResourceCache(filename, currentProject, currentUser);
+            clearResourceCache();
         }
     }
 

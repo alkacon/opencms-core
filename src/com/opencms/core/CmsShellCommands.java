@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.83 $
+* Date   : $Date: 2003/07/08 10:16:53 $
+* Version: $Revision: 1.84 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.83 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.84 $ $Date: 2003/07/08 10:16:53 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -2063,7 +2063,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void readAllFileHeadersForHist(String filename) {
         try {
-            Vector files = m_cms.readAllFileHeadersForHist(filename);
+            Vector files = m_cms.readAllBackupFileHeaders(filename);
             for(int i = 0;i < files.size();i++) {
                 System.out.println((CmsResource)files.elementAt(i));
             }
