@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2004/06/13 23:43:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/07/18 16:35:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3.5
  */
 public final class CmsXmlUtils {
@@ -117,7 +117,7 @@ public final class CmsXmlUtils {
     }
 
     /**
-     * Helper to unmarshal (read) xml contents from a String into a document.<p>
+     * Helper to unmarshal (read) xml contents from an input source into a document.<p>
      * 
      * Using this method ensures that the OpenCms XML entitiy resolver is used.<p>
      * 
