@@ -226,7 +226,7 @@ function updateWindowStore() {
 	if (window.body.explorer_body && window.body.explorer_body.explorer_tree) {
 		theTree = window.body.explorer_body.explorer_tree;
 	}
-	if ((mode == "projectview") || (mode == "galleryview") || window.body.admin_head) {		
+	if ((mode == "projectview") || (mode == "galleryview") || window.body.admin_head) {
 		win = new windowStore(window.body.document, window.body.admin_head.document, theTree, window.body.admin_content.document);
 	} else {
 		try {
@@ -784,7 +784,7 @@ function addProjectDir(nodid) {
 
 function dirUp(){
 	var temp;
-	var marke=0;	
+	var marke=0;
 	var directory = getDisplayResource();
 	var zaehler=0;
 	var newDir = directory.substring(0, directory.length - 1);
@@ -793,7 +793,6 @@ function dirUp(){
 	if (res.length < (getRootFolder().length + 1)) {
 		res = getRootFolder();
 	}
-
 	setDisplayResource(res);
 	openurl();
 }
@@ -843,9 +842,17 @@ function displayHead(doc, pages, actpage){
 	+ "input.location { font-family: verdana, sans-serif; font-size: 11px; font-weight: normal; width: 99% }\n"
 	+ "select.location { font-family: verdana, sans-serif; font-size: 11px; font-weight: normal; width: 50px }\n"
 	+ "</style>\n"
+	
+	+ "<script type=\"text/javascript\">\n"
+	+ "<!--\n"
+	+ "function doSet() {\n"
+	+ "\tdocument.urlform.resource.value=\"" + getDisplayResource("true") + "\";\n"
+	+ "}\n"
+	+ "//-->\n"
+	+ "</script>\n"	
 
 	+ "</head>\n"
-	+ "<body class=\"buttons-head\">\n"
+	+ "<body class=\"buttons-head\" onload=\"window.setTimeout('doSet()',50);\">\n"
 	+ "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n"
 	+ "<form name=\"urlform\" onsubmit=\"top.submitResource();return false;\">\n"
 	+ "<tr>\n"
@@ -858,12 +865,12 @@ function displayHead(doc, pages, actpage){
 
 	+ buttonSep(5, 5, 1)
 	+ "<td>"+vr.langadress+"&nbsp;</td>\n"
-	+ "<td width=\"100%\"><input value=\""+ getDisplayResource("true") +"\" maxlength=\"255\" name=\"resource\" class=\"location\"></td>\n"
+	+ "<td width=\"100%\"><input value=\"\" maxlength=\"255\" name=\"resource\" class=\"location\"></td>\n"
 	+ pageSelect
 
 	+ "</tr>\n</form>\n</table>\n"
 	+ "</body>\n</html>";
-	
+
 	doc.open();
 	doc.writeln(html);
 	doc.close();
@@ -1021,6 +1028,7 @@ function openFolder(folderName) {
 	setDisplayResource(folderName);
 	openurl();
 }
+
 
 function updateTreeFolder(folderName) {
 	if (window.body.explorer_body && window.body.explorer_body.explorer_tree) {
