@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/02/22 10:31:32 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/02/24 14:42:50 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2000/02/22 10:31:32 $
+ * @version $Revision: 1.13 $ $Date: 2000/02/24 14:42:50 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -207,12 +207,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         CmsXmlTemplate bodyElementClassObject = (CmsXmlTemplate)tempObj;
         CmsXmlTemplateFile bodyTemplateFile = bodyElementClassObject.getOwnTemplateFile(cms, tempBodyFilename, "body", parameters, null);
 
-        // Include the datablocks of the layout file into the body file.
-        // So the "bodytag" and "style" data can be accessed by the body file.
-        Element bodyTag = layoutTemplateFile.getBodyTag();
-        bodyTemplateFile.setBodyTag(bodyTag);
-        
-        
         if(templatechangeRequested) {
             // The user requested a change of the layout template
             CmsXmlControlFile temporaryControlFile = new CmsXmlControlFile(cms, tempPageFilename);
@@ -313,7 +307,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 }
                 else throw e;
             }*/
-            bodyTemplateFile.write();
+            bodyTemplateFile.write();        
         }
         
         // If the user requested a preview then send a redirect
@@ -331,16 +325,16 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             preview(tempPageFilename, reqCont);
             return "".getBytes();
         }
-        
-        
-        
+                        
         // If the user requested a "save" expilitly by pressing one of
         // the "save" buttons, copy all informations of the temporary
         // files to the original files.
         if(saveRequested) {
             commitTemporaryFile(cms, bodyElementFilename, tempBodyFilename);
-            cms.writeMetainformation(file, C_METAINFO_TITLE, cms.readMetainformation(tempPageFilename, C_METAINFO_TITLE));
-
+            title = cms.readMetainformation(tempPageFilename, C_METAINFO_TITLE);
+            if(title != null && !"".equals(title)) {
+                cms.writeMetainformation(file, C_METAINFO_TITLE, title);
+            }
             CmsXmlControlFile originalControlFile = new CmsXmlControlFile(cms, file);
             CmsXmlControlFile temporaryControlFile = new CmsXmlControlFile(cms, tempPageFilename);
 
@@ -363,6 +357,11 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             }
             return "".getBytes();
         }
+
+        // Include the datablocks of the layout file into the body file.
+        // So the "bodytag" and "style" data can be accessed by the body file.
+        Element bodyTag = layoutTemplateFile.getBodyTag();
+        bodyTemplateFile.setBodyTag(bodyTag);
 
         // Load the body!                                        
         content = bodyTemplateFile.getEditableTemplateContent(this, parameters, body, editor.equals(C_SELECTBOX_EDITORVIEWS[0]), style);        
@@ -624,7 +623,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             extendedTempFile = temporaryFilename + loop;
             try {
                 cms.copyFile(file.getAbsolutePath(), extendedTempFile);  
-				cms.chmod(temporaryFilename, 91);
+				cms.chmod(extendedTempFile, 91);
             } catch(Exception e) {
                 // temp file could not be created
                 loop++;
