@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/01/24 10:34:43 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/24 11:54:19 $
  */
 class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 
@@ -161,7 +161,8 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 										result.getInt(C_PROJECT_FLAGS)));
 			 } else {
 				 // project not found!
-				 return(null);
+				 throw new CmsException(this.getClass().getName() + ": " + name, 
+					 CmsException.C_NOT_FOUND);
 			 }
 		 } catch( SQLException exc ) {
 			 throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
