@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/I_CmsEventListener.java,v $
- * Date   : $Date: 2003/08/28 12:56:26 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/08/29 10:13:35 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ package com.opencms.flex;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -88,6 +88,11 @@ public interface I_CmsEventListener {
     
     /** 
      * Event "a resource was published".<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "resource": the published CmsResource</li>
+     * </ul>
      * 
      * @see com.opencms.file.CmsObject#publishResource(String, boolean)
      */    
@@ -143,23 +148,75 @@ public interface I_CmsEventListener {
      */
     int EVENT_STATIC_EXPORT = 10;
     
-    /** Event "a single resource has been modified". */
+    /** 
+     * Event "a single resource has been modified".<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "resource": the modified CmsResource</li>
+     * </ul>
+     */
     int EVENT_RESOURCE_MODIFIED = 11;
     
-    /** Event "a bunch of resources has been modified". */
+    /** 
+     * Event "a bunch of resources has been modified".<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "resources": a List of modified CmsResources</li>
+     * </ul>
+     */
     int EVENT_RESOURCES_MODIFIED = 12;
     
-    /** Event "the list of sub-resources of a folder has been modified", (e.g. a new resource has been created). */
+    /** 
+     * Event "the list of sub-resources of a folder has been modified", (e.g. a new resource has been created).<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "resource": the modified CmsResource (a folder)</li>
+     * </ul>
+     */
     int EVENT_RESOURCE_LIST_MODIFIED = 13;
     
-    /** Event "a single property has been modified". */
+    /** 
+     * Event "a single property has been modified".<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "resource": the CmsResource that has the modified property attached</li>
+     * <li>key "property": the modified property</li>
+     * </ul>
+     */
     int EVENT_PROPERTY_MODIFIED = 14;
     
-    /** Event "all properties of a resource have been modified". */
+    /** 
+     * Event "all properties of a resource have been modified".<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "resource": the CmsResource that has the modified properties attached</li>
+     * <li>key "properties": the modified properties as a Map</li>
+     * </ul>
+     */
     int EVENT_PROPERTY_MAP_MODIFIED = 15;
     
-    /** Event "clear all offline caches". */
+    /** 
+     * Event "clear all offline caches".<p>
+     * 
+     * Event data: none
+     */
     int EVENT_CLEAR_OFFLINE_CACHES = 16;
+    
+    /**
+     * Event "a project was modified" (e.g. a project has been deleted, 
+     * or the project resources have been changed).<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "project": the deleted CmsProject</li>
+     * </ul>
+     */
+    int EVENT_PROJECT_MODIFIED = 17;
    
     /**
      * Acknowledge the occurrence of the specified event, implement this 

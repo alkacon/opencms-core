@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/29 07:37:09 $
- * Version: $Revision: 1.182 $
+ * Date   : $Date: 2003/08/29 10:13:35 $
+ * Version: $Revision: 1.183 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.182 $ $Date: 2003/08/29 07:37:09 $
+ * @version $Revision: 1.183 $ $Date: 2003/08/29 10:13:35 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -792,6 +792,8 @@ public class CmsDriverManager extends Object {
         m_vfsDriver.changeLockedInProject(projectId, resource.getResourceId());
         //clearResourceCache(resourcename, new CmsProject(projectId, 0), context.currentUser());
         clearResourceCache();
+        
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
     }
 
     /**
@@ -1301,6 +1303,8 @@ public class CmsDriverManager extends Object {
                     m_vfsDriver.createProjectResource(context.currentProject().getId(), resource);
                 } catch (CmsException exc) {
                     // if the subfolder exists already - all is ok
+                } finally {
+                    OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", context.currentProject())));
                 }
             }
         } else {
@@ -1478,7 +1482,8 @@ public class CmsDriverManager extends Object {
         // write metainfos for the folder
         m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), newFolder, newFolder.getType());
 
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_LIST_MODIFIED, Collections.singletonMap("resource", (CmsResource)cmsFolder)));        
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_LIST_MODIFIED, Collections.singletonMap("resource", (CmsResource)cmsFolder)));
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", context.currentProject())));        
         
         // return the folder        
         return newFolder;
@@ -1733,6 +1738,7 @@ public class CmsDriverManager extends Object {
             CmsProject tempProject = m_projectDriver.createProject(context.currentUser(), group, managergroup, task, name, description, I_CmsConstants.C_PROJECT_STATE_INVISIBLE, I_CmsConstants.C_PROJECT_STATE_INVISIBLE);
             m_vfsDriver.createProjectResource(tempProject.getId(), "/");
             cms.getRegistry().setSystemValue("tempfileproject", "" + tempProject.getId());
+            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", tempProject)));
             return tempProject;
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] createTempfileProject() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                        
@@ -2240,7 +2246,7 @@ public class CmsDriverManager extends Object {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteProject() " + deleteProject.getName(), CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
         }
         
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES, Collections.EMPTY_MAP, false));
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", deleteProject)));
     }
 
     /**
