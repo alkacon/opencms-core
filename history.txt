@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/04/23 15:24:04 $
- * Version: $Revision: 1.472 $
+ * Date   : $Date: 2003/05/07 13:14:01 $
+ * Version: $Revision: 1.473 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,14 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.0 (next version)
+OpenCms 5.1.0
+! Inroduced first version of I_CmsUserAccess 
+! Splitted VFS and user management code from CmsDbAccess classes 
+- The OpenCms 5.1.x version are development versions only.
+  Users looking for updates or improvements of OpenCms should use the 
+  "branch_5_0_x" CVS branch until further notice. 
+
+OpenCms 5.0.0 (5.0 final)
 ! Added "import.immutable.resources" setting to opencms.properties, all resources
   listed there will be igored during an import if they already exist
 ! The size of the file upload can now be limited with the opencms.properties setting "workplace.file.maxuploadsize"
