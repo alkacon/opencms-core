@@ -36,7 +36,8 @@
     <property name="build.inputlib.oracle"      value="${build.inputlib}/classes12.zip"/>  
     <property name="build.inputlib.oro"         value="${build.inputlib}/jakarta-oro-2_0_6.jar"/>
     <property name="build.inputlib.tidy"        value="${build.inputlib}/Tidy.jar"/>
-    
+    <property name="build.inputlib.uuid"        value="${build.inputlib}/jug.jar"/>
+        
     <property name="build.version.propertyfile" value="${build.classes}/com/opencms/core/version.properties"/>
     <property name="build.version.jsfile"       value="${build.webinf}/ocsetup/vfs/system/login/version.js"/>
     <property name="build.version.setupfile"    value="${build.web}/ocsetup/versions.txt"/>
@@ -64,6 +65,7 @@
                 <available file="${build.inputlib.fesi}"/>
                 <available file="${build.inputlib.oro}"/>
                 <available file="${build.inputlib.tidy}"/>
+                <available file="${build.inputlib.uuid}"/>                
             </and>
         </condition>
         
@@ -115,6 +117,7 @@ ${build.inputlib.mysql}
 ${build.inputlib.fesi}
 ${build.inputlib.oro}
 ${build.inputlib.tidy}
+${build.inputlib.uuid}
 
         </fail>
     </target>
@@ -161,6 +164,7 @@ ${build.inputlib.tidy}
                         ${build.inputlib.fop}:
                         ${build.inputlib.oro}:
                         ${build.inputlib.tidy}:
+                        ${build.inputlib.uuid}:                        
                         ${build.inputlib.fesi}"
             debug="on"
             optimize="on"
