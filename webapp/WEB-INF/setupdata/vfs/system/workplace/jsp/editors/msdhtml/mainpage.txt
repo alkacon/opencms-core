@@ -48,7 +48,7 @@
 		case 5:
 			// open properties window;
 			focusCount = 1;
-			dialogPropertyWindow = window.open("about:blank","dialogPropertyWindow","width=600,height=320,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
+			dialogPropertyWindow = window.open("about:blank","dialogPropertyWindow","width=600,height=280,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
 			document.PROPERTIES.submit();
 			openWindow = dialogPropertyWindow;
 			dialogPropertyWindow.focus();
@@ -78,11 +78,14 @@
 	
 	<!-- Workplacepath needed in included javascript files -->
 	var workplacePath="<%= cms.link("/system/workplace/") %>";
+	
+	<!-- Skin URI needed in included javascript files -->
+	var skinUri = "<%= wp.getSkinUri() %>";
 
-	<!-- Needed space for additional toolbar -->
-	var space=75;
-
-	var tbsize = 73;
+	<!-- Object for color picker modaldialog -->
+	var colorPicker = new Object();
+	colorPicker.title = "<%= wp.key("dialog.color.title") %>";
+	colorPicker.color = "000000";
 	
 	var NS = null;
 	var IE = null;

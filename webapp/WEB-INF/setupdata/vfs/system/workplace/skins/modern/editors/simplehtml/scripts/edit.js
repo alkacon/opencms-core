@@ -146,7 +146,7 @@ function doTemplSubmit(para) {
 		break;		
 	case 5:
 		// open properties window;
-		dialogPropertyWindow = window.open("about:blank","DIALOGPROPERTY","width=600,height=320,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
+		dialogPropertyWindow = window.open("about:blank","DIALOGPROPERTY","width=600,height=280,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
 		document.PROPERTIES.submit();
 		dialogPropertyWindow.focus();
 		break;

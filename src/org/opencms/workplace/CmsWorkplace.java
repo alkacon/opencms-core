@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/01/19 16:00:16 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/01/30 11:34:25 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 5.1
  */
@@ -1085,14 +1085,19 @@ public abstract class CmsWorkplace {
      * @return a button for the OpenCms workplace
      */
     public String button(String href, String target, String image, String label, int type, String imagePath) {
-        StringBuffer result = new StringBuffer(512); 
+        StringBuffer result = new StringBuffer(512);
+        
+        String anchorStart =  "<a href=\"";
+        if (href != null && href.toLowerCase().startsWith("javascript:")) {
+            anchorStart = "<a href=\"#\" onclick=\"";
+        }
     
         result.append("<td>");      
         switch (type) {     
             case 1:
             // image and text
                 if (href != null) {
-                    result.append("<a href=\"");
+                    result.append(anchorStart);
                     result.append(href);
                     result.append("\" class=\"button\"");
                     if (target != null) {
@@ -1124,7 +1129,7 @@ public abstract class CmsWorkplace {
             case 2:
             // text only
                 if (href != null) {
-                    result.append("<a href=\"");
+                    result.append(anchorStart);
                     result.append(href);
                     result.append("\" class=\"button\"");
                     if (target != null) {
@@ -1151,7 +1156,7 @@ public abstract class CmsWorkplace {
             default: 
             // only image
                 if (href != null) {
-                    result.append("<a href=\"");
+                    result.append(anchorStart);
                     result.append(href);
                     result.append("\" class=\"button\"");
                     if (target != null) {

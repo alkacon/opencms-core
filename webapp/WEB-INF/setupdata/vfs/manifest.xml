@@ -319,7 +319,7 @@
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
-		</file> 
+		</file>
         <file>
             <destination>system/workplace</destination>
             <type>folder</type>
@@ -1228,7 +1228,7 @@
 		<flags>0</flags>
 		<properties/>
 		<accesscontrol/>
-	</file> 
+	</file>
         <file>
             <source>system/workplace/action/explorer_head.html</source>
             <destination>system/workplace/action/explorer_head.html</destination>
@@ -3172,7 +3172,7 @@
                 </property>
             </properties>
             <accesscontrol/>
-        </file> 
+        </file>
         <file>
             <destination>system/workplace/administration/htmlgallery</destination>
             <type>folder</type>
@@ -3468,7 +3468,7 @@
                     <name>activemethod</name>
                     <type>0</type>
                     <value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isNotOnlineProject]]></value>
-                </property>                
+                </property>
             </properties>
             <accesscontrol/>
         </file>
@@ -3511,7 +3511,7 @@
                     <name>visiblemethod</name>
                     <type>0</type>
                     <value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isAdminFalse]]></value>
-                </property>                
+                </property>
             </properties>
             <accesscontrol/>
         </file>
@@ -5032,7 +5032,7 @@
                     <name>visiblemethod</name>
                     <type>0</type>
                     <value><![CDATA[com.opencms.workplace.CmsAdminGroups.isVisible]]></value>
-                </property> 
+                </property>
                 <property>
                     <name>NavText</name>
                     <type>0</type>
@@ -5151,7 +5151,7 @@
                     <name>visiblemethod</name>
                     <type>0</type>
                     <value><![CDATA[com.opencms.workplace.CmsAdminUsers.isVisible]]></value>
-                </property> 
+                </property>
                 <property>
                     <name>NavText</name>
                     <type>0</type>
@@ -5423,7 +5423,7 @@
                 </property>
             </properties>
             <accesscontrol/>
-        </file> 
+        </file>
         <file>
             <source>system/workplace/jsp/tree_fs.html</source>
             <destination>system/workplace/jsp/tree_fs.html</destination>
@@ -5448,7 +5448,7 @@
                 </property>
             </properties>
             <accesscontrol/>
-        </file> 
+        </file>
         <file>
 		<source>system/workplace/jsp/tree_siteselector.html</source>
 		<destination>system/workplace/jsp/tree_siteselector.html</destination>
@@ -5475,7 +5475,7 @@
 			</property>
 		</properties>
 		<accesscontrol/>
-	</file> 
+	</file>
         <file>
             <destination>system/workplace/jsp/dialogs</destination>
             <type>folder</type>
@@ -5779,7 +5779,7 @@
 			</property>
 		</properties>
 		<accesscontrol/>
-	</file> 
+	</file>
         <file>
             <source>system/workplace/jsp/dialogs/move.html</source>
             <destination>system/workplace/jsp/dialogs/move.html</destination>
@@ -5836,7 +5836,7 @@
 			</property>
 		</properties>
 		<accesscontrol/>
-	</file> 
+	</file>
         <file>
             <source>system/workplace/jsp/dialogs/property.html</source>
             <destination>system/workplace/jsp/dialogs/property.html</destination>
@@ -5896,7 +5896,7 @@
                 </property>
             </properties>
             <accesscontrol/>
-        </file> 
+        </file>
         <file>
 		<source>system/workplace/jsp/dialogs/publishresource.html</source>
 		<destination>system/workplace/jsp/dialogs/publishresource.html</destination>
@@ -5950,7 +5950,7 @@
 			</property>
 		</properties>
 		<accesscontrol/>
-	</file>        
+	</file>
         <file>
             <source>system/workplace/jsp/dialogs/rename.html</source>
             <destination>system/workplace/jsp/dialogs/rename.html</destination>
@@ -6170,7 +6170,7 @@
 			</property>
 		</properties>
 		<accesscontrol/>
-	</file> 
+	</file>
         <file>
             <source>system/workplace/jsp/dialogs/common/confirmation.html</source>
             <destination>system/workplace/jsp/dialogs/common/confirmation.html</destination>
@@ -6260,7 +6260,7 @@
                 </property>
             </properties>
             <accesscontrol/>
-        </file>        
+        </file>
         <file>
             <source>system/workplace/jsp/dialogs/common/resourceinfo.txt</source>
             <destination>system/workplace/jsp/dialogs/common/resourceinfo.txt</destination>
@@ -6409,7 +6409,7 @@
 			</property>
 		</properties>
 		<accesscontrol/>
-	</file> 
+	</file>
 	<file>
 		<source>system/workplace/jsp/editors/editor_main.html</source>
 		<destination>system/workplace/jsp/editors/editor_main.html</destination>
@@ -6500,7 +6500,7 @@
 			</property>
 		</properties>
 		<accesscontrol/>
-	</file> 
+	</file>
 	<file>
 		<source>system/workplace/jsp/editors/dialogs/elements.html</source>
 		<destination>system/workplace/jsp/editors/dialogs/elements.html</destination>
@@ -6581,7 +6581,88 @@
 			</property>
 		</properties>
 		<accesscontrol/>
-	</file> 
+	</file>
+	<file>
+		<source>system/workplace/jsp/editors/dialogs/specialchars.html</source>
+		<destination>system/workplace/jsp/editors/dialogs/specialchars.html</destination>
+		<type>jsp</type>
+		<uuidresource>1898533d-5265-11d8-9722-9798c6a7caf5</uuidresource>
+		<uuidcontent>1898533e-5265-11d8-9722-9798c6a7caf5</uuidcontent>
+		<datelastmodified>1075461034000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1075385516000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property>
+				<name>content-encoding</name>
+				<value><![CDATA[ISO-8859-1]]></value>
+			</property>
+			<property>
+				<name>export</name>
+				<value><![CDATA[false]]></value>
+			</property>
+			<property>
+				<name>Title</name>
+				<value><![CDATA[Special character dialog]]></value>
+			</property>
+		</properties>
+		<accesscontrol/>
+	</file>
+	<file>
+		<source>system/workplace/jsp/editors/dialogs/table_element.html</source>
+		<destination>system/workplace/jsp/editors/dialogs/table_element.html</destination>
+		<type>jsp</type>
+		<uuidresource>e8fa074b-5254-11d8-9722-9798c6a7caf5</uuidresource>
+		<uuidcontent>e8fa074c-5254-11d8-9722-9798c6a7caf5</uuidcontent>
+		<datelastmodified>1075453657000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1075378564000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property>
+				<name>export</name>
+				<value><![CDATA[false]]></value>
+			</property>
+			<property>
+				<name>content-encoding</name>
+				<value><![CDATA[ISO-8859-1]]></value>
+			</property>
+			<property>
+				<name>Title</name>
+				<value><![CDATA[Table element dialog]]></value>
+			</property>
+		</properties>
+		<accesscontrol/>
+	</file>
+	<file>
+		<source>system/workplace/jsp/editors/dialogs/table_new.html</source>
+		<destination>system/workplace/jsp/editors/dialogs/table_new.html</destination>
+		<type>jsp</type>
+		<uuidresource>55dec6ab-51a0-11d8-b484-9798c6a7caf5</uuidresource>
+		<uuidcontent>55dec6ac-51a0-11d8-b484-9798c6a7caf5</uuidcontent>
+		<datelastmodified>1075453634000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1075301008000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property>
+				<name>content-encoding</name>
+				<value><![CDATA[ISO-8859-1]]></value>
+			</property>
+			<property>
+				<name>export</name>
+				<value><![CDATA[false]]></value>
+			</property>
+			<property>
+				<name>Title</name>
+				<value><![CDATA[Create new table dialog]]></value>
+			</property>
+		</properties>
+		<accesscontrol/>
+	</file>
 	<file>
 		<destination>system/workplace/jsp/editors/ledit</destination>
 		<type>folder</type>
@@ -6894,7 +6975,7 @@
 			</property>
 		</properties>
 		<accesscontrol/>
-	</file> 
+	</file>
         <file>
             <destination>system/workplace/locales</destination>
             <type>folder</type>
@@ -12244,7 +12325,7 @@
 		<flags>0</flags>
 		<properties/>
 		<accesscontrol/>
-	</file> 
+	</file>
         <file>
             <source>system/workplace/restypes/XMLTemplate</source>
             <destination>system/workplace/restypes/XMLTemplate</destination>
@@ -13529,7 +13610,7 @@
 		<flags>0</flags>
 		<properties/>
 		<accesscontrol/>
-	</file> 
+	</file>
 	<file>
 		<source>system/workplace/skins/modern/components/js_calendar/calendar-setup.js</source>
 		<destination>system/workplace/skins/modern/components/js_calendar/calendar-setup.js</destination>
@@ -13585,7 +13666,7 @@
 		<flags>0</flags>
 		<properties/>
 		<accesscontrol/>
-	</file> 
+	</file>
 	<file>
 		<destination>system/workplace/skins/modern/components/js_calendar/lang</destination>
 		<type>folder</type>
@@ -13612,7 +13693,7 @@
 		<flags>0</flags>
 		<properties/>
 		<accesscontrol/>
-	</file> 
+	</file>
 	<file>
 		<source>system/workplace/skins/modern/components/js_calendar/lang/calendar-br.js</source>
 		<destination>system/workplace/skins/modern/components/js_calendar/lang/calendar-br.js</destination>
@@ -13822,7 +13903,7 @@
 		<flags>0</flags>
 		<properties/>
 		<accesscontrol/>
-	</file> 
+	</file>
 	<file>
 		<source>system/workplace/skins/modern/components/js_calendar/lang/calendar-nl.js</source>
 		<destination>system/workplace/skins/modern/components/js_calendar/lang/calendar-nl.js</destination>
@@ -13920,7 +14001,7 @@
 		<flags>0</flags>
 		<properties/>
 		<accesscontrol/>
-	</file> 
+	</file>
 	<file>
 		<source>system/workplace/skins/modern/components/js_calendar/lang/calendar-sp.js</source>
 		<destination>system/workplace/skins/modern/components/js_calendar/lang/calendar-sp.js</destination>
@@ -13948,7 +14029,7 @@
 		<flags>0</flags>
 		<properties/>
 		<accesscontrol/>
-	</file> 
+	</file>
 	<file>
 		<source>system/workplace/skins/modern/components/js_calendar/lang/calendar-sw.js</source>
 		<destination>system/workplace/skins/modern/components/js_calendar/lang/calendar-sw.js</destination>
@@ -13989,6 +14070,43 @@
 		<usercreated>Admin</usercreated>
 		<flags>0</flags>
 		<properties/>
+		<accesscontrol/>
+	</file>
+	<file>
+		<destination>system/workplace/skins/modern/components/js_colorpicker</destination>
+		<type>folder</type>
+		<uuidresource>a42e21ae-5269-11d8-af0f-9798c6a7caf5</uuidresource>
+		<uuidcontent>00000000-0000-0000-0000-000000000000</uuidcontent>
+		<datelastmodified>1075387468000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1075387468000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property>
+				<name>Title</name>
+				<value><![CDATA[ ]]></value>
+			</property>
+		</properties>
+		<accesscontrol/>
+	</file>
+	<file>
+		<source>system/workplace/skins/modern/components/js_colorpicker/index.html</source>
+		<destination>system/workplace/skins/modern/components/js_colorpicker/index.html</destination>
+		<type>plain</type>
+		<uuidresource>c75f87f0-5269-11d8-af0f-9798c6a7caf5</uuidresource>
+		<uuidcontent>c75f87f1-5269-11d8-af0f-9798c6a7caf5</uuidcontent>
+		<datelastmodified>1075453933000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1075387527000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property>
+				<name>Title</name>
+				<value><![CDATA[Color selection dialog]]></value>
+			</property>
+		</properties>
 		<accesscontrol/>
 	</file>
 	<file>
@@ -14177,7 +14295,7 @@
 		<flags>0</flags>
 		<properties/>
 		<accesscontrol/>
-	</file> 
+	</file>
         <file>
             <destination>system/workplace/skins/modern/explorer</destination>
             <type>folder</type>
@@ -14344,7 +14462,7 @@
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
-		</file>        
+		</file>
         <file>
             <destination>system/workplace/skins/modern/files</destination>
             <type>folder</type>
@@ -14376,7 +14494,7 @@
 			</property>
 		</properties>
 		<accesscontrol/>
-	</file> 
+	</file>
         <file>
             <source>system/workplace/skins/modern/files/css_workplace.css</source>
             <destination>system/workplace/skins/modern/files/css_workplace.css</destination>
@@ -14450,7 +14568,7 @@
             <flags>0</flags>
             <properties/>
             <accesscontrol/>
-        </file> 
+        </file>
         <file>
             <destination>system/workplace/skins/modern/filetypes</destination>
             <type>folder</type>
@@ -14589,7 +14707,7 @@
 		<flags>0</flags>
 		<properties/>
 		<accesscontrol/>
-	</file>        
+	</file>
         <file>
             <source>system/workplace/skins/modern/filetypes/velocity.gif</source>
             <destination>system/workplace/skins/modern/filetypes/velocity.gif</destination>
@@ -14616,7 +14734,7 @@
 		<flags>0</flags>
 		<properties/>
 		<accesscontrol/>
-	</file> 
+	</file>
         <file>
             <source>system/workplace/skins/modern/filetypes/xmltemplate.gif</source>
             <destination>system/workplace/skins/modern/filetypes/xmltemplate.gif</destination>
@@ -15917,7 +16035,7 @@
 		<flags>0</flags>
 		<properties/>
 		<accesscontrol/>
-	</file> 
+	</file>
         <file>
             <source>system/workplace/templates/explorer_head</source>
             <destination>system/workplace/templates/explorer_head</destination>

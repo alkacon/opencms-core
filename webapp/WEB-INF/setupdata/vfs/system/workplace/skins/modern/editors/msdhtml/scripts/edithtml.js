@@ -19,17 +19,17 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
- 
+
 //------------------------------------------------------//
 // Script for html editcontrol
 //------------------------------------------------------//
- 
+
 var binlist=null;
 
 // Definition of constants, which button is clicked
@@ -133,19 +133,19 @@ DECMD_PROPERTIES =                5052
 //
 // Enums
 //
-// OLECMDEXECOPT  
-OLECMDEXECOPT_DODEFAULT =         0 
+// OLECMDEXECOPT
+OLECMDEXECOPT_DODEFAULT =         0
 OLECMDEXECOPT_PROMPTUSER =        1
 OLECMDEXECOPT_DONTPROMPTUSER =    2
 // DHTMLEDITCMDF
-DECMDF_NOTSUPPORTED =             0 
-DECMDF_DISABLED =                 1 
+DECMDF_NOTSUPPORTED =             0
+DECMDF_DISABLED =                 1
 DECMDF_ENABLED =                  3
 DECMDF_LATCHED =                  7
 DECMDF_NINCHED =                  11
 // DHTMLEDITAPPEARANCE
 DEAPPEARANCE_FLAT =               0
-DEAPPEARANCE_3D =                 1 
+DEAPPEARANCE_3D =                 1
 // OLE_TRISTATE
 OLE_TRISTATE_UNCHECKED =          0
 OLE_TRISTATE_CHECKED =            1
@@ -153,7 +153,7 @@ OLE_TRISTATE_GRAY =               2
 
 <!-- Define Arrays for the context menue -->
 
-var MENU_SEPARATOR = ""; 
+var MENU_SEPARATOR = "";
 var ContextMenu = new Array();
 var GeneralContextMenu = new Array();
 var TableContextMenu = new Array();
@@ -175,7 +175,7 @@ function ShowContextMenu() {
   var i
   var idx = 0;
 
-  // Rebuild the context menu. 
+  // Rebuild the context menu.
   ContextMenu.length = 0;
 
   // Always show general menu
@@ -213,7 +213,7 @@ function ShowContextMenu() {
 <!-- Do the Action when a Context menu entry is selected. Taken from the MS example editor -->
 
 function ContextMenuAction(itemIndex) {
-  
+
   if (ContextMenu[itemIndex].cmdId == DECMD_INSERTTABLE) {
     InsertTable();
   } else {
@@ -224,7 +224,7 @@ function ContextMenuAction(itemIndex) {
 function DisplayChanged()
 {
   var i, s;
-         
+
   s =  document.all.EDIT_HTML.QueryStatus(DECMD_GETBLOCKFMT);
   if (s == DECMDF_DISABLED || s == DECMDF_NOTSUPPORTED) {
     document.all.BLOCK.disabled = true;
@@ -238,24 +238,24 @@ function DisplayChanged()
   } else {
     var value = document.all.EDIT_HTML.ExecCommand(DECMD_GETFONTNAME, OLECMDEXECOPT_DODEFAULT);
     if ((value != null) && (USE_FONTFACE == true)) {
-	    document.all.FONTFACE.disabled = false;  
+	    document.all.FONTFACE.disabled = false;
     	document.all.FONTFACE.value = value;
      } else {
-	    document.all.FONTFACE.disabled = true;  
-     }    
+	    document.all.FONTFACE.disabled = true;
+     }
   }
   if (s == DECMDF_DISABLED || s == DECMDF_NOTSUPPORTED) {
     document.all.FONTSIZE.disabled = true;
   } else {
     var value = document.all.EDIT_HTML.ExecCommand(DECMD_GETFONTSIZE, OLECMDEXECOPT_DODEFAULT);
     if ((value != null) && (USE_FONTSIZE == true)) {
-	    document.all.FONTSIZE.disabled = false;  
+	    document.all.FONTSIZE.disabled = false;
     	document.all.FONTSIZE.value = value;
      } else {
-	    document.all.FONTSIZE.disabled = true;  
+	    document.all.FONTSIZE.disabled = true;
      }
   }
-  
+
   if(document.activeElement != EDITOR.EDIT_HTML) {
     EDITOR.EDIT_HTML.focus();
   }
@@ -272,20 +272,20 @@ function doEditHTML(para)
     switch (para)
     {
     case CLOSE:
-        document.EDITOR.action.value = "exit";      
-        document.EDITOR.target = "_top";        
+        document.EDITOR.action.value = "exit";
+        document.EDITOR.target = "_top";
         doSubmit();
         document.EDITOR.submit();
         break;
     case SAVECLOSE:
         document.EDITOR.action.value = "saveexit";
-        document.EDITOR.target = "_top";        
+        document.EDITOR.target = "_top";
         doSubmit();
         document.EDITOR.submit();
         break;
     case SAVEACTION:
         document.EDITOR.action.value = "saveaction";
-        document.EDITOR.target = "_top";        
+        document.EDITOR.target = "_top";
         doSubmit();
         document.EDITOR.submit();
         break;
@@ -297,7 +297,7 @@ function doEditHTML(para)
         break;
     case 4:
         DECMD_UNDO_onclick();
-        break;  
+        break;
     case 5:
         DECMD_REDO_onclick();
         break;
@@ -306,12 +306,12 @@ function doEditHTML(para)
         break;
     case 7:
         MENU_FILE_SAVEAS_onclick();
-        break;  
+        break;
     case 8:
         break;
     case 9:
         DECMD_CUT_onclick();
-        break;      
+        break;
     case 10:
         DECMD_COPY_onclick();
         break;
@@ -326,10 +326,10 @@ function doEditHTML(para)
         break;
     case 14:
         MENU_FILE_SAVEAS_onclick();
-        break;      
+        break;
     case 15:
         EDITOR.EDIT_HTML.PrintDocument(true);
-        break;        
+        break;
     case 21:
         ParagraphStyle_onchange();
         break;
@@ -341,14 +341,14 @@ function doEditHTML(para)
         break;
     case 24:
         DECMD_BOLD_onclick();
-        break;  
+        break;
     case 25:
         DECMD_ITALIC_onclick();
-        break;  
+        break;
     case 26:
         DECMD_UNDERLINE_onclick();
         break;
-        
+
     case 31:
         DECMD_JUSTIFYLEFT_onclick();
         break;
@@ -360,7 +360,7 @@ function doEditHTML(para)
         break;
     case 34:
         DECMD_UNORDERLIST_onclick();
-        break;                  
+        break;
     case 35:
         DECMD_ORDERLIST_onclick();
         break;
@@ -371,86 +371,85 @@ function doEditHTML(para)
         DECMD_OUTDENT_onclick();
         break;
     case 38:
-        ColorSelected=-1;
-        SelColor=-1;
+        ColorSelected = -1;
+        SelColor = -1;
         CheckFGCol= window.setInterval("setFGColor(SelColor)",500);
-        var SelColorWindow= window.open(workplacePath + 'action/edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=450");
-        openWindow = SelColorWindow;
-        focusCount = 1;
-        SelColorWindow.opener = self;
-        SelColorWindow.focus();
+        
+        SelColor = showModalDialog(skinUri + "components/js_colorpicker/index.html", colorPicker, "resizable: no; help: no; status: no; scroll: no;");
+        if (SelColor != null) {
+        	ColorSelected = 1;
+        }
         break;
     case 39:
         ColorSelected=-1;
         SelColor=-1;
         CheckBGCol= window.setInterval("setBGColor(SelColor)",500);
-        var SelColorWindow= window.open(workplacePath + 'action/edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=450");
-        openWindow = SelColorWindow;
-        focusCount = 1;
-        SelColorWindow.opener = self;
-        SelColorWindow.focus();
+        SelColor = showModalDialog(skinUri + "components/js_colorpicker/index.html", colorPicker, "resizable: no; help: no; status: no; scroll: no;");
+        if (SelColor != null) {
+        	ColorSelected = 1;
+        }
         break;
     case 40:
         checkTableSelection();
-        break;          
+        break;
     case 41:
         link = window.open(workplacePath + 'action/edit_html_link.html','SetLink', "width=450, height=300, resizable=no,status=no, top=300, left=250");
-        break;      
+        break;
     case 42:
         DECMD_IMAGE_onclick();
-        break;      
+        break;
     case 43:
         picwin = window.open(workplacePath + "action/picturebrowser.html?initial=true", "PicBrowser", "width=550, height=500, resizable=yes, top=200, left=450");
         openWindow = picwin;
         focusCount = 1;
         picwin.focus();
         break;
-    case 44: 
+    case 44:
         binlist = window.open(workplacePath + 'action/downloadbrowser.html?initial=true','DownBrowser', "width=550, height=500, resizable=yes, top=200, left=450");
         openWindow = binlist;
         focusCount = 1;
-        binlist.focus(); 
+        binlist.focus();
         break;
     case 45:
         DECMD_HYPERLINK_NODIALOG_onclick();
         break;
     case 46:
         vfslink = window.open(workplacePath + 'action/edit_html_vfslink.html','SetLink', "width=450, height=300, resizable=no, top=300, left=250");
-        break;  
+        break;
     case 47:
-        EDITOR.EDIT_HTML.showDetails = !EDITOR.EDIT_HTML.showDetails; 
-        break;   
+        EDITOR.EDIT_HTML.showDetails = !EDITOR.EDIT_HTML.showDetails;
+        break;
     case 48:
-        specchar = window.open(workplacePath + 'action/edit_html_chars.html','characters', "width=450, height=300, resizable=no, status=yes, top=300, left=250");
+        specchar = window.open("dialogs/specialchars.html","characters", "width=450, height=300, resizable=no, scrollbars=no, location=no, menubar=no, toolbar=no,dependent=yes, top=300, left=250");
         openWindow = specchar;
         focusCount = 1;
         specchar.focus();
-        break;     
-    case 49:    
+        break;
+    case 49:
         DECMD_HYPERLINK_onclick();
-        break;                
+        break;
     case 50:
         var winheight = (USE_LINKSTYLEINPUTS?220:170);
         linkEditor = EDITOR.EDIT_HTML;
-        linkEditorAll = EDITOR.EDIT_HTML.DOM.all.tags("A"); 
+        linkEditorAll = EDITOR.EDIT_HTML.DOM.all.tags("A");
         linkEditorRange = EDITOR.EDIT_HTML.DOM.body.createTextRange();
         linkEditorSelection = EDITOR.EDIT_HTML.DOM.selection;
         linkEditorStyleInputs = USE_LINKSTYLEINPUTS;
         linkwin = window.open('dialogs/link.html','SetLink', "width=480, height=" + winheight + ", resizable=no, top=300, left=250");
         openWindow = linkwin;
         focusCount = 1;
-        linkwin.focus();       
-        break;      	         
+        linkwin.focus();
+        break;
     case 51:
         checkTableElSelection("TR");
-        break;          
+        break;
     case 52:
         checkTableElSelection("TD");
-        break; 
+        break;
     case 53:
         var winheight = (USE_LINKSTYLEINPUTS?180:130);
         linkEditor = EDITOR.EDIT_HTML;
-        linkEditorAll = EDITOR.EDIT_HTML.DOM.all.tags("A"); 
+        linkEditorAll = EDITOR.EDIT_HTML.DOM.all.tags("A");
         linkEditorRange = EDITOR.EDIT_HTML.DOM.body.createTextRange();
         linkEditorSelection = EDITOR.EDIT_HTML.DOM.selection;
         linkEditorStyleInputs = USE_LINKSTYLEINPUTS;
@@ -458,24 +457,24 @@ function doEditHTML(para)
         openWindow = anchorwin;
         focusCount = 1;
         anchorwin.focus();
-        break; 
+        break;
     case 56:
         LinkBrowser = window.open(workplacePath + 'action/linkbrowser.html?initial=true', 'LinkBrowser', "width=550, height=500, resizable=no, status=yes, top=300, left=250");
         openWindow = LinkBrowser;
         focusCount = 1;
         LinkBrowser.focus();
-        break;      	
+        break;
     case 57:
         HtmlBrowser = window.open(workplacePath + 'action/htmlbrowser.html?initial=true', 'HtmlBrowser', "width=550, height=500, resizable=no, status=yes, top=300, left=250");
         openWindow = HtmlBrowser;
         focusCount = 1;
         HtmlBrowser.focus();
-        break;      	     	           
+        break;
     default:
-        alert("Sorry, the requested function code " + para + " is not implemented.");          
-    }   
+        alert("Sorry, the requested function code " + para + " is not implemented.");
+    }
 }
-    
+
 <!-- Includes the Document Source-Code into the HTML-Editor and sets up the contect menue-->
 function setText()
 {
@@ -499,7 +498,7 @@ function setText()
 }
 
 // Submitts the Document to the OpenCms System
-function doSubmit() 
+function doSubmit()
 {
     if(document.EDITOR.EDIT_HTML.DOM.documentElement) {
         // IE5
@@ -556,7 +555,7 @@ function MENU_FILE_EXPORT_onclick()
 {
   if (EDITOR.EDIT_HTML.CurrentDocumentPath != "") {
     var path;
-    
+
     path = EDITOR.EDIT_HTML.CurrentDocumentPath;
     if (path.substring(0, 7) == "http://")
       EDITOR.EDIT_HTML.SaveDocument("", true);
@@ -573,8 +572,8 @@ function MENU_FILE_SAVEAS_onclick()
   EDITOR.EDIT_HTML.focus();
 }
 //=======================================================
-function ParagraphStyle_onchange() 
-{    
+function ParagraphStyle_onchange()
+{
   document.EDITOR.EDIT_HTML.ExecCommand(DECMD_SETBLOCKFMT, OLECMDEXECOPT_DODEFAULT, EDITOR.BLOCK.value);
   EDITOR.EDIT_HTML.focus();
 }
@@ -641,26 +640,26 @@ function DECMD_OUTDENT_onclick()
   EDITOR.EDIT_HTML.focus();
 }
 
-<!-- Function to set the ForegroundColor with the data received set by the "selcolor" dialog --> 
- 
+<!-- Function to set the ForegroundColor with the data received set by the "selcolor" dialog -->
+
  function setFGColor(arr)
   {
-  if (arr != -1) 
+  if (arr != -1)
     {
      if (document.all.EDIT_HTML.QueryStatus( DECMD_GETFORECOLOR )   != DECMDF_DISABLED)
      {
       document.all.EDIT_HTML.ExecCommand(DECMD_SETFORECOLOR, OLECMDEXECOPT_DODEFAULT, arr);
      }
       window.clearInterval(CheckFGCol);
-      SelColor=-1; 
+      SelColor=-1;
     }
   }
-  
-<!-- Function to set the BackgroundColor with the data received set by the "selcolor" dialog --> 
- 
+
+<!-- Function to set the BackgroundColor with the data received set by the "selcolor" dialog -->
+
  function setBGColor(arr)
   {
-  if (arr != -1) 
+  if (arr != -1)
     {
      if (document.all.EDIT_HTML.QueryStatus( DECMD_SETBACKCOLOR )  != DECMDF_DISABLED )
      {
@@ -697,45 +696,52 @@ function DECMD_SETBACKCOLOR_onclick()
   EDITOR.EDIT_HTML.focus();
 }
 
-/* Checks if an table-element is selected in the DHTML Editor */
+/* Checks if a table-element is selected in the DHTML Editor */
 function checkTableSelection() {
   var editor = document.all.EDIT_HTML;
   var sel = editor.DOM.selection;
-    
+
   if(sel.type == "Control") {
     var range = sel.createRange()(0);
-    
+
     // we have selected a table object
     if(range.tagName == "TABLE" || range.tagName == "table") {
-      
+
       // get table properties
-      var args1 = new Array();      
-      args1["border"] = range.border;  
-      args1["cellpadding"] = range.cellPadding;  
-      args1["cellspacing"] = range.cellSpacing; 
-      if(range.bgColor != "" && range.bgColor.length > 0) {
-        args1["bgcolor"] = range.bgColor       
+      var args1 = new Array();
+
+      if (range.border != "" && range.border.length > 0) {
+        args1["BorderLineWidth"] = range.border;
       }
-      
+
+      if (range.cellPadding != "" && range.cellPadding.length > 0) {
+        args1["CellPadding"] = range.cellPadding;
+      }
+
+      if (range.cellSpacing != "" && range.cellSpacing.length > 0) {
+        args1["CellSpacing"] = range.cellSpacing;
+      }
+
+      if (range.bgColor != "" && range.bgColor.length > 0) {
+        args1["TableColor"] = range.bgColor;
+      }
+
       //get new attributes
-      var args2 = new Array();               
-      args2 = showModalDialog( workplacePath + "action/edit_html_changetable.html", args1,"font-family:Verdana; font-size:12; dialogWidth:50em; dialogHeight:25em");
-      
+      var args2 = new Array();
+      args2 = showModalDialog("dialogs/table_new.html?titleType=edit", args1, "dialogWidth:550px; dialogHeight:270px; resizable: no; help: no; status: no; scroll: no;");
+
       // set the new attributes
-      if (args2 != null) {     
+      if (args2 != null) {
         for ( elem in args2 ) {
-          if ("border" == elem && args2["border"] != null) {      
-            range.border = args2["border"];
+          if ("BorderLineWidth" == elem && args2["BorderLineWidth"] != null) {
+            range.border = args2["BorderLineWidth"];
+          } else if ("CellPadding" == elem && args2["CellPadding"] != null) {
+            range.cellPadding = args2["CellPadding"];
+          } else if ("CellSpacing" == elem && args2["CellSpacing"] != null) {
+            range.cellSpacing = args2["CellSpacing"];
+          } else if ("TableColor" == elem && args2["TableColor"] != null) {
+            range.bgColor = args2["TableColor"];
           }
-          else if ("cellpadding" == elem && args2["cellpadding"] != null) {      
-            range.cellPadding = args2["cellpadding"];
-          }          
-          else if ("cellspacing" == elem && args2["cellspacing"] != null) {      
-            range.cellSpacing = args2["cellspacing"];
-          }
-          else if ("bgcolor" == elem && args2["bgcolor"] != null) {      
-            range.bgColor = args2["bgcolor"];
-          }                              
         }
       }
     }
@@ -743,7 +749,7 @@ function checkTableSelection() {
   else {
     InsertTable();
   }
-  
+
 }
 
 /* Checks if tablerow- or tablecell-element is selected in the DHTML Editor */
@@ -758,7 +764,7 @@ function checkTableElSelection(type)
 
   // there should be no selection !
   if (sel.type == 'None') {
-    var elt = cursorPos.parentElement(); 
+    var elt = cursorPos.parentElement();
 	// find next TD or TR
     while (elt) {
       if (elt.tagName == type) {
@@ -771,51 +777,51 @@ function checkTableElSelection(type)
       // don't select document area
       if (elt.id != editor.id) {
         // get all attributes
-        var eltheight = elt.getAttribute("height", 0);      
-        var eltwidth = elt.getAttribute("width", 0);      
-        var eltalign = elt.getAttribute("align", 0);      
-        var eltvAlign = elt.getAttribute("vAlign", 0);      
-        var eltbgColor = elt.getAttribute("bgColor", 0);      
-        var eltborderColor = elt.getAttribute("borderColor", 0);      
+        var eltheight = elt.getAttribute("height", 0);
+        var eltwidth = elt.getAttribute("width", 0);
+        var eltalign = elt.getAttribute("align", 0);
+        var eltvAlign = elt.getAttribute("vAlign", 0);
+        var eltbgColor = elt.getAttribute("bgColor", 0);
+        var eltborderColor = elt.getAttribute("borderColor", 0);
         // set arguments for dialog
         if(eltbgColor != null && eltbgColor != "undefined" && eltbgColor.length > 0) {
-          args1["bgColor"] = eltbgColor;       
+          args1["bgColor"] = eltbgColor;
         } else {
 	      args1["bgColor"] = "";
   	    }
         if(eltborderColor != null && eltborderColor != "undefined" && eltborderColor.length > 0) {
-          args1["borderColor"] = eltborderColor;       
+          args1["borderColor"] = eltborderColor;
         } else {
 	      args1["borderColor"] = "";
 	    }
         if(eltheight != null && eltheight.length > 0) {
-          args1["height"] = eltheight;       
+          args1["height"] = eltheight;
         } else {
 	      args1["height"] = "";
   	    }
         if(eltwidth != null && eltwidth.length > 0) {
-          args1["width"] = eltwidth;       
+          args1["width"] = eltwidth;
         } else {
 	      args1["width"] = "";
 	    }
         if(eltalign != null && eltalign.length > 0) {
-          args1["align"] = eltalign;       
+          args1["align"] = eltalign;
         } else {
 	      args1["align"] = "";
 	    }
         if(eltvAlign != null && eltvAlign.length > 0) {
-          args1["vAlign"] = eltvAlign; 
+          args1["vAlign"] = eltvAlign;
         } else {
 	      args1["vAlign"] = "";
 	    }
   	    args1["title"] = type;
-	  
+
 		// call dialog
-        args2 = showModalDialog( workplacePath + "action/edit_html_changetable_el.html", args1,"font-family:Verdana; font-size:12; dialogWidth:50em; dialogHeight:32em");
+        args2 = showModalDialog("dialogs/table_element.html?titleType=" + type, args1, "dialogWidth:450px; dialogHeight:270px; resizable: no; help: no; status: no; scroll: no;");
 
 		// args == null if cancel button was pressed
-        if (args2 != null) {     
-		  // clear all attributes	
+        if (args2 != null) {
+		  // clear all attributes
   	      elt.removeAttribute("bgColor", 0);
   	      elt.removeAttribute("borderColor", 0);
   	      elt.removeAttribute("height", 0);
@@ -826,24 +832,24 @@ function checkTableElSelection(type)
           for ( elem in args2 ) {
             if ("bgColor" == elem && args2["bgColor"] != null) {
               elt.setAttribute("bgColor", args2["bgColor"]);
-            } else if ("borderColor" == elem && args2["borderColor"] != null) {      
+            } else if ("borderColor" == elem && args2["borderColor"] != null) {
               elt.borderColor = args2["borderColor"];
-            } else if ("height" == elem && args2["height"] != null) {      
+            } else if ("height" == elem && args2["height"] != null) {
               elt.height = args2["height"];
-            } else if ("width" == elem && args2["width"] != null) {      
+            } else if ("width" == elem && args2["width"] != null) {
               elt.width = args2["width"];
-            } else if ("align" == elem && args2["align"] != null) {      
+            } else if ("align" == elem && args2["align"] != null) {
                 elt.align = args2["align"];
-            } else if ("vAlign" == elem && args2["vAlign"] != null) {      
+            } else if ("vAlign" == elem && args2["vAlign"] != null) {
                 elt.vAlign = args2["vAlign"];
-            }          
+            }
           }
         }
       } else {
         // id of found element == id of Editor, so cursor is not inside table
     	args1["error_notable"] = "true";
     	showModalDialog( workplacePath + "action/edit_html_changetable_el.html", args1,"font-family:Verdana; font-size:12; dialogWidth:50em; dialogHeight:32em");
-      } 
+      }
     } else {
       // no parent found with tag.name == TR or TD
       args1["error_notable"] = "true";
@@ -862,12 +868,12 @@ function InsertTable()
   var pVar = document.all.ObjTableInfo;
   var args = new Array();
   var arr = null;
-  
+
   document.all.ObjTableInfo.TableAttrs =" ";
   document.all.ObjTableInfo.CellAttrs =" ";
-   
+
 <!-- Preset values for the Table Dialog. Data is stored in an array that is submitted to the dialog -->
-  
+
   args["NumRows"] = document.all.ObjTableInfo.NumRows;
   args["NumCols"] = document.all.ObjTableInfo.NumCols;
   args["TableAttrs"] =document.all.ObjTableInfo.TableAttrs;
@@ -876,101 +882,65 @@ function InsertTable()
   args["BorderLineWidth"] = 1;
   args["CellSpacing"] = 1;
   args["CellPadding"] = 1;
-  args["TableAlignment"] = "left";
-  args["TableWidth"]=100;
-  args["TableHeight"]=100;
-  args["TableWidthMode"]="%"; 
-  args["TableHeightMode"]="%"; 
-    
-  arr = null; 
-  
+  args["TableAlignment"] = "";
+  args["TableWidth"] = 100;
+  args["TableHeight"] = 100;
+  args["TableWidthMode"] = "";
+  args["TableHeightMode"] = "";
+
+  arr = null;
+
 <!-- Call the "addtable" dialog and receive its results in the arr array -->
 
-  arr = showModalDialog( workplacePath + "action/edit_html_newtable.html",
-                          args,
-                          "font-family:Verdana; font-size:12; dialogWidth:50em; dialogHeight:40em");
-  if (arr != null) 
-  { 
+  arr = showModalDialog("dialogs/table_new.html", args, "dialogWidth:550px; dialogHeight:270px; resizable: no; help: no; status: no; scroll: no;");
+  if (arr != null)
+  {
 
 <!-- Initialize table object. Values from the arr array are processed for creating the Control call -->
-    
-    for ( elem in arr ) 
-    {
-      if ("NumRows" == elem && arr["NumRows"] != null) 
-       {
+
+    for ( elem in arr ) {
+      if ("NumRows" == elem && arr["NumRows"] != null) {
         document.all.ObjTableInfo.NumRows = arr["NumRows"];
-       }
-      else if ("NumCols" == elem && arr["NumCols"] != null)
-       {
+      } else if ("NumCols" == elem && arr["NumCols"] != null) {
         document.all.ObjTableInfo.NumCols = arr["NumCols"];
-       }
-       else if ("BorderLineWidth" == elem)
-       {
-        document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "border="+arr["BorderLineWidth"]+" "; 
-       } 
-       else if ("CellSpacing" == elem)
-       {
-        document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "cellspacing="+arr["CellSpacing"]+" "; 
-       }
-       else if ("CellPadding" == elem)
-       {
-        document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "cellpadding="+arr["CellPadding"]+" "; 
-       }
-       else if ("TableWidth" == elem)
-        {
-         if(arr["TableWidthSelected"] == "TRUE")
-         {
-            document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "width="+arr["TableWidth"]; 
-            if(arr["TableWidthMode"] == "%") 
-            {
-                document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +"% "
-            }
-            else
-            {
-                document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +" "
-            }
-         }
-       }
-       else if ("TableHeight" == elem) 
-        {
-         if(arr["TableHeigthSelected"] == "TRUE")
-         {
-            document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "height="+arr["TableHeight"]; 
-            if(arr["TableHeightMode"] == "%") 
-            {
-                document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +"% "
-            }
-            else
-            {
-                document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +" "
-            }   
-          }      
+      } else if ("BorderLineWidth" == elem) {
+        document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "border="+arr["BorderLineWidth"]+" ";
+      } else if ("CellSpacing" == elem) {
+        document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "cellspacing="+arr["CellSpacing"]+" ";
+      } else if ("CellPadding" == elem) {
+        document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "cellpadding="+arr["CellPadding"]+" ";
+      } else if ("TableWidth" == elem) {
+        if(arr["TableWidth"] != "") {
+          document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "width="+arr["TableWidth"];
+          if(arr["TableWidthMode"] == "%") {
+            document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +"% "
+          } else {
+            document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +" "
+          }
         }
-      else if ("TableAlignment" == elem) 
-       {
-        document.all.ObjTableInfo.CellAttrs = document.all.ObjTableInfo.CellAttrs + "align="+arr["TableAlignment"]+" "; 
-       }
-      else if ("TableColor" == elem)
-       {
-        if(arr["TableColorSelected"] == "TRUE")
-        {
-         document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "bgcolor="+arr["TableColor"];
+      } else if ("TableHeight" == elem) {
+        if(arr["TableHeight"] == "") {
+          document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "height="+arr["TableHeight"];
+          if(arr["TableHeightMode"] == "%") {
+            document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +"% "
+          } else {
+            document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +" "
+          }
         }
-       }
-      else if ("Caption" == elem)
-        {
+      } else if ("TableAlignment" == elem) {
+        document.all.ObjTableInfo.CellAttrs = document.all.ObjTableInfo.CellAttrs + "align="+arr["TableAlignment"]+" ";
+      } else if ("TableColor" == elem) {
+        if(arr["TableColor"] != "") {
+          document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "bgcolor="+arr["TableColor"];
+        }
+      } else if ("Caption" == elem) {
         document.all.ObjTableInfo.Caption = arr["Caption"];
-       }
+      }
     }
-  
-    document.all.EDIT_HTML.ExecCommand(DECMD_INSERTTABLE, OLECMDEXECOPT_DODEFAULT, pVar);  
+
+    document.all.EDIT_HTML.ExecCommand(DECMD_INSERTTABLE, OLECMDEXECOPT_DODEFAULT, pVar);
   }
 }
-
-
-
-
-
 
 
 function DECMD_HYPERLINK_onclick()
@@ -993,10 +963,10 @@ function DECMD_HYPERLINK_NODIALOG_onclick()
 // sends URL string from seperate browser window to a hidden field within the opener document
 function sendURLString(destFormName,destFieldName,strURL) {
     var obj1='top.window.opener.self.document.'+ destFormName;
-    var obj2='top.window.opener.self.document.'+ destFormName +'.'+ destFieldName;   
-    if (eval(obj1) && eval(obj2)) { 
-        eval(obj2 +'.value="'+strURL+'"'); 
-        top.window.opener.doEditHTML(45); 
+    var obj2='top.window.opener.self.document.'+ destFormName +'.'+ destFieldName;
+    if (eval(obj1) && eval(obj2)) {
+        eval(obj2 +'.value="'+strURL+'"');
+        top.window.opener.doEditHTML(45);
     }
 }
 
@@ -1020,14 +990,14 @@ function initStyles() {
 }
 
 /***********************************************************/
-/* Delete all empty <a>-Tags 
+/* Delete all empty <a>-Tags
 /***********************************************************/
 function deleteEmptyATags()
 {
-   	var allLinks = EDITOR.EDIT_HTML.DOM.all.tags("A"); 
-	var allImgLinks;                                            
+   	var allLinks = EDITOR.EDIT_HTML.DOM.all.tags("A");
+	var allImgLinks;
 
-    for(var i = 0; i < allLinks.length; i++) 
+    for(var i = 0; i < allLinks.length; i++)
 	{
 		if (allLinks[i].innerText == "")
 		{
@@ -1039,7 +1009,7 @@ function deleteEmptyATags()
 }
 
 /***********************************************************/
-/* Replace  absolute Image-Path by relative Path.Example, 
+/* Replace  absolute Image-Path by relative Path.Example,
 /* http://10.0.0.0:8080/system/test -> /system/test
 /***********************************************************/
 function makeImageLinks()
@@ -1054,7 +1024,7 @@ function makeImageLinks()
         	href = href.replace(systemPath, "");
 		el.setAttribute("src", href);
 		// el.removeAttribute("style");
-	}	
+	}
 }
 
 /***********************************************************/
@@ -1065,13 +1035,13 @@ function getSystemPath()
 	var systemPath="";
 	var localURL=document.URL;
 	var n;
-   
+
     	n = localURL.indexOf("://", 0);
     	if (n<0) return systemPath;
-    	
+
     	n = localURL.indexOf("/", n+3);
     	if (n<0) n = localURL.length;
-    	
+
     	systemPath = localURL.substring(0, n);
     	return systemPath;
 }

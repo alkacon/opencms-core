@@ -30,7 +30,7 @@ case CmsProperty.ACTION_SHOW_DEFINE:
 	wp.actionEdit(request);
 	wp.setParamAction(wp.DIALOG_SAVE_DEFINE);
 	
-%><%= wp.htmlStart("help.explorer.contextmenu.properties") %>
+%><%= wp.htmlStart("help.explorer.contextmenu.properties", wp.getParamTitle()) %>
 <script type="text/javascript">
 <!--
 function checkName() {
@@ -84,7 +84,7 @@ default:
 
 wp.setParamAction(wp.DIALOG_SAVE_EDIT);
 	
-%><%= wp.htmlStart("help.explorer.contextmenu.properties") %>
+%><%= wp.htmlStart("help.explorer.contextmenu.properties", wp.getParamTitle()) %>
 <script type="text/javascript">
 <!--
 function toggleDelete(propName) {
