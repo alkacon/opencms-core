@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/I_CmsEditorActionHandler.java,v $
- * Date   : $Date: 2004/02/23 11:35:39 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/02/24 17:24:01 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.JspException;
  * The class you enter must implement this interface to perform the editor action.<p>  
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.3.0
  */
@@ -76,6 +76,9 @@ public interface I_CmsEditorActionHandler {
     
     /** Constant for: direct edit mode inactive */
     String C_DIRECT_EDIT_MODE_INACTIVE = "inactive";
+    
+    /** Key to identify the edit button style, used on JPS pages that supply the direct edit html */  
+    String C_DIRECT_EDIT_PARAM_BUTTONSTYLE = "__directEditButtonStyle";
     
     /** Key to identify the edit element, used on JPS pages that supply the direct edit html */  
     String C_DIRECT_EDIT_PARAM_ELEMENT = "__directEditElement";

@@ -11,6 +11,10 @@ org.opencms.jsp.CmsJspActionElement cms = new CmsJspActionElement(pageContext, r
 String uri = cms.getRequestContext().getUri();
 CmsDialog wp = new CmsDialog(cms);
 
+int editButtonStyle = 1;
+try {
+	editButtonStyle = Integer.parseInt((String)request.getAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_BUTTONSTYLE));
+} catch (Exception e) {}
 String editTarget = (String)request.getAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_TARGET);
 String editElement = (String)request.getAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_ELEMENT);
 String editLocale = (String)request.getAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_LOCALE);
@@ -37,9 +41,16 @@ if (editElement != null) {
 <input type="hidden" name="backlink" value="<%= uri %>">
 </form>
 <span class="directedit_button" onmouseover="activate('<%= editId %>');" onmouseout="deactivate('<%= editId %>');">
-<table border="0" cellpadding="1" cellspacing="0">
+<table border="0" cellpadding="0" cellspacing="0">
 <tr>
-	<td><a href="#" onclick="javascript:document.forms['form_<%= editId %>'].submit();" class="button"><span unselectable="on" class="norm" onmouseover="className='over'" onmouseout="className='norm'" onmousedown="className='push'" onmouseup="className='over'"><span id="bt_<%= editId %>" unselectable="on" class="combobutton" style="height: 20px; background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.gif');"><%= wp.key("editor.frontend.button.edit") %></span></span></a></td>
+	<td><a href="#" onclick="javascript:document.forms['form_<%= editId %>'].submit();" class="button"><span unselectable="on" class="over" onmouseover="className='over'" onmouseout="className='over'" onmousedown="className='push'" onmouseup="className='over'"><%
+   if (editButtonStyle == 1) { 
+	%><span id="bt_<%= editId %>" unselectable="on" class="combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.gif');">&nbsp;<%= wp.key("editor.frontend.button.edit") %></span><%
+   } else if (editButtonStyle == 2) { 
+	%><span unselectable="on" class="combobutton" style="padding-left: 4px;"><%= wp.key("editor.frontend.button.edit") %></span><%
+   } else { 
+	%><span id="bt_<%= editId %>" unselectable="on" class="combobutton" style="padding-left: 15px; padding-right: 1px; background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.gif'); background-position: 0px 0px;">&nbsp;</span></span></a></td><%
+   } %></span></a></td>
 </tr>
 </table>
 </span>
@@ -78,56 +89,57 @@ if (editElement != null) {
 <style type="text/css">
 <!--
 a.button {
-	color: #000000;
+	color: ButtonText;
 	text-decoration: none;
-	cursor: hand;
+	cursor: pointer;
 }
 a.button:active {
-	color: #000000;
+	color: ButtonText;
 	text-decoration: none;
 }
 a.button:hover {
-	color: #000000;
+	color: ButtonText;
 	text-decoration: none;
 }
 a.button:visited {
-	color: #000000;
+	color: ButtonText;
 	text-decoration: none;
 }
 span.combobutton {
 	display: block;
-	height: 17px;
-	font-family: verdana, sans-serif;
+	font-family: Verdana, sans-serif;
 	font-size: 11px;
 	white-space: nowrap;
-	padding-top: 3px;
+	padding-top: 4px;
 	padding-left: 21px;
-	padding-right: 5px;
+	padding-right: 4px;
+	padding-bottom: 4px;
 	background-repeat: no-repeat;
-	background-color: #c0c0c0;
+	background-color: ButtonFace;
+	background-position: 4px 0px;
 }
 span.norm {
 	display: block;
-	border: 1px solid #c0c0c0;
+	border: 1px solid ButtonFace;
 }
 span.over {
 	display: block;
-	border-top: 1px solid #ffffff;
-	border-left: 1px solid #ffffff;
-	border-bottom: 1px solid #777777;
-	border-right: 1px solid #777777;
+	border-top: 1px solid ButtonHighlight;
+	border-left: 1px solid ButtonHighlight;
+	border-bottom: 1px solid ButtonShadow;
+	border-right: 1px solid ButtonShadow;
 }
 span.push {
 	display: block;
-	border-top: 1px solid #777777;
-	border-left: 1px solid #777777;
-	border-bottom: 1px solid #ffffff;
-	border-right: 1px solid #ffffff;
+	border-top: 1px solid ButtonShadow;
+	border-left: 1px solid ButtonShadow;
+	border-bottom: 1px solid ButtonHighlight;
+	border-right: 1px solid ButtonHighlight;
 }
 span.disabled {
 	display: block;
-	border: 1px solid #c0c0c0;
-	color: #888888;
+	border: 1px solid ButtonFace;
+	color: ButtonShadow;
 }
 div.directedit_norm {
 	width: 100%;
@@ -138,15 +150,14 @@ div.directedit_over {
 	width: 100%;
 	padding-top: 0;
 	padding-bottom: 0;
-	background-color: #f0f0f0;
-	border-top: 1px dotted #000000;
-	border-bottom: 1px dotted #000000;
+	background-color: InfoBackground;
+	border-top: 1px dotted ThreedDarkShadow;
+	border-bottom: 1px dotted ThreedDarkShadow;
 }
 span.directedit_button {
 	position: absolute;
-	z-index: 25;
-	background-color: #c0c0c0;
-	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=85, finishopacity=85, style=1);
+	z-index: 250;
+	background-color: ButtonFace;
 }
 form.nomargin {
 	display: none;
@@ -161,7 +172,10 @@ function activate(id) {
 	if (el.className == "directedit_norm") {
 		el.className = "directedit_over";
 	}
-	document.getElementById("bt_" + id).style.backgroundImage = "url(<%= wp.getSkinUri() %>buttons/directedit_op.gif)";
+	var bt = document.getElementById("bt_" + id);
+	if (bt != null) {
+		bt.style.backgroundImage = "url(<%= wp.getSkinUri() %>buttons/directedit_op.gif)";
+	}
 
 }
 function deactivate(id) {
@@ -169,7 +183,10 @@ function deactivate(id) {
 	if (el.className == "directedit_over") {
 		el.className = "directedit_norm";
 	}
-	document.getElementById("bt_" + id).style.backgroundImage = "url(<%= wp.getSkinUri() %>buttons/directedit_cl.gif)";
+	var bt = document.getElementById("bt_" + id);
+	if (bt != null) {
+		bt.style.backgroundImage = "url(<%= wp.getSkinUri() %>buttons/directedit_cl.gif)";
+	}
 }
 //-->
 </script>

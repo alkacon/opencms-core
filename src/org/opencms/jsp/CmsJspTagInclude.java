@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2004/02/20 12:45:54 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/02/24 17:24:01 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package org.opencms.jsp;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexResponse;
 import org.opencms.main.CmsException;
@@ -54,7 +55,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -382,7 +383,9 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 // set additional request parameters/attributes required for the included direct edit JSP 
                 req.setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_ELEMENT, element);
                 req.setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_LOCALE, controller.getCmsObject().getRequestContext().getLocale().toString());
-                req.setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_TARGET, target);            
+                req.setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_TARGET, target);
+                CmsUserSettings settings = new CmsUserSettings(controller.getCmsObject().getRequestContext().currentUser());
+                req.setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_BUTTONSTYLE, "" + settings.getDirectEditButtonStyle());
                 
                 includeDirectEditElement(context, directEditIncludeFile, I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_START + "_" + directEditPermissions, req, res);
             }

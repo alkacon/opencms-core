@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/02/22 13:52:27 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/02/24 17:24:01 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1.12
  */
@@ -95,6 +95,9 @@ public class CmsPreferences extends CmsTabDialog {
     
     /** Request parameter name prefix for the preferred editors */
     public static final String INPUT_DEFAULT = "default";
+    
+    /** Request parameter name for the direct edit button style */
+    public static final String PARAM_DIRECTEDIT_BUTTONSTYLE = "tabeddirecteditbuttonstyle";
     
     /** Request parameter name for the editor button style */
     public static final String PARAM_EDITOR_BUTTONSTYLE = "tabedbuttonstyle";
@@ -346,6 +349,17 @@ public class CmsPreferences extends CmsTabDialog {
         String [] vals = new String[] {"0", "1", "2"};
         List values = new ArrayList(java.util.Arrays.asList(vals));
         return buildSelect(htmlAttributes, options, values, selectedIndex);
+    }
+    
+    /**
+     * Builds the html for the direct edit button style select box.<p>
+     * 
+     * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
+     * @return the html for the direct edit button style select box
+     */
+    public String buildSelectDirectEditButtonStyle(String htmlAttributes) {
+        int selectedIndex = Integer.parseInt(getParamTabEdDirectEditButtonStyle());
+        return buildSelectButtonStyle(htmlAttributes, selectedIndex);
     }
     
     /**
@@ -733,6 +747,17 @@ public class CmsPreferences extends CmsTabDialog {
     }
     
     /**
+     * Returns the "direct edit button style" setting.<p>
+     * 
+     * @return the "direct edit button style" setting
+     */
+    public String getParamTabEdDirectEditButtonStyle() {
+        return "" + m_userSettings.getDirectEditButtonStyle();
+    }
+    
+    
+    
+    /**
      * Returns the "explorer button style" setting.<p>
      * 
      * @return the "explorer button style" setting
@@ -1096,6 +1121,19 @@ public class CmsPreferences extends CmsTabDialog {
     public void setParamTabEdButtonStyle(String value) {
         try {
             m_userSettings.setEditorButtonStyle(Integer.parseInt(value));
+        } catch (Throwable t) {
+            // ignore this exception
+        }
+    }
+    
+    /**
+     * Sets the "direct edit button style" setting.<p>
+     * 
+     * @param value a String representation of an int value to set the "direct edit button style" setting
+     */
+    public void setParamTabEdDirectEditButtonStyle(String value) {
+        try {
+            m_userSettings.setDirectEditButtonStyle(Integer.parseInt(value));
         } catch (Throwable t) {
             // ignore this exception
         }

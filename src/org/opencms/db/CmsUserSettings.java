@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2004/02/23 23:27:03 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/24 17:24:01 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Locale;
  * Object to conveniently access and modify the users workplace settings.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1.12
  */
@@ -55,6 +55,10 @@ public class CmsUserSettings {
     
     /** Identifier for the users additional editor settings information */
     public static final String C_ADDITIONAL_INFO_EDITORSETTINGS = "USER_EDITORSETTINGS";
+    private static final int C_BUTTONSTYLE_DEFAULT = 1;
+    
+    /** Identifier for the direct editing button style setting key */
+    public static final String C_DIRECT_EDIT_BUTTONSTYLE = "DIRECT_EDIT_BUTTONSTYLE";
     
     /** Identifier for the editor button style setting key */
     public static final String C_EDITOR_BUTTONSTYLE = "EDITOR_BUTTONSTYLE";
@@ -62,35 +66,34 @@ public class CmsUserSettings {
     /** Identifier for the preferred editor setting key (prefix) */
     public static final String C_EDITOR_PREFERRED_PREFIX = "EDITOR_PREFERRED_";
     
+    private static final int C_ENTRYS_PER_PAGE_DEFAULT = 50;
+    
     /** Identifier for the explorer button style setting key */
     public static final String C_EXPLORER_BUTTONSTYLE = "EXPLORER_BUTTONSTYLE";
     
     /** Identifier for the explorer number of file entries per page setting key */
     public static final String C_EXPLORER_FILEENTRIES = "USER_EXPLORER_FILEENTRIES";
+    private static final String C_REPORTTYPE_DEFAULT = CmsReport.REPORT_TYPE_SIMPLE;
     
     /** Identifier for the workplace button style setting key */
     public static final String C_WORKPLACE_BUTTONSTYLE = "WORKPLACE_BUTTONSTYLE";
     
     /** Identifier for the workplace report type setting key */
     public static final String C_WORKPLACE_REPORTTYPE = "WORKPLACE_REPORTTYPE";
-    
-    private static final int C_ENTRYS_PER_PAGE_DEFAULT = 50;
-    private static final int C_BUTTONSTYLE_DEFAULT = 1;
-    private static final String C_REPORTTYPE_DEFAULT = CmsReport.REPORT_TYPE_SIMPLE;
+    private HashMap m_editorSettings;
     
     private int m_explorerButtonStyle;
     private int m_explorerFileEntries;
     private int m_explorerSettings;
-    private HashMap m_editorSettings;
-    private Hashtable m_taskSettings;
-    private int m_taskMessages;
-    private Hashtable m_workplaceSettings;
-    private String m_town;
-    private String m_zipCode;
-    private CmsUser m_user;
     
     /** Locale to avoid multiple locale constructs out of Strings */
     private Locale m_locale;
+    private int m_taskMessages;
+    private Hashtable m_taskSettings;
+    private String m_town;
+    private CmsUser m_user;
+    private Hashtable m_workplaceSettings;
+    private String m_zipCode;
 
     /**
      * Creates an empty new user settings object.<p>
@@ -116,6 +119,161 @@ public class CmsUserSettings {
      */
     public CmsUserSettings(CmsUser user) {
         init(user);
+    }
+    
+    /**
+     * Returns the town of the user.<p>
+     * 
+     * @return the town of the user
+     */
+    public String getAddressTown() {
+        return m_town;
+    }
+    
+    /**
+     * Returns the zipcode of the user.<p>
+     * 
+     * @return the zipcode of the user
+     */
+    public String getAddressZip() {
+        return m_zipCode;
+    }
+    
+    /**
+     * Returns the style of the direct edit buttons of the user.<p>
+     * 
+     * @return the style of the direct edit buttons of the user
+     */
+    public int getDirectEditButtonStyle() {
+        int style = C_BUTTONSTYLE_DEFAULT;
+        try {
+            style = Integer.parseInt((String)m_editorSettings.get(C_DIRECT_EDIT_BUTTONSTYLE));
+        } catch (Throwable t) {
+            // ignore this exception
+        }
+        return style;
+    }
+    
+    /**
+     * Returns the style of the editor buttons of the user.<p>
+     * 
+     * @return the style of the editor buttons of the user
+     */
+    public int getEditorButtonStyle() {
+        int style = 0;
+        try {
+            style = Integer.parseInt((String)m_editorSettings.get(C_EDITOR_BUTTONSTYLE));
+        } catch (Throwable t) {
+            // ignore this exception
+        }
+        return style;
+    }
+   
+   /**
+    * Returns the style of the explorer buttons of the user.<p>
+    * 
+    * @return the style of the explorer buttons of the user
+    */
+   public int getExplorerButtonStyle() {
+       return m_explorerButtonStyle;
+   }
+   
+   /**
+    * Returns the number of displayed files per page of the user.<p>
+    * 
+    * @return the number of displayed files per page of the user
+    */
+   public int getExplorerFileEntries() {
+       return m_explorerFileEntries;
+   }
+    
+    /** 
+     * Returns the locale of the user.<p>
+     * 
+     * @return the loclae of the user
+     */
+    public Locale getLocale() {
+        if (m_locale == null) {
+            m_locale = CmsLocaleManager.getLocale((String)m_workplaceSettings.get(I_CmsConstants.C_START_LOCALE)); 
+        }
+        return m_locale; 
+    }
+    
+    /**
+     * Returns the preferred editor for the given resource type of the user.<p>
+     * 
+     * @param resourceType the resource type
+     * @return the preferred editor for the resource type or null, if not specified
+     */
+    public String getPreferredEditor(String resourceType) {
+        return (String)m_editorSettings.get(C_EDITOR_PREFERRED_PREFIX + resourceType.toUpperCase());
+    }
+    
+    /** 
+     * Returns the start project of the user.<p>
+     * 
+     * @return the start project of the user
+     */
+    public String getStartProject() {
+        Integer projectId = (Integer)m_workplaceSettings.get(I_CmsConstants.C_START_PROJECT);       
+        return projectId.toString();
+    }
+    
+    /**
+     * Returns the current start view of the user.<p>
+     * 
+     * @return the current start view of the user
+     */
+    public String getStartView() {
+        return (String)m_workplaceSettings.get(I_CmsConstants.C_START_VIEW);
+    }
+    
+    /**
+     * Returns the startup filter for the tasks view.<p>
+     * 
+     * @return the startup filter for the tasks view
+     */
+    public String getTaskStartupFilter() {
+        return (String)m_taskSettings.get(I_CmsConstants.C_TASK_FILTER);
+    }
+    
+    /**
+     * Returns the current user for the settings.<p>
+     * 
+     * @return the CmsUser
+     */
+    public CmsUser getUser() {
+        return m_user;
+    }
+    
+    /**
+     * Returns the style of the workplace buttons of the user.<p>
+     * 
+     * @return the style of the workplace buttons of the user
+     */
+    public int getWorkplaceButtonStyle() {
+        int style = C_BUTTONSTYLE_DEFAULT;
+        try {
+            style = Integer.parseInt((String)m_workplaceSettings.get(C_WORKPLACE_BUTTONSTYLE));
+        } catch (Throwable t) {
+            // ignore this exception
+        }
+        return style;
+    }
+    
+    /**
+     * Returns the type of the report (simple or extended) of the user.<p>
+     * 
+     * @return the type of the report (simple or extended) of the user
+     */
+    public String getWorkplaceReportType() {
+        String type = C_REPORTTYPE_DEFAULT;
+        try {
+            type = (String)m_workplaceSettings.get(C_WORKPLACE_REPORTTYPE);
+        } catch (Throwable t) {
+            // ignore this exception
+        }
+        return type;
     }
     
     /**
@@ -183,30 +341,12 @@ public class CmsUserSettings {
     }
     
     /**
-     * Returns the town of the user.<p>
-     * 
-     * @return the town of the user
-     */
-    public String getAddressTown() {
-        return m_town;
-    }
-    
-    /**
      * Sets the town of the user.<p>
      * 
      * @param value the town of the user 
      */
     public void setAddressTown(String value) {
         m_town = value;
-    }
-    
-    /**
-     * Returns the zipcode of the user.<p>
-     * 
-     * @return the zipcode of the user
-     */
-    public String getAddressZip() {
-        return m_zipCode;
     }
 
     /**
@@ -219,22 +359,40 @@ public class CmsUserSettings {
     }
     
     /**
-     * Returns the current user for the settings.<p>
+     * Sets the style of the direct edit buttons of the user.<p>
      * 
-     * @return the CmsUser
+     * @param style the style of the direct edit buttons of the user
      */
-    public CmsUser getUser() {
-        return m_user;
+    public void setDirectEditButtonStyle(int style) {
+        m_editorSettings.put(C_DIRECT_EDIT_BUTTONSTYLE, "" + style);
     }
     
     /**
-     * Sets the current user for the settings.<p>
+     * Sets the style of the editor buttons of the user.<p>
      * 
-     * @param user the CmsUser
+     * @param style the style of the editor buttons of the user
      */
-    public void setUser(CmsUser user) {
-        m_user = user;
+    public void setEditorButtonStyle(int style) {
+        m_editorSettings.put(C_EDITOR_BUTTONSTYLE, "" + style);
     }
+   
+   /**
+    * Sets the style of the explorer buttons of the user.<p>
+    * 
+    * @param style the style of the explorer buttons of the user
+    */
+   public void setExplorerButtonStyle(int style) {
+       m_explorerButtonStyle = style;
+   }
+   
+   /**
+    * Sets the number of displayed files per page of the user.<p>
+    * 
+    * @param entries the number of displayed files per page of the user
+    */
+   public void setExplorerFileEntries(int entries) {
+       m_explorerFileEntries = entries;
+   }
     
     /**
      * Sets a specific explorer setting depending on the set parameter.<p>
@@ -248,6 +406,186 @@ public class CmsUserSettings {
         } else {
             m_explorerSettings &= ~setting;
         }
+    }
+    
+    /**
+     * Sets the locale of the user.<p>
+     * 
+     * @param locale the locale of the user
+     */
+    public void setLocale(Locale locale) {
+        m_locale = locale;
+        m_workplaceSettings.put(I_CmsConstants.C_START_LOCALE, locale.toString());
+    }
+    
+    /**
+     * Sets the preferred editor for the given resource type of the user.<p>
+     * 
+     * @param resourceType the resource type
+     * @param editorUri the editor URI
+     */
+    public void setPreferredEditor(String resourceType, String editorUri) {
+        if (editorUri == null) {
+            m_editorSettings.remove(C_EDITOR_PREFERRED_PREFIX + resourceType.toUpperCase());
+        }
+        m_editorSettings.put(C_EDITOR_PREFERRED_PREFIX + resourceType.toUpperCase(), editorUri);
+    }
+
+    /**
+     * Sets if the file creation date should be shown in explorer view.<p>
+     * 
+     * @param show true if the file creation date should be shown, otherwise false
+     */
+    public void setShowExplorerFileDateCreated(boolean show) {
+        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_DATE_CREATED);
+    }
+
+    /**
+     * Sets if the file last modified date should be shown in explorer view.<p>
+     * 
+     * @param show true if the file last modified date should be shown, otherwise false
+     */
+    public void setShowExplorerFileDateLastModified(boolean show) {
+        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_DATE_LASTMODIFIED);
+    }
+
+    /**
+     * Sets if the file locked by should be shown in explorer view.<p>
+     * 
+     * @param show true if the file locked by should be shown, otherwise false
+     */
+    public void setShowExplorerFileLockedBy(boolean show) {
+        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_LOCKEDBY);
+    }
+
+    /**
+     * Sets if the file permissions should be shown in explorer view.<p>
+     * 
+     * @param show true if the file permissions should be shown, otherwise false
+     */
+    public void setShowExplorerFilePermissions(boolean show) {
+        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_PERMISSIONS);
+    }
+    
+    /**
+     * Sets if the file size should be shown in explorer view.<p>
+     * 
+     * @param show true if the file size should be shown, otherwise false
+     */
+    public void setShowExplorerFileSize(boolean show) {
+        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_SIZE);
+    }
+
+    /**
+     * Sets if the file state should be shown in explorer view.<p>
+     * 
+     * @param show true if the state size should be shown, otherwise false
+     */
+    public void setShowExplorerFileState(boolean show) {
+        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_STATE);
+    }
+
+    /**
+     * Sets if the file title should be shown in explorer view.<p>
+     * 
+     * @param show true if the file title should be shown, otherwise false
+     */
+    public void setShowExplorerFileTitle(boolean show) {
+        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_TITLE);
+    }
+
+    /**
+     * Sets if the file type should be shown in explorer view.<p>
+     * 
+     * @param show true if the file type should be shown, otherwise false
+     */
+    public void setShowExplorerFileType(boolean show) {
+        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_TYPE);
+    }
+
+    /**
+     * Sets if the file creator should be shown in explorer view.<p>
+     * 
+     * @param show true if the file creator should be shown, otherwise false
+     */
+    public void setShowExplorerFileUserCreated(boolean show) {
+        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_USER_CREATED);
+    }
+
+   /**
+    * Sets if the file last modified by should be shown in explorer view.<p>
+    * 
+    * @param show true if the file last modified by should be shown, otherwise false
+    */
+   public void setShowExplorerFileUserLastModified(boolean show) {
+       setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_USER_LASTMODIFIED);
+   }
+    
+    /**
+     *  Sets if the lock dialog should be shown.<p>
+     * 
+     * @param show true if the lock dialog should be shown, otherwise false
+     */
+    public void setShowLockDialog(boolean show) {
+        if (show) {
+            m_workplaceSettings.put(I_CmsConstants.C_START_LOCKDIALOG, "on");
+        } else {
+            m_workplaceSettings.put(I_CmsConstants.C_START_LOCKDIALOG, "");
+        }
+    }
+
+    /**
+     * Sets the start project of the user.<p>
+     * 
+     * @param projectId the start project id of the user
+     */
+    public void setStartProject(String projectId) {
+        m_workplaceSettings.put(I_CmsConstants.C_START_PROJECT, new Integer(projectId));
+    }
+    
+    /**
+     * Sets the current start view of the user.<p>
+     * 
+     * @param view the current start view of the user
+     */
+    public void setStartView(String view) {
+        m_workplaceSettings.put(I_CmsConstants.C_START_VIEW, view);
+    }
+
+    /**
+     * Sets if a message should be sent if the task is accepted.<p>
+     * 
+     * @param message true if a message should be sent if the task is accepted, otherwise false
+     */
+    public void setTaskMessageAccepted(boolean message) {
+        setTaskMessageSetting(message, I_CmsConstants.C_TASK_MESSAGES_ACCEPTED);
+    }
+
+    /**
+     * Sets if a message should be sent if the task is completed.<p>
+     * 
+     * @param message true if a message should be sent if the task is completed, otherwise false
+     */
+    public void setTaskMessageCompleted(boolean message) {
+        setTaskMessageSetting(message, I_CmsConstants.C_TASK_MESSAGES_COMPLETED);
+    }
+
+    /**
+     * Sets if a message should be sent if the task is forwarded.<p>
+     * 
+     * @param message true if a message should be sent if the task is forwarded, otherwise false
+     */
+    public void setTaskMessageForwarded(boolean message) {
+        setTaskMessageSetting(message, I_CmsConstants.C_TASK_MESSAGES_FORWARDED);
+    }
+
+    /**
+     * Sets if all role members should be informed about the task.<p>
+     * 
+     * @param message true if all role members should be informed about the task, otherwise false
+     */
+    public void setTaskMessageMembers(boolean message) {
+        setTaskMessageSetting(message, I_CmsConstants.C_TASK_MESSAGES_MEMBERS);
     }
     
     /**
@@ -265,50 +603,61 @@ public class CmsUserSettings {
     }
     
     /**
-     * Returns the style of the editor buttons of the user.<p>
+     * Sets if all projects should be shown in tasks view.<p>
      * 
-     * @return the style of the editor buttons of the user
+     * @param show true if all projects should be shown in tasks view, otherwise false
      */
-    public int getEditorButtonStyle() {
-        int style = 0;
-        try {
-            style = Integer.parseInt((String)m_editorSettings.get(C_EDITOR_BUTTONSTYLE));
-        } catch (Throwable t) {
-            // ignore this exception
+    public void setTaskShowAllProjects(boolean show) {
+        m_taskSettings.put(I_CmsConstants.C_TASK_VIEW_ALL, new Boolean(show));
+    }
+    
+    /**
+     * Sets the startup filter for the tasks view.<p>
+     * 
+     * @param filter the startup filter for the tasks view
+     */
+    public void setTaskStartupFilter(String filter) {
+        m_taskSettings.put(I_CmsConstants.C_TASK_FILTER, filter);
+    }
+    
+    /**
+     * Sets the current user for the settings.<p>
+     * 
+     * @param user the CmsUser
+     */
+    public void setUser(CmsUser user) {
+        m_user = user;
+    }
+
+    /**
+     *  Sets if the upload applet should be used.<p>
+     * 
+     * @param use true if the upload applet should be used, otherwise false
+     */
+    public void setUseUploadApplet(boolean use) {
+        if (use) {
+            m_workplaceSettings.put(I_CmsConstants.C_START_UPLOADAPPLET, "on");
+        } else {
+            m_workplaceSettings.put(I_CmsConstants.C_START_UPLOADAPPLET, "");
         }
-        return style;
     }
     
     /**
-     * Sets the style of the editor buttons of the user.<p>
+     * Sets the style of the workplace buttons of the user.<p>
      * 
-     * @param style the style of the editor buttons of the user
+     * @param style the style of the workplace buttons of the user
      */
-    public void setEditorButtonStyle(int style) {
-        m_editorSettings.put(C_EDITOR_BUTTONSTYLE, "" + style);
+    public void setWorkplaceButtonStyle(int style) {
+        m_workplaceSettings.put(C_WORKPLACE_BUTTONSTYLE, "" + style);
     }
     
     /**
-     * Returns the preferred editor for the given resource type of the user.<p>
+     * Sets the type of the report (simple or extended) of the user.<p>
      * 
-     * @param resourceType the resource type
-     * @return the preferred editor for the resource type or null, if not specified
+     * @param type the type of the report (simple or extended) of the user
      */
-    public String getPreferredEditor(String resourceType) {
-        return (String)m_editorSettings.get(C_EDITOR_PREFERRED_PREFIX + resourceType.toUpperCase());
-    }
-    
-    /**
-     * Sets the preferred editor for the given resource type of the user.<p>
-     * 
-     * @param resourceType the resource type
-     * @param editorUri the editor URI
-     */
-    public void setPreferredEditor(String resourceType, String editorUri) {
-        if (editorUri == null) {
-            m_editorSettings.remove(C_EDITOR_PREFERRED_PREFIX + resourceType.toUpperCase());
-        }
-        m_editorSettings.put(C_EDITOR_PREFERRED_PREFIX + resourceType.toUpperCase(), editorUri);
+    public void setWorkplaceReportType(String type) {
+        m_workplaceSettings.put(C_WORKPLACE_REPORTTYPE, type);
     }
     
     /**
@@ -319,15 +668,6 @@ public class CmsUserSettings {
     public boolean showExplorerFileDateCreated() {
         return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_DATE_CREATED) > 0); 
     }
-
-    /**
-     * Sets if the file creation date should be shown in explorer view.<p>
-     * 
-     * @param show true if the file creation date should be shown, otherwise false
-     */
-    public void setShowExplorerFileDateCreated(boolean show) {
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_DATE_CREATED);
-    }
     
     /**
      * Determines if the file last modified date should be shown in explorer view.<p>
@@ -337,15 +677,6 @@ public class CmsUserSettings {
     public boolean showExplorerFileDateLastModified() {
         return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_DATE_LASTMODIFIED) > 0); 
     }
-
-    /**
-     * Sets if the file last modified date should be shown in explorer view.<p>
-     * 
-     * @param show true if the file last modified date should be shown, otherwise false
-     */
-    public void setShowExplorerFileDateLastModified(boolean show) {
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_DATE_LASTMODIFIED);
-    }
     
     /**
      * Determines if the file locked by should be shown in explorer view.<p>
@@ -354,15 +685,6 @@ public class CmsUserSettings {
      */
     public boolean showExplorerFileLockedBy() {
         return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_LOCKEDBY) > 0); 
-    }
-
-    /**
-     * Sets if the file locked by should be shown in explorer view.<p>
-     * 
-     * @param show true if the file locked by should be shown, otherwise false
-     */
-    public void setShowExplorerFileLockedBy(boolean show) {
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_LOCKEDBY);
     }
     
     /**
@@ -375,30 +697,12 @@ public class CmsUserSettings {
     }
 
     /**
-     * Sets if the file permissions should be shown in explorer view.<p>
-     * 
-     * @param show true if the file permissions should be shown, otherwise false
-     */
-    public void setShowExplorerFilePermissions(boolean show) {
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_PERMISSIONS);
-    }
-
-    /**
      * Determines if the file size should be shown in explorer view.<p>
      * 
      * @return true if the file size should be shown, otherwise false
      */
     public boolean showExplorerFileSize() {
         return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_SIZE) > 0); 
-    }
-    
-    /**
-     * Sets if the file size should be shown in explorer view.<p>
-     * 
-     * @param show true if the file size should be shown, otherwise false
-     */
-    public void setShowExplorerFileSize(boolean show) {
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_SIZE);
     }
     
     /**
@@ -409,15 +713,6 @@ public class CmsUserSettings {
     public boolean showExplorerFileState() {
         return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_STATE) > 0); 
     }
-
-    /**
-     * Sets if the file state should be shown in explorer view.<p>
-     * 
-     * @param show true if the state size should be shown, otherwise false
-     */
-    public void setShowExplorerFileState(boolean show) {
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_STATE);
-    }
     
     /**
      * Determines if the file title should be shown in explorer view.<p>
@@ -426,15 +721,6 @@ public class CmsUserSettings {
      */
     public boolean showExplorerFileTitle() {
         return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_TITLE) > 0); 
-    }
-
-    /**
-     * Sets if the file title should be shown in explorer view.<p>
-     * 
-     * @param show true if the file title should be shown, otherwise false
-     */
-    public void setShowExplorerFileTitle(boolean show) {
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_TITLE);
     }
     
     /**
@@ -445,15 +731,6 @@ public class CmsUserSettings {
     public boolean showExplorerFileType() {
         return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_TYPE) > 0); 
     }
-
-    /**
-     * Sets if the file type should be shown in explorer view.<p>
-     * 
-     * @param show true if the file type should be shown, otherwise false
-     */
-    public void setShowExplorerFileType(boolean show) {
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_TYPE);
-    }
     
     /**
      * Determines if the file creator should be shown in explorer view.<p>
@@ -463,15 +740,6 @@ public class CmsUserSettings {
     public boolean showExplorerFileUserCreated() {
         return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_USER_CREATED) > 0); 
     }
-
-    /**
-     * Sets if the file creator should be shown in explorer view.<p>
-     * 
-     * @param show true if the file creator should be shown, otherwise false
-     */
-    public void setShowExplorerFileUserCreated(boolean show) {
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_USER_CREATED);
-    }
     
    /**
     * Determines if the file last modified by should be shown in explorer view.<p>
@@ -480,51 +748,6 @@ public class CmsUserSettings {
     */
    public boolean showExplorerFileUserLastModified() {
        return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_USER_LASTMODIFIED) > 0); 
-   }
-
-   /**
-    * Sets if the file last modified by should be shown in explorer view.<p>
-    * 
-    * @param show true if the file last modified by should be shown, otherwise false
-    */
-   public void setShowExplorerFileUserLastModified(boolean show) {
-       setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_USER_LASTMODIFIED);
-   }
-   
-   /**
-    * Returns the style of the explorer buttons of the user.<p>
-    * 
-    * @return the style of the explorer buttons of the user
-    */
-   public int getExplorerButtonStyle() {
-       return m_explorerButtonStyle;
-   }
-   
-   /**
-    * Sets the style of the explorer buttons of the user.<p>
-    * 
-    * @param style the style of the explorer buttons of the user
-    */
-   public void setExplorerButtonStyle(int style) {
-       m_explorerButtonStyle = style;
-   }
-   
-   /**
-    * Returns the number of displayed files per page of the user.<p>
-    * 
-    * @return the number of displayed files per page of the user
-    */
-   public int getExplorerFileEntries() {
-       return m_explorerFileEntries;
-   }
-   
-   /**
-    * Sets the number of displayed files per page of the user.<p>
-    * 
-    * @param entries the number of displayed files per page of the user
-    */
-   public void setExplorerFileEntries(int entries) {
-       m_explorerFileEntries = entries;
    }
     
     /**
@@ -543,123 +766,48 @@ public class CmsUserSettings {
     }
     
     /**
-     *  Sets if the lock dialog should be shown.<p>
+     * Determines if a message should be sent if the task is accepted.<p>
      * 
-     * @param show true if the lock dialog should be shown, otherwise false
+     * @return true if a message should be sent if the task is accepted, otherwise false
      */
-    public void setShowLockDialog(boolean show) {
-        if (show) {
-            m_workplaceSettings.put(I_CmsConstants.C_START_LOCKDIALOG, "on");
-        } else {
-            m_workplaceSettings.put(I_CmsConstants.C_START_LOCKDIALOG, "");
-        }
-    }
-    
-    /** 
-     * Returns the locale of the user.<p>
-     * 
-     * @return the loclae of the user
-     */
-    public Locale getLocale() {
-        if (m_locale == null) {
-            m_locale = CmsLocaleManager.getLocale((String)m_workplaceSettings.get(I_CmsConstants.C_START_LOCALE)); 
-        }
-        return m_locale; 
+    public boolean taskMessageAccepted() {
+        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_ACCEPTED) > 0); 
     }
     
     /**
-     * Sets the locale of the user.<p>
+     * Determines if a message should be sent if the task is completed.<p>
      * 
-     * @param locale the locale of the user
+     * @return true if a message should be sent if the task is completed, otherwise false
      */
-    public void setLocale(Locale locale) {
-        m_locale = locale;
-        m_workplaceSettings.put(I_CmsConstants.C_START_LOCALE, locale.toString());
-    }
-    
-    /** 
-     * Returns the start project of the user.<p>
-     * 
-     * @return the start project of the user
-     */
-    public String getStartProject() {
-        Integer projectId = (Integer)m_workplaceSettings.get(I_CmsConstants.C_START_PROJECT);       
-        return projectId.toString();
-    }
-
-    /**
-     * Sets the start project of the user.<p>
-     * 
-     * @param projectId the start project id of the user
-     */
-    public void setStartProject(String projectId) {
-        m_workplaceSettings.put(I_CmsConstants.C_START_PROJECT, new Integer(projectId));
+    public boolean taskMessageCompleted() {
+        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_COMPLETED) > 0); 
     }
     
     /**
-     * Returns the current start view of the user.<p>
+     * Determines if a message should be sent if the task is forwarded.<p>
      * 
-     * @return the current start view of the user
+     * @return true if a message should be sent if the task is forwarded, otherwise false
      */
-    public String getStartView() {
-        return (String)m_workplaceSettings.get(I_CmsConstants.C_START_VIEW);
+    public boolean taskMessageForwarded() {
+        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_FORWARDED) > 0); 
     }
     
     /**
-     * Sets the current start view of the user.<p>
+     * Determines if all role members should be informed about the task.<p>
      * 
-     * @param view the current start view of the user
+     * @return true if all role members should be informed about the task, otherwise false
      */
-    public void setStartView(String view) {
-        m_workplaceSettings.put(I_CmsConstants.C_START_VIEW, view);
+    public boolean taskMessageMembers() {
+        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_MEMBERS) > 0); 
     }
     
     /**
-     * Returns the style of the workplace buttons of the user.<p>
-     * 
-     * @return the style of the workplace buttons of the user
+     * Determines if all projects should be shown in tasks view.<p>
+     * @return true if all projects should be shown in tasks view, otherwise false
      */
-    public int getWorkplaceButtonStyle() {
-        int style = C_BUTTONSTYLE_DEFAULT;
-        try {
-            style = Integer.parseInt((String)m_workplaceSettings.get(C_WORKPLACE_BUTTONSTYLE));
-        } catch (Throwable t) {
-            // ignore this exception
-        }
-        return style;
-    }
-    
-    /**
-     * Sets the style of the workplace buttons of the user.<p>
-     * 
-     * @param style the style of the workplace buttons of the user
-     */
-    public void setWorkplaceButtonStyle(int style) {
-        m_workplaceSettings.put(C_WORKPLACE_BUTTONSTYLE, "" + style);
-    }
-    
-    /**
-     * Returns the type of the report (simple or extended) of the user.<p>
-     * 
-     * @return the type of the report (simple or extended) of the user
-     */
-    public String getWorkplaceReportType() {
-        String type = C_REPORTTYPE_DEFAULT;
-        try {
-            type = (String)m_workplaceSettings.get(C_WORKPLACE_REPORTTYPE);
-        } catch (Throwable t) {
-            // ignore this exception
-        }
-        return type;
-    }
-    
-    /**
-     * Sets the type of the report (simple or extended) of the user.<p>
-     * 
-     * @param type the type of the report (simple or extended) of the user
-     */
-    public void setWorkplaceReportType(String type) {
-        m_workplaceSettings.put(C_WORKPLACE_REPORTTYPE, type);
+    public boolean taskShowAllProjects() {
+        Boolean show = (Boolean)m_taskSettings.get(I_CmsConstants.C_TASK_VIEW_ALL);
+        return show.booleanValue();
     }
     
     /**
@@ -675,127 +823,6 @@ public class CmsUserSettings {
             // do nothing
         }
         return ("on".equals(use));
-    }
-
-    /**
-     *  Sets if the upload applet should be used.<p>
-     * 
-     * @param use true if the upload applet should be used, otherwise false
-     */
-    public void setUseUploadApplet(boolean use) {
-        if (use) {
-            m_workplaceSettings.put(I_CmsConstants.C_START_UPLOADAPPLET, "on");
-        } else {
-            m_workplaceSettings.put(I_CmsConstants.C_START_UPLOADAPPLET, "");
-        }
-    }
-    
-    /**
-     * Returns the startup filter for the tasks view.<p>
-     * 
-     * @return the startup filter for the tasks view
-     */
-    public String getTaskStartupFilter() {
-        return (String)m_taskSettings.get(I_CmsConstants.C_TASK_FILTER);
-    }
-    
-    /**
-     * Sets the startup filter for the tasks view.<p>
-     * 
-     * @param filter the startup filter for the tasks view
-     */
-    public void setTaskStartupFilter(String filter) {
-        m_taskSettings.put(I_CmsConstants.C_TASK_FILTER, filter);
-    }
-    
-    /**
-     * Determines if all projects should be shown in tasks view.<p>
-     * @return true if all projects should be shown in tasks view, otherwise false
-     */
-    public boolean taskShowAllProjects() {
-        Boolean show = (Boolean)m_taskSettings.get(I_CmsConstants.C_TASK_VIEW_ALL);
-        return show.booleanValue();
-    }
-    
-    /**
-     * Sets if all projects should be shown in tasks view.<p>
-     * 
-     * @param show true if all projects should be shown in tasks view, otherwise false
-     */
-    public void setTaskShowAllProjects(boolean show) {
-        m_taskSettings.put(I_CmsConstants.C_TASK_VIEW_ALL, new Boolean(show));
-    }
-    
-    /**
-     * Determines if a message should be sent if the task is accepted.<p>
-     * 
-     * @return true if a message should be sent if the task is accepted, otherwise false
-     */
-    public boolean taskMessageAccepted() {
-        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_ACCEPTED) > 0); 
-    }
-
-    /**
-     * Sets if a message should be sent if the task is accepted.<p>
-     * 
-     * @param message true if a message should be sent if the task is accepted, otherwise false
-     */
-    public void setTaskMessageAccepted(boolean message) {
-        setTaskMessageSetting(message, I_CmsConstants.C_TASK_MESSAGES_ACCEPTED);
-    }
-    
-    /**
-     * Determines if a message should be sent if the task is forwarded.<p>
-     * 
-     * @return true if a message should be sent if the task is forwarded, otherwise false
-     */
-    public boolean taskMessageForwarded() {
-        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_FORWARDED) > 0); 
-    }
-
-    /**
-     * Sets if a message should be sent if the task is forwarded.<p>
-     * 
-     * @param message true if a message should be sent if the task is forwarded, otherwise false
-     */
-    public void setTaskMessageForwarded(boolean message) {
-        setTaskMessageSetting(message, I_CmsConstants.C_TASK_MESSAGES_FORWARDED);
-    }
-    
-    /**
-     * Determines if a message should be sent if the task is completed.<p>
-     * 
-     * @return true if a message should be sent if the task is completed, otherwise false
-     */
-    public boolean taskMessageCompleted() {
-        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_COMPLETED) > 0); 
-    }
-
-    /**
-     * Sets if a message should be sent if the task is completed.<p>
-     * 
-     * @param message true if a message should be sent if the task is completed, otherwise false
-     */
-    public void setTaskMessageCompleted(boolean message) {
-        setTaskMessageSetting(message, I_CmsConstants.C_TASK_MESSAGES_COMPLETED);
-    }
-    
-    /**
-     * Determines if all role members should be informed about the task.<p>
-     * 
-     * @return true if all role members should be informed about the task, otherwise false
-     */
-    public boolean taskMessageMembers() {
-        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_MEMBERS) > 0); 
-    }
-
-    /**
-     * Sets if all role members should be informed about the task.<p>
-     * 
-     * @param message true if all role members should be informed about the task, otherwise false
-     */
-    public void setTaskMessageMembers(boolean message) {
-        setTaskMessageSetting(message, I_CmsConstants.C_TASK_MESSAGES_MEMBERS);
     }
     
 }
