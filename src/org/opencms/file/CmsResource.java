@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2004/10/18 18:10:21 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/10/19 18:05:16 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,17 +45,17 @@ import java.util.Comparator;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
     /**
-     * Implements a comparator for the release date of 2 resources.<p>
+     * A comparator for the release date of 2 resources.<p>
      * 
      * If the release date of a resource is not set, the
      * creation date is used instead.<p>
      */
-    public static final Comparator C_DATE_RELEASED_COMPARATOR = new Comparator() {
+    public static final Comparator COMPARE_DATE_RELEASED = new Comparator() {
 
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
@@ -87,6 +87,30 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             return (int)(date1 - date2);
         }
     };
+    
+    /**
+     * A comparator for the root path of 2 resources.<p>
+     */
+    public static final Comparator COMPARE_ROOT_PATH = new Comparator() {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(Object o1, Object o2) {
+
+            if (!(o1 instanceof CmsResource)) {
+                return 0;
+            }
+            if (!(o2 instanceof CmsResource)) {
+                return 0;
+            }
+
+            CmsResource r1 = (CmsResource)o1;
+            CmsResource r2 = (CmsResource)o2;
+            
+            return r1.getRootPath().compareTo(r2.getRootPath());
+        }
+    };    
 
     /** The default expiration date of a resource (which is: never expires). */
     public static final long DATE_EXPIRED_DEFAULT = Long.MAX_VALUE;

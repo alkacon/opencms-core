@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2004/10/15 12:22:00 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/10/19 18:05:16 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.configuration;
 
+import org.opencms.file.I_CmsResourceCollector;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.loader.I_CmsResourceLoader;
@@ -39,7 +40,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
 import org.opencms.xml.CmsXmlContentTypeManager;
-import org.opencms.xml.content.I_CmsXmlContentFilter;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
@@ -107,11 +107,11 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     /** The xmlcontents node name. */
     protected static final String N_XMLCONTENTS = "xmlcontents";
 
-    /** The filters node name. */
-    protected static final String N_FILTERS = "filters";
+    /** The collectors node name. */
+    protected static final String N_COLLECTORS = "collectors";
     
-    /** The filter node name. */
-    protected static final String N_FILTER = "filter";
+    /** The collector node name. */
+    protected static final String N_COLLECTOR = "collector";
     
     /** The name of the DTD for this configuration. */
     private static final String C_CONFIGURATION_DTD_NAME = "opencms-vfs.dtd";
@@ -203,11 +203,16 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPING, I_CmsResourceType.C_ADD_MAPPING_METHOD, 1);
         digester.addCallParam ("*/" +  N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPING, 0, A_SUFFIX);       
         
+        // add rules for VFS content collectors
+        digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR, "addContentCollector", 2);
+        digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR, 0, A_CLASS);
+        digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR, 1, A_ORDER);        
+        
         // generic <param> parameter rules
         digester.addCallMethod("*/" + I_CmsXmlConfiguration.N_PARAM, I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD, 2);
         digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
-        digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 1); 
-                
+        digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 1);         
+                        
         // add rules for file translations
         digester.addCallMethod("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FILETRANSLATIONS + "/" + N_TRANSLATION, "addFileTranslation", 0);
         digester.addCallMethod("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FILETRANSLATIONS, "setFileTranslationEnabled", 1);
@@ -222,11 +227,6 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         digester.addObjectCreate("*/" + N_VFS + "/" + N_XMLCONTENTS, CmsXmlContentTypeManager.class);
         digester.addSetNext("*/" + N_VFS + "/" + N_XMLCONTENTS, "setXmlContentTypeManager");
 
-        // XML content filter add rules
-        digester.addCallMethod("*/" + N_VFS + "/" + N_XMLCONTENTS + "/" + N_FILTERS + "/" + N_FILTER, "addXmlContentFilter", 2);
-        digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENTS + "/" + N_FILTERS + "/" + N_FILTER, 0, A_CLASS);
-        digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENTS + "/" + N_FILTERS + "/" + N_FILTER, 1, A_ORDER);        
-        
         // XML content type add rules
         digester.addCallMethod("*/" + N_VFS + "/" + N_XMLCONTENTS + "/" + N_XMLCONTENT, "addXmlContent", 2);
         digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENTS + "/" + N_XMLCONTENT, 0, A_CLASS);
@@ -281,6 +281,16 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
                 mapping.addAttribute(A_SUFFIX, (String)mappings.get(j));
             }
         }
+        
+        // add VFS content collectors
+        Element collectorsElement = resources.addElement(N_COLLECTORS);
+        Iterator it = m_resourceManager.getRegisteredContentCollectors().iterator();
+        while (it.hasNext()) {
+            I_CmsResourceCollector collector = (I_CmsResourceCollector)it.next();
+            collectorsElement.addElement(N_COLLECTOR)
+                .addAttribute(A_CLASS, collector.getClass().getName())
+                .addAttribute(A_ORDER, String.valueOf(collector.getOrder()));
+        }        
 
         // add translation rules
         Element translationsElement = vfs.addElement(N_TRANSLATIONS);
@@ -289,7 +299,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         Element fileTransElement = 
             translationsElement.addElement(N_FILETRANSLATIONS)
                 .addAttribute(A_ENABLED, new Boolean(m_fileTranslationEnabled).toString());        
-        Iterator it = m_fileTranslations.iterator();
+        it = m_fileTranslations.iterator();
         while (it.hasNext()) {
             fileTransElement.addElement(N_TRANSLATION).setText(it.next().toString());
         }
@@ -304,17 +314,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         }
         
         // XML content configuration
-        Element xmlContentsElement = vfs.addElement(N_XMLCONTENTS);
-        
-        // XML content filters
-        Element filtersElement = xmlContentsElement.addElement(N_FILTERS);
-        it = m_xmlContentTypeManager.getRegisteredContentFilters().iterator();
-        while (it.hasNext()) {
-            I_CmsXmlContentFilter filter = (I_CmsXmlContentFilter)it.next();
-            filtersElement.addElement(N_FILTER)
-                .addAttribute(A_CLASS, filter.getClass().getName())
-                .addAttribute(A_ORDER, String.valueOf(filter.getOrder()));
-        }
+        Element xmlContentsElement = vfs.addElement(N_XMLCONTENTS);        
         
         // XML content types 
         it = m_xmlContentTypeManager.getRegisteredContentTypes().iterator();

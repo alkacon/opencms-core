@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorFrameset.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/19 18:05:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.Enumeration;
@@ -50,11 +51,14 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.12
  */
 public class CmsEditorFrameset extends CmsEditor {
+    
+    /** The title to be displayed in the editor. */
+    private String m_paramEditorTitle;
     
     /**
      * Public constructor.<p>
@@ -71,7 +75,7 @@ public class CmsEditorFrameset extends CmsEditor {
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
         // fill the parameter values in the get/set methods
         fillParamValues(request);
-    }
+    }    
     
     /**
      * Returns all present request parameters as String.<p>
@@ -123,21 +127,21 @@ public class CmsEditorFrameset extends CmsEditor {
      * @see org.opencms.workplace.editors.CmsEditor#actionExit()
      */
     public final void actionExit() {
-        // do nothing, has to be implemented
+        // do nothing
     }
     
     /**
      * @see org.opencms.workplace.editors.CmsEditor#actionSave()
      */
     public final void actionSave() { 
-        // do nothing, has to be implemented
+        // do nothing
     }
     
     /**
      * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()
      */
     public final String getEditorResourceUri() {
-        // return emtpy String, has to be implemented
+        // return emtpy String
         return "";
     }
     
@@ -145,7 +149,28 @@ public class CmsEditorFrameset extends CmsEditor {
      * @see org.opencms.workplace.editors.CmsEditor#initContent()
      */
     protected final void initContent() {
-        // do nothing, has to be implemented
+        // do nothing
     }
     
+    /**
+     * Returns the editor title.<p>
+     *
+     * @return the editor title
+     */
+    public String getParamEditorTitle() {
+
+        if (CmsStringUtil.isEmpty(m_paramEditorTitle)) {
+            return key("editor.title.prefix") + " " + getParamResource();
+        }
+        return m_paramEditorTitle;
+    }
+    /**
+     * Sets the editort title.<p>
+     *
+     * @param editorTitle the editor title to set
+     */
+    public void setParamEditorTitle(String editorTitle) {
+
+        m_paramEditorTitle = editorTitle;
+    }
 }

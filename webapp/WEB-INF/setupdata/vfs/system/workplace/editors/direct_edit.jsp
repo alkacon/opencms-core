@@ -62,6 +62,7 @@ if (editElement != null) {
 <input type="hidden" name="backlink" value="<%= uri %>">
 <input type="hidden" name="newlink">
 <input type="hidden" name="closelink">
+<input type="hidden" name="editortitle">
 </form>
 <span class="directedit_button" onmouseover="activate('<%= editId %>');" onmouseout="deactivate('<%= editId %>');">
 <table border="0" cellpadding="0" cellspacing="0">
@@ -255,7 +256,8 @@ function doSubmit(id, action, link) {
 			form.closelink.value = "<%= cms.link(uri) %>";			
 			form.submit();
 			return;
-		} else if (action == "<%= newAction %>") {		
+		} else if (action == "<%= newAction %>") {	
+			form.editortitle.value = "<%= wp.key("editor.title.new") %>";	
 			form.newlink.value = link;	
 			form.submit();
 			return;

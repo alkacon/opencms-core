@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2004/10/18 18:10:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/19 18:05:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,14 +33,18 @@ package org.opencms.jsp;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.I_CmsResourceCollector;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.I_CmsEditorActionHandler;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
-import org.opencms.xml.content.I_CmsXmlContentFilter;
 
 import java.util.List;
 import java.util.Locale;
@@ -53,7 +57,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagContentContainer {
@@ -61,13 +65,19 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     /** The CmsObject for the current user. */
     private CmsObject m_cms;
 
+    /** The name of the collector to use for list building. */
+    private String m_collector;
+
+    /** The list of collected content items. */
+    private List m_collectorResult;
+
     /** Reference to the last loaded content element. */
     private A_CmsXmlDocument m_content;
 
     /** The FlexController for the current request. */
     private CmsFlexController m_controller;
 
-    /** The link for creation of a new element, specified by the selected filter. */
+    /** The link for creation of a new element, specified by the selected collector. */
     private String m_directEditCreateLink;
 
     /** The "direct edit" options to use for the 2nd to the last element. */
@@ -79,21 +89,18 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     /** The editable flag. */
     private boolean m_editable;
 
-    /** The file name to load the current content value from. */
-    private String m_file;
-
-    /** The name of the filter to use for list building. */
-    private String m_filter;
-
-    /** The list of filtered content items. */
-    private List m_filterResult;
-
     /** Refenence to the currently selected locale. */
     private Locale m_locale;
 
-    /** Paramter used for filters. */
+    /** Paramter used for the collector. */
     private String m_param;
 
+    /** The file name to load the current content value from. */
+    private String m_resourceName;
+
+    /** The (optional) property to extend the parameter with. */
+    private String m_property;
+    
     /**
      * @see javax.servlet.jsp.tagext.BodyTagSupport#doAfterBody()
      */
@@ -104,7 +111,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
             CmsJspTagEditable.includeDirectEditElement(
                 pageContext,
                 I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_END,
-                m_file,
+                m_resourceName,
                 null,
                 null,
                 m_directEditPermissions,
@@ -113,13 +120,13 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
         }
 
         // check if there are more files to iterate
-        if (m_filterResult.size() > 0) {
+        if (m_collectorResult.size() > 0) {
 
             // there are more files available...
             try {
                 doLoadNextFile();
             } catch (CmsException e) {
-                m_controller.setThrowable(e, m_file);
+                m_controller.setThrowable(e, m_resourceName);
                 throw new JspException(e);
             }
 
@@ -129,7 +136,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
                 m_directEditPermissions = CmsJspTagEditable.includeDirectEditElement(
                     pageContext,
                     I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_START,
-                    m_file,
+                    m_resourceName,
                     null,
                     m_directEditFollowOptions,
                     null,
@@ -151,11 +158,28 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
      */
     public void doLoadNextFile() throws CmsException {
 
-        // ge the next file name from the current list
-        m_file = getNextFilname();
+        // get the next resource from the collector
+        CmsResource resource = getNextResource();
+        // set the resource name
+        m_resourceName = m_cms.getSitePath(resource);
 
-        // try to read and initialize the XML content
-        CmsFile file = m_cms.readFile(m_file);
+        // upgrade the resource to a file
+        // the static method CmsFile.upgrade(...) is not used for performance reasons
+        CmsFile file = null;
+        if (resource instanceof CmsFile) {
+            // check the resource contents
+            file = (CmsFile)resource;
+            if ((file.getContents() == null) || (file.getContents().length <= 0)) {
+                // file has no contents available, force re-read
+                file = null;
+            }
+        }
+        if (file == null) {
+            // use ALL filter since the list itself should have filtered out all unwanted resources already 
+            file = m_cms.readFile(m_resourceName, CmsResourceFilter.ALL);     
+        }
+
+        // unmarshal the XML content from the resource        
         m_content = CmsXmlContentFactory.unmarshal(m_cms, file);
     }
 
@@ -164,8 +188,10 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
      */
     public int doStartTag() throws JspException {
 
-        if (getFilter() == null) {
-            throw new IllegalArgumentException("'contentload' tag requires 'filter' attribute");
+        // get the selected collector
+        String collectorName = getCollector();        
+        if (CmsStringUtil.isEmpty(collectorName)) {
+            throw new IllegalArgumentException("'contentload' tag requires 'collector' attribute");
         }
 
         // initialize OpenCms access objects
@@ -175,17 +201,42 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
         // store the current locale    
         m_locale = m_cms.getRequestContext().getLocale();
 
-        // get the selected filter class
-        String filterName = getFilter();
-        String param = resolveMagicName(getParam());
-        I_CmsXmlContentFilter filter = OpenCms.getXmlContentTypeManager().getContentFilter(filterName);
+        // construct the parameters from the "property" and the "param" tag
+        String param = getProperty();
+        String createParam;
+        if (CmsStringUtil.isNotEmpty(param)) {
+            
+            // read the selected property value
+            CmsProperty property;
+            try {
+                property = m_cms.readPropertyObject(m_cms.getRequestContext().getUri(), param, true);
+            } catch (CmsException e) {
+                OpenCms.getLog(this).error(
+                    "Error reading property '" + param + "' on resource " + m_cms.getRequestContext().getUri(), e);
+                property = CmsProperty.getNullProperty();
+            }
+            param = property.getValue("");
+                        
+            if (CmsStringUtil.isNotEmpty(getParam())) {
+                // property and param not empty, concat "property" and "param" tag
+                param = param.concat(getParam());
+            }
+            createParam = param;
+        } else {
+            // resolve magic parameter name
+            param = resolveMagicName(getParam());
+            createParam = getParam();
+        }
+        
+        // now collect the resources
+        I_CmsResourceCollector collector = OpenCms.getResourceManager().getContentCollector(collectorName);
 
         try {
-            // execute the filter
-            m_filterResult = filter.getFilterResults(m_cms, filterName, param);
-            if (filter.getCreateLink(m_cms, filterName, param) != null) {
-                // use "create link" only if filter supports it
-                m_directEditCreateLink = CmsEncoder.encode(getFilter() + "|" + getParam());
+            // execute the collector
+            m_collectorResult = collector.getResults(m_cms, collectorName, param);
+            if (collector.getCreateLink(m_cms, collectorName, param) != null) {
+                // use "create link" only if collector supports it
+                m_directEditCreateLink = CmsEncoder.encode(collectorName + "|" + createParam);
             }
             doLoadNextFile();
         } catch (CmsException e) {
@@ -213,7 +264,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
             m_directEditPermissions = CmsJspTagEditable.includeDirectEditElement(
                 pageContext,
                 I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_START,
-                m_file,
+                m_resourceName,
                 null,
                 directEditOptions,
                 null,
@@ -221,6 +272,16 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
         }
 
         return EVAL_BODY_INCLUDE;
+    }
+
+    /**
+     * Returns the collector.<p>
+     *
+     * @return the collector
+     */
+    public String getCollector() {
+
+        return m_collector;
     }
 
     /**
@@ -234,29 +295,9 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     }
 
     /**
-     * Returns the file.<p>
+     * Returns the collector parameter.<p>
      *
-     * @return the file
-     */
-    public String getFile() {
-
-        return m_file;
-    }
-
-    /**
-     * Returns the filter.<p>
-     *
-     * @return the filter
-     */
-    public String getFilter() {
-
-        return m_filter;
-    }
-
-    /**
-     * Returns the filter parameter.<p>
-     *
-     * @return the filter paramete
+     * @return the collector parameter
      */
     public String getParam() {
 
@@ -268,7 +309,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
      */
     public String getResourceName() {
 
-        return m_file;
+        return m_resourceName;
     }
 
     /**
@@ -311,9 +352,9 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     public void release() {
 
         super.release();
-        m_file = null;
-        m_filter = null;
-        m_filterResult = null;
+        m_resourceName = null;
+        m_collector = null;
+        m_collectorResult = null;
         m_param = null;
         m_cms = null;
         m_controller = null;
@@ -321,6 +362,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
         m_directEditPermissions = null;
         m_directEditCreateLink = null;
         m_directEditFollowOptions = null;
+        m_property = null;
     }
 
     /**
@@ -345,11 +387,21 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
                 return m_cms.getRequestContext().getUri();
             case 1:
                 // "filename"
-                return m_file;
+                return m_resourceName;
             default:
                 // just return the name, unchanged
                 return name;
         }
+    }
+
+    /**
+     * Sets the collector.<p>
+     *
+     * @param collector the collector to set
+     */
+    public void setCollector(String collector) {
+
+        m_collector = collector;
     }
 
     /**
@@ -363,29 +415,9 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     }
 
     /**
-     * Sets the file.<p>
+     * Sets the collector parameter.<p>
      *
-     * @param file the file to set
-     */
-    public void setFile(String file) {
-
-        m_file = file;
-    }
-
-    /**
-     * Sets the filter.<p>
-     *
-     * @param filter the filter to set
-     */
-    public void setFilter(String filter) {
-
-        m_filter = filter;
-    }
-
-    /**
-     * Sets the filter parameter.<p>
-     *
-     * @param param the filter parameter to set
+     * @param param the collector parameter to set
      */
     public void setParam(String param) {
 
@@ -393,15 +425,35 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     }
 
     /**
-     * Returns the next file name from the filter.<p>
+     * Returns the next resource from the collector.<p>
      * 
-     * @return the next file name from the filter
+     * @return the next resource from the collector
      */
-    private String getNextFilname() {
+    private CmsResource getNextResource() {
 
-        if ((m_filterResult != null) && (m_filterResult.size() > 0)) {
-            return (String)m_filterResult.remove(0);
+        if ((m_collectorResult != null) && (m_collectorResult.size() > 0)) {
+            return (CmsResource)m_collectorResult.remove(0);
         }
         return null;
+    }
+    
+    /**
+     * Returns the property.<p>
+     *
+     * @return the property
+     */
+    public String getProperty() {
+
+        return m_property;
+    }
+    
+    /**
+     * Sets the property.<p>
+     *
+     * @param property the property to set
+     */
+    public void setProperty(String property) {
+
+        m_property = property;
     }
 }

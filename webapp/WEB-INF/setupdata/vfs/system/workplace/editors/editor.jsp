@@ -11,7 +11,7 @@
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
-<title>(<%= wp.getSettings().getUser().getName() %>) - <%= wp.getParamResource() %></title>
+<title>(<%= wp.getSettings().getUser().getName() %>) - <%= wp.getParamEditorTitle() %></title>
 </head>
 
 <frameset rows="*,24,0" border="0" frameborder="0" framespacing="0">

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2004/10/15 12:22:00 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/10/19 18:05:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,12 @@
 
 package org.opencms.xml;
 
-import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
-import org.opencms.xml.content.I_CmsXmlContentFilter;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.UnsupportedEncodingException;
@@ -53,20 +51,14 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 
 /**
- * Manager class for registered OpenCms XML content types and XML content filters.<p>
+ * Manager class for registered OpenCms XML content types and content collectors.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.0
  */
 public class CmsXmlContentTypeManager {
-
-    /** The map for all configured filter names, mapped to their filter class. */
-    private Map m_filterNameMappings;
-
-    /** The list of all currently configured XML content filter instances. */
-    private List m_filters;
 
     /** Stores the registered content types. */
     private Map m_registeredTypes;
@@ -227,115 +219,6 @@ public class CmsXmlContentTypeManager {
     }
 
     /**
-     * Adds a given content filter class to the type manager.<p> 
-     * 
-     * @param className the name of the class to add
-     * @param order the order number for this filter
-     * 
-     * @return the created content filter instance
-     * 
-     * @throws CmsConfigurationException in case the class could not be properly initialized
-     */
-    public I_CmsXmlContentFilter addXmlContentFilter(String className, String order) throws CmsConfigurationException {
-
-        Class classClazz;
-        // init class for content filter
-        try {
-            classClazz = Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            OpenCms.getLog(this).error("Configured XML content filter class not found: " + className, e);
-            return null;
-        }
-
-        I_CmsXmlContentFilter filter;
-        try {
-            filter = (I_CmsXmlContentFilter)classClazz.newInstance();
-        } catch (InstantiationException e) {
-            throw new CmsConfigurationException("Invalid XML content filter name '" + className + "' configured");
-        } catch (IllegalAccessException e) {
-            throw new CmsConfigurationException("Invalid XML content filter name '" + className + "' configured");
-        } catch (ClassCastException e) {
-            throw new CmsConfigurationException("Invalid XML content filter name '" + className + "' configured");
-        }
-
-        // set the configured order for the filter
-        int ord = 0;
-        try {
-            ord = Integer.valueOf(order).intValue();
-        } catch (NumberFormatException e) {
-            OpenCms.getLog(this).error("Bad order number for filter '" + className + "'", e);
-        }
-        filter.setOrder(ord);
-
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". XML content config   : added filter class '" + className + "' with order " + order);
-        }
-
-        // extend or init the current list of configured filters
-        if (m_filters != null) {
-            m_filters = new ArrayList(m_filters);
-            m_filterNameMappings = new HashMap(m_filterNameMappings);
-        } else {
-            m_filters = new ArrayList();
-            m_filterNameMappings = new HashMap();
-        }
-
-        if (!m_filters.contains(filter)) {
-            // this is a filter not currently configured
-            m_filters.add(filter);
-
-            Iterator i = filter.getFilterNames().iterator();
-            while (i.hasNext()) {
-                String name = (String)i.next();
-                if (m_filterNameMappings.containsKey(name)) {
-                    // this name is already configured, check the order of the filter
-                    I_CmsXmlContentFilter otherFilter = (I_CmsXmlContentFilter)m_filterNameMappings.get(name);
-                    if (filter.getOrder() > otherFilter.getOrder()) {
-                        // new filter has a greater order than the old filter in the Map
-                        m_filterNameMappings.put(name, filter);
-                        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                                ". XML content config   : replaced filter name '" + name + "'");
-                        }
-                    } else {
-                        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                                ". XML content config   : skipped duplicate filter name '" + name + "'");
-                        }
-                    }
-                } else {
-                    m_filterNameMappings.put(name, filter);
-                    if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                        OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                            ". XML content config   : added new filter name '" + name + "'");
-                    }
-                }
-            }
-        }
-
-        // ensure list is unmodifiable to avoid potential misuse or accidental changes
-        Collections.sort(m_filters);
-        m_filters = Collections.unmodifiableList(m_filters);
-        m_filterNameMappings = Collections.unmodifiableMap(m_filterNameMappings);
-
-        // return the created filter instance
-        return filter;
-    }
-
-    /**
-     * Returns the configured content filter with the given name, or <code>null</code> if 
-     * no filter with this name is configured.<p>
-     *  
-     * @param filterName the name of the filter to get
-     * @return the configured content filter with the given name
-     */
-    public I_CmsXmlContentFilter getContentFilter(String filterName) {
-
-        return (I_CmsXmlContentFilter)m_filterNameMappings.get(filterName);
-    }
-
-    /**
      * Generates an initialized instance of a XML content type definition
      * from the given XML schema element.<p>
      * 
@@ -396,16 +279,6 @@ public class CmsXmlContentTypeManager {
     public I_CmsXmlWidget getEditorWidget(String typeName) {
 
         return (I_CmsXmlWidget)m_registeredWidgets.get(typeName);
-    }
-
-    /**
-     * Returns an (unmodifiable) list of class names of all currently registered filters.<p>
-     *   
-     * @return an (unmodifiable) list of class names of all currently registered filters
-     */
-    public List getRegisteredContentFilters() {
-
-        return m_filters;
     }
 
     /** 

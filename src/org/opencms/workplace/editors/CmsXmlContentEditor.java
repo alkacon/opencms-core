@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/10/18 15:56:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/10/19 18:05:16 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.I_CmsResourceCollector;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -45,17 +46,14 @@ import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
-import org.opencms.xml.content.I_CmsXmlContentFilter;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -65,7 +63,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor {
@@ -231,6 +229,26 @@ public class CmsXmlContentEditor extends CmsEditor {
         // close the editor
         actionClose();
     }
+    
+    /**
+     * Creates a parameter String for passing it to the editor in a "new" operation.<p>
+     * 
+     * @param templateResource the path of the resource to use as template
+     * @param collectorName the name of the collector to use for creating a new resource 
+     * @param param the collector parameters
+     * 
+     * @return a parameter String for passing it to the editor in a "new" operation
+     */
+    public static String actionNewParamters(String templateResource, String collectorName, String param) {
+        
+        StringBuffer result = new StringBuffer(128);
+        result.append(templateResource);
+        result.append('|');
+        result.append(collectorName);
+        result.append('|');
+        result.append(param);
+        return result.toString();        
+    }
 
     /**
      * Creates a new XML content item for editing.<p>
@@ -238,41 +256,48 @@ public class CmsXmlContentEditor extends CmsEditor {
      * @throws JspException in case something goes wrong
      */
     public void actionNew() throws JspException {
-        // get the filter used to create the new content
+        // get the collector used to create the new content
         int pos = m_paramNewLink.indexOf('|');
-        String filterName = m_paramNewLink.substring(0, pos);
+        String collectorName = m_paramNewLink.substring(0, pos);
         String param = m_paramNewLink.substring(pos+1);
-        String newFileName;
+
+        // get the collector used for calculating the next file name
+        I_CmsResourceCollector collector = OpenCms.getResourceManager().getContentCollector(collectorName);    
         
-        int todo = 0;
-        // TODO: Need to improve this
-        I_CmsXmlContentFilter filter = OpenCms.getXmlContentTypeManager().getContentFilter(filterName);     
         try {
             
-            newFileName = filter.getCreateLink(getCms(), filterName, param);
-            
+            // one resource serves as a "template" for the new resource
             CmsFile templateFile = getCms().readFile(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
-            CmsXmlContent template = CmsXmlContentFactory.unmarshal(getCms(), templateFile);            
+            CmsXmlContent template = CmsXmlContentFactory.unmarshal(getCms(), templateFile);
+            Locale locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(0);
             
-            Locale defaultLocale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(0);
-            CmsXmlContent newContent = new CmsXmlContent(template.getContentDefinition(new CmsXmlEntityResolver(getCms())), defaultLocale, template.getEncoding());  
+            // now create a new XML content based on the templates content definition            
+            CmsXmlContent newContent = new CmsXmlContent(template.getContentDefinition(new CmsXmlEntityResolver(getCms())), locale, template.getEncoding());  
+
+            // IMPORTANT: calculation of the name MUST be done here so the file name is ensured to be valid
+            String newFileName = collector.getCreateLink(getCms(), collectorName, param);            
             
+            // now create the resource, fill it with the marshalled XML and write it back to the VFS
             getCms().createResource(newFileName, 11);
             CmsFile newFile = getCms().readFile(newFileName, CmsResourceFilter.IGNORE_EXPIRATION);
             newFile.setContents(newContent.marshal());
             getCms().writeFile(newFile);
             
+            // wipe out parameters for the editor to ensure proper operation
             setParamNewLink(null);
             setParamContent(null);
             setParamAction(null);
             setParamResource(newFileName);
             setAction(ACTION_DEFAULT);
-            initContent();
-            setParamContent(encodeContent(getParamContent()));
             
+            // set the member variables for the content 
+            m_file = newFile;
+            m_content = newContent;
+            m_contentDefinition = m_content.getContentDefinition(new CmsXmlEntityResolver(getCms()));                           
+                        
         } catch (CmsException e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error accessing XML content filter '" + m_paramNewLink + "'" , e);
+                OpenCms.getLog(this).error("Error creating new XML content item '" + m_paramNewLink + "'" , e);
             }                
             throw new JspException(e);
         }

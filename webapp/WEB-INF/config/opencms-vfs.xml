@@ -46,6 +46,9 @@
 					<param name="resource.type.name">xmlcontent</param>
 				</type>
 			</resourcetypes>
+			<collectors>
+				<collector class="org.opencms.file.CmsDefaultResourceCollector" order="100" />
+			</collectors>		
 		</resources>
 		<translations>
 			<filetranslations enabled="true">
@@ -57,16 +60,13 @@
 			<foldertranslations enabled="false"/>
 		</translations>
 		<xmlcontents>
-			<filters>
-				<filter class="org.opencms.xml.content.CmsXmlDefaultContentFilter" order="100" />
-			</filters>
-			<xmlcontent class="org.opencms.xml.types.CmsXmlStringValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
-			<xmlcontent class="org.opencms.xml.types.CmsXmlSimpleHtmlValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
-			<xmlcontent class="org.opencms.xml.types.CmsXmlLocaleValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
-			<xmlcontent class="org.opencms.xml.types.CmsXmlDateTimeValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget" />
-			<xmlcontent class="org.opencms.xml.types.CmsXmlHtmlValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
 			<xmlcontent class="org.opencms.xml.types.CmsXmlBooleanValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" />
 			<xmlcontent class="org.opencms.xml.types.CmsXmlColorValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlColorpickerWidget" />
+			<xmlcontent class="org.opencms.xml.types.CmsXmlDateTimeValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget" />
+			<xmlcontent class="org.opencms.xml.types.CmsXmlHtmlValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
+			<xmlcontent class="org.opencms.xml.types.CmsXmlLocaleValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
+			<xmlcontent class="org.opencms.xml.types.CmsXmlSimpleHtmlValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
+			<xmlcontent class="org.opencms.xml.types.CmsXmlStringValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
 			<xmlcontent class="org.opencms.xml.types.CmsXmlVfsFileValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
 		</xmlcontents>
 	</vfs>

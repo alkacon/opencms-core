@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2004/08/18 11:53:36 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/10/19 18:05:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.I_CmsResourceCollector;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
@@ -59,12 +60,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Collects all available resource loaders and resource types at startup and provides
+ * Collects all available resource loaders, resource types and resource collectors at startup and provides
  * methods to access them during OpenCms runtime.<p> 
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.1
  */
 public class CmsResourceManager {
@@ -72,30 +73,36 @@ public class CmsResourceManager {
     /** The default mimetype. */
     private static final String C_DEFAULT_MIMETYPE = "text/html";
 
+    /** The map for all configured collector names, mapped to their collector class. */
+    private Map m_collectorNameMappings;
+
+    /** The list of all currently configured content collector instances. */
+    private List m_collectors;
+
     /** Indicates if the configuration is finalized (frozen). */
     private boolean m_frozen;
 
     /** Contains all loader extensions to the include process. */
     private List m_includeExtensions;
-    
+
     /** A list that contains all initialized resource loaders. */
     private List m_loaderList;
 
     /** All initialized resource loaders, mapped to their id. */
     private I_CmsResourceLoader[] m_loaders;
-    
+
     /** The mappings of file extensions to resource types. */
     private Map m_mappings;
 
     /** The OpenCms map of configured mime types. */
     private Map m_mimeTypes;
-    
+
     /** A list that contains all initialized resource types. */
     private List m_resourceTypeList;
 
     /** Hashtable with resource types. */
     private I_CmsResourceType[] m_resourceTypes;
-    
+
     /**
      * Creates a new instance for the resource manager, 
      * will be called by the vfs configuration manager.<p>
@@ -105,7 +112,7 @@ public class CmsResourceManager {
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader configuration : starting");
         }
-        
+
         m_loaders = new I_CmsResourceLoader[16];
         m_resourceTypes = new I_CmsResourceType[100];
         m_resourceTypeList = new ArrayList();
@@ -144,6 +151,103 @@ public class CmsResourceManager {
     }
 
     /**
+     * Adds a given content collector class to the type manager.<p> 
+     * 
+     * @param className the name of the class to add
+     * @param order the order number for this collector
+     * 
+     * @return the created content collector instance
+     * 
+     * @throws CmsConfigurationException in case the collector could not be properly initialized
+     */
+    public I_CmsResourceCollector addContentCollector(String className, String order) throws CmsConfigurationException {
+
+        Class classClazz;
+        // init class for content collector
+        try {
+            classClazz = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            OpenCms.getLog(this).error("Configured content collector class not found: " + className, e);
+            return null;
+        }
+
+        I_CmsResourceCollector collector;
+        try {
+            collector = (I_CmsResourceCollector)classClazz.newInstance();
+        } catch (InstantiationException e) {
+            throw new CmsConfigurationException("Invalid content collector name '" + className + "' configured");
+        } catch (IllegalAccessException e) {
+            throw new CmsConfigurationException("Invalid content collector name '" + className + "' configured");
+        } catch (ClassCastException e) {
+            throw new CmsConfigurationException("Invalid content collector name '" + className + "' configured");
+        }
+
+        // set the configured order for the collector
+        int ord = 0;
+        try {
+            ord = Integer.valueOf(order).intValue();
+        } catch (NumberFormatException e) {
+            OpenCms.getLog(this).error("Bad order number for collector '" + className + "'", e);
+        }
+        collector.setOrder(ord);
+
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                ". VFS configuration    : added collector class '" + className + "' with order " + order);
+        }
+
+        // extend or init the current list of configured collectors
+        if (m_collectors != null) {
+            m_collectors = new ArrayList(m_collectors);
+            m_collectorNameMappings = new HashMap(m_collectorNameMappings);
+        } else {
+            m_collectors = new ArrayList();
+            m_collectorNameMappings = new HashMap();
+        }
+
+        if (!m_collectors.contains(collector)) {
+            // this is a collector not currently configured
+            m_collectors.add(collector);
+
+            Iterator i = collector.getCollectorNames().iterator();
+            while (i.hasNext()) {
+                String name = (String)i.next();
+                if (m_collectorNameMappings.containsKey(name)) {
+                    // this name is already configured, check the order of the collector
+                    I_CmsResourceCollector otherCollector = (I_CmsResourceCollector)m_collectorNameMappings.get(name);
+                    if (collector.getOrder() > otherCollector.getOrder()) {
+                        // new collector has a greater order than the old collector in the Map
+                        m_collectorNameMappings.put(name, collector);
+                        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                                ". VFS configuration    : replaced collector named '" + name + "'");
+                        }
+                    } else {
+                        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                                ". VFS configuration    : skipped duplicate collector named '" + name + "'");
+                        }
+                    }
+                } else {
+                    m_collectorNameMappings.put(name, collector);
+                    if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                        OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                            ". VFS configuration    : added new collector named '" + name + "'");
+                    }
+                }
+            }
+        }
+
+        // ensure list is unmodifiable to avoid potential misuse or accidental changes
+        Collections.sort(m_collectors);
+        m_collectors = Collections.unmodifiableList(m_collectors);
+        m_collectorNameMappings = Collections.unmodifiableMap(m_collectorNameMappings);
+
+        // return the created collector instance
+        return collector;
+    }
+
+    /**
      * Adds a new loader to the internal list of loaded loaders.<p>
      *
      * @param loader the loader to add
@@ -155,7 +259,7 @@ public class CmsResourceManager {
         if (m_frozen) {
             throw new CmsConfigurationException("Resource manager configuration only possibule during system startup!");
         }
-        
+
         // add the loader to the internal list of loaders
         int pos = loader.getLoaderId();
         if (pos > m_loaders.length) {
@@ -176,31 +280,6 @@ public class CmsResourceManager {
     }
 
     /**
-     * Adds the file extionsion mappings of a resource type to the internal
-     * mapping storage.<p>
-     *
-     * @param resourceType the resource type with the mappings
-     */
-    private void addMapping(I_CmsResourceType resourceType) {
-        
-        List mappings = resourceType.getMapping();
-        
-        Iterator i = mappings.iterator();
-        while (i.hasNext()) {
-            String mapping = (String)i.next();
-            // only add this mapping if a mapping with this file extension does not
-            // exist already
-            if (!m_mappings.containsKey(mapping)) {
-               m_mappings.put(mapping, resourceType.getTypeName());
-               if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                   OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                       ". File mapping         : Map '" + mapping + "' to resource type " + resourceType.getTypeName());
-                }
-            }          
-        }
-    }
-    
-    /**
      * Adds a new resource type to the internal list of loaded resource types.<p>
      *
      * @param resourceType the resource type to add
@@ -212,7 +291,7 @@ public class CmsResourceManager {
         if (m_frozen) {
             throw new CmsConfigurationException("Resource manager configuration only possibule during system startup!");
         }
-        
+
         // add the loader to the internal list of loaders
         int pos = resourceType.getTypeId();
         if (pos > m_resourceTypes.length) {
@@ -230,6 +309,87 @@ public class CmsResourceManager {
     }
 
     /**
+     * Returns the configured content collector with the given name, or <code>null</code> if 
+     * no collector with this name is configured.<p>
+     *  
+     * @param collectorName the name of the collector to get
+     * @return the configured content collector with the given name
+     */
+    public I_CmsResourceCollector getContentCollector(String collectorName) {
+
+        return (I_CmsResourceCollector)m_collectorNameMappings.get(collectorName);
+    }
+
+    /**
+     * Returns the default resource type for the given resource name, using the 
+     * configured resource type file extensions.<p>
+     * 
+     * In case the given name does not map to a configured resource type,
+     * {@link CmsResourceTypePlain} is returned.<p>
+     * 
+     * This is only required (and should <i>not</i> be used otherwise) when 
+     * creating a new resource automatically during file upload or synchronization.
+     * Only in this case, the file type for the new resource is determined using this method.
+     * Otherwise the resource type is <i>always</i> stored as part of the resource, 
+     * and is <i>not</i> related to the file name.<p>
+     * 
+     * @param resourcename the resource name to look up the resource type for
+     * 
+     * @return the default resource type for the given resource name
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public I_CmsResourceType getDefaultTypeForName(String resourcename) throws CmsException {
+
+        String typeName = null;
+        String suffix = null;
+        if (CmsStringUtil.isNotEmpty(resourcename)) {
+            int pos = resourcename.lastIndexOf('.');
+            if (pos >= 0) {
+                suffix = resourcename.substring(pos);
+                if (CmsStringUtil.isNotEmpty(suffix)) {
+                    suffix = suffix.toLowerCase();
+                    typeName = (String)m_mappings.get(suffix);
+
+                }
+            }
+        }
+
+        if (typeName == null) {
+            // use default type "plain"
+            typeName = CmsResourceTypePlain.C_RESOURCE_TYPE_NAME;
+        }
+
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isDebugEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).debug("getting resource type " + typeName + " for suffix " + suffix);
+        }
+        // look up and return the resource type
+        return getResourceType(typeName);
+    }
+
+    /**
+     * Returns the file extensions (suffixes) mappings to resource types.<p>
+     *
+     * @return a Map with all known file extensions as keys and their resource types as values.
+     */
+    public Map getExtensionMapping() {
+
+        return m_mappings;
+    }
+
+    /**
+     * Returns the loader class instance for a given resource.<p>
+     * 
+     * @param resource the resource
+     * @return the appropriate loader class instance
+     * @throws CmsLoaderException if something goes wrong
+     */
+    public I_CmsResourceLoader getLoader(CmsResource resource) throws CmsLoaderException {
+
+        return getLoader(this.getResourceType(resource.getTypeId()).getLoaderId());
+    }
+
+    /**
      * Returns the loader class instance for the given loader id.<p>
      * 
      * @param id the id of the loader to return
@@ -239,24 +399,12 @@ public class CmsResourceManager {
 
         return m_loaders[id];
     }
-    
-    /**
-     * Returns the loader class instance for a given resource.<p>
-     * 
-     * @param resource the resource
-     * @return the appropriate loader class instance
-     * @throws CmsLoaderException if something goes wrong
-     */
-    public I_CmsResourceLoader getLoader(CmsResource resource) throws CmsLoaderException {
-     
-        return getLoader(this.getResourceType(resource.getTypeId()).getLoaderId());
-    }
 
     /**
      * Returns the (unmodifyable array) list with all initialized resource loaders.<p>
      * 
      * @return the (unmodifyable array) list with all initialized resource loaders
-     */    
+     */
     public List getLoaders() {
 
         return m_loaderList;
@@ -292,62 +440,15 @@ public class CmsResourceManager {
     }
 
     /**
-     * Returns the default resource type for the given resource name, using the 
-     * configured resource type file extensions.<p>
-     * 
-     * In case the given name does not map to a configured resource type,
-     * {@link CmsResourceTypePlain} is returned.<p>
-     * 
-     * This is only required (and should <i>not</i> be used otherwise) when 
-     * creating a new resource automatically during file upload or synchronization.
-     * Only in this case, the file type for the new resource is determined using this method.
-     * Otherwise the resource type is <i>always</i> stored as part of the resource, 
-     * and is <i>not</i> related to the file name.<p>
-     * 
-     * @param resourcename the resource name to look up the resource type for
-     * 
-     * @return the default resource type for the given resource name
-     * 
-     * @throws CmsException if something goes wrong
+     * Returns an (unmodifiable) list of class names of all currently registered content collectors.<p>
+     *   
+     * @return an (unmodifiable) list of class names of all currently registered content collectors
      */
-    public I_CmsResourceType getDefaultTypeForName(String resourcename) throws CmsException {
+    public List getRegisteredContentCollectors() {
 
-        String typeName = null;
-        String suffix = null;
-        if (CmsStringUtil.isNotEmpty(resourcename)) {
-            int pos = resourcename.lastIndexOf('.');
-            if (pos >= 0) {
-                suffix = resourcename.substring(pos);
-                if (CmsStringUtil.isNotEmpty(suffix)) {
-                    suffix = suffix.toLowerCase();  
-                    typeName = (String) m_mappings.get(suffix);         
+        return m_collectors;
+    }
 
-                }
-            }      
-        }
-        
-        if (typeName == null) {
-            // use default type "plain"
-            typeName = CmsResourceTypePlain.C_RESOURCE_TYPE_NAME;
-        }
-        
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isDebugEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).debug(
-                "getting resource type " + typeName + " for suffix " + suffix);
-        }
-        // look up and return the resource type
-        return getResourceType(typeName);
-    }
-    
-    /**
-     * Returns the file extensions (suffixes) mappings to resource types.<p>
-     *
-     * @return a Map with all known file extensions as keys and their resource types as values.
-     */
-    public Map getExtensionMapping() {
-        return m_mappings;
-    }
-    
     /**
      * Returns the initialized resource type instance for the given id.<p>
      * 
@@ -363,8 +464,8 @@ public class CmsResourceManager {
         }
         if (result == null) {
             throw new CmsLoaderException(
-                "Unknown resource type id requested: " + typeId, 
-                CmsLoaderException.C_LOADER_UNKNOWN_RESOURCE_TYPE);            
+                "Unknown resource type id requested: " + typeId,
+                CmsLoaderException.C_LOADER_UNKNOWN_RESOURCE_TYPE);
         }
         return result;
     }
@@ -385,17 +486,17 @@ public class CmsResourceManager {
             }
         }
         throw new CmsLoaderException(
-            "Unknown resource type name requested: " + typeName, 
+            "Unknown resource type name requested: " + typeName,
             CmsLoaderException.C_LOADER_UNKNOWN_RESOURCE_TYPE);
     }
-    
+
     /**
      * Returns the (unmodifyable array) list with all initialized resource types.<p>
      * 
      * @return the (unmodifyable array) list with all initialized resource types
-     */    
+     */
     public List getResourceTypes() {
-        
+
         // return the list of resource types
         return m_resourceTypeList;
     }
@@ -409,11 +510,8 @@ public class CmsResourceManager {
      * @return a resource loader facade for the given file
      * @throws CmsException if something goes wrong
      */
-    public CmsTemplateLoaderFacade getTemplateLoaderFacade(
-        CmsObject cms, 
-        CmsResource resource, 
-        String templateProperty
-    ) throws CmsException {
+    public CmsTemplateLoaderFacade getTemplateLoaderFacade(CmsObject cms, CmsResource resource, String templateProperty)
+    throws CmsException {
 
         String absolutePath = cms.getSitePath(resource);
 
@@ -427,21 +525,21 @@ public class CmsResourceManager {
         CmsResource template = cms.readFile(templateProp, CmsResourceFilter.IGNORE_EXPIRATION);
         return new CmsTemplateLoaderFacade(getLoader(template), resource, template);
     }
-    
+
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
      */
     public void initConfiguration() {
-        
+
         // freeze the current configuration
         m_frozen = true;
         m_resourceTypeList = Collections.unmodifiableList(m_resourceTypeList);
         m_loaderList = Collections.unmodifiableList(m_loaderList);
-        
+
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader configuration : finished");
-        }  
-    }       
+        }
+    }
 
     /**    
      * Loads the requested resource and writes the contents to the response stream.<p>
@@ -454,12 +552,8 @@ public class CmsResourceManager {
      * @throws IOException if something goes wrong
      * @throws CmsException if something goes wrong
      */
-    public void loadResource(
-        CmsObject cms, 
-        CmsResource resource, 
-        HttpServletRequest req, 
-        HttpServletResponse res
-    ) throws ServletException, IOException, CmsException {
+    public void loadResource(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
+    throws ServletException, IOException, CmsException {
 
         res.setContentType(getMimeType(resource.getName(), cms.getRequestContext().getEncoding()));
         I_CmsResourceLoader loader = getLoader(resource);
@@ -487,18 +581,42 @@ public class CmsResourceManager {
         boolean editable,
         Map paramMap,
         ServletRequest req,
-        ServletResponse res
-    ) throws CmsException {
+        ServletResponse res) throws CmsException {
 
         if (m_includeExtensions == null) {
             return target;
         }
         String result = target;
-        for (int i=0; i<m_includeExtensions.size(); i++) {
+        for (int i = 0; i < m_includeExtensions.size(); i++) {
             // offer the element to every include extension
             I_CmsLoaderIncludeExtension loader = (I_CmsLoaderIncludeExtension)m_includeExtensions.get(i);
             result = loader.includeExtension(target, element, editable, paramMap, req, res);
         }
         return result;
+    }
+
+    /**
+     * Adds the file extionsion mappings of a resource type to the internal
+     * mapping storage.<p>
+     *
+     * @param resourceType the resource type with the mappings
+     */
+    private void addMapping(I_CmsResourceType resourceType) {
+
+        List mappings = resourceType.getMapping();
+
+        Iterator i = mappings.iterator();
+        while (i.hasNext()) {
+            String mapping = (String)i.next();
+            // only add this mapping if a mapping with this file extension does not
+            // exist already
+            if (!m_mappings.containsKey(mapping)) {
+               m_mappings.put(mapping, resourceType.getTypeName());
+               if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                   OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                       ". File mapping         : Map '" + mapping + "' to resource type " + resourceType.getTypeName());
+                }
+            }
+        }
     }
 }

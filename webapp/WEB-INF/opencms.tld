@@ -104,15 +104,15 @@
         <body-content>JSP</body-content>
         <description>
             This tag loads XML content items from the OpenCms VFS.
-        </description>
+        </description> 
         <attribute>
-            <name>file</name>
-        </attribute>  
-        <attribute>
-            <name>filter</name>
+            <name>collector</name>
         </attribute>    
         <attribute>
             <name>param</name>
+        </attribute>
+        <attribute>
+            <name>property</name>
         </attribute>
         <attribute>
             <name>editable</name>

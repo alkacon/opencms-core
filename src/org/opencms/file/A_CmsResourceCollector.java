@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/Attic/A_CmsXmlContentFilter.java,v $
- * Date   : $Date: 2004/10/15 12:22:00 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/A_CmsResourceCollector.java,v $
+ * Date   : $Date: 2004/10/19 18:05:16 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,29 +29,34 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
  
-package org.opencms.xml.content;
+package org.opencms.file;
 
 /**
- * Provides some helpful base implementations for content filter classes.<p>
+ * Provides some helpful base implementations for resource collector classes.<p>
+ * 
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * 
+ * @version $Revision: 1.1 $
+ * @since 5.5.2
  */
-public abstract class A_CmsXmlContentFilter implements I_CmsXmlContentFilter {
+public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
 
-    /** The filter order of this filter. */
+    /** The collector order of this collector. */
     protected int m_order;
 
-    /** The hash code of this filter. */
+    /** The hash code of this collector. */
     private int m_hashcode;
     
     /**
      * Constructor to initialize some default values.<p>
      */
-    public A_CmsXmlContentFilter() {
+    public A_CmsResourceCollector() {
         
         m_hashcode = getClass().getName().hashCode();
     }
     
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentFilter#getOrder()
+     * @see org.opencms.file.I_CmsResourceCollector#getOrder()
      */
     public int getOrder() {
     
@@ -59,7 +64,7 @@ public abstract class A_CmsXmlContentFilter implements I_CmsXmlContentFilter {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentFilter#setOrder(int)
+     * @see org.opencms.file.I_CmsResourceCollector#setOrder(int)
      */
     public void setOrder(int order) {
 
@@ -75,15 +80,15 @@ public abstract class A_CmsXmlContentFilter implements I_CmsXmlContentFilter {
             return 0;
         }
         
-        if (! (o instanceof I_CmsXmlContentFilter)) {
+        if (! (o instanceof I_CmsResourceCollector)) {
             return 0;
         }
         
-        return (getOrder() - ((I_CmsXmlContentFilter)o).getOrder());
+        return (getOrder() - ((I_CmsResourceCollector)o).getOrder());
     }    
     
     /**
-     * Two filters are considered to be equal if they are sharing the same
+     * Two collectors are considered to be equal if they are sharing the same
      * implementation class.<p> 
      * 
      * @see java.lang.Object#equals(java.lang.Object)
@@ -94,7 +99,7 @@ public abstract class A_CmsXmlContentFilter implements I_CmsXmlContentFilter {
             return false;
         }
         
-        if (! (o instanceof I_CmsXmlContentFilter)) {
+        if (! (o instanceof I_CmsResourceCollector)) {
             return false;
         }
         
