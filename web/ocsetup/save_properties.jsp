@@ -94,6 +94,7 @@
 						<tr>
 							<td align="center">
 								<b>Do you want to use directory translation?</b><br>
+								Activate this option if you want to import a site built with OpenCms versions prior 5.0 (beta 2).
 							</td>
 						</tr>
 						<tr>
