@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlList.java,v $
- * Date   : $Date: 2004/08/23 15:37:02 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/08/27 12:12:22 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * is called in each operation. This method acts as access guard and matches the required permissions for the operation
  * against the allowed and denied permissions defined for the user or groups of this user.</p>
  * 
- * @version $Revision: 1.13 $ $Date: 2004/08/23 15:37:02 $
+ * @version $Revision: 1.14 $ $Date: 2004/08/27 12:12:22 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlList {
@@ -107,6 +107,7 @@ public class CmsAccessControlList {
 
     /**
      * Sets the allowed permissions of a given access control entry as allowed permissions in the access control list.<p>
+     * The denied permissions are left unchanged.
      * 
      * @param entry the access control entry
      */
@@ -116,12 +117,13 @@ public class CmsAccessControlList {
         if (permissions == null) {
             permissions = new CmsPermissionSetCustom();
         }
-        permissions.setPermissions(entry.getAllowedPermissions(), 0);
+        permissions.setPermissions(entry.getAllowedPermissions(), permissions.getDeniedPermissions());
         m_permissions.put(entry.getPrincipal(), permissions);
     }
 
     /**
      * Sets the denied permissions of a given access control entry as denied permissions in the access control list.<p>
+     * The allowed permissions are left unchanged.
      * 
      * @param entry the access control entry
      */
@@ -131,7 +133,7 @@ public class CmsAccessControlList {
         if (permissions == null) {
             permissions = new CmsPermissionSetCustom();
         }
-        permissions.setPermissions(0, entry.getDeniedPermissions());
+        permissions.setPermissions(permissions.getAllowedPermissions(), entry.getDeniedPermissions());
         m_permissions.put(entry.getPrincipal(), permissions);        
     }
 
