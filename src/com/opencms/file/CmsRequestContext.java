@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/02/02 15:59:53 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2003/02/03 14:15:14 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import com.opencms.core.I_CmsResponse;
 import com.opencms.core.I_CmsSession;
 import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.template.cache.CmsElementCache;
+import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.HashMap;
 import java.util.StringTokenizer;
@@ -59,7 +60,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.63 $ $Date: 2003/02/02 15:59:53 $
+ * @version $Revision: 1.64 $ $Date: 2003/02/03 14:15:14 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -585,7 +586,8 @@ public class CmsRequestContext implements I_CmsConstants {
         if ((m_encoding != null) && ! "".equals(m_encoding)) {
             // encoding was read from resource property
             return;
-        } else if (! (m_req instanceof CmsExportRequest)) {                
+        } else if ((getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) && (! (m_req instanceof CmsExportRequest))) {
+            // try to get encoding from session for special system folder only                
             if (A_OpenCms.C_LOGGING && A_OpenCms.isLogging(A_OpenCms.C_OPENCMS_DEBUG)) {                                
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG,
                     "[" + getClass().getName() + "] can't get encoding property for resource "
