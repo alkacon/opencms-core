@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/06 09:53:01 $
- * Version: $Revision: 1.139 $
+ * Date   : $Date: 2003/08/06 14:48:29 $
+ * Version: $Revision: 1.140 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.139 $ $Date: 2003/08/06 09:53:01 $
+ * @version $Revision: 1.140 $ $Date: 2003/08/06 14:48:29 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -2085,13 +2085,22 @@ public class CmsDriverManager extends Object {
         CmsProject deleteProject = readProject(context, projectId);
 
         if ((isAdmin(context) || isManagerOfProject(context)) && (projectId != I_CmsConstants.C_PROJECT_ONLINE_ID)) {
-            List allFiles = m_vfsDriver.readFiles(deleteProject.getId(), false, true);
-            List allFolders = m_vfsDriver.readFolders(deleteProject, false, true);
+//            List allFiles = m_vfsDriver.readFiles(deleteProject.getId(), false, true);
+//            List allFolders = m_vfsDriver.readFolders(deleteProject, false, true);
+            List allFiles = readResourcesInsideProject(context, projectId, 1);
+            List allFolders = readResourcesInsideProject(context, projectId, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
             // first delete files or undo changes in files
             for (int i = 0; i < allFiles.size(); i++) {
                 CmsFile currentFile = (CmsFile) allFiles.get(i);
                 String currentResourceName = readPath(context, currentFile, true);
                 if (currentFile.getState() == I_CmsConstants.C_STATE_NEW) {
+                    CmsLock lock = getLock(context, currentFile);
+                    if (lock.isNullLock()) {
+                        // lock the resource
+                        lockResource(context, currentResourceName);
+                    } else if (!lock.getUserId().equals(context.currentUser().getId()) || lock.getProjectId() != context.currentProject().getId()) {
+                        changeLock(context, currentResourceName);
+                    }
                     // delete the properties
                     m_vfsDriver.deleteAllProperties(projectId, currentFile);
                     // delete the file
@@ -2103,6 +2112,8 @@ public class CmsDriverManager extends Object {
                     if (lock.isNullLock()) {
                         // lock the resource
                         lockResource(context, currentResourceName);
+                    } else if (!lock.getUserId().equals(context.currentUser().getId()) || lock.getProjectId() != context.currentProject().getId()) {
+                        changeLock(context, currentResourceName);
                     }
                     // undo all changes in the file
                     undoChanges(context, currentResourceName);
@@ -2114,6 +2125,8 @@ public class CmsDriverManager extends Object {
                     if (lock.isNullLock()) {
                         // lock the resource
                         lockResource(context, currentResourceName);
+                    } else if (!lock.getUserId().equals(context.currentUser().getId()) || lock.getProjectId() != context.currentProject().getId()) {
+                        changeLock(context, currentResourceName);
                     }
                     // then undo all changes in the file
                     undoChanges(context, currentResourceName);
@@ -2133,6 +2146,8 @@ public class CmsDriverManager extends Object {
                     if (lock.isNullLock()) {
                         // lock the resource
                         lockResource(context, currentResourceName);
+                    } else if (!lock.getUserId().equals(context.currentUser().getId()) || lock.getProjectId() != context.currentProject().getId()) {
+                        changeLock(context, currentResourceName);
                     }
                     // undo all changes in the folder
                     undoChanges(context, currentResourceName);
@@ -2142,6 +2157,8 @@ public class CmsDriverManager extends Object {
                     if (lock.isNullLock()) {
                         // lock the resource
                         lockResource(context, currentResourceName);
+                    } else if (!lock.getUserId().equals(context.currentUser().getId()) || lock.getProjectId() != context.currentProject().getId()) {
+                        changeLock(context, currentResourceName);
                     }
                     // then undo all changes in the folder
                     undoChanges(context, currentResourceName);
@@ -6120,7 +6137,7 @@ public class CmsDriverManager extends Object {
         // check if only locked resources should be displayed
         if ("locked".equalsIgnoreCase(filter)) {
             onlyLocked = true;
-            resources = readLockedResourcesInProject(context, projectId);
+            resources = readResourcesInsideProject(context, projectId, I_CmsConstants.C_UNKNOWN_ID);
         } else {
             resources = m_projectDriver.readProjectView(projectId, filter);
         }
@@ -6150,68 +6167,83 @@ public class CmsDriverManager extends Object {
     }
     
     /**
-     * Reads all resources that are currently locked for a specified project.<p>
+     * Reads all resources that are inside a specified project.<p>
      * 
      * @param context the current request context
-     * @param projectId the ID of the project for which the locked resources are read
-     * @return a List with all locked resources in the specified project
+     * @param projectId the ID of the project
+     * @param resourceType &lt;0 if files and folders should be read, 0 if only folders should be read, &gt;0 if only files should be read
+     * @return a List with all resources inside the specified project
      * @throws CmsException if somethong goes wrong
      */
-    public List readLockedResourcesInProject(CmsRequestContext context, int projectId) throws CmsException {
+    public List readResourcesInsideProject(CmsRequestContext context, int projectId, int resourceType) throws CmsException {
         List projectResources = m_vfsDriver.readProjectResources(readProject(projectId));
         List result = (List) new ArrayList();
         String currentProjectResource = null;
 
         for (int i = 0; i < projectResources.size(); i++) {
             currentProjectResource = (String) projectResources.get(i);
-            result.addAll(getAllSubResourcesInDfs(context, currentProjectResource));
+            result.addAll(readAllSubResourcesInDfs(context, currentProjectResource, resourceType));
         }
 
         return result;
     }
 
     /**
-     * Collects all sub-resources (including deleted resources) of a specified resource name 
+     * Reads all sub-resources (including deleted resources) of a specified resource name 
      * by traversing the sub-tree in a depth first search.<p>
      * 
      * @param context the current request context
      * @param resourcename the resource name
+     * @param resourceType &lt;0 if files and folders should be read, 0 if only folders should be read, &gt;0 if only files should be read
      * @return a list with all sub-resources, or the just the specified resource itself if this resource is not a folder
      * @throws CmsException if something goes wrong
      */
-    public List getAllSubResourcesInDfs(CmsRequestContext context, String resourcename) throws CmsException {
+    public List readAllSubResourcesInDfs(CmsRequestContext context, String resourcename, int resourceType) throws CmsException {
         List result = (List) new ArrayList();
         Vector unvisited = new Vector();
-        CmsResource currentFolder = null;
+        CmsFolder currentFolder = null;
         Enumeration unvisitedFolders = null;
-
+        
         CmsResource resource = readFileHeader(context, resourcename);
         if (resource.isFile()) {
-            // return a list just with the resource itself in case the 
-            // specified resource name represents a file and not a folder
-            result.add(resource);
-            return result;
+            if (resourceType != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+                // return a list just with the resource itself in case the 
+                // specified resource name represents a file and not a folder     
+                // (unless only folders should be selected)           
+                result.add(resource);                       
+            }
+            return result;   
         }
-
-        unvisited.add(resource);
+        
+        currentFolder = readFolder(context, resourcename);
+        unvisited.add(currentFolder);
 
         while (unvisited.size() > 0) {
             // visit all unvisited folders
             unvisitedFolders = unvisited.elements();
             while (unvisitedFolders.hasMoreElements()) {
-                currentFolder = (CmsResource) unvisitedFolders.nextElement();
+                currentFolder = (CmsFolder) unvisitedFolders.nextElement();
 
                 // remove the current folder from the list of unvisited folders
                 unvisited.remove(currentFolder);
-                // add the current folder to the result list
-                result.add(currentFolder);
-                // add all sub-files in the current folder to the result list
-                result.addAll(getSubFiles(context, currentFolder.getFullResourceName(), true));
+                
+                if (resourceType <= CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+                    // add the current folder to the result list
+                    result.add(currentFolder);
+                }
+                
+                if (resourceType != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+                    // add all sub-files in the current folder to the result list
+                    result.addAll(getSubFiles(context, currentFolder.getFullResourceName(), true));
+                }
+                
                 // add all sub-folders in the current folder to the list of unvisited folders
                 // to visit them in the next iteration                        
                 unvisited.addAll(getSubFolders(context, currentFolder.getFullResourceName(), true));
             }
         }
+        
+        // TODO the calculated resource lists should be cached
 
         return result;
     }

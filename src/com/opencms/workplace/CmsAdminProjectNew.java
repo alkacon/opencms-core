@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2003/07/31 19:20:09 $
-* Version: $Revision: 1.79 $
+* Date   : $Date: 2003/08/06 14:48:29 $
+* Version: $Revision: 1.80 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsRequestContext;
+import com.opencms.file.CmsResource;
 import com.opencms.file.I_CmsRegistry;
 import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.util.Utils;
@@ -53,7 +54,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.79 $ $Date: 2003/07/31 19:20:09 $
+ * @version $Revision: 1.80 $ $Date: 2003/08/06 14:48:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -189,6 +190,11 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
         String fileToGo = (String)parameters.get(C_PARA_RESOURCE);
         if (fileToGo == null){
             fileToGo = (String)session.getValue("newProjectCallingFrom");
+        } else {
+            CmsResource resource = cms.readFileHeader(fileToGo);
+            if (resource.isFolder() && !resource.getFullResourceName().endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+                fileToGo += I_CmsConstants.C_FOLDER_SEPARATOR;
+            }
         }
         String lasturl = (String)parameters.get("lasturl");
         if (lasturl == null){
