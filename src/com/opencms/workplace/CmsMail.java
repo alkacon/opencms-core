@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMail.java,v $
- * Date   : $Date: 2000/05/23 12:51:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/05/23 12:55:30 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.io.*;
  * This class is used to send a mail, it uses Threads to send it.
  *
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.3 $ $Date: 2000/05/23 12:51:29 $
+ * @version $Name:  $ $Revision: 1.4 $ $Date: 2000/05/23 12:55:30 $
  * @see java.lang.Thread
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
@@ -68,6 +68,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 	 * @param to Address of recipient.
 	 * @param subject Subject of email.
 	 * @param content Content of email.
+	 * @param type ContentType of email.
 	 */	
 	public CmsMail(A_CmsObject cms,String from, String[] to, String subject, String content, String type)
 		throws CmsException{
@@ -120,6 +121,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 	 * @param to User object that contains the address of recipient.
 	 * @param subject Subject of email.
 	 * @param content Content of email.
+	 * @param type ContentType of email.
 	 */	
 	public CmsMail(A_CmsObject cms,A_CmsUser from, A_CmsUser[] to, String subject, String content, String type)
 		throws CmsException{
@@ -179,6 +181,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 	 * @param to Group object that contains the address of recipient.
 	 * @param subject Subject of email.
 	 * @param content Content of email.	
+	 * @param type ContentType of email.
 	 */	
 	public CmsMail(A_CmsObject cms,A_CmsUser from, A_CmsGroup to, String subject, String content, String type)
 		throws CmsException{
