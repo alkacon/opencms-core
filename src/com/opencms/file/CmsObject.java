@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/01 16:44:53 $
-* Version: $Revision: 1.392 $
+* Date   : $Date: 2003/09/03 11:23:40 $
+* Version: $Revision: 1.393 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.392 $
+ * @version $Revision: 1.393 $
  */
 public class CmsObject {
 
@@ -2663,94 +2663,97 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void publishProject(I_CmsReport report, CmsResource directPublishResource) throws CmsException {
-        Vector newResources = null;
-        Vector deletedResources = null;
-        Vector changedResources = null;
-        Vector changedModuleMasters = null;
-        boolean success = false;
-        CmsPublishedResources publishedResources = null;
 
-        clearcache();
-
-        publishedResources = new CmsPublishedResources(m_context.currentProject());
-        try {
-           
-            // first we remember the new resources for the link management
-            newResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "new");
-            
-            deletedResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "deleted");
-            
-            changedResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "changed");
-
-            updateOnlineProjectLinks(deletedResources, changedResources, null, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
-           
-            publishedResources = m_driverManager.publishProject(this, m_context, report, directPublishResource);
-
-            // update the online links table for the new resources (now they are there)
-            updateOnlineProjectLinks(null, null, newResources, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
-
-            changedResources.clear();
-            changedResources = null;
-            newResources = null;
-
-            changedResources = publishedResources.getChangedVfsResources();
-            changedModuleMasters = publishedResources.getChangedCosResources();
- 
-            if (CmsXmlTemplateLoader.getOnlineElementCache() != null) {
-                CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
-            }
+        synchronized (m_driverManager) {
+            Vector newResources = null;
+            Vector deletedResources = null;
+            Vector changedResources = null;
+            Vector changedModuleMasters = null;
+            boolean success = false;
+            CmsPublishedResources publishedResources = null;
 
             clearcache();
-            success = true;
-        } catch (Exception e) {
-            String stamp1 = "[" + this.getClass().getName() + ".publishProject()/1] Project:" + m_context.currentProject().getId() + " Time:" + new Date();
-            String stamp2 = "[" + this.getClass().getName() + ".publishProject()/1] User: " + m_context.currentUser().toString();
-            if (DEBUG > 0) {
-                System.err.println("###################################");
-                System.err.println(stamp1);
-                System.err.println(stamp2);
-                e.printStackTrace();
-                System.err.println("Vector of changed resources:");
-                if (changedResources != null) {
-                    for (int i = 0; i < changedResources.size(); i++) {
-                        System.err.println("    -- " + i + " -->" + (String)changedResources.get(i) + "<--");
-                    }
+
+            publishedResources = new CmsPublishedResources(m_context.currentProject());
+            try {
+
+                // first we remember the new resources for the link management
+                newResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "new");
+
+                deletedResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "deleted");
+
+                changedResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "changed");
+
+                updateOnlineProjectLinks(deletedResources, changedResources, null, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
+
+                publishedResources = m_driverManager.publishProject(this, m_context, report, directPublishResource);
+
+                // update the online links table for the new resources (now they are there)
+                updateOnlineProjectLinks(null, null, newResources, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
+
+                changedResources.clear();
+                changedResources = null;
+                newResources = null;
+
+                changedResources = publishedResources.getChangedVfsResources();
+                changedModuleMasters = publishedResources.getChangedCosResources();
+
+                if (CmsXmlTemplateLoader.getOnlineElementCache() != null) {
+                    CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
                 }
-            }
-            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp1);
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp2);
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/1] Exception: " + e);
-            }
-        } finally {
-            if (changedResources == null || changedResources.size() < 1) {
-                String stamp1 = "[" + this.getClass().getName() + ".publishProject()/2] Project:" + m_context.currentProject().getId() + " Time:" + new Date();
-                String stamp2 = "[" + this.getClass().getName() + ".publishProject()/2] User: " + m_context.currentUser().toString();
-                String stamp3 = "[" + this.getClass().getName() + ".publishProject()/2] Vector was null or empty";
+
+                clearcache();
+                success = true;
+            } catch (Exception e) {
+                String stamp1 = "[" + this.getClass().getName() + ".publishProject()/1] Project:" + m_context.currentProject().getId() + " Time:" + new Date();
+                String stamp2 = "[" + this.getClass().getName() + ".publishProject()/1] User: " + m_context.currentUser().toString();
                 if (DEBUG > 0) {
                     System.err.println("###################################");
                     System.err.println(stamp1);
                     System.err.println(stamp2);
-                    System.err.println(stamp3);
+                    e.printStackTrace();
+                    System.err.println("Vector of changed resources:");
+                    if (changedResources != null) {
+                        for (int i = 0; i < changedResources.size(); i++) {
+                            System.err.println("    -- " + i + " -->" + (String)changedResources.get(i) + "<--");
+                        }
+                    }
                 }
-                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {
-                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp1);
-                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp2);
-                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp3);
+                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp1);
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp2);
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/1] Exception: " + e);
                 }
-                success = false;
+            } finally {
+                if (changedResources == null || changedResources.size() < 1) {
+                    String stamp1 = "[" + this.getClass().getName() + ".publishProject()/2] Project:" + m_context.currentProject().getId() + " Time:" + new Date();
+                    String stamp2 = "[" + this.getClass().getName() + ".publishProject()/2] User: " + m_context.currentUser().toString();
+                    String stamp3 = "[" + this.getClass().getName() + ".publishProject()/2] Vector was null or empty";
+                    if (DEBUG > 0) {
+                        System.err.println("###################################");
+                        System.err.println(stamp1);
+                        System.err.println(stamp2);
+                        System.err.println(stamp3);
+                    }
+                    if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {
+                        OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp1);
+                        OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp2);
+                        OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp3);
+                    }
+                    success = false;
+                }
+                if (!success) {
+                    if (CmsXmlTemplateLoader.getOnlineElementCache() != null)
+                        CmsXmlTemplateLoader.getOnlineElementCache().clearCache();
+                }
+                // set current project to online project if the published project was temporary
+                // and the published project is still the current project
+                if (m_context.currentProject().getId() == m_context.currentProject().getId() && (m_context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY)) {
+                    m_context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+                }
+
+                this.fireEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, publishedResources);
             }
-            if (!success) {
-                if (CmsXmlTemplateLoader.getOnlineElementCache() != null)
-                    CmsXmlTemplateLoader.getOnlineElementCache().clearCache();
-            }
-            // set current project to online project if the published project was temporary
-            // and the published project is still the current project
-            if (m_context.currentProject().getId() == m_context.currentProject().getId() && (m_context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY)) {
-                m_context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
-            }
-            
-            this.fireEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, publishedResources);
         }
     }
 
