@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsResourceTranslator.java,v $
- * Date   : $Date: 2004/11/12 14:57:40 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/11/17 08:50:11 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.oro.text.regex.MalformedPatternException;
  * </pre><p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.0 beta 2
  */
 public class CmsResourceTranslator {
@@ -171,7 +171,7 @@ public class CmsResourceTranslator {
                     } else {                        
                         // first pattern matched, return the result
                         if (OpenCms.getLog(this).isDebugEnabled()) {
-                            OpenCms.getLog(this).debug("Resource translation (first match): " + resourceName + " --> " + result);
+                            OpenCms.getLog(this).debug("Resource translation (match rule " + i + "): " + resourceName + " --> " + result);
                         }                        
                         // Return first match result
                         return result.toString();
@@ -186,7 +186,7 @@ public class CmsResourceTranslator {
         
         // the pattern matched, return the result
         if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Resource translation (after loop): " + resourceName + " --> " + current);
+            OpenCms.getLog(this).debug("Resource translation (no match): " + resourceName + " --> " + current);
         }         
         // return last translation (or original if no matching translation found)
         return current;
