@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/12/21 16:48:29 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2001/01/03 17:07:06 $
+ * Version: $Revision: 1.66 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.65 $ $Date: 2000/12/21 16:48:29 $  
+* @version $Revision: 1.66 $ $Date: 2001/01/03 17:07:06 $  
 * 
 * */
 
@@ -289,7 +289,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		output.append("</script>\n");
 		output.append("<head>\n");
 		output.append("<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=iso-8859-1\">\n");
-		output.append("<title>OpenCms - Systemfehler</title>\n");
+		output.append("<title>OpenCms-Systemfehler - " + C_VERSION + "</title>\n");
 		output.append("<style type=\"text/css\">\n");
 		output.append("TD.dialogtxt\n");
 		output.append("{\n");
