@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/04 12:42:19 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2000/04/05 07:34:32 $
+ * Version: $Revision: 1.95 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.94 $ $Date: 2000/04/04 12:42:19 $
+ * @version $Revision: 1.95 $ $Date: 2000/04/05 07:34:32 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1878,10 +1878,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				CmsException.C_SHORT_PASSWORD);
 		}
 		
-		// read the user
-		A_CmsUser user = readUser(currentUser, currentProject, username);
-		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) && 
-			isAdmin(user, currentProject) ) {
+		if( isAdmin(currentUser, currentProject) ) {
 			m_userRb.setPassword(username, newPassword);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
