@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.44 $ $Date: 2000/02/08 09:51:35 $
+ * @version $Revision: 1.45 $ $Date: 2000/02/08 10:50:32 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -3198,7 +3198,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 		
 		// read the parent folder
-		resource = m_fileRb.readFolder(currentProject, resource.getParent());
+		if(resource.getParent() != null) {
+			resource = m_fileRb.readFolder(currentProject, resource.getParent());
+		} else {
+			// no parent folder!
+			return true;
+		}
+		
 		
 		// check the rights and if the resource is not locked
 		do {
