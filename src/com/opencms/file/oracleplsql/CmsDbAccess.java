@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/02/05 10:52:04 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2001/02/06 15:34:33 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.19 $ $Date: 2001/02/05 10:52:04 $ *
+ * @version $Revision: 1.20 $ $Date: 2001/02/06 15:34:33 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -2461,7 +2461,8 @@ public int updateSession(String sessionId, Hashtable data) throws CmsException {
 	PreparedStatement statement = null;
 	PreparedStatement statement2 = null;
 	PreparedStatement nextStatement = null;
-	OraclePreparedStatement trimStatement = null;
+	//OraclePreparedStatement trimStatement = null;
+        PreparedStatement trimStatement = null;
 	Connection con = null;
 	int retValue;
 	ResultSet res = null;
@@ -2490,8 +2491,10 @@ public int updateSession(String sessionId, Hashtable data) throws CmsException {
 			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SESSION_DATA");
 			// first trim the blob to 0 bytes, otherwise there could be left some bytes
 			// of the old content
-			trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.C_TRIMBLOB);
-			trimStatement.setBLOB(1, blob);
+			//trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.C_TRIMBLOB);
+			//trimStatement.setBLOB(1, blob);
+                        trimStatement = con.prepareStatement(cq.C_TRIMBLOB);
+			trimStatement.setBlob(1, blob);
 			trimStatement.setInt(2, 0);
 			trimStatement.execute();
 			ByteArrayInputStream instream = new ByteArrayInputStream(value);
@@ -2627,7 +2630,8 @@ public void writeFile(CmsProject project, CmsProject onlineProject, CmsFile file
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	PreparedStatement statement = null;
 	PreparedStatement nextStatement = null;
-	OraclePreparedStatement trimStatement = null;
+	//OraclePreparedStatement trimStatement = null;
+        PreparedStatement trimStatement = null;
 	Connection con = null;
 	ResultSet res = null;
 	try {
@@ -2644,8 +2648,10 @@ public void writeFile(CmsProject project, CmsProject onlineProject, CmsFile file
 				oracle.sql.BLOB blobnew = ((OracleResultSet) res).getBLOB("FILE_CONTENT");
 				// first trim the blob to 0 bytes, otherwise ther could be left some bytes
 				// of the old content
-				trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.C_TRIMBLOB);
-				trimStatement.setBLOB(1, blobnew);
+				//trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.C_TRIMBLOB);
+				//trimStatement.setBLOB(1, blobnew);
+                                trimStatement = con.prepareStatement(cq.C_TRIMBLOB);
+				trimStatement.setBlob(1, blobnew);
 				trimStatement.setInt(2, 0);
 				trimStatement.execute();
 				ByteArrayInputStream instream = new ByteArrayInputStream(file.getContents());
@@ -2900,7 +2906,8 @@ public Serializable writeSystemProperty(String name, Serializable object) throws
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	PreparedStatement statement = null;
 	PreparedStatement nextStatement = null;
-	OraclePreparedStatement trimStatement = null;
+	//OraclePreparedStatement trimStatement = null;
+        PreparedStatement trimStatement = null;
 	ResultSet res = null;
 	Connection con = null;
 	byte[] value = null;
@@ -2920,8 +2927,10 @@ public Serializable writeSystemProperty(String name, Serializable object) throws
 			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SYSTEMPROPERTY_VALUE");
 			// first trim the blob to 0 bytes, otherwise ther could be left some bytes
 			// of the old content
-			trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.C_TRIMBLOB);
-			trimStatement.setBLOB(1, blob);
+			//trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.C_TRIMBLOB);
+			//trimStatement.setBLOB(1, blob);
+                        trimStatement = con.prepareStatement(cq.C_TRIMBLOB);
+			trimStatement.setBlob(1, blob);
 			trimStatement.setInt(2, 0);
 			trimStatement.execute();
 			trimStatement.close();
@@ -2999,11 +3008,13 @@ public Serializable writeSystemProperty(String name, Serializable object) throws
 public void writeUser(CmsUser user) throws CmsException {
 	//System.out.println("PL/SQL: writeUser");
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-	byte[] value = null;
+        byte[] value = null;
 	PreparedStatement statement = null;
 	PreparedStatement statement2 = null;
 	PreparedStatement nextStatement = null;
-	OraclePreparedStatement trimStatement = null;
+	//OraclePreparedStatement trimStatement = null;
+        PreparedStatement trimStatement = null;
+
 	ResultSet res = null;
 	Connection con = null;
 	try {
@@ -3013,7 +3024,6 @@ public void writeUser(CmsUser user) throws CmsException {
 		oout.writeObject(user.getAdditionalInfo());
 		oout.close();
 		value = bout.toByteArray();
-
 		// write data to database
 		con = DriverManager.getConnection(m_poolName);
 		statement = con.prepareStatement(cq.C_PLSQL_USERSWRITE);
@@ -3042,8 +3052,10 @@ public void writeUser(CmsUser user) throws CmsException {
 				oracle.sql.BLOB blobnew = ((OracleResultSet) res).getBLOB("USER_INFO");
 				// first trim the blob to 0 bytes, otherwise ther could be left some bytes
 				// of the old content
-				trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.C_TRIMBLOB);
-				trimStatement.setBLOB(1, blobnew);
+				//trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.C_TRIMBLOB);
+				trimStatement = con.prepareStatement(cq.C_TRIMBLOB);
+                                //trimStatement.setBLOB(1, blobnew);
+                                trimStatement.setBlob(1, blobnew);
 				trimStatement.setInt(2, 0);
 				trimStatement.execute();
 				trimStatement.close();
