@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsShellReport.java,v $
- * Date   : $Date: 2003/09/12 10:01:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/09/25 15:27:01 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,21 +41,33 @@ import com.opencms.workplace.I_CmsWpConstants;
  * It stores nothing. It just prints everthing to <code>System.out</code>.
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsShellReport implements I_CmsReport {
 
     /** Localized message access object */
     private CmsMessages m_messages;
-    
+
+        
     /**
      * Empty default constructor. 
      * 
      * @see java.lang.Object#Object()
      */
     public CmsShellReport() {
+        this(C_BUNDLE_NAME, I_CmsWpConstants.C_DEFAULT_LANGUAGE);    
+    }
+
+    /**
+     * Constructs a new report using the provided locale and resource bundle
+     * for the output language.<p>
+     * 
+     * @param locale a 2-letter language code according to ISO 639 
+     * @param bundleName the name of the resource bundle with localized strings
+     */      
+    public CmsShellReport(String bundleName, String locale) {
         // generate a message object with the default (english) language
-        m_messages = new CmsMessages(C_BUNDLE_NAME, I_CmsWpConstants.C_DEFAULT_LANGUAGE);        
+        m_messages = new CmsMessages(bundleName, locale);        
     }
     
     /**
