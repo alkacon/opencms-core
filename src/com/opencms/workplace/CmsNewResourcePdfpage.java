@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePdfpage.java,v $
- * Date   : $Date: 2000/08/08 14:08:32 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/10/12 11:27:09 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/08/08 14:08:32 $
+ * @version $Revision: 1.8 $ $Date: 2000/10/12 11:27:09 $
  */
 public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsWpConstants,
 																   I_CmsConstants {
@@ -94,7 +94,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
 			  }
 			  completePath+=foldername+"/";        
 		  }          
-	 } 
+	 }
 	/** 
 	 * Create the pagefile for this new page.
 	 * @classname The name of the class used by this page.
@@ -367,7 +367,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
 			
 			
 			return storage;            
-	  }  
+	  }
 	  /**
 	  * Gets the files displayed in the navigation select box.
 	  * @param cms The CmsObject.
@@ -398,7 +398,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
 			}
    
 			return new Integer(values.size()-1);           
-	  }  
+	  }
 	  /**
 	  * Gets the templates displayed in the template select box.
 	  * @param cms The CmsObject.
@@ -413,7 +413,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
 	  public Integer getTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 			throws CmsException {
 
-			Vector files=cms.getFilesInFolder(C_CONTENTTEMPLATEPATH);
+			Vector files=cms.getFilesInFolderRecursively(C_CONTENTTEMPLATEPATH);
 			Enumeration enum=files.elements();
 			String templateType = null; 
 			while (enum.hasMoreElements()) {
@@ -430,7 +430,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
 				}
 			}
 			return new Integer(0);           
-	  }  
+	  }
 	  /**
 	 * Indicates if the results of this class are cacheable.
 	 * 
@@ -476,7 +476,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
 				}
 			}
 		}
-	  }  
+	  }
 	/**
 	 * Updates the navigation position of all resources in the actual folder.
 	 * @param cms The CmsObject.
@@ -515,5 +515,5 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
 				newPos=1;
 			}
 			cms.writeProperty(newfile.getAbsolutePath(),C_PROPERTY_NAVPOS,new Float(newPos).toString());             
-	  }  
+	  }
 }

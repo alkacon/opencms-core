@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2000/08/15 16:25:33 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/10/12 11:27:09 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/08/15 16:25:33 $
+ * @version $Revision: 1.13 $ $Date: 2000/10/12 11:27:09 $
  */
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,
 																   I_CmsConstants {
@@ -282,7 +282,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
 	  public Integer getTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 			throws CmsException {
 
-			Vector files=cms.getFilesInFolder(C_CONTENTTEMPLATEPATH);
+			Vector files=cms.getFilesInFolderRecursively(C_CONTENTTEMPLATEPATH);
 			 Enumeration enum=files.elements();
 			while (enum.hasMoreElements()) {
 				CmsFile file =(CmsFile)enum.nextElement();
