@@ -44,31 +44,33 @@ PACKAGE BODY opencmsAccess IS
     vNextPath := opencmsResource.getParent(vNextPath);
     -- access for resource and super resources
     --WHILE vNextPath IS NOT NULL
-    LOOP
-    -- for all super resources read access Other/Owner/Group
-      IF (accessOwner(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_OWNER_READ) = 1
+    IF vNextPath IS NOT NULL THEN
+      LOOP
+        -- for all super resources read access Other/Owner/Group
+      	IF (accessOwner(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_OWNER_READ) = 1
           OR accessGroup(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_OWNER_READ) = 1
           OR accessOther(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_OWNER_READ) = 1) THEN
-        curNextResource := opencmsResource.readFolder(pUserId, pProjectID, vNextPath);
-        FETCH curNextResource INTO recResource;
-        IF curNextResource%NOTFOUND THEN
-          recResource := NULL;
-        END IF;
-        CLOSE curNextResource;
-        -- resource locked by another user => false
-        IF recResource.locked_by NOT IN (opencmsConstants.C_UNKNOWN_ID, pUserID) THEN
+          curNextResource := opencmsResource.readFolder(pUserId, pProjectID, vNextPath);
+          FETCH curNextResource INTO recResource;
+          IF curNextResource%NOTFOUND THEN
+            recResource := NULL;
+          END IF;
+          CLOSE curNextResource;
+          -- resource locked by another user => false
+          IF recResource.locked_by NOT IN (opencmsConstants.C_UNKNOWN_ID, pUserID) THEN
+            RETURN 0;
+          END IF;
+          -- search next folder
+          vNextPath := opencmsResource.getParent(recResource.resource_name);
+        ELSE
           RETURN 0;
         END IF;
-        -- search next folder
-        vNextPath := opencmsResource.getParent(recResource.resource_name);
-      ELSE
-        RETURN 0;
-      END IF;
-      IF (opencmsResource.getParent(vNextPath)) IS NULL THEN
-        -- don't check the access for the root-folder
-        EXIT;
-      END IF;
-    END LOOP;
+        IF (opencmsResource.getParent(vNextPath)) IS NULL THEN
+          -- don't check the access for the root-folder
+          EXIT;
+        END IF;
+      END LOOP;
+    END IF;
     RETURN 1;
   END accessCreate;
 ---------------------------------------------------------------------------------------------------
@@ -344,31 +346,33 @@ PACKAGE BODY opencmsAccess IS
     vNextPath := opencmsResource.getParent(vNextPath);
     -- check access for all super resources
     --WHILE vNextPath IS NOT NULL
-    LOOP
-       -- no accessOther/Owner/Group => false
-      IF (accessOwner(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_OWNER_READ) = 1
+    IF vNextPath IS NOT NULL THEN
+      LOOP
+         -- no accessOther/Owner/Group => false
+        IF (accessOwner(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_OWNER_READ) = 1
           OR accessGroup(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_GROUP_READ) = 1
           OR accessOther(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_PUBLIC_READ) = 1) THEN
-        curNextResource := opencmsResource.readFolder(pUserId, pProjectID, vNextPath);
-        FETCH curNextResource INTO recResource;
-        IF curNextResource%NOTFOUND THEN
-          recResource := NULL;
-        END IF;
-        CLOSE curNextResource;
-        -- resource locked by another user => false
-        IF recResource.locked_by NOT IN (opencmsConstants.C_UNKNOWN_ID, pUserID) THEN
+          curNextResource := opencmsResource.readFolder(pUserId, pProjectID, vNextPath);
+          FETCH curNextResource INTO recResource;
+          IF curNextResource%NOTFOUND THEN
+            recResource := NULL;
+          END IF;
+          CLOSE curNextResource;
+          -- resource locked by another user => false
+          IF recResource.locked_by NOT IN (opencmsConstants.C_UNKNOWN_ID, pUserID) THEN
+            RETURN 0;
+          END IF;
+          -- search next folder
+          vNextPath := opencmsResource.getParent(recResource.resource_name);
+        ELSE
           RETURN 0;
         END IF;
-        -- search next folder
-        vNextPath := opencmsResource.getParent(recResource.resource_name);
-      ELSE
-        RETURN 0;
-      END IF;
-      IF opencmsResource.getParent(vNextPath) IS NULL THEN
-        -- don't check the access for the root-folder
-        EXIT;
-      END IF;
-    END LOOP;
+        IF opencmsResource.getParent(vNextPath) IS NULL THEN
+          -- don't check the access for the root-folder
+          EXIT;
+        END IF;
+      END LOOP;
+    END IF;  
     RETURN 1;
   END accessWrite;
 ---------------------------------------------------------------------------------------------------
@@ -447,7 +451,7 @@ PACKAGE BODY opencmsAccess IS
     END IF;
     RETURN 0;
   EXCEPTION
-    WHEN NO_DATA_FOUND THEN
+    WHEN NO_DATA_FOUND THEN 
       RETURN 0;
   END accessGroup;
 ---------------------------------------------------------------------------------------------------
