@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript">
+	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
+	 function doEdit(para) {
+		switch(para) {
+		case 1:	{
+				window.top.body.admin_content.Editor.action.value = "exit";
+				window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;
+				window.top.body.admin_content.Editor.submit();
+				break;
+				}
+		case 2:	{	
+				window.top.body.admin_content.Editor.action.value = "saveexit";
+				window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;
+				window.top.body.admin_content.Editor.submit();
+				break;
+				}
+		case 3: {
+				window.top.body.admin_content.Editor.action.value = "save";
+				window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;
+				window.top.body.admin_content.Editor.submit();
+				break;
+				}
+		  }
+	  }	 	  
+</SCRIPT>
+</head>
+
+<body bgcolor="#E0E0E0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed>
+<!--ksjfdlskjdf-->
+<table cellspacing=0 cellpadding=0 border=0>
+	<tr valign=center>
+		<td class=menu>]]><BUTTON href="javascript:doEdit(2);" name="bt_saveclose" action="" alt="saveclose"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="javascript:doEdit(3);" name="bt_save" action="" alt="save"/><![CDATA[</td>
+		<td class=menu width="10%">&nbsp;&nbsp;&nbsp;&nbsp;</td>]]>
+		<PROCESS>BOSELECTOR</PROCESS><![CDATA[
+		<td class=menu width = "100%" align = right >]]><BUTTON href="javascript:doEdit(1);" name="bt_close" action="" alt="close"/><![CDATA[</td>			
+	</tr>
+</table>
+</body>
+</html>
+]]>
+</TEMPLATE>
+
+
+<BOSELECTOR>
+<![CDATA[
+<td class=menu valign="center">]]><SELECT method="getSelectedPage" class="textfeld" name="backofficepage" id="backofficepage" width="auto" size="1" onchange="window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;window.top.body.admin_content.Editor.submit()"/><![CDATA[</td>
+]]>
+</BOSELECTOR>
+
+
+</WORKPLACE>
