@@ -1,54 +1,92 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeBinary.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.8 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2001  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeBinary.java,v $
+ * Date   : $Date: 2003/07/14 20:12:40 $
+ * Version: $Revision: 1.9 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.opencms.file;
 
-import com.opencms.core.CmsException;
+import org.opencms.loader.CmsDumpLoader;
 
-import java.util.Hashtable;
+import com.opencms.core.CmsException;
+import com.opencms.launcher.I_CmsLauncher;
+
+import java.util.Map;
 
 /**
- * Describes the resource type "binary".
+ * Describes the resource type "binary".<p>
  *
- * @version $Revision: 1.8 $
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @version $Revision: 1.9 $
  */
-public class CmsResourceTypeBinary extends CmsResourceTypePlain {
+public class CmsResourceTypeBinary extends A_CmsResourceType {
 
-    public static final String C_TYPE_RESOURCE_NAME = "binary";
+    /** The type id of this resource */
+    public static final int C_RESOURCE_TYPE_ID = 5;
+    
+    /** The name of this resource */
+    public static final String C_RESOURCE_TYPE_NAME = "binary";
+    
+    /**
+     * @see com.opencms.file.I_CmsResourceType#getResourceType()
+     */
+    public int getResourceType() {
+        return C_RESOURCE_TYPE_ID;
+    }
 
-    public CmsResource createResource(CmsObject cms, String folder, String name, Hashtable properties, byte[] contents, Object parameter) throws CmsException{
-		if (parameter == null) {
-			// noop
-		}
+    /**
+     * @see com.opencms.file.A_CmsResourceType#getResourceTypeName()
+     */
+    public String getResourceTypeName() {
+        return C_RESOURCE_TYPE_NAME;
+    }
+    
+    /**
+     * @see com.opencms.file.I_CmsResourceType#getLauncherClass()
+     */
+    public String getLauncherClass() {
+        return CmsDumpLoader.class.getName();
+    }
 
-		CmsResource res = cms.doCreateFile(folder + name, contents, C_TYPE_RESOURCE_NAME, properties);
-		// lock the new file
-		cms.lockResource(folder + name);
-		return res;
+    /**
+     * @see com.opencms.file.I_CmsResourceType#getLauncherType()
+     */
+    public int getLauncherType() {
+        return I_CmsLauncher.C_TYPE_DUMP;
+    }        
+
+    /**
+     * @see com.opencms.file.A_CmsResourceType#createResource(com.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
+     */
+    public CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException {
+        CmsResource res = cms.doCreateFile(resourcename, contents, getResourceTypeName(), properties);
+        // TODO: Move locking of resource to CmsObject or CmsDriverManager
+        cms.doLockResource(cms.readAbsolutePath(res), true);
+        return res;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/14 18:43:54 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2003/07/14 20:12:41 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.40 $ $Date: 2003/07/14 18:43:54 $
+ * @version $Revision: 1.41 $ $Date: 2003/07/14 20:12:41 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -2753,11 +2753,8 @@ public CmsProject createTempfileProject(CmsObject cms, CmsRequestContext context
                     // add the resource-type
                     try {
                         Class c = Class.forName((String) resourceClass.elementAt(i));
-                        I_CmsResourceType resTypeClass = (I_CmsResourceType) c.newInstance();
-                        resTypeClass.init(i, Integer.parseInt((String)launcherTypes.elementAt(i)),
-                                             (String)resTypeNames.elementAt(i),
-                                             (String)launcherClass.elementAt(i));
-                        m_resourceTypes.put((String) resTypeNames.elementAt(i), resTypeClass);
+                        I_CmsResourceType resTypeClass = (I_CmsResourceType)c.newInstance();
+                        m_resourceTypes.put(resTypeClass.getResourceTypeName(), resTypeClass);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw new CmsException("[" + getClass().getName() + "] Error while getting ResourceType: " + (String) resTypeNames.elementAt(i) + " from registry ", CmsException.C_UNKNOWN_EXCEPTION);
@@ -3335,7 +3332,7 @@ public Vector getFilesWithProperty(CmsRequestContext context, String propertyDef
     public I_CmsResourceType getResourceType(CmsRequestContext context,
                                              int resourceType)
         throws CmsException {
-        // try to get the resource-type
+        // TODO: Optimize getResourceType
         Hashtable types = getAllResourceTypes(context);
         Enumeration keys = types.keys();
         I_CmsResourceType currentType;
@@ -3366,9 +3363,9 @@ public Vector getFilesWithProperty(CmsRequestContext context, String propertyDef
     public I_CmsResourceType getResourceType(CmsRequestContext context,
                                              String resourceType)
         throws CmsException {
-        // try to get the resource-type
+        // TODO: Optimize getResourceType
         try {
-            I_CmsResourceType type = (I_CmsResourceType) getAllResourceTypes(context).get(resourceType);
+            I_CmsResourceType type = (I_CmsResourceType)getAllResourceTypes(context).get(resourceType);
             if (type == null) {
                 throw new CmsException("[" + this.getClass().getName() + "] " + resourceType,
                     CmsException.C_NOT_FOUND);
@@ -7343,7 +7340,7 @@ public Vector getFilesWithProperty(CmsRequestContext context, String propertyDef
         int siteRootLen = siteRoot.length();
 
         // the resource type for VFS links
-        CmsResourceTypeLink resourceTypeLink = (CmsResourceTypeLink) this.getResourceType(context, CmsResourceTypeLink.C_TYPE_RESOURCE_NAME);
+        CmsResourceTypeLink resourceTypeLink = (CmsResourceTypeLink) this.getResourceType(context, CmsResourceTypeLink.C_RESOURCE_TYPE_NAME);
         // ID of the resource type "link"
         int resourceTypeLinkID = resourceTypeLink.getResourceType();
 
@@ -7507,7 +7504,7 @@ public Vector getFilesWithProperty(CmsRequestContext context, String propertyDef
         int resourceID = m_vfsDriver.fetchResourceID(context.currentProject(), theResourceName, -1);
 
         // the resource type for VFS links
-        CmsResourceTypeLink resourceTypeLink = (CmsResourceTypeLink) this.getResourceType(context, CmsResourceTypeLink.C_TYPE_RESOURCE_NAME);
+        CmsResourceTypeLink resourceTypeLink = (CmsResourceTypeLink) this.getResourceType(context, CmsResourceTypeLink.C_RESOURCE_TYPE_NAME);
         // ID of the resource type "link"
         int resourceTypeLinkID = resourceTypeLink.getResourceType();
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2003/06/25 13:49:14 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/07/14 20:12:41 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
         
@@ -209,7 +209,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                     String cacheProperty = null;
                     try {
                         // Read caching property from requested VFS resource                                     
-                        cacheProperty = cms.readProperty(m_vfsTarget, com.opencms.flex.I_CmsResourceLoader.C_LOADER_CACHEPROPERTY);                    
+                        cacheProperty = cms.readProperty(m_vfsTarget, org.opencms.loader.I_CmsResourceLoader.C_LOADER_CACHEPROPERTY);                    
                         cache.putKey(w_res.setCmsCacheKey(m_vfsTarget, cacheProperty, f_req.isOnline(), f_req.isWorkplace()));                                            
                     } catch (com.opencms.core.CmsException e) {
                         if (e.getType() == CmsException.C_FLEX_CACHE) {
@@ -231,7 +231,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         if (entry == null) {
             // The target is not cached (or caching off), so load it with the internal resource loader
             com.opencms.launcher.CmsLauncherManager manager = cms.getLauncherManager();
-            com.opencms.flex.I_CmsResourceLoader loader = null;
+            org.opencms.loader.I_CmsResourceLoader loader = null;
 
             String variation = null;
             // Check cache keys to see if the result can be cached 
@@ -244,7 +244,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                 resource = cms.readFileHeader(m_vfsTarget);
                 int type = resource.getLauncherType();
                 if (DEBUG > 0) System.err.println("FlexDispatcher: Loading resource type " + type);
-                loader = (com.opencms.flex.I_CmsResourceLoader)manager.getLauncher(type);
+                loader = (org.opencms.loader.I_CmsResourceLoader)manager.getLauncher(type);
             } catch (java.lang.ClassCastException e) {
                 throw new ServletException("FlexDispatcher: CmsResourceLoader interface not implemented for cms resource " + m_vfsTarget + "\n" + e, e);
             } catch (com.opencms.core.CmsException e) {

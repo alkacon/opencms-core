@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2003/07/14 13:28:23 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/07/14 20:12:40 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,17 +43,6 @@ import java.util.Map;
  */
 public interface I_CmsResourceType {
     
-    /**
-     * Init a new CmsResourceType object.<p>
-     *
-     * @param resourceType the id of the resource type
-     * @param launcherType the id of the required launcher
-     * @param resourceTypeName the printable name of this resource type
-     * @param launcherClass the {@link com.opencms.launcher.I_CmsLauncher} class name for this resource type
-     * This value is <b> null </b> if the default invokation class should be used.
-     */
-    void init(int resourceType, int launcherType, String resourceTypeName, String launcherClass);
-
      /**
       * Returns the name of the the {@link com.opencms.launcher.I_CmsLauncher} of this resource type.<p> 
       *

@@ -2,63 +2,33 @@
 <registry>
     <system>
         <restype>
-            <name>folder</name>
-            <launcherType>0</launcherType>
-            <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypeFolder</resourceClass>
         </restype>
         <restype>
-            <name>page</name>
-            <launcherType>3</launcherType>
-            <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypePage</resourceClass>
         </restype>
         <restype>
-            <name>link</name>
-            <launcherType>4</launcherType>
-            <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypeLink</resourceClass>
         </restype>
         <restype>
-            <name>plain</name>
-            <launcherType>1</launcherType>
-            <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypePlain</resourceClass>
         </restype>
         <restype>
-            <name>XMLTemplate</name>
-            <launcherType>3</launcherType>
-            <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypeXMLTemplate</resourceClass>
         </restype>
         <restype>
-            <name>binary</name>
-            <launcherType>1</launcherType>
-            <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypeBinary</resourceClass>
         </restype>
         <restype>
-            <name>image</name>
-            <launcherType>1</launcherType>
-            <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypeImage</resourceClass>
         </restype>
         <restype>
-            <name>compatiblePlain</name>
-            <launcherType>1</launcherType>
-            <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypeCompatiblePlain</resourceClass>
         </restype>
         <restype>
-            <name>jsp</name>
-            <launcherType>6</launcherType>
-            <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypeJsp</resourceClass>
         </restype>   
         <restype>
-            <name>newpage</name>
-            <launcherType>8</launcherType>
-            <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypeNewPage</resourceClass>
         </restype>   
         <view>
@@ -94,11 +64,11 @@
             <mailtemplate>/system/workplace/templates/urlcheckform</mailtemplate>
         </checklink>
         <launchers>
-            <launcher1>com.opencms.flex.CmsXmlTemplateLoader</launcher1>
-            <launcher2>com.opencms.flex.CmsDumpLoader</launcher2>
+            <launcher1>org.opencms.loader.CmsXmlTemplateLoader</launcher1>
+            <launcher2>org.opencms.loader.CmsDumpLoader</launcher2>
             <launcher3>com.opencms.launcher.CmsLinkLauncher</launcher3>
-            <launcher4>com.opencms.flex.CmsJspLoader</launcher4>     
-            <launcher5>com.opencms.launcher.CmsPageLauncher</launcher5>     
+            <launcher4>org.opencms.loader.CmsJspLoader</launcher4>
+            <launcher5>org.opencms.loader.CmsPageLoader</launcher5>
         </launchers>
         <tempfileproject></tempfileproject>
         <UseWpPicturesFromVFS>false</UseWpPicturesFromVFS>

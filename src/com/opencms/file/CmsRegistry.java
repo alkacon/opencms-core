@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/04/22 07:01:04 $
-* Version: $Revision: 1.74 $
+* Date   : $Date: 2003/07/14 20:12:41 $
+* Version: $Revision: 1.75 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.74 $ $Date: 2003/04/22 07:01:04 $
+ * @version $Revision: 1.75 $ $Date: 2003/07/14 20:12:41 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
 
@@ -1613,23 +1613,14 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             NodeList resTypes = m_xmlReg.getElementsByTagName("restype");
             for (int x = 0; x < resTypes.getLength(); x++){
                 try{
-                    String name = ((Element)resTypes.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
-                    String lType = ((Element)resTypes.item(x)).getElementsByTagName("launcherType").item(0).getFirstChild().getNodeValue();
-                    String lClass = "";
-                    try{
-                        lClass = ((Element)resTypes.item(x)).getElementsByTagName("launcherClass").item(0).getFirstChild().getNodeValue();
-                    }catch(Exception ex){
-                    }
                     String resClass = ((Element)resTypes.item(x)).getElementsByTagName("resourceClass").item(0).getFirstChild().getNodeValue();
-                    names.addElement(name);
-                    launcherTypes.addElement(lType);
-                    launcherClass.addElement(lClass);
                     resourceClass.addElement(resClass);
                 }catch(Exception exc){
+                    System.err.println(exc);
                     // ignore the exeption
                 }
             }
-            return names.size();
+            return resourceClass.size();
         }catch(Exception e){
             // no returnvalues
             return 0;

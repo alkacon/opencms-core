@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsPageLauncher.java,v $
- * Date   : $Date: 2003/07/14 13:28:23 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsPageLoader.java,v $
+ * Date   : $Date: 2003/07/14 20:12:41 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.opencms.launcher;
+package org.opencms.loader;
 
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
@@ -37,7 +37,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.flex.I_CmsResourceLoader;
+import com.opencms.launcher.I_CmsLauncher;
 
 import java.io.IOException;
 
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Revision: 1.1 $
  * @since 5.1
  */
-public class CmsPageLauncher implements I_CmsLauncher, I_CmsResourceLoader {   
+public class CmsPageLoader implements I_CmsLauncher, I_CmsResourceLoader {   
     
     /**
      * @see com.opencms.launcher.I_CmsLauncher#getLauncherId()
@@ -68,7 +68,7 @@ public class CmsPageLauncher implements I_CmsLauncher, I_CmsResourceLoader {
      * @see com.opencms.launcher.I_CmsLauncher#clearCache()
      */
     public void clearCache() {
-        // TODO: Auto-generated method stub        
+        // NOOP      
     }
 
     /**
@@ -101,46 +101,41 @@ public class CmsPageLauncher implements I_CmsLauncher, I_CmsResourceLoader {
      * @see com.opencms.launcher.I_CmsLauncher#setOpenCms(com.opencms.core.A_OpenCms)
      */
     public void setOpenCms(A_OpenCms openCms) {
-        // TODO: Auto-generated method stub       
+        // NOOP   
     }
 
     /**
      * @see com.opencms.flex.I_CmsResourceLoader#init(com.opencms.core.A_OpenCms)
      */
     public void init(A_OpenCms openCms) {
-        // TODO: Auto-generated method stub
-        
+        // NOOP
     }
 
     /**
      * @see com.opencms.flex.I_CmsResourceLoader#destroy()
      */
     public void destroy() {
-        // TODO: Auto-generated method stub
-        
+        // NOOP
     }
 
     /**
      * @see com.opencms.flex.I_CmsResourceLoader#getResourceLoaderInfo()
      */
     public String getResourceLoaderInfo() {
-        // TODO: Auto-generated method stub
-        return null;
+        return "The OpenCms default resource loader for pages";
     }
 
-    /* (non-Javadoc)
+    /**
      * @see com.opencms.flex.I_CmsResourceLoader#load(com.opencms.file.CmsObject, com.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        // TODO: Auto-generated method stub
-        
+        throw new RuntimeException("load() not a supported operation for resources of this type");  
     }
 
     /**
      * @see com.opencms.flex.I_CmsResourceLoader#service(com.opencms.file.CmsObject, com.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
      */
     public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) throws ServletException, IOException {
-        // TODO: Auto-generated method stub
-        
+        throw new RuntimeException("service() not a supported operation for resources of this type");  
     }    
 }

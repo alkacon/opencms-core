@@ -1,38 +1,44 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/07/14 13:28:23 $
-* Version: $Revision: 1.68 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2001  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
+ * Date   : $Date: 2003/07/14 20:12:41 $
+ * Version: $Revision: 1.69 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+ 
 package com.opencms.file;
+
+import org.opencms.loader.CmsXmlTemplateLoader;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
+import com.opencms.launcher.I_CmsLauncher;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.template.CmsXmlControlFile;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -43,25 +49,68 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
- * Implementation of a resource type for "editable content pages" in OpenCms.
+ * Describes the resource type "page".<p>
  *
- * @version $Revision: 1.68 $ $Date: 2003/07/14 13:28:23 $
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * 
+ * @version $Revision: 1.69 $
+ * @since 5.1
  */
-public class CmsResourceTypePage extends CmsResourceTypePlain {
+public class CmsResourceTypePage implements I_CmsResourceType {
 
-    /** internal debug flag */
-    private static final int DEBUG = 0;
+    /** The type id of this resource */
+    public static final int C_RESOURCE_TYPE_ID = 1;
     
+    /** The name of this resource */
+    public static final String C_RESOURCE_TYPE_NAME = "page";
+
+    /** Internal debug flag */
+    private static final int DEBUG = 0;
+
     /**
-     * @see com.opencms.file.I_CmsResourceType#init(int, int, java.lang.String, java.lang.String)
+     * @see com.opencms.file.I_CmsResourceType#getResourceType()
      */
-    public void init(int resourceType, int launcherType, String resourceTypeName, String launcherClass) {
-        m_resourceType = resourceType;
-        m_launcherType = launcherType;
-        m_resourceTypeName = resourceTypeName;
-        m_launcherClass = launcherClass;
+    public int getResourceType() {
+        return C_RESOURCE_TYPE_ID;
     }
 
+    /**
+     * @see com.opencms.file.A_CmsResourceType#getResourceTypeName()
+     */
+    public String getResourceTypeName() {
+        return C_RESOURCE_TYPE_NAME;
+    }
+
+    /**
+     * @see com.opencms.file.I_CmsResourceType#getLauncherClass()
+     */
+    public String getLauncherClass() {
+        return CmsXmlTemplateLoader.class.getName();
+    }
+
+    /**
+     * @see com.opencms.file.I_CmsResourceType#getLauncherType()
+     */
+    public int getLauncherType() {
+        return I_CmsLauncher.C_TYPE_XML;
+    }     
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        StringBuffer output = new StringBuffer();
+        output.append("[ResourceType]:");
+        output.append(getResourceTypeName());
+        output.append(" , Id=");
+        output.append(getResourceType());
+        output.append(" , launcherType=");
+        output.append(getLauncherType());
+        output.append(" , launcherClass=");
+        output.append(getLauncherClass());
+        return output.toString();
+    }
+    
     /**
      * Returns the default body start string for a new XML template.<p>
      * 
@@ -79,55 +128,7 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
     public static String getDefaultBodyEnd() {
         return "]]></TEMPLATE>\n</XMLTEMPLATE>";
     }
-
-    /**
-     * @see com.opencms.file.I_CmsResourceType#getLauncherClass()
-     */
-    public String getLauncherClass() {
-        if ((m_launcherClass == null) || (m_launcherClass.length() < 1)) {
-            return C_UNKNOWN_LAUNCHER;
-        } else {
-            return m_launcherClass;
-        }
-    }
     
-    /**
-     * @see com.opencms.file.I_CmsResourceType#getLauncherType()
-     */
-    public int getLauncherType() {
-        return m_launcherType;
-    }
-    
-    /**
-     * @see com.opencms.file.I_CmsResourceType#getResourceTypeName()
-     */
-    public String getResourceTypeName() {
-        return m_resourceTypeName;
-    }
-    
-    /**
-     * @see com.opencms.file.I_CmsResourceType#getResourceType()
-     */
-    public int getResourceType() {
-        return m_resourceType;
-    }
-    
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        StringBuffer output = new StringBuffer();
-        output.append("[ResourceType]:");
-        output.append(m_resourceTypeName);
-        output.append(" , Id=");
-        output.append(m_resourceType);
-        output.append(" , launcherType=");
-        output.append(m_launcherType);
-        output.append(" , launcherClass=");
-        output.append(m_launcherClass);
-        return output.toString();
-    }
-
     /**
      * @see com.opencms.file.I_CmsResourceType#touch(com.opencms.file.CmsObject, java.lang.String, long, boolean)
      */
@@ -152,7 +153,7 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
         CmsFile file = cms.readFile(resourcename);
         // check if the current user has the right to change the group of the
         // resource. Only the owner of a file and the admin are allowed to do this.
-        if ((cms.getRequestContext().currentUser().equals(cms.readOwner(file))) || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN))) {
+        if ((cms.getRequestContext().currentUser().equals(cms.readOwner(file))) || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), I_CmsConstants.C_GROUP_ADMIN))) {
             cms.doChtype(resourcename, newType);
             //check if the file type name is page
             String bodyPath = checkBodyPath(cms, (CmsFile)file);
@@ -166,7 +167,7 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
      * @see com.opencms.file.I_CmsResourceType#createResource(com.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
      */
     public CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException {
-        String masterTemplate = (String)properties.get(C_XML_CONTROL_TEMPLATE_PROPERTY);        
+        String masterTemplate = (String)properties.get(I_CmsConstants.C_XML_CONTROL_TEMPLATE_PROPERTY);        
         if (masterTemplate == null) {
             masterTemplate = "";        
             // Scan for mastertemplates
@@ -179,19 +180,19 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
         }
         CmsFile file = null;
 
-        String folderName = resourcename.substring(0, resourcename.lastIndexOf(C_FOLDER_SEPARATOR, resourcename.length()) + 1);
+        String folderName = resourcename.substring(0, resourcename.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR, resourcename.length()) + 1);
         String pageName = resourcename.substring(folderName.length(), resourcename.length());
 
         // Evaluate the absolute path to the new body file
         String bodyFolder = (I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/"))) + folderName;
 
         // Create the new page file
-        file = cms.doCreateFile(resourcename, "".getBytes(), m_resourceTypeName, properties);
+        file = cms.doCreateFile(resourcename, "".getBytes(), getResourceTypeName(), properties);
         cms.doLockResource(resourcename, true);
         CmsXmlControlFile pageXml = new CmsXmlControlFile(cms, file);
-        pageXml.setTemplateClass(C_XML_CONTROL_DEFAULT_CLASS);
+        pageXml.setTemplateClass(I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS);
         pageXml.setMasterTemplate(masterTemplate);
-        pageXml.setElementClass("body", C_XML_CONTROL_DEFAULT_CLASS);
+        pageXml.setElementClass("body", I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS);
         pageXml.setElementTemplate("body", bodyFolder + pageName);
         pageXml.write();
 
@@ -210,6 +211,17 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
         return file;
     }
     
+    /**
+     * Creates a resource for the specified template.<p>
+     * 
+     * @param cms the cms context
+     * @param resourcename the name of the resource to create
+     * @param properties properties for the new resource
+     * @param contents content for the new resource
+     * @param masterTemplate template for the new resource
+     * @return the created resource 
+     * @throws CmsException if something goes wrong
+     */    
     public CmsResource createResourceForTemplate(CmsObject cms, String resourcename, Hashtable properties, byte[] contents, String masterTemplate) throws CmsException {        
         CmsFile resource = (CmsFile)this.createResource(cms, resourcename, properties, contents, null);                
         CmsXmlControlFile pageXml = new CmsXmlControlFile(cms, resource);
@@ -231,9 +243,9 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
         String bodyPath = (I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/"))) + (resourcename);
         String body = hXml.getElementTemplate("body");
         body = hXml.validateBodyPath(cms, body, file);
-        String bodyXml = cms.getRequestContext().getDirectoryTranslator().translateResource(C_VFS_DEFAULT + body);
+        String bodyXml = cms.getRequestContext().getDirectoryTranslator().translateResource(I_CmsConstants.C_VFS_DEFAULT + body);
 
-        if ((C_VFS_DEFAULT + bodyPath).equals(bodyXml)) {
+        if ((I_CmsConstants.C_VFS_DEFAULT + bodyPath).equals(bodyXml)) {
 
             // Evaluate some path information
             String destinationFolder = destination.substring(0, destination.lastIndexOf("/") + 1);
@@ -583,13 +595,15 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
     }
     
     /**
-     * Check get the real body path from the content file.<p>
+     * Returns the real body path sepcified in the content of the file.<p>
      *
      * The provided file must be a CmsFile object an not a file header. 
      * This won't be checked for performance reasons.<p>
      * 
      * @param cms to access the XML file
-     * @param file file in which the body path is stored
+     * @param file file in which the body path is stored 
+     * @throws CmsException if something goes wrong
+     * @return the real body path sepcified in the content of the file
      */
     private String readBodyPath(CmsObject cms, CmsFile file) throws CmsException {
         CmsXmlControlFile hXml = new CmsXmlControlFile(cms, file);
@@ -598,9 +612,9 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
             // Return translated path name for body
             body = hXml.getElementTemplate("body");
             body = hXml.validateBodyPath(cms, body, file);
-            body = cms.getRequestContext().getDirectoryTranslator().translateResource(C_VFS_DEFAULT + body);
-            if (body.startsWith(C_VFS_DEFAULT))
-                body = body.substring(C_VFS_DEFAULT.length());
+            body = cms.getRequestContext().getDirectoryTranslator().translateResource(I_CmsConstants.C_VFS_DEFAULT + body);
+            if (body.startsWith(I_CmsConstants.C_VFS_DEFAULT))
+                body = body.substring(I_CmsConstants.C_VFS_DEFAULT.length());
         } catch (CmsException exc) {
             // could not read body
         }
@@ -612,6 +626,8 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
      *
      * @param cms to access the XML file
      * @param file file in which the body path is stored
+     * @throws CmsException if something goes wrong
+     * @return the real body path for the provided file
      */
     private String checkBodyPath(CmsObject cms, CmsFile file) throws CmsException {
         // Use translated path name of body
@@ -626,10 +642,10 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
      * This method changes the path of the body file in the XML file
      * if file type is "page".<p>
      *
-     * @param cms The CmsObject
-     * @param file The XML content file
+     * @param cms the cms context
+     * @param filename The XML content file
      * @param bodypath the new XML content entry
-     * @throws Exception if something goes wrong.
+     * @throws CmsException if something goes wring
      */
     private void changeContent(CmsObject cms, String filename, String bodypath) throws CmsException {
         CmsFile file = cms.readFile(filename);

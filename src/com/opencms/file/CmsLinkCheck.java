@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsLinkCheck.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/07/14 20:12:41 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob,I_CmsCo
         StringBuffer mailContent = new StringBuffer(template.getProcessedDataValue("single_message"));
 
         // get all links from the database
-        linkList = cms.readFilesByType(I_CmsConstants.C_UNKNOWN_INT, cms.getResourceType(CmsResourceTypeLink.C_TYPE_RESOURCE_NAME).getResourceType());
+        linkList = cms.readFilesByType(I_CmsConstants.C_UNKNOWN_INT, cms.getResourceType(CmsResourceTypeLink.C_RESOURCE_TYPE_NAME).getResourceType());
         for(int i=0; i<linkList.size(); i++){
             CmsFile linkElement = (CmsFile)linkList.elementAt(i);
             String linkName = cms.readAbsolutePath(linkElement);
