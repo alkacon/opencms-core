@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
-* Date   : $Date: 2002/09/16 10:31:58 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2002/09/19 16:01:42 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * This Tag is used to include another OpenCms managed resource in a JSP.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspConstants, I_CmsJspParamParent { 
     
@@ -49,6 +49,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspConstant
     private String m_page = null;
     private String m_suffix = null;
     private String m_property = null;    
+    private String m_attribute = null;    
     private String m_body = null;
     
     /** Debugging on / off */
@@ -106,6 +107,24 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspConstant
             this.m_property = property;
         }
     }
+    
+    /**
+     * Returns the attribute.
+     * @return String
+     */
+    public String getAttribute() {
+        return m_attribute!=null?m_attribute:"";
+    }
+
+    /**
+     * Sets the attribute.
+     * @param property The property to set
+     */
+    public void setAttribute(String attribute) {
+        if (attribute != null) {
+            this.m_attribute = attribute;
+        }
+    }    
 
     /**
      * Returns the suffix.
@@ -186,16 +205,22 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspConstant
             
             // Try to find out what to do
             if (m_target != null) {
-                // Option 1: target is set with page/file attribute
+                // Option 1: target is set with "page" or "file" parameter
                 target = m_target;
             } else if (m_property != null) {            
-                // Option 2: target is set in property attribute
+                // Option 2: target is set with "property" parameter
                 try { 
                     String prop = CmsPropertyLookup.lookupProperty(c_req.getCmsObject(), c_req.getCmsRequestedResource(), m_property, true);
                     target = prop + getSuffix();
                 } catch (Exception e) {} // target will be null
-            } else {
-                // Option 3: target is set in body
+            } else if (m_attribute != null) {            
+                // Option 3: target is set in "attribute" parameter
+                try { 
+                    String attr = (String)c_req.getAttribute(m_attribute);
+                    if (attr != null) target = attr + getSuffix();
+                } catch (Exception e) {} // target will be null
+            }else {
+                // Option 4: target is set in body
                 String body = null;
                 if (getBodyContent() != null) {
                     body = getBodyContent().getString();

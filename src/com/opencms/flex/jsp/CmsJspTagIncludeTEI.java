@@ -36,11 +36,12 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * the <code>cms:include</code> tag.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsJspTagIncludeTEI extends TagExtraInfo {
 
     final private static String C_ATTR_PROPERTY = "property";
+    final private static String C_ATTR_ATTRIBUTE = "attribute";
     final private static String C_ATTR_FILE = "file";
     final private static String C_ATTR_PAGE = "page";
     final private static String C_ATTR_SUFFIX = "suffix";
@@ -62,14 +63,16 @@ public class CmsJspTagIncludeTEI extends TagExtraInfo {
         boolean hasSuffix = isSpecified(data, C_ATTR_SUFFIX);
         boolean hasProperty = isSpecified(data, C_ATTR_PROPERTY);
         boolean hasBody = isSpecified(data, C_ATTR_BODY);
+        boolean hasAttribute = isSpecified(data, C_ATTR_ATTRIBUTE);
         
         if (hasBody) {
             String type = (String)data.getAttribute(C_ATTR_BODY);
             if (! ("eval".equals(type) || "params".equals(type))) return false;
         }
-        if (hasFile && (hasSuffix || hasProperty)) return false;
-        if (hasSuffix && !hasProperty) return false;
-        if (! (hasProperty || hasFile || hasBody)) return false;
+        if (hasFile && (hasSuffix || hasProperty || hasAttribute)) return false;
+        if (hasProperty && hasAttribute) return false;
+        if (hasSuffix && !(hasProperty || hasAttribute)) return false;
+        if (! (hasProperty || hasFile || hasBody || hasAttribute)) return false;
 
         return true;
     }        
