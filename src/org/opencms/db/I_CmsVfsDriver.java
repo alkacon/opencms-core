@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/05/28 16:01:32 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2004/06/06 12:14:00 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.76 $ $Date: 2004/05/28 16:01:32 $
+ * @version $Revision: 1.77 $ $Date: 2004/06/06 12:14:00 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -328,11 +328,12 @@ public interface I_CmsVfsDriver {
      * 
      * @param currentProject the current project
      * @param parentFolder the parent folder
-     * @param getSubFolders true if the sub folders of the parent folder are requested, false if the sub files are requested
+     * @param getFolders if true the child folders of the parent folder are returned in the result set
+     * @param getFiles if true the child files of the parent folder are returned in the result set
      * @return a list of all sub folders or sub files
      * @throws CmsException if something goes wrong
      */
-    List readChildResources(CmsProject currentProject, CmsFolder parentFolder, boolean getSubFolders) throws CmsException;
+    List readChildResources(CmsProject currentProject, CmsFolder parentFolder, boolean getFolders, boolean getFiles) throws CmsException;
 
     /**
      * Creates a new resource from an given CmsResource instance while it is imported.<p>

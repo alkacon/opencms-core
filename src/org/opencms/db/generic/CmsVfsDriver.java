@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/06/04 15:42:06 $
- * Version: $Revision: 1.181 $
+ * Date   : $Date: 2004/06/06 12:14:15 $
+ * Version: $Revision: 1.182 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.181 $ $Date: 2004/06/04 15:42:06 $
+ * @version $Revision: 1.182 $ $Date: 2004/06/06 12:14:15 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1090,24 +1090,33 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readChildResources(org.opencms.file.CmsProject, org.opencms.file.CmsFolder, boolean)
+     * @see org.opencms.db.I_CmsVfsDriver#readChildResources(org.opencms.file.CmsProject, org.opencms.file.CmsFolder, boolean, boolean)
      */
-    public List readChildResources(CmsProject currentProject, CmsFolder parentFolder, boolean getSubFolders) throws CmsException {
+    public List readChildResources(CmsProject currentProject, CmsFolder parentFolder, boolean getFolders, boolean getFiles) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
-        CmsResource currentResource = null;
-        List subResources = new ArrayList();
         String query = null;
-        String resourceTypeClause = null;
         String orderClause = " ORDER BY CMS_T_STRUCTURE.RESOURCE_NAME";
 
-        if (getSubFolders) {
+        String resourceTypeClause;
+        List subFolders;
+        List subFiles;
+        
+        if (getFolders && getFiles) {
+            resourceTypeClause = "";
+            subFolders = new ArrayList();
+            subFiles = new ArrayList();
+        } else if (getFolders) {
             resourceTypeClause = " AND CMS_T_RESOURCES.RESOURCE_TYPE=0";
+            subFolders = new ArrayList();
+            subFiles = null;
         } else {
             resourceTypeClause = " AND CMS_T_RESOURCES.RESOURCE_TYPE<>0";
+            subFolders = null;
+            subFiles = new ArrayList();
         }
-
+        
         try {
             conn = m_sqlManager.getConnection(currentProject);
             query = m_sqlManager.readQuery(currentProject, "C_RESOURCES_GET_SUBRESOURCES") + CmsSqlManager.replaceTableKey(currentProject.getId(), resourceTypeClause + orderClause);
@@ -1116,12 +1125,12 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             res = stmt.executeQuery();
 
             while (res.next()) {
-                if (getSubFolders) {
-                    currentResource = createFolder(res, currentProject.getId(), false);
+                int type = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_TYPE"));                
+                if (type == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+                    subFolders.add(createFolder(res, currentProject.getId(), false));
                 } else {
-                    currentResource = createFile(res, currentProject.getId(), false);
+                    subFiles.add(createFile(res, currentProject.getId(), false));
                 }
-                subResources.add(currentResource);
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1129,7 +1138,14 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             m_sqlManager.closeAll(conn, stmt, res);
         }
 
-        return subResources;
+        // this is required in order to get the "folders first" sort order 
+        if (getFolders && getFiles) {
+            subFolders.addAll(subFiles);
+            return subFolders;
+        } else if (getFolders) {
+            return subFolders;
+        } 
+        return subFiles;
     }
 
     /**
@@ -1804,12 +1820,12 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     public void removeFolder(CmsProject currentProject, CmsFolder folder) throws CmsException {
         // the current implementation only deletes empty folders
         // check if the folder has any files in it
-        List files = readChildResources(currentProject, folder, false);
+        List files = readChildResources(currentProject, folder, false, true);
         files = internalFilterUndeletedResources(files);
         
         if (files.size() == 0) {
             // check if the folder has any folders in it
-            List folders = readChildResources(currentProject, folder, true);
+            List folders = readChildResources(currentProject, folder, true, false);
             folders = internalFilterUndeletedResources(folders);
             
             if (folders.size() == 0) {

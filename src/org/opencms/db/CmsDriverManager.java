@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/06/06 08:52:42 $
- * Version: $Revision: 1.372 $
+ * Date   : $Date: 2004/06/06 12:13:59 $
+ * Version: $Revision: 1.373 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.372 $ $Date: 2004/06/06 08:52:42 $
+ * @version $Revision: 1.373 $ $Date: 2004/06/06 12:13:59 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -3450,6 +3450,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         List extractedResources = null;
         String cacheKey = null;
 
+        // TODO: Currently the expiration date is ignored for the results
         cacheKey = getCacheKey(context.currentUser().getName() + "_SubtreeResourcesInTimeRange", context.currentProject(), folder + "_" + starttime + "_" + endtime);
         if ((extractedResources = (List)m_resourceListCache.get(cacheKey)) == null) {
             // get the folder tree
@@ -3483,6 +3484,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         List extractedResources = null;
         String cacheKey = null;
 
+        // TODO: Currently the expiration date is ignored for the results        
         cacheKey = getCacheKey(context.currentUser().getName() + "_SubtreeResourcesWithProperty", context.currentProject(), folder + "_" + propertyDefinition);
         if ((extractedResources = (List)m_resourceListCache.get(cacheKey)) == null) {
             // get the folder tree
@@ -3630,11 +3632,11 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // try to get the sub resources from the cache
         String cacheKey;
         if (getFolders && getFiles) {
-            cacheKey = "_all_";
+            cacheKey = CmsCacheKey.C_CACHE_KEY_SUBALL;
         } else if (getFolders) {
-            cacheKey = "_folders_";
+            cacheKey = CmsCacheKey.C_CACHE_KEY_SUBFOLDERS;
         } else {
-            cacheKey = "_files_";
+            cacheKey = CmsCacheKey.C_CACHE_KEY_SUBFILES;
         }
         cacheKey = getCacheKey(context.currentUser().getName() + cacheKey + filter.getCacheId(), context.currentProject(), parentFolderName);
         List subResources = (List)m_resourceListCache.get(cacheKey);        
@@ -3645,17 +3647,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             return filterCacheResult(context, subResources, filter);
         }
 
-        if (getFolders && getFiles) {
-            // read both folders and files
-            subResources = m_vfsDriver.readChildResources(context.currentProject(), parentFolder, true);
-            subResources.addAll(m_vfsDriver.readChildResources(context.currentProject(), parentFolder, false));
-        } else if (getFolders) {
-            // just read the folders
-            subResources = m_vfsDriver.readChildResources(context.currentProject(), parentFolder, true);
-        } else {
-            // only files requested (default)
-            subResources = m_vfsDriver.readChildResources(context.currentProject(), parentFolder, false);
-        }
+        // now read the result form the database
+        subResources = m_vfsDriver.readChildResources(context.currentProject(), parentFolder, getFolders, getFiles);
         
         for (int i = 0; i < subResources.size(); i++) {
             CmsResource currentResource = (CmsResource)subResources.get(i);
@@ -3678,8 +3671,20 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         return filterCacheResult(context, subResources, filter);
     }
 
+    /**
+     * Applies the resource filter to all resources in a result list,
+     * usually required in case a result is read from a cache.<p>
+     * 
+     * @param context the current context
+     * @param cacheResult the orginal cache result
+     * @param filter the filter to use
+     * @return the filtered cache result
+     */
     private List filterCacheResult(CmsRequestContext context, List cacheResult, CmsResourceFilter filter) {
+       
+        // TODO: This method may be used more often in other methods of this class
         int warning = 0;
+        
         ArrayList result = new ArrayList(cacheResult.size());
         for (int i=0; i<cacheResult.size(); i++) {
             CmsResource resource = (CmsResource)cacheResult.get(i);
@@ -6977,10 +6982,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public List setFullResourceNames(CmsRequestContext context, List resourceList) throws CmsException {
-        Iterator i = resourceList.iterator();
-
-        while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
+        
+        for (int i=0; i<resourceList.size(); i++) {
+            CmsResource res = (CmsResource)resourceList.get(i);
             if (!res.hasFullResourceName()) {
                 res.setFullResourceName(readPath(context, res, CmsResourceFilter.ALL));
             }
