@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/10 11:49:48 $
- * Version: $Revision: 1.149 $
+ * Date   : $Date: 2003/08/11 10:11:07 $
+ * Version: $Revision: 1.150 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.149 $ $Date: 2003/08/10 11:49:48 $
+ * @version $Revision: 1.150 $ $Date: 2003/08/11 10:11:07 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1995,7 +1995,6 @@ public class CmsDriverManager extends Object {
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void deleteFolder(CmsRequestContext context, String foldername) throws CmsException {
-
         CmsResource onlineFolder;
 
         // TODO: "/" is currently used inconsistent !!! 
@@ -5366,23 +5365,23 @@ public class CmsDriverManager extends Object {
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public CmsResource readFileHeaderInProject(CmsRequestContext context, int projectId, String filename, boolean includeDeleted) throws CmsException {
+        if (filename == null) {
+            return null;
+        }
+        
         if (filename.endsWith("/")) {
             return readFolderInProject(context, projectId, filename);
         }
 
         List path = readPathInProject(context, projectId, filename, includeDeleted);
         CmsResource resource = (CmsResource) path.get(path.size() - 1);
-        int[] pathProjectId = m_vfsDriver.getProjectsForPath(projectId, filename);
-
-        for (int i = 0; i < pathProjectId.length; i++) {
-            if (pathProjectId[i] == resource.getProjectId()) {
-                // set full resource name
-                resource.setFullResourceName(filename);
-                return resource;
-            }
+        List projectResources = m_vfsDriver.readProjectResources(readProject(context, projectId));
+        
+        if (isInsideProject(projectResources, resource)) {
+            return resource;
         }
 
-        throw new CmsResourceNotFoundException("File " + filename + " is not part of project with ID " + projectId);
+        throw new CmsResourceNotFoundException("File " + filename + " is not inside project with ID " + projectId);
     }
 
     /**
@@ -5578,17 +5577,14 @@ public class CmsDriverManager extends Object {
         }
 
         List path = readPathInProject(context, projectId, foldername, false);
-        CmsFolder cmsFolder = (CmsFolder) path.get(path.size() - 1);
-        int[] pathProjectId = m_vfsDriver.getProjectsForPath(projectId, foldername);
+        CmsFolder cmsFolder = (CmsFolder) path.get(path.size() - 1);        
+        List projectResources = m_vfsDriver.readProjectResources(readProject(context, projectId));
+        
+        if (isInsideProject(projectResources, (CmsResource) cmsFolder)) {
+            return cmsFolder;
+        }        
 
-        for (int i = 0; i < pathProjectId.length; i++) {
-            if (pathProjectId[i] == cmsFolder.getProjectId()) {
-                cmsFolder.setFullResourceName(foldername);
-                return cmsFolder;
-            }
-        }
-
-        throw new CmsResourceNotFoundException("Folder " + foldername + " is not part of project with ID " + projectId);
+        throw new CmsResourceNotFoundException("Folder " + foldername + " is not inside project with ID " + projectId);
     }
 
     /**

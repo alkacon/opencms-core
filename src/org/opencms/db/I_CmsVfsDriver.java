@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/08 12:50:40 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2003/08/11 10:11:07 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.32 $ $Date: 2003/08/08 12:50:40 $
+ * @version $Revision: 1.33 $ $Date: 2003/08/11 10:11:07 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -402,7 +402,7 @@ public interface I_CmsVfsDriver {
      * @return int[] with all project ID's whose project resources match the given path
      * @throws CmsException if something gows wrong
      */
-    int[] getProjectsForPath(int projectId, String path) throws CmsException;
+    //int[] getProjectsForPath(int projectId, String path) throws CmsException;
         
     /**
      * Moves a resource to a new destination folder.<p>

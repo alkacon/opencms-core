@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/10 11:49:48 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2003/08/11 10:11:07 $
+ * Version: $Revision: 1.89 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.88 $ $Date: 2003/08/10 11:49:48 $
+ * @version $Revision: 1.89 $ $Date: 2003/08/11 10:11:07 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -3671,6 +3671,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#fetchProjectsForPath(com.opencms.file.CmsProject, java.lang.String)
      */
+    /*
     public int[] getProjectsForPath(int projectId, String path) throws CmsException {
     	int projectIds[] = new int[0];
         Connection conn = null;
@@ -3700,7 +3701,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         }                  
         
         return projectIds;
-    }     
+    }   
+    */  
     
     public List readAllFileHeaders(CmsProject currentProject) throws CmsException {
         Connection conn = null;
