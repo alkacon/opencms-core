@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/07 13:13:53 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/06/07 13:56:36 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.11 $ $Date: 2000/06/07 13:13:53 $
+ * @version $Revision: 1.12 $ $Date: 2000/06/07 13:56:36 $
  */
 public interface I_CmsQuerys {
     
@@ -133,6 +133,7 @@ public interface I_CmsQuerys {
 	public static final String C_USERS_USER_ADDRESS = "USER_ADDRESS";
 	public static final String C_USERS_USER_SECTION = "USER_SECTION";
 	public static final String C_USERS_USER_TYPE = "USER_TYPE";
+	public static final String C_USERS_USER_EMAIL = "USER_EMAIL";
 	
 	// Constants for Users	
     public static final Integer C_USERS_MAXID_KEY = new Integer(250);
@@ -140,5 +141,38 @@ public interface I_CmsQuerys {
 
     public static final Integer C_USERS_ADD_KEY = new Integer(251);
 	public static final String C_USERS_ADD = "INSERT INTO " + C_DATABASE_PREFIX + "USERS VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+	public static final Integer C_USERS_READ_KEY = new Integer(252);
+	public static final String C_USERS_READ = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS, " + C_DATABASE_PREFIX + "GROUPS WHERE USER_NAME = ? and USER_TYPE = ? and USER_DEFAULT_GROUP_ID = GROUP_ID";
+
+	public static final Integer C_USERS_READID_KEY = new Integer(253);
+	public static final String C_USERS_READID = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS, " + C_DATABASE_PREFIX + "GROUPS WHERE USER_ID = ? and USER_TYPE = ? and USER_DEFAULT_GROUP_ID = GROUP_ID";
+
+	public static final Integer C_USERS_READPW_KEY = new Integer(254);
+	public static final String C_USERS_READPW = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS, " + C_DATABASE_PREFIX + "GROUPS WHERE USER_NAME = ? and USER_PASSWORD = ? and USER_TYPE = ? and USER_DEFAULT_GROUP_ID = GROUP_ID";
+
+	public static final Integer C_USERS_WRITE_KEY = new Integer(255);
+	public static final String C_USERS_WRITE = "UPDATE " + C_DATABASE_PREFIX + "USERS " + 
+											   "SET USER_DESCRIPTION = ?, " +
+											   "USER_FIRSTNAME = ?, " +
+											   "USER_LASTNAME = ?, " +
+											   "USER_EMAIL = ?, " +
+											   "USER_LASTLOGIN = ?, " +
+											   "USER_LASTUSED = ?, " +
+											   "USER_FLAGS = ?, " +
+											   "USER_INFO = ?, " +
+											   "USER_ADDRESS = ?, " +
+											   "USER_SECTION = ?, " +
+											   "USER_TYPE = ? " +
+											   "WHERE USER_ID = ? ";
+
+	public static final Integer C_USERS_DELETE_KEY = new Integer(256);
+	public static final String C_USERS_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "USERS WHERE USER_NAME = ?";
+
+	public static final Integer C_USERS_GETUSERS_KEY = new Integer(257);
+	public static final String C_USERS_GETUSERS = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS, " + C_DATABASE_PREFIX + "GROUPS where USER_TYPE = ? and USER_DEFAULT_GROUP_ID = GROUP_ID";
+
+	public static final Integer C_USERS_SETPW_KEY = new Integer(258);
+	public static final String C_USERS_SETPW = "UPDATE " + C_DATABASE_PREFIX + "USERS SET USER_PASSWORD = ? WHERE USER_NAME = ? ";
 }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/07 13:13:53 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/06/07 13:56:36 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.19 $ $Date: 2000/06/07 13:13:53 $ * 
+ * @version $Revision: 1.20 $ $Date: 2000/06/07 13:56:36 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -624,23 +624,386 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 			statement.setString(14,section);
 			statement.setInt(15,type);
 			statement.executeUpdate();
-			m_pool.putPreparedStatement(C_USERS_ADD_KEY, statement);
          }
         catch (SQLException e){
-			m_pool.putPreparedStatement(C_USERS_ADD_KEY, statement);
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
         catch (IOException e){
             throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:"+CmsException. C_SERIALIZATION, e);			
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_USERS_ADD_KEY, statement);
+			}
 		}
-		m_pool.putPreparedStatement(C_USERS_ADD_KEY, statement);
-		
-		// TODO: read user here!
-		return null;
+		return readUser(id, type);
+	}
+	
+	/**
+	 * Reads a user from the cms.
+	 * 
+	 * @param name the name of the user.
+	 * @param type the type of the user.
+	 * @return the read user.
+	 * @exception thorws CmsException if something goes wrong.
+	 */
+	public CmsUser readUser(String name, int type) 
+		throws CmsException {
+		PreparedStatement statement = null;
+		ResultSet res = null;
+		CmsUser user = null;
+
+		try	{			
+            statement = m_pool.getPreparedStatement(C_USERS_READ_KEY);
+            statement.setString(1,name);
+			statement.setInt(2,type);
+			res = statement.executeQuery();
+			
+			// create new Cms user object
+			if(res.next()) {
+				// read the additional infos.
+                byte[] value = res.getBytes(C_USERS_USER_INFO);
+				// now deserialize the object
+				ByteArrayInputStream bin= new ByteArrayInputStream(value);
+				ObjectInputStream oin = new ObjectInputStream(bin);
+				Hashtable info=(Hashtable)oin.readObject();
+
+				user = new CmsUser(res.getInt(C_USERS_USER_ID),
+								   res.getString(C_USERS_USER_NAME),
+								   res.getString(C_USERS_USER_PASSWORD),
+								   res.getString(C_USERS_USER_DESCRIPTION),
+								   res.getString(C_USERS_USER_FIRSTNAME),
+								   res.getString(C_USERS_USER_LASTNAME),
+								   res.getString(C_USERS_USER_EMAIL),
+								   res.getTimestamp(C_USERS_USER_LASTLOGIN).getTime(),
+								   res.getTimestamp(C_USERS_USER_LASTUSED).getTime(),
+								   res.getInt(C_USERS_USER_FLAGS),
+								   info,
+								   new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
+												res.getInt(C_GROUPS_PARENT_GROUP_ID),
+												res.getString(C_GROUPS_GROUP_NAME),
+												res.getString(C_GROUPS_GROUP_DESCRIPTION),
+												res.getInt(C_GROUPS_GROUP_FLAGS)),
+								   res.getString(C_USERS_USER_ADDRESS),
+								   res.getString(C_USERS_USER_SECTION),
+								   res.getInt(C_USERS_USER_TYPE));
+			} else {
+				res.close();
+				throw new CmsException("["+this.getClass().getName()+"]"+name,CmsException.C_NO_USER);
+			}
+
+			res.close();
+			return user;
+         }
+        catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+		catch (Exception e) {
+            throw new CmsException("["+this.getClass().getName()+"]", e);			
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_USERS_READ_KEY, statement);
+			}
+		}
 	}
     
-   
+	/**
+	 * Reads a user from the cms, only if the password is correct.
+	 * 
+	 * @param name the name of the user.
+	 * @param password the password of the user.
+	 * @param type the type of the user.
+	 * @return the read user.
+	 * @exception thorws CmsException if something goes wrong.
+	 */
+	public CmsUser readUser(String name, String password, int type) 
+		throws CmsException {
+		PreparedStatement statement = null;
+		ResultSet res = null;
+		CmsUser user = null;
+
+		try	{			
+            statement = m_pool.getPreparedStatement(C_USERS_READPW_KEY);
+            statement.setString(1,name);
+			statement.setString(2,digest(password));
+			statement.setInt(3,type);
+			res = statement.executeQuery();
+			
+			// create new Cms user object
+			if(res.next()) {
+				// read the additional infos.
+                byte[] value = res.getBytes(C_USERS_USER_INFO);
+				// now deserialize the object
+				ByteArrayInputStream bin= new ByteArrayInputStream(value);
+				ObjectInputStream oin = new ObjectInputStream(bin);
+				Hashtable info=(Hashtable)oin.readObject();
+
+				user = new CmsUser(res.getInt(C_USERS_USER_ID),
+								   res.getString(C_USERS_USER_NAME),
+								   res.getString(C_USERS_USER_PASSWORD),
+								   res.getString(C_USERS_USER_DESCRIPTION),
+								   res.getString(C_USERS_USER_FIRSTNAME),
+								   res.getString(C_USERS_USER_LASTNAME),
+								   res.getString(C_USERS_USER_EMAIL),
+								   res.getTimestamp(C_USERS_USER_LASTLOGIN).getTime(),
+								   res.getTimestamp(C_USERS_USER_LASTUSED).getTime(),
+								   res.getInt(C_USERS_USER_FLAGS),
+								   info,
+								   new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
+												res.getInt(C_GROUPS_PARENT_GROUP_ID),
+												res.getString(C_GROUPS_GROUP_NAME),
+												res.getString(C_GROUPS_GROUP_DESCRIPTION),
+												res.getInt(C_GROUPS_GROUP_FLAGS)),
+								   res.getString(C_USERS_USER_ADDRESS),
+								   res.getString(C_USERS_USER_SECTION),
+								   res.getInt(C_USERS_USER_TYPE));
+			} else {
+				res.close();
+				throw new CmsException("["+this.getClass().getName()+"]"+name,CmsException.C_NO_USER);
+			}
+
+			res.close();
+			return user;
+         }
+        catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+		catch (Exception e) {
+            throw new CmsException("["+this.getClass().getName()+"]", e);			
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_USERS_READPW_KEY, statement);
+			}
+		}
+	}
          
+	/**
+	 * Reads a user from the cms, only if the password is correct.
+	 * 
+	 * @param id the id of the user.
+	 * @param type the type of the user.
+	 * @return the read user.
+	 * @exception thorws CmsException if something goes wrong.
+	 */
+	public CmsUser readUser(int id, int type) 
+		throws CmsException {
+		PreparedStatement statement = null;
+		ResultSet res = null;
+		CmsUser user = null;
+
+		try	{			
+            statement = m_pool.getPreparedStatement(C_USERS_READID_KEY);
+            statement.setInt(1,id);
+			statement.setInt(2,type);
+			res = statement.executeQuery();
+			
+			// create new Cms user object
+			if(res.next()) {
+				// read the additional infos.
+                byte[] value = res.getBytes(C_USERS_USER_INFO);
+				// now deserialize the object
+				ByteArrayInputStream bin= new ByteArrayInputStream(value);
+				ObjectInputStream oin = new ObjectInputStream(bin);
+				Hashtable info=(Hashtable)oin.readObject();
+
+				user = new CmsUser(res.getInt(C_USERS_USER_ID),
+								   res.getString(C_USERS_USER_NAME),
+								   res.getString(C_USERS_USER_PASSWORD),
+								   res.getString(C_USERS_USER_DESCRIPTION),
+								   res.getString(C_USERS_USER_FIRSTNAME),
+								   res.getString(C_USERS_USER_LASTNAME),
+								   res.getString(C_USERS_USER_EMAIL),
+								   res.getTimestamp(C_USERS_USER_LASTLOGIN).getTime(),
+								   res.getTimestamp(C_USERS_USER_LASTUSED).getTime(),
+								   res.getInt(C_USERS_USER_FLAGS),
+								   info,
+								   new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
+												res.getInt(C_GROUPS_PARENT_GROUP_ID),
+												res.getString(C_GROUPS_GROUP_NAME),
+												res.getString(C_GROUPS_GROUP_DESCRIPTION),
+												res.getInt(C_GROUPS_GROUP_FLAGS)),
+								   res.getString(C_USERS_USER_ADDRESS),
+								   res.getString(C_USERS_USER_SECTION),
+								   res.getInt(C_USERS_USER_TYPE));
+			} else {
+				res.close();
+				throw new CmsException("["+this.getClass().getName()+"]"+id,CmsException.C_NO_USER);
+			}
+
+			res.close();
+			return user;
+         }
+        catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+		catch (Exception e) {
+            throw new CmsException("["+this.getClass().getName()+"]", e);			
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_USERS_READID_KEY, statement);
+			}
+		}
+	}
+	
+	/**
+	 * Writes a user to the database.
+	 * 
+	 * @param user the user to write
+	 * @exception thorws CmsException if something goes wrong.
+	 */ 
+	public void writeUser(CmsUser user) 
+		throws CmsException {
+        byte[] value=null;
+		PreparedStatement statement = null;
+		
+		try	{			
+            // serialize the hashtable
+            ByteArrayOutputStream bout= new ByteArrayOutputStream();            
+            ObjectOutputStream oout=new ObjectOutputStream(bout);
+            oout.writeObject(user.getAdditionalInfo());
+            oout.close();
+            value=bout.toByteArray();
+			
+            // write data to database     
+            statement = m_pool.getPreparedStatement(C_USERS_WRITE_KEY);
+			
+			statement.setString(1,user.getDescription());
+			statement.setString(2,user.getFirstname());
+			statement.setString(3,user.getLastname());
+			statement.setString(4,user.getEmail());
+			statement.setTimestamp(5, new Timestamp(user.getLastlogin()));
+			statement.setTimestamp(6, new Timestamp(user.getLastUsed()));
+			statement.setInt(7,user.getFlags());
+			statement.setBytes(8,value);
+			statement.setString(9,user.getAddress());
+			statement.setString(10,user.getSection());
+			statement.setInt(11,user.getType());
+            statement.setInt(12,user.getId());
+			statement.executeUpdate();
+		}
+        catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+        catch (IOException e){
+            throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:"+CmsException. C_SERIALIZATION, e);			
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_USERS_WRITE_KEY, statement);
+			}
+		}
+	}
+	
+	/**
+	 * Deletes a user from the database.
+	 * 
+	 * @param user the user to delete
+	 * @exception thorws CmsException if something goes wrong.
+	 */ 
+	public void deleteUser(String name) 
+		throws CmsException {
+		PreparedStatement statement = null;
+		
+		try	{			
+            statement = m_pool.getPreparedStatement(C_USERS_DELETE_KEY);
+			statement.setString(1,name);
+		}
+        catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_USERS_DELETE_KEY, statement);
+			}
+		}
+	}
+	
+	/**
+	 * Gets all users of a type.
+	 * 
+	 * @param type the type of the users to get
+	 * @exception thorws CmsException if something goes wrong.
+	 */ 
+	public Vector getUsers(int type) 
+		throws CmsException {
+		PreparedStatement statement = null;
+		ResultSet res = null;
+		Vector users = null;
+		
+		try	{			
+            statement = m_pool.getPreparedStatement(C_USERS_GETUSERS_KEY);
+			statement.setInt(1,type);
+			res = statement.executeQuery();
+			
+			// create new Cms user objects
+			while( res.next() ) {
+				// read the additional infos.
+                byte[] value = res.getBytes(C_USERS_USER_INFO);
+				// now deserialize the object
+				ByteArrayInputStream bin= new ByteArrayInputStream(value);
+				ObjectInputStream oin = new ObjectInputStream(bin);
+				Hashtable info=(Hashtable)oin.readObject();
+
+				CmsUser user = new CmsUser(res.getInt(C_USERS_USER_ID),
+										   res.getString(C_USERS_USER_NAME),
+										   res.getString(C_USERS_USER_PASSWORD),
+										   res.getString(C_USERS_USER_DESCRIPTION),
+										   res.getString(C_USERS_USER_FIRSTNAME),
+										   res.getString(C_USERS_USER_LASTNAME),
+										   res.getString(C_USERS_USER_EMAIL),
+										   res.getTimestamp(C_USERS_USER_LASTLOGIN).getTime(),
+										   res.getTimestamp(C_USERS_USER_LASTUSED).getTime(),
+										   res.getInt(C_USERS_USER_FLAGS),
+										   info,
+										   new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
+														res.getInt(C_GROUPS_PARENT_GROUP_ID),
+														res.getString(C_GROUPS_GROUP_NAME),
+														res.getString(C_GROUPS_GROUP_DESCRIPTION),
+														res.getInt(C_GROUPS_GROUP_FLAGS)),
+										   res.getString(C_USERS_USER_ADDRESS),
+										   res.getString(C_USERS_USER_SECTION),
+										   res.getInt(C_USERS_USER_TYPE));
+				
+				users.addElement(user);
+			} 
+
+			res.close();
+		} catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		} catch (Exception e) {
+            throw new CmsException("["+this.getClass().getName()+"]", e);			
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_USERS_GETUSERS_KEY, statement);
+			}
+		}
+		return users;
+	}
+	
+	/**
+	 * Sets a new password for a user.
+	 * 
+	 * @param user the user to set the password for.
+	 * @param password the password to set
+	 * @exception thorws CmsException if something goes wrong.
+	 */ 
+	public void setPassword(String user, String password) 
+		throws CmsException {
+		PreparedStatement statement = null;
+		
+		try	{			
+            statement = m_pool.getPreparedStatement(C_USERS_SETPW_KEY);
+			
+			statement.setString(1,digest(password));
+			statement.setString(2,user);
+			statement.executeUpdate();
+		}
+        catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_USERS_SETPW_KEY, statement);
+			}
+		}
+	}
+	
     // methods working with systemproperties
     
     /**
@@ -810,6 +1173,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		// init statements for users
 		m_pool.initPreparedStatement(C_USERS_MAXID_KEY,C_USERS_MAXID);
 		m_pool.initPreparedStatement(C_USERS_ADD_KEY,C_USERS_ADD);
+		m_pool.initPreparedStatement(C_USERS_READ_KEY,C_USERS_READ);
+		m_pool.initPreparedStatement(C_USERS_READID_KEY,C_USERS_READID);
+		m_pool.initPreparedStatement(C_USERS_READPW_KEY,C_USERS_READPW);
+		m_pool.initPreparedStatement(C_USERS_WRITE_KEY,C_USERS_WRITE);
+		m_pool.initPreparedStatement(C_USERS_DELETE_KEY,C_USERS_DELETE);
+		m_pool.initPreparedStatement(C_USERS_GETUSERS_KEY,C_USERS_GETUSERS);
+		m_pool.initPreparedStatement(C_USERS_SETPW_KEY,C_USERS_SETPW);
 		
 		// init statements for projects        
 		m_pool.initPreparedStatement(C_PROJECTS_MAXID_KEY, C_PROJECTS_MAXID);
@@ -873,11 +1243,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 				id = 0;
 			}
 			res.close();
-			m_pool.putPreparedStatement(key, statement);
-        
         } catch (SQLException e){
-			m_pool.putPreparedStatement(key, statement);
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(key, statement);
+			}
 		}
 		return id;
 	}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/07 13:13:53 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/06/07 13:56:36 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/06/07 13:13:53 $
+ * @version $Revision: 1.16 $ $Date: 2000/06/07 13:56:36 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -651,6 +651,18 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void setPassword(CmsUser currentUser, CmsProject currentProject, 
 							String username, String newPassword)
         throws CmsException {
+		// check the length of the new password.
+		if(newPassword.length() < C_PASSWORD_MINIMUMSIZE) {
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+				CmsException.C_SHORT_PASSWORD);
+		}
+		
+		if( isAdmin(currentUser, currentProject) ) {
+			m_dbAccess.setPassword(username, newPassword);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 	
 	/**
@@ -852,7 +864,21 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser loginUser(CmsUser currentUser, CmsProject currentProject, 
 							   String username, String password) 
         throws CmsException {
-     return null;
+   		CmsUser newUser = readUser(currentUser, currentProject, username, password);
+		
+		// is the user enabled?
+		if( newUser.getFlags() == C_FLAG_ENABLED ) {
+			// Yes - log him in!
+			// first write the lastlogin-time.
+			newUser.setLastlogin(new Date().getTime());
+			// write the user back to the cms.
+			m_dbAccess.writeUser(newUser);
+			return(newUser);
+		} else {
+			// No Access!
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+				CmsException.C_NO_ACCESS );
+		}
     }
 
     	
@@ -1106,7 +1132,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) 
         throws CmsException {
-     return null;
+		return readUser(currentUser, currentProject, C_USER_GUEST);
     }
 	
 	/**
@@ -1124,8 +1150,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
 							  String username)
         throws CmsException {
-		// TODO: return the correct user
-		return new CmsUser(-1, "DummyUser", "", "", "", "", "", 0, 0, 1, new Hashtable(), new CmsGroup(-1, -1, "dummy", "", 1), "", "", 1);
+		
+		return m_dbAccess.readUser(username, C_USER_TYPE_SYSTEMUSER);
     }
 	
 	/**
@@ -1145,7 +1171,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
 							  String username, String password)
         throws CmsException {
-     return null;
+		
+ 		return m_dbAccess.readUser(username, password, C_USER_TYPE_SYSTEMUSER);
     }
 
 
@@ -1283,8 +1310,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( isAdmin(currentUser, currentProject) ) {
 			// check the password minimumsize
 			if( (name.length() > 0) && (password.length() >= C_PASSWORD_MINIMUMSIZE) ) {
-				// TODO: read the group first
-				return( m_dbAccess.addUser(name, password, description, "", "", "", 0, 0, C_FLAG_ENABLED, additionalInfos, new CmsGroup(-1, -1, "", "", 0), "", "", C_USER_TYPE_SYSTEMUSER));
+				CmsGroup defaultGroup =  readGroup(currentUser, currentProject, group);
+				CmsUser newUser = m_dbAccess.addUser(name, password, description, "", "", "", 0, 0, C_FLAG_ENABLED, additionalInfos, defaultGroup, "", "", C_USER_TYPE_SYSTEMUSER);
+				addUserToGroup(currentUser, currentProject, newUser.getName(),defaultGroup.getName());
+				return newUser;
 			} else {
 				throw new CmsException("[" + this.getClass().getName() + "] " + name, 
 					CmsException.C_SHORT_PASSWORD);
@@ -1340,6 +1369,15 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void deleteUser(CmsUser currentUser, CmsProject currentProject, 
 						   String username)
         throws CmsException {
+		// Check the security
+		// Avoid to delete admin or guest-user
+		if( isAdmin(currentUser, currentProject) && 
+			!(username.equals(C_USER_ADMIN) || username.equals(C_USER_GUEST))) {
+			m_dbAccess.deleteUser(username);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 
 	/**
@@ -1359,6 +1397,19 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
     public void writeUser(CmsUser currentUser, CmsProject currentProject, 
 						  CmsUser user)			
         throws CmsException {
+		// Check the security
+		if( isAdmin(currentUser, currentProject) || (currentUser.equals(user)) ) {
+			
+			// prevent the admin to be set disabled!
+			if( isAdmin(user, currentProject) ) {
+				user.setEnabled();
+			}
+			
+			m_dbAccess.writeUser(user);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + user.getName(), 
+				CmsException.C_NO_ACCESS);
+		}
     }
 
 	/**
@@ -1537,7 +1588,13 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public Vector getUsers(CmsUser currentUser, CmsProject currentProject)
         throws CmsException {
-     return null;
+		// check security
+		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
+			return m_dbAccess.getUsers(C_USER_TYPE_SYSTEMUSER);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + currentUser.getName(), 
+				CmsException.C_NO_ACCESS);
+		}
     }
 	
 	/**
@@ -1679,6 +1736,21 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void setPassword(CmsUser currentUser, CmsProject currentProject, 
 							String username, String oldPassword, String newPassword)
         throws CmsException {
+		// check the length of the new password.
+		if(newPassword.length() < C_PASSWORD_MINIMUMSIZE) {
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+				CmsException.C_SHORT_PASSWORD);
+		}
+		
+		// read the user
+		CmsUser user = readUser(currentUser, currentProject, username, oldPassword);
+		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) && 
+			( isAdmin(user, currentProject) || user.equals(currentUser)) ) {
+			m_dbAccess.setPassword(username, newPassword);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 
     

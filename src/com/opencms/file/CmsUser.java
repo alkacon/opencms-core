@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
- * Date   : $Date: 2000/06/07 09:08:07 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/06/07 13:56:36 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import com.opencms.core.*;
  * This class describes the Cms user object and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2000/06/07 09:08:07 $
+ * @version $Revision: 1.22 $ $Date: 2000/06/07 13:56:36 $
  */
 
 public class CmsUser implements I_CmsConstants,
@@ -123,7 +123,7 @@ public class CmsUser implements I_CmsConstants,
     /**
 	 * The typ of the user.
 	 */
-	private int m_typ = C_UNKNOWN_INT;
+	private int m_type = C_UNKNOWN_INT;
 	
     	 
     /**
@@ -152,7 +152,7 @@ public class CmsUser implements I_CmsConstants,
         m_additionalInfo=additionalInfo;
         m_address = address;
         m_section = section;
-        m_typ = typ;
+        m_type = typ;
     }
     
 	/**
@@ -180,7 +180,7 @@ public class CmsUser implements I_CmsConstants,
 	 * @return the description of this user.
 	 */
 	public String getDescription() {
-    return m_description;
+		return m_description;
     }
 	
 	/**
@@ -188,7 +188,7 @@ public class CmsUser implements I_CmsConstants,
 	 * 
 	 * @param the description of this user.
 	 */
-	public void getDescription(String value) {
+	public void setDescription(String value) {
 		m_description = value;
     }
 	
@@ -460,7 +460,7 @@ public class CmsUser implements I_CmsConstants,
 	 * 
 	 * @param value The new user section.
 	 */
-    void setLastlogin(long value) {
+    public void setLastlogin(long value) {
         m_lastlogin = value;
     }
     
@@ -510,12 +510,12 @@ public class CmsUser implements I_CmsConstants,
     }
     
      /**
-	 * Gets the typ.
+	 * Gets the type.
 	 * 
-	 * @return the USER_typ, or C_UNKNOWN_INT.
+	 * @return the type, or C_UNKNOWN_INT.
 	 */
-	public int getTyp() {
-        return m_typ;
+	public int getType() {
+        return m_type;
     }
  
     /**
@@ -523,8 +523,8 @@ public class CmsUser implements I_CmsConstants,
 	 * 
 	 * @param value The new user typ.
 	 */
-     void setTyp(int value) {
-         m_typ = value;
+     void setType(int value) {
+         m_type = value;
      }
      
     
@@ -537,7 +537,7 @@ public class CmsUser implements I_CmsConstants,
 								  new String (m_description),new String(m_firstname),
 								  new String(m_lastname),new String(m_email),m_lastlogin,
 								  m_lastused, m_flags, getAdditionalInfo(),
-								  m_defaultGroup, new String(m_address), new String(m_section),m_typ);
+								  m_defaultGroup, new String(m_address), new String(m_section),m_type);
         return user;   
     }
     
