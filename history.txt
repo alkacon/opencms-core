@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/09/10 16:52:12 $
- * Version: $Revision: 1.501 $
+ * Date   : $Date: 2003/09/10 16:53:50 $
+ * Version: $Revision: 1.502 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.1.10 Salusa Secundus - September xx, 2003
+OpenCms 5.1.10 Salusa Secundus - September 10, 2003
 ! Added report to Workplace synchronize feature
 ! JSP output for workplace report Threads implemented
 ! Added CmsThreadStore for workplace report Threads
