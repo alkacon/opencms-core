@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/12/13 08:47:42 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2001/01/15 14:53:31 $
+ * Version: $Revision: 1.35 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.34 $ $Date: 2000/12/13 08:47:42 $
+ * @version $Revision: 1.35 $ $Date: 2001/01/15 14:53:31 $
  */
 public class CmsImport implements I_CmsConstants {
 
@@ -361,13 +361,7 @@ public Vector getResourcesForProject() throws CmsException {
 private void importFile(String source, String destination, String type, String user, String group, String access, Hashtable properties, String launcherStartClass, Vector writtenFilenames, Vector fileCodes) {
 	// print out the information for shell-users
 	System.out.print("Importing ");
-	System.out.print(source + ", ");
-	System.out.print(destination + ", ");
-	System.out.print(type + ", ");
-	System.out.print(user + ", ");
-	System.out.print(group + ", ");
-	System.out.print(access + ", ");
-	System.out.print(launcherStartClass + "... ");
+	System.out.print(source + " ");
 	boolean success = false;
 	byte[] content = null;
 	String fullname = null;
@@ -405,9 +399,21 @@ private void importFile(String source, String destination, String type, String u
 			success = true;
 		}
 		if (fullname != null) {
-			m_cms.chmod(fullname, Integer.parseInt(access));
-			m_cms.chgrp(fullname, group);
-			m_cms.chown(fullname, user);
+			try {
+				m_cms.chmod(fullname, Integer.parseInt(access));
+			} catch(CmsException exc) {
+				System.out.print(" chmod(" + access + ") failed ");
+			}
+			try {
+				m_cms.chgrp(fullname, group);
+			} catch(CmsException exc) {
+				System.out.print(" chgrp(" + group + ") failed ");
+			}
+			try {
+				m_cms.chown(fullname, user);
+			} catch(CmsException exc) {
+				System.out.print(" chown(" + user + ") failed ");
+			}
 			if(launcherStartClass != null) {
 				CmsFile f = m_cms.readFile(fullname);
 				f.setLauncherClassname(launcherStartClass);                
@@ -485,7 +491,7 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
 				if (propertyName != null && propertyValue != null && !"".equals(propertyName)) {
 					if (!types.contains(type)) {
 						types.addElement(type);
-						createPropertydefinition(propertyName, "" + C_PROPERTYDEF_TYPE_OPTIONAL, type);
+						createPropertydefinition(propertyName, "" + C_PROPERTYDEF_TYPE_NORMAL, type);
 					}
 					properties.put(propertyName, propertyValue);
 				}
