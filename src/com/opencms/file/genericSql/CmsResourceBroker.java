@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/13 09:23:21 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2000/06/13 10:22:58 $
+ * Version: $Revision: 1.47 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.46 $ $Date: 2000/06/13 09:23:21 $
+ * @version $Revision: 1.47 $ $Date: 2000/06/13 10:22:58 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2914,11 +2914,11 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
             m_dbAccess.createFolder(currentUser,currentProject,onlineProject(currentUser, currentProject),folder,cmsFolder.getResourceId(),destination);        
 
 			// copy the properties
-			m_metadefRb.writeMetainformations(m_metadefRb.readAllMetainformations(folder),
+		/*	m_metadefRb.writeMetainformations(m_metadefRb.readAllMetainformations(folder),
 											  currentProject.getId(), 
 											  destination, 
 											  folder.getType());			
-            
+          */  
 			// inform about the file-system-change
 			fileSystemChanged();                      
         } else {

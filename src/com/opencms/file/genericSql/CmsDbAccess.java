@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/13 09:23:21 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2000/06/13 10:22:57 $
+ * Version: $Revision: 1.62 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.61 $ $Date: 2000/06/13 09:23:21 $ * 
+ * @version $Revision: 1.62 $ $Date: 2000/06/13 10:22:57 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -1690,7 +1690,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		  }	
     }
     
-     /**
+    /**
 	 * Creates a serializable object in the systempropertys.
 	 * 
 	 * @param name The name of the property.
@@ -2063,7 +2063,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	
 	/**
 	 * Updates the propertydefinition for the resource type.<BR/>
-	 * 
+	 *  
 	 * Only the admin can do this.
 	 * 
 	 * @param metadef The propertydef to be deleted.
@@ -2372,18 +2372,22 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 
 	// methods working with resources
     
-     /**
+    /**
      * Copies a resource from the online project to a new, specified project.<br>
      *
      * @param project The project to be published.
 	 * @param onlineProject The online project of the OpenCms.
+	 * @param resourceId The Id of the resource.
+	 * @param parentId The parentId of the resource.
+	 * @param fileId The fileId of the resource.
 	 * @param resourcename The name of the resource.
+	 * @param resourceLastModifiedBy The Id of the user who changed the resourse.
  	 * @exception CmsException  Throws CmsException if operation was not succesful.
      */
      public void copyResourceToProject(CmsProject project,
                                        CmsProject onlineProject,
                                        int resourceId, int parentId,
-                                       int fileId,String resourcename,
+                                       int fileId, String resourcename,
                                        int resourceLastModifiedBy) 
          throws CmsException {
          CmsResource resource=readResource(onlineProject,resourcename);
@@ -2393,7 +2397,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
      }
 	
      
-     /**
+    /**
      * Publishes a specified project to the online project. <br>
      *
      * @param project The project to be published.
@@ -2471,8 +2475,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
      * @param project The project to be published.
 	 * @param onlineProject The online project of the OpenCms.
 	 * @param state The resource-state.
-	 * @param onlineIds in this Vector the result will be filled in.
-	 * @param offlineIds in this Vector the result will be filled in.
+	 * @param online in this Vector the result will be filled in.
+	 * @param offline in this Vector the result will be filled in.
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
 	private void publishRead(CmsProject project, CmsProject onlineProject, int state, Vector online, Vector offline)
@@ -2568,7 +2572,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 * Reads a resource from the Cms.<BR/>
 	 * A resource is either a file header or a folder.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param filename The complete name of the new file (including pathinformation).
 	 * 
@@ -2634,7 +2637,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * 
-	 * @return A Vecot of resources.
+	 * @return A Vecor of resources.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
@@ -2763,8 +2766,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	/**
 	 * Reads a file from the Cms.<BR/>
 	 * 
-	 * @param project The project in which the resource will be used.
-	 * @param onlineProject The online project of the OpenCms.
+	 * @param projectId The Id of the project in which the resource will be used.
+	 * @param onlineProjectId The online projectId of the OpenCms.
 	 * @param filename The complete name of the new file (including pathinformation).
 	 * 
 	 * @return file The read file.
@@ -2917,8 +2920,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 * Reads a file header from the Cms.<BR/>
 	 * The reading excludes the filecontent.
 	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
+	 * @param projectId The Id of the project in which the resource will be used.
 	 * @param filename The complete name of the new file (including pathinformation).
 	 * 
 	 * @return file The read file.
@@ -2991,6 +2993,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 * @param onlineProject The online project of the OpenCms.
 	 * @param filename The complete name of the new file (including pathinformation).
 	 * @param flags The flags of this resource.
+	 * @param parentId The parentId of the resource.
 	 * @param contents The contents of the new file.
 	 * @param resourceType The resourceType of the new file.
 	 * 
@@ -3070,6 +3073,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 * @param project The project in which the resource will be used.
 	 * @param onlineProject The online project of the OpenCms.
 	 * @param file The file to be written to the Cms.
+	 * @param user The Id of the user who changed the resourse.
+ 	 * @param parentId The parentId of the resource.
 	 * @param filename The complete new name of the file (including pathinformation).
 	 * 
 	 * @return file The created file.
@@ -3305,7 +3310,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
      * 
 	 * @param project The project in which the resource will be used.
 	 * @param onlineProject The online project of the OpenCms.
-	 * @param filename The complete name of the new file (including pathinformation).
+	 * @param file The new file.
 	 * @param changed Flag indicating if the file state must be set to changed.
 	 *
      * @exception CmsException Throws CmsException if operation was not succesful.
@@ -3399,7 +3404,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param onlineProject The online project of the OpenCms.
-	 * @param filename The complete name of the new file (including pathinformation).
+	 * @param file The new file.
 	 * @param changed Flag indicating if the file state must be set to changed.
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
@@ -3434,7 +3439,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 * Writes a folder to the Cms.<BR/>
 	 * 
 	 * @param project The project in which the resource will be used.
-	 * @param foldername The complete name of the folder (including pathinformation).
+	 * @param folder The folder to be written.
 	 * @param changed Flag indicating if the file state must be set to changed.
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
@@ -3483,6 +3488,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 * 
 	 * @param user The user who wants to create the folder.
 	 * @param project The project in which the resource will be used.
+	 * @param parentId The parentId of the folder.
+	 * @param fileId The fileId of the folder.
 	 * @param foldername The complete path to the folder in which the new folder will 
 	 * be created.
 	 * @param flags The flags of this resource.
@@ -3533,10 +3540,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	/**
 	 * Creates a new folder from an existing folder object.
 	 * 
+	 * @param user The user who wants to create the folder.
 	 * @param project The project in which the resource will be used.
 	 * @param onlineProject The online project of the OpenCms.
 	 * @param folder The folder to be written to the Cms.
-     *
+     * @param parentId The parentId of the resource.
+	 *
 	 * @param foldername The complete path of the new name of this folder.
 	 * 
 	 * @return The created folder.
@@ -3609,8 +3618,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
       * Deletes a folder in the database. 
       * This method is used to physically remove a folder form the database.
       * 
-      * @param project The project in which the resource will be used.
-	  * @param foldername The complete path of the folder.
+      * @param folder The folder.
       * @exception CmsException Throws CmsException if operation was not succesful
       */
      public void removeFolder(CmsFolder folder) 
@@ -3654,7 +3662,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 * Only empty folders can be deleted yet.
 	 * 
 	 * @param project The project in which the resource will be used.
-	 * @param foldername The complete path of the folder.
+	 * @param orgFolder The folder that will be deleted.
 	 * @param force If force is set to true, all sub-resources will be deleted.
 	 * If force is set to false, the folder will be deleted only if it is empty.
 	 * This parameter is not used yet as only empty folders can be deleted!
@@ -3705,7 +3713,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param onlineProject The online project of the OpenCms.
+	 * @param userId The id of the user who wants to copy the file.
 	 * @param source The complete path of the sourcefile.
+	 * @param parentId The parentId of the resource.
 	 * @param destination The complete path of the destinationfile.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
@@ -3787,8 +3797,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
    	/**
 	 * Returns a Vector with all subfolders.<BR/>
 	 * 
-	 * @param project The project in which the resource will be used.
-	 * @param foldername the complete path to the folder.
+	 * @param parentFolder The folder to be searched.
 	 * 
 	 * @return Vector with all subfolders for the given folder.
 	 * 
@@ -3843,8 +3852,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	/**
 	 * Returns a Vector with all file headers of a folder.<BR/>
 	 * 
-	 * @param project The project in which the resource will be used.
-	 * @param foldername the complete path to the folder.
+	 * @param parentFolder The folder to be searched.
 	 * 
 	 * @return subfiles A Vector with all file headers of the folder.
 	 * 
@@ -3955,7 +3963,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 
     /**
 	 * Deletes all files in CMS_FILES without fileHeader in CMS_RESOURCES
-	 * 
 	 * 
 	 *
 	 */
