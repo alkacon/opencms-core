@@ -13,7 +13,7 @@
     	<TD nowrap class="wizard"><iframe src="]]><method name="getServletPath" /><PROCESS>filename</PROCESS><![CDATA[" name="iframe]]><process>snippetid</process><![CDATA[" width="300" height="150"></iframe></TD>
 		<TD nowrap class="wizard" width="10">&nbsp;</TD>
 	</tr>
-	<input type="hidden" name="snippet]]><process>snippetid</process><![CDATA[" value="]]><process>filecontent_encodeURIComponentd</process><![CDATA[">
+	<input type="hidden" name="snippet]]><process>snippetid</process><![CDATA[" value="]]><process>filecontent_escaped</process><![CDATA[">
 	<tr>
 	  <td colspan="3"><hr /></td>
 	</tr>
