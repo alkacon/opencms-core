@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2002/10/16 10:42:57 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2002/11/07 19:31:33 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import com.opencms.workplace.*;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert
- * @version $Revision: 1.52 $ $Date: 2002/10/16 10:42:57 $
+ * @version $Revision: 1.53 $ $Date: 2002/11/07 19:31:33 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
@@ -115,6 +115,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
      */
     private static final String[] C_EXPORTPOINT = { "<exportpoint><source>", "</source><destination>", "</destination></exportpoint>"};
     
+    /** Debug flag, set to 9 for maximum vebosity */
     private static final int DEBUG = 0;
 
 /**
@@ -311,13 +312,13 @@ public void createModule(String modulename, String niceModulename, String descri
     moduleString.append( C_EMPTY_MODULE[5] + author );
     moduleString.append( C_EMPTY_MODULE[6] + createDate );
     moduleString.append( C_EMPTY_MODULE[7] );
-    moduleString.append( C_EXPORTPOINT[0] + "/system/modules/" + modulename +"/classes/" );
+    moduleString.append( C_EXPORTPOINT[0] + I_CmsWpConstants.C_VFS_PATH_MODULES + modulename +"/classes/" );
     moduleString.append( C_EXPORTPOINT[1] + "WEB-INF/classes/" + C_EXPORTPOINT[2] );
-    moduleString.append( C_EXPORTPOINT[0] + "/system/modules/" + modulename +"/lib/" );
+    moduleString.append( C_EXPORTPOINT[0] + I_CmsWpConstants.C_VFS_PATH_MODULES + modulename +"/lib/" );
     moduleString.append( C_EXPORTPOINT[1] + "WEB-INF/lib/" + C_EXPORTPOINT[2] );
     moduleString.append( C_EMPTY_MODULE[8] );
 
-    //[removed by Gridnine AB, 2002-06-13] Document doc = parse(moduleString);
+    // encoding project:
     Document doc;
     try {
         doc = parse(moduleString.toString().getBytes(I_CmsXmlParser.C_XML_ENCODING));
@@ -366,14 +367,19 @@ public Vector deleteCheckDependencies(String modulename) throws CmsException {
      * @param resourcesForProject a return value. The files that should be copied to a project to delete.
      */
     public void deleteGetConflictingFileNames(String modulename, Vector filesWithProperty, Vector missingFiles, Vector wrongChecksum, Vector filesInUse, Vector resourcesForProject) throws CmsException {
+
+        // Module type SIMPLE? Just do nothing here, as SIMPLE modules do not support file conflicts
+        if (this.getModuleType(modulename).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) return;
+
         // the files and checksums for this module
         Vector moduleFiles = new Vector();
         Vector moduleChecksums = new Vector();
-        getModuleFiles(modulename, moduleFiles, moduleChecksums);
-    
         // the files and checksums for all other modules
         Vector otherFiles = new Vector();
-        Vector otherChecksums = new Vector();
+        Vector otherChecksums = new Vector();        
+        
+        getModuleFiles(modulename, moduleFiles, moduleChecksums);
+    
         Enumeration modules = getModuleNames();
         while (modules.hasMoreElements()) {
             String module = (String) modules.nextElement();
@@ -418,7 +424,7 @@ public Vector deleteCheckDependencies(String modulename) throws CmsException {
                 // was the file changed?
                 if (file != null) {
                     // create the current digest-content for the file
-                    //Gridnine AB Aug 8, 2002
+                    // encoding project:
                     String digestContent;
                     try {
                         digestContent =
@@ -442,42 +448,7 @@ public Vector deleteCheckDependencies(String modulename) throws CmsException {
             }
         }
         
-        Vector files = null;
-        
-        if (this.getModuleType(modulename).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
-            // ADVANCED MODULE
-            
-            // check if additional resources outside the system/modules/{exportName} folder were 
-            // specified as module resources by reading the module property {C_MODULE_PROPERTY_ADDITIONAL_RESOURCES}
-            // just delete these resources plus the "standard" module paths under system/modules
-                    
-            String additionalResources = this.getModuleParameterString( modulename, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES );
-            files = new Vector();
-                                
-            if (additionalResources!=null && !additionalResources.equals("")) {                            
-                // add each additonal folder plus its content folder under "content/bodys"
-                StringTokenizer additionalResourceTokens = null;
-                additionalResourceTokens = new StringTokenizer( additionalResources, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR ); 
-                                       
-                while (additionalResourceTokens.hasMoreTokens()) {
-                    String currentResource = additionalResourceTokens.nextToken();
-                    
-                    if (DEBUG>0) {
-                        System.err.println( "Adding resource: " + currentResource );
-                        System.err.println( "Adding resource: " + C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.length()-1) + currentResource );
-                    }
-                                            
-                    files.add( currentResource );
-                    files.add( C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.length()-1) + currentResource );                           
-                }                       
-            }            
-        }      
-        else {        
-            // TRADITIONAL MODULE
-                   
-            files = m_cms.getFilesWithProperty("module", modulename + "_" + getModuleVersion(modulename));                                       
-        } 
-        
+        Vector files = m_cms.getFilesWithProperty("module", modulename + "_" + getModuleVersion(modulename));        
         int fileCount = files.size();
         
         for(int i=0;i<fileCount;i++) {
@@ -510,6 +481,9 @@ public Vector deleteCheckDependencies(String modulename) throws CmsException {
  *  @param exclusion a Vector with resource-names that should be excluded from this deletion.
  */
 public synchronized void deleteModule(String module, Vector exclusion) throws CmsException {
+
+    if (DEBUG > 2) System.err.println("[" + this.getClass().getName() + ".deleteModule()] Starting to delete module " + module);
+
     // check if the module exists
     if (!moduleExists(module)) {
         throw new CmsException("Module '"+module+"' does not exist", CmsException.C_REGISTRY_ERROR);
@@ -539,35 +513,84 @@ public synchronized void deleteModule(String module, Vector exclusion) throws Cm
         // ignore the exception.
     }
 
-    // get the files, that are belonging to the module.
-    Vector resourceNames = new Vector();
-    Vector missingFiles = new Vector();
-    Vector wrongChecksum = new Vector();
-    Vector filesInUse = new Vector();
-    Vector resourceCodes = new Vector();
-
-    // get files by property
-    deleteGetConflictingFileNames(module, resourceNames, missingFiles, wrongChecksum, filesInUse, new Vector());
-
-    // get files by registry
-    getModuleFiles(module, resourceNames, resourceCodes);
-
-    // move through all resource-names and try to delete them
-    for (int i = resourceNames.size() - 1; i >= 0; i--) {
-        try {
-            String currentResource = (String) resourceNames.elementAt(i);
-            if ((!exclusion.contains(currentResource)) && (!filesInUse.contains(currentResource))) {
-                m_cms.lockResource(currentResource, true);
-                if(currentResource.endsWith("/") ) {
-                    // this is a folder
-                    m_cms.deleteEmptyFolder(currentResource);
-                } else {
-                    // this is a file
-                    m_cms.deleteResource(currentResource);
+    if (this.getModuleType(module).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
+        // SIMPLE module: Just delete all the folders of the module
+            
+        // check if additional resources outside the system/modules/{exportName} folder were 
+        // specified as module resources by reading the module property {C_MODULE_PROPERTY_ADDITIONAL_RESOURCES}
+        // just delete these resources plus the "standard" module paths under system/modules
+                
+        String additionalResources = this.getModuleParameterString( module, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES );
+        Vector resources = new Vector();
+                            
+        if (additionalResources!=null && !additionalResources.equals("")) {                            
+            // add each additonal folder plus its content folder under "content/bodys"
+            StringTokenizer additionalResourceTokens = null;
+            additionalResourceTokens = new StringTokenizer( additionalResources, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR ); 
+                                   
+            while (additionalResourceTokens.hasMoreTokens()) {
+                String currentResource = additionalResourceTokens.nextToken();
+                
+                if (DEBUG>0) {
+                    System.err.println( "Adding resource: " + currentResource );
+                    System.err.println( "Adding resource: " + C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1) + currentResource );
                 }
+                                        
+                resources.add( currentResource );
+                resources.add( C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1) + currentResource );                           
+            }                       
+        }          
+        
+        resources.add(I_CmsWpConstants.C_VFS_PATH_MODULES + module + "/");
+        // move through all resource-names and try to delete them
+        for (int i = resources.size() - 1; i >= 0; i--) {
+            String currentResource = null;
+            try {
+                currentResource = (String) resources.elementAt(i);
+                if (DEBUG > 1) System.err.println("[" + this.getClass().getName() + ".deleteModule()] Deleting resource " + currentResource);
+                // lock the resource
+                m_cms.lockResource(currentResource, true);
+                 // delete the resource
+                m_cms.deleteResource(currentResource);
+            } catch (CmsException exc) {
+                // ignore the exception and delete the next resource
+                if (DEBUG > 0) System.err.println("[" + this.getClass().getName() + ".deleteModule()] Exception " + exc + " deleting resource " + currentResource);
             }
-        } catch (CmsException exc) {
-            // ignore the exception and delete the next resource.
+        }              
+ 
+    } else {
+        // TRADITIONAL module: Check file dependencies
+
+        // get the files, that are belonging to the module.
+        Vector resourceNames = new Vector();
+        Vector missingFiles = new Vector();
+        Vector wrongChecksum = new Vector();
+        Vector filesInUse = new Vector();
+        Vector resourceCodes = new Vector();
+    
+        // get files by property
+        deleteGetConflictingFileNames(module, resourceNames, missingFiles, wrongChecksum, filesInUse, new Vector());
+    
+        // get files by registry
+        getModuleFiles(module, resourceNames, resourceCodes);
+    
+        // move through all resource-names and try to delete them
+        for (int i = resourceNames.size() - 1; i >= 0; i--) {
+            try {
+                String currentResource = (String) resourceNames.elementAt(i);
+                if ((!exclusion.contains(currentResource)) && (!filesInUse.contains(currentResource))) {
+                    m_cms.lockResource(currentResource, true);
+                    if(currentResource.endsWith("/") ) {
+                        // this is a folder
+                        m_cms.deleteEmptyFolder(currentResource);
+                    } else {
+                        // this is a file
+                        m_cms.deleteResource(currentResource);
+                    }
+                }
+            } catch (CmsException exc) {
+                // ignore the exception and delete the next resource.
+            }
         }
     }
 
@@ -581,6 +604,8 @@ public synchronized void deleteModule(String module, Vector exclusion) throws Cm
     } catch (Exception exc) {
         throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
     }
+    
+    if (DEBUG > 2) System.err.println("[" + this.getClass().getName() + ".deleteModule()] Finished for module " + module);    
 }
 /**
  * Deletes the view for a module.
