@@ -25,23 +25,6 @@ top.head.helpUrl=']]><LABEL value="help.administration.moduledata.export"/><![CD
 
 <script language=JavaScript>
 <!--
-//------------------------------------------------------------------------------------
-// checkFormData(formField)
-//
-// author:  Matthias Schreiber
-// company: mindfact interaktive medien ag
-// date:    13.03.2000
-// update:  14.03.2000
-//
-// Method checkFormData performs a client-side check of form fields containing names.
-// Form can be surrounded by <DIV>-section (layer).
-//
-// @param form Name of the form where the field to be checked is situated
-// @param field Name of the field to be checked
-// @param lyr Name of the layer in which the form is embedded. If there's no layer set it to null.
-//
-//------------------------------------------------------------------------------------
-
 function checkFormData()
 {
     var result=true;
@@ -233,83 +216,151 @@ function selectAllModules(theList) {
 ]]>
 </TEMPLATE>
 
-<TEMPLATE name="error">
+<!-- This is the default template for the html report -->
+
+<TEMPLATE name="showresult">
 <![CDATA[
-]]><ERRORPAGE title="error.title.database" message="error.message.database" reason="error.reason.database" suggestion="error.suggestion.database" ref="index.html?sender=/system/workplace/administration/database/exportmoduldata/index.html" ><process>details</process></ERRORPAGE><![CDATA[
+<HTML>
+
+<!-- Include external JavaScripts-->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+
+<script language=JavaScript>
+<!--
+var pageStart="<html>\n<head>\n" +
+    "<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=]]><METHOD name="getEncoding"/><![CDATA['>\n"+ 
+    "<script language='JavaScript'>\n" + 
+    "function init() { setTimeout('window.scrollBy(0,100000)',100); }\n" +
+    "</script>\n" +
+    "<style type='text/css'>\n<!--\n" +
+    "body { color: #000000; font-family: sans-serif; font-size: 11px; }\n" +
+    "p { color: #000000; font-family: sans-serif; font-size: 11px; }\n" +
+    "span.head { color: #000099; font-family: sans-serif; font-size: 11px; font-weight: bold; }\n"+
+    "-->\n</style>\n" +
+    "</head>\n" +
+    "<body bgcolor='#ffffff' marginwidth='0' marginheight='0' topmargin='0' leftmargin='0' onload='init()'>\n";
+                                               
+var pageEnd="</body>\n</html>";
+
+var pageBody="";
+ 
+function initiate(){
+    refreshResult("");
+}
+function refreshResult(addOn){
+    pageBody += addOn;
+    showframe.document.open();
+    showframe.document.write(pageStart + pageBody + pageEnd);
+    showframe.document.close();
+}
+function finish(){
+    document.getElementById("cancel").disabled=false;
+}
+function fillHead(content){
+    document.getElementById("headline").innerHTML=content;
+}
+//-->
+</script>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="initiate();">
+
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+<table cellspacing=0 cellpadding=0 border=1 width="90%">
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+            <tr>
+                <td class="head">]]><process>headLabel</process><![CDATA[</td>
+            </tr>
+            <tr>
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <tr><td class=dialogtxt>
+                <table border=0 width=100%>
+                    <tr><td class=dialogtxt>
+                        <table border=0 cellspacing=4 width=100% height=300px>
+                            <tr>
+                                <td id=headline class=formular width=10%></td>
+                            </tr>
+                            <tr>
+                                <td height=280px>
+                                    <iframe src="empty.html" align="center" width="100%" height="100%" scrolling="yes" name="showframe" id="showframe">
+                                    </iframe>
+                                </td>
+                            </tr>
+                        </table>
+                    </td></tr>
+                    <tr><td class=dialogtxt>
+                        <table cellspacing=0 border=0 cellpadding=5 width=100%>
+                            <tr>
+                                <td width="20">&nbsp;</td>
+                                <td class=formular align=center width=100%><input type="button" class="button" disabled="true" width=100 value="]]><LABEL value="button.ok" /><![CDATA[" name="cancel" id="cancel" onClick="]]><process>finishUri</process><![CDATA["></td>
+                                <td width="20">
+                                    <iframe src="]]><process>updateUri</process><![CDATA[" width="20" height="20" id="loadframe" marginwidth="0" marginheight="0" frameborder="0" framespacing="0">
+                                    </iframe>                                                                
+                                </td>
+                            </tr>
+                        </table>
+                    </td></tr>
+                </table>
+            </td></tr>
+        </table>
+    </td></tr>
+</table>
+</td></tr>
+</table>
+</BODY>
+</html>
 ]]>
 </TEMPLATE>
 
-<TEMPLATE name="wait">
+
+<TEMPLATE name="updateReport">
 <![CDATA[
 <HTML>
-<HEAD>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 
+<script language=JavaScript>
+<!--
+function update(){
+    var value="]]><process>data</process><![CDATA[";
+    var headline="]]><process>text</process><![CDATA[";
+    parent.refreshResult(value);
+    parent.fillHead(headline);
+}
+
+function finish(){
+    parent.finish();
+}
+//-->
+</script>
 <SCRIPT LANGUAGE="Javascript">
 function reload()
 {
-location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA[" ;
+location.href="]]><process>updateUri</process><![CDATA[";
 }
 </SCRIPT>
-
+<title>OpenCms</title>
 
 </HEAD>
-<BODY onload="setTimeout('reload()', 15000);">
-<CENTER>
-<!-- Begin Logo opencms -->
-<table border=0 cellspacing=0 cellpadding=0 align=center height=100>
-    <tr>
-        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA["></td>
-    </tr>
-</table>
-<!-- End Logo opencms -->
-
-<!-- Begin please wait text -->
-<table cellspacing=0 cellpadding=0 border=0>
-<tr>
-<td><font size="-1" face="MS Sans Serif,Arial,Helvetica">]]><LABEL value="message.wait"/><![CDATA[</font></td>
-</tr>
-</table>
-<!-- End please wait text -->
-<table cellspacing=0 cellpadding=0 border=0>
-    <tr><br><br>
-        <td><IMG width=]]><PROCESS>time</PROCESS><![CDATA[ height=20 border=0 hspace=0 src="]]><METHOD name="resourcesUri">pixel_blue.gif</METHOD><![CDATA["></td>
-    </tr>
-</table>
-</CENTER>
+<BODY bgcolor="#c0c0c0" marginwidth="0" marginheight="0" topmargin="0" leftmargin="0" onLoad="]]><process>autoUpdate</process><![CDATA[update();]]><process>endMethod</process><![CDATA[">
 </BODY>
-</HTML>
+</html>
 ]]>
 </TEMPLATE>
 
-
-<TEMPLATE name="done">
-<![CDATA[
-<HTML>
-<HEAD>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
-</HEAD>
-<BODY onload="parent.admin_content.location.href='../../../action/administration_content_top.html?sender=/system/workplace/administration/database/';">
-<CENTER>
-<!-- Begin Logo opencms -->
-<table border=0 cellspacing=0 cellpadding=0 align=center height=100>
-    <tr>
-        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="resourcesUri">opencms.gif</METHOD><![CDATA["></td>
-    </tr>
-</table>
-<!-- End Logo opencms -->
-
-<!-- Begin please wait text -->
-<table cellspacing=0 cellpadding=0 border=0>
-<tr>
-<td><font size="-1" face="MS Sans Serif,Arial,Helvetica">]]><LABEL value="message.wait"/><![CDATA[</font></td>
-</tr>
-</table>
-<!-- End please wait text -->
-</CENTER>
-</BODY>
-</HTML>
-]]>
-</TEMPLATE>
+<endMethod><![CDATA[finish();]]></endMethod>
+<autoUpdate><![CDATA[setTimeout('reload()', 2000);]]></autoUpdate>
+<updateUri><![CDATA[index.html?action=showExportResult]]></updateUri>
+<finishUri><![CDATA[parent.admin_content.location.href='../../../action/administration_content_top.html?sender=/system/workplace/administration/database/';]]></finishUri>
+<headLabel><LABEL value="database.label.titleexport" /></headLabel>
 
 </WORKPLACE>

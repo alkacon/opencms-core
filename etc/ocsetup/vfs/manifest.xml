@@ -1764,6 +1764,16 @@
             <properties/>
         </file>
         <file>
+            <source>system/workplace/administration/database/exportmoduldata/empty.html</source>
+            <destination>system/workplace/administration/database/exportmoduldata/empty.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>47</access>
+            <lastmodified>1046214000000</lastmodified>
+            <properties/>
+        </file>
+        <file>
             <source>system/workplace/administration/database/exportmoduldata/index.html</source>
             <destination>system/workplace/administration/database/exportmoduldata/index.html</destination>
             <type>XMLTemplate</type>
