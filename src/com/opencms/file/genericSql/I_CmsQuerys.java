@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/09 16:23:18 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2000/06/09 17:05:19 $
+ * Version: $Revision: 1.37 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.36 $ $Date: 2000/06/09 16:23:18 $
+ * @version $Revision: 1.37 $ $Date: 2000/06/09 17:05:19 $
  */
 public interface I_CmsQuerys {
     
@@ -147,6 +147,15 @@ public interface I_CmsQuerys {
 	
 	public static final Integer C_RESOURCES_READBYPROJECT_KEY = new Integer(122);
 	public static final String C_RESOURCES_READBYPROJECT = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES where PROJECT_ID = ?";
+
+	public static final Integer C_RESOURCES_PUBLISH_MARKED_KEY = new Integer(123);
+	public static final String C_RESOURCES_PUBLISH_MARKED = "select OL.*, OFF.* from " + C_DATABASE_PREFIX + "RESOURCES as OL, " + C_DATABASE_PREFIX + "RESOURCES as OFF " + 
+															 "where OFF.PROJECT_ID = ? and OL.PROJECT_ID = ? and OFF.RESOURCE_NAME = OL.RESOURCE_NAME and OFF.STATE = ? " +
+															 "order by OFF.RESOURCE_NAME";
+
+	public static final Integer C_RESOURCES_DELETEBYID_KEY = new Integer(124);
+	public static final String C_RESOURCES_DELETEBYID = "DELETE FROM " + C_DATABASE_PREFIX + "RESOURCES " + 
+														"WHERE RESOURCE_ID = ?";
 
     public static final Integer C_RESOURCES_GET_FILESINFOLDER_KEY = new Integer(130);
 	public static final String C_RESOURCES_GET_FILESINFOLDER = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE PARENT_ID = ? AND RESOURCE_TYPE <> "
