@@ -1376,7 +1376,7 @@
 			<properties/>
 		</file>
         <file>
-            <source>system/workplace/administration/module/module_admin</source>
+            <source>administration/module/module_admin</source>
             <destination>system/workplace/administration/module/module_admin</destination>
             <type>plain</type>
             <user>Admin</user>
@@ -1391,7 +1391,7 @@
             </properties>
         </file>
         <file>
-            <source>system/workplace/administration/module/module_admin.html</source>
+            <source>administration/module/module_admin.html</source>
             <destination>system/workplace/administration/module/module_admin.html</destination>
             <type>XMLTemplate</type>
             <user>Admin</user>
@@ -1400,7 +1400,7 @@
             <properties/>
         </file>
         <file>
-            <source>system/workplace/administration/module/module_admin_prop_edit</source>
+            <source>administration/module/module_admin_prop_edit</source>
             <destination>system/workplace/administration/module/module_admin_prop_edit</destination>
             <type>plain</type>
             <user>Admin</user>
@@ -1415,7 +1415,7 @@
             </properties>
         </file>
         <file>
-            <source>system/workplace/administration/module/module_admin_prop_edit.html</source>
+            <source>administration/module/module_admin_prop_edit.html</source>
             <destination>system/workplace/administration/module/module_admin_prop_edit.html</destination>
             <type>XMLTemplate</type>
             <user>Admin</user>
@@ -1424,7 +1424,7 @@
             <properties/>
         </file>
         <file>
-            <source>system/workplace/administration/module/module_admin_prop_mitte</source>
+            <source>administration/module/module_admin_prop_mitte</source>
             <destination>system/workplace/administration/module/module_admin_prop_mitte</destination>
             <type>plain</type>
             <user>Admin</user>
@@ -1433,7 +1433,7 @@
             <properties/>
         </file>
         <file>
-            <source>system/workplace/administration/module/module_admin_prop_mitte.html</source>
+            <source>administration/module/module_admin_prop_mitte.html</source>
             <destination>system/workplace/administration/module/module_admin_prop_mitte.html</destination>
             <type>XMLTemplate</type>
             <user>Admin</user>
@@ -1442,7 +1442,7 @@
             <properties/>
         </file>
         <file>
-            <source>system/workplace/administration/module/module_admin_prop_unten</source>
+            <source>administration/module/module_admin_prop_unten</source>
             <destination>system/workplace/administration/module/module_admin_prop_unten</destination>
             <type>plain</type>
             <user>Admin</user>
@@ -1451,7 +1451,7 @@
             <properties/>
         </file>
         <file>
-            <source>system/workplace/administration/module/module_admin_prop_unten.html</source>
+            <source>administration/module/module_admin_prop_unten.html</source>
             <destination>system/workplace/administration/module/module_admin_prop_unten.html</destination>
             <type>XMLTemplate</type>
             <user>Admin</user>
@@ -1460,7 +1460,7 @@
             <properties/>
         </file>
         <file>
-            <source>system/workplace/administration/module/module_create</source>
+            <source>administration/module/module_create</source>
             <destination>system/workplace/administration/module/module_create</destination>
             <type>plain</type>
             <user>Admin</user>
@@ -1475,7 +1475,7 @@
             </properties>
         </file>
         <file>
-            <source>system/workplace/administration/module/module_create.html</source>
+            <source>administration/module/module_create.html</source>
             <destination>system/workplace/administration/module/module_create.html</destination>
             <type>XMLTemplate</type>
             <user>Admin</user>
@@ -1508,7 +1508,7 @@
 			<properties/>
 		</file>
         <file>
-            <source>system/workplace/administration/module/module_export</source>
+            <source>administration/module/module_export</source>
             <destination>system/workplace/administration/module/module_export</destination>
             <type>plain</type>
             <user>Admin</user>
@@ -1523,7 +1523,7 @@
             </properties>
         </file>
         <file>
-            <source>system/workplace/administration/module/module_export.html</source>
+            <source>administration/module/module_export.html</source>
             <destination>system/workplace/administration/module/module_export.html</destination>
             <type>XMLTemplate</type>
             <user>Admin</user>
