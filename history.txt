@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/03/31 10:32:12 $
- * Version: $Revision: 1.620 $
+ * Date   : $Date: 2005/03/31 12:39:43 $
+ * Version: $Revision: 1.621 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@ OpenCms 5.7.2 Corrin (aka 6.0 beta 2) - March 31, 2005
 - Improved implementation of SQL manager by adding additional methods for pool information
 ! Added individual "broadcast message" queues for each user
 * Fixed issue with temporary projects causing errors after publishing
-* Fixed issue in "templateone" causing wrong cahing of elements
+* Fixed issue in "templateone" causing wrong caching of elements
 * Fixed issue with non-ascii chars in search terms being garbled on the secound result page
 - Optimized the session info handling and the implementation of the OpenCmsListener
 - Removed the requirement for a separate OpenCmsSessionManager listener in the web.xml
@@ -49,7 +49,7 @@ OpenCms 5.7.2 Corrin (aka 6.0 beta 2) - March 31, 2005
 ! Added multiple search root option
 * Fixed issue with editor link replacement and parameter links that contain "&language"
 - Updated HtmlParser component to latest release 1.5 (20050313)
-! New "secure" feature allows for easy re-directing of secure (https) pages "inside" a OpenCms site
+! New "secure" feature allows easy re-directing of secure (https) pages "inside" a OpenCms site
 ! New "Export/Secure" dialog for easy setting (and controlling) of export and secure property
 ! OpenCms sites can now have multiple alias names in the configuration
 
