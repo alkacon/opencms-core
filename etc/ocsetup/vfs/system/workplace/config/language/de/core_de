@@ -465,6 +465,9 @@
                 <paste>Einfügen</paste>             
                 <splitcell>Zellen teilen</splitcell>
             </context>
+            <message>
+            	<confirmhttp>Die Link URL sieht wie eine externe URL aus\naber es fehlt das notwendige Protokoll (z.B. 'http://').\n\nSoll das http Protokoll zur URL addiert werden?</confirmhttp>
+            </message>
         </editor>
         <explorer>
             <linkto>Verknüpfung mit</linkto>
@@ -569,11 +572,12 @@
             <lastname>Name</lastname>
             <left>Links</left>
             <linkname>Linkname</linkname>
-            <linkto>Verknüpfung</linkto>
+            <linkto>Link URL</linkto>
             <linktarget>Linkziel</linktarget>
             <linktargetself>Gleiches Fenster</linktargetself>
             <linktargetblank>Neues Fenster</linktargetblank>
             <linktargettop>Oberstes Fenster</linktargettop>
+            <linktargetnamed>Benanntes Fenster</linktargetnamed>   
             <linkanchor>Ankerlink</linkanchor>
             <linkstyle>Styleangaben</linkstyle>
             <linkstyleclass>Stylesheet Klasse</linkstyleclass>            
