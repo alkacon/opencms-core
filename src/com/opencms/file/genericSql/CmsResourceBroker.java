@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/07 10:20:41 $
- * Version: $Revision: 1.208 $
+ * Date   : $Date: 2000/12/07 17:25:33 $
+ * Version: $Revision: 1.209 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.208 $ $Date: 2000/12/07 10:20:41 $
+ * @version $Revision: 1.209 $ $Date: 2000/12/07 17:25:33 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1220,6 +1220,8 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 		// the name of the folder.
 		String foldername;
 
+		// checks, if the destinateion is valid, if not it throws a exception
+		validFilename(destination.replace('/', 'a'));		
 		
 		// read the source-file, to check readaccess
 		CmsResource file = readFileHeader(currentUser, currentProject, source);
