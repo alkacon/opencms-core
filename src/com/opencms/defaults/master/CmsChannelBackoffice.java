@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
  * Author : $Author: a.schouten $
- * Date   : $Date: 2001/11/20 16:41:07 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2001/11/21 10:25:39 $
+ * Version: $Revision: 1.6 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -37,7 +37,7 @@ import java.sql.*;
 import java.text.*;
 
 
-public abstract class CmsChannelBackoffice extends A_CmsBackoffice{
+public class CmsChannelBackoffice extends A_CmsBackoffice{
 
     /** Default value of permission*/
     protected final static int C_DEFAULT_PERMISSIONS=383;
