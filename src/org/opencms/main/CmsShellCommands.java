@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/08/18 15:49:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/08/20 11:44:58 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import org.opencms.security.I_CmsPrincipal;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
@@ -73,7 +72,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $ $Date: 2003/08/18 15:49:53 $ 
+ * @version $Revision: 1.4 $ $Date: 2003/08/20 11:44:58 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -3471,7 +3470,6 @@ class CmsShellCommands {
         try {
         
             I_CmsVfsDriver vfsDriver = m_driverManager.getVfsDriver();
-            CmsFolder systemFolder = m_driverManager.readFolder(m_cms.getRequestContext(), I_CmsConstants.VFS_FOLDER_SYSTEM); 
             Random random = new Random();
             int projectId = m_cms.getRequestContext().currentProject().getId();
 

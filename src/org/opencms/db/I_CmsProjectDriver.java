@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/19 16:04:17 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/08/20 11:44:58 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,13 +45,11 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
-import source.org.apache.java.util.Configurations;
-
 /**
  * Definitions of all required project driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/08/19 16:04:17 $
+ * @version $Revision: 1.8 $ $Date: 2003/08/20 11:44:58 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {

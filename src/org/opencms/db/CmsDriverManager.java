@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/19 16:18:39 $
- * Version: $Revision: 1.171 $
+ * Date   : $Date: 2003/08/20 11:44:58 $
+ * Version: $Revision: 1.172 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.171 $ $Date: 2003/08/19 16:18:39 $
+ * @version $Revision: 1.172 $ $Date: 2003/08/20 11:44:58 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4140,7 +4140,7 @@ public class CmsDriverManager extends Object {
 
          //clearResourceCache(newResourceName, context.currentProject(), context.currentUser());
          clearResourceCache();
-         readPath(context,newResource,true);
+         readPath(context, newResource, true);
          // write metainfos for the folder
          m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), newResource, newResource.getType(), true);
 
@@ -5462,9 +5462,9 @@ public class CmsDriverManager extends Object {
 
         List path = readPathInProject(context, projectId, filename, includeDeleted);
         CmsResource resource = (CmsResource) path.get(path.size() - 1);
-        List projectResources = m_vfsDriver.readProjectResources(readProject(context, projectId));
+        List projectResources = readProjectResources(readProject(context, projectId));
 
-        if (isInsideProject(projectResources, resource)) {
+        if (CmsProject.isInsideProject(projectResources, resource)) {
                 return resource;
             }
 
@@ -5665,9 +5665,9 @@ public class CmsDriverManager extends Object {
 
         List path = readPathInProject(context, projectId, foldername, false);
         CmsFolder cmsFolder = (CmsFolder)path.get(path.size() - 1);
-        List projectResources = m_vfsDriver.readProjectResources(readProject(context, projectId));
+        List projectResources = readProjectResources(readProject(context, projectId));
 
-        if (isInsideProject(projectResources, cmsFolder)) {
+        if (CmsProject.isInsideProject(projectResources, cmsFolder)) {
             return cmsFolder;
         }
 
@@ -6395,7 +6395,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if somethong goes wrong
      */
     public List readChangedResourcesInsideProject(CmsRequestContext context, int projectId, int resourceType) throws CmsException {
-        List projectResources = m_vfsDriver.readProjectResources(readProject(projectId));
+        List projectResources = readProjectResources(readProject(projectId));
         List result = (List) new ArrayList();
         String currentProjectResource = null;
         List resources = (List) new ArrayList();
@@ -8488,36 +8488,27 @@ public class CmsDriverManager extends Object {
         List projectResources = null;
            
         try {
-            projectResources = m_vfsDriver.readProjectResources(context.currentProject());
+            projectResources = readProjectResources(context.currentProject());
         } catch (CmsException e) {
             if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                 OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager.isInsideProject()] error reading project resources " + e.getMessage());
             }
                         
             return false;
-        }
-                     
-        return isInsideProject(projectResources, resource);
+        }                     
+        return CmsProject.isInsideProject(projectResources, resource);
     } 
     
     /**
-     * Proves if the full resource name (including the site root) of a resource matches
-     * any of the project resources of a project.<p>
-     * 
-     * @param projectResources a List of project resources as strings
-     * @param resource the resource
-     * @return true, if the resource name of the specified resource matches any of the project's resources
+     * Returns the list of all resources that define the "view" of the given project.<p>
+     * @param project the project to get the project resources for
+     * @return the list of all resources that define the "view" of the given project
+     * @throws CmsException if something goes wrong
      */
-    public boolean isInsideProject(List projectResources, CmsResource resource) {        
-        for (int i = 0; i < projectResources.size(); i++) {
-            if (resource.getFullResourceName().startsWith((String) projectResources.get(i))) {
-                return true;
-            }
-        }
-
-        return false;
+    public List readProjectResources(CmsProject project) throws CmsException {
+        return m_vfsDriver.readProjectResources(project);
     }
-
+    
     /**
      * Recovers a resource from the online project back to the offline project as an unchanged resource.<p>
      * 

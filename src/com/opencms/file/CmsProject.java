@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/08/20 11:44:58 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,8 @@ import com.opencms.util.SqlHelper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Describes a project. A project is used to handle versions of
@@ -44,7 +46,7 @@ import java.sql.Timestamp;
  * @author Michael Emmerich
  * @author Anders Fugmann
  * @author Jan Krag
- * @version $Revision: 1.41 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.42 $ $Date: 2003/08/20 11:44:58 $
  */
 public class CmsProject implements Cloneable{
 
@@ -340,6 +342,25 @@ public CmsProject(ResultSet res, org.opencms.db.generic.CmsSqlManager m_cq) thro
 
     public static boolean isOnlineProject(int projectId) {
         return (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID);
+    }
+
+    /**
+     * Proves if the full resource name (including the site root) of a resource matches
+     * any of the project resources of a project.<p>
+     * 
+     * @param projectResources a List of project resources as strings
+     * @param resource the resource
+     * @return true, if the resource name of the specified resource matches any of the project's resources
+     */
+    public static boolean isInsideProject(List projectResources, CmsResource resource) {
+        Iterator i = projectResources.iterator();  
+        String resourcename = resource.getFullResourceName();
+        while (i.hasNext()) {
+            if (resourcename.startsWith((String)i.next())) {
+                return true;
+            }
+        }    
+        return false;
     }
         
 }

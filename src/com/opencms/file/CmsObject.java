@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/19 14:38:07 $
-* Version: $Revision: 1.382 $
+* Date   : $Date: 2003/08/20 11:44:58 $
+* Version: $Revision: 1.383 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.382 $
+ * @version $Revision: 1.383 $
  */
 public class CmsObject {
 
@@ -4326,8 +4326,19 @@ public class CmsObject {
      */
     public boolean isInsideCurrentProject(CmsResource resource) {
         return m_driverManager.isInsideCurrentProject(m_context, resource);
-    }
+    }      
     
+    /**
+     * Returns the list of all resources that define the "view" of the given project.<p>
+     * 
+     * @param project the project to get the project resources for
+     * @return the list of all resources that define the "view" of the given project
+     * @throws CmsException if something goes wrong
+     */
+    public List readProjectResources(CmsProject project) throws CmsException {
+        return m_driverManager.readProjectResources(project);
+    }
+        
     /**
      * Recovers a resource from the online project back to the offline project as an unchanged resource.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/08/19 16:04:17 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/08/20 11:44:58 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,8 +45,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import source.org.apache.java.util.Configurations;
-
 /**
  * Definitions of all required backup driver methods.<p>
  * 
@@ -56,7 +54,7 @@ import source.org.apache.java.util.Configurations;
  * of resource that were saved during one backup process.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2003/08/19 16:04:17 $
+ * @version $Revision: 1.9 $ $Date: 2003/08/20 11:44:58 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {

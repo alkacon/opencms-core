@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/08/19 15:57:12 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2003/08/20 11:44:58 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import com.opencms.flex.util.CmsUUID;
 import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -61,7 +62,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 5.1
  */
@@ -358,6 +359,15 @@ public class CmsExplorer extends CmsWorkplace {
                 }
             }
         }
+        
+        // read the list of project resource to select which resource is "inside" or "outside" 
+        List projectResources;
+        try {
+            projectResources = getCms().readProjectResources(getCms().getRequestContext().currentProject());
+        } catch (CmsException e) {
+            // use an empty list (all resources are "outside")
+            projectResources = new ArrayList();
+        }
 
         for (int i = startat; i < stopat; i++) {
             CmsResource res = (CmsResource)resources.elementAt(i);
@@ -545,7 +555,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append(",\"");
             
             // position 18: project state, I=resource is inside current project, O=resource is outside current project        
-            if (getCms().isInsideCurrentProject(res)) {
+            if (CmsProject.isInsideProject(projectResources, res)) {
                 content.append("I");
             } else {
                 content.append("O");

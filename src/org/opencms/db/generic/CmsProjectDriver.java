@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/19 16:04:17 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2003/08/20 11:44:58 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.58 $ $Date: 2003/08/19 16:04:17 $
+ * @version $Revision: 1.59 $ $Date: 2003/08/20 11:44:58 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1077,7 +1077,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }
 
         // read the project resources of the project that gets published
-        projectResources = m_driverManager.getVfsDriver().readProjectResources(context.currentProject());
+        projectResources = m_driverManager.readProjectResources(context.currentProject());
         
         // read all changed/new/deleted folders in the offline project
         offlineFolders = m_driverManager.getVfsDriver().readFolders(context.currentProject(), false, false);
@@ -1113,7 +1113,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                             
             // the resource must be in one of the paths defined for the project
             // attention: the resource needs a full resource path ! (so readPath has to be done before !)            
-            publishCurrentResource = publishCurrentResource && m_driverManager.isInsideProject(projectResources, currentFolder);
+            publishCurrentResource = publishCurrentResource && CmsProject.isInsideProject(projectResources, currentFolder);
             
             if (publishCurrentResource && currentLock.isNullLock()) {           
                 // currentResourceName = context.removeSiteRoot(m_driverManager.readPath(context, currentFolder, true));
