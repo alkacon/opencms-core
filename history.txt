@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/01/24 20:36:09 $
- * Version: $Revision: 1.436 $
+ * Date   : $Date: 2003/01/28 14:12:27 $
+ * Version: $Revision: 1.437 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 5.0 (next version)
+! The com.opencms.flex.jsp.CmsJspNavElement now provides direct access to all properties of a file
 * Fixed an issue with JSP error pages not working in Tomcat 4.1,
   see comment for the setting "flex.jsp.errorpagecommit" in opencms.properties
 * Fixed issues #43, 44 and 45 from Bugzilla
