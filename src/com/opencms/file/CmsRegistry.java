@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/02/16 19:31:08 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2003/02/18 14:17:09 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert
- * @version $Revision: 1.64 $ $Date: 2003/02/16 19:31:08 $
+ * @version $Revision: 1.65 $ $Date: 2003/02/18 14:17:09 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
@@ -124,7 +124,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         "</type><name>", 
         "</name><nicename>", 
         "</nicename><version>", 
-        "</version><description><![CDATA[", 
+        "</version><description><![CDATA[ ", 
         "]]></description><author>", 
         "</author><email/><creationdate>", 
         "</creationdate>",
@@ -277,7 +277,7 @@ public I_CmsRegistry clone(CmsObject cms) {
      * @param version the version number of the module
      * @throws CmsException if the user has no right to create a new module
      */
-    public void createModule(String modulename, String niceModulename, String description, String author, String type, Map exportPoints, long createDate, int version) throws CmsException {
+    public void createModule(String modulename, String niceModulename, String description, String author, String type, Map exportPoints, long createDate, float version) throws CmsException {
             createModule(modulename, niceModulename, description, author, type, exportPoints, m_dateFormat.format(new Date(createDate)), version);
     }
     
@@ -294,7 +294,7 @@ public I_CmsRegistry clone(CmsObject cms) {
      * @param version the version number of the module
      * @throws CmsException if the user has no right to create a new module
      */
-    public void createModule(String modulename, String niceModulename, String description, String author, String type, Map exportPoints, String createDate, int version) throws CmsException {
+    public void createModule(String modulename, String niceModulename, String description, String author, String type, Map exportPoints, String createDate, float version) throws CmsException {
 
     // find out if the module exists already
     if (moduleExists(modulename)) {

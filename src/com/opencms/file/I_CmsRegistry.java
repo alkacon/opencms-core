@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
-* Date   : $Date: 2003/02/16 19:31:08 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/02/18 14:17:09 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.report.I_CmsReport;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert
- * @version $Revision: 1.37 $ $Date: 2003/02/16 19:31:08 $
+ * @version $Revision: 1.38 $ $Date: 2003/02/18 14:17:09 $
  *
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -70,7 +70,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param version the version number of the module
      * @throws CmsException if the user has no right to create a new module
      */
-    public void createModule(String modulename, String niceModulename, String description, String author, String type, Map exportPoints, long createDate, int version) throws CmsException;
+    public void createModule(String modulename, String niceModulename, String description, String author, String type, Map exportPoints, long createDate, float version) throws CmsException;
     
     /**
      * This method creates a new module in the repository.
@@ -85,7 +85,7 @@ public interface I_CmsRegistry extends Cloneable {
      * @param version the version number of the module
      * @throws CmsException if the user has no right to create a new module
      */
-    public void createModule(String modulename, String niceModulename, String description, String author, String type, Map exportPoints, String createDate, int version) throws CmsException;
+    public void createModule(String modulename, String niceModulename, String description, String author, String type, Map exportPoints, String createDate, float version) throws CmsException;
 
 /**
  * This method checks which modules need this module. If a module depends on this the name

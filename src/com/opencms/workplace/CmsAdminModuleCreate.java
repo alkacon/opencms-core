@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2003/02/12 12:05:11 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/02/18 14:17:09 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -147,9 +147,9 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                 boolean mustExportLib = ((exportLib != null) && exportLib.equals("checked"));
                 
                 boolean moduleExists = reg.moduleExists(packagename);
-                int v = -1;
+                float v = -1;
                 try {
-                    v = Integer.parseInt(version);
+                    v = Float.parseFloat(version);
                 }catch(Exception e) {
                 }
                 if((!checkName(packagename)) || (version == null) || ("".equals(version)) || moduleExists || (v < 0)) {
