@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2004/10/25 14:17:16 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.54 $ $Date: 2004/10/22 14:37:39 $
+ * @version $Revision: 1.55 $ $Date: 2004/10/25 14:17:16 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -425,20 +425,6 @@ public interface I_CmsProjectDriver {
      */
     void writePublishHistory(I_CmsRuntimeInfo runtimeInfo, CmsProject currentProject, CmsUUID publishId, int tagId, CmsResource resource) throws CmsException;
     
-    /**
-     * Inserts an entry in the publish history for a published COS resource.<p>
-     * 
-     * @param currentProject the current project
-     * @param publishId the ID of the current publishing process
-     * @param tagId the current backup ID
-     * @param contentDefinitionName the package/class name of the content definition 
-     * @param masterId the content ID of the published module data
-     * @param subId the module ID of the published module data
-     * @param state the state of the resource *before* it was published
-     * @throws CmsException if something goes wrong
-     */
-    void writePublishHistory(CmsProject currentProject, CmsUUID publishId, int tagId, String contentDefinitionName, CmsUUID masterId, int subId, int state) throws CmsException;
-
     /**
      * Inserts an entry in the published resource table.<p>
      * 

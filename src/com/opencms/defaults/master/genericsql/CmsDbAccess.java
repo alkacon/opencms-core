@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2004/10/22 14:37:39 $
-* Version: $Revision: 1.81 $
+* Date   : $Date: 2004/10/25 14:17:16 $
+* Version: $Revision: 1.82 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
@@ -1586,8 +1587,9 @@ public class CmsDbAccess {
 
     /**
      * Publishes a single content definition.<p>
-     *
+     * 
      * @param cms The CmsObject
+     * @param publishHistoryId the ID of the current publish task
      * @param dataset the dataset to publish.
      * @param subId the subId to publish cd's for.
      * @param contentDefinitionName the name of the contentdefinition.
@@ -1597,14 +1599,15 @@ public class CmsDbAccess {
      * @param changedResources a Vector of changed resources.
      * @param changedModuleData a Vector of changed moduledata.
      */
-    public void publishResource(CmsObject cms, CmsMasterDataSet dataset, int subId, String contentDefinitionName, boolean enableHistory, int versionId, long publishingDate, Vector changedResources, Vector changedModuleData) throws CmsException {
-        this.publishOneLine(cms, dataset, subId, contentDefinitionName, enableHistory, versionId, publishingDate, changedResources, changedModuleData);
+    public void publishResource(CmsObject cms, CmsUUID publishHistoryId, CmsMasterDataSet dataset, int subId, String contentDefinitionName, boolean enableHistory, int versionId, long publishingDate, Vector changedResources, Vector changedModuleData) throws CmsException {
+        this.publishOneLine(cms, publishHistoryId, dataset, subId, contentDefinitionName, enableHistory, versionId, publishingDate, changedResources, changedModuleData);
     }
     /**
      * Publishes all resources for this project.
      * Publishes all modified content definitions for this project.<p>
      * 
      * @param cms The CmsObject
+     * @param publishHistoryId the ID of the current publish task
      * @param enableHistory set to true if backup tables should be filled.
      * @param projectId the Project that should be published.
      * @param versionId the versionId to save in the backup tables.
@@ -1615,13 +1618,14 @@ public class CmsDbAccess {
      * @param changedModuleData a Vector of Resources that were changed by this publishing process. 
      * New published data will be added to this Vector to return it.
      */
-    public void publishProject(CmsObject cms, boolean enableHistory, int projectId, int versionId, long publishingDate, int subId, String contentDefinitionName, Vector changedRessources, Vector changedModuleData) throws CmsException {
+    public void publishProject(CmsObject cms, CmsUUID publishHistoryId, boolean enableHistory, int projectId, int versionId, long publishingDate, int subId, String contentDefinitionName, Vector changedRessources, Vector changedModuleData) throws CmsException {
 
         String statement_key = "read_all_for_publish";
 
         PreparedStatement stmt = null;
         ResultSet res = null;
         Connection conn = null;
+        
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
@@ -1636,7 +1640,7 @@ public class CmsDbAccess {
                 CmsMasterDataSet dataset = new CmsMasterDataSet();
                 // fill the values to the dataset
                 sqlFillValues(res, cms, dataset);
-                publishOneLine(cms, dataset, subId, contentDefinitionName, enableHistory, versionId, publishingDate, changedRessources, changedModuleData);
+                publishOneLine(cms, publishHistoryId, dataset, subId, contentDefinitionName, enableHistory, versionId, publishingDate, changedRessources, changedModuleData);
             }
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
@@ -1649,6 +1653,7 @@ public class CmsDbAccess {
      * Publish one content definition.<p>
      * 
      * @param cms The CmsObject
+     * @param publishHistoryId the ID of the current publish task
      * @param dataset the dataset to publish.
      * @param subId the subId to publish cd's for.
      * @param contentDefinitionName the name of the contentdefinition.
@@ -1659,7 +1664,7 @@ public class CmsDbAccess {
      * @param changedModuleData a Vector of Ressource that were changed by this publishing process. 
      * New published data will be add to this Vector to return it.
      */
-    protected void publishOneLine(CmsObject cms, CmsMasterDataSet dataset, int subId, String contentDefinitionName, boolean enableHistory, int versionId, long publishingDate, Vector changedRessources, Vector changedModuleData) throws CmsException {
+    protected void publishOneLine(CmsObject cms, CmsUUID publishHistoryId, CmsMasterDataSet dataset, int subId, String contentDefinitionName, boolean enableHistory, int versionId, long publishingDate, Vector changedRessources, Vector changedModuleData) throws CmsException {
         int state = dataset.m_state;
 
         try {
@@ -1707,6 +1712,16 @@ public class CmsDbAccess {
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, null);
         }
+        
+        // add an entry to the publish history
+        writePublishHistory(
+            cms.getRequestContext().currentProject(),
+            publishHistoryId,
+            versionId,
+            contentDefinitionName,
+            dataset.m_masterId,
+            subId,
+            state);
 
         // update changedModuleData Vector
         changedModuleData.add(
@@ -1970,5 +1985,49 @@ public class CmsDbAccess {
             m_sqlManager.closeAll(null, conn, stmt, res);
         }
     }
+    
+    /**
+     * Inserts an entry in the publish history for a published COS resource.<p>
+     * 
+     * @param project the current project
+     * @param publishId the ID of the current publishing process
+     * @param tagId the current backup ID
+     * @param contentDefinitionName the package/class name of the content definition 
+     * @param masterId the content ID of the published module data
+     * @param subId the module ID of the published module data
+     * @param state the state of the resource *before* it was published
+     * 
+     * @throws CmsException if something goes wrong
+     */   
+    public void writePublishHistory(CmsProject project, CmsUUID publishId, int tagId, String contentDefinitionName, CmsUUID masterId, int subId, int state) throws CmsException {
+        
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        Connection conn = null;
+        
+        try {
+            conn = m_sqlManager.getConnection(project);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_WRITE_PUBLISH_HISTORY");
+            stmt.setInt(1, tagId);
+            // structure id is null
+            stmt.setString(2, CmsUUID.getNullUUID().toString());
+            // master ID
+            stmt.setString(3, masterId.toString());
+            // content definition name
+            stmt.setString(4, contentDefinitionName);
+            // state
+            stmt.setInt(5, state);
+            // sub ID
+            stmt.setInt(6, subId);
+            stmt.setString(7, publishId.toString());
+            stmt.setInt(8, 0);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsException(CmsException.C_SQL_ERROR, e);
+        } finally {
+            m_sqlManager.closeAll(null, conn, stmt, res);
+        }
+        
+    }    
 
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2004/09/28 15:17:38 $
-* Version: $Revision: 1.68 $
+* Date   : $Date: 2004/10/25 14:17:16 $
+* Version: $Revision: 1.69 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.defaults.master;
 
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
@@ -59,8 +60,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.68 $
- * $Date: 2004/09/28 15:17:38 $
+ * $Revision: 1.69 $
+ * $Date: 2004/10/25 14:17:16 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -646,6 +647,7 @@ public abstract class CmsMasterContent
         int versionId = 0;
         long publishDate = System.currentTimeMillis();
         boolean historyEnabled = OpenCms.getSystemInfo().isVersionHistoryEnabled();
+        CmsUUID publishHistoryId = new CmsUUID();
 
         try {
             if (historyEnabled) {
@@ -656,35 +658,47 @@ public abstract class CmsMasterContent
             }
             
             // now publish the content definition
-            getDbAccessObject(getSubId()).publishResource(cms, m_dataSet, getSubId(), this.getClass().getName(), historyEnabled, versionId, publishDate, changedResources, changedModuleData);
+            getDbAccessObject(getSubId()).publishResource(cms, publishHistoryId, m_dataSet, getSubId(), this.getClass().getName(), historyEnabled, versionId, publishDate, changedResources, changedModuleData);
             
             // update the cache
             if (CmsXmlTemplateLoader.isElementCacheEnabled()) {
                 CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleData);
             }
-        } catch (Exception e) {
-            // this is a dummy try-catch block to have a finally clause below
-            throw e;
         } finally {
-            CmsUUID publishId = new CmsUUID();
-            cms.postPublishBoResource(
-                new CmsPublishedResource(
-                    CmsUUID.getNullUUID(), // identifies cos resource
-                    m_dataSet.m_masterId, 
-                    I_CmsConstants.C_UNKNOWN_ID,
-                    this.getClass().getName(), 
-                    getSubId(),
-                    m_dataSet.m_state,
-                    1), 
-                publishId, 
-                versionId);
+            
+            // a "directly" published COS resource can be handled totally equal to a published project
             Map eventData = new HashMap();
-            eventData.put(I_CmsEventListener.KEY_PUBLISHID, publishId.toString());  
-            eventData.put(I_CmsEventListener.KEY_PROJECTID, new Integer(cms.getRequestContext().currentProject().getId()));
-            // a "directly" published COS resource can be handled totally equal to a published project            
+            eventData.put(I_CmsEventListener.KEY_PUBLISHID, publishHistoryId.toString());  
+            eventData.put(I_CmsEventListener.KEY_PROJECTID, new Integer(cms.getRequestContext().currentProject().getId()));            
             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData));
         }
     }
+    
+    /**
+     * Writes an entry to the publish history for a published COS resource.<p>
+     * 
+     * @param project the current project
+     * @param publishedBoResource the CmsPublishedResource onject representing the published COS resource
+     * @param publishId unique int ID to identify each publish task in the publish history
+     * @param tagId the backup tag revision
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void writePublishHistory(CmsProject project, CmsPublishedResource publishedBoResource, CmsUUID publishId, int tagId) throws CmsException {
+
+        getDbAccessObject(getSubId()).writePublishHistory(
+            project,
+            publishId,
+            tagId,
+            // content definition name
+            publishedBoResource.getRootPath(),
+            // master id
+            publishedBoResource.getResourceId(),
+            // sub ID
+            publishedBoResource.getType(), // state
+            publishedBoResource.getState());
+        
+    }    
 
     /**
      * Undelete method
@@ -713,8 +727,10 @@ public abstract class CmsMasterContent
     }
 
     /**
-     * Publishes all modified content definitions for this project.
+     * Publishes all modified content definitions for this project.<p>
+     * 
      * @param cms The CmsObject
+     * @param publishHistoryId the ID of the current publish task
      * @param enableHistory set to true if backup tables should be filled.
      * @param projectId the Project that should be published.
      * @param versionId the versionId to save in the backup tables.
@@ -727,15 +743,15 @@ public abstract class CmsMasterContent
      * publishing process. New published data will be add to this Vector to
      * return it.
      */
-    protected static void publishProject(CmsObject cms, boolean enableHistory,
-        int projectId, int versionId, long publishingDate, int subId,
-        String contentDefinitionClassName, Vector changedRessources,
-        Vector changedModuleData) throws CmsException {
+    protected static void publishProject(CmsObject cms, CmsUUID publishHistoryId,
+        boolean enableHistory, int projectId, int versionId, long publishingDate,
+        int subId, String contentDefinitionClassName,
+        Vector changedRessources, Vector changedModuleData) throws CmsException {
 
          // now publish the project
-         getDbAccessObject(subId).publishProject(cms, enableHistory, projectId,
-             versionId, publishingDate, subId, contentDefinitionClassName,
-             changedRessources, changedModuleData );
+         getDbAccessObject(subId).publishProject(cms, publishHistoryId, enableHistory,
+             projectId, versionId, publishingDate, subId,
+             contentDefinitionClassName, changedRessources, changedModuleData );
     }
 
     /**

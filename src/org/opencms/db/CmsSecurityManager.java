@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/10/23 06:53:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/25 14:17:33 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * are granted, the security manager invokes a method on the OpenCms driver manager to access the database.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -2179,24 +2179,6 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Completes all post-publishing tasks for a "directly" published COS resource.<p>
-     * 
-     * @param context the current request context
-     * @param publishedBoResource the CmsPublishedResource onject representing the published COS resource
-     * @param publishId unique int ID to identify each publish task in the publish history
-     * @param tagId the backup tag revision
-     * @throws CmsException if something goes wrong
-     */
-    public void postPublishBoResource(
-        CmsRequestContext context,
-        CmsPublishedResource publishedBoResource,
-        CmsUUID publishId,
-        int tagId) throws CmsException {
-
-        m_driverManager.postPublishBoResource(context, publishedBoResource, publishId, tagId);
-    }
-
-    /**
      * Publishes a project.<p>
      *
      * Only the admin or the owner of the project can do this.<p>
@@ -3558,7 +3540,7 @@ public final class CmsSecurityManager {
                 I_CmsRuntimeInfo.C_RUNTIMEINFO_USER);
 
             try {
-                m_driverManager.writeGroup(context, runtimeInfo, group);
+                m_driverManager.writeGroup(runtimeInfo, group);
                 runtimeInfo.pop();
             } catch (CmsException e) {
                 runtimeInfo.report(null, "Error writing group " + group.getName(), e);

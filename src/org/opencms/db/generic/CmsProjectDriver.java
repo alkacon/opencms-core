@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/10/22 15:11:00 $
- * Version: $Revision: 1.191 $
+ * Date   : $Date: 2004/10/25 14:17:15 $
+ * Version: $Revision: 1.192 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.191 $ $Date: 2004/10/22 15:11:00 $
+ * @version $Revision: 1.192 $ $Date: 2004/10/25 14:17:15 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1798,7 +1798,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             // TODO make the getConnection and getPreparedStatement calls project-ID dependent
             conn = m_sqlManager.getConnection();
             String query = m_sqlManager.readQuery("C_RESOURCES_PROJECTVIEW") + whereClause + orderClause;
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, CmsSqlManager.replaceTableKey(I_CmsConstants.C_PROJECT_ONLINE_ID + 1, query));
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, CmsSqlManager.replaceProjectPattern(I_CmsConstants.C_PROJECT_ONLINE_ID + 1, query));
 
             stmt.setInt(1, project);
             res = stmt.executeQuery();
@@ -1965,40 +1965,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         } finally {
             m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
         }
-    }
-    
-    /**
-     * @see org.opencms.db.I_CmsProjectDriver#writePublishHistory(org.opencms.file.CmsProject, org.opencms.util.CmsUUID, int, java.lang.String, org.opencms.util.CmsUUID, int, int)
-     */
-    public void writePublishHistory(CmsProject currentProject, CmsUUID publishId, int tagId, String contentDefinitionName, CmsUUID masterId, int subId, int state) throws CmsException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-
-        int todo = 0;
-        // TODO: move COS stuff to legacy package
-        
-        try {
-            conn = m_sqlManager.getConnection(currentProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_WRITE_PUBLISH_HISTORY");
-            stmt.setInt(1, tagId);
-            // cos content: structure id is null
-            stmt.setString(2, CmsUUID.getNullUUID().toString());
-            // cos content: resource id is master id
-            stmt.setString(3, masterId.toString());
-            // cos content: path is content definition name
-            stmt.setString(4, contentDefinitionName);
-            stmt.setInt(5, state);
-            stmt.setInt(6, subId);
-            stmt.setString(7, publishId.toString());
-            stmt.setInt(8, 0);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(null, conn, stmt, null);
-        }
-    }    
-
+    }   
 
     /**
      * @see org.opencms.db.I_CmsProjectDriver#writeStaticExportPublishedResource(org.opencms.file.CmsProject, java.lang.String, int, java.lang.String, long)

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/10/22 16:44:56 $
- * Version: $Revision: 1.427 $
+ * Date   : $Date: 2004/10/25 14:17:15 $
+ * Version: $Revision: 1.428 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.427 $ $Date: 2004/10/22 16:44:56 $
+ * @version $Revision: 1.428 $ $Date: 2004/10/25 14:17:15 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -427,13 +427,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             I_CmsEventListener.EVENT_CLEAR_CACHES,
             I_CmsEventListener.EVENT_PUBLISH_PROJECT
         });
-        
-        int todo = 0;
-        // TODO: move COS stuff to legacy package        
-        // set the pool for the COS
-        String cosPoolUrl = configuration.getString("db.cos.pool");
-        OpenCms.setRuntimeProperty("cosPoolUrl", cosPoolUrl);
-        CmsDbUtil.setDefaultPool(cosPoolUrl);
         
         // return the configured driver manager
         return driverManager;
@@ -2591,8 +2584,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
     }    
     
+    // revised code goes up here...
     //-----------------------------------------------------------------------------------
-    private int warning1;
     
 
     
@@ -5314,21 +5307,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     public CmsProject onlineProject() throws CmsException {
         return readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
-    }
-    
-    /**
-     * Completes all post-publishing tasks for a "directly" published COS resource.<p>
-     * 
-     * @param context the current request context
-     * @param publishedBoResource the CmsPublishedResource onject representing the published COS resource
-     * @param publishId unique int ID to identify each publish task in the publish history
-     * @param tagId the backup tag revision
-     * @throws CmsException if something goes wrong
-     */    
-    public void postPublishBoResource(CmsRequestContext context, CmsPublishedResource publishedBoResource, CmsUUID publishId, int tagId) throws CmsException {
-        int todo = 0;
-        // TODO: move COS stuff to legacy package                
-        m_projectDriver.writePublishHistory(context.currentProject(), publishId, tagId, publishedBoResource.getRootPath(), publishedBoResource.getResourceId(), publishedBoResource.getType(), publishedBoResource.getState());
     }   
 
     /**
@@ -6707,7 +6685,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             group.setParentId(parentGroupId);
 
             // write the changes to the cms
-            writeGroup(context, runtimeInfo, group);
+            writeGroup(runtimeInfo, group);
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] setParentGroup() " + groupName, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
@@ -7129,15 +7107,14 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     /**
      * Writes an already existing group in the Cms.<p>
      *
-     * Only the admin can do this.
+     * Only the admin can do this.<p>
      * 
-     * @param context the current request context
      * @param runtimeInfo the current runtime info
      * @param group the group that should be written to the Cms
-     *
+     * 
      * @throws CmsException if operation was not succesfull
      */
-    public void writeGroup(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, CmsGroup group) throws CmsException {
+    public void writeGroup(I_CmsRuntimeInfo runtimeInfo, CmsGroup group) throws CmsException {
         m_userDriver.writeGroup(runtimeInfo, group);
         m_groupCache.put(new CacheId(group), group);
     }

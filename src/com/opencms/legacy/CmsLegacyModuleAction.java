@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsLegacyModuleAction.java,v $
- * Date   : $Date: 2004/10/22 14:37:40 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/10/25 14:17:16 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package com.opencms.legacy;
 
 import org.opencms.db.CmsDbPool;
 import org.opencms.db.CmsPublishList;
-import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
@@ -43,6 +42,7 @@ import org.opencms.module.A_CmsModuleAction;
 import org.opencms.module.CmsModule;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import com.opencms.defaults.master.genericsql.*;
 
@@ -122,7 +122,7 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
         
         ExtendedProperties config = adminCms.getConfigurations();
         String dbName = config.getString(CmsDbPool.C_KEY_DATABASE_NAME).toLowerCase();
-        String poolUrl = (String)OpenCms.getRuntimeProperty("cosPoolUrl");
+        String poolUrl = config.getString("db.cos.pool");
         
         CmsDbAccess dbAccess = new CmsDbAccess(poolUrl);
         boolean masterAvailable = dbAccess.checkTables();
@@ -219,6 +219,7 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
                         "publishProject",
                         new Class[] {
                             CmsObject.class,
+                            CmsUUID.class,
                             Boolean.class,
                             Integer.class,
                             Integer.class,
@@ -228,6 +229,7 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
                         null,
                         new Object[] {
                             cms,
+                            publishList.getPublishHistoryId(),
                             new Boolean(OpenCms.getSystemInfo().isVersionHistoryEnabled()),
                             new Integer(context.currentProject().getId()),
                             new Integer(backupTagId),
@@ -251,12 +253,6 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
                             t);
                     }
                 }
-            }
-
-            Iterator i = changedModuleMasters.iterator();
-            while (i.hasNext()) {
-                CmsPublishedResource currentCosResource = (CmsPublishedResource)i.next();
-                cms.postPublishBoResource(currentCosResource, publishList.getPublishHistoryId(), backupTagId);
             }
         }
     }
