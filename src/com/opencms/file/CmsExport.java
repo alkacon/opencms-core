@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2002/11/08 10:22:18 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2002/11/11 15:02:11 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.36 $ $Date: 2002/11/08 10:22:18 $
+ * @version $Revision: 1.37 $ $Date: 2002/11/11 15:02:11 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -260,6 +260,7 @@ public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean
             // first add superfolders to the xml-config file
             addSuperFolders(path);
             exportResources(path);
+            m_exportedResources.add(path);
         }
         
         // export the single files
@@ -312,14 +313,7 @@ public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean
      * added by the user.
      */
     public void addPageBodyFiles() throws CmsException {
-        Iterator i;
-        // add all exported folders to the list of exported resources
-        // this is done here to ensure folders that have been added 
-        // by the call to addSingelFiles() are also included already
-        i = m_superFolders.iterator();
-        while (i.hasNext()) {
-            m_exportedResources.add(i.next());
-        }        
+        Iterator i;   
         
         Vector bodyFileNames = new Vector();
         String bodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/"));
@@ -531,7 +525,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
                 // check if this is a system-folder and if it should be included.
                 String export = folder.getAbsolutePath();
                 if( // new VFS, always export "/system/bodies/" OR
-                    I_CmsWpConstants.C_VFS_NEW_STRUCTURE && export.startsWith("/system/bodies/") ||                    
+                    (I_CmsWpConstants.C_VFS_NEW_STRUCTURE && export.startsWith("/system/bodies/")) ||
                     // option "exclude system folder" selected AND
                     !(m_excludeSystem && 
                         // export folder is a system folder 
