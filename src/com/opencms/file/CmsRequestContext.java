@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2000/09/27 16:06:09 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2000/12/21 08:51:42 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Anders Fugmann
  *
- * @version $Revision: 1.30 $ $Date: 2000/09/27 16:06:09 $
+ * @version $Revision: 1.31 $ $Date: 2000/12/21 08:51:42 $
  * 
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -79,6 +79,13 @@ public class CmsRequestContext implements I_CmsConstants {
 	 */
 	private CmsProject m_currentProject;
 
+/**
+ * The default constructor.
+ * 
+ */
+public CmsRequestContext() {
+	super();
+}
 /**
  * Returns the current folder object.
  * 
@@ -188,8 +195,15 @@ public CmsFolder currentFolder() throws CmsException {
 		m_rb = rb;
 		m_req = req;
 		m_resp = resp;
-		
-		m_user = m_rb.readUser(null, null, user);
+
+		try {
+			m_user = m_rb.readUser(null, null, user);
+		} catch (CmsException ex){
+		}	
+		// if no user found try to read webUser
+		if (m_user == null) {
+			m_user = m_rb.readWebUser(null, null, user);
+		}	
 
 		// check, if the user is disabled
 		if( m_user.getDisabled() == true ) {
@@ -260,11 +274,4 @@ public CmsFolder currentFolder() throws CmsException {
 		}
 		return( m_currentProject );
 	}
-/**
- * The default constructor.
- * 
- */
-public CmsRequestContext() {
-	super();
-}
 }
