@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2001/04/06 16:15:19 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2001/05/03 15:42:49 $
+* Version: $Revision: 1.34 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -31,6 +31,7 @@ package com.opencms.template;
 
 import com.opencms.file.*;
 import com.opencms.core.*;
+import com.opencms.staging.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 import java.util.*;
@@ -40,7 +41,7 @@ import java.io.*;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.33 $ $Date: 2001/04/06 16:15:19 $
+ * @version $Revision: 1.34 $ $Date: 2001/05/03 15:42:49 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -60,7 +61,9 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      */
     public CmsXmlTemplateFile(CmsObject cms, CmsFile file) throws CmsException {
         super();
-        registerMyTags();
+        if(!cms.getRequestContext().isStaging()) {
+            registerMyTags();
+        }
         init(cms, file);
     }
 
@@ -73,7 +76,9 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      */
     public CmsXmlTemplateFile(CmsObject cms, String filename) throws CmsException {
         super();
-        registerMyTags();
+        if(!cms.getRequestContext().isStaging()) {
+            registerMyTags();
+        }
         init(cms, filename);
     }
     public int createNewSection(String sectionName) {
@@ -440,6 +445,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      */
     public String getProcessedTemplateContent(Object callingObject, Hashtable parameters, String templateSelector) throws CmsException {
         OutputStream os = null;
+
         if(m_cms.getRequestContext().isStreaming()) {
             if(A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_STREAMING, getClassName() + "Entering streaming mode for file: " + getAbsoluteFilename());
@@ -458,8 +464,61 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         if(datablockName == null && (templateSelector.toLowerCase().equals("script"))) {
             return "";
         }
+
         return getProcessedDataValue(datablockName, callingObject, parameters, os);
     }
+
+    /**
+     * Gets the processed data of the appropriate <code>&lt;TEMPLATE&gt;</code> section of
+     * this workplace template file.
+     * <P>
+     * The correct datablock name for the template datablock will be taken
+     * from <code>getTemplateDatablockName</code>.
+     *
+     * @param callingObject reference to the calling object. Used to look up user methods while processing.
+     * @param parameters hashtable containing all user parameters.
+     * @param elementName Element name of this template in our parent template.
+     * @param templateSelector Name of the template section or null if the default section is requested.
+     * @return Processed template data.
+     * @exception CmsException
+     * @see #getTemplateDatablockName
+     */
+    public void generateStagingVariant(Object callingObject, Hashtable parameters, String elementName, String templateSelector, CmsElementVariant variant) throws CmsException {
+        String datablockName = this.getTemplateDatablockName(templateSelector);
+        if(datablockName == null && (templateSelector.toLowerCase().equals("script"))) {
+            return;
+        }
+
+        Element domEl = getProcessedData(datablockName, callingObject, parameters, null);
+        StringBuffer buf = new StringBuffer();
+        for(Node n = domEl.getFirstChild(); n != null; n = treeWalker(domEl, n)) {
+            if(n.getNodeType() == n.ELEMENT_NODE && "element".equalsIgnoreCase(n.getNodeName())) {
+                // This is an <ELEMENT> tag. First get the name of this element
+                String elName = ((Element)n).getAttribute("name");
+
+                if(elName != null && !"".equalsIgnoreCase(elName)) {
+                    // If there is something in the string buffer, store is now!
+                    if(buf.length() > 0) {
+                        variant.add(buf.toString().getBytes());
+                        buf = new StringBuffer();
+
+                    }
+
+                    // Create new CmsElementLink
+                    CmsElementLink link = new CmsElementLink(elName);
+                    variant.add(link);
+                }
+            } else if (n.getNodeType() == n.TEXT_NODE || n.getNodeType() == n.CDATA_SECTION_NODE) {
+                buf.append(n.getNodeValue());
+            }
+        }
+
+        // Store pending buffer content
+        if(buf.length() > 0) {
+            variant.add(buf.toString().getBytes());
+        }
+    }
+
     public String getSectionTitle(String sectionName) throws CmsException {
         String datablockName = getTemplateDatablockName(sectionName);
         String result = null;

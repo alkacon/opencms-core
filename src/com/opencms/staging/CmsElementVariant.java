@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsElementVariant.java,v $
-* Date   : $Date: 2001/04/30 15:19:36 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/05/03 15:43:42 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -80,11 +80,37 @@ public class CmsElementVariant {
     }
 
     /**
+     * Get the number of objects in this variant.
+     */
+    public int size() {
+        return m_content.size();
+    }
+
+    /**
      * Returns a peace of this variant. It can be of the type String, byte[] or
      * CmsElementLink.
      * @param i - the index to the vector of variant-pieces.
      */
     public Object get(int i) {
         return m_content.get(i);
+    }
+
+
+    public String toString() {
+        int len = m_content.size();
+        StringBuffer result = new StringBuffer("[CmsElementVariant] (" + len + ") :");
+        for(int i=0; i<len; i++) {
+            Object o = m_content.elementAt(i);
+            String s = o.toString();
+            if(o instanceof byte[] || o instanceof String) {
+                result.append("TXT");
+            } else {
+                result.append("(");
+                result.append(o.toString());
+                result.append(")");
+            }
+            if(i < len-1) result.append("-");
+        }
+        return result.toString();
     }
 }

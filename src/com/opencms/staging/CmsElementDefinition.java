@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsElementDefinition.java,v $
-* Date   : $Date: 2001/04/27 15:21:48 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/05/03 15:41:56 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -76,7 +76,7 @@ public class CmsElementDefinition {
     public CmsElementDefinition(String name, String className,
         String templateName) {
         m_name = name;
-        m_className = name;
+        m_className = className;
         m_templateName = templateName;
     }
 
@@ -106,4 +106,38 @@ public class CmsElementDefinition {
         this(name, className, templateName, templateSelector);
         m_elements = elements;
     }
+
+    /**
+     * Get an element descriptor for looking up the
+     * corresponding element of this definition using the element locator
+     * @return Element descriptor for this definition
+     */
+    public CmsElementDescriptor getDescriptor() {
+        return new CmsElementDescriptor(m_className, m_templateName);
+    }
+
+    /**
+     * Get the name of the element defined.
+     * @return Name of the element.
+     */
+    public String getName() {
+        return m_name;
+    }
+
+    /**
+     * Get the class name for the element defined.
+     * @return Class name for the element.
+     */
+    public String getClassName() {
+        return m_className;
+    }
+
+    /**
+     * Get the template name for the element defined.
+     * @return Template name for the element.
+     */
+    public String getTemplateName() {
+        return m_templateName;
+    }
+
 }

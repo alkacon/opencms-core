@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/04/27 16:59:17 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2001/05/03 15:37:38 $
+* Version: $Revision: 1.49 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -52,7 +52,7 @@ import com.opencms.staging.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.48 $ $Date: 2001/04/27 16:59:17 $
+ * @version $Revision: 1.49 $ $Date: 2001/05/03 15:37:38 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -411,6 +411,14 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      * @return CmsStaging object
      */
     public CmsStaging getStaging() {
+        return c_staging;
+    }
+
+    /**
+     * Get the system wide CmsStaging object.
+     * @return CmsStaging object
+     */
+    public static CmsStaging getStaticStaging() {
         return c_staging;
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2001/04/27 15:21:48 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/05/03 15:43:42 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -58,7 +58,7 @@ public class CmsElementLocator {
      * @param descriptor - the descriptor for this element.
      * @param element - the Element to put in this locator.
      */
-    public void put(CmsElementDescriptor desc, CmsElement element) {
+    public void put(CmsElementDescriptor desc, A_CmsElement element) {
         m_elements.put(desc.getKey(), element);
     }
 
@@ -67,7 +67,7 @@ public class CmsElementLocator {
      * @param desc - the descriptor to locate the element.
      * @returns the element that was found.
      */
-    public CmsElement get(CmsElementDescriptor desc) {
-        return (CmsElement) m_elements.get(desc.getKey());
+    public A_CmsElement get(CmsElementDescriptor desc) {
+        return (A_CmsElement) m_elements.get(desc.getKey());
     }
 }

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsJavascriptTemplate.java,v $
-* Date   : $Date: 2001/02/06 13:57:27 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/05/03 15:42:49 $
+* Version: $Revision: 1.14 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -32,6 +32,7 @@ package com.opencms.template;
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.launcher.*;
+import com.opencms.staging.*;
 import java.util.*;
 
 /** Document the purpose of this class.
@@ -178,5 +179,10 @@ public class CmsJavascriptTemplate extends A_CmsTemplate implements I_CmsJavascr
      */
     public boolean shouldReload(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return true;
+    }
+
+    public A_CmsElement createElement(CmsObject cms, String templateFile, String elementName, Hashtable parameters) {
+        // to be implemented
+        return null;
     }
 }

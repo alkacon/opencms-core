@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/04/23 08:59:42 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2001/05/03 15:42:58 $
+* Version: $Revision: 1.19 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -34,6 +34,7 @@ import com.opencms.launcher.*;
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.template.*;
+import com.opencms.staging.*;
 import com.opencms.util.*;
 import java.util.*;
 import org.w3c.dom.*;
@@ -45,7 +46,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.18 $ $Date: 2001/04/23 08:59:42 $
+ * @version $Revision: 1.19 $ $Date: 2001/05/03 15:42:58 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -87,8 +88,8 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         try {
             CmsFolder test = cms.readFolder(path);
             if (test.isFile()){
-				return false;
-			}
+                return false;
+            }
         }
         catch(CmsException e) {
             return false;
@@ -445,5 +446,9 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
     public boolean shouldReload(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) {
         return false;
+    }
+
+    public A_CmsElement createElement(CmsObject cms, String templateFile, String elementName, Hashtable parameters) {
+        return new CmsElementDump(getClass().getName(), templateFile, elementName);
     }
 }

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/04/27 17:03:31 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2001/05/03 15:42:49 $
+* Version: $Revision: 1.50 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -35,6 +35,7 @@ import com.opencms.launcher.*;
 import com.opencms.file.*;
 import com.opencms.util.*;
 import com.opencms.core.*;
+import com.opencms.staging.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 import javax.servlet.http.*;
@@ -44,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.49 $ $Date: 2001/04/27 17:03:31 $
+ * @version $Revision: 1.50 $ $Date: 2001/05/03 15:42:49 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -839,8 +840,32 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @exception CmsException
      */
     protected byte[] startProcessing(CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+
+        System.err.println("*** startProcessing called for " + getClass().getName() + "/" + xmlTemplateDocument.getAbsoluteFilename());
         String result = null;
 
+        if(cms.getRequestContext().isStaging()) {
+            System.err.println("*** staging mode");
+            // We are in staging mode. Create a new variant instead of a completely processed subtemplate
+            CmsElementVariant variant = new CmsElementVariant();
+            xmlTemplateDocument.generateStagingVariant(this, parameters, elementName, templateSelector, variant);
+            System.err.println("*** variantXXX " + variant);
+            // Get current element.
+            CmsStaging staging = OpenCms.getStaticStaging();
+            CmsElementDescriptor elKey = new CmsElementDescriptor(getClass().getName(), xmlTemplateDocument.getAbsoluteFilename());
+            A_CmsElement currElem = staging.getElementLocator().get(elKey);
+
+            if(currElem == null) {
+                System.err.println("** Cannot find element for the variant I'm currently generating. This hould not happen!");
+                System.err.println("** Avoiding further errors by creating a new element on the fly.");
+                //currElem = new CmsElementXml(getClass().getName(), xmlTemplateDocument.getAbsoluteFilename(), elementName);
+                currElem = createElement(cms, xmlTemplateDocument.getAbsoluteFilename(), elementName, parameters);
+                staging.getElementLocator().put(elKey, currElem);
+            }
+            // Store the new variant
+            currElem.addVariant(getKey(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters, templateSelector), variant);
+            return null;
+        } else {
         // Try to process the template file
         try {
             result = xmlTemplateDocument.getProcessedTemplateContent(this, parameters, templateSelector);
@@ -871,8 +896,68 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                 throw new CmsException(errorMessage);
             }
         }
+        }
         return result.getBytes();
     }
+//---------------------------------------------------------------------
+
+/*
+
+
+        byte[] result = null;
+
+
+
+        // Try to process the template file
+        try {
+
+            // Since we are staging we don't want to start the template engine
+            //result = xmlTemplateDocument.getProcessedTemplateContent(this, parameters, elementName, templateSelector, variant);
+
+            int len = variant.size();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            for(int i=0; i<len; i++) {
+                Object o = variant.get(i);
+                if(o instanceof String) {
+                    baos.write(((String)o).getBytes());
+                } else if(o instanceof byte[]) {
+                    baos.write((byte[])o);
+                } else if(o instanceof CmsElementLink) {
+                    // we have to resolve the element link right NOW!
+                }
+            }
+            result = baos.toByteArray();
+        }
+        catch(Throwable e) {
+
+            // There were errors while generating output for this template.
+
+            // Clear HTML cache and then throw exception again
+            xmlTemplateDocument.removeFromFileCache();
+            if(isCacheable(cms, xmlTemplateDocument.getAbsoluteFilename(), elementName, parameters, templateSelector)) {
+                m_cache.clearCache(getKey(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters, templateSelector));
+            }
+            if(e instanceof CmsException) {
+                throw (CmsException)e;
+            }
+            else {
+
+                // under normal cirumstances, this should not happen.
+
+                // any exception should be caught earlier and replaced by
+
+                // corresponding CmsExceptions.
+                String errorMessage = "Exception while getting content for (sub)template " + elementName + ". " + e;
+                if(A_OpenCms.isLogging()) {
+                    A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+                }
+                throw new CmsException(errorMessage);
+            }
+        }
+
+        //return result.getBytes();
+        return result;
+    }*/
 
     /**
      * Handles any occurence of an <code>&lt;ELEMENT&gt;</code> tag.
@@ -1084,5 +1169,43 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         else {
             throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION, e);
         }
+    }
+
+    public A_CmsElement createElement(CmsObject cms, String templateFile, String elementName, Hashtable parameters) {
+        Vector subtemplateDefinitions = new Vector();
+
+        try {
+            CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, null);
+
+            // Code for collecting all ElementDefinitions
+            // Where shall we do this
+
+            CmsStaging staging = OpenCms.getStaticStaging();
+
+            Vector subtemplates = xmlTemplateDocument.getAllSubElements();
+
+            int numSubtemplates = subtemplates.size();
+            for(int i = 0; i < numSubtemplates; i++) {
+                String elName = (String)subtemplates.elementAt(i);
+                String className = null;
+                String templateName = null;
+
+                className = getTemplateClassName(elName, xmlTemplateDocument, parameters);
+                templateName = getTemplateFileName(elName, xmlTemplateDocument, parameters);
+
+                if(className != null && templateName != null) {
+                    CmsElementDefinition elDef = new CmsElementDefinition(elName, className, templateName);
+                    subtemplateDefinitions.addElement(elDef);
+                } else {
+                    // This template file includes a subelement not exactly defined.
+                    // The name of it's template class is missing at the moment.
+                    // TODO: What shall we to here?
+                }
+            }
+        } catch(Exception e) {
+            System.err.println("=== E");
+        }
+        CmsElementXml result = new CmsElementXml(getClass().getName(), templateFile, elementName, subtemplateDefinitions);
+        return result;
     }
 }

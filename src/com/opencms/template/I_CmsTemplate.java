@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsTemplate.java,v $
-* Date   : $Date: 2001/02/06 13:57:28 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/05/03 15:42:49 $
+* Version: $Revision: 1.10 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -32,6 +32,7 @@ package com.opencms.template;
 import com.opencms.launcher.*;
 import com.opencms.file.*;
 import com.opencms.core.*;
+import com.opencms.staging.*;
 import java.util.*;
 
 /**
@@ -40,7 +41,7 @@ import java.util.*;
  * have to be implemtented.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2001/02/06 13:57:28 $
+ * @version $Revision: 1.10 $ $Date: 2001/05/03 15:42:49 $
  */
 public interface I_CmsTemplate {
 
@@ -226,4 +227,6 @@ public interface I_CmsTemplate {
      * @return <EM>true</EM> if reload is neccesary, <EM>false</EM> otherwise.
      */
     public boolean shouldReload(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector);
+
+    public abstract A_CmsElement createElement(CmsObject cms, String templateFile, String elementName, Hashtable parameters);
 }

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2001/04/20 09:54:40 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2001/05/03 15:44:23 $
+* Version: $Revision: 1.20 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -32,6 +32,7 @@ package com.opencms.launcher;
 import com.opencms.template.*;
 import com.opencms.file.*;
 import com.opencms.core.*;
+import com.opencms.staging.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 import java.util.*;
@@ -54,7 +55,7 @@ import javax.servlet.http.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.19 $ $Date: 2001/04/20 09:54:40 $
+ * @version $Revision: 1.20 $ $Date: 2001/05/03 15:44:23 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
 
@@ -67,7 +68,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
      * @param startTemplateClass Name of the template class to start with.
      * @exception CmsException
      */
-    protected byte[] generateOutput(CmsObject cms, CmsFile file, String startTemplateClass, I_CmsRequest req) throws CmsException {
+    protected byte[] generateOutput(CmsObject cms, CmsFile file, String startTemplateClass, I_CmsRequest req, A_OpenCms openCms) throws CmsException {
         byte[] output = null;
         CmsXmlControlFile doc = null;
         try {
@@ -88,15 +89,12 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
             templateClass = "com.opencms.template.CmsXmlTemplate";
         }
         String templateName = doc.getMasterTemplate();
+
         CmsFile masterTemplate = loadMasterTemplateFile(cms, templateName, doc);
-        I_CmsTemplate tmpl = getTemplateClass(cms, templateClass);
-        if(!(tmpl instanceof I_CmsXmlTemplate)) {
-            String errorMessage = "Error in " + file.getAbsolutePath() + ": " + templateClass + " is not a XML template class.";
-            if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
-            }
-            throw new CmsException(errorMessage, CmsException.C_XML_WRONG_TEMPLATE_CLASS);
-        }
+        /* Previously, the template class was loaded here.
+           We avoid doing this so early, since in staging mode the template
+           class is not needed here.
+           Moved this stuff into the "classic way" branch */
 
         // Now look for parameters in the page file...
         Hashtable newParameters = new Hashtable();
@@ -162,16 +160,61 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
                 }
             }
         }
-        try {
-            output = callCanonicalRoot(cms, (I_CmsTemplate)tmpl, masterTemplate, newParameters);
-        }
-        catch(CmsException e) {
-            if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlLauncher] There were exceptions while generating output for " + file.getAbsolutePath());
-                A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlLauncher] Clearing template file cache for this file.");
+
+        // ---- staging stuff --------
+            if(cms.getRequestContext().isStaging()) {
+
+            CmsStaging staging = null;
+            // Get the currently requested URI
+            String uri = cms.getRequestContext().getUri();
+
+            staging = openCms.getStaging();
+
+            CmsUriDescriptor uriDesc = new CmsUriDescriptor(uri);
+            CmsUriLocator uriLoc = staging.getUriLocator();
+            CmsUri cmsUri = uriLoc.get(uriDesc);
+
+            if(cmsUri == null) {
+                // hammer nich
+                I_CmsTemplate tmpl = getTemplateClass(cms, templateClass);
+                if(!(tmpl instanceof I_CmsXmlTemplate)) {
+                    String errorMessage = "Error in " + file.getAbsolutePath() + ": " + templateClass + " is not a XML template class.";
+                    if(A_OpenCms.isLogging()) {
+                        A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+                    }
+                    throw new CmsException(errorMessage, CmsException.C_XML_WRONG_TEMPLATE_CLASS);
+                }
+
+                CmsElementDescriptor elemDesc = new CmsElementDescriptor(templateClass, templateName);
+                cmsUri = new CmsUri(elemDesc, null, (Vector)null);
+                staging.getElementLocator().put(elemDesc, tmpl.createElement(cms, templateName, C_ROOT_TEMPLATE_NAME, newParameters));
+                staging.getUriLocator().put(uriDesc, cmsUri);
             }
-            doc.removeFromFileCache();
-            throw e;
+
+            // YES - we stage!
+            output = staging.callCanonicalRoot(cms, newParameters);
+        } else {
+        // ----- End of staging stuff ------
+            // NO - traditional way
+            try {
+                I_CmsTemplate tmpl = getTemplateClass(cms, templateClass);
+                if(!(tmpl instanceof I_CmsXmlTemplate)) {
+                    String errorMessage = "Error in " + file.getAbsolutePath() + ": " + templateClass + " is not a XML template class.";
+                    if(A_OpenCms.isLogging()) {
+                        A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+                    }
+                    throw new CmsException(errorMessage, CmsException.C_XML_WRONG_TEMPLATE_CLASS);
+                }
+                output = callCanonicalRoot(cms, (I_CmsTemplate)tmpl, masterTemplate, newParameters);
+            }
+            catch(CmsException e) {
+                if(A_OpenCms.isLogging()) {
+                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlLauncher] There were exceptions while generating output for " + file.getAbsolutePath());
+                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlLauncher] Clearing template file cache for this file.");
+                }
+                doc.removeFromFileCache();
+                throw e;
+            }
         }
         return output;
     }
@@ -203,7 +246,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
         // get the CmsRequest
         I_CmsRequest req = cms.getRequestContext().getRequest();
         byte[] result = null;
-        result = generateOutput(cms, file, startTemplateClass, req);
+        result = generateOutput(cms, file, startTemplateClass, req, openCms);
         if(result != null) {
             writeBytesToResponse(cms, result);
         }
