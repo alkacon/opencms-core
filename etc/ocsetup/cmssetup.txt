@@ -1,5 +1,4 @@
 login Admin admin
-writeExportPath "c:/work/exportfiles/"
 addResourceType plain "1" ""
 addResourceType XMLTemplate "3" ""
 addResourceType page "3" ""
@@ -27,4 +26,5 @@ unlockResource "/"
 importDb "config/workplace.dat" "/"
 publishProject "__setupproj"
 addMountPoint "/system/workplace/pics/" "C:/Programme/Apache/html/pics/" pics Guest Guests plain "383"
+writeExportPath "c:/export/"
 exit
