@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.5.14 Gom Jabbar   - xx September 2001
+* Temporary projects are now created with the right type and will be deleted after publish.
+
 OpenCms 4.5.13 Gom Jabbar   - 28 September 2001
 ! Now webusers can be read from the CmsObject and the Shell with and without password..
   
