@@ -41,7 +41,7 @@ PACKAGE BODY OpenCmsProject IS
       -- all projects where the groups, which the user belongs to, have access
 	  LOOP
 	    FETCH vCursor INTO recGroup;
-	    EXIT WHEN vCursor%NOTFOUND;	    
+	    EXIT WHEN vCursor%NOTFOUND;
         IF recGroup.group_name = opencmsConstants.C_GROUP_ADMIN THEN
           -- if the user is member of the group administrators then list all projects
           FOR recProject IN cProjAdmin LOOP
@@ -61,8 +61,8 @@ PACKAGE BODY OpenCmsProject IS
 	  END LOOP;
       CLOSE vCursor;
       bAnyList := '';
-      -- return the cursor 
-       
+      -- return the cursor
+
       OPEN recAllAccProjects FOR 'select * from (select * from cms_projects where user_id = '||to_char(pUserID)||' and project_flags = 0 '||
                                   vQueryStr||') order by project_name';
       RETURN recAllAccProjects;
@@ -339,7 +339,9 @@ PACKAGE BODY OpenCmsProject IS
         opencmsProperty.writeProperties(opencmsProperty.readAllProperties(pUserId, pProjectId, recFolders.resource_name),
                                         recNewFolder.resource_id, recNewFolder.resource_type);
         -- cursor for checkExport/discAccess
-        vCurWriteFolders := vCurWriteFolders||','||recNewFolder.resource_id;
+        --vCurWriteFolders := vCurWriteFolders||','||recNewFolder.resource_id;
+        -- remember only one id for mark
+        vCurWriteFolders := recNewFolder.resource_id;
       -- is the resource marked as changed?
       ELSIF recFolders.state = opencmsConstants.C_STATE_CHANGED THEN
         -- checkExport ???
@@ -388,7 +390,9 @@ PACKAGE BODY OpenCmsProject IS
         opencmsProperty.writeProperties(opencmsProperty.readAllProperties(pUserId, pProjectId, recFolders.resource_name),
                                         recNewFolder.resource_id, recNewFolder.resource_type);
         -- cursor for checkExport/discAccess
-        vCurWriteFolders := vCurWriteFolders||','||recNewFolder.resource_id;
+        --vCurWriteFolders := vCurWriteFolders||','||recNewFolder.resource_id;
+        -- remember only one id for mark
+        vCurWriteFolders := recNewFolder.resource_id;
       -- is the resource unchanged?
       ELSIF recFolders.state = opencmsConstants.C_STATE_UNCHANGED THEN
         curNewFolder := opencmsResource.readFolder(pUserId, pOnlineProjectId, recFolders.resource_name);
@@ -436,7 +440,9 @@ PACKAGE BODY OpenCmsProject IS
         delete from cms_properties where resource_id = recNewFile.resource_id;
         delete from cms_resources where resource_id = recNewFile.resource_id;
         -- cursor for checkExport/discAccess
-        vCurDelFiles := vCurDelFiles||','||recNewFile.resource_id;
+        --vCurDelFiles := vCurDelFiles||','||recNewFile.resource_id;
+        -- remember only one id for mark
+        vCurDelFiles := recNewFile.resource_id;
       -- resource is new
       ELSIF recFiles.state = opencmsConstants.C_STATE_NEW THEN
         -- checkExport ???
@@ -459,7 +465,9 @@ PACKAGE BODY OpenCmsProject IS
         opencmsProperty.writeProperties(opencmsProperty.readAllProperties(pUserId, pProjectId, recFiles.resource_name),
                                         recNewFile.resource_id, recNewFile.resource_type);
         -- cursor for checkExport/discAccess
-        vCurWriteFiles := vCurWriteFiles||','||recNewFile.resource_id;
+        --vCurWriteFiles := vCurWriteFiles||','||recNewFile.resource_id;
+        -- remember only one id for mark
+        vCurWriteFiles := recNewFile.resource_id;
       -- resource is changed
       ELSIF recFiles.state = opencmsConstants.C_STATE_CHANGED THEN
         -- does the folder exist in the online-project?
@@ -507,7 +515,9 @@ PACKAGE BODY OpenCmsProject IS
         opencmsProperty.writeProperties(opencmsProperty.readAllProperties(pUserId, pProjectId, recFiles.resource_name),
                                         recNewFile.resource_id, recNewFile.resource_type);
         -- cursor for checkExport/discAccess
-        vCurWriteFiles := vCurWriteFiles||','||recNewFile.resource_id;
+        --vCurWriteFiles := vCurWriteFiles||','||recNewFile.resource_id;
+        -- remember only one id for mark
+        vCurWriteFiles := recNewFile.resource_id;
       END IF;
     END LOOP;
     CLOSE curFiles;
@@ -531,7 +541,10 @@ PACKAGE BODY OpenCmsProject IS
     -- build the cursors which are used in java for the discAccess
     BEGIN
       IF length(vCurDelFolders) > 0 THEN
-        OPEN pCurDelFolders FOR 'select resource_name from cms_resources where resource_id in ('||vCurDelFolders||')';
+        --OPEN pCurDelFolders FOR 'select resource_name from cms_resources where resource_id in ('||vCurDelFolders||')';
+          OPEN pCurDelFolders FOR 'select resource_name from cms_resources where project_id = '||pProjectId||
+          						  ' and resource_type = '||opencmsConstants.C_TYPE_FOLDER||
+          						  ' and state = '||opencmsConstants.C_STATE_DELETED;
       ELSE
         -- return a cursor that contains no rows
         OPEN pCurDelFolders FOR 'select resource_name from cms_resources where resource_id = -1';
@@ -542,7 +555,12 @@ PACKAGE BODY OpenCmsProject IS
     END;
     BEGIN
       IF length(vCurWriteFolders) > 0 THEN
-        OPEN pCurWriteFolders FOR 'select resource_name from cms_resources where resource_id in ('||substr(vCurWriteFolders,2)||')';
+        --OPEN pCurWriteFolders FOR 'select resource_name from cms_resources where resource_id in ('||substr(vCurWriteFolders,2)||')';
+        OPEN pCurWriteFolders FOR 'select resource_name from cms_resources where project_id = '||pProjectId||
+        					    ' and resource_type = '||opencmsConstants.C_TYPE_FOLDER||
+        						' and state in ('||opencmsConstants.C_STATE_NEW||', '||
+        						opencmsConstants.C_STATE_CHANGED||')';
+
       ELSE
         -- return a cursor that contains no rows
         OPEN pCurWriteFolders FOR 'select resource_name from cms_resources where resource_id = -1';
@@ -553,7 +571,10 @@ PACKAGE BODY OpenCmsProject IS
     END;
     BEGIN
       IF length(vCurDelFiles) > 0 THEN
-        OPEN pCurDelFiles FOR 'select resource_name from cms_resources where resource_id in ('||substr(vCurDelFiles,2)||')';
+        -- OPEN pCurDelFiles FOR 'select resource_name from cms_resources where resource_id in ('||substr(vCurDelFiles,2)||')';
+        OPEN pCurDelFiles FOR 'select resource_name from cms_resources where project_id = '||pProjectId||
+                              ' and resource_type != '||opencmsConstants.C_TYPE_FOLDER||
+          					  ' and state = '||opencmsConstants.C_STATE_DELETED;
       ELSE
         -- return a cursor that contains no rows
         OPEN pCurDelFiles FOR 'select resource_name from cms_resources where resource_id = -1';
@@ -564,7 +585,11 @@ PACKAGE BODY OpenCmsProject IS
     END;
     BEGIN
       IF length(vCurWriteFiles) > 0 THEN
-        OPEN pCurWriteFiles FOR 'select resource_name, file_id from cms_resources where resource_id in ('||substr(vCurWriteFiles,2)||')';
+        --OPEN pCurWriteFiles FOR 'select resource_name, file_id from cms_resources where resource_id in ('||substr(vCurWriteFiles,2)||')';
+        OPEN pCurWriteFiles FOR 'select resource_name, file_id from cms_resources where project_id = '||pProjectId||
+                                ' and resource_type != '||opencmsConstants.C_TYPE_FOLDER||
+          					    ' and state in ('||opencmsConstants.C_STATE_NEW||', '||
+        						opencmsConstants.C_STATE_CHANGED||')';
       ELSE
         -- return a cursor that contains no rows
         OPEN pCurWriteFiles FOR 'select resource_name, file_id from cms_resources where resource_id = -1';
