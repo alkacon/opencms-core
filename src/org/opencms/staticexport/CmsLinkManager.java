@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2005/03/29 18:20:16 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/03/30 09:49:31 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  */
 public class CmsLinkManager {
 
@@ -433,7 +433,7 @@ public class CmsLinkManager {
                 resultLink = getRelativeUri(uriBaseName, resultLink);
             }
             // read only properties, if the current site and the target site both do have a secure server
-            if (targetSite.hasSecureServer() && CmsSiteManager.getCurrentSite(cms).hasSecureServer()) {
+            if (targetSite.hasSecureServer() || CmsSiteManager.getCurrentSite(cms).hasSecureServer()) {
                 if (!link.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) {
                     boolean secureLink = false;
                     boolean secureRequest = false;

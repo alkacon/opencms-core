@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestSecure.java,v $
- * Date   : $Date: 2005/03/29 18:06:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/30 09:49:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,17 +55,17 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.5.0
  */
 public class TestSecure extends OpenCmsTestCase {
 
     /** the prefix of the secure server. */
-    private String m_secureServer = "https://localhost";
+    private static final String m_secureServer = "https://localhost";
 
     /** the prefix of the normal server. */
-    private String m_normalServer = "http://localhost";
+    private static final String m_normalServer = "http://localhost";
 
     /**
      * Test suite for this test class.<p>
@@ -227,6 +227,9 @@ public class TestSecure extends OpenCmsTestCase {
 
         // the converted HTML must have links with normal and secure server prefixes of the first site
         String text = page.getStringValue(cms, element, Locale.ENGLISH);
+        
+        System.out.println(text);
+        
         assertTrue(text.indexOf(m_secureServer) != -1);
         assertTrue(text.indexOf(m_normalServer) != -1);
     }
