@@ -112,7 +112,7 @@ CREATE TABLE CMS_GROUPS
  unique(GROUP_NAME));
  
 CREATE TABLE CMS_SYSTEMID 
-(TABLE_KEY int not null,
+(TABLE_KEY VARCHAR2(255) not null,
  ID int not null,
  primary key (TABLE_KEY));
  
