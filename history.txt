@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/02/12 18:27:00 $
- * Version: $Revision: 1.518 $
+ * Date   : $Date: 2004/02/13 15:41:21 $
+ * Version: $Revision: 1.519 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.3.2 Ix - February xx, 2004
+OpenCms 5.3.2 Ix - February 13, 2004
 ! Improved dialogs for MS DHTML editor implemented in JSP
 ! New editor plugin API for adding alternative editors
 ! OpenCms now features a build in search facility based on Lucene
