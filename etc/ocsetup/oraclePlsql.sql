@@ -1,29 +1,3 @@
-DROP TABLE CMS_SYSTEMPROPERTIES;
-DROP TABLE CMS_USERS;
-DROP TABLE CMS_PROJECTS;
-DROP TABLE CMS_PROJECTRESOURCES;
-DROP TABLE CMS_PROPERTYDEF;
-DROP TABLE CMS_PROPERTIES;
-DROP TABLE CMS_RESOURCES;
-DROP TABLE CMS_FILES;
-DROP TABLE CMS_ONLINE_PROPERTYDEF;
-DROP TABLE CMS_ONLINE_PROPERTIES;
-DROP TABLE CMS_ONLINE_RESOURCES;
-DROP TABLE CMS_ONLINE_FILES;
-DROP TABLE CMS_BACKUP_PROPERTYDEF;
-DROP TABLE CMS_BACKUP_PROPERTIES;
-DROP TABLE CMS_BACKUP_RESOURCES;
-DROP TABLE CMS_BACKUP_FILES;
-DROP TABLE CMS_BACKUP_PROJECTS;
-DROP TABLE CMS_BACKUP_PROJECTRESOURCES;
-DROP TABLE CMS_GROUPS;
-DROP TABLE CMS_SYSTEMID;
-DROP TABLE CMS_GROUPUSERS;
-DROP TABLE CMS_Task;
-DROP TABLE CMS_TaskLog;
-DROP TABLE CMS_TaskType;
-DROP TABLE CMS_TaskPar;
-DROP TABLE CMS_SESSIONS;
 
 CREATE TABLE CMS_SYSTEMPROPERTIES
 (	SYSTEMPROPERTY_ID int not null,
@@ -387,4 +361,48 @@ CREATE INDEX TASKPAR_REF ON
 CREATE INDEX PROJECTRESOURCE_RESOURCE_NAME ON
   CMS_PROJECTRESOURCES(RESOURCE_NAME);
 
-@./oracleplsql/install_with_db.sql;
+prompt 'package_usertypes';
+@./oracleplsql/package_usertypes.sql;
+
+prompt 'package_usererrors';
+@./oracleplsql/package_usererrors.sql;
+
+prompt 'package_body_usererrors';
+@./oracleplsql/package_body_usererrors.sql;
+
+prompt 'package_opencmsconstants';
+@./oracleplsql/package_opencmsconstants;
+
+prompt 'function_getnextid';
+@./oracleplsql/function_getnextid.sql;
+
+prompt 'package_opencmsgroup';
+@./oracleplsql/package_opencmsgroup;
+
+prompt 'package_opencmsaccess';
+@./oracleplsql/package_opencmsaccess;
+
+prompt 'package_opencmsproperty';
+@./oracleplsql/package_opencmsproperty;
+
+prompt 'package_opencmsresource';
+@./oracleplsql/package_opencmsresource;
+
+prompt 'package_opencmsproject';
+@./oracleplsql/package_opencmsproject;
+
+prompt 'package_body_opencmsgroup';
+@./oracleplsql/package_body_opencmsgroup;
+
+prompt 'package_body_opencmsaccess';
+@./oracleplsql/package_body_opencmsaccess;
+
+prompt 'package_body_opencmsproperty';
+@./oracleplsql/package_body_opencmsproperty;
+
+prompt 'package_body_opencmsresource';
+@./oracleplsql/package_body_opencmsresource;
+
+prompt 'package_body_opencmsproject';
+@./oracleplsql/package_body_opencmsproject;
+
