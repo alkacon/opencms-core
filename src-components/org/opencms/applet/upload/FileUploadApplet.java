@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2003/10/28 14:09:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/12/11 15:21:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -166,19 +166,39 @@ public class FileUploadApplet extends JApplet implements Runnable {
         m_floater=getImage(getCodeBase(), "org/opencms/applet/upload/floater.gif");
         
         // get the output massages in the correct language
-        if (getParameter("actionOutputSelect")!=null) m_actionOutputSelect = getParameter("actionOutputSelect");
-        if (getParameter("actionOutputCount")!=null) m_actionOutputCount = getParameter("actionOutputCount");
-        if (getParameter("actionOutputCreate")!=null) m_actionOutputCreate = getParameter("actionOutputCreate");
-        if (getParameter("actionOutputUpload")!=null) m_actionOutputUpload = getParameter("actionOutputUpload");
-        if (getParameter("actionOutputError")!=null) m_actionOutputError = getParameter("actionOutputError");
-        if (getParameter("messageOutputUpload")!=null) m_messageOutputUpload = getParameter("messageOutputUpload");
-        if (getParameter("messageOutputAdding")!=null) m_messageOutputAdding = getParameter("messageOutputAdding");
-        if (getParameter("messageOutputErrorZip")!=null) m_messageOutputErrorZip = getParameter("messageOutputErrorZip");
-        if (getParameter("messageOutputErrorSize")!=null) m_messageOutputErrorSize = getParameter("messageOutputErrorSize");
-        if (getParameter("messageNoPreview")!=null) m_messageNoPreview = getParameter("messageNoPreview");
-        if (getParameter("errorLine1")!=null) m_errorLine1 = getParameter("errorLine1");
-        
-        
+        if (getParameter("actionOutputSelect")!=null) {
+            m_actionOutputSelect = getParameter("actionOutputSelect");
+        }
+        if (getParameter("actionOutputCount")!=null) {
+            m_actionOutputCount = getParameter("actionOutputCount");
+        }
+        if (getParameter("actionOutputCreate")!=null) {
+            m_actionOutputCreate = getParameter("actionOutputCreate");
+        }
+        if (getParameter("actionOutputUpload")!=null) {
+            m_actionOutputUpload = getParameter("actionOutputUpload");
+        }
+        if (getParameter("actionOutputError")!=null) {
+            m_actionOutputError = getParameter("actionOutputError");
+        }
+        if (getParameter("messageOutputUpload")!=null) {
+            m_messageOutputUpload = getParameter("messageOutputUpload");
+        }
+        if (getParameter("messageOutputAdding")!=null) {
+            m_messageOutputAdding = getParameter("messageOutputAdding");
+        }
+        if (getParameter("messageOutputErrorZip")!=null) {
+            m_messageOutputErrorZip = getParameter("messageOutputErrorZip");
+        }
+        if (getParameter("messageOutputErrorSize")!=null) {
+            m_messageOutputErrorSize = getParameter("messageOutputErrorSize");
+        }
+        if (getParameter("messageNoPreview")!=null) {
+            m_messageNoPreview = getParameter("messageNoPreview");
+        }
+        if (getParameter("errorLine1")!=null) {
+            m_errorLine1 = getParameter("errorLine1");
+        }                
     }
 
 
@@ -186,7 +206,9 @@ public class FileUploadApplet extends JApplet implements Runnable {
     /**
      * @see java.applet.Applet#destroy()
      */
-    public void destroy() { }
+    public void destroy() {
+        // NOOP
+    }
 
     /**
      * @see java.applet.Applet#start()
@@ -589,9 +611,12 @@ public class FileUploadApplet extends JApplet implements Runnable {
             throw e;
         } finally {
             try {
-                if (fileStream != null)
+                if (fileStream != null) {
                     fileStream.close();
-            } catch (IOException e) { }
+                }
+            } catch (IOException e) {
+                // ignore
+            }
         }
     }
 

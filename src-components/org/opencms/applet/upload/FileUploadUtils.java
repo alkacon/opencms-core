@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadUtils.java,v $
- * Date   : $Date: 2003/10/28 13:28:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/12/11 15:21:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ public final class FileUploadUtils {
      *
      */
     private FileUploadUtils() {
+        // noop
     }
     
          

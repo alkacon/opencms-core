@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImagePreview.java,v $
- * Date   : $Date: 2003/10/28 13:28:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/12/11 15:21:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -112,11 +112,16 @@ public class ImagePreview extends JComponent implements PropertyChangeListener {
             for (int i = 0; i < 35; i++) {
                 m_text[i] = fileStream.readLine();              
             }
-        } catch (Exception e) { } finally {
+        } catch (Exception e) {
+            // ignore
+        } finally {
             try {
-                if (fileStream != null)
+                if (fileStream != null) {
                     fileStream.close();
-            } catch (IOException e) { }
+                }
+            } catch (IOException e) {
+                // ignore
+            }
         }
     }
 
