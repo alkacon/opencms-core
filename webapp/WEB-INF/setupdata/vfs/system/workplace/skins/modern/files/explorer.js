@@ -601,9 +601,15 @@ function printList(wo) {
 					// online project
 					if (vi.menus[vi.liste[i].type].items[a].rules.charAt(0) == 'i') {
 						result = 2;
-					} else {
+					} else {							
 						if (vi.menus[vi.liste[i].type].items[a].rules.charAt(0) == 'a') {
-							result = (vi.liste[i].type == 0)?3:4;
+							if ((vi.menus[vi.liste[i].type].items[a].link.indexOf("showlinks=true") > 0)
+							&& (vi.liste[i].linkType == 0)) {
+								// special case: resource without siblings
+								result = 2;
+							} else {
+								result = (vi.liste[i].type == 0)?3:4;
+							}						
 						}
 					}
 				} else {
@@ -617,7 +623,13 @@ function printList(wo) {
 								if (vi.menus[vi.liste[i].type].items[a].name == "-") {
 									result = 1;
 								} else {
-									result = (vi.liste[i].type == 0)?3:4;
+									if ((vi.menus[vi.liste[i].type].items[a].link.indexOf("showlinks=true") > 0)
+									&& (vi.liste[i].linkType == 0)) {
+										// special case: resource without siblings
+										result = 2;
+									} else {
+										result = (vi.liste[i].type == 0)?3:4;
+									}
 								}
 							}
 						}
@@ -661,6 +673,7 @@ function printList(wo) {
 							if (display == 'a') {
 								if ((vi.menus[vi.liste[i].type].items[a].link.indexOf("showlinks=true") > 0)
 								&& (vi.liste[i].linkType == 0)) {
+									// special case: resource without siblings
 									result = 2;
 								} else {
 									result = (vi.liste[i].type == 0)?3:4;

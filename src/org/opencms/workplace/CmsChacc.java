@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2004/06/28 11:18:09 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/07/03 10:19:42 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 5.1
  */
@@ -255,9 +255,11 @@ public class CmsChacc extends CmsDialog {
 
         // check the current users permission to change access control entries
         try {
-            if (getCms().isAdmin() || ((m_curPermissions.getAllowedPermissions() & I_CmsConstants.C_PERMISSION_CONTROL) > 0
-                && !((m_curPermissions.getDeniedPermissions() & I_CmsConstants.C_PERMISSION_CONTROL) > 0))) {
-                    setEditable(true);
+            if ((! getCms().getRequestContext().currentProject().isOnlineProject() 
+                && getCms().isInsideCurrentProject(getParamResource()))            
+            && (getCms().isAdmin() 
+                || ((m_curPermissions.getAllowedPermissions() & I_CmsConstants.C_PERMISSION_CONTROL) > 0 && !((m_curPermissions.getDeniedPermissions() & I_CmsConstants.C_PERMISSION_CONTROL) > 0)))) {
+                setEditable(true);
             }
         } catch (CmsException e) {
             // can usually be ignored

@@ -40,21 +40,20 @@
 					</defaultproperties>
 					<contextmenu>
 						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
+						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaaa" order="20"/>
 						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d aaaa aaaa dddd" order="60"/>
 						<separator order="70"/>
 						<entry key="explorer.context.copy" uri="dialogs/copy.html" rules="d d iiii aaai dddd" order="150"/>
-						<entry key="explorer.context.rename" uri="dialogs/rename.html" rules="d d iiii aaai dddd" order="160"/>
 						<entry key="explorer.context.move" uri="dialogs/move.html" rules="d d iiii aaai dddd" order="170"/>
 						<entry key="explorer.context.delete" uri="dialogs/delete.html" rules="d d iiii aaai dddd" order="180"/>
 						<entry key="explorer.context.touch" uri="dialogs/touch.html" rules="d d iiii aaai dddd" order="190"/>
 						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" rules="d d iiid aaid dddd" order="200"/>
 						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
-						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="d d iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="a a iiii aaai dddd" order="300"/>
 						<entry key="explorer.context.chnav" uri="dialogs/chnav.html" rules="d d iiii aaai dddd" order="310"/>
 						<separator order="340"/>
 						<entry key="explorer.context.property" uri="dialogs/property.html" rules="a a aaai aaai aaai" order="360"/>
@@ -76,7 +75,7 @@
 					</defaultproperties>
 					<contextmenu>
 						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
+						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaaa" order="20"/>
 						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
@@ -86,16 +85,15 @@
 						<entry key="explorer.context.edit" uri="editors/editor.html?editormode=edit" target="_top" rules="d d iiii aaai dddd" order="90"/>
 						<separator order="100"/>
 						<entry key="explorer.context.copy" uri="dialogs/copy.html" rules="d d aaai aaai dddd" order="150"/>
-						<entry key="explorer.context.rename" uri="dialogs/rename.html" rules="d d iiii aaai dddd" order="160"/>
 						<entry key="explorer.context.move" uri="dialogs/move.html" rules="d d iiii aaai dddd" order="170"/>
 						<entry key="explorer.context.delete" uri="dialogs/delete.html" rules="d d iiii aaai dddd" order="180"/>
 						<entry key="explorer.context.touch" uri="dialogs/touch.html" rules="d d iiii aaai dddd" order="190"/>
 						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" rules="d d iiid iaid dddd" order="200"/>
 						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
-						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" rules="d d aaai aaai dddd" order="250"/>
+						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
-						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="d d iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="a a iiii aaai dddd" order="300"/>
 						<entry key="explorer.context.chnav" uri="dialogs/chnav.html" rules="d d iiii aaai dddd" order="310"/>
 						<separator order="330"/>
 						<entry key="explorer.context.editcontrolfile" uri="editors/editor.html?editastext=true" target="_top" rules="d d iiii aaai dddd" order="335"/>
@@ -119,7 +117,7 @@
 					</defaultproperties>
 					<contextmenu>
 						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
+						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaaa" order="20"/>
 						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
@@ -128,16 +126,15 @@
 						<entry key="explorer.context.edit" uri="editors/editor.html" target="_top" rules="d d iiii aaai dddd" order="80"/>
 						<separator order="100"/>
 						<entry key="explorer.context.copy" uri="dialogs/copy.html" rules="d d aaai aaai dddd" order="150"/>
-						<entry key="explorer.context.rename" uri="dialogs/rename.html" rules="d d iiii aaai dddd" order="160"/>
 						<entry key="explorer.context.move" uri="dialogs/move.html" rules="d d iiii aaai dddd" order="170"/>
 						<entry key="explorer.context.delete" uri="dialogs/delete.html" rules="d d iiii aaai dddd" order="180"/>
 						<entry key="explorer.context.touch" uri="dialogs/touch.html" rules="d d iiii aaai dddd" order="190"/>
 						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" rules="d d iiid iaid dddd" order="200"/>
 						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
-						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" rules="d d aaai aaai dddd" order="250"/>
+						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
-						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="d d iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="a a iiii aaai dddd" order="300"/>
 						<entry key="explorer.context.type" uri="chtype.html" isxml="true" rules="d d iiii aaai dddd" order="310"/>
 						<separator order="340"/>
 						<entry key="explorer.context.history" uri="history.html" isxml="true" rules="a a aaaa aaaa aaaa" order="350"/>
@@ -156,14 +153,13 @@
 					<defaultproperties enabled="false" shownavigation="false"/>
 					<contextmenu>
 						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
+						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaaa" order="20"/>
 						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d iaaa iaaa dddd" order="60"/>
 						<separator order="70"/>
 						<entry key="explorer.context.copy" uri="dialogs/copy.html" rules="d d aaai aaai dddd" order="150"/>
-						<entry key="explorer.context.rename" uri="dialogs/rename.html" rules="d d iiii aaai dddd" order="160"/>
 						<entry key="explorer.context.move" uri="dialogs/move.html" rules="d d iiii aaai dddd" order="170"/>
 						<entry key="explorer.context.delete" uri="dialogs/delete.html" rules="d d iiii aaai dddd" order="180"/>
 						<entry key="explorer.context.replace" uri="replace.html?overwrite=yes&amp;mode=replace" isxml="true" rules="d d iiii aaai dddd" order="185"/>
@@ -171,9 +167,9 @@
 						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" rules="d d iiid iaid dddd" order="200"/>
 						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
-						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" rules="d d aaai aaai dddd" order="250"/>
+						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
-						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="d d iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="a a iiii aaai dddd" order="300"/>
 						<entry key="explorer.context.type" uri="chtype.html" isxml="true" rules="d d iiii aaai dddd" order="310"/>
 						<entry key="explorer.context.chnav" uri="dialogs/chnav.html" rules="d d iiii aaai dddd" order="320"/>
 						<separator order="340"/>
@@ -198,7 +194,7 @@
 					</defaultproperties>
 					<contextmenu>
 						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
+						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaaa" order="20"/>
 						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
@@ -207,16 +203,15 @@
 						<entry key="explorer.context.edit" uri="editors/editor.html" target="_top" rules="d d iiii aaai dddd" order="80"/>
 						<separator order="100"/>
 						<entry key="explorer.context.copy" uri="dialogs/copy.html" rules="d d aaai aaai dddd" order="150"/>
-						<entry key="explorer.context.rename" uri="dialogs/rename.html" rules="d d iiii aaai dddd" order="160"/>
 						<entry key="explorer.context.move" uri="dialogs/move.html" rules="d d iiii aaai dddd" order="170"/>
 						<entry key="explorer.context.delete" uri="dialogs/delete.html" rules="d d iiii aaai dddd" order="180"/>
 						<entry key="explorer.context.touch" uri="dialogs/touch.html" rules="d d iiii aaai dddd" order="190"/>
 						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" rules="d d iiid iaid dddd" order="200"/>
 						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
-						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" rules="d d aaai aaai dddd" order="250"/>
+						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
-						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="d d iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="a a iiii aaai dddd" order="300"/>
 						<entry key="explorer.context.type" uri="chtype.html" isxml="true" rules="d d iiii aaai dddd" order="310"/>
 						<entry key="explorer.context.chnav" uri="dialogs/chnav.html" rules="d d iiii aaai dddd" order="320"/>
 						<separator order="340"/>
@@ -238,14 +233,13 @@
 					</defaultproperties>
 					<contextmenu>
 						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
+						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaaa" order="20"/>
 						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d iaaa iaaa dddd" order="60"/>
 						<separator order="70"/>
 						<entry key="explorer.context.copy" uri="dialogs/copy.html" rules="d d aaai aaai dddd" order="150"/>
-						<entry key="explorer.context.rename" uri="dialogs/rename.html" rules="d d iiii aaai dddd" order="160"/>
 						<entry key="explorer.context.move" uri="dialogs/move.html" rules="d d iiii aaai dddd" order="170"/>
 						<entry key="explorer.context.delete" uri="dialogs/delete.html" rules="d d iiii aaai dddd" order="180"/>
 						<entry key="explorer.context.replace" uri="replace.html?overwrite=yes&amp;mode=replace" isxml="true" rules="d d iiii aaai dddd" order="185"/>
@@ -253,9 +247,9 @@
 						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" rules="d d iiid iaid dddd" order="200"/>
 						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
-						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" rules="d d aaai aaai dddd" order="250"/>
+						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
-						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="d d iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="a a iiii aaai dddd" order="300"/>
 						<entry key="explorer.context.type" uri="chtype.html" isxml="true" rules="d d iiii aaai dddd" order="310"/>
 						<entry key="explorer.context.chnav" uri="dialogs/chnav.html" rules="d d iiii aaai dddd" order="320"/>
 						<separator order="340"/>
@@ -277,7 +271,7 @@
 					</defaultproperties>
 					<contextmenu>
 						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
+						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaaa" order="20"/>
 						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
@@ -286,13 +280,12 @@
 						<entry key="explorer.context.editlink" uri="explorer_files_new_externallink.html?newlink=false" isxml="true" rules="d d iiii aaai dddd" order="80"/>
 						<separator order="100"/>
 						<entry key="explorer.context.copy" uri="dialogs/copy.html" rules="d d aaai aaai dddd" order="150"/>
-						<entry key="explorer.context.rename" uri="dialogs/rename.html" rules="d d iiii aaai dddd" order="160"/>
 						<entry key="explorer.context.move" uri="dialogs/move.html" rules="d d iiii aaai dddd" order="170"/>
 						<entry key="explorer.context.delete" uri="dialogs/delete.html" rules="d d iiii aaai dddd" order="180"/>
 						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" rules="d d iiid iaid dddd" order="200"/>
 						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
-						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="d d iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="a a iiii aaai dddd" order="300"/>
 						<entry key="explorer.context.type" uri="chtype.html" isxml="true" rules="d d iiii aaai dddd" order="310"/>
 						<entry key="explorer.context.chnav" uri="dialogs/chnav.html" rules="d d iiii aaai dddd" order="320"/>
 						<separator order="340"/>
@@ -312,7 +305,7 @@
 					<defaultproperties enabled="false" shownavigation="false"/>
 					<contextmenu>
 						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
+						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaaa" order="20"/>
 						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
@@ -321,16 +314,15 @@
 						<entry key="explorer.context.edit" uri="editors/editor.html" target="_top" rules="d d iiii aaai dddd" order="80"/>
 						<separator order="100"/>
 						<entry key="explorer.context.copy" uri="dialogs/copy.html" rules="d d aaai aaai dddd" order="150"/>
-						<entry key="explorer.context.rename" uri="dialogs/rename.html" rules="d d iiii aaai dddd" order="160"/>
 						<entry key="explorer.context.move" uri="dialogs/move.html" rules="d d iiii aaai dddd" order="170"/>
 						<entry key="explorer.context.delete" uri="dialogs/delete.html" rules="d d iiii aaai dddd" order="180"/>
 						<entry key="explorer.context.touch" uri="dialogs/touch.html" rules="d d iiii aaai dddd" order="190"/>
 						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" rules="d d iiid iaid dddd" order="200"/>
 						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
-						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" rules="d d aaai aaai dddd" order="250"/>
+						<entry key="explorer.context.showsiblings" uri="explorer_files.html?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
-						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="d d iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="a a iiii aaai dddd" order="300"/>
 						<separator order="340"/>
 						<entry key="explorer.context.history" uri="history.html" isxml="true" rules="a a aaaa aaaa aaaa" order="350"/>
 						<entry key="explorer.context.property" uri="dialogs/property.html" rules="a a aaai aaai aaai" order="360"/>
@@ -421,6 +413,6 @@
 					<informrolemembers>false</informrolemembers>
 				</workflow-defaultsettings>			
 			</workflow-preferences>				
-		</default-preferences>
+		</default-preferences>		
 	</workplace>
 </opencms>

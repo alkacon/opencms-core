@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2004/07/01 16:30:24 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2004/07/03 10:20:04 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.79 $
+ * @version $Revision: 1.80 $
  * 
  * @since 5.1
  */
@@ -291,16 +291,7 @@ public class CmsExplorer extends CmsWorkplace {
         // set the writeAccess for the current Folder       
         boolean writeAccess = "explorerview".equals(getSettings().getExplorerMode());
         if (writeAccess && (! showVfsLinks)) {        
-            try {
-                CmsFolder test = getCms().readFolder(currentFolder, CmsResourceFilter.IGNORE_EXPIRATION);
-                writeAccess = getCms().isInsideCurrentProject(test);
-            } catch (CmsException e) {
-                // should usually never happen
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
-                }                
-                writeAccess = false;
-            }
+            writeAccess = getCms().isInsideCurrentProject(currentFolder);
         }
         content.append("top.enableNewButton(");
         content.append(writeAccess);
