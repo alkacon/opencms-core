@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/10/09 13:12:45 $
- * Version: $Revision: 1.104 $
+ * Date   : $Date: 2000/10/25 08:31:42 $
+ * Version: $Revision: 1.105 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.104 $ $Date: 2000/10/09 13:12:45 $
+ * @version $Revision: 1.105 $ $Date: 2000/10/25 08:31:42 $
  */
 public interface I_CmsConstants
 {
@@ -98,7 +98,10 @@ public interface I_CmsConstants
 	 /** Path to the workplace ini file */     
 	 static final String C_PATH_INTERNAL_TEMPLATES = "/content/internal/";
 	 
-	 /** prefix for temporary files */
+	/** Path to the root of all modules */
+	public static final String C_MODULES_PATH = "/system/modules/"; 
+
+	/** prefix for temporary files */
 	 public static final String C_TEMP_PREFIX = "~";
 		  
 	 /**
@@ -514,6 +517,11 @@ public interface I_CmsConstants
 	* Session key for storing the possition in the administration navigation
 	*/
 	public static final String C_SESSION_ADMIN_POS = "adminposition";
+
+	/** 
+	* Session key for storing a possible error while executing a thread
+	*/
+	public static final String C_SESSION_THREAD_ERROR = "threaderror";
 
 	/** 
 	* Session key for storing the files Vector for moduleimport.
