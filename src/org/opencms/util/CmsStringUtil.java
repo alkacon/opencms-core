@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2004/10/20 13:36:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/08 15:06:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -362,26 +362,87 @@ public final class CmsStringUtil {
     }
 
     /**
-     * This method splits a String into substrings along the provided String delimiter.<p>
+     * Splits a String into substrings along the provided String delimiter and returns
+     * the result as an Array of Substrings.<p>
      *
      * @param source the String to split
      * @param delimiter the delimiter to split at
      *
-     * @return an array of Strings
+     * @return the Array of splitted Substrings
      */
-    public static String[] split(String source, String delimiter) {
-
-        List parts = new ArrayList();
-        int index = 0;
-        int nextIndex = source.indexOf(delimiter);
-        while (nextIndex != -1) {
-            parts.add(source.substring(index, nextIndex));
-            index = nextIndex + delimiter.length();
-            nextIndex = source.indexOf(delimiter, index);
-        }
-        parts.add(source.substring(index));
-        return (String[])parts.toArray(new String[parts.size()]);
+    public static String[] splitAsArray(String source, String delimiter) {
+        
+        List result = splitAsList(source, delimiter);        
+        return (String[])result.toArray(new String[result.size()]);
     }
+    
+    /**
+     * Splits a String into substrings along the provided String delimiter and returns
+     * the result as List of Substrings.<p>
+     *
+     * @param source the String to split
+     * @param delimiter the delimiter to split at
+     *
+     * @return the Array of splitted Substrings
+     */    
+    public static List splitAsList(String source, String delimiter) {
+        
+        int len = delimiter.length();    
+        if (len == 1) {
+            // optimize for short strings
+            return splitAsList(source, delimiter.charAt(0));
+        }
+        
+        List result = new ArrayList();
+        int index = 0;
+        int next = source.indexOf(delimiter);
+        while (next != -1) {
+            result.add(source.substring(index, next));
+            index = next + len;
+            next = source.indexOf(delimiter, index);
+        }
+        result.add(source.substring(index));
+        return result;
+    }
+    
+    /**
+     * Splits a String into substrings along the provided char delimiter and returns
+     * the result as a List of Substrings.<p>
+     *
+     * @param source the String to split
+     * @param delimiter the delimiter to split at
+     *
+     * @return the List of splitted Substrings
+     */    
+    public static List splitAsList(String source, char delimiter) {
+        
+        List result = new ArrayList();
+        int index = 0;
+        int next = source.indexOf(delimiter);
+        while (next != -1) {
+            result.add(source.substring(index, next));
+            index = next + 1;
+            next = source.indexOf(delimiter, index);
+        }
+        result.add(source.substring(index));
+        return result;
+    }
+    
+    /**
+     * Splits a String into substrings along the provided char delimiter and returns
+     * the result as an Array of Substrings.<p>
+     *
+     * @param source the String to split
+     * @param delimiter the delimiter to split at
+     *
+     * @return the Array of splitted Substrings
+     */       
+    public static String[] splitAsArray(String source, char delimiter) {
+        
+        List result = splitAsList(source, delimiter);
+        return (String[])result.toArray(new String[result.size()]);
+    }
+    
 
     /**
      * Substitutes searchString in content with replaceItem.<p>

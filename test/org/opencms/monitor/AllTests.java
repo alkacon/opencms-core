@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/AllTests.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/monitor/AllTests.java,v $
  * Date   : $Date: 2004/11/08 15:06:43 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,25 +28,22 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
-package org.opencms.xml.content;
+
+package org.opencms.monitor; 
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
- * 
- * @since 5.0
+ * @version $Revision: 1.1 $
  */
 public final class AllTests {
 
     /**
      * Hide constructor to prevent generation of class instances.<p>
      */
-    private AllTests() {
+    private AllTests() { 
         // empty
     }
     
@@ -54,13 +51,11 @@ public final class AllTests {
      * Returns the JUnit test suite for this package.<p>
      * 
      * @return the JUnit test suite for this package
-     */    
+     */        
     public static Test suite() {
-        TestSuite suite = new TestSuite("Tests for package org.opencms.xml.content");
+        TestSuite suite = new TestSuite("Tests for package org.opencms.monitor");
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(TestCmsXmlContent.class));        
-        suite.addTest(new TestSuite(TestCmsXmlContentDefinition.class));
-        suite.addTest(TestCmsXmlContentWithVfs.suite());
+        suite.addTest(TestMemoryMonitor.suite());
         //$JUnit-END$
         return suite;
     }

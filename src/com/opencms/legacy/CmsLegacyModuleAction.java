@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsLegacyModuleAction.java,v $
- * Date   : $Date: 2004/10/28 12:58:07 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/11/08 15:06:44 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
             return result;
         }
         
-        String[] names = CmsStringUtil.split(value, ";");
+        String[] names = CmsStringUtil.splitAsArray(value, ';');
         for (int i=0; i<names.length; i++) {
             String name = names[i].trim();
             if (CmsStringUtil.isNotEmpty(name)) {

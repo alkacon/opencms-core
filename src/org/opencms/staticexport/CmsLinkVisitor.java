@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLinkVisitor.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/08 15:06:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.staticexport;
 
 import org.htmlparser.Node;
@@ -45,34 +46,36 @@ import org.htmlparser.visitors.NodeVisitor;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3
  */
 public class CmsLinkVisitor extends NodeVisitor {
-    
+
     /** The link processor. */
     private CmsLinkProcessor m_linkProcessor;
-    
+
     /** The processed content. */
-    private StringBuffer m_result;      
-    
+    private StringBuffer m_result;
+
     /**
      * Public constructor.<p>
      * 
      * @param linkProcessor the link processor to use 
      */
     public CmsLinkVisitor(CmsLinkProcessor linkProcessor) {
-        super(true, true);        
+
+        super(true, true);
         m_linkProcessor = linkProcessor;
         m_result = new StringBuffer(1024);
     }
-    
+
     /**
      * Returns the generated HTML.<p>
      * 
      * @return the generated HTML
      */
     public String getHtml() {
+
         return m_result.toString();
     }
 
@@ -80,9 +83,10 @@ public class CmsLinkVisitor extends NodeVisitor {
      * Visitor method to process a tag end.<p>
      * 
      * @param tag the tag to process
-     */    
+     */
     public void visitEndTag(Tag tag) {
-        Node parent = tag.getParent ();
+
+        Node parent = tag.getParent();
         // process only those nodes not processed by a parent
         if (parent == null) {
             // an orphan end tag
@@ -93,16 +97,16 @@ public class CmsLinkVisitor extends NodeVisitor {
         }
     }
 
-    
     /**
      * Visitor method to process an image tag.<p>
      * 
      * @param imageTag the tag to process
      */
     public void visitImageTag(ImageTag imageTag) {
+
         m_linkProcessor.processImageTag(imageTag);
     }
-    
+
     /**
      * Visitor method to process a single link.<p>
      * 
@@ -111,6 +115,7 @@ public class CmsLinkVisitor extends NodeVisitor {
      * @see org.htmlparser.visitors.NodeVisitor#visitLinkTag(org.htmlparser.tags.LinkTag)
      */
     public void visitLinkTag(LinkTag linkTag) {
+
         m_linkProcessor.processLinkTag(linkTag);
     }
 
@@ -119,8 +124,11 @@ public class CmsLinkVisitor extends NodeVisitor {
      * 
      * @param node the node to process
      */
-    public void visitRemarkNode(RemarkNode node) {        
-        m_result.append(node.toHtml());
+    public void visitRemarkNode(RemarkNode node) {
+
+        if (null == node.getParent()) {
+            m_result.append(node.toHtml());
+        }
     }
 
     /**
@@ -129,17 +137,19 @@ public class CmsLinkVisitor extends NodeVisitor {
      * @param node the string node to process
      */
     public void visitStringNode(StringNode node) {
-        if (null == node.getParent ()) {
+
+        if (null == node.getParent()) {
             m_result.append(node.toHtml());
         }
-    }    
-    
+    }
+
     /**
      * Visitor method to process a tag (start).<p>
      * 
      * @param tag the tag to process
      */
     public void visitTag(Tag tag) {
+
         // process only those nodes that won't be processed by an end tag,
         // nodes without parents or parents without an end tag, since
         // the complete processing of all children should happen before

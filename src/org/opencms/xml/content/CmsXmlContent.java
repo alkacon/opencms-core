@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2004/11/02 08:30:56 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/11/08 15:06:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,13 +43,13 @@ import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
+import org.opencms.xml.types.CmsXmlCascadedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 
 import org.dom4j.Document;
@@ -65,7 +65,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -204,28 +204,16 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             try {
                 Locale locale = CmsLocaleManager.getLocale(node.attribute(
                     CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE).getValue());
-                for (Iterator j = node.elementIterator(); j.hasNext();) {
-                    Element element = (Element)j.next();
-                    String name = element.getName();
-
-                    int pos = 0;
-                    List list = getBookmark(name, locale);
-                    if (list != null) {
-                        pos = list.size();
-                    }
-
-                    // create a XML content value element
-                    I_CmsXmlSchemaType schemaType = m_contentDefinition.getSchemaType(name);
-                    I_CmsXmlContentValue value = schemaType.createValue(element, name, pos);
-
-                    addBookmark(name, locale, true, value);
-                }
+                                
+                processSchemaNode(node, null, locale, definition);
             } catch (NullPointerException e) {
                 OpenCms.getLog(this).error("Error while initalizing XML content bookmarks", e);
             }
-        }
-    }
+        }            
+        
 
+    }
+    
     /**
      * Sets the file this XML content is written to.<p> 
      * 
@@ -234,5 +222,58 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     protected void setFile(CmsFile file) {
 
         m_file = file;
+    }
+
+    /**
+     * Processes a document node and extracts the values of the node according to the provided XML
+     * content definition.<p> 
+     * 
+     * @param root the root node element to process
+     * @param rootPath the Xpath of the root node in the document
+     * @param locale the locale 
+     * @param definition the XML content definition to use for processing the values
+     */
+    private void processSchemaNode(Element root, String rootPath, Locale locale, CmsXmlContentDefinition definition) {
+
+        int count = 0;
+        String previousName = null;
+        
+        for (Iterator j = root.elementIterator(); j.hasNext();) {
+            Element element = (Element)j.next();
+
+            // check if this is a new node, if so reset the node counter
+            String name = element.getName();
+            if ((previousName == null) || !previousName.equals(name)) {
+                previousName = name;
+                count = 0;
+            }
+
+            // build the Xpath expression for the current node
+            String path;
+            if (rootPath != null) {
+                StringBuffer b = new StringBuffer(rootPath.length() + name.length() + 6);
+                b.append(rootPath);
+                b.append('/');
+                b.append(createXpathElement(name, count));
+                path = b.toString();
+            } else {
+                path = createXpathElement(name, count);
+            }
+
+            // create a XML content value element
+            I_CmsXmlSchemaType schemaType = definition.getSchemaType(name);
+
+            if (schemaType.isSimpleType()) {
+                // directly add simple type to schema
+                I_CmsXmlContentValue value = schemaType.createValue(element, name, count);
+                addBookmark(path, locale, true, value);
+            } else {
+                // recurse for cascaded schema
+                CmsXmlCascadedContentDefinition cascadedSchema = (CmsXmlCascadedContentDefinition)schemaType;
+                processSchemaNode(element, path, locale, cascadedSchema.getContentDefinition());
+            }
+            // increase the node counter
+            count++;
+        }
     }
 }

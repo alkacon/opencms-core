@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLink.java,v $
- * Date   : $Date: 2004/11/04 13:58:42 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/11/08 15:06:43 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.dom4j.Element;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  */
 public class CmsLink {
 
@@ -178,9 +178,9 @@ public class CmsLink {
         }
 
         HashMap parameters = new HashMap();
-        String params[] = CmsStringUtil.split(query, "&");
+        String params[] = CmsStringUtil.splitAsArray(query, '&');
         for (int i = 0; i < params.length; i++) {
-            String pair[] = CmsStringUtil.split(params[i], "=");
+            String pair[] = CmsStringUtil.splitAsArray(params[i], '=');
             String[] p = (String[])parameters.get(pair[0]);
             if (p == null) {
                 if (pair.length > 1) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2004/10/23 06:50:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/11/08 15:06:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,9 @@
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -44,7 +46,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -228,5 +230,33 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
 
         // for most values, no special processing on the users OpenCms context is required
         setStringValue(value);
-    } 
+    }
+    
+    /**
+     * Convenience method to loads the XML schema definition for this value type from an external file.<p>
+     * 
+     * @param schemaUri the schema uri to load the XML schema file from
+     * 
+     * @return the loaded XML schema
+     */
+    protected String readSchemaDefinition(String schemaUri) {
+
+        // the schema definition is located in a separate file for easier editing
+        String schemaDefinition;
+        try {
+            schemaDefinition = CmsFileUtil.readFile(schemaUri, CmsEncoder.C_UTF8_ENCODING);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to load external schema: " + schemaUri, e);
+        }
+        return schemaDefinition;
+    }    
+
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#isSimpleType()
+     */
+    public boolean isSimpleType() {
+
+        // the abstract base type should be used for simple types only
+        return true;
+    }
 }

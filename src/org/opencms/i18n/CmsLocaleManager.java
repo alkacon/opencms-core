@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/09/21 16:21:30 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/11/08 15:06:43 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class CmsLocaleManager implements I_CmsEventListener {
 
@@ -154,7 +154,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
             locale = (Locale)m_localeCache.get(localeName);
             if (locale == null) {
                 try {
-                    String localeNames[] = CmsStringUtil.split(localeName, "_");
+                    String localeNames[] = CmsStringUtil.splitAsArray(localeName, '_');
                     locale = new Locale(
                         localeNames[0],
                         (localeNames.length > 1) ? localeNames[1] : "",
@@ -178,11 +178,11 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * @param localeNames array of locale names
      * @return a List of locales derived from the given locale names
      */
-    public static List getLocales(Object[] localeNames) {
+    public static List getLocales(List localeNames) {
 
-        List result = new ArrayList(localeNames.length);
-        for (int i = 0; i < localeNames.length; i++) {
-            result.add(getLocale(localeNames[i].toString().trim()));
+        List result = new ArrayList(localeNames.size());
+        for (int i = 0; i < localeNames.size(); i++) {
+            result.add(getLocale(localeNames.get(i).toString().trim()));
         }
         return result;
     }
@@ -198,7 +198,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
         if (localeNames == null) {
             return null;
         }
-        return getLocales(CmsStringUtil.split(localeNames, ","));
+        return getLocales(CmsStringUtil.splitAsList(localeNames, ','));
     }
 
     /**

@@ -1,0 +1,3 @@
+<xsd:simpleType name="OpenCmsVfsFile">
+	<xsd:restriction base="xsd:string" />
+</xsd:simpleType>

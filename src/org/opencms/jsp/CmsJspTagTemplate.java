@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2004/10/16 08:24:38 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/11/08 15:06:43 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
@@ -221,7 +221,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
             if (content != null) {
                 String absolutePath = controller.getCmsObject().getSitePath(content.getFile());
                 // check the elements in the elementlist, if the check fails don't render the element
-                String elements[] = CmsStringUtil.split(elementlist, ",");
+                String elements[] = CmsStringUtil.splitAsArray(elementlist, ',');
                 boolean found = false;
                 for (int i = 0; i < elements.length; i++) {                    
                     String el = elements[i].trim();

@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/AllTests.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestXmlContentHandler.java,v $
  * Date   : $Date: 2004/11/08 15:06:43 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,37 +31,20 @@
  
 package org.opencms.xml.content;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
-
 /**
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * Test handler for XML content.
  * 
- * @since 5.0
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @version $Revision: 1.1 $
+ * 
+ * @since 5.5.4
  */
-public final class AllTests {
+public class TestXmlContentHandler extends CmsDefaultXmlContentHandler {
 
     /**
-     * Hide constructor to prevent generation of class instances.<p>
+     * Creates a new instance.<p>
      */
-    private AllTests() {
-        // empty
-    }
-    
-    /**
-     * Returns the JUnit test suite for this package.<p>
-     * 
-     * @return the JUnit test suite for this package
-     */    
-    public static Test suite() {
-        TestSuite suite = new TestSuite("Tests for package org.opencms.xml.content");
-        //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(TestCmsXmlContent.class));        
-        suite.addTest(new TestSuite(TestCmsXmlContentDefinition.class));
-        suite.addTest(TestCmsXmlContentWithVfs.suite());
-        //$JUnit-END$
-        return suite;
+    public TestXmlContentHandler() {
+        super();
     }
 }

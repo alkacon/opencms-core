@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2004/10/23 06:50:36 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/11/08 15:06:43 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
-import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -56,7 +55,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -225,13 +224,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
 
         // the schema definition is located in a separate file for easier editing
         if (m_schemaDefinition == null) {
-            try {
-                m_schemaDefinition = CmsFileUtil.readFile(
-                    "org/opencms/xml/types/HtmlValue.xsd",
-                    CmsEncoder.C_UTF8_ENCODING);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            m_schemaDefinition = readSchemaDefinition("org/opencms/xml/types/XmlHtmlValue.xsd");
         }
         return m_schemaDefinition;
     }
@@ -311,13 +304,12 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     
                 CmsLinkTable linkTable = linkProcessor.getLinkTable();
                 for (Iterator i = linkTable.iterator(); i.hasNext();) {
-                    CmsLink link = linkTable.getLink((String)i.next());
+                    CmsLink link = (CmsLink)i.next();
     
-                    Element linkElement = links.addElement(CmsXmlPage.NODE_LINK).addAttribute(
-                        CmsXmlPage.ATTRIBUTE_NAME,
-                        link.getName()).addAttribute(CmsXmlPage.ATTRIBUTE_TYPE, link.getType()).addAttribute(
-                        CmsXmlPage.ATTRIBUTE_INTERNAL,
-                        Boolean.toString(link.isInternal()));
+                    Element linkElement = links.addElement(CmsXmlPage.NODE_LINK)
+                        .addAttribute(CmsXmlPage.ATTRIBUTE_NAME, link.getName())
+                        .addAttribute(CmsXmlPage.ATTRIBUTE_TYPE, link.getType())
+                        .addAttribute(CmsXmlPage.ATTRIBUTE_INTERNAL, Boolean.toString(link.isInternal()));
     
                     linkElement.addElement(CmsXmlPage.NODE_TARGET).addCDATA(link.getTarget());
     

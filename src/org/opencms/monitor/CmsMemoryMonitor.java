@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2004/11/05 18:15:11 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/11/08 15:06:43 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.monitor;
 
 import org.opencms.cache.CmsLruCache;
@@ -64,386 +65,73 @@ import org.apache.commons.collections.map.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.34 $ $Date: 2004/11/05 18:15:11 $
+ * @version $Revision: 1.35 $ $Date: 2004/11/08 15:06:43 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  */
 public class CmsMemoryMonitor implements I_CmsScheduledJob {
-    
+
     /** Set interval for clearing the caches to 10 minutes. */
     private static final int C_INTERVAL_CLEAR = 1000 * 60 * 10;
-    
+
     /** Maximum depth for object size recursion. */
     private static final int C_MAX_DEPTH = 5;
 
     /** Flag indicating if monitor is currently running. */
     private static boolean m_currentlyRunning;
-    
+
+    /** The memory monitor configuration. */
+    private CmsMemoryMonitorConfiguration m_configuration;
+
+    /** Interval in which emails are send. */
+    private int m_intervalEmail;
+
+    /** Interval in which the log is written. */
+    private int m_intervalLog;
+
+    /** Interval between 2 warnings. */
+    private int m_intervalWarning;
+
     /** The time the caches were last cleared. */
-    private long m_lastClearCache;    
-    
+    private long m_lastClearCache;
+
     /** The time the last status email was send. */
     private long m_lastEmailStatus;
 
     /** The time the last warning email was send. */
     private long m_lastEmailWarning;
-    
+
     /** The time the last status log was written. */
     private long m_lastLogStatus;
-    
+
     /** The time the last warning log was written. */
-    private long m_lastLogWarning;    
+    private long m_lastLogWarning;
+
+    /** The number of times the log entry was written. */
+    private int m_logCount;
+
+    /** Memory percentage to reach to go to warning level. */
+    private int m_maxUsagePercent;
 
     /** Contains the object to be monitored. */
     private Map m_monitoredObjects;
 
     /** Flag for memory warning mail send. */
-    private boolean m_warningSendSinceLastStatus;
-    
-    /** Flag for memory warning mail send. */
     private boolean m_warningLoggedSinceLastStatus;
-    
-    private CmsMemoryMonitorConfiguration m_configuration;
-    
-    /**
-     * Defalt declaration.<p>
-     * 
-     * this members are used in several methods
-     */
-    private int m_emailInterval;
-    private int m_logInterval;
-    private int m_warningInterval = 360;
-    private int m_maxUsagePercent = 90;
-    
-    
+
+    /** Flag for memory warning mail send. */
+    private boolean m_warningSendSinceLastStatus;
+
     /**
      * Empty constructor, required by OpenCms scheduler.<p>
      */
     public CmsMemoryMonitor() {
-        
+
         m_monitoredObjects = new HashMap();
     }
-    
-    /**
-     * Initializes the monitor with the provided configuration.<p>
-     * 
-     * @param configuration the configuration to use
-     */
-    public void initialize(CmsMemoryMonitorConfiguration configuration) {
-        
-        m_warningSendSinceLastStatus = false;
-        m_warningLoggedSinceLastStatus = false;
-        m_lastEmailWarning = 0;
-        m_lastEmailStatus = 0;       
-        m_lastLogStatus = 0;
-        m_lastLogWarning = 0;        
-        m_lastClearCache = 0;
-        m_configuration = configuration;
-        
-        m_emailInterval = m_configuration.getEmailInterval() * 60000;
-        m_logInterval = m_configuration.getLogInterval() * 60000;
-        
-        if (m_configuration.getWarningInterval() > 0) {
-            m_warningInterval = m_configuration.getWarningInterval();
-        }
-        m_warningInterval *= 60000;
-        
-        if (m_configuration.getMaxUsagePercent() > 0) {
-            m_maxUsagePercent = m_configuration.getMaxUsagePercent();
-        }
-        
-        
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval log      : " + (m_logInterval / 60000) + " min");
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval email    : " + (m_emailInterval / 60000) + " min");
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval warning  : " + (m_warningInterval / 60000) + " min");
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM max usage         : " + m_maxUsagePercent + "%");
-            if ((m_configuration.getEmailReceiver() == null) || (m_configuration.getEmailSender() == null)) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM email             : disabled");
-            } else {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM email sender      : " + m_configuration.getEmailSender());
-                Iterator i = m_configuration.getEmailReceiver().iterator();
-                int n = 0;
-                while (i.hasNext()) {                    
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM email receiver    : " + (n+1) + " - " + i.next());
-                    n++;
-                }
-            }
-        }  
-        
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            // this will happen only once during system startup
-            OpenCms.getLog(this).debug(", New instance of CmsMemoryMonitor created at " + (new Date(System.currentTimeMillis())));
-        }
-        
-    }
 
-    /**
-     * Clears the OpenCms caches.<p> 
-     */
-    private void clearCaches() {
-        if ((m_lastClearCache + C_INTERVAL_CLEAR) > System.currentTimeMillis()) {
-            // if the cache has already been cleared less then 15 minutes ago we skip this because 
-            // clearing the caches to often will hurt system performance and the 
-            // setup seems to be in trouble anyway
-            return;
-        }        
-        m_lastClearCache = System.currentTimeMillis();
-        if (OpenCms.getLog(this).isWarnEnabled()) {
-            OpenCms.getLog(this).warn(", Clearing caches because memory consumption has reached a critical level");
-        }        
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
-        System.gc();       
-    }
-
-    /**
-     * Returns if monitoring is enabled.<p>
-     * 
-     * @return true if monitoring is enabled
-     */
-    public boolean enabled() {
-        return true;
-    }
-
-    /**
-     * Returns the cache costs of a monitored object.<p>
-     * obj must be of type CmsLruCache 
-     * 
-     * @param obj the object
-     * @return the cache costs or "-"
-     */
-    private long getCosts(Object obj) {
-        
-        long costs = 0;
-        if (obj instanceof CmsLruCache) {
-            costs = ((CmsLruCache)obj).getObjectCosts();
-            if (costs < 0) {
-                costs = 0;
-            }
-        }
-        
-        return costs;
-    }
-
-    /**
-     * Returns the number of items within a monitored object.<p>
-     * obj must be of type CmsLruCache, CmsLruHashMap or Map
-     * 
-     * @param obj the object
-     * @return the number of items or "-"
-     */
-    private String getItems(Object obj) {
-        if (obj instanceof CmsLruCache) {
-            return Integer.toString(((CmsLruCache)obj).size());
-        }
-        if (obj instanceof Map) {
-            return Integer.toString(((Map)obj).size());
-        }
-        return "-";
-    }
-
-    /**
-     * Returns the total size of key strings within a monitored object.<p>
-     * obj must be of type map, the keys must be of type String.
-     * 
-     * @param obj the object
-     * @return the total size of key strings
-     */
-    private long getKeySize(Object obj) {
-        
-        if (obj instanceof Map) {
-            return getKeySize ((Map)obj, 1);
-        }
-        
-        return 0;
-    }
-
-    /**
-     * Returns the total size of key strings within a monitored map.<p>
-     * the keys must be of type String.
-     * 
-     * @param map the map
-     * @param depth the max recursion depth for calculation the size
-     * @return total size of key strings
-     */
-    private long getKeySize(Map map, int depth) {
-        long keySize = 0;          
-        try {
-            Object[] values = map.values().toArray();                
-            for (int i=0, s=values.length; i<s; i++) {
-                
-                Object obj = values[i];
-                
-                if (obj instanceof Map && depth < C_MAX_DEPTH) {
-                    keySize += getKeySize((Map)obj, depth+1);
-                    continue;
-                }
-            }
-            values = null;
-            
-            Object[] keys = map.keySet().toArray();           
-            for (int i=0, s=keys.length; i<s; i++) {
-                
-                Object obj = keys[i];
-                
-                if (obj instanceof String) {
-                    String st = (String)obj;
-                    keySize += (st.length() * 2);
-                }
-            }
-        } catch (ConcurrentModificationException e) {
-            // this might happen since even the .toArray() method internally creates an iterator
-        } catch (Throwable t) {
-            // catch all other exceptions otherwise the whole monitor will stop working
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Caught throwable "+t.getMessage());
-            } 
-        }
-        
-        return keySize;
-    }
-    
-    /**
-     * Returns the max costs for all items within a monitored object.<p>
-     * obj must be of type CmsLruCache, CmsLruHashMap
-     * 
-     * @param obj the object
-     * @return max cost limit or "-"
-     */
-    private String getLimit(Object obj) {
-        if (obj instanceof CmsLruCache) {
-            return Integer.toString(((CmsLruCache)obj).getMaxCacheCosts());
-        }
-        if (obj instanceof LRUMap) { 
-            return Integer.toString(((LRUMap)obj).maxSize());
-        }
-        return "-";
-    }
-
-    /**
-     * Returns the value sizes of value objects within the monitored object.<p>
-     * obj must be of type map
-     * 
-     * @param obj the object 
-     * @return the value sizes of value objects or "-"-fields
-     */    
-    private long getValueSize(Object obj) {
-
-        if (obj instanceof CmsLruCache) {
-            return ((CmsLruCache)obj).size();
-        }
-        
-        if (obj instanceof Map) {
-            return getValueSize((Map)obj, 1);
-        }
-        
-        if (obj instanceof List) {
-            return getValueSize((List)obj, 1);
-        }
-        
-        try {
-            return getMemorySize(obj);
-        } catch (Exception exc) {
-            return 0;
-        }
-    }
-    
-    /**
-     * Returns the total value size of a map object.<p>
-     * 
-     * @param mapValue the map object
-     * @param depth the max recursion depth for calculation the size
-     * @return the size of the map object
-     */
-    private long getValueSize(Map mapValue, int depth) {     
-        long totalSize = 0;
-        try {
-            Object[] values = mapValue.values().toArray();
-            for (int i=0, s=values.length; i<s; i++) {
-                
-                Object obj = values[i];
-                
-                if (obj instanceof CmsAccessControlList) {
-                    obj = ((CmsAccessControlList)obj).getPermissionMap();
-                }
-                
-                if (obj instanceof CmsFlexCacheVariation) {
-                    obj = ((CmsFlexCacheVariation)obj).m_map;
-                }
-                
-                if (obj instanceof Map && depth < C_MAX_DEPTH) {
-                    totalSize += getValueSize((Map)obj, depth+1);
-                    continue;
-                }
-                
-                if (obj instanceof List && depth < C_MAX_DEPTH) {
-                    totalSize += getValueSize((List)obj, depth+1);
-                    continue;
-                }
-                
-                totalSize += getMemorySize(obj);
-            }
-        } catch (ConcurrentModificationException e) {
-            // this might happen since even the .toArray() method internally creates an iterator
-        } catch (Throwable t) {
-            // catch all other exceptions otherwise the whole monitor will stop working
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Caught throwable "+t.getMessage());
-            } 
-        }
-        
-        return totalSize;
-    }
-    
-    /**
-     * Returns the total value size of a list object.<p>
-     * 
-     * @param listValue the list object
-     * @param depth the max recursion depth for calculation the size
-     * @return the size of the list object
-     */
-    private long getValueSize(List listValue, int depth) {        
-        long totalSize = 0;
-        try {
-            Object[] values = listValue.toArray();        
-            for (int i=0, s=values.length; i<s; i++) {
-                
-                Object obj = values[i];
-                
-                if (obj instanceof CmsAccessControlList) {
-                    obj = ((CmsAccessControlList)obj).getPermissionMap();
-                }
-                
-                if (obj instanceof CmsFlexCacheVariation) {
-                    obj = ((CmsFlexCacheVariation)obj).m_map;
-                }
-                
-                if (obj instanceof Map && depth < C_MAX_DEPTH) {
-                    totalSize += getValueSize((Map)obj, depth+1);
-                    continue;
-                }
-                
-                if (obj instanceof List && depth < C_MAX_DEPTH) {
-                    totalSize += getValueSize((List)obj, depth+1);
-                    continue;
-                }
-                
-                totalSize += getMemorySize(obj);
-            }
-        } catch (ConcurrentModificationException e) {
-            // this might happen since even the .toArray() method internally creates an iterator
-        } catch (Throwable t) {
-            // catch all other exceptions otherwise the whole monitor will stop working
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Caught throwable "+t.getMessage());
-            } 
-        }
-              
-        return totalSize;
-    }
-    
     /**
      * Returns the size of objects that are instances of
      * <code>byte[]</code>, <code>String</code>, <code>CmsFile</code>,<code>I_CmsLruCacheObject</code>.<p>
@@ -457,16 +145,16 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         if (obj instanceof I_CmsMemoryMonitorable) {
             return ((I_CmsMemoryMonitorable)obj).getMemorySize();
         }
-        
+
         if (obj instanceof byte[]) {
             // will always be a total of 16 + 8
             return 8 + (int)(Math.ceil(((byte[])obj).length / 16.0) * 16.0);
         }
-        
+
         if (obj instanceof String) {
             // will always be a total of 16 + 24
             return 24 + (int)(Math.ceil(((String)obj).length() / 8.0) * 16.0);
-        }        
+        }
 
         if (obj instanceof CmsFile) {
             CmsFile f = (CmsFile)obj;
@@ -476,11 +164,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 return 1024;
             }
         }
-        
+
         if (obj instanceof CmsUUID) {
             return 184; // worst case if UUID String has been generated
         }
-        
+
         if (obj instanceof CmsPermissionSet) {
             return 16; // two ints
         }
@@ -488,32 +176,120 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         if (obj instanceof CmsResource) {
             return 1024; // estimated size
         }
-        
+
         if (obj instanceof CmsUser) {
             return 2048; // estimated size
         }
-        
+
         if (obj instanceof CmsGroup) {
             return 512; // estimated size
         }
-        
+
         if (obj instanceof CmsProject) {
             return 512;
         }
-        
+
         if (obj instanceof Boolean) {
             return 8; // one boolean
         }
-        
+
         // System.err.println("Unresolved: " + obj.getClass().getName());
         return 8;
     }
-    
+
+    /**
+     * Returns if monitoring is enabled.<p>
+     * 
+     * @return true if monitoring is enabled
+     */
+    public boolean enabled() {
+
+        return true;
+    }
+
+    /**
+     * Returns the configuration.<p>
+     *
+     * @return the configuration
+     */
+    public CmsMemoryMonitorConfiguration getConfiguration() {
+
+        return m_configuration;
+    }
+
+    /**
+     * Returns the log count.<p>
+     *
+     * @return the log count
+     */
+    public int getLogCount() {
+
+        return m_logCount;
+    }
+
+    /**
+     * Initializes the monitor with the provided configuration.<p>
+     * 
+     * @param configuration the configuration to use
+     */
+    public void initialize(CmsMemoryMonitorConfiguration configuration) {
+
+        m_warningSendSinceLastStatus = false;
+        m_warningLoggedSinceLastStatus = false;
+        m_lastEmailWarning = 0;
+        m_lastEmailStatus = 0;
+        m_lastLogStatus = 0;
+        m_lastLogWarning = 0;
+        m_lastClearCache = 0;
+        m_configuration = configuration;
+
+        m_intervalWarning = 720 * 60000;
+        m_maxUsagePercent = 90;
+
+        m_intervalEmail = m_configuration.getEmailInterval() * 1000;
+        m_intervalLog = m_configuration.getLogInterval() * 1000;
+
+        if (m_configuration.getWarningInterval() > 0) {
+            m_intervalWarning = m_configuration.getWarningInterval();
+        }
+        m_intervalWarning *= 1000;
+
+        if (m_configuration.getMaxUsagePercent() > 0) {
+            m_maxUsagePercent = m_configuration.getMaxUsagePercent();
+        }
+
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval log      : " + (m_intervalLog / 1000) + " min");
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval email    : " + (m_intervalEmail / 1000) + " min");
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval warning  : " + (m_intervalWarning / 1000) + " min");
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM max usage         : " + m_maxUsagePercent + "%");
+            if ((m_configuration.getEmailReceiver() == null) || (m_configuration.getEmailSender() == null)) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM email             : disabled");
+            } else {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                    ". MM email sender      : " + m_configuration.getEmailSender());
+                Iterator i = m_configuration.getEmailReceiver().iterator();
+                int n = 0;
+                while (i.hasNext()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM email receiver    : " + (n + 1) + " - " + i.next());
+                    n++;
+                }
+            }
+        }
+
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            // this will happen only once during system startup
+            OpenCms.getLog(this).debug(
+                " New instance of CmsMemoryMonitor created at " + (new Date(System.currentTimeMillis())));
+        }
+
+    }
+
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, org.apache.commons.collections.ExtendedProperties)
      */
     public String launch(CmsObject cms, ExtendedProperties parameters) throws Exception {
-        
+
         CmsMemoryMonitor monitor = OpenCms.getMemoryMonitor();
 
         if (m_currentlyRunning) {
@@ -521,7 +297,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         } else {
             m_currentlyRunning = true;
         }
-        
+
         // check if the system is in a low memory condition
         if (monitor.lowMemory()) {
             // log warning
@@ -531,30 +307,304 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             // clean up caches     
             monitor.clearCaches();
         }
-        
+
         // check if regular a log entry must be written
-        if ((System.currentTimeMillis() - monitor.m_lastLogStatus) > monitor.m_logInterval) {
+        if ((System.currentTimeMillis() - monitor.m_lastLogStatus) > monitor.m_intervalLog) {
             monitor.monitorWriteLog(false);
         }
-        
+
         // check if the memory status email must be send
-        if ((System.currentTimeMillis() - monitor.m_lastEmailStatus) > monitor.m_emailInterval) {
+        if ((System.currentTimeMillis() - monitor.m_lastEmailStatus) > monitor.m_intervalEmail) {
             monitor.monitorSendEmail(false);
         }
 
         m_currentlyRunning = false;
         return null;
     }
-    
+
     /**
      * Returns true if the system runs low on memory.<p>
      * 
      * @return true if the system runs low on memory
      */
     public boolean lowMemory() {
+
         long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         long usage = usedMemory * 100 / Runtime.getRuntime().maxMemory();
         return ((m_maxUsagePercent > 0) && (usage > m_maxUsagePercent));
+    }
+
+    /**
+     * Adds a new object to the monitor.<p>
+     * 
+     * @param objectName name of the object
+     * @param object the object for monitoring
+     */
+    public void register(String objectName, Object object) {
+
+        m_monitoredObjects.put(objectName, object);
+    }
+
+    /**
+     * Clears the OpenCms caches.<p> 
+     */
+    private void clearCaches() {
+
+        if ((m_lastClearCache + C_INTERVAL_CLEAR) > System.currentTimeMillis()) {
+            // if the cache has already been cleared less then 15 minutes ago we skip this because 
+            // clearing the caches to often will hurt system performance and the 
+            // setup seems to be in trouble anyway
+            return;
+        }
+        m_lastClearCache = System.currentTimeMillis();
+        if (OpenCms.getLog(this).isWarnEnabled()) {
+            OpenCms.getLog(this).warn("Clearing caches because memory consumption has reached a critical level");
+        }
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
+        System.gc();
+    }
+
+    /**
+     * Returns the cache costs of a monitored object.<p>
+     * obj must be of type CmsLruCache 
+     * 
+     * @param obj the object
+     * @return the cache costs or "-"
+     */
+    private long getCosts(Object obj) {
+
+        long costs = 0;
+        if (obj instanceof CmsLruCache) {
+            costs = ((CmsLruCache)obj).getObjectCosts();
+            if (costs < 0) {
+                costs = 0;
+            }
+        }
+
+        return costs;
+    }
+
+    /**
+     * Returns the number of items within a monitored object.<p>
+     * obj must be of type CmsLruCache, CmsLruHashMap or Map
+     * 
+     * @param obj the object
+     * @return the number of items or "-"
+     */
+    private String getItems(Object obj) {
+
+        if (obj instanceof CmsLruCache) {
+            return Integer.toString(((CmsLruCache)obj).size());
+        }
+        if (obj instanceof Map) {
+            return Integer.toString(((Map)obj).size());
+        }
+        return "-";
+    }
+
+    /**
+     * Returns the total size of key strings within a monitored map.<p>
+     * the keys must be of type String.
+     * 
+     * @param map the map
+     * @param depth the max recursion depth for calculation the size
+     * @return total size of key strings
+     */
+    private long getKeySize(Map map, int depth) {
+
+        long keySize = 0;
+        try {
+            Object[] values = map.values().toArray();
+            for (int i = 0, s = values.length; i < s; i++) {
+
+                Object obj = values[i];
+
+                if (obj instanceof Map && depth < C_MAX_DEPTH) {
+                    keySize += getKeySize((Map)obj, depth + 1);
+                    continue;
+                }
+            }
+            values = null;
+
+            Object[] keys = map.keySet().toArray();
+            for (int i = 0, s = keys.length; i < s; i++) {
+
+                Object obj = keys[i];
+
+                if (obj instanceof String) {
+                    String st = (String)obj;
+                    keySize += (st.length() * 2);
+                }
+            }
+        } catch (ConcurrentModificationException e) {
+            // this might happen since even the .toArray() method internally creates an iterator
+        } catch (Throwable t) {
+            // catch all other exceptions otherwise the whole monitor will stop working
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("Caught throwable " + t.getMessage());
+            }
+        }
+
+        return keySize;
+    }
+
+    /**
+     * Returns the total size of key strings within a monitored object.<p>
+     * obj must be of type map, the keys must be of type String.
+     * 
+     * @param obj the object
+     * @return the total size of key strings
+     */
+    private long getKeySize(Object obj) {
+
+        if (obj instanceof Map) {
+            return getKeySize((Map)obj, 1);
+        }
+
+        return 0;
+    }
+
+    /**
+     * Returns the max costs for all items within a monitored object.<p>
+     * obj must be of type CmsLruCache, CmsLruHashMap
+     * 
+     * @param obj the object
+     * @return max cost limit or "-"
+     */
+    private String getLimit(Object obj) {
+
+        if (obj instanceof CmsLruCache) {
+            return Integer.toString(((CmsLruCache)obj).getMaxCacheCosts());
+        }
+        if (obj instanceof LRUMap) {
+            return Integer.toString(((LRUMap)obj).maxSize());
+        }
+
+        return "-";
+    }
+
+    /**
+     * Returns the total value size of a list object.<p>
+     * 
+     * @param listValue the list object
+     * @param depth the max recursion depth for calculation the size
+     * @return the size of the list object
+     */
+    private long getValueSize(List listValue, int depth) {
+
+        long totalSize = 0;
+        try {
+            Object[] values = listValue.toArray();
+            for (int i = 0, s = values.length; i < s; i++) {
+
+                Object obj = values[i];
+
+                if (obj instanceof CmsAccessControlList) {
+                    obj = ((CmsAccessControlList)obj).getPermissionMap();
+                }
+
+                if (obj instanceof CmsFlexCacheVariation) {
+                    obj = ((CmsFlexCacheVariation)obj).m_map;
+                }
+
+                if (obj instanceof Map && depth < C_MAX_DEPTH) {
+                    totalSize += getValueSize((Map)obj, depth + 1);
+                    continue;
+                }
+
+                if (obj instanceof List && depth < C_MAX_DEPTH) {
+                    totalSize += getValueSize((List)obj, depth + 1);
+                    continue;
+                }
+
+                totalSize += getMemorySize(obj);
+            }
+        } catch (ConcurrentModificationException e) {
+            // this might happen since even the .toArray() method internally creates an iterator
+        } catch (Throwable t) {
+            // catch all other exceptions otherwise the whole monitor will stop working
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("Caught throwable " + t.getMessage());
+            }
+        }
+
+        return totalSize;
+    }
+
+    /**
+     * Returns the total value size of a map object.<p>
+     * 
+     * @param mapValue the map object
+     * @param depth the max recursion depth for calculation the size
+     * @return the size of the map object
+     */
+    private long getValueSize(Map mapValue, int depth) {
+
+        long totalSize = 0;
+        try {
+            Object[] values = mapValue.values().toArray();
+            for (int i = 0, s = values.length; i < s; i++) {
+
+                Object obj = values[i];
+
+                if (obj instanceof CmsAccessControlList) {
+                    obj = ((CmsAccessControlList)obj).getPermissionMap();
+                }
+
+                if (obj instanceof CmsFlexCacheVariation) {
+                    obj = ((CmsFlexCacheVariation)obj).m_map;
+                }
+
+                if (obj instanceof Map && depth < C_MAX_DEPTH) {
+                    totalSize += getValueSize((Map)obj, depth + 1);
+                    continue;
+                }
+
+                if (obj instanceof List && depth < C_MAX_DEPTH) {
+                    totalSize += getValueSize((List)obj, depth + 1);
+                    continue;
+                }
+
+                totalSize += getMemorySize(obj);
+            }
+        } catch (ConcurrentModificationException e) {
+            // this might happen since even the .toArray() method internally creates an iterator
+        } catch (Throwable t) {
+            // catch all other exceptions otherwise the whole monitor will stop working
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("Caught throwable " + t.getMessage());
+            }
+        }
+
+        return totalSize;
+    }
+
+    /**
+     * Returns the value sizes of value objects within the monitored object.<p>
+     * obj must be of type map
+     * 
+     * @param obj the object 
+     * @return the value sizes of value objects or "-"-fields
+     */
+    private long getValueSize(Object obj) {
+
+        if (obj instanceof CmsLruCache) {
+            return ((CmsLruCache)obj).size();
+        }
+
+        if (obj instanceof Map) {
+            return getValueSize((Map)obj, 1);
+        }
+
+        if (obj instanceof List) {
+            return getValueSize((List)obj, 1);
+        }
+
+        try {
+            return getMemorySize(obj);
+        } catch (Exception exc) {
+            return 0;
+        }
     }
 
     /**
@@ -563,14 +613,18 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * @param warning if true, send a memory warning email 
      */
     private void monitorSendEmail(boolean warning) {
+
         if ((m_configuration.getEmailSender() == null) || (m_configuration.getEmailReceiver() == null)) {
             // send no mails if not fully configured
             return;
-        } else if (warning && (m_warningSendSinceLastStatus && !((m_emailInterval <= 0) && (System.currentTimeMillis() < (m_lastEmailWarning + m_warningInterval))))) {
+        } else if (warning 
+            && (m_warningSendSinceLastStatus 
+                && !((m_intervalEmail <= 0) 
+                    && (System.currentTimeMillis() < (m_lastEmailWarning + m_intervalWarning))))) {
             // send no warning email if no status email has been send since the last warning
             // if status is disabled, send no warn email if warn interval has not passed
             return;
-        } else if ((! warning) && (m_emailInterval <= 0)) {
+        } else if ((!warning) && (m_intervalEmail <= 0)) {
             // if email iterval is <= 0 status email is disabled
             return;
         }
@@ -579,194 +633,249 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         String content = "";
         if (warning) {
             m_warningSendSinceLastStatus = true;
-            m_lastEmailWarning = System.currentTimeMillis(); 
-            subject = "OpenCms Memory W A R N I N G [" + OpenCms.getSystemInfo().getServerName().toUpperCase() + "/" + date + "]";
-            content += "W A R N I N G !\nOpenCms memory consumption on server " + OpenCms.getSystemInfo().getServerName().toUpperCase() + " has reached a critical level !\n\n"
-                    + "The configured limit is " + m_maxUsagePercent + "%\n\n";
+            m_lastEmailWarning = System.currentTimeMillis();
+            subject = "OpenCms Memory W A R N I N G ["
+                + OpenCms.getSystemInfo().getServerName().toUpperCase()
+                + "/"
+                + date
+                + "]";
+            content += "W A R N I N G !\nOpenCms memory consumption on server "
+                + OpenCms.getSystemInfo().getServerName().toUpperCase()
+                + " has reached a critical level !\n\n"
+                + "The configured limit is "
+                + m_maxUsagePercent
+                + "%\n\n";
         } else {
             m_warningSendSinceLastStatus = false;
             m_lastEmailStatus = System.currentTimeMillis();
-            subject = "OpenCms Memory Status [" + OpenCms.getSystemInfo().getServerName().toUpperCase() + "/" + date + "]";
+            subject = "OpenCms Memory Status ["
+                + OpenCms.getSystemInfo().getServerName().toUpperCase()
+                + "/"
+                + date
+                + "]";
         }
-        
+
         long maxMemory = Runtime.getRuntime().maxMemory() / 1048576;
         long totalMemory = Runtime.getRuntime().totalMemory() / 1048576;
         long usedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576;
         long freeMemory = maxMemory - usedMemory;
         long usage = usedMemory * 100 / maxMemory;
-        
-        content += "Memory usage report of OpenCms server " + OpenCms.getSystemInfo().getServerName().toUpperCase() + " at " + date + "\n\n" 
-            + "Memory maximum heap size: " + maxMemory + " mb\n" 
-            + "Memory current heap size: " + totalMemory + " mb\n\n" 
-            + "Memory currently used   : " + usedMemory + " mb (" + usage + "%)\n"
-            + "Memory currently unused : " + freeMemory + " mb\n\n\n";
+
+        content += "Memory usage report of OpenCms server "
+            + OpenCms.getSystemInfo().getServerName().toUpperCase()
+            + " at "
+            + date
+            + "\n\n"
+            + "Memory maximum heap size: "
+            + maxMemory
+            + " mb\n"
+            + "Memory current heap size: "
+            + totalMemory
+            + " mb\n\n"
+            + "Memory currently used   : "
+            + usedMemory
+            + " mb ("
+            + usage
+            + "%)\n"
+            + "Memory currently unused : "
+            + freeMemory
+            + " mb\n\n\n";
 
         if (warning) {
             content += "*** Please take action NOW to ensure that no OutOfMemoryException occurs.\n\n\n";
         }
-        
+
         OpenCmsSessionManager sm = OpenCmsCore.getInstance().getSessionManager();
         CmsSessionInfoManager cs = OpenCms.getSessionInfoManager();
-        
+
         if ((sm != null) && (cs != null)) {
             content += "Current status of the sessions:\n\n";
             content += "Logged in users          : " + cs.getLoggedInUsers().size() + "\n";
             content += "Currently active sessions: " + sm.getCurrentSessions() + "\n";
             content += "Total created sessions   : " + sm.getTotalSessions() + "\n\n\n";
         }
-        
+
         sm = null;
         cs = null;
-        
-        content += "Current status of the caches:\n\n";        
+
+        content += "Current status of the caches:\n\n";
         List keyList = Arrays.asList(m_monitoredObjects.keySet().toArray());
         Collections.sort(keyList);
         long totalSize = 0;
         for (Iterator keys = keyList.iterator(); keys.hasNext();) {
-            String key = (String)keys.next();        
+            String key = (String)keys.next();
             String shortKeys[] = key.split("\\.");
             String shortKey = shortKeys[shortKeys.length - 2] + "." + shortKeys[shortKeys.length - 1];
             PrintfFormat form = new PrintfFormat("%9s");
             Object obj = m_monitoredObjects.get(key);
-            
+
             long size = getKeySize(obj) + getValueSize(obj) + getCosts(obj);
             totalSize += size;
-            
-            content += new PrintfFormat("%-42.42s").sprintf(shortKey) + "  " 
-                    + "Entries: " + form.sprintf(getItems(obj)) + "   " 
-                    + "Limit: " + form.sprintf(getLimit(obj)) + "   "
-                    + "Size: " + form.sprintf(Long.toString(size)) + "\n";
+
+            content += new PrintfFormat("%-42.42s").sprintf(shortKey)
+                + "  "
+                + "Entries: "
+                + form.sprintf(getItems(obj))
+                + "   "
+                + "Limit: "
+                + form.sprintf(getLimit(obj))
+                + "   "
+                + "Size: "
+                + form.sprintf(Long.toString(size))
+                + "\n";
         }
         content += "\nTotal size of cache memory monitored: " + totalSize + " (" + totalSize / 1048576 + ")\n\n";
-        
+
         String from = m_configuration.getEmailSender();
         List receivers = new ArrayList();
-        List receiverEmails = m_configuration.getEmailReceiver();   
+        List receiverEmails = m_configuration.getEmailReceiver();
         try {
             if (from != null && receiverEmails != null && !receiverEmails.isEmpty()) {
                 Iterator i = receiverEmails.iterator();
                 while (i.hasNext()) {
-                    receivers.add(new InternetAddress((String)i.next()));    
-                }               
-                CmsSimpleMail email =  new CmsSimpleMail();
+                    receivers.add(new InternetAddress((String)i.next()));
+                }
+                CmsSimpleMail email = new CmsSimpleMail();
                 email.setFrom(from);
                 email.setTo(receivers);
                 email.setSubject(subject);
                 email.setMsg(content);
-                new CmsMailTransport(email).send();                
-            }            
+                new CmsMailTransport(email).send();
+            }
             if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(", Memory Monitor " + (warning?"warning":"status") + " email send");
+                OpenCms.getLog(this).info("Memory Monitor " + (warning ? "warning" : "status") + " email send");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Write a warning or status log entry with OpenCms Memory information.<p>
      * 
      * @param warning if true, write a memory warning log entry 
      */
     private void monitorWriteLog(boolean warning) {
-        if (! OpenCms.getLog(this).isWarnEnabled()) {
+
+        if (!OpenCms.getLog(this).isWarnEnabled()) {
             // we need at last warn level for this output
             return;
-        } else if ((! warning) && (! OpenCms.getLog(this).isDebugEnabled())) {
-            // if not warning we need debug level
+        } else if ((!warning) && (!OpenCms.getLog(this).isInfoEnabled())) {
+            // if not warning we need info level
             return;
-        } else if (warning && (m_warningLoggedSinceLastStatus && !(((m_logInterval <= 0) && (System.currentTimeMillis() < (m_lastLogWarning + m_warningInterval)))))) {
+        } else if (warning
+            && (m_warningLoggedSinceLastStatus 
+                && !(((m_intervalLog <= 0) 
+                    && (System.currentTimeMillis() < (m_lastLogWarning + m_intervalWarning)))))) {
             // write no warning log if no status log has been written since the last warning
             // if status is disabled, log no warn entry if warn interval has not passed
             return;
-        } else if ((! warning) && (m_logInterval <= 0)) {
+        } else if ((!warning) && (m_intervalLog <= 0)) {
             // if log iterval is <= 0 status log is disabled
             return;
         }
-        
+
         long maxMemory = Runtime.getRuntime().maxMemory() / 1048576;
         long totalMemory = Runtime.getRuntime().totalMemory() / 1048576;
         long usedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576;
         long freeMemory = maxMemory - usedMemory;
         long usage = usedMemory * 100 / maxMemory;
-        
+
         if (warning) {
             m_lastLogWarning = System.currentTimeMillis();
             m_warningLoggedSinceLastStatus = true;
-            OpenCms.getLog(this).warn(", W A R N I N G Memory consumption of " + usage 
-                 + "% has reached a critical level" 
-                 + " (" + m_maxUsagePercent + "% configured)");
+            OpenCms.getLog(this).warn(
+                " W A R N I N G Memory consumption of "
+                    + usage
+                    + "% has reached a critical level"
+                    + " ("
+                    + m_maxUsagePercent
+                    + "% configured)");
         } else {
             m_warningLoggedSinceLastStatus = false;
             m_lastLogStatus = System.currentTimeMillis();
         }
 
-        String memStatus = ", Memory max: " + maxMemory + " mb  " 
-            + "total: " + totalMemory + " mb  " 
-            + "free: " + freeMemory + " mb  " 
-            + "used: " + usedMemory + " mb  " 
-            + "percent: " + usage + "%  " 
-            + "limit: " + m_maxUsagePercent + "%  ";
-                
+        String memStatus = "Memory max: "
+            + maxMemory
+            + " mb  "
+            + "total: "
+            + totalMemory
+            + " mb  "
+            + "free: "
+            + freeMemory
+            + " mb  "
+            + "used: "
+            + usedMemory
+            + " mb  "
+            + "percent: "
+            + usage
+            + "%  "
+            + "limit: "
+            + m_maxUsagePercent
+            + "%  ";
+
         if (warning) {
             OpenCms.getLog(this).warn(memStatus);
-        } else {            
-            
-            OpenCms.getLog(this).debug(", Memory monitor log for server " + OpenCms.getSystemInfo().getServerName().toUpperCase());
-            
+        } else {
+
+            m_logCount++;
+            OpenCms.getLog(this).info(
+                "Memory monitor log for server "
+                    + OpenCms.getSystemInfo().getServerName().toUpperCase()
+                    + " ("
+                    + m_logCount
+                    + ")");
+
             List keyList = Arrays.asList(m_monitoredObjects.keySet().toArray());
             Collections.sort(keyList);
-            long totalSize = 0;            
+            long totalSize = 0;
             for (Iterator keys = keyList.iterator(); keys.hasNext();) {
-                
+
                 String key = (String)keys.next();
                 Object obj = m_monitoredObjects.get(key);
-                
+
                 long size = getKeySize(obj) + getValueSize(obj) + getCosts(obj);
                 totalSize += size;
-                
+
                 PrintfFormat name1 = new PrintfFormat("%-80s");
                 PrintfFormat name2 = new PrintfFormat("%-50s");
                 PrintfFormat form = new PrintfFormat("%9s");
-                OpenCms.getLog(this).debug(",, " 
-                        + "Monitored:, " + name1.sprintf(key) + ", " 
-                        + "Type:, " + name2.sprintf(obj.getClass().getName()) + ", " 
-                        + "Entries:, " + form.sprintf(getItems(obj)) + ", " 
-                        + "Limit:, " + form.sprintf(getLimit(obj)) + ", " 
-                        + "Size:, " + form.sprintf(Long.toString(size)));
+                OpenCms.getLog(this).info(
+                    "    "
+                        + "Monitored: "
+                        + name1.sprintf(key)
+                        + " "
+                        + "Type: "
+                        + name2.sprintf(obj.getClass().getName())
+                        + " "
+                        + "Entries: "
+                        + form.sprintf(getItems(obj))
+                        + " "
+                        + "Limit: "
+                        + form.sprintf(getLimit(obj))
+                        + " "
+                        + "Size: "
+                        + form.sprintf(Long.toString(size)));
             }
-            memStatus += "size monitored: " + totalSize + " (" + totalSize / 1048576 + ")";
-            OpenCms.getLog(this).debug(memStatus);
-            
+            memStatus += "size monitored: " + totalSize + " (" + totalSize / 1048576 + " mb)";
+            OpenCms.getLog(this).info(memStatus);
+
             OpenCmsSessionManager sm = OpenCmsCore.getInstance().getSessionManager();
             CmsSessionInfoManager cs = OpenCms.getSessionInfoManager();
-            
-            if ((sm != null) && (cs != null)) {
-                OpenCms.getLog(this).debug(", Sessions users: " + cs.getLoggedInUsers().size() + " current: " + sm.getCurrentSessions() + " total: " + sm.getTotalSessions());
-            }
-            
-            sm = null;
-            cs = null;            
-        }                
-    }
-    
-    /**
-     * Adds a new object to the monitor.<p>
-     * 
-     * @param objectName name of the object
-     * @param object the object for monitoring
-     */
-    public void register(String objectName, Object object) {
-        m_monitoredObjects.put(objectName, object);
-    }
-    
-    /**
-     * Returns the configuration.<p>
-     *
-     * @return the configuration
-     */
-    public CmsMemoryMonitorConfiguration getConfiguration() {
 
-        return m_configuration;
+            if ((sm != null) && (cs != null)) {
+                OpenCms.getLog(this).info(
+                    "Sessions users: "
+                        + cs.getLoggedInUsers().size()
+                        + " current: "
+                        + sm.getCurrentSessions()
+                        + " total: "
+                        + sm.getTotalSessions());
+            }
+
+            sm = null;
+            cs = null;
+        }
     }
 }

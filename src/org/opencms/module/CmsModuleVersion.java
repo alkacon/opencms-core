@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleVersion.java,v $
- * Date   : $Date: 2004/07/18 16:33:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/08 15:06:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -215,7 +215,7 @@ public class CmsModuleVersion implements Comparable {
     private void setVersion(String version) {
 
         m_number = 0L;
-        String[] split = CmsStringUtil.split(version, ".");
+        String[] split = CmsStringUtil.splitAsArray(version, '.');
         m_dots = split.length;
         if (m_dots > 4) {
             throw new IllegalArgumentException("Version can have only 4 numbers");

@@ -53,9 +53,9 @@
 		<defaultcontentencoding>UTF-8</defaultcontentencoding>	
 		<memorymonitor>
 			<maxusagepercent>90</maxusagepercent>
-			<log-interval>15</log-interval>
-			<email-interval>720</email-interval>
-			<warning-interval>720</warning-interval>
+			<log-interval>2</log-interval>
+			<email-interval>43200</email-interval>
+			<warning-interval>43200</warning-interval>
 		</memorymonitor>
 		<flexcache>
 			<cache-enabled>true</cache-enabled>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/11/08 15:06:44 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -83,7 +83,6 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
         List elementNames = null;
         String elementName = null;
         CmsLinkTable linkTable = null;
-        String linkName = null;
         CmsLink link = null;
 
         try {
@@ -115,8 +114,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
                     // iterate over all links inside a body element
                     Iterator k = linkTable.iterator();
                     while (k.hasNext()) {
-                        linkName = (String)k.next();
-                        link = linkTable.getLink(linkName);
+                        link = (CmsLink)k.next();
 
                         // external links are ommitted
                         if (link.isInternal()) {

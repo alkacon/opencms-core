@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/10/28 13:20:30 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/11/08 15:06:43 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.xml;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.io.ByteArrayOutputStream;
@@ -57,82 +58,13 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.3.5
  */
 public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
-    /**
-     * Data structure for name / index pairs, used to access elements in the form "Title[0]".<p>
-     */
-    private class CmsNameIndexPair {
-
-        /** The index of the element. */
-        private int m_index;
-
-        /** The name of the element. */
-        private String m_name;
-
-        /**
-         * Create a new name / index pair by parsing the input 
-         * for names like "Title[0]".<p>
-         * 
-         * If the name does not end with a valid number in square brackets,
-         * then the index is 0 and the name is used "as is" from the input.<p>
-         * 
-         * @param name the input to parse
-         */
-        public CmsNameIndexPair(String name) {
-
-            int end = name.length() - 1;
-            if (name.charAt(end) == ']') {
-                // parse names in the form: "Title[1]"
-                int pos = name.lastIndexOf('[');
-                if (pos > 0) {
-                    String number = name.substring(pos + 1, end);
-                    try {
-                        m_index = Integer.parseInt(number, 10);
-                        if (m_index < 0) {
-                            // no negative index numbers are allowed
-                            m_index = 0;
-                        }
-                        // only truncate the name if the number was successfully parsed 
-                        m_name = name.substring(0, pos);
-                    } catch (Exception e) {
-                        // ignore, index will be 0, name will be unchanged
-                        m_index = 0;
-                        m_name = name;
-                    }
-                }
-            } else {
-                m_index = 0;
-                m_name = name;
-            }
-        }
-
-        /**
-         * Returns the index.<p>
-         *
-         * @return the index
-         */
-        public int getIndex() {
-
-            return m_index;
-        }
-
-        /**
-         * Returns the name.<p>
-         *
-         * @return the name
-         */
-        public String getName() {
-
-            return m_name;
-        }
-    }
-    
     /** The XML content definition object (i.e. XML schema) used by this content. */
-    protected CmsXmlContentDefinition m_contentDefinition;    
+    protected CmsXmlContentDefinition m_contentDefinition;
 
     /** The content conversion to use for this xml document. */
     protected String m_conversion;
@@ -169,6 +101,97 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     }
 
     /**
+     * Translates a simple lookup path to the simplified Xpath format used for 
+     * the internal bookmarks.<p>
+     * 
+     * Examples:<br> 
+     * <code>title</code> becomes <code>title[0]</code><br>
+     * <code>title[1]</code> is left untouched<br>
+     * <code>title/subtitle</code> becomes <code>title[0]/subtitle[0]</code><br>
+     * <code>title/subtitle[1]</code> becomes <code>title[0]/subtitle[1]</code><p>
+     * 
+     * Note: If the name already has the format <code>title[1]</code> then provided index parameter 
+     * is ignored.<p> 
+     * 
+     * @param path the path to get the simplified Xpath for
+     * @param index the index to append (if required)
+     * 
+     * @return the simplified Xpath for the given name
+     */
+    protected static String createXpath(String path, int index) {
+
+        if (path.indexOf('/') > -1) {
+            // this is a complex path over more then 1 node
+            StringBuffer result = new StringBuffer(path.length() + 32);
+
+            // split the path into subelements
+            List elements = CmsStringUtil.splitAsList(path, '/');
+            int end = elements.size() - 1;
+            for (int i = 0; i <= end; i++) {
+                // append [i] to path element if required 
+                result.append(createXpathElementCheck((String)elements.get(i), 0));
+                if (i < end) {
+                    // append path delimiter if not final path element
+                    result.append('/');
+                }
+            }
+            return result.toString();
+        }
+
+        // this path has only 1 node, append [index] if required
+        return createXpathElementCheck(path, index);
+    }
+
+    /**
+     * Appends the provided index parameter in square brackets to the given name,
+     * like <code>path[index]</code>.<p>
+     * 
+     * This method is used if it's clear that some path does not have 
+     * a square bracket already appended.<p>
+     * 
+     * @param path the path append the index to
+     * @param index the index to append
+     * 
+     * @return the simplified Xpath for the given name
+     */
+    protected static String createXpathElement(String path, int index) {
+
+        StringBuffer result = new StringBuffer(path.length() + 5);
+        result.append(path);
+        result.append('[');
+        result.append(index);
+        result.append(']');
+
+        return result.toString();
+    }
+
+    /**
+     * Ensures that a provided simplified Xpath has the format <code>title[0]</code>.<p>
+     * 
+     * This method is used if it's uncertain if some path does have 
+     * a square bracket already appended or not.<p>
+     * 
+     * Note: If the name already has the format <code>title[0]</code>, then provided index parameter 
+     * is ignored.<p> 
+     * 
+     * @param path the path to get the simplified Xpath for
+     * @param index the index to append (if required)
+     * 
+     * @return the simplified Xpath for the given name
+     */
+    protected static String createXpathElementCheck(String path, int index) {
+
+        if (path.charAt(path.length() - 1) == ']') {
+            // path is already in the form "title[1]"
+            // ignore provided index and return the path "as is"
+            return path;
+        }
+
+        // append index in square brackets
+        return createXpathElement(path, index);
+    }
+
+    /**
      * Creates the bookmark name for a localized element to be used in the bookmark lookup table.<p>
      * 
      * @param name the element name
@@ -178,8 +201,9 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     protected static final String getBookmarkName(String name, Locale locale) {
 
         StringBuffer result = new StringBuffer(64);
+        result.append('/');
         result.append(locale.toString());
-        result.append('|');
+        result.append('/');
         result.append(name);
         return result.toString();
     }
@@ -203,18 +227,13 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
             // iterate over all nodes per language
             Iterator j = names.iterator();
             while (j.hasNext()) {
+
+                // this step is required for values that need a processing of their content
+                // an example for this is the HTML value that does link replacement                
                 String name = (String)j.next();
-                List elements = getBookmark(name, locale);
-
-                // iterate over all elements of this name
-                for (int pos = 0; pos < elements.size(); pos++) {
-
-                    // this step is required for values that need a processing of their content
-                    // an example for this is the HTML value that does link replacement
-                    I_CmsXmlContentValue value = getValue(name, locale, pos);
-                    String content = value.getStringValue(cms, this);
-                    value.setStringValue(cms, this, content);
-                }
+                I_CmsXmlContentValue value = getValue(name, locale);
+                String content = value.getStringValue(cms, this);
+                value.setStringValue(cms, this, content);
             }
         }
 
@@ -256,9 +275,9 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public int getIndexCount(String name, Locale locale) {
 
-        List elements = getBookmark(name, locale);
+        List elements = getValues(name, locale);
         if (elements == null) {
-            return -1;
+            return 0;
         } else {
             return elements.size();
         }
@@ -277,13 +296,12 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      * 
      * If no locale for the given element name is available, an empty list is returned.<p>
      * 
-     * @param element the element to look up the locale List for
+     * @param name the element to look up the locale List for
      * @return a List of all Locales that have the named element set in this document
      */
-    public List getLocales(String element) {
+    public List getLocales(String name) {
 
-        CmsNameIndexPair input = new CmsNameIndexPair(element);
-        Object result = m_elementLocales.get(input.getName());
+        Object result = m_elementLocales.get(createXpath(name, 0));
         if (result == null) {
             return Collections.EMPTY_LIST;
         }
@@ -312,8 +330,11 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public String getStringValue(CmsObject cms, String name, Locale locale) throws CmsXmlException {
 
-        CmsNameIndexPair input = new CmsNameIndexPair(name);
-        return getStringValue(cms, input.getName(), locale, input.getIndex());
+        I_CmsXmlContentValue value = getValueInternal(createXpath(name, 0), locale);
+        if (value != null) {
+            return value.getStringValue(cms, this);
+        }
+        return null;
     }
 
     /**
@@ -321,12 +342,11 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public String getStringValue(CmsObject cms, String name, Locale locale, int index) throws CmsXmlException {
 
-        List values = getBookmark(name, locale);
-        if (values != null) {
-            Object value = values.get(index);
-            if (value != null) {
-                return ((I_CmsXmlContentValue)value).getStringValue(cms, this);
-            }
+        // directly calling getValueInternal() is more efficient then calling getStringValue(CmsObject, String, Locale)
+        // since the most costs are generated in resolving the Xpath name
+        I_CmsXmlContentValue value = getValueInternal(createXpath(name, index), locale);
+        if (value != null) {
+            return value.getStringValue(cms, this);
         }
         return null;
     }
@@ -336,8 +356,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public I_CmsXmlContentValue getValue(String name, Locale locale) {
 
-        CmsNameIndexPair input = new CmsNameIndexPair(name);
-        return getValue(input.getName(), locale, input.getIndex());
+        return getValueInternal(createXpath(name, 0), locale);
     }
 
     /**
@@ -345,15 +364,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public I_CmsXmlContentValue getValue(String name, Locale locale, int index) {
 
-        List values = getBookmark(name, locale);
-        if (values != null) {
-            Object value = values.get(index);
-            if (value != null) {
-                return (I_CmsXmlContentValue)value;
-            }
-        }
-
-        return null;
+        return getValueInternal(createXpath(name, index), locale);
     }
 
     /**
@@ -361,10 +372,21 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public List getValues(String name, Locale locale) {
 
-        return getBookmark(name, locale);
+        List elements = new ArrayList();
+        int count = 0;
+        Object o;
+        do {
+            String path = createXpathElement(name, count);
+            o = getBookmark(path, locale);
+            if (o != null) {
+                elements.add(o);
+                count++;
+            }
+        } while (o != null);
+
+        return elements;
     }
-    
-    
+
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#hasLocale(java.util.Locale)
      */
@@ -373,7 +395,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         if (locale == null) {
             throw new IllegalArgumentException("Locale must not be null");
         }
-        
+
         return m_locales.contains(locale);
     }
 
@@ -382,8 +404,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public boolean hasValue(String name, Locale locale) {
 
-        CmsNameIndexPair input = new CmsNameIndexPair(name);
-        return hasValue(input.getName(), locale, input.getIndex());
+        return null != getBookmark(createXpath(name, 0), locale);
     }
 
     /**
@@ -391,18 +412,17 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public boolean hasValue(String name, Locale locale, int index) {
 
-        List elements = getBookmark(name, locale);
-        return ((elements != null) && (elements.size() > index));
+        return null != getBookmark(createXpath(name, index), locale);
     }
-        
+
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#isEnabled(java.lang.String, java.util.Locale)
      */
     public boolean isEnabled(String name, Locale locale) {
 
         return hasValue(name, locale);
-    }    
-    
+    }
+
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#isEnabled(java.lang.String, java.util.Locale, int)
      */
@@ -422,16 +442,16 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
         return ((ByteArrayOutputStream)marshal(new ByteArrayOutputStream(), m_encoding)).toByteArray();
     }
-    
+
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#removeLocale(java.util.Locale)
      */
     public void removeLocale(Locale locale) throws CmsXmlException {
-        
-        if (! hasLocale(locale)) {
+
+        if (!hasLocale(locale)) {
             throw new CmsXmlException("Locale '" + locale + "' not available in XML document");
         }
-        
+
         Element rootNode = m_document.getRootElement();
         Iterator i = rootNode.elementIterator();
         String localeStr = locale.toString();
@@ -444,7 +464,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                 // there can be only one node for the locale
                 break;
             }
-        }        
+        }
 
         // re-initialize the document bookmarks
         initDocument(m_document, m_encoding, m_contentDefinition);
@@ -496,30 +516,20 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     /**
      * Adds a bookmark for the given value.<p>
      * 
-     * @param name the name of the value
-     * @param locale the locale of the value
+     * @param name the name to use for the bookmark
+     * @param locale the locale to use for the bookmark
      * @param enabled if true, the value is enabled, if false it is disabled
      * @param value the value to bookmark
      */
     protected void addBookmark(String name, Locale locale, boolean enabled, Object value) {
 
+        // add the locale to all locales in this dcoument
         m_locales.add(locale);
 
-        List list;
+        // add a bookmark to the provided value 
+        m_bookmarks.put(getBookmarkName(name, locale), value);
+
         Object o;
-
-        // all bookmarks are stored in lists
-        o = getBookmark(name, locale);
-        if (o == null) {
-            // no bookmark defined yet, initialize new List
-            list = new ArrayList(1);
-        } else {
-            // expand existing list
-            list = (List)o;
-        }
-        list.add(value);
-        m_bookmarks.put(getBookmarkName(name, locale), list);
-
         // update mapping of element name to locale
         if (enabled) {
             // only include enabled elements
@@ -544,15 +554,15 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     }
 
     /**
-     * Returns the bookmarked lists of values for the given name.<p>
+     * Returns the bookmarked value for the given name.<p>
      * 
      * @param name the name to get the bookmark for
      * @param locale the locale to get the bookmark for
-     * @return the bookmarked list of values
+     * @return the bookmarked value
      */
-    protected List getBookmark(String name, Locale locale) {
+    protected Object getBookmark(String name, Locale locale) {
 
-        return (List)m_bookmarks.get(getBookmarkName(name, locale));
+        return m_bookmarks.get(getBookmarkName(name, locale));
     }
 
     /**
@@ -610,5 +620,26 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         }
         // remove the bookmark and return the removed element
         return (List)m_bookmarks.remove(getBookmarkName(name, locale));
+    }
+
+    /**
+     * Internal method to look up a value, requires that the name already has been 
+     * "normalized" for the bookmark lookup. 
+     * 
+     * This is required to find names like "title/subtitle" which are stored
+     * internally as "title[0]/subtitle[0)" in the bookmarks. 
+     * 
+     * @param name the name to look up 
+     * @param locale the locale to look up
+     *  
+     * @return the value found in the bookmarks 
+     */
+    private I_CmsXmlContentValue getValueInternal(String name, Locale locale) {
+
+        Object value = getBookmark(name, locale);
+        if (value != null) {
+            return (I_CmsXmlContentValue)value;
+        }
+        return null;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/10/31 21:30:17 $
- * Version: $Revision: 1.212 $
+ * Date   : $Date: 2004/11/08 15:06:44 $
+ * Version: $Revision: 1.213 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.212 $ $Date: 2004/10/31 21:30:17 $
+ * @version $Revision: 1.213 $ $Date: 2004/11/08 15:06:44 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1509,16 +1509,12 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         List files = readChildResources(runtimeInfo, currentProject, resource, false, true);
         
         // remove deleted files from the child resources
-        //files = internalFilterUndeletedResources(files);
-        
         if (files.size() == 0) {
             
             // check if the folder has any folders in it
             List folders = readChildResources(runtimeInfo, currentProject, resource, true, false);
             
             // remove deleted folders from the child resources
-            //folders = internalFilterUndeletedResources(folders);
-            
             if (folders.size() == 0) {
                 internalRemoveFolder(runtimeInfo, currentProject, resource);
             } else {

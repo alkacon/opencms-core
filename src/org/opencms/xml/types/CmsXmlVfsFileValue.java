@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2004/10/23 06:50:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/08 15:06:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,9 @@
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
+import org.opencms.staticexport.CmsLink;
+import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -43,7 +46,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.2
  */
 public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
@@ -53,6 +56,9 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
 
     /** The String value of the element node. */
     private String m_stringValue;
+    
+    /** The schema definition String is located in a text for easier editing. */
+    private static String m_schemaDefinition;
 
     /**
      * Creates a new VFS file type definition.<p>
@@ -142,21 +148,29 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
 
         return new CmsXmlVfsFileValue(element, name, index);
     }
-
+    
     /**
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#getSchemaDefinition()
      */
     public String getSchemaDefinition() {
 
-        return "<xsd:simpleType name=\"" + C_TYPE_NAME + "\"><xsd:restriction base=\"xsd:string\" /></xsd:simpleType>";
+        // the schema definition is located in a separate file for easier editing
+        if (m_schemaDefinition == null) {
+            m_schemaDefinition = readSchemaDefinition("org/opencms/xml/types/XmlVfsFileValue.xsd");
+        }
+        return m_schemaDefinition;
     }
-
+    
     /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(CmsObject, I_CmsXmlDocument)
      */
-    public String getStringValue(CmsObject cms, I_CmsXmlDocument document) {
-
-        return m_stringValue;
+    public String getStringValue(CmsObject cms, I_CmsXmlDocument document) {       
+        
+        if (cms != null) {
+            return cms.getRequestContext().removeSiteRoot(m_stringValue);
+        } else {
+            return m_stringValue;
+        }
     }
 
     /**
@@ -180,9 +194,47 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
      */
     public void setStringValue(String value) {
 
+        // we don't have any information available for link processing
+        setStringValue(null, null, value);        
+    }    
+    
+    /**
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, java.lang.String)
+     */
+    public void setStringValue(CmsObject cms, I_CmsXmlDocument document, String value) {
+
+        if ((cms != null) && (document != null)) {            
+            // add site path if required
+            value = CmsLinkManager.getSitePath(cms, null, value);
+        }
+        
+        // now update the XML node
         m_element.clearContent();
         if (CmsStringUtil.isNotEmpty(value)) { 
             m_element.addText(value);
+            m_stringValue = value;
+        } else {
+            m_stringValue = null;
         }
     }
+    
+    /**
+     * Returns the link table of this XML page element.<p>
+     * 
+     * @return the link table of this XML page element
+     */
+    public CmsLinkTable getLinkTable() {
+
+        CmsLinkTable linkTable = new CmsLinkTable();
+
+        CmsLink link = new CmsLink(
+            "link0",
+            "vfs",
+            m_element.getText(),
+            true);
+
+        linkTable.addLink(link);
+        
+        return linkTable;
+    }    
 }

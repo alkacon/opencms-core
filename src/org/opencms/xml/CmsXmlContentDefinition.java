@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2004/11/02 08:30:56 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/11/08 15:06:43 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,13 +38,16 @@ import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.CmsXmlLocaleValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.dom4j.Attribute;
 import org.dom4j.Document;
@@ -54,13 +57,14 @@ import org.dom4j.Namespace;
 import org.dom4j.QName;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Describes the structure definition of an XML content object.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
@@ -136,6 +140,9 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /** The XML content handler. */
     private I_CmsXmlContentHandler m_contentHandler;
+    
+    /** The set of included additional XML content definitions. */
+    private Set m_includes;
 
     /** The name of the content definition. */
     private String m_name;
@@ -143,12 +150,15 @@ public class CmsXmlContentDefinition implements Cloneable {
     /** The location from which the XML schema was read (XML system id). */
     private String m_schemaLocation;
 
+    /** The main type name of this XML content definition. */
+    private String m_typeName;
+
     /** The Map of configured types. */
     private Map m_types;
 
     /** The type sequence. */
     private List m_typeSequence;
-
+    
     /**
      * Creates a new XML content definition.<p> 
      * 
@@ -158,11 +168,18 @@ public class CmsXmlContentDefinition implements Cloneable {
     public CmsXmlContentDefinition(String name, String schemaLocation) {
 
         m_name = name;
+        m_typeName = createTypeName(name);
         m_typeSequence = new ArrayList();
         m_types = new HashMap();
+        m_includes = new HashSet();
         m_schemaLocation = schemaLocation;
     }
-
+    
+    private CmsXmlContentDefinition() {
+        
+        // noop, required for efficient clone operation
+    }
+    
     /**
      * Factory method to unmarshal (read) a XML content definition instance from a byte array
      * that contains XML data.<p>
@@ -197,7 +214,7 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         return CmsXmlContentDefinition.unmarshal(source, systemId, resolver);
     }
-
+    
     /**
      * Factory method to unmarshal (read) a XML content definition instance from a XML document.<p>
      * 
@@ -212,7 +229,8 @@ public class CmsXmlContentDefinition implements Cloneable {
     public static CmsXmlContentDefinition unmarshal(Document document, String schemaLocation) throws CmsXmlException {
 
         // TODO: why not use a XML schmema for the validation?
-
+        int todo = 0; // TODO: create cache with "finished" content definitions 
+        
         // now analyze the document and generate the XML content type definition        
         Element root = document.getRootElement();
         if (!XSD_NODE_SCHEMA.equals(root.getQName())) {
@@ -220,19 +238,16 @@ public class CmsXmlContentDefinition implements Cloneable {
         }
 
         List includes = root.elements(XSD_NODE_INCLUDE);
-        if (includes.size() != 1) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+        if (includes.size() < 1) {
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Requires at last one include");
         }
         Element include = (Element)includes.get(0);
         Attribute target = include.attribute(XSD_ATTRIBUTE_SCHEMA_LOCATION);
         if (!XSD_INCLUDE_OPENCMS.equals(target.getValue())) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: First include must point to OpenCms master schema");
         }
 
         List elements = root.elements(XSD_NODE_ELEMENT);
-        if (includes.size() != 1) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
-        }
         Element main = (Element)elements.get(0);
         Attribute nameAttr = main.attribute(XSD_ATTRIBUTE_NAME);
         Attribute typeAttr = main.attribute(XSD_ATTRIBUTE_TYPE);
@@ -349,11 +364,33 @@ public class CmsXmlContentDefinition implements Cloneable {
         }
 
         // generate the XML content definition
-        CmsXmlContentTypeManager typeManager = OpenCms.getXmlContentTypeManager();
         CmsXmlContentDefinition result = new CmsXmlContentDefinition(name, schemaLocation);
+        
+        if (includes.size() > 1) {
+            // resolve additional, cascaded include calls
+            for (int i = 1; i<includes.size(); i++) {
+                
+                Element inc = (Element)includes.get(i);
+                String schemaLoc = inc.attribute(XSD_ATTRIBUTE_SCHEMA_LOCATION).getValue();
+                EntityResolver resolver = document.getEntityResolver();
+                InputSource source = null;
+                try {
+                    source = resolver.resolveEntity(null, schemaLoc);
+                } catch (SAXException e) {
+                    throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Unable to resolve included schema '" + schemaLoc + "'");
+                } catch (IOException e) {
+                    throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Unable to resolve included schema '" + schemaLoc + "'");
+                }
+                CmsXmlContentDefinition xmlContentDefinition = unmarshal(source, schemaLoc, resolver);
+                result.addInclude(xmlContentDefinition);
+            }
+        }
+        
+        // now add all type definitions from the schema
+        CmsXmlContentTypeManager typeManager = OpenCms.getXmlContentTypeManager();
         Iterator i = typeSequenceElements.iterator();
         while (i.hasNext()) {
-            result.addType(typeManager.getContentType((Element)i.next()));
+            result.addType(typeManager.getContentType((Element)i.next(), result.getIncludes()));
         }
 
         // resolve the XML content handler information
@@ -462,6 +499,16 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
+     * Adds an included (cascaded) XML content sub-definition.<p>
+     * 
+     * @param include the included (cascaded) XML content definition to add
+     */
+    public void addInclude(CmsXmlContentDefinition include) {
+        
+        m_includes.add(include);
+    }
+
+    /**
      * Adds the given content type.<p>
      * 
      * @param type the content type to add
@@ -471,8 +518,8 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         // check if the type to add actually exists in the type manager
         CmsXmlContentTypeManager typeManager = OpenCms.getXmlContentTypeManager();
-        if (typeManager.getContentType(type.getTypeName()) == null) {
-            throw new CmsXmlException("Unregistered XML content type added");
+        if (type.isSimpleType() && (typeManager.getContentType(type.getTypeName()) == null)) {
+            throw new CmsXmlException("Unregistered XML content type '" + type.getTypeName() + "' added");
         }
 
         m_typeSequence.add(type);
@@ -486,10 +533,14 @@ public class CmsXmlContentDefinition implements Cloneable {
      */
     public Object clone() {
 
-        CmsXmlContentDefinition result = new CmsXmlContentDefinition(m_name, m_schemaLocation);
+        CmsXmlContentDefinition result = new CmsXmlContentDefinition();
+        result.m_name = m_name;
+        result.m_schemaLocation = m_schemaLocation;
         result.m_typeSequence = m_typeSequence;
         result.m_types = m_types;
         result.m_contentHandler = m_contentHandler;
+        result.m_typeName = m_typeName;
+        result.m_includes = m_includes;
         return result;
     }
 
@@ -564,6 +615,16 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         return m_contentHandler;
     }
+    
+    /**
+     * Returns the set of included (cascaded) XML content sub-schemata.<p>
+     * 
+     * @return the set of included (cascaded) XML content sub-schemata
+     */
+    public Set getIncludes() {
+        
+        return m_includes;
+    }
 
     /**
      * Returns the name.<p>
@@ -590,6 +651,14 @@ public class CmsXmlContentDefinition implements Cloneable {
         Element include = root.addElement(XSD_NODE_INCLUDE);
         include.addAttribute(XSD_ATTRIBUTE_SCHEMA_LOCATION, XSD_INCLUDE_OPENCMS);
 
+        if (m_includes.size() > 0) {
+            Iterator i = m_includes.iterator();
+            while (i.hasNext()) {
+                CmsXmlContentDefinition definition = (CmsXmlContentDefinition)i.next();
+                root.addElement(XSD_NODE_INCLUDE).addAttribute(XSD_ATTRIBUTE_SCHEMA_LOCATION, definition.m_schemaLocation);                
+            }
+        }
+        
         String listName = createListName(getName());
         String typeName = createTypeName(getName());
         String contentName = getName() + "s";
@@ -648,6 +717,16 @@ public class CmsXmlContentDefinition implements Cloneable {
     public I_CmsXmlSchemaType getSchemaType(String keyName) {
 
         return (I_CmsXmlSchemaType)m_types.get(keyName);
+    }
+    
+    /**
+     * Returns the main type name of this XML content definition.<p>
+     * 
+     * @return the main type name of this XML content definition
+     */
+    public String getTypeName() {
+        
+        return m_typeName;
     }
 
     /**

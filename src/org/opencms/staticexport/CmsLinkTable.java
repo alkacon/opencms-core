@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkTable.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/11/08 15:06:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.util.Iterator;
  *  
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.3
  */
 public class CmsLinkTable {
@@ -101,11 +101,23 @@ public class CmsLinkTable {
     }
     
     /**
-     * Returns an iterator over the internal names for links in the table.<p>
+     * Returns an iterator over the links in the table.<p>
+     * 
+     * The objects iterated are of type <code>{@link CmsLink}</code>.
      * 
      * @return a string iterator for internal link names
      */
     public Iterator iterator() {    
-        return m_linkTable.keySet().iterator();
+        return m_linkTable.values().iterator();
+    }
+    
+    /**
+     * Returns the size of this link table.<p>
+     * 
+     * @return the size of this link table
+     */
+    public int size() {
+        
+        return m_linkTable.size();
     }
 }

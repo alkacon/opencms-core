@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPage.java,v $
- * Date   : $Date: 2004/10/11 08:12:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/08 15:06:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.types.CmsXmlHtmlValue;
 
+import java.util.List;
 import java.util.Locale;
 
 import junit.framework.TestCase;
@@ -53,7 +54,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.5.0
  */
@@ -146,6 +147,34 @@ public class TestCmsXmlPage extends TestCase {
         assertTrue(table.getLink("link0").isInternal());
         assertEquals("English WRITTEN! Image <img src=\"/test/image.gif\" />", page.getStringValue(null, "body3", Locale.ENGLISH));        
     }
+    
+    /**
+     * Tests acessing XML page values via lovales.<p> 
+     *
+     * @throws Exception in case something goes wrong
+     */
+    public void testXmlPageLocaleAccess() throws Exception {
+                
+        // create a XML entity resolver
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
+        
+        CmsXmlPage page;
+        String content; 
+        
+        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-2.xml", UTF8);        
+        page = CmsXmlPageFactory.unmarshal(content, UTF8, resolver);
+
+        List locales;
+        
+        locales = page.getLocales("body");
+        assertEquals(2, locales.size());
+        assertTrue(locales.contains(Locale.ENGLISH));
+        assertTrue(locales.contains(Locale.GERMAN));
+
+        locales = page.getLocales("body2");
+        assertEquals(1, locales.size());
+        assertTrue(locales.contains(Locale.ENGLISH));
+    }    
         
     /**
      * Tests reading elements from the updated, final version of the XML page.<p> 

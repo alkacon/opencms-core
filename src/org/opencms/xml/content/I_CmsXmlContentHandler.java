@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2004/11/02 08:30:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/08 15:06:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.4
  */
 public interface I_CmsXmlContentHandler {
@@ -97,4 +97,8 @@ public interface I_CmsXmlContentHandler {
      */
     void resolveAppInfo(CmsObject cms, CmsXmlContent content, CmsXmlContentDefinition contentDefinition)
     throws CmsException;
+    
+    // TODO: Method for content validation
+    // TODO: Method for default values
+    // TODO: Method for preview URL
 }

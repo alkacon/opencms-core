@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2004/10/22 11:05:22 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/11/08 15:06:44 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.xml.sax.SAXException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsXmlPage extends A_CmsXmlDocument {
 
@@ -223,7 +223,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         CmsXmlHtmlValue value = new CmsXmlHtmlValue(element, NODE_ELEMENT, pos);
 
         // bookmark the element
-        addBookmark(name, locale, true, value);
+        addBookmark(createXpathElement(name, 0), locale, true, value);
     }
 
     /**
@@ -413,7 +413,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
                     CmsXmlHtmlValue value = new CmsXmlHtmlValue(element, NODE_ELEMENT, pos);
 
                     // add the element type bookmark
-                    addBookmark(name, locale, enabled, value);
+                    addBookmark(createXpathElement(name, 0), locale, enabled, value);
                     pos++;
                 }
             }

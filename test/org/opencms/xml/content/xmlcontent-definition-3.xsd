@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>	
+	<xsd:element name="Handlertests" type="OpenCmsHandlertests"/>
+	
+	<xsd:complexType name="OpenCmsHandlertests">
+		<xsd:sequence>
+			<xsd:element name="Handlertest" type="OpenCmsHandlertest" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsHandlertest">
+		<xsd:sequence>
+			<xsd:element name="Html" type="OpenCmsHtml" />
+			<xsd:element name="VfsLink" type="OpenCmsVfsFile" maxOccurs="5" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo/>
+		<xsd:appinfo>
+			<handler class="org.opencms.xml.content.TestXmlContentHandler" />
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>

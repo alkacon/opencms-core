@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskDocu.java,v $
-* Date   : $Date: 2004/07/18 16:27:12 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2004/11/08 15:06:43 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;TASKDOCU&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2004/07/18 16:27:12 $
+ * @version $Revision: 1.22 $ $Date: 2004/11/08 15:06:43 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  *
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -65,7 +65,7 @@ public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement {
      */
     
     private String addBrTags(String value) {
-        String lines[] = CmsStringUtil.split(value, "\n");
+        String lines[] = CmsStringUtil.splitAsArray(value, '\n');
         String retValue = "";
         for(int i = 0;i < lines.length;i++) {
             retValue += lines[i] + "<BR>";

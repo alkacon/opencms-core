@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2004/08/30 12:38:57 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2004/11/08 15:06:44 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -113,7 +113,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
                 String header = (String)i.next();
                 
                 // set header only if format is "key: value"
-                String parts[] = CmsStringUtil.split(header, ":"); 
+                String parts[] = CmsStringUtil.splitAsArray(header, ':'); 
                 if (parts.length == 2) {
                     res.setHeader(parts[0], parts[1]);
                 }

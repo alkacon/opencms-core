@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlSchemaType.java,v $
- * Date   : $Date: 2004/10/23 06:50:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/08 15:06:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.dom4j.QName;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.0
  * 
  * @see org.opencms.xml.types.I_CmsXmlContentValue
@@ -166,4 +166,12 @@ public interface I_CmsXmlSchemaType extends Comparable {
      * @param defaultValue the default value to set
      */
     void setDefault(String defaultValue);
+    
+    /**
+     * Returns <code>true</code> if this is  a simple type, or <code>false</code>
+     * if this type is a cascaded schema.<p>
+     * 
+     * @return true if this is  a simple type, or false if this type is a cascaded schema
+     */
+    boolean isSimpleType();
 }

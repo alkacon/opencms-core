@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Handlertests 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="http://www.opencms.org/test3.xsd">
+  
+	<Handlertest language="en">
+		<Html>
+			<links />
+			<content><![CDATA[
+<a href="http://www.alkacon.com">Alkacon</a>
+<a href="/index.html">Index page</a>
+<a href="/folder1/index.html?a=b&c=d#anchor">Index page</a>
+]]></content>
+		</Html>
+		<VfsLink>/index.html</VfsLink>
+	</Handlertest>
+</Handlertests>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2004/08/10 15:42:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/08 15:06:44 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.5.0
  */
@@ -71,6 +71,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         suite.setName(TestCmsXmlPageInSystem.class.getName());
         
         suite.addTest(new TestCmsXmlPageInSystem("testLinkReplacement"));
+        suite.addTest(new TestCmsXmlPageInSystem("testCommentInSource"));
         
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -130,4 +131,60 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         text = page.getStringValue(cms, element, Locale.ENGLISH);
         assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index_noexist.html\">link</a>", text);
     }
+    
+    /**
+     * Tests comments in the page HTML source code.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testCommentInSource() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing XML page comment handling");
+
+        String filename = "/folder1/subfolder11/test2.html";
+        List properties = new ArrayList();
+        properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, UTF8, null));
+        properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_LOCALE, Locale.ENGLISH.toString(), null));
+        String content = CmsXmlPageFactory.createDocument(Locale.ENGLISH, UTF8);
+        cms.createResource(filename, CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID, content.getBytes(UTF8), properties);
+        
+        CmsFile file = cms.readFile(filename);
+        CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file);
+        String element = "test";
+        page.addValue(element, Locale.ENGLISH);
+        
+
+        String result;
+        
+        // first test using a simple comment
+        content = "<h1>Comment Test 1</h1>\n<!-- This is a comment -->\nSome text here...";               
+        page.setStringValue(cms, element, Locale.ENGLISH, content);                
+        result = page.getStringValue(cms, element, Locale.ENGLISH);
+        assertEquals(content, result);
+        
+        // more complex comment test
+        content = "<!-- First comment --><h1>Comment Test 2</h1>\n<!-- This is a comment -->\nSome text here...<!-- Another comment -->";
+        page.setStringValue(cms, element, Locale.ENGLISH, content);                
+        result = page.getStringValue(cms, element, Locale.ENGLISH);
+        assertEquals(content, result);   
+        
+        // mix of comment and links
+        content = "<!-- First comment --><img src=\"/data/opencms/image.gif\" alt=\"an image\" />\n<!-- This is a comment -->\n<a href=\"/data/opencms/index.html\">Link</a><!-- Another comment -->";
+        page.setStringValue(cms, element, Locale.ENGLISH, content);                
+        result = page.getStringValue(cms, element, Locale.ENGLISH);
+        assertEquals(content, result);          
+        
+        // commented out html tags
+        content = "<!-- <img src=\"/data/opencms/image.gif\" alt=\"an image\" />\n<h1>some text</h1>--><!-- This is a comment -->\n<a href=\"/data/opencms/index.html\">Link</a><!-- Another comment -->";
+        page.setStringValue(cms, element, Locale.ENGLISH, content);                
+        result = page.getStringValue(cms, element, Locale.ENGLISH);
+        assertEquals(content, result);          
+        
+        // nested comments
+        content = "<!-- Start of comment <!-- img src=\"/data/opencms/image.gif\" alt=\"an image\" / -->\n<h1>some text</h1><!-- This is a comment -->\n End of comment! --> <a href=\"/data/opencms/index.html\">Link</a><!-- Another comment -->";
+        page.setStringValue(cms, element, Locale.ENGLISH, content);                
+        result = page.getStringValue(cms, element, Locale.ENGLISH);
+        assertEquals(content, result);          
+    }    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestLogAppender.java,v $
- * Date   : $Date: 2004/08/10 15:42:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/08 15:06:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.apache.log4j.spi.LoggingEvent;
  * causing the running test to fail.<p> 
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.5.0
  */
@@ -72,6 +72,13 @@ public class OpenCmsTestLogAppender extends ConsoleAppender {
             switch (logLevel) {
                 case Priority.ERROR_INT:
                 case Priority.FATAL_INT:
+                    if (logEvent.getThrowableInformation() != null) {
+                        if (logEvent.getThrowableInformation().getThrowable() != null) {
+                            throw new RuntimeException(
+                                logEvent.getRenderedMessage(), 
+                                logEvent.getThrowableInformation().getThrowable());
+                        }
+                    }
                     throw new RuntimeException(logEvent.getRenderedMessage());
                 default:
                     // noop

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2004/08/25 07:47:21 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2004/11/08 15:06:43 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.56 $ $Date: 2004/08/25 07:47:21 $
+ * @version $Revision: 1.57 $ $Date: 2004/11/08 15:06:43 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -161,7 +161,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
         int priority = Integer.parseInt(priorityString);
 
         // create a long from the overgiven date.
-        String splittetDate[] = CmsStringUtil.split(timeoutString, ".");
+        String splittetDate[] = CmsStringUtil.splitAsArray(timeoutString, '.');
         GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]),
                 Integer.parseInt(splittetDate[1]) - 1, Integer.parseInt(splittetDate[0]), 0, 0, 0);
         long timeout = cal.getTime().getTime();
@@ -339,7 +339,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
     public static void due(CmsObject cms, int taskid, String timeoutString) throws CmsException {
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         CmsTask task = cms.readTask(taskid);
-        String splittetDate[] = CmsStringUtil.split(timeoutString, ".");
+        String splittetDate[] = CmsStringUtil.splitAsArray(timeoutString, '.');
         GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]),
                 Integer.parseInt(splittetDate[1]) - 1, Integer.parseInt(splittetDate[0]), 0, 0, 0);
         long timeout = cal.getTime().getTime();
@@ -548,7 +548,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
 
             // check if this is a type "created" or "new"
             if((type == C_TASKLOGTYPE_CREATED) || (type == C_TASKLOGTYPE_REACTIVATED)) {
-                String comment[] = CmsStringUtil.split(tasklog.getComment(), "\n");
+                String comment[] = CmsStringUtil.splitAsArray(tasklog.getComment(), '\n');
                 for(int j = 2;j < comment.length;j++) {
                     retValue.append(comment[j] + "\n");
                 }
@@ -739,7 +739,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
         cms.setPriority(taskid, priority);
 
         // create a long from the overgiven date.
-        String splittetDate[] = CmsStringUtil.split(timeoutString, ".");
+        String splittetDate[] = CmsStringUtil.splitAsArray(timeoutString, '.');
         GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]), Integer.parseInt(splittetDate[1]) - 1,
                 Integer.parseInt(splittetDate[0]), 0, 0, 0);
         long timeout = cal.getTime().getTime();
