@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsEncoder.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/02/28 16:56:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -119,5 +119,28 @@ public class TestCmsEncoder extends TestCase {
         assertEquals(CmsEncoder.lookupEncoding("ISO_8859_1", null), "ISO-8859-1");
         assertEquals(CmsEncoder.lookupEncoding("iso_8859_1", null), "ISO-8859-1");        
         assertEquals(CmsEncoder.lookupEncoding("latin1", null), "ISO-8859-1");        
+    }
+    
+    /**
+     * Tests encoding of parameters.<p>
+     */
+    public void testParameterEncoding() {
+        
+        String param;
+        String result;
+        
+        param = "+";
+
+        result = CmsEncoder.encode(param, CmsEncoder.C_UTF8_ENCODING);
+        result = CmsEncoder.decode(result, CmsEncoder.C_UTF8_ENCODING);
+
+        assertEquals(param, result);
+
+        param = "+Köln -Düsseldorf &value";        
+        
+        result = CmsEncoder.encode(param, CmsEncoder.C_UTF8_ENCODING);
+        result = CmsEncoder.decode(result, CmsEncoder.C_UTF8_ENCODING);
+        
+        assertEquals(param, result);
     }
 }
