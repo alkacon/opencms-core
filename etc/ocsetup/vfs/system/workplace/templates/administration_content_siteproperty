@@ -45,6 +45,10 @@
 					<td class=dialogtxt>]]><PROCESS>domainname</PROCESS><![CDATA[</td>
 				</tr>
 				<tr>
+					<td class=dialogtxt>]]><LABEL value="sitemanagement.label.fallbacksite" /><![CDATA[:</td>
+					<td class=dialogtxt>]]><PROCESS>fallbacksite</PROCESS><![CDATA[</td>
+				</tr>
+				<tr>
 					<td class=dialogtxt>]]><LABEL value="sitemanagement.label.domain" /><![CDATA[:</td>
 					<td class=dialogtxt>]]><PROCESS>domain</PROCESS><![CDATA[</td>
 				</tr>
