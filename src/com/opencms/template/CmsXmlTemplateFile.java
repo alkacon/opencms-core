@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
- * Date   : $Date: 2000/03/08 14:38:02 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/03/16 13:40:06 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import java.io.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2000/03/08 14:38:02 $
+ * @version $Revision: 1.16 $ $Date: 2000/03/16 13:40:06 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -423,14 +423,20 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             result.append("</HEAD>\n");
             result.append("<BODY " + getProcessedDataValue("bodytag", callingObject, parameters) + ">\n");
                 
-            while(cdataStart != -1) {
-                result.append(xmlString.substring(currentPos, cdataStart).replace('<', '[').replace('>', ']'));
+            while(cdataStart != -1) {                
+                String tempString = xmlString.substring(currentPos, cdataStart);
+                tempString = myReplace(tempString);
+                //result.append(xmlString.substring(currentPos, cdataStart).replace('<', '[').replace('>', ']'));
+                result.append(tempString);
                 result.append((String)cdatas.elementAt(loop++));
                 cdataStart = xmlString.indexOf("<![CDATA[", cdataStart + 1);
                 currentPos = xmlString.indexOf("]]>", currentPos + 1) + 3;
             }
-            result.append(xmlString.substring(currentPos).replace('<', '[').replace('>', ']'));
-        
+            String tempString = xmlString.substring(currentPos);
+            tempString = myReplace(tempString);
+            //result.append(xmlString.substring(currentPos).replace('<', '[').replace('>', ']'));
+            result.append(tempString);
+                                   
             result.append("\n</BODY>\n</HTML>");        
             xmlString = result.toString();
         }
@@ -538,22 +544,49 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     private String replace(String s, String search, String replace) {
         StringBuffer tempContent = new StringBuffer();                
         //int index = s.indexOf(search);
-        int index = min(s.indexOf("["), s.indexOf("]"));
+        int index = min(s.indexOf("<CODE>["), s.indexOf("]</CODE>"));
+        index = min(index, s.indexOf("&quot;"));
         int lastindex = 0;
         while(index != -1) {
+            
             String sub = s.substring(lastindex, index);
             tempContent.append(sub);
-            if(s.charAt(index) == '[') {                
-                tempContent.append("]]><");
-            } else {
+            if(s.charAt(index) == ']') {                
                 tempContent.append("><![CDATA[");
+                lastindex = index + 8;
+            } else if(s.charAt(index) == '<') {
+                tempContent.append("]]><");
+                lastindex = index + 7;
+            } else {
+                tempContent.append("\"");
+                lastindex = index + 6;
             }
-            lastindex = index + 1;
             //index = s.indexOf(search, index+1);
-            index = min(s.indexOf("[", index+1), s.indexOf("]", index+1));
+            index = min(s.indexOf("<CODE>[", index+1), min(s.indexOf("]</CODE>", index+1), s.indexOf("&quot;", index+1)));
         }
         tempContent.append(s.substring(lastindex));
         return new String(tempContent);
     }
-        
+
+    private String myReplace(String s) {
+        StringBuffer tempContent = new StringBuffer();                
+        //int index = s.indexOf(search);
+        int index = min(s.indexOf("<"), s.indexOf(">"));
+        int lastindex = 0;
+        while(index != -1) {
+            String sub = s.substring(lastindex, index);
+            tempContent.append(sub);
+            if(s.charAt(index) == '>') {                
+                tempContent.append("]</CODE>");
+                lastindex = index + 1;
+            } else {
+                tempContent.append("<CODE>[");
+                lastindex = index + 1;
+            }
+            //index = s.indexOf(search, index+1);
+            index = min(s.indexOf("<", index+1), s.indexOf(">", index+1));
+        }
+        tempContent.append(s.substring(lastindex));
+        return new String(tempContent);
+    }        
 }
