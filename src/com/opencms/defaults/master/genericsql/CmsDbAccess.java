@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/01/20 23:59:32 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/02/26 15:39:41 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -361,7 +361,7 @@ public class CmsDbAccess {
             } else {
                 throw new CmsException("Row not found: " + masterId + " " + content.getSubId(), CmsException.C_NOT_FOUND);
             }
-            if(!checkAccess(cms, content, false)) {
+            if(!checkAccess(content, false)) {
                 throw new CmsException("Not readable", CmsException.C_NO_ACCESS);
             }
         } catch(SQLException exc) {
@@ -1188,7 +1188,7 @@ public class CmsDbAccess {
                 // add the cd only if read (and visible) permissions are granted.
                 // the visible-permissens will be checked, if viewonly is set to true
                 // viewonly=true is needed for the backoffice
-                if(checkAccess(cms, content, viewonly)) {
+                if(checkAccess(content, viewonly)) {
                     retValue.add(content);
                 }
             } catch(Exception exc) {
@@ -1243,7 +1243,7 @@ public class CmsDbAccess {
      * @param content - the cd to check.
      * @param viewonly - if set to true the v-Flag will be checked, too
      */
-    protected boolean checkAccess(CmsObject cms, CmsMasterContent content, boolean viewonly) {
+    protected boolean checkAccess(CmsMasterContent content, boolean viewonly) {
         if(!content.isReadable()) {
             // was not readable
             return false;
