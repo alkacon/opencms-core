@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/21 16:17:56 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2003/08/22 14:54:43 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.42 $ $Date: 2003/08/21 16:17:56 $
+ * @version $Revision: 1.43 $ $Date: 2003/08/22 14:54:43 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -533,14 +533,111 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if something goes wrong
      */        
     CmsFile readFile(int projectId, boolean includeDeleted, CmsUUID resourceId) throws CmsException;
-    
+
+    /**
+     * Reads a file header from the Cms.<BR/>
+     * The reading excludes the filecontent.
+     *
+     * @param projectId The Id of the project
+     * @param resource The resource.
+     *
+     * @return file The read file.
+     *
+     * @throws CmsException Throws CmsException if operation was not succesful
+     */    
     CmsFile readFileHeader(int projectId, CmsResource resource) throws CmsException;
+
+    /**
+     * Reads a file header from the Cms.<BR/>
+     * The reading excludes the filecontent.
+     *
+     * @param projectId The Id of the project
+     * @param resourceId The Id of the resource.
+     * @param includeDeleted true if already deleted files are included
+     *
+     * @return file The read file.
+     *
+     * @throws CmsException Throws CmsException if operation was not succesful
+     */
     CmsFile readFileHeader(int projectId, CmsUUID resourceId, boolean includeDeleted) throws CmsException;
+
+    /**
+     * Reads a file header from the Cms.<BR/>
+     * The reading excludes the filecontent.
+     *
+     * @param projectId The Id of the project in which the resource will be used.
+     * @param parentId the id of the parent folder
+     * @param filename The name of the file
+     * @param includeDeleted true if already deleted files are included
+     *
+     * @return file The read file.
+     *
+     * @throws CmsException Throws CmsException if operation was not succesful
+     */
     CmsFile readFileHeader(int projectId, CmsUUID parentId, String filename, boolean includeDeleted) throws CmsException;
+
+    /**
+     * Reads all files from the Cms, that are in one project.<BR/>
+     *
+     * @param projectId The project in which the files are.
+     * @param includeUnchanged true if unchanged files are included
+     * @param onlyProject true if only resources aree included that are changed in the project
+     *
+     * @return A Vecor of files.
+     *
+     * @throws CmsException Throws CmsException if operation was not succesful
+     */
+    // List readFiles(int projectId, boolean includeUnchanged, boolean onlyProject) throws CmsException;
+
+    /**
+     * Reads all files from the Cms, that are of the given type.<BR/>
+     *
+     * @param projectId A project id for reading online or offline resources
+     * @param resourcetype The type of the files.
+     *
+     * @return A Vector of files.
+     *
+     * @throws CmsException Throws CmsException if operation was not succesful
+     */
     List readFiles(int projectId) throws CmsException;
     Vector readFilesByType(int projectId, int resourcetype) throws CmsException;
+
+    /**
+     * Reads a folder from the Cms.<BR/>
+     *
+     * @param projectId The project in which the resource will be used.
+     * @param folderId The id of the folder to be read.
+     *
+     * @return The read folder.
+     *
+     * @throws CmsException Throws CmsException if operation was not succesful.
+     */
     CmsFolder readFolder(int projectId, CmsUUID folderId) throws CmsException;
-    CmsFolder readFolder(int projectId, CmsUUID parentId, String filename) throws CmsException;
+
+    /**
+     * Reads a folder from the Cms.<BR/>
+     *
+     * @param projectId The project in which the resource will be used.
+     * @param parentId the id of the parent folder
+     * @param foldername The name of the folder to be read.
+     *
+     * @return The read folder.
+     *
+     * @throws CmsException Throws CmsException if operation was not succesful.
+     */
+    CmsFolder readFolder(int projectId, CmsUUID parentId, String foldername) throws CmsException;
+
+    /**
+     * Reads all folders from the Cms, that are in one project.<BR/>
+     *
+     * @param currentProject The project in which the folders are.
+     * @param includeUnchanged true if unchanged files are included
+     * @param onlyProject true if only resources aree included that are changed in the project
+     *
+     * @return A Vecor of folders.
+     *
+     * @throws CmsException Throws CmsException if operation was not succesful
+     */
     List readFolders(CmsProject currentProject, boolean includeUnchanged, boolean onlyProject) throws CmsException;
     
     /**
@@ -558,10 +655,10 @@ public interface I_CmsVfsDriver {
      * Reads the project resources for a specified project.<p>
      * 
      * @param project the project for which the resource path is read
-     * @return String the project's resource path
+     * @return the project's resource path
      * @throws CmsException if something goes wrong
      */
-    public List readProjectResources(CmsProject project) throws CmsException;
+    List readProjectResources(CmsProject project) throws CmsException;
     
     /**
      * Reads all properties of a resource.<p>
@@ -585,9 +682,36 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if something goes wrong
      */    
     String readProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException;
-    
+
+    /**
+     * Reads a propertydefinition for the given resource type.
+     *
+     * @param name The name of the propertydefinition to read.
+     * @param projectId the id of the project
+     * @param type The resource type for which the propertydefinition is valid.
+     *
+     * @return propertydefinition The propertydefinition that corresponds to the overgiven
+     * arguments - or null if there is no valid propertydefinition.
+     *
+     * @throws CmsException Throws CmsException if something goes wrong.
+     */    
     CmsPropertydefinition readPropertydefinition(String name, int projectId, I_CmsResourceType type) throws CmsException;
+
+    /**
+     * Reads a propertydefinition for the given resource type.
+     *
+     * @param name The name of the propertydefinition to read.
+     * @param projectId the id of the project
+     * @param type The resource type for which the propertydefinition is valid.
+     *
+     * @return propertydefinition The propertydefinition that corresponds to the overgiven
+     * arguments - or null if there is no valid propertydefinition.
+     *
+     * @throws CmsException Throws CmsException if something goes wrong.
+     */
     CmsPropertydefinition readPropertydefinition(String name, int projectId, int type) throws CmsException;
+
+
     CmsResource readResource(CmsProject project, CmsUUID parentId, String filename) throws CmsException;
     Vector readResources(CmsProject project) throws CmsException;
     Vector readResourcesLikeName(CmsProject project, String resourcename) throws CmsException;

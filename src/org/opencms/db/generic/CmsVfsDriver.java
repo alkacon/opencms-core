@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/21 16:17:56 $
- * Version: $Revision: 1.99 $
+ * Date   : $Date: 2003/08/22 14:54:43 $
+ * Version: $Revision: 1.100 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.99 $ $Date: 2003/08/21 16:17:56 $
+ * @version $Revision: 1.100 $ $Date: 2003/08/22 14:54:43 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -2656,6 +2656,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * Reads a propertydefinition for the given resource type.
      *
      * @param name The name of the propertydefinition to read.
+     * @param projectId the id of the project
      * @param type The resource type for which the propertydefinition is valid.
      *
      * @return propertydefinition The propertydefinition that corresponds to the overgiven
@@ -2671,6 +2672,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * Reads a propertydefinition for the given resource type.
      *
      * @param name The name of the propertydefinition to read.
+     * @param projectId the id of the project
      * @param type The resource type for which the propertydefinition is valid.
      *
      * @return propertydefinition The propertydefinition that corresponds to the overgiven

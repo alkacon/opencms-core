@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsSqlManager.java,v $
- * Date   : $Date: 2003/08/21 16:17:56 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/22 14:54:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,12 +40,13 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import org.apache.commons.dbcp.DelegatingPreparedStatement;
+import org.apache.commons.dbcp.DelegatingResultSet;
 
 /**
  * Handles SQL queries from query.properties of the Oracle/OCI package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/08/21 16:17:56 $ 
+ * @version $Revision: 1.6 $ $Date: 2003/08/22 14:54:43 $ 
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
@@ -105,7 +106,8 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      * @see org.opencms.db.generic.CmsSqlManager#getBytes(java.sql.ResultSet, java.lang.String)
      */
     public byte[] getBytes(ResultSet res, String attributeName) throws SQLException {
-        oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB(attributeName);
+        OracleResultSet ors = (OracleResultSet)((DelegatingResultSet)res).getInnermostDelegate();
+        oracle.sql.BLOB blob = ors.getBLOB(attributeName);
         byte[] content = new byte[(int) blob.length()];
         content = blob.getBytes(1, (int) blob.length());
 
@@ -114,11 +116,11 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
 
     /**
      * @see org.opencms.db.generic.CmsSqlManager#getPreparedStatementForSql(java.sql.Connection, java.lang.String)
-     */
+     *//*
     public PreparedStatement getPreparedStatementForSql(Connection con, String query) throws SQLException {
         // unfortunately, this wrapper is essential. some JDBC driver implementations 
         // don't accept the delegated objects of DBCP's connection pool.        
         return ((DelegatingPreparedStatement) con.prepareStatement(query)).getDelegate();
-    }   
+    }*/   
 
 }

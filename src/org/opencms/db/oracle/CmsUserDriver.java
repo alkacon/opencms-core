@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2003/08/20 16:51:16 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/22 14:54:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,10 +48,13 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Hashtable;
 
+import org.apache.commons.dbcp.DelegatingResultSet;
+import org.apache.commons.dbcp.PoolablePreparedStatement;
+
 /**
  * Oracle/OCI implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.5 $ $Date: 2003/08/20 16:51:16 $
+ * @version $Revision: 1.6 $ $Date: 2003/08/22 14:54:43 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -99,13 +102,15 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
             stmt.executeUpdate();
             stmt.close();
-
+            stmt = null;
+            
             // now update user_info of the new user
             stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERSFORUPDATE");
             stmt2.setString(1, id.toString());
             conn.setAutoCommit(false);
 
-            res = stmt2.executeQuery();
+            res = ((DelegatingResultSet)stmt2.executeQuery()).getInnermostDelegate();
+            
             while (res.next()) {
                 oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("USER_INFO");
                 ByteArrayInputStream instream = new ByteArrayInputStream(value);
@@ -121,6 +126,8 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
             stmt2.close();
             res.close();
+            stmt2 = null;
+            res = null;
 
             // for the oracle-driver commit or rollback must be executed manually
             // because setAutoCommit = false in CmsDbPool.CmsDbPool
@@ -128,25 +135,43 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             nextStmt.execute();
 
             nextStmt.close();
+            nextStmt = null;
+            
             conn.setAutoCommit(true);
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
             throw m_sqlManager.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e, false);
         } finally {
-            if (stmt2 != null) {
+            if (res != null) {
                 try {
-                    stmt2.close();
+                    res.close();
                 } catch (SQLException exc) {
-                }
+                }                
+            } 
+            if (stmt2 != null) {
                 try {
                     nextStmt = m_sqlManager.getPreparedStatement(conn, "C_ROLLBACK");
                     nextStmt.execute();
                 } catch (SQLException se) {
                 }
+                try {
+                    stmt2.close();
+                } catch (SQLException exc) {
+                }
             }
-            m_sqlManager.closeAll(null, nextStmt, null);
-            m_sqlManager.closeAll(conn, stmt, res);
+            if (nextStmt != null) {
+                try {
+                    nextStmt.close();
+                } catch (SQLException exc) {
+                }
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException exc) {
+                }                
+            }                  
         }
         return readUser(id);
     }
@@ -197,8 +222,8 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERSFORUPDATE");
             stmt2.setString(1, id.toString());
             conn.setAutoCommit(false);
-            res = stmt2.executeQuery();
-
+            // res = stmt2.executeQuery();
+            res = ((DelegatingResultSet)stmt2.executeQuery()).getInnermostDelegate();
             while (res.next()) {
                 oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("USER_INFO");
                 ByteArrayInputStream instream = new ByteArrayInputStream(value);
@@ -283,11 +308,14 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setString(12, user.getId().toString());
             stmt.executeUpdate();
             stmt.close();
+            stmt = null;
+            
             // update user_info in this special way because of using blob
             stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERSFORUPDATE");
             stmt2.setString(1, user.getId().toString());
             conn.setAutoCommit(false);
-            res = stmt2.executeQuery();
+            //res = stmt2.executeQuery();
+            res = ((DelegatingResultSet)stmt2.executeQuery()).getInnermostDelegate();
             try {
                 while (res.next()) {
                     oracle.sql.BLOB blobnew = ((OracleResultSet) res).getBLOB("USER_INFO");
@@ -313,31 +341,51 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
                 nextStmt = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
                 nextStmt.execute();
                 nextStmt.close();
+                nextStmt = null;
                 conn.setAutoCommit(true);
             } catch (IOException e) {
                 throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
             }
             stmt2.close();
             res.close();
+            stmt2 = null;
+            res = null;
+            
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
             throw m_sqlManager.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e, false);
         } finally {
-            if (stmt2 != null) {
+
+            if (res != null) {
                 try {
-                    stmt2.close();
+                    res.close();
                 } catch (SQLException exc) {
-                }
+                }                
+            } 
+            if (stmt2 != null) {
                 try {
                     nextStmt = m_sqlManager.getPreparedStatement(conn, "C_ROLLBACK");
                     nextStmt.execute();
                 } catch (SQLException se) {
                 }
+                try {
+                    stmt2.close();
+                } catch (SQLException exc) {
+                }
             }
-            m_sqlManager.closeAll(null, trimStmt, null);
-            m_sqlManager.closeAll(null, nextStmt, null);
-            m_sqlManager.closeAll(conn, stmt, res);
+            if (nextStmt != null) {
+                try {
+                    nextStmt.close();
+                } catch (SQLException exc) {
+                }
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException exc) {
+                }                
+            }                
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/20 16:51:16 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/08/22 14:54:43 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,11 +44,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.commons.dbcp.DelegatingResultSet;
+
 /**
  * Oracle/OCI implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/08/20 16:51:16 $
+ * @version $Revision: 1.8 $ $Date: 2003/08/22 14:54:43 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {     
@@ -106,7 +108,8 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_FILE_READ");
             stmt.setInt(1, fileId);
-            res = stmt.executeQuery();
+            // res = stmt.executeQuery();
+            res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             if (res.next()) {
                 returnValue = m_sqlManager.getBytes(res, m_sqlManager.get("C_RESOURCES_FILE_CONTENT"));
             } else {
@@ -142,7 +145,8 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             // update the file content in the FILES database.
             stmt.setString(1, fileId.toString());
             conn.setAutoCommit(false);
-            res = stmt.executeQuery();
+            //res = stmt.executeQuery();
+            res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             try {
                 while (res.next()) {
                     oracle.sql.BLOB blobnew = ((OracleResultSet) res).getBLOB("FILE_CONTENT");

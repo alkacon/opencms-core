@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/08/20 16:51:16 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/08/22 14:54:43 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,11 +55,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.dbcp.DelegatingPreparedStatement;
+import org.apache.commons.dbcp.DelegatingResultSet;
+
 /**
  * Handles SQL queries from query.properties of the generic (ANSI-SQL) driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2003/08/20 16:51:16 $
+ * @version $Revision: 1.12 $ $Date: 2003/08/22 14:54:43 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -149,27 +152,42 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * @see com.opencms.dbpool.CmsConnection#close()
      */
     public void closeAll(Connection con, Statement stmnt, ResultSet res) {
+
+        // NOTE: we have to close Connections/Statements that way, because a dbcp PoolablePreparedStatement
+        // is not a DelegatedStatement; for that reason its not removed from the trace of the connection when it is closed.
+        // So, the connection tries to close it again when the connection is closed itself; 
+        // as a result there is an error that forces the connection to be destroyed and not pooled
+         
         try {
+            // first, close the connection and (eventually) implicitly all assigned statements and result sets
             if (con != null && !con.isClosed()) {
                 con.close();
             }
-
+        } catch (SQLException e) {
+            // intentionally left blank
+        }
+        
+        try {
+            // close the statement and (normally) implicitly all assigned result sets
             if (stmnt != null) {
                 stmnt.close();
-            }
-
+            } 
+        } catch (SQLException e) {
+            // intentionally left blank
+        }
+        
+        try {
+            // close the result set          
             if (res != null) {
                 res.close();
             }
         } catch (SQLException e) {
-            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + "] error closing JDBC connection/statement/result: " + e.toString());
-            }
-        } finally {
-            res = null;
-            stmnt = null;
-            con = null;
+            // intentionally left blank
         }
+
+        res = null;
+        stmnt = null;
+        con = null;
     }
     
     /**
@@ -410,7 +428,11 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
         } else {
             conn = DriverManager.getConnection(m_offlinePoolUrl);
         }
-
+        /*
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "getConnection/" + id + " returning " + conn.toString());
+        }    
+        */
         return conn;
     }
 
@@ -483,7 +505,13 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     public PreparedStatement getPreparedStatementForSql(Connection con, String query) throws SQLException {
         // unfortunately, this wrapper is essential, because some JDBC driver 
         // implementations don't accept the delegated objects of DBCP's connection pool. 
-        return con.prepareStatement(query);
+        PreparedStatement stmt = con.prepareStatement(query);
+        /*
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "getPreparedStatementForSql/" + con.toString() + " (" + query + ") returning " + stmt.toString());
+        }
+        */
+        return stmt;
     }    
     
     /**

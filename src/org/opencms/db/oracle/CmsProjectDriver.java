@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/20 16:51:16 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/22 14:54:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,10 +47,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Hashtable;
 
+import org.apache.commons.dbcp.DelegatingResultSet;
+
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.5 $ $Date: 2003/08/20 16:51:16 $
+ * @version $Revision: 1.6 $ $Date: 2003/08/22 14:54:43 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -90,7 +92,8 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
             stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_SYSTEMPROPERTIES_FORUPDATE");
             stmt2.setInt(1, id);
             conn.setAutoCommit(false);
-            res = stmt2.executeQuery();
+            // res = stmt2.executeQuery();
+            res = ((DelegatingResultSet)stmt2.executeQuery()).getInnermostDelegate();
             while (res.next()) {
                 oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SYSTEMPROPERTY_VALUE");
                 ByteArrayInputStream instream = new ByteArrayInputStream(value);
@@ -162,7 +165,8 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
             stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_SESSION_FORUPDATE");
             stmt2.setString(1, sessionId);
             conn.setAutoCommit(false);
-            res = stmt2.executeQuery();
+            // res = stmt2.executeQuery();
+            res = ((DelegatingResultSet)stmt2.executeQuery()).getInnermostDelegate();
             while (res.next()) {
                 oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SESSION_DATA");
                 ByteArrayInputStream instream = new ByteArrayInputStream(value);
@@ -245,7 +249,9 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
             stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_SESSION_FORUPDATE");
             stmt2.setString(1, sessionId);
             conn.setAutoCommit(false);
-            res = stmt2.executeQuery();
+            // res = stmt2.executeQuery();
+            res = ((DelegatingResultSet)stmt2.executeQuery()).getInnermostDelegate();
+            
             while (res.next()) {
                 oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SESSION_DATA");
                 // first trim the blob to 0 bytes, otherwise there could be left some bytes
@@ -318,7 +324,8 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_SYSTEMPROPERTIES_NAMEFORUPDATE");
             stmt.setString(1, name);
             conn.setAutoCommit(false);
-            res = stmt.executeQuery();
+            // res = stmt.executeQuery();
+            res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             while (res.next()) {
                 oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SYSTEMPROPERTY_VALUE");
                 // first trim the blob to 0 bytes, otherwise ther could be left some bytes

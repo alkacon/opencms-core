@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2003/07/17 12:00:40 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/22 14:54:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,16 @@
 
 package org.opencms.db;
 
+import java.sql.DriverManager;
+
 import org.apache.commons.dbcp.AbandonedConfig;
 import org.apache.commons.dbcp.AbandonedObjectPool;
 import org.apache.commons.dbcp.ConnectionFactory;
 import org.apache.commons.dbcp.DriverManagerConnectionFactory;
 import org.apache.commons.dbcp.PoolableConnectionFactory;
 import org.apache.commons.dbcp.PoolingDriver;
+import org.apache.commons.pool.impl.GenericKeyedObjectPool;
+import org.apache.commons.pool.impl.GenericKeyedObjectPoolFactory;
 import org.apache.commons.pool.impl.GenericObjectPool;
 
 import source.org.apache.java.util.Configurations;
@@ -48,7 +52,7 @@ import source.org.apache.java.util.Configurations;
  * based pools might be added probably later.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/07/17 12:00:40 $
+ * @version $Revision: 1.6 $ $Date: 2003/08/22 14:54:43 $
  * @since 5.1
  */
 public final class CmsDbPool extends Object {
@@ -177,12 +181,29 @@ public final class CmsDbPool extends Object {
         //KeyedObjectPoolFactory statementFactory = new StackKeyedObjectPoolFactory();
         //KeyedObjectPoolFactory statementFactory = new StackKeyedObjectPoolFactory(null, 5000, 0);
 
+        // Set up statement pool, if desired
+        boolean poolingStatements = true;
+        int maxOpenStatements = 5;
+        int maxStatements = 100;
+        GenericKeyedObjectPoolFactory statementFactory = null;
+        if (poolingStatements) {
+            statementFactory = new GenericKeyedObjectPoolFactory(null, 
+                maxOpenStatements,
+                // If statements are unlimited, then always grow
+                (maxOpenStatements == 0 || maxStatements == 0) ?
+                    GenericKeyedObjectPool.WHEN_EXHAUSTED_GROW : 
+                    GenericKeyedObjectPool.WHEN_EXHAUSTED_FAIL, 
+                0, maxStatements); 
+        }
+        
         // initialize a factory to obtain pooled connections and prepared statements
-        new PoolableConnectionFactory(connectionFactory, connectionPool, null, testQuery, false, true);
+        new PoolableConnectionFactory(connectionFactory, connectionPool, statementFactory, testQuery, false, true);
 
         // initialize a new pooling driver using the pool
         PoolingDriver driver = new PoolingDriver();
         driver.registerPool(poolUrl, connectionPool);
+
+// DriverManager.setLogStream(System.err);
 
         return poolUrl;
     }
