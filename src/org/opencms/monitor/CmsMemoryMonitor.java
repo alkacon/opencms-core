@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2003/11/06 16:37:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/11/07 15:48:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,9 @@ import java.util.Map;
 import org.apache.commons.collections.LRUMap;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/11/06 16:37:41 $
+ * Monitors OpenCms memory consumtion.<p>
+ * 
+ * @version $Revision: 1.4 $ $Date: 2003/11/07 15:48:15 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsMemoryMonitor implements I_CmsCronJob {
@@ -135,22 +137,26 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
     
         long freeMemory = Runtime.getRuntime().freeMemory();
         long totalMemory = Runtime.getRuntime().totalMemory();
-        long maxMemory = Runtime.getRuntime().maxMemory();    
-        long usage = (totalMemory - freeMemory) * 100 / maxMemory;
+        long maxMemory = Runtime.getRuntime().maxMemory();
+        long usedMemory = totalMemory - freeMemory;
+        long usage = usedMemory * 100 / maxMemory;
         
-        if (m_maxUsage > 0 && usage > m_maxUsage) {
+        if ((m_maxUsage > 0) && (usage > m_maxUsage)) {
              
-            if (OpenCms.getLog(this).isWarnEnabled())
+            if (OpenCms.getLog(this).isWarnEnabled()) {
                 OpenCms.getLog(this).warn ("Memory usage of " + usage + "% exceeds max usage of " + m_maxUsage + "%, clearing caches");
+            }
                    
             OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
             System.gc();    
 
-            if (OpenCms.getLog(this).isWarnEnabled())
+            if (OpenCms.getLog(this).isWarnEnabled()) {
                 OpenCms.getLog(this).warn(""
-                    + "Memory max: ," + Runtime.getRuntime().maxMemory() / 1048576 + " ,"
-                    + "total: ," + Runtime.getRuntime().totalMemory() / 1048576 + " ,"
-                    + "free: ," + Runtime.getRuntime().freeMemory() / 1048576); 
+                    + "Memory max: ," + maxMemory / 1048576 + " ,"
+                    + "total: ," + totalMemory / 1048576 + " ,"
+                    + "free: ," + freeMemory / 1048576 + " ,"
+                    + "used: ," + usedMemory / 1048576);
+            }
         }
     }
     
@@ -165,7 +171,8 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
         OpenCms.getLog(this).debug(", "
             + "Memory max: ," + Runtime.getRuntime().maxMemory() / 1048576 + " ,"
             + "total: ," + Runtime.getRuntime().totalMemory() / 1048576 + " ,"
-            + "free: ," + Runtime.getRuntime().freeMemory() / 1048576);    
+            + "free: ," + Runtime.getRuntime().freeMemory() / 1048576 + " ,"
+            + "used: ," + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576);    
                     
         for (Iterator keys = m_monitoredObjects.keySet().iterator(); keys.hasNext();) {
             
@@ -328,7 +335,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
      
     /**
      * Returns the cache costs of a monitored object.<p>
-     * obj must be of type CmsLruCache or CmsLruHashMap
+     * obj must be of type CmsLruCache 
      * 
      * @param obj the object
      * @return the cache costs or "-"
