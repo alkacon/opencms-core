@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/07/31 15:50:15 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2001/10/02 13:05:09 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -52,7 +52,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.40 $ $Date: 2001/07/31 15:50:15 $ *
+ * @version $Revision: 1.41 $ $Date: 2001/10/02 13:05:09 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -3100,10 +3100,12 @@ public boolean userInGroup(int userid, int groupid) throws CmsException {
  * @param onlineProject The online project of the OpenCms.
  * @param file The new file.
  * @param changed Flag indicating if the file state must be set to changed.
+ * @param userId The user who has changed the resource
  *
  * @exception CmsException Throws CmsException if operation was not succesful.
  */
-public void writeFile(CmsProject project, CmsProject onlineProject, CmsFile file, boolean changed) throws CmsException {
+public void writeFile(CmsProject project, CmsProject onlineProject, CmsFile file, boolean changed,
+                        int userId) throws CmsException {
     com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
     PreparedStatement statement = null;
     PreparedStatement nextStatement = null;
@@ -3113,16 +3115,18 @@ public void writeFile(CmsProject project, CmsProject onlineProject, CmsFile file
     ResultSet res = null;
     String usedPool;
     String usedStatement;
+    int modifiedBy = userId;
     if (project.getId() == onlineProject.getId()){
         usedPool = m_poolNameOnline;
         usedStatement = "_ONLINE";
+        modifiedBy = file.getResourceLastModifiedBy();
     } else {
         usedPool = m_poolName;
         usedStatement = "";
     }
     try {
         // update the file header in the RESOURCE database.
-        writeFileHeader(project, file, changed);
+        writeFileHeader(project, file, changed, modifiedBy);
         // update the file content in the FILES database.
         con = DriverManager.getConnection(usedPool);
         statement = con.prepareStatement(cq.get("C_PLSQL_FILESFORUPDATE"+usedStatement));
