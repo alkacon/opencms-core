@@ -1,0 +1,105 @@
+echo on
+login Admin admin
+createPropertydefinition Title plain
+createPropertydefinition Title compatiblePlain
+createPropertydefinition Title page
+createPropertydefinition Title XMLTemplate
+createPropertydefinition Title binary
+createPropertydefinition Title image
+createPropertydefinition Title link
+createPropertydefinition NavText page
+createPropertydefinition NavPos page
+createPropertydefinition NavText plain
+createPropertydefinition NavPos plain
+createPropertydefinition NavText link
+createPropertydefinition NavPos link
+createPropertydefinition NavText compatiblePlain
+createPropertydefinition NavPos compatiblePlain
+createPropertydefinition NavText folder
+createPropertydefinition NavPos folder
+createPropertydefinition Title folder
+createPropertydefinition Description folder
+createPropertydefinition Keywords folder
+createPropertydefinition ChannelId folder
+createPropertydefinition relativeroot folder
+createPropertydefinition TemplateType plain
+createPropertydefinition TemplateType compatiblePlain
+createPropertydefinition TemplateType XMLTemplate
+createPropertydefinition Keywords XMLTemplate
+createPropertydefinition Description page
+createPropertydefinition Keywords page
+createPropertydefinition Description plain
+createPropertydefinition Keywords plain
+createPropertydefinition Description compatiblePlain
+createPropertydefinition Keywords compatiblePlain
+createPropertydefinition module compatiblePlain
+createPropertydefinition Description binary
+createPropertydefinition Keywords binary
+createPropertydefinition Description image
+createPropertydefinition export compatiblePlain
+createPropertydefinition export folder
+createPropertydefinition export plain
+createPropertydefinition export page
+createPropertydefinition export link
+createPropertydefinition exportname compatiblePlain
+createPropertydefinition exportname folder
+createPropertydefinition exportname plain
+createPropertydefinition exportname page
+createPropertydefinition exportname image
+createPropertydefinition exportname link
+createPropertydefinition content-encoding folder
+createPropertydefinition content-encoding plain
+createPropertydefinition content-encoding page
+createPropertydefinition content-encoding link
+createPropertydefinition default-file folder
+createPropertydefinition Title jsp
+createPropertydefinition Keywords jsp
+createPropertydefinition Description jsp
+createPropertydefinition export jsp
+createPropertydefinition cache jsp
+createPropertydefinition stream jsp
+createPropertydefinition content-encoding jsp
+createPropertydefinition NavText jsp
+createPropertydefinition NavPos jsp
+addFileExtension doc binary
+addFileExtension pdf binary
+addFileExtension zip binary
+addFileExtension class binary
+addFileExtension txt plain
+addFileExtension html plain
+addFileExtension htm plain
+addFileExtension jpeg image
+addFileExtension jpg image
+addFileExtension gif image
+addFileExtension jsp jsp
+createTempfileProject
+setCurrentProject "2"
+importResources "ocsetup/vfs"
+publishProject "2"
+writeExportPath "export/"
+createDefaultProject "Offline" "The Offline Project"
+importModuleFromDefault "org.opencms.default.zip"
+importModuleFromDefault "org.opencms.welcome.zip"
+importModuleFromDefault "org.opencms.templates.zip"
+importModuleFromDefault "org.opencms.website-demo.zip"
+importModuleFromDefault "org.opencms.help.zip"
+importModuleFromDefault "org.opencms.help.en.zip"
+importModuleFromDefault "org.opencms.help.de.zip"
+importModuleFromDefault "org.opencms.locale.es.zip"
+importModuleFromDefault "org.opencms.locales.fr.zip"
+importModuleFromDefault "org.opencms.locales.it.zip"
+importModuleFromDefault "com.alkacon.documentation.zip"
+importModuleFromDefault "com.alkacon.documentation.documentation-flexcache.zip"
+importModuleFromDefault "com.alkacon.documentation.documentation-jsp.zip"
+importModuleFromDefault "com.alkacon.documentation.documentation-modules.zip"
+importModuleFromDefault "com.alkacon.documentation.documentation-scriptlet.zip"
+importModuleFromDefault "com.alkacon.documentation.documentation-taglib.zip"
+importModuleFromDefault "com.alkacon.documentation.examples-flex-1.zip"
+importModuleFromDefault "com.alkacon.documentation.examples-flex-2.zip"
+importModuleFromDefault "com.alkacon.documentation.examples-flex-3.zip"
+importModuleFromDefault "com.alkacon.documentation.examples-jstl.zip"
+importModuleFromDefault "com.alkacon.documentation.examples-tomcat.zip"
+importModuleFromDefault "com.alkacon.documentation.howto-template.zip"
+importModuleFromDefault "com.alkacon.documentation.howto-workplace-translation.zip"
+importModuleFromDefault "com.alkacon.introduction.zip"
+exit
