@@ -235,7 +235,8 @@ ${build.inputlib.dbcp}
        </copy>       
 
        <!-- create version-info for the workplace-->
-       <echo file="${build.version.jsfile}">var version = '${version.number} ${version.name}';</echo>
+       <echo file="${build.version.jsfile}">var version = '${version.number} ${version.name}';
+</echo>
        <!-- create version-info for the setup versions.txt -->
        <echo file="${build.version.setupfile}" append="on">OpenCms ${version.number}
 </echo>
