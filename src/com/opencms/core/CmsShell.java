@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/09/29 06:46:26 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2000/09/29 06:59:11 $
+ * Version: $Revision: 1.44 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.43 $ $Date: 2000/09/29 06:46:26 $
+ * @version $Revision: 1.44 $ $Date: 2000/09/29 06:59:11 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -1079,26 +1079,17 @@ public void getCurrentSite()
  */
 public void help(String searchString)
 {
-	Method meth[] = getClass().getMethods();
-	for (int z = 0; z < meth.length; z++)
+	if (searchString.equals("help"))
+		printHelpText();
+	else
 	{
-		if ((meth[z].getDeclaringClass() == getClass()) && (meth[z].getModifiers() == Modifier.PUBLIC) && (meth[z].getName().toLowerCase().indexOf(searchString.toLowerCase()) > -1))
+		Method meth[] = getClass().getMethods();
+		for (int z = 0; z < meth.length; z++)
 		{
-			printMethod(meth[z]);
-			/*
-			System.out.print("  " + meth[z].getName() + " (");
-			Class[] params = meth[z].getParameterTypes();
-			for (int i = 0; i < params.length; i++)
+			if ((meth[z].getDeclaringClass() == getClass()) && (meth[z].getModifiers() == Modifier.PUBLIC) && (meth[z].getName().toLowerCase().indexOf(searchString.toLowerCase()) > -1))
 			{
-				String par = params[i].getName();
-				par = par.substring(par.lastIndexOf(".") + 1);
-				if (i == 0)
-					System.out.print(par);
-				else
-					System.out.print(", " + par);
+				printMethod(meth[z]);
 			}
-			System.out.println(")");
-*/
 		}
 	}
 }
@@ -1416,7 +1407,9 @@ public void printHelpText()
 {
 	System.out.println("help              Gives a list of available commands with signature");
 	System.out.println("help <command>    Shows signature of command");
-	System.out.println("help <substring>  Gives a list of commands containing this substring");
+	System.out.println("help <substring>  Lists only those commands containing this substring");
+	System.out.println("help help         Prints this text");
+	System.out.println("exit or quit      Leaves the Shell");
 	System.out.println("");
 }
 /**
