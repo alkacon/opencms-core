@@ -1,7 +1,7 @@
 History of changes for the OpenCms project.
 
 Changes are chronologically ordered from top (most recent) to bottom (least recent).
-For more information about the OpenCms project, see the OpenCms website at http://www.opencms.com.
+For more information about the OpenCms project, see the OpenCms website at http://www.opencms.org.
 
 Legend: 
 ! New Feature
@@ -9,12 +9,15 @@ Legend:
 - General comment
 
 OpenCms 4.5.32 Chusuk       - xx January 2001
-- Index added on field sub_id in table cms_module_master and cms_module_online_master
+! The digest-method for encrypting passwords is now available in the CmsObject.
 * when the property export is set to https, the 404 error is thrown only in the online project
   and it works for folders too.
 * Bugfix in subressource-cache. Now the subressource-cache is user dependend.
 - The static message parts of the system-errormessage are stored now in the errormsg.properties.
-! The digest-method for encrypting passwords is now available in the CmsObject.
+- Index added on field sub_id in table cms_module_master and cms_module_online_master
+- Prepared mechanism for showing preview of ressources with a special class and template.
+  This allows control about the used protocol-sheme (http or https) for previews in the online
+  project.
 
 OpenCms 4.5.31 Chusuk       - 09 January 2001
 ! Modification on Explorer-View for "Gecko" support. The "Gecko-Support" is not finished yet.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-* Date   : $Date: 2001/12/14 16:04:37 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2002/01/15 15:02:12 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -240,7 +240,7 @@ var ns,ie,gecko;
     if (url != '#') {
         w=screen.availWidth-50;
         h=screen.availHeight-200;
-        workplace = window.open(url,'preview', 'toolbar=yes,location=yes,directories=no,status=yes,menubar=1,scrollbars=yes,resizable=yes,width='+w+',height='+h);
+        workplace = window.open("explorerShowResource.html?url=" + url,'preview', 'toolbar=yes,location=yes,directories=no,status=yes,menubar=1,scrollbars=yes,resizable=yes,width='+w+',height='+h);
         if(workplace != null) {
             workplace.focus();
         }
@@ -1053,11 +1053,11 @@ showKontext(doc, welche, id,x,y);
              "/"+"/"+"--></style></head>";
     var returnplace=wo.location.href;
     if(openfolderMethod == "openthisfolderflat" || projectView){
-    	returnplace=returnplace.replace(/\?/g, "%3F");
-    	returnplace=returnplace.replace(/\&/g, "%26");
-    	returnplace=returnplace.replace(/\=/g, "%3D");
+        returnplace=returnplace.replace(/\?/g, "%3F");
+        returnplace=returnplace.replace(/\&/g, "%26");
+        returnplace=returnplace.replace(/\=/g, "%3D");
     } else {
-    	returnplace=returnplace.substring(0, returnplace.lastIndexOf("/")) + "/explorer_files.html";
+        returnplace=returnplace.substring(0, returnplace.lastIndexOf("/")) + "/explorer_files.html";
     }
     returnplace=simpleEscape(returnplace);
 
@@ -1207,11 +1207,11 @@ showKontext(doc, welche, id,x,y);
 
          var resourceName = vr.actDirectory+vi.liste[i].name;
          if(projectView){
-         	if(vi.liste[i].type == 0){
-         		resourceName = vi.liste[i].path.substring(0, vi.liste[i].path.lastIndexOf("/"));
-         	} else {
-         		resourceName = vi.liste[i].path+vi.liste[i].name;
-         	}
+            if(vi.liste[i].type == 0){
+                resourceName = vi.liste[i].path.substring(0, vi.liste[i].path.lastIndexOf("/"));
+            } else {
+                resourceName = vi.liste[i].path+vi.liste[i].name;
+            }
          }
          for(a=0;a<vi.menus[vi.liste[i].type].items.length;a++){
 
