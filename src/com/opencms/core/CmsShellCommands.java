@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2002/12/12 18:48:54 $
-* Version: $Revision: 1.57 $
+* Date   : $Date: 2002/12/17 12:13:20 $
+* Version: $Revision: 1.58 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.57 $ $Date: 2002/12/12 18:48:54 $
+ * @version $Revision: 1.58 $ $Date: 2002/12/17 12:13:20 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -1888,7 +1888,7 @@ class CmsShellCommands implements I_CmsConstants {
     /**
      * Imports a module (zipfile) to the cms.
      *
-     * @param importFile java.lang.String the name (complete Path) of the import module
+     * @param importFile the name (complete Path) of the import module
      */
     public void importModule(String importFile) {
 
@@ -1896,6 +1896,37 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             I_CmsRegistry reg = m_cms.getRegistry();
             reg.importModule(importFile, new Vector(), new CmsShellReport());
+        }
+        catch(Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
+     * Imports a module (zipfile) from the default module directory, creating a temporary project
+     * for this.
+     *
+     * @param importFile the name of the import module located in the default module directory
+     */
+    public void importModuleFromDefault(String importFile) {
+        // build the complete filename
+        String fileName = com.opencms.boot.CmsBase.getAbsolutePath("export/")
+            + I_CmsRegistry.C_MODULE_PATH
+            + importFile;
+        System.out.println("Importing module: " + fileName);
+        // import the module
+        try {
+            // create a temporary project for the import
+            CmsProject project = m_cms.createProject("ModuleImport", "A temporary project to import the module " + importFile, C_GROUP_ADMIN, C_GROUP_ADMIN, C_PROJECT_TYPE_TEMPORARY);
+            int id = project.getId();
+            m_cms.getRequestContext().setCurrentProject(id);
+            m_cms.copyResourceToProject(C_ROOT);
+            // import the module
+            I_CmsRegistry reg = m_cms.getRegistry();
+            reg.importModule(fileName, new Vector(), new CmsShellReport());
+            // finally publish the project
+            m_cms.unlockProject(id);
+            m_cms.publishProject(id);            
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
