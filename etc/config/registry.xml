@@ -1,6 +1,66 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <registry>
     <system>
+        <restype>
+            <name>folder</name>
+            <launcherType>0</launcherType>
+            <launcherClass></launcherClass>
+            <resourceClass>com.opencms.file.CmsResourceTypeFolder</resourceClass>
+        </restype>
+        <restype>
+            <name>plain</name>
+            <launcherType>1</launcherType>
+            <launcherClass></launcherClass>
+            <resourceClass>com.opencms.file.CmsResourceTypePlain</resourceClass>
+        </restype>
+        <restype>
+            <name>XMLTemplate</name>
+            <launcherType>3</launcherType>
+            <launcherClass></launcherClass>
+            <resourceClass>com.opencms.file.CmsResourceTypeXMLTemplate</resourceClass>
+        </restype>
+        <restype>
+            <name>page</name>
+            <launcherType>3</launcherType>
+            <launcherClass></launcherClass>
+            <resourceClass>com.opencms.file.CmsResourceTypePage</resourceClass>
+        </restype>
+        <restype>
+            <name>binary</name>
+            <launcherType>1</launcherType>
+            <launcherClass></launcherClass>
+            <resourceClass>com.opencms.file.CmsResourceTypeBinary</resourceClass>
+        </restype>
+        <restype>
+            <name>image</name>
+            <launcherType>1</launcherType>
+            <launcherClass></launcherClass>
+            <resourceClass>com.opencms.file.CmsResourceTypeImage</resourceClass>
+        </restype>
+        <restype>
+            <name>script</name>
+            <launcherType>1</launcherType>
+            <launcherClass></launcherClass>
+            <resourceClass>com.opencms.file.CmsResourceTypeScript</resourceClass>
+        </restype>
+        <restype>
+            <name>link</name>
+            <launcherType>4</launcherType>
+            <launcherClass></launcherClass>
+            <resourceClass>com.opencms.file.CmsResourceTypeLink</resourceClass>
+        </restype>
+        <restype>
+            <name>newspage</name>
+            <launcherType>3</launcherType>
+            <launcherClass></launcherClass>
+            <resourceClass>com.opencms.file.CmsResourceTypeNewspage</resourceClass>
+        </restype>
+        <restype>
+            <name>pdfpage</name>
+            <launcherType>5</launcherType>
+            <launcherClass></launcherClass>
+            <resourceClass>com.opencms.file.CmsResourceTypePdfpage</resourceClass>
+        </restype>
         <view>
             <name>select.explorer</name>
             <url>/system/workplace/action/explorer_new.html</url>
@@ -13,23 +73,26 @@
             <name>select.tasks</name>
             <url>/system/workplace/action/tasks.html</url>
         </view>
-		
-		<smtpserver>my.smtp.server</smtpserver>
+        <smtpserver>my.smtp.server</smtpserver>
         <smtpserver2>alternative.smtp.server</smtpserver2>
         <defaultmailsender>nobody@nowhere.com</defaultmailsender>
-		
         <repository>
             <path>/system/classes/</path>
         </repository>
-		
-		<!-- enable this for synchronizing resources and set the desired paths
-		<syncpath>c:/work41/sync</syncpath>
-		<syncproject>_syncProject</syncproject>
-		<syncresource>
-			<res1>/content/</res1>
-			<res2>/download/</res2>
-			<res3>/pics/</res3>
-		</syncresource> -->
+        <launchers>
+            <launcher1>com.opencms.launcher.CmsXmlLauncher</launcher1>
+            <launcher2>com.opencms.launcher.CmsDumpLauncher</launcher2>
+            <launcher3>com.opencms.launcher.CmsLinkLauncher</launcher3>
+            <launcher4>com.opencms.launcher.CmsPdfLauncher</launcher4>
+        </launchers>
+        <!-- enable this for synchronizing resources and set the desired paths
+        <syncpath>c:/work41/sync</syncpath>
+            <syncproject>_syncProject</syncproject>
+            <syncresource>
+                <res1>/content/</res1>
+                <res2>/download/</res2>
+                <res3>/pics/</res3>
+            </syncresource> -->
     </system>
     <modules/>
 </registry>
