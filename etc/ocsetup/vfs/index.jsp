@@ -2,7 +2,6 @@
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %>
 <cms:include property="template" part="head" />
 
-<img src="<cms:link>/system/modules/default/resources/logo_opencms_large.gif</cms:link>" alt="OpenCms Logo" width="250" height="68" border="0" align="right">
 <h1>Congratulations!</h1>
 
 <h3>If you're seeing this page via a web browser, it means you've setup OpenCms successfully.</h3>
@@ -49,7 +48,7 @@ before someone else does it for you.</p>
 
 
 <p>If you're seeing this page, and you don't think you should be, 
-then either you're a user who has arrived at a new installation of OpenCms, 
+then either you're a a user who has arrived at a new installation of OpenCms, 
 or you're an administrator who hasn't got his/her setup quite right. 
 Providing the latter is the case, please refer to the OpenCms Documentation 
 available at <a href="http://www.opencms.org" target="_blank">http://www.opencms.org</a>
@@ -64,10 +63,6 @@ in the body of your mail. The mail does not need a subject.
 </p>
 
 <p>Thank you for using OpenCms!</p>
-
-<p class="small"><img src="<cms:link>/system/modules/default/resources/logo_opencms_power.gif</cms:link>" alt="Powered by OpenCms" width="100" height="30" border="0" align="left">
-&copy; 2000 - 2002 The OpenCms Group<br>
-All Rights Reserved</p>
 
 <cms:include property="template" part="foot" />
 

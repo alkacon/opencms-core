@@ -22,6 +22,16 @@
                     <value><![CDATA[ISO-8859-1]]></value>
                 </property>
                 <property>
+                    <name>NavText</name>
+                    <type>8</type>
+                    <value><![CDATA[Welcome to OpenCms]]></value>
+                </property>
+                <property>
+                    <name>NavPos</name>
+                    <type>8</type>
+                    <value><![CDATA[1.0]]></value>
+                </property>
+                <property>
                     <name>Title</name>
                     <type>8</type>
                     <value><![CDATA[Welcome to OpenCms]]></value>
@@ -34,6 +44,41 @@
                 <property>
                     <name>export</name>
                     <type>8</type>
+                    <value><![CDATA[false]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>notes_5.0b2.html</source>
+            <destination>notes_5.0b2.html</destination>
+            <type>page</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>content-encoding</name>
+                    <type>1</type>
+                    <value><![CDATA[ISO-8859-1]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>1</type>
+                    <value><![CDATA[5.0 beta 2 release notes]]></value>
+                </property>
+                <property>
+                    <name>NavPos</name>
+                    <type>1</type>
+                    <value><![CDATA[2.0]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[5.0 beta 2 release notes]]></value>
+                </property>
+                <property>
+                    <name>export</name>
+                    <type>1</type>
                     <value><![CDATA[false]]></value>
                 </property>
             </properties>
@@ -59,6 +104,15 @@
                     <value><![CDATA[false]]></value>
                 </property>
             </properties>
+        </file>
+        <file>
+            <source>system/bodies/notes_5.0b2.html</source>
+            <destination>system/bodies/notes_5.0b2.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>895</access>
+            <properties/>
         </file>
         <file>
             <destination>system/galleries</destination>
@@ -297,6 +351,44 @@
                     <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Empty body]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <destination>system/modules/default/elements</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/modules/default/elements/default_nav.jsp</source>
+            <destination>system/modules/default/elements/default_nav.jsp</destination>
+            <type>jsp</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>content-encoding</name>
+                    <type>8</type>
+                    <value><![CDATA[ISO-8859-1]]></value>
+                </property>
+                <property>
+                    <name>cache</name>
+                    <type>8</type>
+                    <value><![CDATA[uri]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>8</type>
+                    <value><![CDATA[Default template navigation]]></value>
+                </property>
+                <property>
+                    <name>export</name>
+                    <type>8</type>
+                    <value><![CDATA[false]]></value>
                 </property>
             </properties>
         </file>
