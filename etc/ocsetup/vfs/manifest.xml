@@ -35,6 +35,14 @@
 			<access>383</access>
 			<properties/>
 		</file>
+		<file>
+			<destination>content/default_bodies</destination>
+			<type>folder</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>383</access>
+			<properties/>
+		</file>
         <file>
             <destination>moduledemos</destination>
             <type>folder</type>
@@ -259,6 +267,21 @@
                     <value><![CDATA[Definitions for HTML form objects]]></value>
                 </property>
             </properties>
+        </file>
+		<file>
+		    <source>content/default_bodies/empty</source>
+		    <destination>content/default_bodies/empty</destination>
+		    <type>plain</type>
+		    <user>Admin</user>
+		    <group>Users</group>
+		    <access>383</access>
+		    <properties>
+		    	<property>
+		        	<name>Title</name>
+		            <type>1</type>
+		           	<value><![CDATA[empty body]]></value>
+		    	</property>
+			</properties>
         </file>
         <file>
             <source>moduledemos/index</source>

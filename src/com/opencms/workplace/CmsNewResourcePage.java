@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2001/03/28 14:33:16 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2001/04/27 14:39:59 $
+* Version: $Revision: 1.37 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.36 $ $Date: 2001/03/28 14:33:16 $
+ * @version $Revision: 1.37 $ $Date: 2001/04/27 14:39:59 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -204,6 +204,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
         String templatefile = (String)parameters.get(C_PARA_TEMPLATE);
         String navtitle = (String)parameters.get(C_PARA_NAVTEXT);
         String navpos = (String)parameters.get(C_PARA_NAVPOS);
+        String layoutFilePath = (String)parameters.get(C_PARA_LAYOUT);
 
         // get the current phase of this wizard
         String step = cms.getRequestContext().getRequest().getParameter("step");
@@ -236,9 +237,18 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                         cms.writeProperty(file.getAbsolutePath(), C_PROPERTY_DESCRIPTION, description);
                     }
 
+                    byte[] bodyBytes = null;
+                    if (layoutFilePath == null || layoutFilePath.equals("")) {
+                        // layout not specified, use default body
+                        bodyBytes = C_DEFAULTBODY.getBytes();
+                    } else {
+                        // do not catch exceptions, a specified layout should exist
+                        CmsFile layoutFile = cms.readFile(layoutFilePath);
+                        bodyBytes = layoutFile.getContents();
+                    }
                     // now create the page content file
                     contentFile = cms.createFile(C_CONTENTBODYPATH + currentFilelist.substring(1,
-                            currentFilelist.length()), newFile, C_DEFAULTBODY.getBytes(), "plain");
+                                currentFilelist.length()), newFile, bodyBytes, "plain");
 
                     /* try {
                     contentFile=cms.readFile(C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length()),newFile);
@@ -562,5 +572,38 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
             newPos = 1;
         }
         cms.writeProperty(newfile.getAbsolutePath(), C_PROPERTY_NAVPOS, new Float(newPos).toString());
+    }
+
+    /**
+     * Gets the content layouts displayed in the content layouts select box.
+     * @param cms The CmsObject.
+     * @param lang The langauge definitions.
+     * @param names The names of the new rescources.
+     * @param values The links that are connected with each resource.
+     * @param parameters Hashtable of parameters (not used yet).
+     * @returns The vectors names and values are filled with the information found in the
+     * workplace.ini.
+     * @exception Throws CmsException if something goes wrong.
+     */
+
+    public Integer getLayouts(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
+            Vector values, Hashtable parameters) throws CmsException {
+
+        Vector files = cms.getFilesInFolder(C_CONTENTLAYOUTPATH);
+
+        Enumeration enum = files.elements();
+        while(enum.hasMoreElements()) {
+            CmsFile file = (CmsFile)enum.nextElement();
+            if(file.getState() != C_STATE_DELETED) {
+                String nicename = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
+                if(nicename == null) {
+                    nicename = file.getName();
+                }
+                names.addElement(nicename);
+                values.addElement(file.getAbsolutePath());
+            }
+        }
+        bubblesort(names, values);
+        return new Integer(0);
     }
 }

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2001/04/06 10:13:56 $
-* Version: $Revision: 1.104 $
+* Date   : $Date: 2001/04/27 14:40:07 $
+* Version: $Revision: 1.105 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.104 $ $Date: 2001/04/06 10:13:56 $
+ * @version $Revision: 1.105 $ $Date: 2001/04/27 14:40:07 $
  */
 
 public interface I_CmsWpConstants {
@@ -1234,4 +1234,11 @@ public interface I_CmsWpConstants {
 
     /** The default icon */
     public final static String C_ICON_DEFAULT = "ic_file_othertype.gif";
+
+     /** Parameter for content layouts folder */
+    public static final String C_CONTENTLAYOUTPATH = C_CONTENTPATH + "default_bodies/";
+
+    /** Parameter for layout  */
+    public static final String C_PARA_LAYOUT = "default_body";
+
 }
