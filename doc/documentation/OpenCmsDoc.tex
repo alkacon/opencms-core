@@ -8,7 +8,7 @@
 % use some packages...
 %--------------------------------------------------
 %\usepackage{german}           % do not use because this is english!
-%\usepackage{t1enc}	       % what for? 
+%\usepackage{t1enc}        % what for?
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{xspace}
@@ -16,7 +16,7 @@
 \usepackage[pdftex]{graphicx}  %enable if you want to use pdflatex
 % enable if you habe installed the ae fonts !!!
 % and want to use T1 fonts together with pdflatex
-\usepackage{ae}                
+\usepackage{ae}
 %\usepackage{psfig}
 \usepackage{makeidx}
 \usepackage{fancyhdr}                    % for header and footer
@@ -52,7 +52,7 @@
 %--------------------------------------------------
 
 %\addtolength{\topmargin}{-1.5cm}
-\setcounter{topnumber}{1}              % allow only one figure at top 
+\setcounter{topnumber}{1}              % allow only one figure at top
 \setcounter{bottomnumber}{1}           % allow only one figure at bottom
 \setlength{\parindent}{0em}
 \setlength{\parskip}{1ex plus0.5ex minus0.5ex}
@@ -62,11 +62,11 @@
 %--------------------------------------------------
 % Trennvorschläge
 %--------------------------------------------------
-\hyphenation{Cms-Xml-Content CmsXml-Wp-Template-File 
+\hyphenation{Cms-Xml-Content CmsXml-Wp-Template-File
 CmsXml-Form-Temp-late-File com open-cms temp-late Cms-Xml-Temp-late
-an-other user-def-ined met-hods temp-late al-rea-dy  get-Title  
-temp-late sec-ond Cms-Xml-Conten de-sign-ed Cms-Xml-Wp-Temp-late-File 
-cre-at-ed fet-ched cal-ling get-Ses-sion met-hod Cms-Ses-sion 
+an-other user-def-ined met-hods temp-late al-rea-dy  get-Title
+temp-late sec-ond Cms-Xml-Conten de-sign-ed Cms-Xml-Wp-Temp-late-File
+cre-at-ed fet-ched cal-ling get-Ses-sion met-hod Cms-Ses-sion
 ses-sionCms-Sess-ion get-Re-qu-est-Con-text-get-Sess-ion }
 %
 %--------------------------------------------------
@@ -115,7 +115,7 @@ ses-sionCms-Sess-ion get-Re-qu-est-Con-text-get-Sess-ion }
 \newcommand{\class}{\it}
 \newcommand{\backbug}{}
 
-% macro for hypertext-references (has to be used in install... 
+% macro for hypertext-references (has to be used in install...
 % tex-files for correct conversion into html)
 \def\rqtilde{\ensuremath{\tilde{\;}}\xspace}
 \def\rqhttp#1#2{\texttt{#2}}
@@ -126,9 +126,9 @@ ses-sionCms-Sess-ion get-Re-qu-est-Con-text-get-Sess-ion }
 
 \input{title}
 %\setcounter{realpage}{\value{page}}  % speichern
-%\addtocounter{realpage}{1}           % + 1 
+%\addtocounter{realpage}{1}           % + 1
 \frontmatter
-%\setcounter{page}{\value{realpage}}  % und wieder zurück! 
+%\setcounter{page}{\value{realpage}}  % und wieder zurück!
 \tableofcontents
 \mainmatter
 %\include{introduction}
@@ -143,7 +143,10 @@ ses-sionCms-Sess-ion get-Re-qu-est-Con-text-get-Sess-ion }
 \include{install_components}
 \include{install_opencms_4_2}
 \include{install_opencms_4_3}
+\include{newProject}
+\include{newFeatures}
 %\include{browserSettings}
+\include{credits}
 %\backmatter
 \begin{appendix}
 \chapter{JavaDoc}
