@@ -71,7 +71,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 				<td class=dialogtxt>
 					<input type="text" name="folder" class="textfeld" size=31>	
 				</td>
-				<td class=formular><a href="javascript:treewin=opensmallwin('folder_tree.html?foldertree=%2F&formname=COPY&variable=folder&viewfile=no', 'explorer_viewer', 150, 300),treewin.focus();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="Durchsuchen"></a></td>
+				<td class=formular><a href="javascript:top.openTreeCopyWin();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>    
 			</tr>
 			<!-- End dropdown-->
 			<tr> 
@@ -145,6 +145,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 			
 			<!-- Begin tablehead blue -->
 			<tr> 
+		
            		<td colspan=3 class="head">]]><LABEL value="title.copyfolder" /><![CDATA[: ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
 			</tr>
 			<!-- Ende tablehead blue -->
@@ -168,7 +169,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 			<tr>
 				<td class=formular width=40%>
 					]]><LABEL value="input.name" /><![CDATA[:</td>
-				<td class=dialogtxt  colspan=2>]]><INPUTFIELD name="file" class="textfeld" size="31" length="50" method="setValue" /><![CDATA[</td>								
+				<td class=dialogtxt  colspan=2>]]><INPUTFIELD name="file" class="textfeld" size="31" length="50" method="setValue" /><![CDATA[</td>
 			</tr>
 			<!-- End textfield -->
 			<!-- Begin dropdown-->
@@ -177,7 +178,8 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 				<td class=dialogtxt>
 					<input type="text" name="folder" class="textfeld" size=31>	
 				</td>
-				<td class=formular><a href="javascript:treewin=opensmallwin('folder_tree.html?foldertree=%2F&formname=COPY&variable=folder', 'explorer_viewer', 150, 300),treewin.focus();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="Durchsuchen"></a></td>
+					               
+				<td class=formular><a href="javascript:top.openTreeCopyWin();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>    
 			</tr>
 			<!-- End dropdown-->
 			<tr> 

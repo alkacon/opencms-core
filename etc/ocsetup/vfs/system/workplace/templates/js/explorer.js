@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/01/09 13:17:51 $
-  * Version: $Revision: 1.13 $
+  * Date   : $Date: 2001/01/22 16:08:41 $
+  * Version: $Revision: 1.14 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -137,6 +137,10 @@
      this.text = text;
      this.icon = icon;
  }
+ 
+ 
+ var windowed=0;
+ 
  
  /**
   *  detects the users browser
@@ -449,59 +453,62 @@
  	}
  }
  
- function toggleNode(doc, id) {
- 	tree.dfsToggleFound = false;
- 	dfsToggle(id, tree.root);
- 	showTree(doc);
- }
+function toggleNode(doc, id, windowed) {
+    
+	tree.dfsToggleFound = false;
+	dfsToggle(id, tree.root);
+	showTree(doc,windowed);
+}
  
- /**
-  *  write <img> tag
-  */
- function showPic(doc, pic) {
- 	doc.write("<img src='" + pic + "' height=16 width=16 border=0 vspace=0 hspace=0 align=left>");
- }
+/**
+ *  write <img> tag
+ */
+function showPic(doc, pic) {
+	doc.write("<img src='" + pic + "' height=16 width=16 border=0 vspace=0 hspace=0 align=left>");
+}
  
- /**
-  *  write linked <img> tag, used for open-able folders/crosses in the tree frame
-  */
- function showPicLink(doc, pic, id) {
- 	doc.write("<a href=javascript:top.toggleNode(document,"+ id +")><img src='"+ pic +"' height=16 width=16 border=0 vspace=0 hspace=0 align=left></a>");
- }
+/**
+ *  write linked <img> tag, used for open-able folders/crosses in the tree frame
+ */
+function showPicLink(doc, pic, id,windowed) {
+    if(windowed==0) doc.write("<a href=javascript:top.toggleNode(document,"+ id +","+windowed+")><img src='"+ pic +"' height=16 width=16 border=0 vspace=0 hspace=0 align=left></a>");
+    if(windowed>0) doc.write("<a href=javascript:window.opener.toggleNode(document,"+ id +","+windowed+")><img src='"+ pic +"' height=16 width=16 border=0 vspace=0 hspace=0 align=left></a>");
+
+}
  
  
- function dfsTree(doc, node, depth, last, shape) {
-     var loop1;
+function dfsTree(doc, node, depth, last, shape,windowed) {
+    var loop1;
  
- 	if (node.parent==null) {
- 		showPic(doc, tree.icon[9].src); // rootdir
- 	} else {
- 		for (loop1=0; loop1<depth-1; loop1++) {
- 			if (shape[loop1+1] == 1) {
- 				showPic(doc, tree.icon[10].src); //vert.line
- 			} else {
- 				showPic(doc, tree.icon[0].src); //nothing
- 			}
- 		}
- 
- 		if (last) {
- 			if (node.childs.length > 0) {
- 				if (node.open) {
-				//wenn actdir ein child vom knopf ist
- 					showPicLink(doc, tree.icon[5].src, node.id); //corner to close
- 				} else {
- 					showPicLink(doc, tree.icon[7].src, node.id); //corner to open 
- 				}
- 			} else {
- 				showPic(doc, tree.icon[1].src); //corner
- 			}
+	if (node.parent==null) {
+		showPic(doc, tree.icon[9].src); // rootdir
+	} else {
+		for (loop1=0; loop1<depth-1; loop1++) {
+			if (shape[loop1+1] == 1) {
+				showPic(doc, tree.icon[10].src); //vert.line
+			} else {
+				showPic(doc, tree.icon[0].src); //nothing
+			}
+		}
+
+		if (last) {
+			if (node.childs.length > 0) {
+		    	if (node.open) {
+        	    	//wenn actdir ein child vom knopf ist
+					showPicLink(doc, tree.icon[5].src, node.id,windowed); //corner to close
+				} else {
+					showPicLink(doc, tree.icon[7].src, node.id,windowed); //corner to open 
+				}
+			} else {
+				showPic(doc, tree.icon[1].src); //corner
+			}
  			shape[depth] = 0;
  		} else {
  			if (node.childs.length > 0) {
  				if (node.open) {
- 					showPicLink(doc, tree.icon[6].src, node.id); //cross to close
+					showPicLink(doc, tree.icon[6].src, node.id,windowed); //cross to close
  				} else {
- 					showPicLink(doc, tree.icon[8].src, node.id); //cross to open
+ 					showPicLink(doc, tree.icon[8].src, node.id,windowed); //cross to open
  				}
  			} else {
  				showPic(doc, tree.icon[4].src); //cross
@@ -523,50 +530,124 @@
  
      if(node.isGrey)var foco="class=ig ";
          else var foco="class=tf ";
-     doc.writeln("<a "+foco+"href='javascript:top.openFolder(&quot;"+ node.id +"&quot;);' target='explorer_files' ;>&nbsp;"+ node.name + "&nbsp;</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
- 
- 
+     if(windowed==0) doc.writeln("<a "+foco+"href='javascript:top.openFolder(&quot;"+ node.id +"&quot;);' target='explorer_files' ;>&nbsp;"+ node.name + "&nbsp;</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
+     if(windowed==1) doc.writeln("<a "+foco+" href=javascript:window.opener.addProjectDir("+node.id+");> &nbsp;"+ node.name + "&nbsp;</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
+     if(windowed==2) doc.writeln("<a "+foco+" href=javascript:window.opener.addDir("+node.id+");> &nbsp;"+ node.name + "&nbsp;</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
+
+     //javascript:window.opener.frames[1].document.COPY.folder.value =node.name '>&nbsp;"+ node.name + "&nbsp;</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
+
  	if (node.open || node == tree.root) {
  		for (var loop1=0; loop1<node.childs.length; loop1++) {
- 			dfsTree(doc, node.childs[loop1], depth+1, (loop1==(node.childs.length-1)), shape);	
+ 			dfsTree(doc, node.childs[loop1], depth+1, (loop1==(node.childs.length-1)), shape,windowed);	
  		}
  	}
  }
+
+function addDir(nodid){
+    
+    
+    var pfad="";
+
+ 	if (nodid!=tree.root.id){
+ 		do{
+ 			var nodeName='_n'+nodid;
+ 			pfad=tree.nodes[nodeName].name+"/"+pfad;
+ 			//top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value = pfad +top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value ;
+ 			nodid   = tree.nodes[nodeName].parent.id;
+ 			test = tree.nodes[nodeName].parent.id;
+
+ 		}while(nodid!=tree.root.id);
+ 	}
+    pfad='/'+pfad;
+
+	//window.frames[1].frames[1].PROJECTNEW.tempFolder.value=pfad;
+	window.frames[1].frames[1].frames[1].document.forms[0].folder.value=pfad;
+
+}
  
- /**
-  *  displays the tree
-  */
- function showTree(doc) {
+function addProjectDir(nodid){
+
+    var pfad="";
+
+ 	if (nodid!=tree.root.id){
+ 		do{
+ 			var nodeName='_n'+nodid;
+ 			pfad=tree.nodes[nodeName].name+"/"+pfad;
+ 			//top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value = pfad +top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value ;
+ 			nodid   = tree.nodes[nodeName].parent.id;
+ 			test = tree.nodes[nodeName].parent.id;
+
+ 		}while(nodid!=tree.root.id);
+ 	}
+    pfad='/'+pfad;
+
+	//window.frames[1].frames[1].PROJECTNEW.tempFolder.value=pfad;
+	window.frames[1].frames[1].document.forms[0].tempFolder.value=pfad;
+
+	if (window.frames[1].frames[1].copySelection) { 
+		window.frames[1].frames[1].copySelection();
+	}
+}
+
+
+function opensmallwin(url, name, w, h) //opens a new window with parameter URL, Windowname (free choosable), width and height
+{
+	smallwindow = window.open(url, name, 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width='+w+',height='+h);
+	if(smallwindow != null)
+	   {
+	      if (smallwindow.opener == null)
+	      {
+	         smallwindow.opener = self;
+	      }
+   		}
+	smallwindow.focus();
+	return smallwindow;
+}
+
  
-     var showTreeHead="<html><head><title>opencms explorer tree</title>"+
-             "<style type='text/css'>"+
-             "a { text-decoration: none; color: #000000; font-family:arial; font-size:8pt;}"+
-			 // is: isgrey
-             "a.is { text-decoration: none; color: silver; font-family:arial; font-size:8pt;}"+
-			 // tf: treefolder
-             "a.tf { text-decoration: none; color: #000000; font-family:MS Sans Serif, Arial, helvetica, sans-serif; font-size:8px;}"+
-             "a:hover { text-decoration: none; color: #FFFFFF; background:#000066 font-family:arial; font-size:8pt;}"+
-             "<!"+"--"+
-             "body { margin-left:3px; margin-right:0px; margin-top:4px; margin-bottom:0px; margin-height:0px; marginspace=0; margin-top:3px;}"+
-             "/"+"/"+"--></style>"+
-             "</head><body>"+
- 	        "<table border=0 cellpadding=0 cellspacing=0>"+
- 	        "<tr><td valign=bottom align=left nowrap>"+
- 	        "<font face='arial' size=2>";
+function showWinCopyTree(doc){
+    
+	showTree(doc,2);
+	
+	//toggleNode(doc,tree.root.id,1);
+	//showTree(doc,1);
+}
+
+function showWinTree(doc){
+    
+	showTree(doc,1);
+	//toggleNode(doc,tree.root.id,1);
+	//showTree(doc,1);
+}
  
-     var showTreeFoot="</font>"+
- 	        "</table>"+
- 	        "</body></html>";
  
- 	doc.open();
-     doc.writeln(showTreeHead);
- 	dfsTree(doc, tree.root, 0, false, new Array());
-     doc.writeln(showTreeFoot);
- 	doc.close();
+function openTreeCopyWin(){
+    treewin=opensmallwin('/servlets/opencms/system/workplace/action/treewindowcopy.html', 'test', 170, 300);
+}
  
- 	
- }
+function openTreeWin(){
+	treewin=opensmallwin('../../../action/treewindow.html', 'test', 170, 300);
+
+}
  
+ 
+/**
+ *  displays the tree
+ */
+function showTree(doc,windowed) {
+
+    var showTreeHead="<html><head><title>opencms explorer tree</title><style type='text/css'> a { text-decoration: none; color: #000000; font-family:arial; font-size:8pt;} a.is { text-decoration: none; color: silver; font-family:arial; font-size:8pt;} a.tf { text-decoration: none; color: #000000; font-family:MS Sans Serif, Arial, helvetica, sans-serif; font-size:8px;} var a:hover { text-decoration: none; color: #FFFFFF; background:#000066 font-family:arial; font-size:8pt;} body { margin-left:3px; margin-right:0px; margin-top:4px; margin-bottom:0px; margin-height:0px; marginspace:0; margin-top:3px;} </style></head><body><font face='arial' size=2><table border=0 cellpadding=0 cellspacing=0><tr><td valign=bottom align=left nowrap>";
+
+    var showTreeFoot="</font></TD></TR></table></body></html>";
+
+    doc.open();
+    doc.writeln(showTreeHead);
+
+    dfsTree(doc, tree.root, 0, false, new Array(),windowed);
+    doc.writeln(showTreeFoot);
+    doc.close();
+}
+
  function updateFrame(which, frameurl){
  	eval('window.top.'+which+'.location.href="'+frameurl+'"');
  }
@@ -708,7 +789,7 @@
          g_isShowing = true;
          
          rT();
-         showTree(explorer_tree);
+         showTree(explorer_tree,0);
  
          doc.releaseEvents(Event.CLICK);
          doc.captureEvents(Event.CLICK);
@@ -1004,128 +1085,128 @@
  									wo.writeln("<tr><td><hr size=1></td></tr>");
  								}else{
  									if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/' >"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
- 										else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
- 								}
- 							}
- 						}
- 					}
- 				}
-             }
-         wo.writeln("</table></td></tr></table></div>");
-     }
-     wo.writeln("<br></body></html>");
-     wo.close();
- }
+										else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+								}
+							}
+						}
+					}
+				}
+            }
+        wo.writeln("</table></td></tr></table></div>");
+    }
+    wo.writeln("<br></body></html>");
+    wo.close();
+}
  
- /**
-  *  do an update (filelist display)
-  */
- function dU(doc){
- 	 vi.lastLayer=null;
-     vi.locklength=0;
-     showCols(vr.viewcfg);
-     printList(doc);
- 	 folderOpen(vr.actDirId);
-     showTree(explorer_tree);
-     displayHead(explorer_head);
- }
- 
- /**
-  *  reset data (filelist)
-  */
- function rD(){
- //    initHist();
-     vi.liste = new Array();
-     vi.icons = new Array();
- }
- 
- /* km functions --------------------------------------------------- */
- 
- /**
-  *  called, if mousebutton is clicked (only netscape)
-  */
- var nsx=0,nsy=0;
- function mouseClickedNs(doc){
-     nsx=doc.x;
-     nsy=doc.y;
- 
-     //hideMenu(vi.dokument,vi.letztelyr);
-     hideLastone(vi.dokument);
- }
- 
- /**
-  *  set vi.dokument to current document
-  */
- function whichdoc(doc){
-     vi.dokument=doc;
-     //preloadPics(doc);
- }
- 
- /**
-  *  hides last layer (last context menu)
-  */
- function hideLastone(doc){
-     if(vi.condition==0){
-         hideMenu(doc, vi.lastLayer);
-         vi.condition=0;
-     }
-     if(vi.condition==1)vi.condition=0;
- }
- 
- /**
-  *  displays a contextmenu
-  */
- function showKontext(doc, welche, id,x,y){
- 
-     vi.condition=1; //ie
- 
-     if(x==0){
-         x=nsx;
-         y=nsy;
-     }
- 
-     if (!vi.shown || id!=vi.oldId){
-         if(y >= (screen.availHeight/2)){
-         	eval(brcfg.docu+"men"+welche+brcfg.distanceTop+'y'+brcfg.yOffset);
-        	}
- 		eval(brcfg.docu+"men"+welche+brcfg.distanceTop+'y'+brcfg.yOffset);
-         eval(brcfg.docu+"men"+welche+brcfg.distanceLeft+'x'+brcfg.xOffset);
- 
- 		hideMenu(doc, vi.lastLayer);
- 		eval(brcfg.allLayers+"men"+welche+brcfg.showLayer);
- 		vi.shown = true;
-    	} else {
- 		hideMenu(doc, vi.lastLayer);
- 		vi.shown = false;
-    	}
- 	vi.lastLayer=welche;
- 	vi.oldId=id;
-     vi.dokument=doc;
- }
- 
- /**
-  *  hides the context (layer)
-  */
- function hideMenu(doc, welche){
- 	if(welche!=null){
- 		eval(brcfg.allLayers+"men"+welche+brcfg.hideLayer);
- 		vi.shown=false;
- 	}
- 	else return;
- }
- 
- /**
-  *  contextmenu
-  */
- function menu(nr) {
-     this.nr = nr;
-     this.items = new Array();
- }
- 
- /**
-  *  add a menuentry / a menuItem
-  */
- function addMenuEntry(nr,text,link,target,rules){ 
+/**
+ *  do an update (filelist display)
+ */
+function dU(doc){
+    vi.lastLayer=null;
+    vi.locklength=0;
+    showCols(vr.viewcfg);
+    printList(doc);
+    folderOpen(vr.actDirId);
+    showTree(explorer_tree,0);
+    displayHead(explorer_head);
+}
+
+/**
+ *  reset data (filelist)
+ */
+function rD(){
+//    initHist();
+    vi.liste = new Array();
+    vi.icons = new Array();
+}
+
+/* km functions --------------------------------------------------- */
+
+/**
+ *  called, if mousebutton is clicked (only netscape)
+ */
+var nsx=0,nsy=0;
+function mouseClickedNs(doc){
+    nsx=doc.x;
+    nsy=doc.y;
+
+    //hideMenu(vi.dokument,vi.letztelyr);
+    hideLastone(vi.dokument);
+}
+
+/**
+ *  set vi.dokument to current document
+ */
+function whichdoc(doc){
+    vi.dokument=doc;
+    //preloadPics(doc);
+}
+
+/**
+ *  hides last layer (last context menu)
+ */
+function hideLastone(doc){
+    if(vi.condition==0){
+        hideMenu(doc, vi.lastLayer);
+        vi.condition=0;
+    }
+    if(vi.condition==1)vi.condition=0;
+}
+
+/**
+ *  displays a contextmenu
+ */
+function showKontext(doc, welche, id,x,y){
+
+    vi.condition=1; //ie
+
+    if(x==0){
+        x=nsx;
+        y=nsy;
+    }
+
+    if (!vi.shown || id!=vi.oldId){
+        if(y >= (screen.availHeight/2)){
+        	eval(brcfg.docu+"men"+welche+brcfg.distanceTop+'y'+brcfg.yOffset);
+       	}
+		eval(brcfg.docu+"men"+welche+brcfg.distanceTop+'y'+brcfg.yOffset);
+        eval(brcfg.docu+"men"+welche+brcfg.distanceLeft+'x'+brcfg.xOffset);
+
+		hideMenu(doc, vi.lastLayer);
+		eval(brcfg.allLayers+"men"+welche+brcfg.showLayer);
+		vi.shown = true;
+   	} else {
+		hideMenu(doc, vi.lastLayer);
+		vi.shown = false;
+   	}
+	vi.lastLayer=welche;
+	vi.oldId=id;
+    vi.dokument=doc;
+}
+
+/**
+ *  hides the context (layer)
+ */
+function hideMenu(doc, welche){
+	if(welche!=null){
+		eval(brcfg.allLayers+"men"+welche+brcfg.hideLayer);
+		vi.shown=false;
+	}
+	else return;
+}
+
+/**
+ *  contextmenu
+ */
+function menu(nr) {
+    this.nr = nr;
+    this.items = new Array();
+}
+
+/**
+ *  add a menuentry / a menuItem
+ */
+function addMenuEntry(nr,text,link,target,rules){ 
      if(!vi.menus[nr])vi.menus[nr] = new menu(vi.menus.length);
      vi.menus[nr].items[vi.menus[nr].items.length] = new menuItem(text,link,target,rules);
 }
