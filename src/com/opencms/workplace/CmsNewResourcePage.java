@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2001/09/05 13:40:47 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2001/09/10 08:32:51 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.43 $ $Date: 2001/09/05 13:40:47 $
+ * @version $Revision: 1.44 $ $Date: 2001/09/10 08:32:51 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -399,7 +399,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
 
     public Integer getTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
-        return CmsHelperMastertemplates.getTemplates(cms, names, values);
+        return CmsHelperMastertemplates.getTemplates(cms, names, values, null);
     }
 
 

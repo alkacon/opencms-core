@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHelperMastertemplates.java,v $
-* Date   : $Date: 2001/09/05 13:40:47 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/09/10 08:32:51 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import java.util.*;
 
 /**
  * Helper class to receive all mastertemplates that are currently in the system.
- * @version $Revision: 1.1 $ $Date: 2001/09/05 13:40:47 $
+ * @version $Revision: 1.2 $ $Date: 2001/09/10 08:32:51 $
  */
 
 public class CmsHelperMastertemplates {
@@ -49,7 +49,7 @@ public class CmsHelperMastertemplates {
      * workplace.ini.
      * @exception Throws CmsException if something goes wrong.
      */
-    public static Integer getTemplates(CmsObject cms, Vector names, Vector values) throws CmsException {
+    public static Integer getTemplates(CmsObject cms, Vector names, Vector values, String currentTemplate) throws CmsException {
 
         Vector files = cms.getFilesInFolder(I_CmsWpConstants.C_CONTENTTEMPLATEPATH);
 
@@ -76,6 +76,19 @@ public class CmsHelperMastertemplates {
             }
         }
         Utils.bubblesort(names, values);
+
+        // find the correct index for the current template
+
+        if(currentTemplate != null) {
+            for(int i = 0; i < values.size(); i++) {
+                String template = (String) values.get(i);
+                if(currentTemplate.equals(template)) {
+                    // found the correct index - return it
+                    return new Integer(i);
+                }
+            }
+        }
+
         return new Integer(0);
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2001/09/06 13:23:17 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2001/09/10 08:32:52 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.49 $ $Date: 2001/09/06 13:23:17 $
+ * @version $Revision: 1.50 $ $Date: 2001/09/10 08:32:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -146,7 +146,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
     public Integer getAvailableTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
-        return CmsHelperMastertemplates.getTemplates(cms, names, values);
+        return CmsHelperMastertemplates.getTemplates(cms, names, values, (String)parameters.get("template"));
     }
 
     /**
