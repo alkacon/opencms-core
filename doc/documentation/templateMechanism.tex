@@ -2519,10 +2519,14 @@ Here is a short overview of the directories that are created by the module mecha
 \xtaba                    /administration \\
 \xtabb                         /view \\
 \xtabb                         /templates \\
+\xtabb                         /frametemplates \\
+\xtabb                         /contenttemplates \\
+\xtabb                         /default\_bodies \\
+\xtabb                         /elements \\
 \xtabb                         /language \\
-\xtabc                         /de \\
-\xtabc                                 /uk\\
-\xtabb                            /doc\\
+\xtabc                              /de \\
+\xtabc                              /uk \\
+\xtabb                         /doc\\
 /system/classes/com/opencms/mymodule\\
 \end{xml}
 
@@ -2530,15 +2534,17 @@ Here is a short overview of the directories that are created by the module mecha
 %============================================================================
 \index{Stylesheets}
 
-Stylesheets can be used in OpenCms just like in standard html. There is only one
-point concerning Stylesheets which is worth to be mentioned here in the documentation.
-This is that stylesheet information can be used in the WYSIWYG-Editor as well.
-This way WYSIWYG-behaviour can be realized even when using stylesheets.
-There is only one change within the mastertemplate necessary to achieve this
-behaviour. The special tag {\name stylesheet} has to be inserted and the path to the
-stylesheet-file has to be determined.
-Here is an example of a mastertemplate which includes Stylesheet information and allows
-the WYSIWYG-Editor to use them as well.
+Stylesheets can be used in OpenCms just like in standard html.
+There is only one point concerning Stylesheets which is worth to
+be mentioned here in the documentation. This is that stylesheet
+information can be used in the WYSIWYG-Editor as well. This way
+WYSIWYG-behaviour can be realized even when using stylesheets.
+There is only one change within the mastertemplate necessary to
+achieve this behaviour. The special tag {\name stylesheet} has to
+be inserted and the path to the stylesheet-file has to be
+determined. Here is an example of a frametemplate which includes
+Stylesheet information and allows the WYSIWYG-Editor to use them
+as well.
 
 \begin{xml}
 <?xml version="1.0"?>\\
