@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edithtml.js,v $
-* Date   : $Date: 2002/05/02 06:59:57 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2002/08/16 14:00:09 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -235,14 +235,24 @@ function DisplayChanged()
   if (s == DECMDF_DISABLED || s == DECMDF_NOTSUPPORTED) {
     document.all.FONTFACE.disabled = true;
   } else {
-    document.all.FONTFACE.disabled = false;
-    document.all.FONTFACE.value =  document.all.EDIT_HTML.ExecCommand(DECMD_GETFONTNAME, OLECMDEXECOPT_DODEFAULT);
+    var value = document.all.EDIT_HTML.ExecCommand(DECMD_GETFONTNAME, OLECMDEXECOPT_DODEFAULT);
+    if ((value != null) && (USE_FONTFACE == true)) {
+	    document.all.FONTFACE.disabled = false;  
+    	document.all.FONTFACE.value = value;
+     } else {
+	    document.all.FONTFACE.disabled = true;  
+     }    
   }
   if (s == DECMDF_DISABLED || s == DECMDF_NOTSUPPORTED) {
     document.all.FONTSIZE.disabled = true;
   } else {
-    document.all.FONTSIZE.disabled = false;
-    document.all.FONTSIZE.value = document.all.EDIT_HTML.ExecCommand(DECMD_GETFONTSIZE, OLECMDEXECOPT_DODEFAULT);
+    var value = document.all.EDIT_HTML.ExecCommand(DECMD_GETFONTSIZE, OLECMDEXECOPT_DODEFAULT);
+    if ((value != null) && (USE_FONTSIZE == true)) {
+	    document.all.FONTSIZE.disabled = false;  
+    	document.all.FONTSIZE.value = value;
+     } else {
+	    document.all.FONTSIZE.disabled = true;  
+     }
   }
   
   if(document.activeElement != EDITOR.EDIT_HTML) {
@@ -356,7 +366,6 @@ function doEditHTML(para)
         CheckFGCol= window.setInterval("setFGColor(SelColor)",500);
         var SelColorWindow= window.open('edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=450");
         SelColorWindow.opener = self;
-        //DECMD_SETFORECOLOR_onclick();
         break;
     case 39:
         ColorSelected=-1;
@@ -364,14 +373,11 @@ function doEditHTML(para)
         CheckBGCol= window.setInterval("setBGColor(SelColor)",500);
         var SelColorWindow= window.open('edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=450");
         SelColorWindow.opener = self;
-        //DECMD_SETBACKCOLOR_onclick();
         break;
     case 40:
-//        InsertTable();
-          checkTableSelection();
+        checkTableSelection();
         break;          
     case 41:
-//        DECMD_HYPERLINK_onclick();
         link = window.open('edit_html_link.html','SetLink', "width=450, height=300, resizable=no,status=no, top=300, left=250");
         break;      
     case 42:
@@ -396,9 +402,12 @@ function doEditHTML(para)
     case 48:
         specchar = window.open('edit_html_chars.html','characters', "width=450, height=300, resizable=no, status=yes, top=300, left=250");
         specchar.focus();
-        break;                    
+        break;     
+    case 49:    
+        DECMD_HYPERLINK_onclick();
+        break;                         
     default:
-        alert("Sorry, leider kann die Funktion nicht ausgeführt werden.");          
+        alert("Sorry, the requested function code " + para + " is not implemented.");          
     }   
 }
 
@@ -827,4 +836,24 @@ function sendURLString(destFormName,destFieldName,strURL){
         eval(obj2 +'.value="'+strURL+'"'); 
         top.window.opener.doEditHTML(45); 
     }
+}
+
+
+var foundstyles = new Array();
+
+function setStyles(i, name) {
+    foundstyles[i] = name;
+}
+
+function resetStyles() {
+    var sel = document.all.BLOCK;
+    var fops = new Array(); 
+    for (i=0; i<foundstyles.length; i++) {
+       sel.options[i] = new Option(foundstyles[i], foundstyles[i]);
+    }
+}
+
+function initStyles() {
+    getStyles();
+    resetStyles();
 }

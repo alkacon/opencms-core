@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-* Date   : $Date: 2002/04/24 07:05:35 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2002/08/16 13:57:53 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1108,8 +1108,24 @@ showKontext(doc, welche, id,x,y);
      wo.writeln("</tr>");
 
  for(var i=0; i<vi.liste.length; i++){
+         
+         var vi_icon;
+         var vi_text;      
+         var noaccess = false; 
+         // TODO: Figure aut the value of plainresid at runtime
+         var plainresid = 3;         
+         	
+         if (vi.resource[vi.liste[i].type] == undefined) {
+         // The user has no access to this resource type
+         	noaccess = true;
+         	vi_icon = vi.resource[plainresid].icon;
+         	vi_text = vi.resource[plainresid].text;
+         } else {
+            vi_icon = vi.resource[vi.liste[i].type].icon;
+            vi_text = vi.resource[vi.liste[i].type].text;
+         }
 
-         if(vi.liste[i].project!=vr.actProject){
+         if((vi.liste[i].project!=vr.actProject) || (noaccess)){
               ssclass="fp";
          } else {
              ssclass="nf";
@@ -1122,12 +1138,12 @@ showKontext(doc, welche, id,x,y);
 
          wo.writeln("<td align=center>");
 
-         if(showKon) {
+         if(showKon && ! noaccess) {
             wo.writeln(brcfg.showKontext + i + "'," + i + brcfg.showKontextEnd);
 //document.getElementById(x)
          }
-         wo.write("<img src='"+vi.resource[vi.liste[i].type].icon+"' border=0 width=16 height=16>");
-         if(showKon) {
+         wo.write("<img src='"+vi_icon+"' border=0 width=16 height=16>");
+         if(showKon && ! noaccess) {
             wo.write("</a>");
          }
          wo.writeln("</td>");
@@ -1206,7 +1222,7 @@ showKontext(doc, welche, id,x,y);
              }
          }
          if(vi.check_title)wo.writeln("<td nowrap class="+ssclass+">&nbsp;"+vi.liste[i].title+"&nbsp;</td>");
-         if(vi.check_type)wo.writeln("<td class="+ssclass+">&nbsp;"+vi.resource[vi.liste[i].type].text+"</td>");
+         if(vi.check_type)wo.writeln("<td class="+ssclass+">&nbsp;"+vi_text+"</td>");
          if(vi.check_date)wo.writeln("<td nowrap class="+ssclass+">&nbsp;"+vi.liste[i].date+"</td>");
          if(vi.check_size)wo.writeln("<td class="+ssclass+">&nbsp;"+vi.liste[i].size+"</td>");
          if(vi.check_status)wo.writeln("<td class="+ssclass+">&nbsp;"+vr.stati[vi.liste[i].status]+"</td>");
@@ -1219,6 +1235,14 @@ showKontext(doc, welche, id,x,y);
      wo.writeln("</tr></table>");
 
     for(i=0;i<vi.liste.length;i++){
+
+         var access = true;          
+         if (vi.resource[vi.liste[i].type] == undefined) {
+         // The user has no access to this resource type
+         	access = false;
+         } 
+    
+		 if (access) {
          wo.writeln("<div id='men"+i+"' class='km'>");
          wo.writeln("<table CELLPADDING=1 CELLSPACING=0 BORDER=0 bgcolor=#777777><tr><td>");
          wo.writeln("<table width=150 CELLPADDING=1 CELLSPACING=0 BORDER=0 class=fk>");
@@ -1314,6 +1338,7 @@ showKontext(doc, welche, id,x,y);
             }
         }
         wo.writeln("</table></td></tr></table></div>");
+        }
     }
     wo.writeln("<br></body></html>");
     wo.close();

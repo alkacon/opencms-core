@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edit.js,v $
-* Date   : $Date: 2002/01/17 16:38:50 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2002/08/16 13:58:18 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -233,4 +233,9 @@ function doEdit(para)
     }
     }   
     document.EDITOR.edit1.focus();
+}
+
+
+// This is not used on the code editor, but must be there since it is called on onLoad() event
+function initStyles() {
 }
