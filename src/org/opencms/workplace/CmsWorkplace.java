@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/09/11 12:04:49 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/09/11 13:41:43 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 5.1
  */
@@ -493,11 +493,13 @@ public abstract class CmsWorkplace {
             StringBuffer result = new StringBuffer(128);
             result.append("</head>\n<body unselectable=\"on\"");
             if (getSettings().isViewAdministration()) {
-                result.append(" bgcolor=\"#ffffff\"");
-                result.append(" background=\"" + getJsp().link(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "resources/bg_weiss.gif") + "\"");
-                result.append(" bgproperties=\"fixed\"");
-                result.append(" onLoad=\"window.top.body.admin_head.location.href='" + getJsp().link(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/administration_head.html") + "';\"");
-                result.append(" style=\"margin-left: auto; margin-right: auto; margin-top: 30px;\"");
+                if (className == null || "dialog".equals(className)) {
+                    result.append(" class=\"dialogadmin\"");
+                    className = null;
+                }
+                if (parameters == null) {               
+                    result.append(" onLoad=\"window.top.body.admin_head.location.href='" + getJsp().link(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/administration_head.html") + "';\"");
+                }
             }
             if (className != null) {
                 result.append(" class=\"");
