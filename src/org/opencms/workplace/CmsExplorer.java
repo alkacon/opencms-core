@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/31 14:20:50 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2003/08/01 10:15:49 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 5.1
  */
@@ -478,7 +478,8 @@ public class CmsExplorer extends CmsWorkplace {
             // position 15: type of lock
             content.append(lock.getType());
             content.append(",");                
-            // position 16: name of project where the resource is locked in         
+            // position 16: name of project where the resource is locked in
+            /*         
             int lockedInProject = lock.isNullLock() ? getCms().getRequestContext().currentProject().getId() : lock.getProjectId();
             String lockedInProjectName = "";
             if (res.getProjectId()>0) {
@@ -488,6 +489,35 @@ public class CmsExplorer extends CmsWorkplace {
                     // ignore the exception - this is an old project so ignore it
                 }
             }
+            */
+            
+            int lockedInProject = I_CmsConstants.C_UNKNOWN_ID;
+            if (lock.isNullLock() && res.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
+                // resource is unlocked and modified
+                lockedInProject = res.getProjectId();
+            } else {
+                if (res.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
+                    // resource is locked and modified
+                    lockedInProject = res.getProjectId();
+                } else {
+                    // resource is locked and unchanged
+                    lockedInProject = getCms().getRequestContext().currentProject().getId();
+                }
+            }
+
+            String lockedInProjectName = null;
+            try {
+                if (lockedInProject == I_CmsConstants.C_UNKNOWN_ID) {
+                    // the resource is unlocked and unchanged
+                    lockedInProjectName = "";
+                } else {
+                    lockedInProjectName = getCms().readProject(lockedInProject).getName();
+                }
+            } catch (CmsException exc) {
+                // where did my project go?
+                lockedInProjectName = "";
+            }            
+            
             content.append("\"");
             content.append(lockedInProjectName);
             content.append("\",");
