@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-* Date   : $Date: 2002/01/15 15:02:12 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2002/03/07 14:54:08 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -345,7 +345,10 @@ var ns,ie,gecko;
      explorer_tree = window.body.explorer_tree.document;
 //    framefill(explorer_tree, frametree);
 
-     explorer_head = window.body.explorer_content.explorer_head.document;
+     if(window.body.explorer_content.explorer_head) {
+        explorer_head = window.body.explorer_content.explorer_head.document;
+     }
+     
   //   framefill(explorer_head, framehead);
 
      //window.body.explorer_content.explorer_files.document.location="explorer_files.html";
