@@ -8,13 +8,15 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.15 Chusuk       - 12 October 2001
+OpenCms 4.5.15 Chusuk       - xx October 2001
 ! It is now easier to add a new page resource type that gets its templates 
   in a different way.
+* Bugfix 1796: temporary files are not exported.
 
 OpenCms 4.4.6  Gom Jabbar   - XX October 2001
 * if a body file in a folder is deleted the folder can nevertheless be deleted.
 * The Import works again (body files where not imported).
+* Bugfix 1796: temporary files are not exported.
 
 OpenCms 4.4.5  Gom Jabbar   - 12 October 2001
 * When an exception occurs while changing the owner, group or access flags of the files in a folder
