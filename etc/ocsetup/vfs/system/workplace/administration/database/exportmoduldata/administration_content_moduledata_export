@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <WORKPLACE>
 
+<nounchangedbox></nounchangedbox>
+<userdatabox></userdatabox>
+
 <TEMPLATE>
 <![CDATA[
 
@@ -81,7 +84,7 @@ function addFolder(theList, item) {
     }
 }
 
-function copySelection() { 
+function copyChannelSelection() { 
     addFolder(document.DBEXPORT.new_ressources, document.DBEXPORT.tempFolder.value);
 }
 
@@ -151,8 +154,7 @@ function selectAllModules(theList) {
 							<tr>
 								<td class=formular>]]><LABEL value="input.exportadd" /><![CDATA[:</td>
 								<td class=dialogtxt>
-									]]><SELECT class="textfeld" name="new_modules" size="20" method="getModules" width="330"  onchange="" multiple/><![CDATA[
-									<!-- <select name="new_modules" id="new_modules" style="width:300px" size=5 width="300" multiple></select> -->
+									]]><SELECT class="textfeld" name="new_modules" size="10" method="getModules" width="300"  onchange="" multiple="multiple" /><![CDATA[
 								</td>
 							</tr>
                             <tr>
