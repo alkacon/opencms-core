@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/03/31 12:37:47 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,9 @@
 
 package org.opencms.flex;
 
+import org.opencms.main.CmsException;
+import org.opencms.util.CmsDateUtil;
+
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -43,11 +46,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
-
-import org.opencms.main.CmsException;
-import org.opencms.util.CmsDateUtil;
 
 /**
  * Wrapper class for a HttpServletResponse.<p>
@@ -56,7 +57,7 @@ import org.opencms.util.CmsDateUtil;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
     
@@ -178,6 +179,10 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                 
     /** Flag for debugging output. */
     private static final boolean DEBUG = false;
+
+    /** Utility class required to format cookie headers. */
+    private static final org.apache.commons.httpclient.cookie.CookieSpecBase m_cookieBase = 
+        new org.apache.commons.httpclient.cookie.CookieSpecBase();
     
     /** Map to save response headers belonging to a single include call in .*/
     private Map m_bufferHeaders;
@@ -302,6 +307,27 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             }        
         }          
     }
+        
+    /**
+     * Method overlodad from the standard HttpServletRequest API.<p>
+     *
+     * Cookies must be set directly as a header, otherwise they might not be set
+     * in the super class.<p>
+     *
+     * @see javax.servlet.http.HttpServletResponseWrapper#addCookie(javax.servlet.http.Cookie)
+     */
+    public void addCookie(Cookie cookie) {
+    
+        // formatting cookies is done using http client utility class
+        String header = m_cookieBase.formatCookie(new org.apache.commons.httpclient.Cookie(
+            cookie.getDomain(), 
+            cookie.getName(), 
+            cookie.getValue(),
+            cookie.getPath(),
+            cookie.getMaxAge(),
+            cookie.getSecure()));
+        addHeader("Set-Cookie", header);
+    }      
 
     /**
      * Method overlodad from the standard HttpServletRequest API.<p>
@@ -351,7 +377,6 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         addHeader(name, "" + value);
     }    
         
-    
     /** 
      * Adds an inclusion target to the list of include results.<p>
      * 
@@ -369,7 +394,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         m_includeListParameters.add(parameterMap);
         m_includeList.add(target);
     }
-
+    
     /**
      * Returns the value of the encoding used for this response.<p>
      * 
