@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/20 14:59:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/01/04 14:13:34 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -65,7 +65,6 @@ public CmsAdminDatabaseExportThread(CmsObject cms, String fileName, String[] exp
 	}
 	public void run() {
 
-System.err.println("mgm----databaseExport thread started----------------"+m_fileName+" - "+m_excludeSystem+" - "+m_exportPaths.toString());
 		I_CmsSession session = m_cms.getRequestContext().getSession(true);
 		try{
 			// do the export   

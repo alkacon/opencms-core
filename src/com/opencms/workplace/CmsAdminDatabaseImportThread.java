@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/01 14:29:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2001/01/04 14:16:56 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -59,12 +59,10 @@ public CmsAdminDatabaseImportThread(CmsObject cms, String existingFile) {
 	}
 	public void run() {
 
-System.err.println("mgm----thread databaseImport started----------------importing:"+m_existingFile);
 		I_CmsSession session = m_cms.getRequestContext().getSession(true);
 		try{
 			// import the database
 			m_cms.importResources(m_existingFile, C_ROOT); 
-System.err.println("mgm----thread databaseImport ready ;no exception----------------");
 
 		}catch (CmsException e) {			
 			session.putValue(C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
