@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2002/02/19 09:40:01 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2002/02/25 13:44:13 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.60 $ $Date: 2002/02/19 09:40:01 $
+ * @version $Revision: 1.61 $ $Date: 2002/02/25 13:44:13 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -262,19 +262,72 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
         // Get all URL parameters
         String content = (String)parameters.get(C_PARA_CONTENT);
+        if(content == null){
+            // try to get the value from the session because we might come from errorpage
+            content = (String)session.getValue(C_PARA_CONTENT);
+            session.removeValue(C_PARA_CONTENT);
+        }
         String body = (String)parameters.get("body");
+        if(body == null){
+            // try to get the value from the session because we might come from errorpage
+            body = (String)session.getValue("body");
+            session.removeValue("body");
+        }
         String file = (String)parameters.get(C_PARA_FILE);
+        if(file == null){
+            // try to get the value from the session because we might come from errorpage
+            file = (String)session.getValue(C_PARA_FILE);
+            session.removeValue(C_PARA_FILE);
+        }
         String editor = (String)parameters.get("editor");
+        if((editor == null) || "".equals(editor)){
+            // try to get the value from the session because we might come from errorpage
+            editor = (String)session.getValue("editor");
+            if(editor != null){
+                parameters.put("editor", editor);
+            }
+            session.removeValue("editor");
+        }
         String title = (String)parameters.get(C_PARA_TITLE);
+        if(title == null){
+            // try to get the value from the session because we might come from errorpage
+            title = (String)session.getValue(C_PARA_TITLE);
+            session.removeValue(C_PARA_TITLE);
+        }
         String bodytitle = (String)parameters.get("bodytitle");
+        if(bodytitle == null){
+            // try to get the value from the session because we might come from errorpage
+            bodytitle = (String)session.getValue("bodytitle");
+            session.removeValue("bodytitle");
+        }
         String layoutTemplateFilename = (String)parameters.get("template");
+        if(layoutTemplateFilename == null){
+            // try to get the value from the session because we might come from errorpage
+            layoutTemplateFilename = (String)session.getValue("template");
+            session.removeValue("template");
+        }
         String layoutTemplatFilenameRelative = layoutTemplateFilename;
         layoutTemplateFilename = Utils.mergeAbsolutePath(file, layoutTemplateFilename);
         String bodyElementClassName = (String)parameters.get("bodyclass");
+        if(bodyElementClassName == null){
+            // try to get the value from the session because we might come from errorpage
+            bodyElementClassName = (String)session.getValue("bodyclass");
+            session.removeValue("bodyclass");
+        }
         String bodyElementFilename = (String)parameters.get("bodyfile");
+        if(bodyElementFilename == null){
+            // try to get the value from the session because we might come from errorpage
+            bodyElementFilename = (String)session.getValue("bodyfile");
+            session.removeValue("bodyfile");
+        }
         String action = (String)parameters.get(C_PARA_ACTION);
 
         String startView = (String)parameters.get("startview");
+        if((startView == null) || ("".equals(startView))){
+            // try to get the value from the session because we might come from errorpage
+            startView = (String)session.getValue("startview");
+            session.removeValue("startview");
+        }
 
         // Get all session parameters
         String oldEdit = (String)session.getValue("te_oldedit");
@@ -300,6 +353,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         boolean newbodyRequested = ((action != null) && "newbody".equals(action));
         boolean previewRequested = ((action != null) && "preview".equals(action));
         boolean bodytitlechangeRequested = (oldBodytitle != null && bodytitle != null && (!(oldBodytitle.equals(bodytitle))));
+
+        String saveerror = "";
 
         // Check if there is a file parameter in the request
         if(!existsFileParam) {
@@ -549,20 +604,56 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         // the "save" buttons, copy all informations of the temporary
         // files to the original files.
         if(saveRequested) {
-            commitTemporaryFile(cms, bodyElementFilename, tempBodyFilename, tempProject, curProject);
-            cms.getRequestContext().setCurrentProject(tempProject);
-            title = cms.readProperty(tempPageFilename, C_PROPERTY_TITLE);
-            cms.getRequestContext().setCurrentProject(curProject);
-            if(title != null && !"".equals(title)) {
-                cms.writeProperty(file, C_PROPERTY_TITLE, title);
+            try{
+                commitTemporaryFile(cms, bodyElementFilename, tempBodyFilename, tempProject, curProject);
+                cms.getRequestContext().setCurrentProject(tempProject);
+                title = cms.readProperty(tempPageFilename, C_PROPERTY_TITLE);
+                cms.getRequestContext().setCurrentProject(curProject);
+                if(title != null && !"".equals(title)) {
+                    cms.writeProperty(file, C_PROPERTY_TITLE, title);
+                }
+                CmsXmlControlFile originalControlFile = new CmsXmlControlFile(cms, file);
+                originalControlFile.setMasterTemplate(temporaryControlFile.getMasterTemplate());
+                originalControlFile.write();
+            } catch (CmsException e){
+                // there was an exception while the file should be saved
+                // return to the editor and show the exception so the user can save the changes
+                saveerror = e.getShortException();
+                if(content != null){
+                    session.putValue(C_PARA_CONTENT, content);
+                }
+                if(body != null){
+                    session.putValue("body", body);
+                }
+                if(file != null){
+                    session.putValue(C_PARA_FILE, file);
+                }
+                if(editor != null){
+                    session.putValue("editor", editor);
+                }
+                if(title != null){
+                    session.putValue(C_PARA_TITLE, title);
+                }
+                if(bodytitle != null){
+                    session.putValue("bodytitle", bodytitle);
+                }
+                if(layoutTemplatFilenameRelative != null){
+                    session.putValue("template", layoutTemplatFilenameRelative);
+                }
+                if(bodyElementClassName != null){
+                    session.putValue("bodyclass", bodyElementClassName);
+                }
+                if(bodyElementFilename != null){
+                    session.putValue("bodyfile", bodyElementFilename);
+                }
+                if(startView != null){
+                    session.putValue("startview", startView);
+                }
             }
-            CmsXmlControlFile originalControlFile = new CmsXmlControlFile(cms, file);
-            originalControlFile.setMasterTemplate(temporaryControlFile.getMasterTemplate());
-            originalControlFile.write();
         }
 
         // Check if we should leave th editor instead of start processing
-        if(exitRequested) {
+        if(exitRequested && ((saveerror == null) || "".equals(saveerror))) {
 
             // First delete temporary files
             temporaryControlFile.removeFromFileCache();
@@ -630,6 +721,11 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         // Put the "file" datablock for processing in the template file.
         // It will be inserted in a hidden input field and given back when submitting.
         xmlTemplateDocument.setData(C_PARA_FILE, file);
+        if(!"".equals(saveerror)){
+            templateSelector = "errorsave";
+            xmlTemplateDocument.setData("errordetail", saveerror);
+            xmlTemplateDocument.setData("errorlasturl", xmlTemplateDocument.getFilename()+".html");
+        }
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }
 

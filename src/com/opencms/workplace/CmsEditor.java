@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2002/02/19 09:40:01 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2002/02/25 13:44:13 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.28 $ $Date: 2002/02/19 09:40:01 $
+ * @version $Revision: 1.29 $ $Date: 2002/02/25 13:44:13 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -108,11 +108,37 @@ public class CmsEditor extends CmsWorkplaceDefault {
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
 
+        I_CmsSession session = cms.getRequestContext().getSession(true);
+        String saveerror = "";
         // Get all editor parameters
         String file = (String)parameters.get(C_PARA_FILE);
+        // try to get the value from the session because we might come from the error page
+        if((file == null) || ("".equals(file))){
+            file = (String)session.getValue(C_PARA_FILE);
+            session.removeValue(C_PARA_FILE);
+        }
         String content = (String)parameters.get(C_PARA_CONTENT);
+        // try to get the value from the session because we might come from the error page
+        if((content == null) || ("".equals(content))){
+            content = (String)session.getValue(C_PARA_CONTENT);
+            if(content != null){
+                parameters.put(C_PARA_CONTENT, content);
+            }
+            session.removeValue(C_PARA_CONTENT);
+        }
         String action = (String)parameters.get(C_PARA_ACTION);
         String jsfile = (String)parameters.get(C_ROOT_TEMPLATE_NAME + "." + C_PARA_JSFILE);
+        // try to get the value from the session because we might come from the error page
+        if((jsfile == null) || ("".equals(jsfile))){
+            jsfile = (String)session.getValue(C_PARA_JSFILE);
+            session.removeValue(C_PARA_JSFILE);
+        }
+        String editorframe = (String)parameters.get("root.editorframe");
+        if((editorframe == null) || ("".equals(editorframe))){
+            editorframe = (String)session.getValue("editorframe");
+            session.removeValue("editorframe");
+        }
+
         boolean checkit = false;
         boolean existsFileParam = ((file != null) && (!"".equals(file)));
         boolean saveRequested = ((action != null) && (C_EDIT_ACTION_SAVE.equals(action)
@@ -147,14 +173,18 @@ public class CmsEditor extends CmsWorkplaceDefault {
             // If the user requested a file save, write the file content
             // back to the database.
             if(saveRequested) {
-                String decodedContent = enc.unescape(content);
-                editFile.setContents(decodedContent.getBytes());
-                cms.writeFile(editFile);
+                try{
+                    String decodedContent = enc.unescape(content);
+                    editFile.setContents(decodedContent.getBytes());
+                    cms.writeFile(editFile);
+                } catch (CmsException e){
+                    saveerror = e.getShortException();
+                }
             }
         }
 
         // Check if we should leave th editor instead of start processing
-        if(exitRequested) {
+        if(exitRequested && ((saveerror == null) || ("".equals(saveerror)))) {
             try {
                 cms.getRequestContext().getResponse().sendCmsRedirect("/system/workplace/action/index.html");
             }
@@ -184,11 +214,33 @@ public class CmsEditor extends CmsWorkplaceDefault {
         // It will be inserted in a hidden input field and given back when submitting.
         xmlTemplateDocument.setData(C_PARA_FILE, file);
         xmlTemplateDocument.setData(C_PARA_JSFILE, jsfile);
-        xmlTemplateDocument.setData("editorframe", (String)parameters.get("root.editorframe"));
+        xmlTemplateDocument.setData("editorframe", editorframe);
         // Announcement of path and file name in the header of the browser.
         if(checkit==true){
-        xmlTemplateDocument.setData("fileName", (String) editFile.getName());
-        xmlTemplateDocument.setData("pathName", (String) editFile.getPath());
+            xmlTemplateDocument.setData("fileName", (String) editFile.getName());
+            xmlTemplateDocument.setData("pathName", (String) editFile.getPath());
+        }
+        String lasturlname = null;
+        if(!"".equals(saveerror)){
+            if(file != null){
+                session.putValue(C_PARA_FILE, file);
+            }
+            if(content != null){
+                session.putValue(C_PARA_CONTENT, content);
+            }
+            if(jsfile != null){
+                session.putValue(C_PARA_JSFILE, jsfile);
+            }
+            if(editorframe != null){
+                session.putValue("editorframe", editorframe);
+            }
+            sectionName = "errorsave";
+            xmlTemplateDocument.setData("errordetail", saveerror);
+            lasturlname=(String)parameters.get("editor._TEMPLATE_");
+            if (lasturlname != null){
+                lasturlname=lasturlname.substring(lasturlname.lastIndexOf("/")+1, lasturlname.length());
+            }
+            xmlTemplateDocument.setData("errorlasturl", lasturlname+".html");
         }
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, sectionName);
     }
