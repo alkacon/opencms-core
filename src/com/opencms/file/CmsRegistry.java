@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2002/05/24 12:51:08 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2002/07/01 11:07:02 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.43 $ $Date: 2002/05/24 12:51:08 $
+ * @version $Revision: 1.44 $ $Date: 2002/07/01 11:07:02 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -1161,6 +1161,30 @@ public String getModuleViewUrl(String modulname) {
         // ignore the exception - reg is not welformed
     }
     return retValue;
+}
+
+/**
+ * Returns all lifecycle classes for all modules.
+ *
+ * @parameter Vector classes in this parameter the classes will be returned.
+ * @return int the amount of classes.
+ */
+public int getModuleLifeCycle(Vector classes){
+    try {
+        NodeList classList = m_xmlReg.getElementsByTagName("lifecycleclass");
+        for (int x = 0; x < classList.getLength(); x++) {
+            try {
+                String name = ((Element) classList.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+                classes.addElement(name);
+            } catch(Exception exc) {
+                // ignore the exception and try the next view-pair.
+            }
+        }
+        return classes.size();
+    } catch (Exception exc) {
+        // no return-values
+        return 0;
+    }
 }
 
 /**

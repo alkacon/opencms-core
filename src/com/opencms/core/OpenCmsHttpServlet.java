@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2002/01/15 13:31:52 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2002/07/01 11:07:02 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2002/01/15 13:31:52 $
+ * @version $Revision: 1.26 $ $Date: 2002/07/01 11:07:02 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -177,11 +177,14 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         }
         try {
             m_opencms.destroy();
-        }
-        catch(CmsException e) {
+        }catch(CmsException e) {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet]" + e.toString());
             }
+        }
+        try{
+            Utils.getModulShutdownMethods(OpenCms.getRegistry());
+        }catch (CmsException e){
         }
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet] Shutdown Completed");
@@ -481,6 +484,10 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         loader.init(cms);
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing CmsClassLoader... DONE");
+        }
+        try{
+            Utils.getModulStartUpMethods(cms);
+        }catch(CmsException e){
         }
     }
 

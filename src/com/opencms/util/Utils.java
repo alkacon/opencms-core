@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2002/02/04 16:42:08 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2002/07/01 11:07:03 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.util;
 
 import com.opencms.file.*;
 import com.opencms.core.*;
+import com.opencms.defaults.*;
 import java.util.*;
 import java.io.*;
 
@@ -267,6 +268,42 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "Error when publish data of module "+(String)publishModules.elementAt(i)+"!: "+ex.getMessage());
                 }
+            }
+        }
+    }
+
+    /**
+     * Calls the startup methode on all module classes that are registerd in the registry.
+     *
+     * @param cms. The CmsObject.
+     */
+    public static void getModulStartUpMethods(CmsObject cms) throws CmsException{
+
+        Vector startUpModules = new Vector();
+        cms.getRegistry().getModuleLifeCycle(startUpModules);
+        for(int i = 0; i < startUpModules.size(); i++){
+            try{
+                I_CmsLifeCycle lifeClass = (I_CmsLifeCycle)Class.forName((String)startUpModules.elementAt(i)).getConstructor(new Class[] {}).newInstance(new Class[] {});
+                lifeClass.startUp(cms);
+            } catch(Exception ex){
+            }
+        }
+    }
+
+    /**
+     * Calls the startup methode on all module classes that are registerd in the registry.
+     *
+     * @param cms. The CmsObject.
+     */
+    public static void getModulShutdownMethods(I_CmsRegistry reg) throws CmsException{
+
+        Vector startUpModules = new Vector();
+        reg.getModuleLifeCycle(startUpModules);
+        for(int i = 0; i < startUpModules.size(); i++){
+            try{
+                I_CmsLifeCycle lifeClass = (I_CmsLifeCycle)Class.forName((String)startUpModules.elementAt(i)).getConstructor(new Class[] {}).newInstance(new Class[] {});
+                lifeClass.shutDown();
+            } catch(Exception ex){
             }
         }
     }

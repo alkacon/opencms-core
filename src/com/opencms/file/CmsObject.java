@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/05/31 13:20:57 $
-* Version: $Revision: 1.234 $
+* Date   : $Date: 2002/07/01 11:07:02 $
+* Version: $Revision: 1.235 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.234 $ $Date: 2002/05/31 13:20:57 $
+ * @version $Revision: 1.235 $ $Date: 2002/07/01 11:07:02 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -648,6 +648,13 @@ protected void doChtype(String filename, String newType) throws CmsException {
 public void clearcache() {
     m_rb.clearcache();
     System.gc();
+}
+
+/**
+ * Clears the element cache.
+ */
+public void clearElementCache(){
+    this.getOnlineElementCache().clearCache();
 }
 
 /**
@@ -1437,16 +1444,33 @@ public CmsFile exportResource(CmsFile file) throws CmsException {
  *
  * @param startpoints the startpoints for the export.
  * @param projectResources
+ * @param allExportedLinks
  * @param changedResources
  * @param report the cmsReport to handle the log messages.
  *
  * @exception CmsException if operation was not successful.
  */
-public void exportStaticResources(Vector startpoints, Vector projectResources,
+public void exportStaticResources(Vector startpoints, Vector projectResources, Vector allExportedLinks,
             CmsPublishedResources changedResources, I_CmsReport report) throws CmsException {
 
     m_rb.exportStaticResources(m_context.currentUser(), m_context.currentProject(),
-             this, startpoints, projectResources, changedResources, report);
+             this, startpoints, projectResources, allExportedLinks, changedResources, report);
+}
+
+/**
+ * Creates a static export in the filesystem. This method is used only
+ * on a slave system in a cluster. The Vector is generated in the static export
+ * on the master system (in the Vector allExportdLinks), so in this method the
+ * database must not be updated.
+ *
+ * @param linksToExport all links that where exported by the master OpenCms.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public void exportStaticResources(Vector linksToExport) throws CmsException {
+
+    m_rb.exportStaticResources(m_context.currentUser(), m_context.currentProject(),
+             this, linksToExport);
 }
 
 /**
@@ -2232,6 +2256,9 @@ public String loginUser(String username, String password) throws CmsException {
     CmsUser newUser = m_rb.loginUser(m_context.currentUser(), m_context.currentProject(), username, password);
     // init the new user
     init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage);
+
+    this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
+
     // return the user-name
     return (newUser.getName());
 }
@@ -2354,11 +2381,15 @@ public void publishProject(int id, I_CmsReport report) throws CmsException {
             try{
                 int oldId = m_context.currentProject().getId();
                 m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
+                // the return value for the search
                 Vector linkChanges = new Vector();
+                // the return value for cluster server to syncronize the export
+                Vector allExportedLinks = new Vector();
                 this.exportStaticResources(this.getStaticExportProperties().getStartPoints(),
-                                 linkChanges, allChanged, report);
+                                 linkChanges, allExportedLinks, allChanged, report);
                 m_context.setCurrentProject(oldId);
                 Utils.getModulPublishMethods(this, linkChanges);
+                this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_STATIC_EXPORT, allExportedLinks);
             } catch (Exception ex){
                 System.err.println("Error while exporting static resources:");
                 ex.printStackTrace();
@@ -2368,7 +2399,7 @@ public void publishProject(int id, I_CmsReport report) throws CmsException {
                 // just generate the link rules, in case there were properties changed
                 int oldId = m_context.currentProject().getId();
                 m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
-                new CmsStaticExport(this, null, false, null, null, null);
+                new CmsStaticExport(this, null, false, null, null, null, null);
                 m_context.setCurrentProject(oldId);
             }
         }
@@ -2402,6 +2433,7 @@ public void publishProject(int id, I_CmsReport report) throws CmsException {
             m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
         }
     }
+    this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_PROJECT, theProject);
 }
 
 /**
@@ -2469,6 +2501,7 @@ public int publishResource(String resourcename, boolean justPrepare) throws CmsE
     } else {
         throw new CmsException("[CmsObject] cannot publish resource in online project", CmsException.C_NO_ACCESS);
     }
+    this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_RESOURCE, res);
     return retValue;
 }
 
@@ -4032,6 +4065,16 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      */
     public void changeUserType(String username, int userType) throws CmsException{
         m_rb.changeUserType(m_context.currentUser(), m_context.currentProject(), username, userType);
+    }
+
+    /**
+     * Fires a CmsEvent
+     *
+     * @param type The type of the event
+     * @param data A data object that contains data used by the event listeners
+     */
+    private void fireEvent(int type, Object data) {
+        A_OpenCms.fireCmsEvent(this, type, data);
     }
 
     /**

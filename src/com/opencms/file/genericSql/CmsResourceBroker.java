@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/06/05 14:28:18 $
-* Version: $Revision: 1.324 $
+* Date   : $Date: 2002/07/01 11:07:02 $
+* Version: $Revision: 1.325 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.324 $ $Date: 2002/06/05 14:28:18 $
+ * @version $Revision: 1.325 $ $Date: 2002/07/01 11:07:02 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4431,18 +4431,43 @@ public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) 
  * @exception CmsException if operation was not successful.
  */
 public synchronized void exportStaticResources(CmsUser currentUser, CmsProject currentProject,
-                     CmsObject cms, Vector startpoints, Vector projectResources,
+                     CmsObject cms, Vector startpoints, Vector projectResources, Vector allExportedLinks,
                      CmsPublishedResources changedResources, I_CmsReport report) throws CmsException {
 
     if(isAdmin(currentUser, currentProject) || isProjectManager(currentUser, currentProject) ||
         isUser(currentUser, currentProject)) {
-        new CmsStaticExport(cms, startpoints, true, projectResources, changedResources, report);
+        new CmsStaticExport(cms, startpoints, true, projectResources, allExportedLinks, changedResources, report);
     } else {
          throw new CmsException("[" + this.getClass().getName() + "] exportResources",
              CmsException.C_NO_ACCESS);
     }
-
 }
+
+    /**
+     * Creates a static export in the filesystem. This method is used only
+     * on a slave system in a cluster. The Vector is generated in the static export
+     * on the master system (in the Vector allExportdLinks), so in this method the
+     * database must not be updated.
+     *
+     * @param currentUser user who requestd themethod
+     * @param currentProject current project of the user
+     * @param cms the cms-object to use for the export.
+     * @param linksToExport all links that where exported by the master OpenCms.
+     *
+     * @exception CmsException if operation was not successful.
+     */
+    public synchronized void exportStaticResources(CmsUser currentUser, CmsProject currentProject,
+                 CmsObject cms, Vector linksToExport) throws CmsException {
+
+        if(isAdmin(currentUser, currentProject) || isProjectManager(currentUser, currentProject) ||
+            isUser(currentUser, currentProject)) {
+            new CmsStaticExport(cms, linksToExport);
+        } else {
+             throw new CmsException("[" + this.getClass().getName() + "] exportResources",
+                 CmsException.C_NO_ACCESS);
+        }
+    }
+
 
     /**
      * Publishes a project.

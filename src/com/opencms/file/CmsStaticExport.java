@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/05/24 14:08:28 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2002/07/01 11:07:02 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.27 $ $Date: 2002/05/24 14:08:28 $
+ * @version $Revision: 1.28 $ $Date: 2002/07/01 11:07:02 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -66,6 +66,13 @@ public class CmsStaticExport implements I_CmsConstants{
      * It contains compleate links (after linkreplace rules).
      */
     private Vector m_changedLinks = null;
+
+    /**
+     * this is used as a return value. it contains all links that where exported.
+     * We need it for the clustering of OpenCms. The Slave servers get the vector and
+     * can export all changed stuff without creating the vector themself.
+     */
+    private Vector m_allExportedLinks = null;
 
     private static Perl5Util c_perlUtil = null;
 
@@ -123,22 +130,72 @@ public class CmsStaticExport implements I_CmsConstants{
     private I_CmsReport m_report = null;
 
     /**
+     * This constructor is used to export the files on a slave server in clustering mode.
+     * The list of linksToExport is created by the master server and is ready to use.
+     *
+     * @param cms The cms-object to work with.
+     * @param linksToExport A vector of links that were exported on the master server.
+     */
+    public CmsStaticExport(CmsObject cms, Vector linksToExport) throws CmsException{
+
+        m_cms = cms;
+        m_exportPath = cms.getStaticExportProperties().getExportPath();
+        c_perlUtil = new Perl5Util();
+        m_afterPublish = true;
+        m_report = new CmsShellReport();
+
+        try{
+            m_servletUrl = cms.getRequestContext().getRequest().getServletUrl();
+            m_webAppUrl = cms.getRequestContext().getRequest().getWebAppUrl();
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
+                                    "[CmsStaticExport] Starting the static export on slave server.");
+            }
+            createDynamicRules();
+            checkExportPath();
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
+                        "[CmsStaticExport] got "+linksToExport.size()+" links to export.");
+            }
+
+            for(int i=0; i < linksToExport.size(); i++){
+                String aktLink = (String)linksToExport.elementAt(i);
+                exportLink(aktLink, linksToExport, false);
+            }
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
+                        "[CmsStaticExport] all done.");
+            }
+        }catch(NullPointerException e){
+            // no original request
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
+                                    "[CmsStaticExport] Nothing found to export.");
+            }
+        }
+
+    }
+
+    /**
      * This constructs a new CmsStaticExport-object which generates static html pages in the filesystem.
      *
      * @param cms the cms-object to work with.
      * @param startpoints. The resources to export (Vector of Strings)
      * @param doTheExport. must be set to true to export something, otherwise only the linkrules are generated.
+     * @param changedLinks here we return the changed links for the search module (worked with the getlinksubstitution() method.
+     * @param allExportedLinks here we return the links that was exported
      * @param changedResources. Contains the changed resources belonging to the project, if started after publishProject.
      * @param report the cmsReport to handle the log messages.
      *
      * @exception CmsException the CmsException is thrown if something goes wrong.
      */
     public CmsStaticExport(CmsObject cms, Vector startpoints, boolean doTheExport,
-                     Vector changedLinks, CmsPublishedResources changedResources, I_CmsReport report)
+                     Vector changedLinks, Vector allExportedLinks, CmsPublishedResources changedResources, I_CmsReport report)
                      throws CmsException{
         m_cms = cms;
         m_startpoints = startpoints;
         m_changedLinks = changedLinks;
+        m_allExportedLinks = allExportedLinks;
         m_exportPath = cms.getStaticExportProperties().getExportPath();
         c_perlUtil = new Perl5Util();
         m_report = report;
@@ -181,7 +238,7 @@ public class CmsStaticExport implements I_CmsConstants{
                 for(int i=0; i < exportLinks.size(); i++){
                     m_report.addString(" "+i+" ");
                     String aktLink = (String)exportLinks.elementAt(i);
-                    exportLink(aktLink, exportLinks);
+                    exportLink(aktLink, exportLinks, true);
                 }
                 setChangedLinkVector(exportLinks);
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
@@ -441,8 +498,10 @@ public class CmsStaticExport implements I_CmsConstants{
      *
      * @param link The link to export may have html parameters
      * @param allLinks The vector with all links that have to be exported.
+     * @param writeAccess says if the DB should be updated. Needed for the clustering mode
+     *      where only the files must be written but the database was updated by the master system.
      */
-    private void exportLink(String link, Vector allLinks) throws CmsException{
+    private void exportLink(String link, Vector allLinks, boolean writeAccess) throws CmsException{
 
         String deleteFileOnError = null;
         OutputStream outStream = null;
@@ -550,18 +609,20 @@ public class CmsStaticExport implements I_CmsConstants{
                 }
             }
             // now get the dependencies and write the link to the database
-            Vector depsToAdd = cmsForStaticExport.getRequestContext().getDependencies();
-            for(int i=0; i<depsToAdd.size(); i++){
-                dbLink.addDependency((String)depsToAdd.elementAt(i));
-            }
-            try{
-                dbLink.setProcessedState(true);
-                m_cms.writeExportLink(dbLink);
-            }catch(CmsException e){
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] write ExportLink "+dbLink.getLink()+" failed: "+e.toString());
+            if(writeAccess){
+                Vector depsToAdd = cmsForStaticExport.getRequestContext().getDependencies();
+                for(int i=0; i<depsToAdd.size(); i++){
+                    dbLink.addDependency((String)depsToAdd.elementAt(i));
                 }
-                m_report.addString(" write ExportLink "+dbLink.getLink()+" failed: "+e.toString());
+                try{
+                    dbLink.setProcessedState(true);
+                    m_cms.writeExportLink(dbLink);
+                }catch(CmsException e){
+                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] write ExportLink "+dbLink.getLink()+" failed: "+e.toString());
+                    }
+                    m_report.addString(" write ExportLink "+dbLink.getLink()+" failed: "+e.toString());
+                }
             }
 
             // at last close the outputstream
@@ -810,17 +871,24 @@ public class CmsStaticExport implements I_CmsConstants{
     }
 
     /**
-     * fills the vector of the changed links.
+     * fills the return value vectors m_allExportedLinks and m_changedLinks.
      */
     private void setChangedLinkVector(Vector exportLinks){
-        if(m_changedLinks != null){
-            int oldMode = m_cms.getMode();
-            m_cms.setMode(C_MODUS_ONLINE);
-            for(int i=0; i<exportLinks.size(); i++){
-                m_changedLinks.add(m_cms.getLinkSubstitution((String)exportLinks.elementAt(i)));
-            }
-            m_cms.setMode(oldMode);
+        if(m_changedLinks == null){
+            m_changedLinks = new Vector();
         }
+        if(m_allExportedLinks == null){
+            m_allExportedLinks = new Vector();
+        }
+        int oldMode = m_cms.getMode();
+        m_cms.setMode(C_MODUS_ONLINE);
+        for(int i=0; i<exportLinks.size(); i++){
+            // for the changedLinks we need the linkSubstitution
+            m_changedLinks.add(m_cms.getLinkSubstitution((String)exportLinks.elementAt(i)));
+            // for the exported links we just add the link
+            m_allExportedLinks.add(exportLinks.elementAt(i));
+        }
+        m_cms.setMode(oldMode);
     }
 
     /**

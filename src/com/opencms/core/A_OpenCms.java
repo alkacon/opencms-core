@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2001/12/21 11:23:11 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2002/07/01 11:07:02 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,9 +33,9 @@ import java.util.*;
 import com.opencms.boot.*;
 import com.opencms.file.*;
 import com.opencms.template.cache.*;
-//import com.opencms.launcher.*;
 import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
+import com.opencms.flex.*;
 
 /**
  * Abstract class for the main class of the OpenCms system.
@@ -49,12 +49,15 @@ import source.org.apache.java.util.*;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2001/12/21 11:23:11 $
+ * @version $Revision: 1.22 $ $Date: 2002/07/01 11:07:02 $
  *
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 
     private static String m_logfile;
+
+    /** List to save the event listeners in */
+    private static java.util.ArrayList m_listeners = new ArrayList();
 
     /**
      * Destructor, called when the the servlet is shut down.
@@ -172,4 +175,49 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * @param entry the CmsCronEntry to start.
      */
     abstract void startScheduleJob(CmsCronEntry entry);
+
+    /**
+     * Notify all container event listeners that a particular event has
+     * occurred for this Container.  The default implementation performs
+     * this notification synchronously using the calling thread.
+     *
+     * @since FLEX alpha 1
+     * @param type Event type
+     * @param data Event data
+     */
+    public static void fireCmsEvent(CmsObject cms, int type, Object data) {
+        if (m_listeners.size() < 1)
+            return;
+        CmsEvent event = new CmsEvent(cms, type, data);
+        I_CmsEventListener list[] = new I_CmsEventListener[0];
+        synchronized (m_listeners) {
+            list = (I_CmsEventListener[]) m_listeners.toArray(list);
+        }
+        for (int i = 0; i < list.length; i++)
+            ((I_CmsEventListener) list[i]).cmsEvent(event);
+    }
+
+    /**
+     * Add a cms event listener.
+     *
+     * @since FLEX alpha 1
+     * @param listener The listener to add
+     */
+    public static void addCmsEventListener(I_CmsEventListener listener) {
+        synchronized (m_listeners) {
+            m_listeners.add(listener);
+        }
+    }
+
+    /**
+     * Remove a cms event listener.
+     *
+     * @since FLEX alpha 1
+     * @param listener The listener to add
+     */
+    public static void removeCmsEventListener(I_CmsEventListener listener) {
+        synchronized (m_listeners) {
+            m_listeners.remove(listener);
+        }
+    }
 }
