@@ -1,8 +1,8 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/07/18 06:08:16 $
+* Version: $Revision: 1.5 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -452,7 +452,7 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault implements I_Cms
         boolean access = false;
         int accessflags;
         try {
-            CmsResource res = cms.readFileHeaderForHist(resPath, projectId);
+            CmsResource res = cms.readFileHeader(resPath, projectId);
             accessflags = res.getAccessFlags();
             boolean groupAccess = false;
             Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
