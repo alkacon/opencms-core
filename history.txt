@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.3.34 Bela Tegeuse - ?? July 2001
+OpenCms 4.3.34 Bela Tegeuse - 26 July 2001
 * Overwrought the import. Now the reource type classes import the resources.
 * Fixed bug when deleting projects: Now the subfolders are deleted before deleting folders
 * Fixed bug when publishing a resource: The project-id of all resources has to be set
