@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/13 10:03:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/13 11:01:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/06/13 10:03:10 $
+ * @version $Revision: 1.2 $ $Date: 2003/06/13 11:01:15 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -108,30 +108,45 @@ public class CmsDriverManager implements I_CmsConstants {
 
     // define the VfsAccessGuard
     class VfsAccessGuard extends CmsAccessGuard {
-    	
-		public VfsAccessGuard(CmsUser user, CmsProject project) {
-			super(user, project);    	
+
+		/*
+		 * Flags to define the checks performed when evaluating the permissions
+		 */
+		public static final int C_CHECK_PROJECT = 1;
+		public static final int C_CHECK_RESTYPE = 2;
+		public static final int C_CHECK_LOCKSTATE = 4; 
+		
+		/*
+		 * Sets of checks
+		 */
+		public static final int C_CHECK_DEFAULT = C_CHECK_PROJECT|C_CHECK_RESTYPE|C_CHECK_LOCKSTATE;
+		public static final int C_CHECK_IGNORE_LOCK = C_CHECK_PROJECT|C_CHECK_RESTYPE; 
+				    	
+		public VfsAccessGuard(CmsUser user, CmsProject project, int checks) {
+			super(user, project, checks);    	
 		}
 		
-		public CmsPermissionSet evaluatePermissions(CmsResource resource)  throws CmsException {
+		public CmsPermissionSet evaluatePermissions(CmsResource resource, int checks)  throws CmsException {
 
 			CmsPermissionSet permissions = null;
 			//int allowed = 0;
             int denied = 0;
 			
 			// if this is the onlineproject, write is rejected 
-			if(this.getProject().isOnlineProject())
+			if((checks & C_CHECK_PROJECT) > 0 && this.getProject().isOnlineProject())
 				denied |= C_PERMISSION_WRITE;
 
 			// if the resource type is jsp or xml template
 			// write is only allowed for administrators
-			I_CmsResourceType resType = getResourceType(getUser(), getProject(), resource.getType());
-			if(( "XMLTemplate".equals(resType.getResourceTypeName())||"jsp".equals(resType.getResourceTypeName()) ) &&
-				!isAdmin(getUser(),getProject()) ) 
-				denied |= C_PERMISSION_WRITE;	
+			if ((checks & C_CHECK_RESTYPE) > 0) {
+				I_CmsResourceType resType = getResourceType(getUser(), getProject(), resource.getType());
+				if(( "XMLTemplate".equals(resType.getResourceTypeName())||"jsp".equals(resType.getResourceTypeName()) ) &&
+					!isAdmin(getUser(),getProject()) ) 
+					denied |= C_PERMISSION_WRITE;	
+			}
 			
 			// TODO: handling of locked resources 
-			if(false && resource.isLocked()) {
+			if((checks & C_CHECK_LOCKSTATE) > 0 && resource.isLocked()) {
 				//	if the resource is locked by another user, write is rejected
 				//  read must still be possible, since the explorer file list needs some properties
 				if (!this.getUser().getId().equals(resource.isLockedBy()))
@@ -142,7 +157,7 @@ public class CmsDriverManager implements I_CmsConstants {
 				// exception: if the resource is locked in the tempfileProject, read and write are allowed
 				if((this.getProject().getId() != resource.getLockedInProject()) &&
 				   !isTempfileProject(readProject(resource.getLockedInProject()))) {
-				
+					
 					if (isTempfileProject(this.getProject())) {
 						denied |= C_PERMISSION_WRITE;
 					} else {
@@ -1119,7 +1134,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
     }
     
     public CmsAccessGuard getVfsAccessGuard(CmsUser currentUser, CmsProject currentProject) {
-    	return new VfsAccessGuard(currentUser, currentProject);
+    	return new VfsAccessGuard(currentUser, currentProject, VfsAccessGuard.C_CHECK_DEFAULT);
     }
     
     /**
@@ -4662,7 +4677,7 @@ System.err.println("ReadingpermittedGroup=" + rpgroupName);
         }
         
 		// check if the user has write access to the resource
-		getVfsAccessGuard(currentUser, currentProject).check(cmsResource, C_WRITE_ACCESS);
+		getVfsAccessGuard(currentUser, currentProject).check(cmsResource, C_WRITE_ACCESS, VfsAccessGuard.C_CHECK_IGNORE_LOCK, true);
 		
         // check, if the user may lock the resource
             if(cmsResource.isLocked()) {
