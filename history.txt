@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/07/08 10:30:45 $
- * Version: $Revision: 1.481 $
+ * Date   : $Date: 2003/07/11 06:31:28 $
+ * Version: $Revision: 1.482 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,9 +20,15 @@ Legend:
 - General comment
 
 OpenCms (next version) Salusa Secundus
+! Added initial functionalty for multiple site management to the OpenCms core
+! Rewrote the "Synchronize" mechanism between VFS - FS to better deal with 
+  more complex change scenarios and deleted files
+- Further improvements in the JSP workplace,
+  operations "copy", "move", "rename", "delete", "change permissions", 
+  "change navigation", "touch" now fully functional
 - Database schema change for revised data in resources table,
   "Owner", "Group" and "Access flags" removed because of new ACL,
-  added "user who created". 
+  added "user who created" 
 
 OpenCms 5.1.3 Salusa Secundus - July 7, 2003
 - OpenCms 5.1.3 is a development version.
