@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/10/31 13:11:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/10/31 17:11:18 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.3 $ $Date: 2000/10/31 13:11:28 $ * 
+ * @version $Revision: 1.4 $ $Date: 2000/10/31 17:11:18 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -487,10 +487,14 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 	int state = C_STATE_NEW;
 	// Test if the file is already there and marked as deleted.
 	// If so, delete it
-	CmsResource resource = readFileHeader(project.getId(), filename);
-	if ((resource != null) && (resource.getState() == C_STATE_DELETED)) {
-		removeFile(project.getId(), filename);
-		state = C_STATE_CHANGED;
+	try {
+		CmsResource resource = readFileHeader(project.getId(), filename);   
+	} catch (CmsException e) {
+		// if the file is maked as deleted remove it!
+		if (e.getType()==CmsException.C_RESOURCE_DELETED) {
+		   removeFile(project.getId(),filename);
+		   state=C_STATE_CHANGED;
+		}              
 	}
 	int resourceId = nextId(C_TABLE_RESOURCES);
 	int fileId = nextId(C_TABLE_FILES);
@@ -561,7 +565,7 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 		if (statement != null) {
 			m_pool.putPreparedStatement(m_cq.C_RESOURCES_WRITE_KEY, statement);
 		}
-	}	
+	}
 	return readFile(user.getId(), project.getId(), onlineProject.getId(), filename);
 }
 /**
