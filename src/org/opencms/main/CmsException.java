@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2004/06/14 14:25:56 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/25 16:34:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.*;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsException extends Exception {
 
@@ -202,7 +202,7 @@ public class CmsException extends Exception {
     public static final int C_XML_WRONG_TEMPLATE_CLASS = 26;
 
     /** A string message describing the CmsEception. */
-    protected String m_message = "NO MESSAGE";
+    protected String m_message;
 
     /** Stores a forwarded exception. */
     protected Throwable m_rootCause;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHtmlGalleries.java,v $
-* Date   : $Date: 2004/06/21 11:43:01 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2004/06/25 16:32:34 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  * <p>
  *
  * @author simmeu
- * @version $Revision: 1.26 $ $Date: 2004/06/21 11:43:01 $
+ * @version $Revision: 1.27 $ $Date: 2004/06/25 16:32:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -183,12 +183,12 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
                     cms.chmod(cms.readAbsolutePath(folder), flag);
                     */
                     try {
-                      cms.unlockResource(cms.readAbsolutePath(folder), false);
+                      cms.unlockResource(cms.readAbsolutePath(folder));
                     }
                     catch (CmsException e) {
                       String parent = CmsResource.getParentFolder(cms.readAbsolutePath(folder));
-                      cms.unlockResource(parent, false);
-                      cms.unlockResource(cms.readAbsolutePath(folder), false);
+                      cms.unlockResource(parent);
+                      cms.unlockResource(cms.readAbsolutePath(folder));
 
                     }
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/06/21 09:55:10 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/06/25 16:33:15 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.24 $ $Date: 2004/06/21 09:55:10 $
+ * @version $Revision: 1.25 $ $Date: 2004/06/25 16:33:15 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -211,7 +211,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                             
         try {
             // binary content gets only published once while a project is published
-            if (!offlineFileHeader.getFileId().isNullUUID() && !publishedContentIds.contains(offlineFileHeader.getFileId())) {
+            if (!offlineFileHeader.getContentId().isNullUUID() && !publishedContentIds.contains(offlineFileHeader.getContentId())) {
 
                 // create the file online, but without content              
                 // newFile = (CmsFile) offlineFile.clone();
@@ -219,7 +219,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                     offlineFileHeader.getStructureId(),
                     offlineFileHeader.getResourceId(),
                     offlineFileHeader.getParentStructureId(),
-                    offlineFileHeader.getFileId(),
+                    offlineFileHeader.getContentId(),
                     offlineFileHeader.getName(),
                     offlineFileHeader.getTypeId(),
                     offlineFileHeader.getFlags(),
@@ -237,20 +237,24 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                     new byte[0]
                 );
                 newFile.setFullResourceName(offlineFileHeader.getRootPath());                
-                m_driverManager.getVfsDriver().createFile(onlineProject, newFile, offlineFileHeader.getUserCreated(), newFile.getParentStructureId(), newFile.getName());
+
+                m_driverManager.getVfsDriver().createResource(
+                    onlineProject, 
+                    newFile, 
+                    newFile.getContents());
 
                 conn = m_sqlManager.getConnection();
             
                 // read the content blob
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_FILES_READCONTENT");
-                stmt.setString(1, offlineFileHeader.getFileId().toString());
+                stmt.setString(1, offlineFileHeader.getContentId().toString());
                 res = stmt.executeQuery();
                 if (res.next()) {
                     Blob content = res.getBlob(1);
                     // publish the content
                     stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_FILES_PUBLISHCONTENT");
                     stmt2.setBlob(1, content);
-                    stmt2.setString(2, offlineFileHeader.getFileId().toString());
+                    stmt2.setString(2, offlineFileHeader.getContentId().toString());
                     stmt2.executeUpdate();
                     stmt2.close();
                     stmt2 = null;                    
@@ -269,11 +273,14 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                 // m_driverManager.getVfsDriver().writeResource(onlineProject, newFile, offlineFile, false);
 
                 // add the content ID to the content IDs that got already published
-                publishedContentIds.add(offlineFileHeader.getFileId());
+                publishedContentIds.add(offlineFileHeader.getContentId());
                 
             } else {
                 // create the sibling online
-                m_driverManager.getVfsDriver().createSibling(onlineProject, offlineFileHeader, offlineFileHeader.getUserCreated(), offlineFileHeader.getParentStructureId(), offlineFileHeader.getName());
+                m_driverManager.getVfsDriver().createSibling(
+                    onlineProject, 
+                    offlineFileHeader, 
+                    offlineFileHeader.getName());
 
                 newFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), false, offlineFileHeader.getStructureId());
                 newFile.setFullResourceName(offlineFileHeader.getRootPath());                

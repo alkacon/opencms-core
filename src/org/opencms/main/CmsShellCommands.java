@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/06/21 11:45:21 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2004/06/25 16:34:41 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -176,6 +176,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @see CmsObject#chacc(String, String, String, String)
      */
     public void chacc(String resourceName, String principalType, String principalName, String permissionString) throws CmsException {
+        m_cms.lockResource(resourceName);
         if (I_CmsPrincipal.C_PRINCIPAL_GROUP.equalsIgnoreCase(principalType.trim())) {
             principalName = OpenCms.getImportExportManager().translateGroup(principalName);
         } else {

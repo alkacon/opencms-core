@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2004/06/25 16:32:34 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
@@ -55,7 +56,7 @@ import java.util.Map;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.51 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Name:  $ $Revision: 1.52 $ $Date: 2004/06/25 16:32:34 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault {
@@ -257,10 +258,15 @@ public class CmsAdministration extends CmsWorkplaceDefault {
             modules = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_MODULES);
 
             for(int i = 0;i < modules.size();i++) {
-                List moduleAdminPoints = (List) new ArrayList();
+                List moduleAdminPoints = (List) new ArrayList();                
                 String dummy = cms.readAbsolutePath((CmsFolder)modules.get(i));
                 dummy += "administration/";
-                moduleAdminPoints = cms.getSubFolders(dummy);
+                try {
+                    moduleAdminPoints = cms.getSubFolders(dummy);
+                } catch (CmsVfsResourceNotFoundException e) {
+                    // folder does not exists
+                    continue;
+                }
                 for(int j = 0;j < moduleAdminPoints.size();j++) {
                     CmsFolder currentModuleAdminFolder = (CmsFolder) moduleAdminPoints.get(j);
                     iconVector.add(currentModuleAdminFolder);

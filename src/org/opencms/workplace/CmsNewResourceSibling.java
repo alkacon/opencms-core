@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceSibling.java,v $
- * Date   : $Date: 2004/06/21 09:59:03 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/25 16:35:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.3
  */
@@ -160,7 +160,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
                             OpenCms.getLog(this).error("Error reading properties of " + targetName, e);
                         }                
                     }
-                    getCms().createSibling(fullResourceName, targetName, targetProperties);                   
+                    getCms().createSibling(targetName, fullResourceName, targetProperties);                   
                 }
                 
             } finally {

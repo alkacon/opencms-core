@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/06/21 09:55:02 $
- * Version: $Revision: 1.171 $
+ * Date   : $Date: 2004/06/25 16:33:07 $
+ * Version: $Revision: 1.172 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.171 $ $Date: 2004/06/21 09:55:02 $
+ * @version $Revision: 1.172 $ $Date: 2004/06/25 16:33:07 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -484,32 +484,50 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
         // create the online project
         CmsTask task = m_driverManager.getWorkflowDriver().createTask(0, 0, 1, admin.getId(), admin.getId(), administrators.getId(), I_CmsConstants.C_PROJECT_ONLINE, new java.sql.Timestamp(new java.util.Date().getTime()), new java.sql.Timestamp(new java.util.Date().getTime()), I_CmsConstants.C_TASK_PRIORITY_NORMAL);
-        CmsProject online = createProject(admin, users /* guests */
-        , projectmanager, task, I_CmsConstants.C_PROJECT_ONLINE, "The Online Project", I_CmsConstants.C_FLAG_ENABLED, I_CmsConstants.C_PROJECT_TYPE_NORMAL, null);
+        CmsProject online = createProject(
+            admin, 
+            users,
+            projectmanager, 
+            task, 
+            I_CmsConstants.C_PROJECT_ONLINE, 
+            "The Online Project", 
+            I_CmsConstants.C_FLAG_ENABLED, 
+            I_CmsConstants.C_PROJECT_TYPE_NORMAL, 
+            null);
 
         // create the root-folder for the online project
         CmsFolder onlineRootFolder = new CmsFolder(
             new CmsUUID(),
             new CmsUUID(),
             CmsUUID.getNullUUID(),
-            CmsUUID.getNullUUID(),
             "/",
             CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
             0,
             online.getId(),
-            org.opencms.main.I_CmsConstants.C_STATE_NEW,
-            0, 
+            I_CmsConstants.C_STATE_NEW,
+            0,
             admin.getId(), 
             0, 
-            admin.getId(),
+            admin.getId(), 
             1,
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT            
         );
-        m_driverManager.getVfsDriver().createFolder(online, onlineRootFolder, CmsUUID.getNullUUID());
-            
+        onlineRootFolder.setFullResourceName("/");
+
+        m_driverManager.getVfsDriver().createResource(
+            online, 
+            onlineRootFolder, 
+            null);        
         onlineRootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeFolder(online, onlineRootFolder, CmsDriverManager.C_UPDATE_ALL, onlineRootFolder.getUserLastModified());
+        m_driverManager.getVfsDriver().writeResource(
+            online, 
+            onlineRootFolder, 
+            CmsDriverManager.C_UPDATE_ALL);
+        m_driverManager.getProjectDriver().createProjectResource(
+            online.getId(), 
+            onlineRootFolder.getName(), 
+            null);
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // setup project stuff
@@ -517,13 +535,32 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
         // create the task for the setup project
         task = m_driverManager.getWorkflowDriver().createTask(0, 0, 1, admin.getId(), admin.getId(), administrators.getId(), "_setupProject", new java.sql.Timestamp(new java.util.Date().getTime()), new java.sql.Timestamp(new java.util.Date().getTime()), I_CmsConstants.C_TASK_PRIORITY_NORMAL);
-        CmsProject setup = createProject(admin, administrators, administrators, task, "_setupProject", "Initial site import", I_CmsConstants.C_FLAG_ENABLED, I_CmsConstants.C_PROJECT_TYPE_TEMPORARY, null);
+        CmsProject setup = createProject(
+            admin, 
+            administrators,
+            administrators, 
+            task, 
+            "_setupProject", 
+            "Initial site import", 
+            I_CmsConstants.C_FLAG_ENABLED,
+            I_CmsConstants.C_PROJECT_TYPE_TEMPORARY, 
+            null);
 
         // create the root-folder for the offline project
-        CmsFolder setupRootFolder = m_driverManager.getVfsDriver().createFolder(setup, onlineRootFolder, CmsUUID.getNullUUID());
-        setupRootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeFolder(setup, setupRootFolder, CmsDriverManager.C_UPDATE_ALL, setupRootFolder.getUserLastModified());
 
+        CmsResource offlineRootFolder = m_driverManager.getVfsDriver().createResource(
+            setup, 
+            onlineRootFolder, 
+            null);
+        offlineRootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
+        m_driverManager.getVfsDriver().writeResource(
+            setup, 
+            offlineRootFolder, 
+            CmsDriverManager.C_UPDATE_ALL);        
+        m_driverManager.getProjectDriver().createProjectResource(
+            setup.getId(), 
+            offlineRootFolder.getName(), 
+            null);
     }
 
     /**
@@ -847,7 +884,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     }
 
                     // remove the file online
-                    boolean removeContent = !publishedContentIds.contains(offlineFileHeader.getFileId());
+                    boolean removeContent = !publishedContentIds.contains(offlineFileHeader.getContentId());
                     m_driverManager.getVfsDriver().removeFile(onlineProject, onlineFileHeader, removeContent);
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -942,7 +979,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                             // remove the existing file and ensure that it's content is written 
                             // in any case by removing it's content ID from the set of published content IDs
                             m_driverManager.getVfsDriver().removeFile(onlineProject, offlineFileHeader, true);
-                            publishedContentIds.remove(offlineFileHeader.getFileId());
+                            publishedContentIds.remove(offlineFileHeader.getContentId());
                             newFile = m_driverManager.getProjectDriver().publishFileContent(context.currentProject(), onlineProject, offlineFileHeader, publishedContentIds);
                         } catch (CmsException e1) {
                             if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -1036,25 +1073,32 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
         try {
             // binary content gets only published once while a project is published
-            if (!offlineFileHeader.getFileId().isNullUUID() && !publishedContentIds.contains(offlineFileHeader.getFileId())) {
+            if (!offlineFileHeader.getContentId().isNullUUID() && !publishedContentIds.contains(offlineFileHeader.getContentId())) {
                 // read the file offline
                 offlineFile = m_driverManager.getVfsDriver().readFile(offlineProject.getId(), false, offlineFileHeader.getStructureId());
                 offlineFile.setFullResourceName(offlineFileHeader.getRootPath());
 
                 // create the file online              
-                newFile = (CmsFile) offlineFile.clone();
+                newFile = (CmsFile)offlineFile.clone();
                 newFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
                 newFile.setFullResourceName(offlineFileHeader.getRootPath());                
-                m_driverManager.getVfsDriver().createFile(onlineProject, newFile, offlineFile.getUserCreated(), newFile.getParentStructureId(), newFile.getName());
+                
+                m_driverManager.getVfsDriver().createResource(
+                    onlineProject, 
+                    newFile, 
+                    newFile.getContents());
 
                 // update the online/offline structure and resource records of the file
-                m_driverManager.getVfsDriver().writeResource(onlineProject, newFile, offlineFile, false);
+                m_driverManager.getVfsDriver().publishResource(onlineProject, newFile, offlineFile, false);
 
                 // add the content ID to the content IDs that got already published
-                publishedContentIds.add(offlineFileHeader.getFileId());
+                publishedContentIds.add(offlineFileHeader.getContentId());
             } else {
                 // create the sibling online
-                m_driverManager.getVfsDriver().createSibling(onlineProject, offlineFileHeader, offlineFileHeader.getUserCreated(), offlineFileHeader.getParentStructureId(), offlineFileHeader.getName());
+                m_driverManager.getVfsDriver().createSibling(
+                    onlineProject, 
+                    offlineFileHeader, 
+                    offlineFileHeader.getName());
 
                 newFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), false, offlineFileHeader.getStructureId());
                 newFile.setFullResourceName(offlineFileHeader.getRootPath());                
@@ -1074,8 +1118,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @see org.opencms.db.I_CmsProjectDriver#publishFolder(org.opencms.file.CmsRequestContext, org.opencms.report.I_CmsReport, int, int, org.opencms.file.CmsProject, org.opencms.file.CmsFolder, boolean, long, org.opencms.util.CmsUUID, int, int)
      */
     public void publishFolder(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder offlineFolder, boolean backupEnabled, long publishDate, CmsUUID publishHistoryId, int backupTagId, int maxVersions) throws Exception {
-        CmsFolder newFolder = null;
-        CmsFolder onlineFolder = null;
+        CmsResource newFolder = null;
+        CmsResource onlineFolder = null;
         List offlineProperties = null;
 
         try {
@@ -1089,14 +1133,19 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     newFolder = (CmsFolder) offlineFolder.clone();
                     newFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
                     newFolder.setFullResourceName(offlineFolder.getRootPath());
-                    onlineFolder = m_driverManager.getVfsDriver().createFolder(onlineProject, newFolder, newFolder.getParentStructureId());
+
+                    onlineFolder = m_driverManager.getVfsDriver().createResource(
+                        onlineProject, 
+                        newFolder, 
+                        null);
+
                     onlineFolder.setFullResourceName(offlineFolder.getRootPath());
                 } catch (CmsException e) {
                     if (e.getType() == CmsException.C_FILE_EXISTS) {
                         try {
                             onlineFolder = m_driverManager.getVfsDriver().readFolder(onlineProject.getId(), newFolder.getStructureId());
                             onlineFolder.setFullResourceName(offlineFolder.getRootPath());
-                            m_driverManager.getVfsDriver().writeResource(onlineProject, onlineFolder, offlineFolder, false);
+                            m_driverManager.getVfsDriver().publishResource(onlineProject, onlineFolder, offlineFolder, false);
                         } catch (CmsException e1) {
                             if (OpenCms.getLog(this).isErrorEnabled()) {
                                 OpenCms.getLog(this).error("Error reading resource " + offlineFolder.toString(), e1);
@@ -1117,32 +1166,25 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     // read the folder online
                     onlineFolder = m_driverManager.getVfsDriver().readFolder(onlineProject.getId(), offlineFolder.getStructureId());
                     onlineFolder.setFullResourceName(offlineFolder.getRootPath());
-                } catch (CmsException e) {
-                    if (e.getType() == CmsException.C_NOT_FOUND) {
-                        try {
-                            onlineFolder = m_driverManager.getVfsDriver().createFolder(onlineProject, offlineFolder, offlineFolder.getParentStructureId());
-                            onlineFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                            onlineFolder.setFullResourceName(offlineFolder.getRootPath());
-                            m_driverManager.getVfsDriver().writeResourceState(context.currentProject(), onlineFolder, CmsDriverManager.C_UPDATE_ALL);
-                        } catch (CmsException e1) {
-                            if (OpenCms.getLog(this).isErrorEnabled()) {
-                                OpenCms.getLog(this).error("Error creating resource " + offlineFolder.toString(), e1);
-                            }
-
-                            throw e1;
-                        }
-                    } else {
+                } catch (CmsVfsResourceNotFoundException e) {
+                    try {
+                        //onlineFolder = m_driverManager.getVfsDriver().createFolder(onlineProject, offlineFolder, offlineFolder.getParentStructureId());
+                        onlineFolder = m_driverManager.getVfsDriver().createResource(onlineProject, offlineFolder, null);
+                        onlineFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
+                        onlineFolder.setFullResourceName(offlineFolder.getRootPath());
+                        m_driverManager.getVfsDriver().writeResourceState(context.currentProject(), onlineFolder, CmsDriverManager.C_UPDATE_ALL);
+                    } catch (CmsException e1) {
                         if (OpenCms.getLog(this).isErrorEnabled()) {
-                            OpenCms.getLog(this).error("Error reading resource " + offlineFolder.toString(), e);
+                            OpenCms.getLog(this).error("Error creating resource " + offlineFolder.toString(), e1);
                         }
 
-                        throw e;   
+                        throw e1;
                     }
                 }
 
                 try {
                     // update the folder online
-                    m_driverManager.getVfsDriver().writeResource(onlineProject, onlineFolder, offlineFolder, false);
+                    m_driverManager.getVfsDriver().publishResource(onlineProject, onlineFolder, offlineFolder, false);
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
                         OpenCms.getLog(this).error("Error updating resource " + offlineFolder.toString(), e);
@@ -1989,7 +2031,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setInt(1, tagId);
             stmt.setString(2, resource.getStructureId().toString());
             stmt.setString(3, resource.getResourceId().toString());
-            stmt.setString(4, resource.getFileId().toString());
+            stmt.setString(4, resource.getContentId().toString());
             stmt.setString(5, resource.getRootPath());
             stmt.setInt(6, resource.getState());
             stmt.setInt(7, resource.getTypeId());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/06/21 11:43:43 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2004/06/25 16:34:23 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -426,7 +426,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                     m_report.print(m_report.key("report.dots"));
 
                     // get all properties
-                    properties = readPropertiesFromManifest(currentElement, resourceTypeId, propertyName, propertyValue, deleteProperties);
+                    properties = readPropertiesFromManifest(currentElement, propertyName, propertyValue, deleteProperties);
 
                     // import the specified file 
                     CmsResource res = importResource(source, destination, uuid, uuidfile, uuidresource, resourceTypeId, resourceTypeName, resourceTypeLoaderId, lastmodified, properties, writtenFilenames, fileCodes);
@@ -735,25 +735,21 @@ public class CmsImportVersion2 extends A_CmsImport {
     /**
      * Merges a single page.<p>
      * 
-     * @param resname the resource name of the page
+     * @param resourcename the resource name of the page
      * @throws Exception if something goes wrong
      */
-    private void mergePageFile(String resname) throws Exception {
-        Document contentXml = null;
-        CmsFile bodyfile = null;
-        String mastertemplate = "";
-        String bodyname = "";
-        String bodyclass = "";
-        Map bodyparams = null;
+    private void mergePageFile(String resourcename) throws Exception {
         
         // get the header file
-        CmsFile pagefile = m_cms.readFile(resname);
-        contentXml = CmsImport.getXmlDocument(pagefile.getContents());
+        CmsFile pagefile = m_cms.readFile(resourcename);
+        Document contentXml = CmsImport.getXmlDocument(pagefile.getContents());
         
         // get the <masterTemplate> node to check the content.
         // this node contains the name of the template file
         List masterTemplateNode = contentXml.selectNodes("//masterTemplate");
+        
         // there is only one <masterTemplate> allowed
+        String mastertemplate = null;    
         if (masterTemplateNode.size() == 1) {
             // get the name of the mastertemplate
             mastertemplate = ((Element) masterTemplateNode.get(0)).getTextTrim();
@@ -773,6 +769,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             Node node = null;
             
             // get the class of the body template
+            String bodyclass = null;
             for (i = 0; i < nodes.size(); i++) {
                 node = (Node) nodes.get(i);
                 if ("CLASS".equals(node.getName())) {
@@ -782,18 +779,20 @@ public class CmsImportVersion2 extends A_CmsImport {
             }
             
             // get the name of the body template
+            String bodyname = null;          
             for (i = 0; i < nodes.size(); i++) {
                 node = (Node) nodes.get(i);
                 if ("TEMPLATE".equals(node.getName())) {
                     bodyname = ((Element)node).getTextTrim();
                     if (!bodyname.startsWith("/")) {
-                        bodyname = CmsResource.getFolderPath(resname) + bodyname;
+                        bodyname = CmsResource.getFolderPath(resourcename) + bodyname;
                     }
                     break;
                 }
             }
             
             // get body template parameters if defined
+            Map bodyparams = null;
             for (i = 0; i < nodes.size(); i++) {
                 node = (Node) nodes.get(i);
                 if ("PARAMETER".equals(node.getName())) {
@@ -805,14 +804,19 @@ public class CmsImportVersion2 extends A_CmsImport {
                 }
             }
             
-            // lock the resource, so that it can be manipulated
-            m_cms.lockResource(resname);             
-            // get all properties      
-             
+            if ((mastertemplate == null) || (bodyname == null)) {
+                // required XML nodes not found
+                throw new CmsException("Could not merge page file '" + resourcename + "', bad XML structure!");
+            }
             
-            List properties = m_cms.readPropertyObjects(resname, false);
+            // lock the resource, so that it can be manipulated
+            m_cms.lockResource(resourcename);
+            
+            // get all properties                               
+            List properties = m_cms.readPropertyObjects(resourcename, false);
+            
             // now get the content of the bodyfile and insert it into the control file                   
-            bodyfile = m_cms.readFile(bodyname);
+            CmsFile bodyfile = m_cms.readFile(bodyname);
             
             //get the encoding
             String encoding = null;                    
@@ -823,7 +827,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                      
             if (m_convertToXmlPage) {
                 // TODO: Check encoding
-                CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(bodyfile.getContents(), encoding), "body", getLocale(resname, properties), encoding); 
+                CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(bodyfile.getContents(), encoding), "body", getLocale(resourcename, properties), encoding); 
                 
                 if (xmlPage != null) {
                     pagefile.setContents(xmlPage.marshal());
@@ -833,27 +837,39 @@ public class CmsImportVersion2 extends A_CmsImport {
                     pagefile.setLoaderId(CmsXmlPageLoader.C_RESOURCE_LOADER_ID);
                 }
             }
+
+            // add the template and other required properties
+            CmsProperty newProperty;
             
-            // write all changes                     
-            m_cms.writeFile(pagefile);
-            // add the template property to the controlfile                      
-            m_cms.writePropertyObject(resname, new CmsProperty(I_CmsConstants.C_PROPERTY_TEMPLATE, mastertemplate, null));
+            newProperty = new CmsProperty(I_CmsConstants.C_PROPERTY_TEMPLATE, mastertemplate, null);
+            // property lists must not contain equal properties
+            properties.remove(newProperty);            
+            properties.add(newProperty);
+            
             // if set, add the bodyclass as property
             if (bodyclass != null && !"".equals(bodyclass)) {
-                m_cms.writePropertyObject(resname, new CmsProperty(I_CmsConstants.C_PROPERTY_BODY_CLASS, bodyclass, null));
+                newProperty = new CmsProperty(I_CmsConstants.C_PROPERTY_TEMPLATE, mastertemplate, null);
+                newProperty.setAutoCreatePropertyDefinition(true);
+                properties.remove(newProperty);            
+                properties.add(newProperty);
             }
             // if set, add bodyparams as properties
             if (bodyparams != null) {
                 for (Iterator p = bodyparams.keySet().iterator(); p.hasNext();) {
                     String key = (String)p.next();
-                    m_cms.writePropertyObject(resname, new CmsProperty(key, (String)bodyparams.get(key), null));
+                    newProperty = new CmsProperty(key, (String)bodyparams.get(key), null);
+                    newProperty.setAutoCreatePropertyDefinition(true);
+                    properties.remove(newProperty);            
+                    properties.add(newProperty);
                 }
             }
-            CmsProperty.setAutoCreatePropertyDefinitions(properties, true);
-            m_cms.writePropertyObjects(resname, properties);
-            m_cms.touch(resname, pagefile.getDateLastModified(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, pagefile.getUserLastModified(), false);
+            
+            // now import the resource
+            m_cms.importResource(resourcename, pagefile, pagefile.getContents(), properties);
+
             // done, ulock the resource                   
-            m_cms.unlockResource(resname, false);
+            m_cms.unlockResource(resourcename);
+            
             // finally delete the old body file, it is not needed anymore
             m_cms.lockResource(bodyname);
             m_cms.deleteResource(bodyname, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
@@ -864,13 +880,13 @@ public class CmsImportVersion2 extends A_CmsImport {
             // there are more than one template nodes in this control file
             // convert the resource into a plain text file
             // lock the resource, so that it can be manipulated
-            m_cms.lockResource(resname);
+            m_cms.lockResource(resourcename);
             // set the type to plain
             pagefile.setType(CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
             // write all changes                     
             m_cms.writeFile(pagefile);
             // don, ulock the resource                   
-            m_cms.unlockResource(resname, false);
+            m_cms.unlockResource(resourcename);
             m_report.println(" " + m_report.key("report.notconverted"), I_CmsReport.C_FORMAT_OK);
         }
     }

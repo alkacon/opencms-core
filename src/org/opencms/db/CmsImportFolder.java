@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2004/06/21 09:54:49 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/06/25 16:32:54 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsImportFolder {
 
@@ -129,7 +129,7 @@ public class CmsImportFolder {
                 importZipResource(m_zipStreamIn, m_importPath, false);
             }
             // all is done, unlock the resources
-            m_cms.unlockResource(m_importPath, false);
+            m_cms.unlockResource(m_importPath);
         } catch (Exception exc) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }

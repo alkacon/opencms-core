@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2004/06/25 16:35:08 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.60 $
+ * @version $Revision: 1.61 $
  * 
  * @since 5.1.12
  */
@@ -140,7 +140,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         if ("true".equals(getParamDirectedit()) || forceUnlock) {
             // unlock the resource when in direct edit mode or force unlock is true
             try {
-                getCms().unlockResource(getParamResource(), false);
+                getCms().unlockResource(getParamResource());
             } catch (CmsException e) {
                 // ignore this exception
             }

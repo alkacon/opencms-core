@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/06/21 11:43:43 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2004/06/25 16:34:23 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -432,7 +432,6 @@ public class CmsImportVersion4 extends A_CmsImport {
                     // get all properties
                     properties = readPropertiesFromManifest(
                         currentElement,
-                        resType,
                         propertyKey,
                         propertyValue,
                         ignoredProperties);
@@ -531,24 +530,24 @@ public class CmsImportVersion4 extends A_CmsImport {
     }
 
    /**
-    * Imports a resource (file or folder) into the cms.<p>
-    * 
-    * @param source the path to the source-file
- * @param destination the path to the destination-file in the cms
- * @param resType the resource-type of the file
- * @param loaderId the loader id of the resource
- * @param uuidresource  the resource uuid of the resource
- * @param uuidcontent the file uuid of the resource
- * @param datelastmodified the last modification date of the resource
- * @param userlastmodified the user who made the last modifications to the resource
- * @param datecreated the creation date of the resource
- * @param usercreated the user who created 
- * @param datereleased the release date of the resource
- * @param dateexpired the expire date of the resource
- * @param flags the flags of the resource     
- * @param properties a hashtable with properties for this resource
- * @return imported resource
-    */
+     * Imports a resource (file or folder) into the cms.<p>
+     * 
+     * @param source the path to the source-file
+     * @param destination the path to the destination-file in the cms
+     * @param resType the resource-type of the file
+     * @param loaderId the loader id of the resource
+     * @param uuidresource  the resource uuid of the resource
+     * @param uuidcontent the file uuid of the resource
+     * @param datelastmodified the last modification date of the resource
+     * @param userlastmodified the user who made the last modifications to the resource
+     * @param datecreated the creation date of the resource
+     * @param usercreated the user who created 
+     * @param datereleased the release date of the resource
+     * @param dateexpired the expire date of the resource
+     * @param flags the flags of the resource     
+     * @param properties a hashtable with properties for this resource
+     * @return imported resource
+     */
     private CmsResource importResource(
         String source, 
         String destination,         
@@ -630,7 +629,8 @@ public class CmsImportVersion4 extends A_CmsImport {
 
             // convert to xml page if wanted
             if (m_convertToXmlPage 
-                    && (resType == A_CmsImport.C_RESOURCE_TYPE_PAGE_ID || resType == C_RESOURCE_TYPE_NEWPAGE_ID)) {
+            && (resType == A_CmsImport.C_RESOURCE_TYPE_PAGE_ID 
+                || resType == C_RESOURCE_TYPE_NEWPAGE_ID)) {
                 
                 if (content != null) {
                     //get the encoding

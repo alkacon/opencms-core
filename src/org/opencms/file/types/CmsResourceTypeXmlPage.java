@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/06/21 09:55:50 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/25 16:33:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -177,14 +177,17 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
      */
     public CmsFile writeFile(CmsObject cms, CmsDriverManager driverManger, CmsFile resource) throws CmsException {
 
-        // read the xml page, use the encoding set in the property       
-        CmsXmlPage xmlPage = CmsXmlPage.unmarshal(cms, resource, false);
-        // validate the xml structure before writing the file         
-        // an exception will be thrown if the structure is invalid
-        xmlPage.validateXmlStructure(new CmsXmlEntityResolver(cms));
-        // correct the HTML structure 
-        CmsFile correctedFile = xmlPage.correctHtmlStructure(cms);
+        // empty file content is allowed
+        if (resource.getLength() > 0) {
+            // read the xml page, use the encoding set in the property       
+            CmsXmlPage xmlPage = CmsXmlPage.unmarshal(cms, resource, false);
+            // validate the xml structure before writing the file         
+            // an exception will be thrown if the structure is invalid
+            xmlPage.validateXmlStructure(new CmsXmlEntityResolver(cms));
+            // correct the HTML structure 
+            resource = xmlPage.correctHtmlStructure(cms);
+        }
         // xml is valid if no exception occured
-        return super.writeFile(cms, driverManger, correctedFile);
+        return super.writeFile(cms, driverManger, resource);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2004/06/21 09:55:50 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/25 16:33:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,11 +35,11 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsUUID;
 
 import java.util.List;
 
@@ -49,8 +49,9 @@ import org.apache.commons.collections.ExtendedProperties;
  * Base implementation for resource type classes.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -68,64 +69,95 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#changeLastModifiedProjectId(org.opencms.file.CmsObject, org.opencms.db.CmsDriverManager, java.lang.String)
+     * @see org.opencms.file.types.I_CmsResourceType#changeLastModifiedProjectId(org.opencms.file.CmsObject, org.opencms.db.CmsDriverManager, CmsResource)
      */
     public void changeLastModifiedProjectId(
         CmsObject cms, 
         CmsDriverManager driverManager, 
-        String resourcename
+        CmsResource resource
     ) throws CmsException {
 
         driverManager.changeLastModifiedProjectId(
             cms.getRequestContext(), 
-            cms.getRequestContext().addSiteRoot(resourcename));
+            resource);
+    }
+    
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#changeLock(org.opencms.file.CmsObject, org.opencms.db.CmsDriverManager, CmsResource)
+     */
+    public void changeLock(
+        CmsObject cms, 
+        CmsDriverManager driverManager,
+        CmsResource resource
+    ) throws CmsException {
+
+        driverManager.changeLock(
+            cms.getRequestContext(), 
+            resource);
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#chtype(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, int)
+     * @see org.opencms.file.types.I_CmsResourceType#chflags(org.opencms.file.CmsObject, CmsDriverManager, CmsResource, int)
+     */
+    public void chflags(
+        CmsObject cms, 
+        CmsDriverManager driverManager, 
+        CmsResource resource, 
+        int flags
+    ) throws CmsException {
+
+        driverManager.chflags(
+            cms.getRequestContext(), 
+            resource, 
+            flags);
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#chtype(org.opencms.file.CmsObject, CmsDriverManager, CmsResource, int)
      */
     public void chtype(
         CmsObject cms, 
         CmsDriverManager driverManager, 
-        String resourcename, 
-        int newType
+        CmsResource resource, 
+        int type
     ) throws CmsException {
 
         driverManager.chtype(
             cms.getRequestContext(), 
-            cms.getRequestContext().addSiteRoot(resourcename), newType);
+            resource, 
+            type);
     }
-
+    
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, java.lang.String, int)
+     * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsDriverManager, CmsResource, java.lang.String, int)
      */
     public void copyResource(
         CmsObject cms,
         CmsDriverManager driverManager,
-        String source,
+        CmsResource source,
         String destination,
         int siblingMode
     ) throws CmsException {
 
         driverManager.copyResource(
             cms.getRequestContext(), 
-            cms.getRequestContext().addSiteRoot(source), 
+            source, 
             cms.getRequestContext().addSiteRoot(destination), 
             siblingMode);
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#copyResourceToProject(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String)
+     * @see org.opencms.file.types.I_CmsResourceType#copyResourceToProject(org.opencms.file.CmsObject, CmsDriverManager, CmsResource)
      */
     public void copyResourceToProject(
         CmsObject cms, 
         CmsDriverManager driverManager, 
-        String resourcename
+        CmsResource resource
     ) throws CmsException {
 
         driverManager.copyResourceToProject(
             cms.getRequestContext(), 
-            cms.getRequestContext().addSiteRoot(resourcename));
+            resource);
     }
 
     /**
@@ -146,20 +178,38 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             content, 
             properties);
     }
+ 
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#createSibling(org.opencms.file.CmsObject, org.opencms.db.CmsDriverManager, CmsResource, java.lang.String, java.util.List)
+     */
+     public void createSibling(
+        CmsObject cms,
+        CmsDriverManager driverManager,
+        CmsResource source,
+        String destination,
+        List properties
+     ) throws CmsException {
+
+        driverManager.createSibling(
+            cms.getRequestContext(), 
+            source, 
+            cms.getRequestContext().addSiteRoot(destination), 
+            properties);
+    }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, int)
+     * @see org.opencms.file.types.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, CmsDriverManager, CmsResource, int)
      */
     public void deleteResource(
         CmsObject cms, 
         CmsDriverManager driverManager, 
-        String resourcename, 
+        CmsResource resource, 
         int siblingMode
     ) throws CmsException {
 
         driverManager.deleteResource(
             cms.getRequestContext(), 
-            cms.getRequestContext().addSiteRoot(resourcename), 
+            resource, 
             siblingMode);
     }
 
@@ -209,80 +259,19 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         byte[] content, 
         List properties
     ) throws CmsException {
-
-        CmsResource importedResource = null;
-        CmsResource existingResource = null;
-
-        try {
-            importedResource = driverManager.importResource(
-                cms.getRequestContext(), 
-                cms.getRequestContext().addSiteRoot(resourcename), 
-                resource, 
-                content, 
-                properties);
-
-            cms.lockResource(resourcename);
-        } catch (CmsException e) {
-            if (e.getType() == CmsException.C_FILE_EXISTS) {
-                // read the existing resource                
-                existingResource = cms.readFileHeader(resourcename);
-
-                // check if the resource uuids are the same, if so, update the content
-                if (OpenCms.getImportExportManager().overwriteCollidingResources()
-                    || existingResource.getResourceId().equals(resource.getResourceId())) {
-                    // resource with the same name and same uuid does exist, 
-                    // update the existing resource
-                    cms.lockResource(resourcename);
-                    
-                    driverManager.importResourceUpdate(
-                        cms.getRequestContext(), 
-                        cms.getRequestContext().addSiteRoot(resourcename), 
-                        content, 
-                        properties);
-
-                    importedResource = cms.readFileHeader(resourcename);
-                    cms.touch(
-                        resourcename,
-                        resource.getDateLastModified(),
-                        I_CmsConstants.C_DATE_UNCHANGED,
-                        I_CmsConstants.C_DATE_UNCHANGED,
-                        resource.getUserLastModified(),
-                        false);
-                } else {
-                    // a resource with the same name but different uuid does exist,
-                    // copy the new resource to the lost+found folder 
-                    String newResourcename = moveToLostAndFound(cms, driverManager, resourcename, false);
-                    CmsResource newResource = new CmsResource(
-                        resource.getStructureId(),
-                        resource.getResourceId(),
-                        resource.getParentStructureId(),
-                        resource.getFileId(),
-                        CmsResource.getName(newResourcename),
-                        resource.getTypeId(),
-                        resource.getFlags(),
-                        resource.getProjectLastModified(),
-                        resource.getState(),
-                        resource.getLoaderId(),
-                        resource.getDateLastModified(),
-                        resource.getUserLastModified(),
-                        resource.getDateCreated(),
-                        resource.getUserCreated(),
-                        resource.getDateReleased(),
-                        resource.getDateExpired(),
-                        1,
-                        resource.getLength());
-                    
-                    importedResource = driverManager.importResource(
-                        cms.getRequestContext(), 
-                        cms.getRequestContext().addSiteRoot(newResourcename), 
-                        newResource, 
-                        content, 
-                        properties);
-                }
-            }
-        }
-
-        return importedResource;
+        
+        // this triggers the interal "is touched" state
+        // and prevents the driver manager from inserting the current time
+        resource.setDateLastModified(resource.getDateLastModified());
+        // ensure resource record is updated
+        resource.setState(I_CmsConstants.C_STATE_NEW);
+        return driverManager.createResource(
+            cms.getRequestContext(),
+            cms.getRequestContext().addSiteRoot(resourcename),
+            resource,
+            content,
+            properties,
+            true);
     }
 
     /**
@@ -309,58 +298,52 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#lockResource(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, int)
+     * @see org.opencms.file.types.I_CmsResourceType#lockResource(org.opencms.file.CmsObject, CmsDriverManager, CmsResource, int)
      */
     public void lockResource(
         CmsObject cms, 
         CmsDriverManager driverManager, 
-        String resourcename, 
+        CmsResource resource, 
         int mode
     ) throws CmsException {
 
         driverManager.lockResource(
             cms.getRequestContext(), 
-            cms.getRequestContext().addSiteRoot(resourcename), 
+            resource, 
             mode);
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, java.lang.String)
+     * @see org.opencms.file.types.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, CmsDriverManager, CmsResource, java.lang.String)
      */
     public void moveResource(
         CmsObject cms, 
         CmsDriverManager driverManager, 
-        String source, 
+        CmsResource resource, 
         String destination
     ) throws CmsException {
         
-        copyResource(cms, driverManager, source, destination, I_CmsConstants.C_COPY_AS_SIBLING);
-        deleteResource(cms, driverManager, source, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+        copyResource(
+            cms, 
+            driverManager, 
+            resource, 
+            destination, 
+            I_CmsConstants.C_COPY_AS_SIBLING);
+        
+        deleteResource(
+            cms, 
+            driverManager, 
+            resource, 
+            I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#moveToLostAndFound(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, boolean)
-     */
-    public String moveToLostAndFound(
-        CmsObject cms, 
-        CmsDriverManager driverManager, 
-        String resourcename, 
-        boolean returnNameOnly
-    ) throws CmsException {
-
-        return driverManager.moveToLostAndFound(
-            cms.getRequestContext(), 
-            cms.getRequestContext().addSiteRoot(resourcename), 
-            returnNameOnly);
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, int, byte[], List)
+     * @see org.opencms.file.types.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, CmsDriverManager, CmsResource, int, byte[], List)
      */
     public void replaceResource(
         CmsObject cms, 
         CmsDriverManager driverManager, 
-        String resourcename, 
+        CmsResource resource, 
         int type, 
         byte[] content, 
         List properties
@@ -368,25 +351,25 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         
         driverManager.replaceResource(
             cms.getRequestContext(), 
-            cms.getRequestContext().addSiteRoot(resourcename), 
+            resource, 
             type, 
             content, 
             properties);
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#restoreResource(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, int)
+     * @see org.opencms.file.types.I_CmsResourceType#restoreResourceBackup(org.opencms.file.CmsObject, CmsDriverManager, CmsResource, int)
      */
-    public void restoreResource(
+    public void restoreResourceBackup(
         CmsObject cms, 
         CmsDriverManager driverManager, 
-        String resourcename, 
+        CmsResource resource, 
         int tag
     ) throws CmsException {
 
         driverManager.restoreResource(
             cms.getRequestContext(), 
-            cms.getRequestContext().addSiteRoot(resourcename), 
+            resource, 
             tag);
     }
 
@@ -406,70 +389,53 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#touch(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, long, long, long, org.opencms.util.CmsUUID, boolean)
+     * @see org.opencms.file.types.I_CmsResourceType#touch(org.opencms.file.CmsObject, CmsDriverManager, CmsResource, long, long, long, boolean)
      */
     public void touch(
         CmsObject cms,
         CmsDriverManager driverManager,
-        String resourcename,
+        CmsResource resource,
         long dateLastModified,
         long dateReleased,
         long dateExpired,
-        CmsUUID user, 
         boolean recursive
     ) throws CmsException {
 
         driverManager.touch(
             cms.getRequestContext(), 
-            cms.getRequestContext().addSiteRoot(resourcename), 
+            resource, 
             dateLastModified, 
             dateReleased, 
-            dateExpired, 
-            user);
+            dateExpired);
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#undeleteResource(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String)
-     */
-    public void undeleteResource(
-        CmsObject cms, 
-        CmsDriverManager driverManager, 
-        String resourcename
-    ) throws CmsException {
-
-        driverManager.undeleteResource(
-            cms.getRequestContext(), 
-            cms.getRequestContext().addSiteRoot(resourcename));
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, boolean)
+     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, CmsDriverManager, CmsResource, boolean)
      */
     public void undoChanges(
         CmsObject cms, 
         CmsDriverManager driverManager, 
-        String resourcename, 
+        CmsResource resource, 
         boolean recursive
     ) throws CmsException {
 
         driverManager.undoChanges(
             cms.getRequestContext(),
-            cms.getRequestContext().addSiteRoot(resourcename));
+            resource);
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#unlockResource(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, boolean)
+     * @see org.opencms.file.types.I_CmsResourceType#unlockResource(org.opencms.file.CmsObject, CmsDriverManager, CmsResource)
      */
     public void unlockResource(
         CmsObject cms, 
         CmsDriverManager driverManager, 
-        String resourcename, 
-        boolean recursive
+        CmsResource resource
     ) throws CmsException {
 
         driverManager.unlockResource(
             cms.getRequestContext(),
-            cms.getRequestContext().addSiteRoot(resourcename));
+            resource);
     }
 
     /**
@@ -487,4 +453,52 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         // folders can never be written like a file
         throw new CmsException("Attempt to write a folder as if it where a file!");        
     }
+  
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#writePropertyObject(org.opencms.file.CmsObject, org.opencms.db.CmsDriverManager, CmsResource, org.opencms.file.CmsProperty)
+     */
+    public void writePropertyObject(
+        CmsObject cms,
+        CmsDriverManager driverManager,
+        CmsResource resource,
+        CmsProperty property
+    ) throws CmsException {
+
+        driverManager.writePropertyObject(
+            cms.getRequestContext(), 
+            resource, 
+            property);
+    }
+    
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#writePropertyObjects(org.opencms.file.CmsObject, org.opencms.db.CmsDriverManager, CmsResource, java.util.List)
+     */
+    public void writePropertyObjects(
+        CmsObject cms,
+        CmsDriverManager driverManager,
+        CmsResource resource, 
+        List properties
+        ) throws CmsException {
+        
+        driverManager.writePropertyObjects(
+            cms.getRequestContext(),
+            resource,
+            properties);
+    }     
+
+    /**
+     * Convenience method to return the initialized resource type 
+     * instance for the given id.<p>
+     * 
+     * @param resourceType the id of the resource type to get
+     * @return the initialized resource type instance for the given id
+     * @throws CmsException if something goes wrong
+     * 
+     * @see org.opencms.loader.CmsResourceManager#getResourceType(int)
+     */
+    protected I_CmsResourceType getResourceType(int resourceType) throws CmsException {
+        
+        return OpenCms.getResourceManager().getResourceType(resourceType);
+    }
+    
 }

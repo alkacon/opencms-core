@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2004/06/21 09:55:24 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/25 16:33:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
     
@@ -121,7 +121,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
      * @param parentId the id of this resources parent folder
-     * @param fileId the id of this resources content record
+     * @param contentId the id of this resources content record
      * @param name the filename of this resouce
      * @param type the type of this resource
      * @param flags the flags of this resource
@@ -141,7 +141,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         CmsUUID structureId, 
         CmsUUID resourceId, 
         CmsUUID parentId, 
-        CmsUUID fileId, 
+        CmsUUID contentId, 
         String name, 
         int type, 
         int flags, 
@@ -160,7 +160,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_structureId = structureId;
         m_resourceId = resourceId;
         m_parentId = parentId;
-        m_contentId = fileId;
+        m_contentId = contentId;
         m_name = name;
         m_typeId = type;
         m_flags = flags;
@@ -423,11 +423,11 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Gets the id of the file content database entry.<p>
+     * Gets the id of the content database entry.<p>
      *
-     * @return the id of the file content database entry
+     * @return the id of the content database entry
      */
-    public CmsUUID getFileId() {
+    public CmsUUID getContentId() {
         return m_contentId;
     }
 

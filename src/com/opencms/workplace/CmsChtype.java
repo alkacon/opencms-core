@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChtype.java,v $
- * Date   : $Date: 2004/06/21 11:43:01 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/06/25 16:32:34 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Template class for displaying the type screen of the OpenCms workplace.<p>
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.37 $ $Date: 2004/06/21 11:43:01 $
+ * @version $Revision: 1.38 $ $Date: 2004/06/25 16:32:34 $
  */
 public class CmsChtype extends CmsWorkplaceDefault {
 
@@ -118,31 +118,8 @@ public class CmsChtype extends CmsWorkplaceDefault {
                 }       
             }
             
-            // read all properties of the file, store them in a map and delete them
-            Map fileProperties = cms.readProperties(filename);
-            cms.deleteAllProperties(filename, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
-            
             // change the file type
             cms.chtype(cms.readAbsolutePath(file), type);
-            
-            // now write all stored properties back to the changed file
-            Iterator i = fileProperties.keySet().iterator();
-            while (i.hasNext()) {
-                String curKey = (String)i.next();
-                String curValue = (String)fileProperties.get(curKey);
-                try {
-                    cms.writeProperty(filename, curKey, curValue);
-                } catch (CmsException e) {
-                    // Propertydefinition does not exist, try to create it
-                    if (e.getType() == CmsException.C_NOT_FOUND) {
-                        cms.createPropertydefinition(curKey);
-                        cms.writeProperty(filename, curKey, curValue);
-                    } else {
-                        throw e;
-                    }
-                }
-            }          
-            
             session.removeValue(C_PARA_RESOURCE);
 
             // return to filelist

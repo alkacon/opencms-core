@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsSecurityException.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/25 16:34:49 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,10 @@ package org.opencms.security;
 import org.opencms.main.CmsException;
 
 /**
- * Signals that a particular action was invoked on resource with an insufficient lock state.<p>
+ * Used to signal security related issues, for example example during file access and login.<p> 
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.1.4
  */
 public class CmsSecurityException extends CmsException {
@@ -107,7 +107,11 @@ public class CmsSecurityException extends CmsException {
      * @return the exception description message
      */
     public String getMessage() {
-        return getClass().getName() + ": " + getErrorDescription(getType());
+        if (m_message != null) {
+            return getClass().getName() + ": " + m_message;
+        } else {
+            return getClass().getName() + ": " + getErrorDescription(getType());
+        }
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/06/21 11:43:43 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/06/25 16:34:23 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -267,8 +267,7 @@ public class CmsImportVersion3 extends A_CmsImport {
 
         String source, destination, type, uuidstructure, uuidresource, uuidcontent, userlastmodified, usercreated, flags, timestamp;
         long datelastmodified, datecreated;
-        int resType;
-        
+
         List fileNodes, acentryNodes;
         Element currentElement, currentEntry;
         List properties = null;
@@ -311,11 +310,6 @@ public class CmsImportVersion3 extends A_CmsImport {
                 destination = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESTINATION);
                 // <type>
                 type = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
-                if (C_RESOURCE_TYPE_NEWPAGE_NAME.equals(type)) {
-                    resType = C_RESOURCE_TYPE_NEWPAGE_ID;
-                } else {
-                    resType = OpenCms.getResourceManager().getResourceType(type).getTypeId();
-                }
                 // <uuidstructure>
                 uuidstructure = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDSTRUCTURE);
                 // <uuidresource>
@@ -357,9 +351,9 @@ public class CmsImportVersion3 extends A_CmsImport {
                     m_report.print(translatedName);
                     m_report.print(m_report.key("report.dots"));
                     // get all properties
-                    properties = readPropertiesFromManifest(currentElement, resType, propertyName, propertyValue, deleteProperties);
-                    // import the resource               
+                    properties = readPropertiesFromManifest(currentElement, propertyName, propertyValue, deleteProperties);
 
+                    // import the resource               
                     CmsResource res = importResource(source, destination, type, uuidstructure, uuidresource, uuidcontent, datelastmodified, userlastmodified, datecreated, usercreated, flags, properties, writtenFilenames, fileCodes);
 
                     // if the resource was imported add the access control entrys if available
@@ -389,12 +383,6 @@ public class CmsImportVersion3 extends A_CmsImport {
                     m_report.println(translatedName);
                 }
             }
-//            if (!m_importingChannelData) {
-//                // at last we have to get the links from all new imported pages for the  linkmanagement
-//                m_report.println(m_report.key("report.check_links_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-//                updatePageLinks();
-//                m_report.println(m_report.key("report.check_links_end"), I_CmsReport.C_FORMAT_HEADLINE);
-//            }
 
         } catch (Exception exc) {
             m_report.println(exc);

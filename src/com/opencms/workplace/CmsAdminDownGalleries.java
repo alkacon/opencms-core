@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2004/06/21 11:43:01 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2004/06/25 16:32:34 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.51 $ $Date: 2004/06/21 11:43:01 $
+ * @version $Revision: 1.52 $ $Date: 2004/06/25 16:32:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -208,7 +208,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                 }
                cms.chmod(cms.readAbsolutePath(folder), flag);
                */
-               cms.unlockResource(cms.readAbsolutePath(folder), false);
+               cms.unlockResource(cms.readAbsolutePath(folder));
             }
             catch(CmsException ex) {
                 xmlTemplateDocument.setData("ERRORDETAILS", CmsException.getStackTraceAsString(ex));

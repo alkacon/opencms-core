@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2004/06/21 09:59:03 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/06/25 16:35:00 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 5.1.12
  */
@@ -264,7 +264,7 @@ public class CmsPublishProject extends CmsReport {
                         org.opencms.lock.CmsLock lock = getCms().getLock(publishResource);
                         if (!lock.isNullLock()) {
                             // resource is locked, so unlock it
-                            getCms().unlockResource(getParamResource(), false);
+                            getCms().unlockResource(getParamResource());
                         }  
                     }
                     
@@ -277,7 +277,7 @@ public class CmsPublishProject extends CmsReport {
                                 folderName += "/";
                             }
                             getCms().lockResource(folderName);
-                            getCms().unlockResource(folderName, false);
+                            getCms().unlockResource(folderName);
                         } else {
                             // unlock all project resources
                             getCms().unlockProject(Integer.parseInt(getParamProjectid()));                               

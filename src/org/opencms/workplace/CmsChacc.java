@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/06/25 16:35:00 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 5.1
  */
@@ -308,9 +308,8 @@ public class CmsChacc extends CmsDialog {
                 if ((flags & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0) {
                     flags -= I_CmsConstants.C_ACCESS_INTERNAL_READ;
                 }
-            }               
-            resource.setFlags(flags);
-            getCms().writeFileHeader(resource);
+            }
+            getCms().chflags(getParamResource(), flags);
 
         } catch (CmsException e) {       
               m_errorMessages.add(key("dialog.permission.error.internal"));
@@ -484,7 +483,7 @@ public class CmsChacc extends CmsDialog {
                 }
             }
             CmsResource res = getCms().readFileHeader(fileName, CmsResourceFilter.ALL);
-            CmsUUID fileId = res.getFileId();
+            CmsUUID fileId = res.getContentId();
             CmsAccessControlEntry entry = new CmsAccessControlEntry(fileId, id, curSet, flags);
             return buildPermissionEntryForm(entry, editable, extendedView, null);
         } catch (CmsException e) {

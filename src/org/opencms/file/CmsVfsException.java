@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsLoaderException.java,v $
- * Date   : $Date: 2004/06/25 16:34:33 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsVfsException.java,v $
+ * Date   : $Date: 2004/06/25 16:33:32 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,83 +29,74 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
  
-package org.opencms.loader;
+package org.opencms.file;
 
 import org.opencms.main.CmsException;
 
 /**
- * Signals exceptions occuring during the resource loading process.<p>
+ * Used to signal VFS related issues, for example during file access.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
- * @since 5.3
+ * @version $Revision: 1.1 $
+ * @since 5.1.4
  */
-public class CmsLoaderException extends CmsException {
+public class CmsVfsException extends CmsException {
 
-    /** Generic error code for loader errors. */
-    public static final int C_LOADER_GENERIC_ERROR = 28; 
+    /** Folders don't suport siblings. */
+    public static final int C_VFS_FOLDERS_DONT_SUPPORT_SIBLINGS = 300;
+
+    /** List of property must not contain equal properties. */
+    public static final int C_VFS_INVALID_PROPERTY_LIST = 301;
     
-    /** Non-template loader called through template loader facade. */
-    public static final int C_LOADER_NOT_TEMPLATE_ENABLED = 300;
-    
-    /** Unknown resource type. */
-    public static final int C_LOADER_UNKNOWN_RESOURCE_TYPE = 301;
-        
+    /** Resource not found. */
+    public static final int C_VFS_RESOURCE_NOT_FOUND = C_NOT_FOUND;
+
     /**
      * Default constructor for a CmsSecurityException.<p>
      */
-    public CmsLoaderException() {
+    public CmsVfsException() {
         super();
     }
     
     /**
-     * Constructs a CmsLoaderException with the specified description message and type.<p>
+     * Constructs a CmsSecurityException with the specified description message and type.<p>
      * 
      * @param type the type of the exception
      */
-    public CmsLoaderException(int type) {
+    public CmsVfsException(int type) {
         super(type);
     }
-     
+        
     /**
-     * Constructs a CmsLoaderException with the specified description message and type.<p>
-     * 
-     * @param message the description message
-     */
-    public CmsLoaderException(String message) {
-        super(message, C_LOADER_GENERIC_ERROR);
-    }
-    
-    /**
-     * Constructs a CmsLoaderException with the specified description message and type.<p>
+     * Constructs a CmsSecurityException with the specified description message and type.<p>
      * 
      * @param message the description message
      * @param type the type of the exception
      */
-    public CmsLoaderException(String message, int type) {
+    public CmsVfsException(String message, int type) {
         super(message, type);
     }
     
     /**
-     * Constructs a CmsLoaderException with the specified description message, type and root exception.<p>
+     * Constructs a CmsSecurityException with the specified description message and root exception.<p>
+     * 
+     * @param type the type of the exception
+     * @param rootCause root cause exception
+     */
+    public CmsVfsException(int type, Throwable rootCause) {
+        super(type, rootCause);
+    }        
+    
+    /**
+     * Constructs a CmsSecurityException with the specified description message and root exception.<p>
      * 
      * @param message the description message
      * @param type the type of the exception
      * @param rootCause root cause exception
      */
-    public CmsLoaderException(String message, int type, Throwable rootCause) {
+    public CmsVfsException(String message, int type, Throwable rootCause) {
         super(message, type, rootCause);
-    }
-    
-    /**
-     * Constructs a CmsLoaderException with the specified description message and root exception.<p>
-     * 
-     * @param message the description message
-     * @param rootCause root cause exception
-     */
-    public CmsLoaderException(String message, Throwable rootCause) {
-        super(message, rootCause);
-    }
+    }       
     
     /**
      * Returns the exception description message.<p>
@@ -118,22 +109,22 @@ public class CmsLoaderException extends CmsException {
         } else {
             return getClass().getName() + ": " + getErrorDescription(getType());
         }
-    }    
+    }
     
     /**
-     * Returns the description String for the provided CmsLoaderException type.<p>
+     * Returns the description String for the provided CmsException type.<p>
      * 
      * @param type exception error code 
-     * @return the description String for the provided CmsLoaderException type
+     * @return the description String for the provided CmsException type
      */    
     protected String getErrorDescription(int type) {
         switch (type) {
-            case C_LOADER_GENERIC_ERROR:
-                return "Error while loading invoking resource loader";       
-            case C_LOADER_NOT_TEMPLATE_ENABLED:
-                return "Resource loader not template enabled";
-            case C_LOADER_UNKNOWN_RESOURCE_TYPE:
-                return "Unknown resource type requested!";                
+            case C_VFS_RESOURCE_NOT_FOUND:                
+                return "Resource not found!";            
+            case C_VFS_FOLDERS_DONT_SUPPORT_SIBLINGS:
+                return "Folders in the VFS don't support siblings!";
+            case C_VFS_INVALID_PROPERTY_LIST:                
+                return "Invalid multiple occurence of equal properties in property list!";
             default:
                 return super.getErrorDescription(type);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/06/21 09:54:49 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2004/06/25 16:32:54 $
+ * Version: $Revision: 1.82 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,14 +32,13 @@
 package org.opencms.db;
 
 import org.opencms.db.generic.CmsSqlManager;
-import org.opencms.file.*;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
@@ -52,40 +51,10 @@ import java.util.List;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.81 $ $Date: 2004/06/21 09:54:49 $
+ * @version $Revision: 1.82 $ $Date: 2004/06/25 16:32:54 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
-
-    /**
-     * Creates a new file in the database from a specified CmsFile instance.<p>
-     *
-     * @param project the project in which the resource will be used.
-     * @param file the file to be written to the Cms.
-     * @param userId the Id of the user who changed the resourse.
-     * @param parentId the parentId of the resource.
-     * @param filename the complete new name of the file (including pathinformation).
-     * @return file the created file.
-     * @throws CmsException f operation was not succesful
-     */
-    CmsFile createFile(CmsProject project, CmsFile file, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException;
-
-    /**
-     * Creates a new file in the database from a list of arguments.<p>
-     *
-     * @param user the user who wants to create the file
-     * @param project the project in which the resource will be used
-     * @param filename the complete name of the new file (including pathinformation)
-     * @param flags the flags of this resource
-     * @param parentFolder the parent folder of the resource
-     * @param contents the contents of the new file
-     * @param resourceType the resourceType of the new file
-     * @param dateReleased the release date of the new file
-     * @param dateExpired the expiration date of the new file
-     * @return file the created file.
-     * @throws CmsException if operation was not successful
-     */
-    CmsFile createFile(CmsUser user, CmsProject project, String filename, int flags, CmsFolder parentFolder, byte[] contents, I_CmsResourceType resourceType, long dateReleased, long dateExpired) throws CmsException;
     
     /**
      * Creates a CmsFile instance from a JDBC ResultSet.<p>
@@ -109,27 +78,17 @@ public interface I_CmsVfsDriver {
     CmsFile createFile(ResultSet res, int projectId, boolean hasFileContentInResultSet) throws SQLException;
 
     /**
-     * Creates a BLOB in the database for the content of a file.<p>
+     * Creates a resource content with the specified id.<p>
      * 
-     * @param fileId the ID of the new file
-     * @param fileContent the content of the new file
+     * @param project the current project
+     * @param contentId the id of the new content
+     * @param content the content to write
      * @param versionId for the content of a backup file you need to insert the versionId of the backup
-     * @param projectId the ID of the current project
      * @param writeBackup true if the content should be written to the backup table
+     * 
      * @throws CmsException if somethong goes wrong
      */
-    void createFileContent(CmsUUID fileId, byte[] fileContent, int versionId, int projectId, boolean writeBackup) throws CmsException;
-
-    /**
-     * Creates a new folder in the database from a specified CmsFolder instance.<p>
-     *
-     * @param project the project in which the resource will be used
-     * @param folder the folder to be written to the Cms
-     * @param parentId the parentId of the resource
-     * @return the created folder
-     * @throws CmsException if operation was not succesful
-     */
-    CmsFolder createFolder(CmsProject project, CmsFolder folder, CmsUUID parentId) throws CmsException;
+    void createContent(CmsProject project, CmsUUID contentId, byte[] content, int versionId, boolean writeBackup) throws CmsException;
 
     /**
      * Creates a CmsFolder instance from a JDBC ResultSet.<p>
@@ -170,13 +129,12 @@ public interface I_CmsVfsDriver {
      * 
      * @param project the project where to create the link
      * @param resource the link prototype
-     * @param userId the id of the user creating the link
-     * @param parentId the id of the folder where the link is created
-     * @param filename the name of the link
+     * @param resourcename the name of the link
+     * 
      * @return a valid link resource
      * @throws CmsException if something goes wrong
      */
-    CmsResource createSibling(CmsProject project, CmsResource resource, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException;
+    CmsResource createSibling(CmsProject project, CmsResource resource, String resourcename) throws CmsException;
     
     /**
      * Deletes all property values of a file or folder.<p>
@@ -219,20 +177,6 @@ public interface I_CmsVfsDriver {
     CmsSqlManager getSqlManager();
 
     /**
-     * Creates a new resource from an given CmsResource instance while it is imported.<p>
-     *
-     * @param project the project in which the resource will be used
-     * @param newResource the resource to be written to the Cms
-     * @param filecontent the filecontent if the resource is a file
-     * @param userId the ID of the current user
-     * @param parentId the parentId of the resource
-     * @param isFolder true to create a new folder
-     * @return resource the created resource
-     * @throws CmsException if operation was not succesful
-     */
-    CmsResource importResource(CmsProject project, CmsUUID parentId, CmsResource newResource, byte[] filecontent, CmsUUID userId, boolean isFolder) throws CmsException;
-
-    /**
      * Initializes the SQL manager for this driver.<p>
      * 
      * To obtain JDBC connections from different pools, further 
@@ -246,16 +190,16 @@ public interface I_CmsVfsDriver {
     org.opencms.db.generic.CmsSqlManager initQueries();
 
     /**
-     * Reads either all child-files or child-folders of a specified parent folder.<p>
+     * Reads all child-files and/or child-folders of a specified parent resource.<p>
      * 
      * @param currentProject the current project
-     * @param parentFolder the parent folder
+     * @param resource the parent folder
      * @param getFolders if true the child folders of the parent folder are returned in the result set
      * @param getFiles if true the child files of the parent folder are returned in the result set
      * @return a list of all sub folders or sub files
      * @throws CmsException if something goes wrong
      */
-    List readChildResources(CmsProject currentProject, CmsFolder parentFolder, boolean getFolders, boolean getFiles) throws CmsException;
+    List readChildResources(CmsProject currentProject, CmsResource resource, boolean getFolders, boolean getFiles) throws CmsException;
 
     /**
      * Reads a file specified by it's structure ID.<p>
@@ -460,10 +404,10 @@ public interface I_CmsVfsDriver {
      * Removes a folder physically in the database.<p>
      *
      * @param currentProject the current project
-     * @param folder the folder
+     * @param resource the folder
      * @throws CmsException if something goes wrong
      */
-    void removeFolder(CmsProject currentProject, CmsFolder folder) throws CmsException;
+    void removeFolder(CmsProject currentProject, CmsResource resource) throws CmsException;
     
     /**
      * Replaces the content and properties of an existing resource.<p>
@@ -509,23 +453,24 @@ public interface I_CmsVfsDriver {
     boolean validateStructureIdExists(int projectId, CmsUUID structureId) throws CmsException;
     
     /**
-     * Writes the file content of a specified file ID.<p>
+     * Writes the resource content with the specified content id.<p>
      * 
-     * @param projectId the ID of the current project
+     * @param project the current project
+     * @param contentId the id of the content to update
+     * @param content the new content of the file
      * @param writeBackup true if the file content should be written to the backup table
-     * @param fileId The ID of the file to update
-     * @param fileContent The new content of the file
+     * 
      * @throws CmsException if something goes wrong
      */
-    void writeFileContent(CmsUUID fileId, byte[] fileContent, int projectId, boolean writeBackup) throws CmsException;
+    void writeContent(CmsProject project, CmsUUID contentId, byte[] content, boolean writeBackup) throws CmsException;
 
     /**
-     * Writes the complete file header of an existing file.<p>
+     * Writes the structure and/or resource record(s) of an existing file.<p>
      * 
-     * Common usages of writeFileHeader are saving the file header
-     * information after creating, importing or restoring complete files
-     * where all file header attribs. in both the structure and resource 
-     * records get written. Thus, using writeFileHeader affects all siblings of
+     * Common usages of this method are saving the resource information
+     * after creating, importing or restoring complete files
+     * where all file header attribs are changed. Both the structure and resource 
+     * records get written. Thus, using this method affects all siblings of
      * a resource! Use {@link #writeResourceState(CmsProject, CmsResource, int)}
      * instead if you just want to update the file state, e.g. of a single sibling.<p>
      * 
@@ -534,46 +479,24 @@ public interface I_CmsVfsDriver {
      * or resource state, or none of them, is set to "changed".<p>
      * 
      * The rating of the file state values is as follows:<br>
-     * unchanged < changed < new < deleted<p>
+     * unchanged &lt; changed &lt; new &lt; deleted<p>
      * 
      * Second, the "state" of the resource is the structure state, if the structure state
      * has a higher file state value than the resource state. Otherwise the file state is
      * the resource state.<p>
      * 
      * @param project the current project
-     * @param file the file to be updated
+     * @param resource the resource to be updated
      * @param changed determines whether the structure or resource state, or none of them, is set to "changed"
-     * @param userId the ID of the current user
+     * 
      * @throws CmsException if something goes wrong
+     * 
      * @see org.opencms.db.CmsDriverManager#C_UPDATE_RESOURCE_STATE
      * @see org.opencms.db.CmsDriverManager#C_UPDATE_STRUCTURE_STATE
      * @see org.opencms.db.CmsDriverManager#C_NOTHING_CHANGED
      * @see #writeResourceState(CmsProject, CmsResource, int)
      */
-    void writeFileHeader(CmsProject project, CmsFile file, int changed, CmsUUID userId) throws CmsException;
-    
-    /**
-     * Writes the complete file header of an existing folder.<p>
-     * 
-     * Common usages of writeFolder are saving the file header
-     * information after creating, importing or restoring complete folder
-     * where all folder header attribs. in both the structure and resource 
-     * records get written.
-     * 
-     * Please refer to the javadoc of {@link #writeFileHeader(CmsProject, CmsFile, int, CmsUUID)} to read
-     * how setting resource state values affects the file state.<p>
-     * 
-     * @param project the current project
-     * @param folder the folder to update
-     * @param changed determines whether the structure or resource state, or none of them, is set to "changed"
-     * @param userId the ID of the current user
-     * @throws CmsException if something goes wrong
-     * @see org.opencms.db.CmsDriverManager#C_UPDATE_RESOURCE_STATE
-     * @see org.opencms.db.CmsDriverManager#C_UPDATE_STRUCTURE_STATE
-     * @see org.opencms.db.CmsDriverManager#C_NOTHING_CHANGED
-     * @see #writeResourceState(CmsProject, CmsResource, int)
-     */
-    void writeFolder(CmsProject project, CmsFolder folder, int changed, CmsUUID userId) throws CmsException;
+    void writeResource(CmsProject project, CmsResource resource, int changed) throws CmsException;
 
     /**
      * Writes the "last-modified-in-project" ID of a resource.<p>
@@ -617,10 +540,11 @@ public interface I_CmsVfsDriver {
      * @param userId the user who writes the file
      * @throws CmsException if something goes wrong
      */
-    void writeResource(CmsProject project, CmsResource resource, byte[] filecontent, int changed, CmsUUID userId) throws CmsException;
+    //void writeResource(CmsProject project, CmsResource resource, byte[] filecontent, int changed, CmsUUID userId) throws CmsException;
 
     /**
-     * Writes the structure and resource records of an existing offline resource into it's online counterpart while it is published.<p>
+     * Publishes the structure and resource records of an 
+     * offline resource into it's online counterpart.<p>
      * 
      * @param onlineProject the online project
      * @param onlineResource the online resource
@@ -628,7 +552,7 @@ public interface I_CmsVfsDriver {
      * @param writeFileContent true, if also the content record of the specified offline resource should be written to the online table; false otherwise
      * @throws CmsException if somethong goes wrong
      */
-    void writeResource(CmsProject onlineProject, CmsResource onlineResource, CmsResource offlineResource, boolean writeFileContent) throws CmsException;
+    void publishResource(CmsProject onlineProject, CmsResource onlineResource, CmsResource offlineResource, boolean writeFileContent) throws CmsException;
     
     /**
      * Writes file state in either the structure or resource record, or both of them.<p>
@@ -639,10 +563,10 @@ public interface I_CmsVfsDriver {
      * This method is frequently used while resources are published to set the file state
      * back to "unchanged".<p>
      * 
-     * Only file state attribs. get updated here. Use {@link #writeFileHeader(CmsProject, CmsFile, int, CmsUUID)}
-     * or {@link #writeFolder(CmsProject, CmsFolder, int, CmsUUID)} instead to write the complete file header.<p>
+     * Only file state attribs. get updated here. Use {@link #writeResource(CmsProject, CmsResource, int)}
+     * or {@link #writeResource(CmsProject, CmsFolder, int)} instead to write the complete file header.<p>
      * 
-     * Please refer to the javadoc of {@link #writeFileHeader(CmsProject, CmsFile, int, CmsUUID)} to read
+     * Please refer to the javadoc of {@link #writeResource(CmsProject, CmsResource, int)} to read
      * how setting resource state values affects the file state.<p>
      * 
      * @param project the current project
@@ -655,4 +579,23 @@ public interface I_CmsVfsDriver {
      */
     void writeResourceState(CmsProject project, CmsResource resource, int changed) throws CmsException;
 
+    /**
+     * Creates a new resource from a given CmsResource object.<p>
+     * 
+     * This method works for both files and folders. Existing resources get overwritten.<p>
+     * @param project the current project
+     * @param resource the resource to be created
+     * @param content the file content, or null in case of a folder
+     * 
+     * @return the new resource
+     * 
+     * @throws CmsException if somethong goes wrong
+     * 
+     * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, CmsDriverManager, String, byte[], List)
+     * @see org.opencms.file.types.I_CmsResourceType#importResource(org.opencms.file.CmsObject, CmsDriverManager, String, CmsResource, byte[], List)
+     * @see org.opencms.file.CmsObject#createResource(String, int, byte[], List)
+     * @see org.opencms.file.CmsObject#importResource(String, CmsResource, byte[], List)
+     */
+    CmsResource createResource(CmsProject project, CmsResource resource, byte[] content) throws CmsException;
+    
 }

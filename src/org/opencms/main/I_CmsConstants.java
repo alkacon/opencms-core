@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/06/21 09:57:23 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/06/25 16:34:41 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public interface I_CmsConstants {
 
@@ -454,6 +454,11 @@ public interface I_CmsConstants {
      * WARNING: Don't change the state values, they are used to calculate the importance !
      */
     int C_STATE_DELETED = 3;
+    
+    /**
+     * Special state value that indicates the current state must be kept on the resource.
+     */
+    int C_STATE_KEEP = 99;    
 
     /**
      * This value will be returned for int's withaout a value.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
-* Date   : $Date: 2004/03/12 16:00:48 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2004/06/25 16:32:34 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.55 $ $Date: 2004/03/12 16:00:48 $
+ * @version $Revision: 1.56 $ $Date: 2004/06/25 16:32:34 $
  */
 
 public class CmsUnlock extends CmsWorkplaceDefault {
@@ -138,7 +138,7 @@ public class CmsUnlock extends CmsWorkplaceDefault {
         if (unlock != null) {
             if (unlock.equals("true")) {
                 try {
-                    cms.unlockResource(filename, false);
+                    cms.unlockResource(filename);
                     session.removeValue(C_PARA_RESOURCE);
                 }  catch (CmsException e) {
                     CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);

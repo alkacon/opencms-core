@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/06/21 11:45:21 $
- * Version: $Revision: 1.124 $
+ * Date   : $Date: 2004/06/25 16:34:41 $
+ * Version: $Revision: 1.125 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.124 $
+ * @version $Revision: 1.125 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1185,8 +1185,8 @@ public final class OpenCmsCore {
         
         // get an Admin cms context object with site root set to "/"
         CmsObject adminCms = initCmsObject(null, null, getDefaultUsers().getUserAdmin(), null);
-        
-        // initialize the workplace manager        
+
+        // initialize the workplace manager
         m_workplaceManager.initialize(adminCms);
         
         // initialize the locale manager
@@ -1197,7 +1197,7 @@ public final class OpenCmsCore {
         m_siteManager = CmsSiteManager.initialize(configuration, adminCms);
         // initialize the search manager
         m_searchManager = CmsSearchManager.initialize(configuration, adminCms);
-
+        
         // initializes the cron manager
         // TODO enable the cron manager
         //m_cronManager = new CmsCronManager();

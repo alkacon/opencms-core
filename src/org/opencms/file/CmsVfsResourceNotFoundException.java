@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsResourceNotFoundException.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsVfsResourceNotFoundException.java,v $
+ * Date   : $Date: 2004/06/25 16:33:32 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,39 +29,35 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
  
-package org.opencms.db;
-
-import org.opencms.main.CmsException;
+package org.opencms.file;
 
 /**
- * Signals that an attempt to open a resource in the VFS denoted by a specified 
- * pathname has failed. This exception is thrown by various Cms driver classes 
- * in the org.opencms.db package and its sub-packages.
+ * Signals that an attempt to read a resource in the VFS denoted by a specified 
+ * pathname has failed.<p> 
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.1 $ $Date: 2004/06/25 16:33:32 $
  * @since 5.1.2
  */
-public class CmsResourceNotFoundException extends CmsException {
+public class CmsVfsResourceNotFoundException extends CmsVfsException {
 
     /**
-     * Constructs a CmsResourceNotFoundException with the specified detail message.<p>
+     * Constructs a CmsVfsResourceNotFoundException with the specified detail message.<p>
      * 
      * @param message the detail message
      */
-    public CmsResourceNotFoundException(String message) {
-        super(message, CmsException.C_NOT_FOUND);
+    public CmsVfsResourceNotFoundException(String message) {
+        super(message, C_VFS_RESOURCE_NOT_FOUND);
     }
 
     /**
-     * Constructs a CmsResourceNotFoundException with the specified detail message
+     * Constructs a CmsVfsResourceNotFoundException with the specified detail message
      * and adds the original exception as a delegated root cause.<p>
      * 
      * @param message the detail message
      * @param rootCause the delegated exception
      */
-    public CmsResourceNotFoundException(String message, Throwable rootCause) {
-        super(message, CmsException.C_NOT_FOUND, rootCause);
+    public CmsVfsResourceNotFoundException(String message, Throwable rootCause) {
+        super(message, C_VFS_RESOURCE_NOT_FOUND, rootCause);
     }
-
 }

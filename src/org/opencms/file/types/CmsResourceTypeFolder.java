@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/06/21 09:55:50 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/25 16:33:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,16 +34,11 @@ package org.opencms.file.types;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsNotImplementedException;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsStringSubstitution;
-import org.opencms.util.CmsUUID;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -51,7 +46,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsResourceTypeFolder extends A_CmsResourceType {
 
@@ -62,113 +57,149 @@ public class CmsResourceTypeFolder extends A_CmsResourceType {
     public static final String C_RESOURCE_TYPE_NAME = "folder";
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#changeLastModifiedProjectId(org.opencms.file.CmsObject, org.opencms.db.CmsDriverManager, java.lang.String)
+     * @see org.opencms.file.types.I_CmsResourceType#changeLastModifiedProjectId(org.opencms.file.CmsObject, org.opencms.db.CmsDriverManager, CmsResource)
      */
     public void changeLastModifiedProjectId(
         CmsObject cms, 
         CmsDriverManager driverManager, 
-        String resourcename
+        CmsResource resource
     ) throws CmsException {
 
-        // first validate the resource name
-        resourcename = validateFoldername(resourcename);
-
         // collect all resources in the folder (include deleted ones)
-        List resources = cms.getResourcesInFolder(resourcename, CmsResourceFilter.ALL);
+        List resources = driverManager.readChildResources(
+            cms.getRequestContext(), 
+            resource, 
+            CmsResourceFilter.ALL, 
+            true, 
+            true); 
 
         // handle the folder itself
-        super.changeLastModifiedProjectId(cms, driverManager, resourcename);
+        super.changeLastModifiedProjectId(cms, driverManager, resource);
 
         // now walk through all sub-resources in the folder
         for (int i = 0; i < resources.size(); i++) {
-            CmsResource res = (CmsResource)resources.get(i);    
-            String name = cms.readAbsolutePath(res, CmsResourceFilter.ALL);
-            if (res.isFolder()) {
+            CmsResource childResource = (CmsResource)resources.get(i);    
+            if (childResource.isFolder()) {
                 // recurse into this method for subfolders
-                changeLastModifiedProjectId(cms, driverManager, name);
+                changeLastModifiedProjectId(cms, driverManager, childResource);
             } else {
-                // handle other resources using the CmsObject method
-                cms.changeLastModifiedProjectId(name);
+                // handle child resources
+                getResourceType(
+                    childResource.getTypeId()
+                ).changeLastModifiedProjectId(cms, driverManager, childResource);
             }            
         }
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#chtype(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, int)
+     * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, byte[], List)
      */
-    public void chtype(CmsObject cms, CmsDriverManager driverManager, String filename, int newType) throws CmsException {
+    public CmsResource createResource(
+        CmsObject cms, 
+        CmsDriverManager driverManager, 
+        String resourcename, 
+        byte[] content, 
+        List properties
+    ) throws CmsException {
+        
+        resourcename = validateFoldername(resourcename);
+        return super.createResource(cms, driverManager, resourcename, content, properties);
+    }
+    
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#chtype(org.opencms.file.CmsObject, CmsDriverManager, CmsResource, int)
+     */
+    public void chtype(CmsObject cms, CmsDriverManager driverManager, CmsResource filename, int newType) throws CmsException {
         
         // it is not possible to change the type of a folder
         throw new CmsNotImplementedException("Folder resource type can not be changed!");
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, java.lang.String, int)
+     * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsDriverManager, CmsResource, java.lang.String, int)
      */
     public void copyResource(
         CmsObject cms, 
         CmsDriverManager driverManager, 
-        String source, 
+        CmsResource source, 
         String destination, 
         int siblingMode
     ) throws CmsException {
 
-        // first validate the destination and source name
-        source = validateFoldername(source);
+        // first validate the destination name
         destination = validateFoldername(destination);
 
         // collect all resources in the folder (but exclude deleted ones)
-        List resources = cms.getResourcesInFolder(source, CmsResourceFilter.IGNORE_EXPIRATION);
-        
+        List resources = driverManager.readChildResources(
+            cms.getRequestContext(),            
+            source,
+            CmsResourceFilter.IGNORE_EXPIRATION, 
+            true, 
+            true); 
+            
         // handle the folder itself
-        super.copyResource(cms, driverManager, source, destination, siblingMode);
+        super.copyResource(
+            cms, 
+            driverManager, 
+            source, 
+            destination, 
+            siblingMode);
         
         // now walk through all sub-resources in the folder
         for (int i = 0; i < resources.size(); i++) {
-            CmsResource res = (CmsResource)resources.get(i);    
-            String sourceName = cms.readAbsolutePath(res, CmsResourceFilter.IGNORE_EXPIRATION);
-            String targetName = destination + CmsResource.getName(sourceName);
-            if (res.isFolder()) {
+            CmsResource childResource = (CmsResource)resources.get(i);    
+            String childDestination = destination.concat(childResource.getName());
+            if (childResource.isFolder()) {
                 // recurse into this method for subfolders
-                copyResource(cms, driverManager, sourceName, targetName, siblingMode);
+                copyResource(cms, driverManager, childResource, childDestination, siblingMode);
             } else {
-                // handle other resources using the CmsObject method
-                cms.copyResource(sourceName, targetName, siblingMode);
+                // handle child resources
+                getResourceType(
+                    childResource.getTypeId()
+                ).copyResource(
+                    cms, 
+                    driverManager, 
+                    childResource, 
+                    childDestination, 
+                    siblingMode);
             }            
         }        
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, int)
+     * @see org.opencms.file.types.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, CmsDriverManager, CmsResource, int)
      */
     public void deleteResource(
         CmsObject cms, 
         CmsDriverManager driverManager, 
-        String resourcename, 
+        CmsResource resource, 
         int siblingMode
     ) throws CmsException {
 
-        // first validate the resource name
-        resourcename = validateFoldername(resourcename);
-
         // collect all resources in the folder (but exclude deleted ones)
-        List resources = cms.getResourcesInFolder(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        List resources = driverManager.readChildResources(
+            cms.getRequestContext(),            
+            resource,
+            CmsResourceFilter.IGNORE_EXPIRATION, 
+            true, 
+            true); 
         
         // now walk through all sub-resources in the folder
         for (int i = 0; i < resources.size(); i++) {
-            CmsResource res = (CmsResource)resources.get(i);    
-            String name = cms.readAbsolutePath(res, CmsResourceFilter.IGNORE_EXPIRATION);
-            if (res.isFolder()) {
+            CmsResource childResource = (CmsResource)resources.get(i);
+            if (childResource.isFolder()) {
                 // recurse into this method for subfolders
-                deleteResource(cms, driverManager, name, siblingMode);
+                deleteResource(cms, driverManager, childResource, siblingMode);
             } else {
-                // handle other resources using the CmsObject method
-                cms.deleteResource(name, siblingMode);
+                // handle child resources
+                getResourceType(
+                    childResource.getTypeId()
+                ).deleteResource(cms, driverManager, childResource, siblingMode);
             }            
         }  
 
         // handle the folder itself
-        super.deleteResource(cms, driverManager, resourcename, siblingMode);
+        super.deleteResource(cms, driverManager, resource, siblingMode);
     }
     
     /**
@@ -197,117 +228,12 @@ public class CmsResourceTypeFolder extends A_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#importResource(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, org.opencms.file.CmsResource, byte[], List)
-     */
-    public CmsResource importResource(
-        CmsObject cms, 
-        CmsDriverManager driverManager, 
-        String resourcename, 
-        CmsResource resource, 
-        byte[] content, 
-        List properties
-    ) throws CmsException {
-        
-        resourcename = validateFoldername(resourcename);
-
-        CmsResource importedResource = null;
-        CmsProperty property = null, oldProperty = null;
-        int found = 0;
-        
-        boolean changed = true;
-        //try to import the resource
-        try {            
-            importedResource = driverManager.importResource(
-                cms.getRequestContext(), 
-                cms.getRequestContext().addSiteRoot(resourcename), 
-                resource, 
-                null, 
-                properties);            
-            
-            if (importedResource != null) {
-                changed = false;
-            }
-        } catch (CmsException e) {
-            // an exception is thrown if the folder already exists
-        }
-        
-        if (changed) {
-            changed = false;
-            // the resource did already exist, check if properties have to be updated
-            importedResource = cms.readFolder(resourcename);
-            String importedResourcename = cms.readAbsolutePath(importedResource);
-            List oldProperties = cms.readPropertyObjects(importedResourcename, false);
-            if (oldProperties == null) {
-                oldProperties = Collections.EMPTY_LIST;
-            }
-            if (properties == null) {
-                properties = Collections.EMPTY_LIST;
-            }
-            
-            // find the delta between imported and existing properties
-            if (properties.size() > 0) {
-                if (oldProperties.size() != properties.size()) {
-                    changed = true;
-                } else {
-                    for (int i = 0, n = properties.size(); i < n; i++) {
-                        found = -1;
-                        property = (CmsProperty)properties.get(i);
-
-                        if ((found = oldProperties.indexOf(property)) == -1
-                            || (oldProperty = (CmsProperty)oldProperties.get(found)) == null) {
-                            changed = true;
-                            break;
-                        }
-                        
-                        if (!oldProperty.isIdentical(property)) {
-                            changed = true;
-                            break;
-                        }
-                    }
-                }
-            }
-            
-            // check changes of the resourcetype
-            if (importedResource.getTypeId() != getTypeId()) {
-                changed = true;
-            }
-            
-            // update the folder if something has changed
-            if (changed) {                
-                lockResource(cms, driverManager, importedResourcename, CmsLock.C_MODE_COMMON);
-                
-                driverManager.importResourceUpdate(
-                    cms.getRequestContext(), 
-                    cms.getRequestContext().addSiteRoot(importedResourcename), 
-                    null, 
-                    properties);
-            } 
-        }
-        // get the updated folder
-        return importedResource;
-    }
-    
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#moveToLostAndFound(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, boolean)
-     */
-    public String moveToLostAndFound(
-        CmsObject cms, 
-        CmsDriverManager driverManager, 
-        String resourcename, 
-        boolean copyResource
-    ) {
-
-        // nothing to do here, folders are never moved to the "lost and found" folder
-        return null;
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, int, byte[], List)
+     * @see org.opencms.file.types.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, CmsDriverManager, CmsResource, int, byte[], List)
      */
     public void replaceResource(
         CmsObject cms, 
         CmsDriverManager driverManager, 
-        String resourcename, 
+        CmsResource resource, 
         int type, 
         byte[] content, 
         List properties
@@ -318,16 +244,16 @@ public class CmsResourceTypeFolder extends A_CmsResourceType {
             throw new CmsNotImplementedException("Folder resource type can not be replaced!");
         }
         // properties of a folder can be replaced, content is ignored
-        super.replaceResource(cms, driverManager, resourcename, getTypeId(), null, properties);
+        super.replaceResource(cms, driverManager, resource, getTypeId(), null, properties);
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#restoreResource(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, int)
+     * @see org.opencms.file.types.I_CmsResourceType#restoreResourceBackup(org.opencms.file.CmsObject, CmsDriverManager, CmsResource, int)
      */
-    public void restoreResource(
+    public void restoreResourceBackup(
         CmsObject cms, 
         CmsDriverManager driverManager, 
-        String resourename, 
+        CmsResource resourename, 
         int tag
     ) throws CmsException {
 
@@ -349,139 +275,103 @@ public class CmsResourceTypeFolder extends A_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#touch(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, long, long, long, org.opencms.util.CmsUUID, boolean)
+     * @see org.opencms.file.types.I_CmsResourceType#touch(org.opencms.file.CmsObject, CmsDriverManager, CmsResource, long, long, long, boolean)
      */
     public void touch(
         CmsObject cms, 
         CmsDriverManager driverManager, 
-        String resourcename,  
+        CmsResource resource,  
         long dateLastModified, 
         long dateReleased, 
         long dateExpired, 
-        CmsUUID user, 
         boolean recursive
     ) throws CmsException {
-
-        // first validate the resource name
-        resourcename = validateFoldername(resourcename);
-
-        // collect all resources in the folder (but exclude deleted ones)
-        List resources = cms.getResourcesInFolder(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
 
         // handle the folder itself
         super.touch(
             cms, 
             driverManager, 
-            resourcename, 
+            resource, 
             dateLastModified, 
             dateReleased, 
             dateExpired, 
-            user, 
             recursive);
         
-        if (! recursive) {
-            // if no recurse mode operation is finished
-            return;
-        }
-        
-        // now walk through all sub-resources in the folder
-        for (int i = 0; i < resources.size(); i++) {
-            CmsResource res = (CmsResource)resources.get(i);    
-            String name = cms.readAbsolutePath(res, CmsResourceFilter.IGNORE_EXPIRATION);
-            if (res.isFolder()) {
-                // recurse into this method for subfolders
-                touch(
-                    cms, 
-                    driverManager, 
-                    name, 
-                    dateLastModified, 
-                    dateReleased, 
-                    dateExpired, 
-                    user, 
-                    recursive);
-            } else {
-                // handle other resources using the CmsObject method
-                cms.touch(
-                    name, 
-                    dateLastModified, 
-                    dateReleased, 
-                    dateExpired, 
-                    user, 
-                    recursive);
-            }            
-        }  
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#undeleteResource(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String)
-     */
-    public void undeleteResource(
-        CmsObject cms, 
-        CmsDriverManager driverManager, 
-        String resourcename
-    ) throws CmsException {
-        
-        // first validate the resource name
-        resourcename = validateFoldername(resourcename);
-        
-        // handle the folder itself
-        super.undeleteResource(cms, driverManager, resourcename);
-        
-        // collect all resources in the folder (but exclude deleted ones)
-        List resources = cms.getResourcesInFolder(resourcename, CmsResourceFilter.ALL);
-        
-        // now walk through all sub-resources in the folder
-        for (int i = 0; i < resources.size(); i++) {
-            CmsResource res = (CmsResource)resources.get(i);
-            if (res.getState() == I_CmsConstants.C_STATE_DELETED) {
-                String name = cms.readAbsolutePath(res, CmsResourceFilter.ALL);
-                if (res.isFolder()) {
+        if (recursive) {            
+            // collect all resources in the folder (but exclude deleted ones)
+            List resources = driverManager.readChildResources(
+                cms.getRequestContext(),            
+                resource,
+                CmsResourceFilter.ALL, 
+                true, 
+                true); 
+            
+            // now walk through all sub-resources in the folder
+            for (int i = 0; i < resources.size(); i++) {
+                CmsResource childResource = (CmsResource)resources.get(i);
+                if (childResource.isFolder()) {
                     // recurse into this method for subfolders
-                    undeleteResource(cms, driverManager, name);
+                    touch(
+                        cms, 
+                        driverManager, 
+                        childResource, 
+                        dateLastModified, 
+                        dateReleased, 
+                        dateExpired, 
+                        recursive);
                 } else {
-                    // handle other resources using the CmsObject method
-                    cms.undeleteResource(name);
+                    // handle child resources
+                    getResourceType(
+                        childResource.getTypeId()
+                    ).touch(
+                        cms, 
+                        driverManager, 
+                        childResource, 
+                        dateLastModified, 
+                        dateReleased, 
+                        dateExpired, 
+                        recursive);
                 }            
             }
-        }          
+        }       
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, CmsDriverManager, java.lang.String, boolean)
+     * @see org.opencms.file.types.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, CmsDriverManager, CmsResource, boolean)
      */
     public void undoChanges(
         CmsObject cms, 
         CmsDriverManager driverManager, 
-        String resourcename,
+        CmsResource resource,
         boolean recursive
     ) throws CmsException {
 
-        // first validate the resource name
-        resourcename = validateFoldername(resourcename);
-        
         // handle the folder itself
-        super.undoChanges(cms, driverManager, resourcename, recursive);
+        super.undoChanges(cms, driverManager, resource, recursive);
         
-        // collect all resources in the folder (but exclude deleted ones)
-        List resources = cms.getResourcesInFolder(resourcename, CmsResourceFilter.ALL);
-        
-        if (! recursive) {
-            // if no recurse mode operation is finished
-            return;
-        }
-        
-        // now walk through all sub-resources in the folder
-        for (int i = 0; i < resources.size(); i++) {
-            CmsResource res = (CmsResource)resources.get(i);
-            String name = cms.readAbsolutePath(res, CmsResourceFilter.ALL);
-            if (res.isFolder()) {
-                // recurse into this method for subfolders
-                undoChanges(cms, driverManager, name, recursive);
-            } else {
-                // handle other resources using the CmsObject method
-                cms.undoChanges(name, recursive);
-            }            
-        }          
+        if (recursive) {            
+            // collect all resources in the folder (but exclude deleted ones)
+            List resources = driverManager.readChildResources(
+                cms.getRequestContext(),            
+                resource,
+                CmsResourceFilter.ALL, 
+                true, 
+                true); 
+            
+            // now walk through all sub-resources in the folder
+            for (int i = 0; i < resources.size(); i++) {
+                CmsResource childResource = (CmsResource)resources.get(i);
+                if (childResource.isFolder()) {
+                    // recurse into this method for subfolders
+                    undoChanges(cms, driverManager, childResource, recursive);
+                } else {
+                    // handle child resources
+                    getResourceType(
+                        childResource.getTypeId()
+                    ).undoChanges(cms, driverManager, childResource, recursive);
+                }            
+            }
+        }     
     }
     
     /**

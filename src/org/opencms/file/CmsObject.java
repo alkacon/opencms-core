@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/06/21 11:43:20 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2004/06/25 16:33:32 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.file;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
-import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
@@ -56,7 +55,6 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -79,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  */
 public class CmsObject {
 
@@ -115,16 +113,18 @@ public class CmsObject {
      * with the project.<p>
      * 
      * @param resourcename the name of the resource to change the project id for (full path)
+     * 
      * @throws CmsException if something goes wrong
      */
     public void changeLastModifiedProjectId(String resourcename) throws CmsException {
 
+        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.ALL);
         getResourceType(
-            readFileHeader(resourcename, CmsResourceFilter.ALL).getTypeId()
+            resource.getTypeId()
         ).changeLastModifiedProjectId(
             this, 
             m_driverManager, 
-            resourcename);
+            resource);
     }
 
     /**
@@ -136,20 +136,45 @@ public class CmsObject {
      * makes sense e.g. if you want to make a plain text file a JSP resource,
      * or a binary file an image etc.<p> 
      *
-     * @param resourcename the name of the resource to apply this operation to (full path)
-     * @param newType the new resource type for this resource
+     * @param resourcename the name of the resource to change the type for (full path)
+     * @param type the new resource type for this resource
      *
      * @throws CmsException if something goes wrong
      */
-    public void chtype(String resourcename, int newType) throws CmsException {
+    public void chtype(String resourcename, int type) throws CmsException {
         
+        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
-            readFileHeader(resourcename, CmsResourceFilter.ALL).getTypeId()
+            resource.getTypeId()
         ).chtype(
             this, 
             m_driverManager, 
-            resourcename, 
-            newType);
+            resource,
+            type);
+    }
+    
+    /**
+     * Changes the resource flags of a resource.<p>
+     * 
+     * The resource flags are used to indicate various "special" conditions
+     * for a resource. Most notably the "internal only" setting which signals 
+     * that a resource can not be directly requested with it's URL.<p>
+     *
+     * @param resourcename the name of the resource to change the flags for (full path)
+     * @param flags the new flags for this resource
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void chflags(String resourcename, int flags) throws CmsException {
+        
+        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        getResourceType(
+            resource.getTypeId()
+        ).chflags(
+            this, 
+            m_driverManager, 
+            resource,
+            flags);
     }
     
     /**
@@ -161,8 +186,8 @@ public class CmsObject {
      * Siblings will be treated according to the
      * <code>{@link org.opencms.main.I_CmsConstants#C_COPY_PRESERVE_SIBLING}</code> mode.<p>
      * 
-     * @param source the name of the resource to copy with complete path
-     * @param destination the name of the copy destination with complete path
+     * @param source the name of the resource to copy (full path)
+     * @param destination the name of the copy destination (full path)
      * 
      * @throws CmsException if something goes wrong
      * 
@@ -188,20 +213,21 @@ public class CmsObject {
      * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_PRESERVE_SIBLING}</code></li>
      * </ul><p>
      * 
-     * @param source the name of the resource to copy with complete path
-     * @param destination the name of the copy destination with complete path
+     * @param source the name of the resource to copy (full path)
+     * @param destination the name of the copy destination (full path)
      * @param siblingMode indicates how to handle siblings during copy
      * 
      * @throws CmsException if something goes wrong
      */
     public void copyResource(String source, String destination, int siblingMode) throws CmsException {
         
+        CmsResource resource = readFileHeader(source, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
-            readFileHeader(source, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
+            resource.getTypeId()
         ).copyResource(
             this, 
             m_driverManager, 
-            source, 
+            resource, 
             destination, 
             siblingMode);
     }
@@ -214,18 +240,19 @@ public class CmsObject {
      * The resource is not really copied like in a regular copy operation, 
      * it is in fact only "enabled" in the current users project.<p>   
      * 
-     * @param resourcename the name of the resource to apply this operation to
+     * @param resourcename the name of the resource to copy to the current project (full path)
      * 
      * @throws CmsException if something goes wrong
      */
     public void copyResourceToProject(String resourcename) throws CmsException {
         
+        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.ALL);
         getResourceType(
-            readFileHeader(resourcename, CmsResourceFilter.ALL).getTypeId()
+            resource.getTypeId()
          ).copyResourceToProject(
              this, 
              m_driverManager, 
-             resourcename);
+             resource);
     }
     
     /**
@@ -286,25 +313,24 @@ public class CmsObject {
      * @param siblingMode indicates how to handle siblings of the deleted resource
      *
      * @throws CmsException if something goes wrong
-     * 
-     * @see CmsObject#deleteResource(String, int)
      */
     public void deleteResource(String resourcename, int siblingMode) throws CmsException {
         
+        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
-            readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
+            resource.getTypeId()
         ).deleteResource(
             this, 
             m_driverManager, 
-            resourcename, 
+            resource, 
             siblingMode);
-    }    
+    }      
     
     /**
      * Returns the name a resource would have it is was moved to the
      * "lost and found" folder.<p>
      * 
-     * @param resourcename the name of the resource to apply this operation to
+     * @param resourcename the name of the resource to get the "loast and found" name for (full path)
      *
      * @return the name of the resource inside the "lost and found" folder
      * 
@@ -314,16 +340,12 @@ public class CmsObject {
      */
     public String getLostAndFoundName(String resourcename) throws CmsException {
         
-        return getResourceType(
-            readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
-        ).moveToLostAndFound(
-            this, 
-            m_driverManager, 
+        return m_driverManager.moveToLostAndFound(
+            m_context, 
             resourcename, 
             true);
     }     
     
-
     /**
      * Imports a resource to the OpenCms VFS.<p>
      * 
@@ -333,8 +355,8 @@ public class CmsObject {
      * If a resource with the same name but a different id exists, 
      * the imported resource is (usually) moved to the "lost and found" folder.<p> 
      *
-     * @param resourcename the target name (with full path) for the resource after import
-     * @param resource the resource to be imported
+     * @param resourcename the name for the resource after import (full path)
+     * @param resource the resource object to be imported
      * @param content the content of the resource
      * @param properties the properties of the resource
      * 
@@ -362,12 +384,11 @@ public class CmsObject {
      *
      * The mode for the lock is <code>{@link org.opencms.lock.CmsLock#C_MODE_COMMON}</code>.<p>
      *
-     * @param resourcename the name (with full path) of the resource to lock
+     * @param resourcename the name of the resource to lock (full path)
      * 
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#lockResource(String, int)
-     * @see CmsDriverManager#lockResource(CmsRequestContext, String, int)
      */    
     public void lockResource(String resourcename) throws CmsException {
 
@@ -383,24 +404,22 @@ public class CmsObject {
      * <li><code>{@link org.opencms.lock.CmsLock#C_MODE_COMMON}</code></li>
      * <li><code>{@link org.opencms.lock.CmsLock#C_MODE_TEMP}</code></li>
      * </ul><p>
-     * @param resourcename the name (with full path) of the resource to lock
+     * @param resourcename the name of the resource to lock (full path)
      * @param mode flag indicating the mode for the lock
      * 
      * @throws CmsException if something goes wrong
-     * 
-     * @see CmsObject#lockResource(String, int)
-     * @see CmsDriverManager#lockResource(CmsRequestContext, String, int)
      */    
     public void lockResource(String resourcename, int mode) throws CmsException {
         
+        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
-            readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
+            resource.getTypeId()
         ).lockResource(
             this, 
             m_driverManager, 
-            resourcename, 
+            resource, 
             mode);
-    }    
+    }     
     
     /**
      * Moves a resource to the given destination.<p>
@@ -410,8 +429,8 @@ public class CmsObject {
      * OpenCms VFS. This way you can see the deleted files/folder in the offline
      * project, and are unable to undelete them.<p>
      * 
-     * @param source the name of the resource to apply this operation to
-     * @param destination the destination resource name
+     * @param source the name of the resource to move (full path)
+     * @param destination the destination resource name (full path)
      *
      * @throws CmsException if something goes wrong
      * 
@@ -419,13 +438,14 @@ public class CmsObject {
      */
     public void moveResource(String source, String destination) throws CmsException {
         
+        CmsResource resource = readFileHeader(source, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
-            readFileHeader(source, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
+            resource.getTypeId()
         ).moveResource(
             this, 
             m_driverManager, 
-            source, 
-            destination);
+            resource, 
+            destination);     
     }
 
     /**
@@ -437,9 +457,9 @@ public class CmsObject {
      * already exists in the VFS. In this case the imported resource is 
      * moved to the "lost and found" folder.<p>
      * 
-     * @param resourcename the name of the resource to apply this operation to
+     * @param resourcename the name of the resource to move to "lost and found" (full path)
      *
-     * @return the name of the resource inside the "lost and found" folder
+     * @return the name of the resource inside the "lost and found" folder 
      * 
      * @throws CmsException if something goes wrong
      * 
@@ -447,11 +467,8 @@ public class CmsObject {
      */
     public String moveToLostAndFound(String resourcename) throws CmsException {
         
-        return getResourceType(
-            readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
-        ).moveToLostAndFound(
-            this, 
-            m_driverManager, 
+        return m_driverManager.moveToLostAndFound(
+            m_context, 
             resourcename, 
             false);
     }    
@@ -460,8 +477,8 @@ public class CmsObject {
      * Renames a resource to the given destination name,
      * this is identical to a <code>move</code> operation.<p>
      *
-     * @param source the name of the resource to apply this operation to
-     * @param destination the destination resource name
+     * @param source the name of the resource to rename (full path)
+     * @param destination the new resource name (full path)
      * 
      * @throws CmsException if something goes wrong
      * 
@@ -475,7 +492,7 @@ public class CmsObject {
     /**
      * Replaces the content, type and properties of a resource.<p>
      * 
-     * @param resourcename the name of the resource to apply this operation to
+     * @param resourcename the name of the resource to replace (full path)
      * @param type the new type of the resource
      * @param content the new content of the resource
      * @param properties the new properties of the resource
@@ -484,33 +501,35 @@ public class CmsObject {
      */
     public void replaceResource(String resourcename, int type, byte[] content, List properties) throws CmsException {
 
+        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
-            readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
+            resource.getTypeId()
         ).replaceResource(
             this, 
             m_driverManager, 
-            resourcename,
+            resource,
             type, 
             content, 
             properties);
     }
 
     /**
-     * Restores a file in the current project with a version from the backup.<p>
+     * Restores a file in the current project with a version from the backup archive.<p>
      * 
-     * @param resourcename the name of the resource to apply this operation to
-     * @param tag the tag id to resource form the backup
+     * @param resourcename the name of the resource to restore from the archive (full path)
+     * @param tag the tag (version) id to resource form the archive
      *
      * @throws CmsException if something goes wrong
      */
-    public void restoreResource(String resourcename, int tag) throws CmsException {
+    public void restoreResourceBackup(String resourcename, int tag) throws CmsException {
         
+        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
-            readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
-        ).restoreResource(
+            resource.getTypeId()
+        ).restoreResourceBackup(
             this, 
             m_driverManager, 
-            resourcename, 
+            resource, 
             tag);
     }    
     
@@ -521,125 +540,98 @@ public class CmsObject {
      * of a resource, the "release" date of a resource, 
      * and also the "expires" date of a resource.<p>
      * 
-     * @param resourcename the name of the resource to change
+     * @param resourcename the name of the resource to change (full path)
      * @param dateLastModified timestamp the new timestamp of the changed resource
      * @param dateReleased the new releasedate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
      * @param dateExpired the new expiredate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
      * @param recursive if true, touch recursively all sub-resources (only for folders)
      * 
      * @throws CmsException if something goes wrong
-     * 
-     * @see #touch(String, long, long, long, CmsUUID, boolean)
      */
     public void touch(String resourcename, long dateLastModified, long dateReleased, long dateExpired, boolean recursive) throws CmsException {
         
-        touch(
-            resourcename, 
-            dateLastModified, 
-            dateReleased, 
-            dateExpired, 
-            getRequestContext().currentUser().getId(), 
-            recursive);
-    }
-
-    /**
-     * Change the timestamp information of a resource.<p>
-     * 
-     * This method is used to set the "last modified" date
-     * of a resource, the "release" date of a resource, 
-     * and also the "expires" date of a resource.<p>
-     * 
-     * @param resourcename the name of the resource to apply this operation to
-     * @param dateLastModified the new last modified date of the resource
-     * @param dateReleased the new release date of the resource, 
-     *      use <code>{@link org.opencms.main.I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged
-     * @param dateExpired the new expire date of the resource, 
-     *      use <code>{@link org.opencms.main.I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged
-     * @param user the user who is inserted as userLastModified 
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void touch(String resourcename, long dateLastModified, long dateReleased, long dateExpired, CmsUUID user, boolean recursive) throws CmsException {
-
+        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
-            readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
+            resource.getTypeId()
         ).touch(
             this, 
             m_driverManager, 
-            resourcename, 
+            resource, 
             dateLastModified, 
             dateReleased, 
             dateExpired, 
-            user, 
             recursive);
     }
-
+    
     /**
-     * Undeletes a resource.<p>
+     * Undeletes a resource (this is the same operation as "undo changes").<p>
      * 
-     * @param resourcename the name of the resource to apply this operation to
+     * Only resources that have already been published once can be undeleted,
+     * if a "new" resource is deleted it can not be undeleted.<p>
+     * 
+     * @param resourcename the name of the resource to undelete (full path)
      *
      * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#undoChanges(String, boolean)
      */
     public void undeleteResource(String resourcename) throws CmsException {
 
-        getResourceType(
-            readFileHeader(resourcename, CmsResourceFilter.ALL).getTypeId()
-        ).undeleteResource(
-            this, 
-            m_driverManager, 
-            resourcename);
+        undoChanges(resourcename, true);
     }
 
     /**
-     * Undos all changes in the resource by restoring the version from the 
+     * Undos all changes to a resource by restoring the version from the 
      * online project to the current offline project.<p>
      * 
-     * @param resourcename the name of the resource to apply this operation to
+     * @param resourcename the name of the resource to undo the changes for (full path)
      * @param recursive if this operation is to be applied recursivly to all resources in a folder
      *
      * @throws CmsException if something goes wrong
      */
     public void undoChanges(String resourcename, boolean recursive) throws CmsException {
 
+        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.ALL);
         getResourceType(
-            readFileHeader(resourcename, CmsResourceFilter.ALL).getTypeId()
+            resource.getTypeId()
         ).undoChanges(
             this, 
             m_driverManager, 
-            resourcename, 
-            recursive);
+            resource, 
+            recursive);     
     }    
 
     /**
      * Unlocks a resource.<p>
      * 
-     * @param resourcename the name of the resource to apply this operation to
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
-     *
+     * @param resourcename the name of the resource to unlock (full path)
+     * 
      * @throws CmsException if something goes wrong
      */    
-    public void unlockResource(String resourcename, boolean recursive) throws CmsException {
+    public void unlockResource(String resourcename) throws CmsException {
 
+        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
-            readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getTypeId()
+            resource.getTypeId()
         ).unlockResource(
             this, 
             m_driverManager, 
-            resourcename, 
-            recursive);
+            resource);
     }
     
     /**
-     * Writes a resource, including it's content.<p>
+     * Writes a resource to the OpenCms VFS, including it's content.<p>
      * 
      * Applies only to resources of type <code>{@link CmsFile}</code>
      * i.e. resources that have a binary content attached.<p>
      * 
-     * @param resource the resource to apply this operation to
+     * Certain resource types might apply content validation or transformation rules 
+     * before the resource is actually written to the VFS. The returned result
+     * might therefore be a modified version from the provided original.<p>
      *
-     * @return the written resource
+     * @param resource the resource to write
+     *
+     * @return the written resource (may have been modified)
      *
      * @throws CmsException if something goes wrong
      */
@@ -696,10 +688,219 @@ public class CmsObject {
         return m_context.removeSiteRoot(resourcename);
     }
     
+    /**
+     * Creates a new sibling of the source resource.<p>
+     * 
+     * @param source the name of the resource to create a sibling for with complete path
+     * @param destination the name of the sibling to create with complete path
+     * @param properties additional properties of the sibling
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void createSibling(String source, String destination, List properties) throws CmsException {
+        
+        CmsResource resource = readFileHeader(source, CmsResourceFilter.IGNORE_EXPIRATION);        
+        getResourceType(
+            resource.getTypeId()
+        ).createSibling(
+            this, 
+            m_driverManager, 
+            resource, 
+            destination,
+            properties);  
+    }    
+    
+    /**
+     * Changes the lock of a resource to the current user,
+     * that is "steals" the lock from another user.<p>
+     * 
+     * This is the "steal lock" operation.<p>
+     * 
+     * @param resourcename the name of the resource to change the lock with complete path
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void changeLock(String resourcename) throws CmsException {
+        
+        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        getResourceType(
+            resource.getTypeId()
+        ).changeLock(
+            this, 
+            m_driverManager, 
+            resource);
+    }    
+    
+    /**
+     * Writes a property for a specified resource.<p>
+     * 
+     * @param resourcename the name of resource with complete path
+     * @param property the property to write
+     * 
+     * @throws CmsException if something goes wrong
+     */   
+    public void writePropertyObject(String resourcename, CmsProperty property) throws CmsException {
+        
+        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        getResourceType(
+            resource.getTypeId()
+        ).writePropertyObject(
+            this, 
+            m_driverManager, 
+            resource, 
+            property);
+    }    
+    
+    /**
+     * Writes a list of properties for a specified resource.<p>
+     * 
+     * Code calling this method has to ensure that the no properties 
+     * <code>a, b</code> are contained in the specified list so that <code>a.equals(b)</code>, 
+     * otherwise an exception is thrown.<p>
+     * 
+     * @param resourcename the name of resource with complete path
+     * @param properties the list of properties to write
+     * 
+     * @throws CmsException if something goes wrong
+     */   
+    public void writePropertyObjects(String resourcename, List properties) throws CmsException {
+        
+        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        getResourceType(
+            resource.getTypeId()
+        ).writePropertyObjects(
+            this, 
+            m_driverManager, 
+            resource, 
+            properties);
+    }    
+
+    /**
+     * Returns all child resources of a resource, that is the resources
+     * contained in a folder.<p>
+     * 
+     * With the {@link CmsResourceFilter} provided as parameter
+     * you can control if you want to include deleted, invisible or 
+     * time-invalid resources in the result.<p>
+     * 
+     * @param resourcename the full path of the resource to return the child resources for 
+     * @param filter the resource filter to use
+     * 
+     * @return a list of all child resources
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List getResourcesInFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
+        
+        return m_driverManager.readChildResources(
+            m_context, 
+            readFileHeader(resourcename, filter), 
+            filter, 
+            true, 
+            true);
+    }
+    
+    
+    /**
+     * Returns all file resources contained in a folder.<p>
+     * 
+     * The result is filtered according to the rules of 
+     * the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p>
+     * 
+     * @param resourcename the full path of the resource to return the child resources for 
+     * 
+     * @return a list of all child file resources
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #getFilesInFolder(String, CmsResourceFilter)
+     */
+    public List getFilesInFolder(String resourcename) throws CmsException {
+        
+        return getFilesInFolder(resourcename, CmsResourceFilter.DEFAULT);
+    }
+
+    /**
+     * Returns all file resources contained in a folder.<p>
+     * 
+     * With the {@link CmsResourceFilter} provided as parameter
+     * you can control if you want to include deleted, invisible or 
+     * time-invalid resources in the result.<p>
+     * 
+     * @param resourcename the full path of the resource to return the child resources for 
+     * 
+     * @return a list of all child file resources
+     * @param filter the resource filter to use
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List getFilesInFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
+        
+        return m_driverManager.readChildResources(
+            m_context, 
+            readFileHeader(resourcename, filter), 
+            filter, 
+            false, 
+            true);
+    }
+
+    /**
+     * Returns all folder resources contained in a folder.<p>
+     * 
+     * The result is filtered according to the rules of 
+     * the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p>
+     * 
+     * @param resourcename the full path of the resource to return the child resources for 
+     * 
+     * @return a list of all child file resources
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #getSubFolders(String, CmsResourceFilter)
+     */
+    public List getSubFolders(String resourcename) throws CmsException {
+        
+        return getSubFolders(resourcename, CmsResourceFilter.DEFAULT);        
+    }
+
+    /**
+     * Returns all folder resources contained in a folder.<p>
+     * 
+     * With the {@link CmsResourceFilter} provided as parameter
+     * you can control if you want to include deleted, invisible or 
+     * time-invalid resources in the result.<p>
+     * 
+     * @param resourcename the full path of the resource to return the child resources for 
+     * 
+     * @return a list of all child folder resources
+     * @param filter the resource filter to use
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List getSubFolders(String resourcename, CmsResourceFilter filter) throws CmsException {
+        
+        return m_driverManager.readChildResources(
+            m_context, 
+            readFileHeader(resourcename, filter), 
+            filter, 
+            true, 
+            false);
+    }    
 
     
-    
     //-----------------------------------------------------------------------------------
+    private int warning1;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -896,16 +1097,6 @@ public class CmsObject {
     }
 
     /**
-     * Changes the lock of a resource.<p>
-     * 
-     * @param resourcename name of the resource
-     * @throws CmsException if something goes wrong
-     */
-    public void changeLock(String resourcename) throws CmsException {
-        m_driverManager.changeLock(m_context, addSiteRoot(resourcename));
-    }
-
-    /**
      * Changes the type of the user.<p>
      *
      * @param userId The id of the user to change
@@ -1045,19 +1236,6 @@ public class CmsObject {
     }
 
     /**
-     * Creates a new sibling of the target resource.<p>
-     * 
-     * @param siblingName name of the new link
-     * @param targetName name of the target
-     * @param siblingProperties additional properties of the link resource
-     * @return the new link resource
-     * @throws CmsException if something goes wrong
-     */
-    public CmsResource createSibling(String siblingName, String targetName, List siblingProperties) throws CmsException {
-        return m_driverManager.createSibling(m_context, addSiteRoot(siblingName), addSiteRoot(targetName), siblingProperties, true);
-    }
-
-    /**
       * Creates a new task.<p>
       * 
       * <B>Security:</B>
@@ -1104,23 +1282,6 @@ public class CmsObject {
      */
     public CmsProject createTempfileProject() throws CmsException {
         return m_driverManager.createTempfileProject(m_context);
-    }
-    
-    /**
-     * Deletes all property values of a file or folder.<p>
-     * 
-     * You may specify which whether just structure or resource property values should
-     * be deleted, or both of them.<p>
-     *
-     * @param resourcename the name of the resource for which all properties should be deleted.
-     * @param deleteOption determines which property values should be deleted
-     * @throws CmsException if operation was not successful
-     * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES
-     * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_STRUCTURE_VALUES
-     * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_RESOURCE_VALUES
-     */
-    public void deleteAllProperties(String resourcename, int deleteOption) throws CmsException {
-        m_driverManager.deleteAllProperties(m_context, addSiteRoot(resourcename), deleteOption);
     }
 
     /**
@@ -1187,7 +1348,7 @@ public class CmsObject {
         property.setKey(key);
         property.setStructureValue(CmsProperty.C_DELETE_VALUE);
         
-        m_driverManager.writePropertyObject(m_context, addSiteRoot(resourcename), property);        
+        writePropertyObject(resourcename, property);        
     }
 
     /**
@@ -1438,36 +1599,6 @@ public class CmsObject {
     }
     
     /**
-     * Returns a Vector with all files of a given folder
-     * (only the direct subfiles, not the files in subfolders).<p>
-     *
-     * @param foldername the complete path to the folder.
-     * @return a Vector with all files of the given folder.
-     * @throws CmsException something goes wrong
-     */
-    public List getFilesInFolder(String foldername) throws CmsException {
-        int warning = 0;
-        // must check usages in the workplace, better remove this altogether
-        return (m_driverManager.getSubFiles(m_context, addSiteRoot(foldername), CmsResourceFilter.DEFAULT));
-    }
-
-    /**
-     * Returns a Vector with all files of a given folder.
-     * <br>
-     * Files of a folder can be read from an offline Project and the online Project.
-     *
-     * @param foldername the complete path to the folder.
-     * @param filter a filter object to filter the resources
-     *
-     * @return subfiles a Vector with all files of the given folder.
-     *
-     * @throws CmsException if the user has not hte appropriate rigths to access or read the resource.
-     */
-    public List getFilesInFolder(String foldername, CmsResourceFilter filter) throws CmsException {
-        return (m_driverManager.getSubFiles(m_context, addSiteRoot(foldername), filter));
-    }
-
-    /**
      * Returns all groups in the Cms.
      *
      * @return a Vector of all groups in the Cms.
@@ -1628,18 +1759,6 @@ public class CmsObject {
     }
 
     /**
-     * Returns a list with the sub resources for a folder.<br>
-     *
-     * @param folder the name of the folder to get the subresources from.
-     * @param filter the resource filter
-     * @return subfolders a Vector with resources
-     * @throws CmsException  if operation was not succesful
-     */
-    public List getResourcesInFolder(String folder, CmsResourceFilter filter) throws CmsException {
-        return m_driverManager.getResourcesInFolder(m_context, addSiteRoot(folder), filter);
-    }
-
-    /**
     * Returns a List with all sub resources of a given folder that have benn modified
     * in a given time range.<p>
     * 
@@ -1700,31 +1819,6 @@ public class CmsObject {
      */
     public List getResourcesWithPropertyDefinition(String propertyDefinition) throws CmsException {
         return m_driverManager.getResourcesWithPropertyDefinition(m_context, propertyDefinition);
-    }
-    
-    /**
-     * Returns a Vector with all subfolders of a given folder.<p>
-     *
-     * @param foldername the complete path to the folder
-     * @return all subfolders (CmsFolder Objects) for the given folder
-     * @throws CmsException if the user has not the permissions to access or read the resource
-     */
-    public List getSubFolders(String foldername) throws CmsException {
-        int warning = 0;
-        // check all occurences, replace with version using filter
-        return (m_driverManager.getSubFolders(m_context, addSiteRoot(foldername), CmsResourceFilter.DEFAULT));
-    }
-
-    /**
-     * Returns a Vector with all subfolders of a given folder.<p>
-     *
-     * @param foldername the complete path to the folder
-     * @param filter a filter object to filter the resources
-     * @return all subfolders (CmsFolder Objects) for the given folder
-     * @throws CmsException if the user has not the permissions to access or read the resource
-     */
-    public List getSubFolders(String foldername, CmsResourceFilter filter) throws CmsException {
-        return (m_driverManager.getSubFolders(m_context, addSiteRoot(foldername), filter));
     }
 
     /**
@@ -1823,7 +1917,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
-        return 0 == m_driverManager.hasPermissions(m_context, resource, requiredPermissions, CmsResourceFilter.ALL).intValue();
+        return  CmsDriverManager.PERM_ALLOWED == m_driverManager.hasPermissions(m_context, resource, requiredPermissions, true, CmsResourceFilter.ALL);
     }
     
     /**
@@ -1831,12 +1925,16 @@ public class CmsObject {
      * 
      * @param resource the resource that will be accessed
      * @param requiredPermissions the set of required permissions
+     * @param checkLock if true, a lock for the current user is required for 
+     *      all write operations, if false it's ok to write as long as the resource
+     *      is not locked by another user
      * @param filter the resource filter to use
+     * 
      * @return true if the required permissions are satisfied
      * @throws CmsException if something goes wrong
      */
-    public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions, CmsResourceFilter filter) throws CmsException {
-        return 0 == m_driverManager.hasPermissions(m_context, resource, requiredPermissions, filter).intValue();
+    public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions, boolean checkLock, CmsResourceFilter filter) throws CmsException {
+        return CmsDriverManager.PERM_ALLOWED == m_driverManager.hasPermissions(m_context, resource, requiredPermissions, checkLock, filter);
     }
 
     /**
@@ -3089,18 +3187,6 @@ public class CmsObject {
     public void recoverPassword(String username, String recoveryPassword, String newPassword) throws CmsException {
         m_driverManager.recoverPassword(username, recoveryPassword, newPassword);
     }
-        
-    /**
-     * Recovers a resource from the online project back to the 
-     * offline project as an unchanged resource.<p>
-     * 
-     * @param resourcename the name of the resource which is recovered
-     * @return the recovered resource in the offline project
-     * @throws CmsException if somethong goes wrong
-     */
-    public CmsResource recoverResource(String resourcename) throws CmsException {
-        return m_driverManager.recoverResource(m_context, m_context.addSiteRoot(resourcename));        
-    }
 
     /**
      * Removes a user from a group.
@@ -3404,7 +3490,7 @@ public class CmsObject {
      * if the user has not the rights to write the file header..
      */
     public void writeFileHeader(CmsFile file) throws CmsException {
-        m_driverManager.writeFileHeader(m_context, file);
+        m_driverManager.writeResource(m_context, file);
     }
 
     /**
@@ -3501,31 +3587,6 @@ public class CmsObject {
         property.setAutoCreatePropertyDefinition(addDefinition);
         
         writePropertyObject(name, property); 
-    }
-    
-    /**
-     * Writes a property object to the database mapped to a specified resource.<p>
-     * 
-     * @param resourceName the name of resource where the property is mapped to
-     * @param property a CmsProperty object containing a structure and/or resource value
-     * @throws CmsException if something goes wrong
-     */    
-    public void writePropertyObject(String resourceName, CmsProperty property) throws CmsException {
-        m_driverManager.writePropertyObject(m_context, addSiteRoot(resourceName), property);
-    }
-    
-    /**
-     * Writes a list of property objects to the database mapped to a specified resource.<p>
-     * 
-     * Code calling this method has to ensure that the properties in the specified list are
-     * disjunctive.<p>
-     * 
-     * @param resourceName the name of resource where the property is mapped to
-     * @param properties a list of CmsPropertys object containing a structure and/or resource value
-     * @throws CmsException if something goes wrong
-     */    
-    public void writePropertyObjects(String resourceName, List properties) throws CmsException {
-        m_driverManager.writePropertyObjects(m_context, addSiteRoot(resourceName), properties);
     }
 
     /**

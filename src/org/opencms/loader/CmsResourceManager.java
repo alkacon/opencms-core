@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2004/06/21 11:45:12 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/25 16:34:33 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1
  */
 public class CmsResourceManager {
@@ -251,18 +251,20 @@ public class CmsResourceManager {
      * 
      * @param typeId the id of the resource type to get
      * @return the initialized resource type instance for the given id
-     * @throws CmsException if no resource type is vaialble for the given id
+     * @throws CmsLoaderException if no resource type is vaialble for the given id
      */
-    public I_CmsResourceType getResourceType(int typeId) throws CmsException {
+    public I_CmsResourceType getResourceType(int typeId) throws CmsLoaderException {
 
-        try {
-            return m_resourceTypes[typeId];
-        } catch (Exception e) {
-            throw new CmsException("["
-                + this.getClass().getName()
-                + "] Unknown resource type id requested: "
-                + typeId, CmsException.C_NOT_FOUND);
+        I_CmsResourceType result = null;
+        if (typeId < m_resourceTypes.length) {
+            result = m_resourceTypes[typeId];
         }
+        if (result == null) {
+            throw new CmsLoaderException(
+                "Unknown resource type id requested: " + typeId, 
+                CmsLoaderException.C_LOADER_UNKNOWN_RESOURCE_TYPE);            
+        }
+        return result;
     }
 
     /**
@@ -270,9 +272,9 @@ public class CmsResourceManager {
      * 
      * @param typeName the name of the resource type to get
      * @return the initialized resource type instance for the given name
-     * @throws CmsException if no resource type is vaialble for the given name
+     * @throws CmsLoaderException if no resource type is vaialble for the given name
      */
-    public I_CmsResourceType getResourceType(String typeName) throws CmsException {
+    public I_CmsResourceType getResourceType(String typeName) throws CmsLoaderException {
 
         for (int i = 0; i < m_resourceTypeList.size(); i++) {
             I_CmsResourceType type = (I_CmsResourceType)m_resourceTypeList.get(i);
@@ -280,10 +282,9 @@ public class CmsResourceManager {
                 return type;
             }
         }
-        throw new CmsException("["
-            + this.getClass().getName()
-            + "] Unknown resource type name requested: "
-            + typeName, CmsException.C_NOT_FOUND);
+        throw new CmsLoaderException(
+            "Unknown resource type name requested: " + typeName, 
+            CmsLoaderException.C_LOADER_UNKNOWN_RESOURCE_TYPE);
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2004/06/21 09:53:52 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2004/06/25 16:32:34 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.55 $ $Date: 2004/06/21 09:53:52 $
+ * @version $Revision: 1.56 $ $Date: 2004/06/25 16:32:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -207,7 +207,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                     }
                     cms.chmod(cms.readAbsolutePath(folder), flag);
                     */
-                    cms.unlockResource(cms.readAbsolutePath(folder), false);
+                    cms.unlockResource(cms.readAbsolutePath(folder));
                 }
                 catch(CmsException ex) {
                     xmlTemplateDocument.setData("ERRORDETAILS", CmsException.getStackTraceAsString(ex));

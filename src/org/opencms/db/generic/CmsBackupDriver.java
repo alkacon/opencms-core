@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/06/21 09:55:03 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2004/06/25 16:33:07 $
+ * Version: $Revision: 1.95 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.CmsUser;
 
 import java.io.ByteArrayInputStream;
@@ -73,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.94 $ $Date: 2004/06/21 09:55:03 $
+ * @version $Revision: 1.95 $ $Date: 2004/06/25 16:33:07 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -418,7 +419,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         PreparedStatement stmt = null;
 
         // CmsFile offlineFile = m_driverManager.getVfsDriver().readFile(projectId, false, resource.getStructureId());
-        CmsUUID fileId = resource.getFileId();
+        CmsUUID fileId = resource.getContentId();
         // byte[] fileContent = offlineFile.getContents();
         
         try {
@@ -467,7 +468,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                     // do nothing only move through all rows because of mssql odbc driver
                 }
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + resourceId.toString(), CmsException.C_NOT_FOUND);
+                throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + "] " + resourceId.toString());
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -503,7 +504,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                     // do nothing only move through all rows because of mssql odbc driver
                 }
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + resourceId.toString(), CmsException.C_NOT_FOUND);
+                throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + "] " + resourceId.toString());
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1100,7 +1101,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                     stmt.setString(1, resource.getResourceId().toString());
                     stmt.setInt(2, resource.getTypeId());
                     stmt.setInt(3, resource.getFlags());
-                    stmt.setString(4, resource.getFileId().toString());
+                    stmt.setString(4, resource.getContentId().toString());
                     stmt.setInt(5, resource.getLoaderId());
                     stmt.setLong(6, publishDate);
                     stmt.setString(7, resource.getUserCreated().toString());

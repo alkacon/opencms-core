@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/06/21 11:43:43 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/06/25 16:34:23 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -251,7 +251,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                         new CmsUUID(), // structure ID is always a new UUID
                         target.getResourceId(), 
                         CmsUUID.getNullUUID(),
-                        target.getFileId(), 
+                        target.getContentId(), 
                         CmsResource.getName(key), 
                         target.getTypeId(), 
                         0, // TODO: pass flags from import 
@@ -387,16 +387,15 @@ public abstract class A_CmsImport implements I_CmsImport {
      * Reads all properties below a specified parent element from manifest.xml.<p>
      * 
      * @param parentElement the current file node
-     * @param resType the resource type of this node
      * @param propertyKey key of a property to be added to all resources, or null
      * @param propertyValue value of the property to be added to all resources, or null
      * @param ignoredPropertyKeys a list of properies to be ignored
-     * @return ArrayList with all properties
+     * 
+     * @return a list with all properties
      * @throws CmsException if something goes wrong
      */
     protected List readPropertiesFromManifest(
         Element parentElement,
-        int resType,
         String propertyKey,
         String propertyValue,
         List ignoredPropertyKeys) throws CmsException {
@@ -413,8 +412,6 @@ public abstract class A_CmsImport implements I_CmsImport {
         Attribute attrib = null;
 
         if (propertyKey != null && propertyValue != null && !"".equals(propertyKey)) {
-            // TODO I can't remember at the moment this piece of code is still required or not
-            int warning = 0;
             checkPropertyDefinition(propertyKey);
             properties.put(propertyKey, propertyValue);
         }

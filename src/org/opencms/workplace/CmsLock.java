@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsLock.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/06/25 16:35:00 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1.12
  */
@@ -199,7 +199,7 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
                 break;
             case TYPE_UNLOCK:
             default:               
-                getCms().unlockResource(resName, false);
+                getCms().unlockResource(resName);
             }
             actionCloseDialog();
         } catch (CmsException e) {

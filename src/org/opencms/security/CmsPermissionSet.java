@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionSet.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/06/25 16:34:49 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,60 +40,20 @@ import java.util.StringTokenizer;
 /**
  * A permission set contains both allowed and denied permissions as bitsets.<p>
  * 
- * Currently supported permissions are:<br>
- * <code>C_PERMISSION_READ</code> (r) the right to read the contents of a resource<br>
- * <code>C_PERMISSION_WRITE</code> (w) the right to write the contents of a resource<br>
- * <code>C_PERMISSION_VIEW</code> (v) the right to see a resource in listings (workplace)<br>
- * <code>C_PERMISSION_CONTROL</code> (c) the right to set permissions of a resource<br>
- * <code>C_PERMISSION_DIRECT_PUBLISH</code> (d) the right direct publish a resource even without publish project permissions<br>
+ * Currently supported permissions are:<ul>
+ * <li><code>{@link I_CmsConstants#C_PERMISSION_READ}</code> (r) the right to read the contents of a resource</li>
+ * <li><code>{@link I_CmsConstants#C_PERMISSION_WRITE}</code> (w) the right to write the contents of a resource</li>
+ * <li><code>{@link I_CmsConstants#C_PERMISSION_VIEW}</code> (v) the right to see a resource in listings (workplace)</li>
+ * <li><code>{@link I_CmsConstants#C_PERMISSION_CONTROL}</code> (c) the right to set permissions of a resource</li>
+ * <li><code>{@link I_CmsConstants#C_PERMISSION_DIRECT_PUBLISH}</code> (d) the right direct publish a resource even without publish project permissions</li></ul><p>
  * 
- * @version $Revision: 1.15 $ $Date: 2004/06/14 15:50:09 $
+ * @version $Revision: 1.16 $ $Date: 2004/06/25 16:34:49 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPermissionSet {
 
     /**  HashMap of all available permissions. */
     static HashMap m_permissions;
-
-    /**
-     * Returns the message keys of each permission known in the system.<p>
-     * 
-     * @return Enumeration of message keys
-     */
-    public static Set getPermissionKeys() {
-
-        return permissions().keySet();
-    }
-
-    /**
-     * Returns the value of a single permission.<p>
-     * 
-     * @param key the key of the permission
-     * @return the value of the given permission
-     */
-    public static int getPermissionValue(String key) {
-
-        return ((Integer)permissions().get(key)).intValue();
-    }
-
-    /**
-     * Initializes and returns the hashtable of all permissions known in the system.<p>
-     * 
-     * @return hastable with permission keys and values
-     */
-    private static HashMap permissions() {
-
-        if (m_permissions == null) {
-            m_permissions = new HashMap();
-            m_permissions.put("security.permission.read", new Integer(I_CmsConstants.C_PERMISSION_READ));
-            m_permissions.put("security.permission.write", new Integer(I_CmsConstants.C_PERMISSION_WRITE));
-            m_permissions.put("security.permission.view", new Integer(I_CmsConstants.C_PERMISSION_VIEW));
-            m_permissions.put("security.permission.control", new Integer(I_CmsConstants.C_PERMISSION_CONTROL));
-            m_permissions.put("security.permission.direct_publish", new Integer(
-                I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH));
-        }
-        return m_permissions;
-    }
 
     /** The set of allowed permissions. */
     int m_allowed;
@@ -204,6 +164,46 @@ public class CmsPermissionSet {
     }
 
     /**
+     * Returns the message keys of each permission known in the system.<p>
+     * 
+     * @return Enumeration of message keys
+     */
+    public static Set getPermissionKeys() {
+
+        return permissions().keySet();
+    }
+
+    /**
+     * Returns the value of a single permission.<p>
+     * 
+     * @param key the key of the permission
+     * @return the value of the given permission
+     */
+    public static int getPermissionValue(String key) {
+
+        return ((Integer)permissions().get(key)).intValue();
+    }
+
+    /**
+     * Initializes and returns the hashtable of all permissions known in the system.<p>
+     * 
+     * @return hastable with permission keys and values
+     */
+    private static HashMap permissions() {
+
+        if (m_permissions == null) {
+            m_permissions = new HashMap();
+            m_permissions.put("security.permission.read", new Integer(I_CmsConstants.C_PERMISSION_READ));
+            m_permissions.put("security.permission.write", new Integer(I_CmsConstants.C_PERMISSION_WRITE));
+            m_permissions.put("security.permission.view", new Integer(I_CmsConstants.C_PERMISSION_VIEW));
+            m_permissions.put("security.permission.control", new Integer(I_CmsConstants.C_PERMISSION_CONTROL));
+            m_permissions.put("security.permission.direct_publish", new Integer(
+                I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH));
+        }
+        return m_permissions;
+    }
+
+    /**
      * Sets permissions from another permission set additionally both as allowed and denied permissions.<p>
      * 
      * @param permissionSet the set of permissions to set additionally.
@@ -304,31 +304,31 @@ public class CmsPermissionSet {
 
         if ((m_denied & I_CmsConstants.C_PERMISSION_READ) > 0) {
             p.append("-r");
-        } else if ((m_allowed & I_CmsConstants.C_PERMISSION_READ) > 0) {
+        } else if (requiresReadPermission()) {
             p.append("+r");
         }
 
         if ((m_denied & I_CmsConstants.C_PERMISSION_WRITE) > 0) {
             p.append("-w");
-        } else if ((m_allowed & I_CmsConstants.C_PERMISSION_WRITE) > 0) {
+        } else if (requiresWritePermission()) {
             p.append("+w");
         }
 
         if ((m_denied & I_CmsConstants.C_PERMISSION_VIEW) > 0) {
             p.append("-v");
-        } else if ((m_allowed & I_CmsConstants.C_PERMISSION_VIEW) > 0) {
+        } else if (requiresViewPermission()) {
             p.append("+v");
         }
 
         if ((m_denied & I_CmsConstants.C_PERMISSION_CONTROL) > 0) {
             p.append("-c");
-        } else if ((m_allowed & I_CmsConstants.C_PERMISSION_CONTROL) > 0) {
+        } else if (requiresControlPermission()) {
             p.append("+c");
         }
 
         if ((m_denied & I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH) > 0) {
             p.append("-d");
-        } else if ((m_allowed & I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH) > 0) {
+        } else if (requiresDirectPublishPermission()) {
             p.append("+d");
         }
 
@@ -350,6 +350,51 @@ public class CmsPermissionSet {
      */
     public int hashCode() {
         return m_allowed * m_denied;
+    }
+    
+    /**
+     * Returns true if control permissions (+c) are required by this permission set.<p>
+     * 
+     * @return true if control permissions (+c) are required by this permission set
+     */    
+    public boolean requiresControlPermission() {
+        return 0 < (m_allowed & I_CmsConstants.C_PERMISSION_CONTROL);
+    }
+
+    /**
+     * Returns true if direct publish permissions (+d) are required by this permission set.<p>
+     * 
+     * @return true if direct publish permissions (+d) are required by this permission set
+     */     
+    public boolean requiresDirectPublishPermission() {
+        return 0 < (m_allowed & I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH);
+    }
+    
+    /**
+     * Returns true if read permissions (+r) are required by this permission set.<p>
+     * 
+     * @return true if read permissions (+r) are required by this permission set
+     */    
+    public boolean requiresReadPermission() {
+        return 0 < (m_allowed & I_CmsConstants.C_PERMISSION_READ);
+    }
+    
+    /**
+     * Returns true if view permissions (+v) are required by this permission set.<p>
+     * 
+     * @return true if view permissions (+v) are required by this permission set
+     */        
+    public boolean requiresViewPermission() {
+        return 0 < (m_allowed & I_CmsConstants.C_PERMISSION_VIEW);
+    }
+    
+    /**
+     * Returns true if write permissions (+w) are required by this permission set.<p>
+     * 
+     * @return true if write permissions (+w) are required by this permission set
+     */
+    public boolean requiresWritePermission() {
+        return 0 < (m_allowed & I_CmsConstants.C_PERMISSION_WRITE);
     }
 
     /**

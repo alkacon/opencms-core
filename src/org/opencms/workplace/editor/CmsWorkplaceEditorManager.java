@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsWorkplaceEditorManager.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/06/25 16:35:08 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.TreeMap;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.3.1
  */
@@ -77,19 +77,18 @@ public class CmsWorkplaceEditorManager {
      * Creates a new editor manager.<p>
      * 
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
-     * @throws CmsException if reading the editor folder fails (fatal)
      */
-    public CmsWorkplaceEditorManager(CmsObject cms) throws CmsException {
+    public CmsWorkplaceEditorManager(CmsObject cms) {
         // get all subfolders of the workplace editor folder
         List editorFolders = new ArrayList();
         try {
             editorFolders = cms.getSubFolders(CmsEditor.C_PATH_EDITORS);
         } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error reading editor folders.", e);  
-            }
-            throw e;
+            OpenCms.getLog(this).error("Workplace init: Unable to read editor folder '" + CmsEditor.C_PATH_EDITORS + "', editors disabled!");
+            // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
+            editorFolders = new ArrayList();
         }
+        
         m_editorConfigurations = new ArrayList(editorFolders.size());
         
         // try to read the configuration files and create configuration objects for valid configurations

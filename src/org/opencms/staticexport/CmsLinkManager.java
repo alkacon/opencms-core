@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/06/25 16:35:00 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  */
 public class CmsLinkManager {
     
@@ -424,7 +424,10 @@ public class CmsLinkManager {
         } else {
             
             // offline project, no export required
-            resultLink = OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName);
+            if (OpenCms.getRunLevel() > 2) {
+                // in unit test this code would fail otherwise
+                resultLink = OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName);
+            }
 
             // add cut off parameters and return the result
             if (parameters != null) {      

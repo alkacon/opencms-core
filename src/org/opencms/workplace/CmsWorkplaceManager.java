@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/06/25 16:35:00 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.3.1
  */
@@ -258,19 +258,13 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
         switch (event.getType()) {       
             case I_CmsEventListener.EVENT_WORKPLACE_UPDATE:
-                try {
-                    // re-initialize the locale handler
-                    initHandler(event.getCmsObject()); 
-                    // re-initilize the editor manager           
-                    m_editorManager = new CmsWorkplaceEditorManager(event.getCmsObject());
-                } catch (CmsException e) {
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error re-initalizing WorkplaceManger", e);  
-                    }
-                }
+                // re-initialize the locale handler
+                initHandler(event.getCmsObject()); 
+                // re-initilize the editor manager           
+                m_editorManager = new CmsWorkplaceEditorManager(event.getCmsObject());
                 break;
             default:
-        // no operation
+                // no operation
         }
     }
     
@@ -710,8 +704,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         try {
             localeFolders = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_LOCALES);
         } catch (CmsException e) {
-            OpenCms.getLog(this).error("Unable to read locales folder " + I_CmsWpConstants.C_VFS_PATH_LOCALES, e);
-            localeFolders = new ArrayList();
+            OpenCms.getLog(this).error("Workplace init: Unable to read locales folder '" + I_CmsWpConstants.C_VFS_PATH_LOCALES + "', locales disabled!");
+            // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
+            localeFolders = new ArrayList();            
         }
         Iterator i = localeFolders.iterator();
         while (i.hasNext()) {

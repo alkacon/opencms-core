@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/25 16:34:49 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.StringTokenizer;
  * <code>C_ACCESSFLAGS_GROUP</code> indicates that the principal is a group
  * </p>
  * 
- * @version $Revision: 1.10 $ $Date: 2004/06/14 15:50:09 $
+ * @version $Revision: 1.11 $ $Date: 2004/06/25 16:34:49 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlEntry {
@@ -78,6 +78,21 @@ public class CmsAccessControlEntry {
     private CmsUUID m_resource;
 
     /**
+     * Constructor to create a new access control entry for a given resource
+     * based on an existing access control entry.<p>
+     * 
+     * @param resource the resource
+     * @param base the base for the created access control entry
+     */
+    public CmsAccessControlEntry(CmsUUID resource, CmsAccessControlEntry base) {
+
+        m_resource = resource;
+        m_principal = base.m_principal;
+        m_permissions = base.m_permissions;
+        m_flags = base.m_flags;
+    }
+    
+    /**
      * Constructor to create a new access control entry on a given resource and a given principal.<p>
      * Permissions are specified as permission set, flags as bitset.
      * 
@@ -93,7 +108,6 @@ public class CmsAccessControlEntry {
         m_permissions = permissions;
         m_flags = flags;
     }
-    
     
     /**
      * Constructor to create a new access control entry on a given resource and a given principal.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2004/06/13 23:32:19 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/06/25 16:33:07 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,13 @@
 package org.opencms.db.generic;
 
 import org.opencms.db.CmsDbPool;
-import org.opencms.db.CmsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringSubstitution;
 
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
@@ -96,7 +96,7 @@ import java.util.Properties;
  * </table>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.34 $ $Date: 2004/06/13 23:32:19 $
+ * @version $Revision: 1.35 $ $Date: 2004/06/25 16:33:07 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -379,7 +379,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
 
         switch (exceptionType) {
             case CmsException.C_NOT_FOUND :
-                return new CmsResourceNotFoundException(message);
+                return new CmsVfsResourceNotFoundException(message);
             default:
         }
 

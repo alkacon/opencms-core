@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2004/06/21 09:55:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/25 16:33:32 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
@@ -58,7 +59,6 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             resource.getStructureId(),
             resource.getResourceId(),
             resource.getParentStructureId(),
-            resource.getFileId(),
             resource.getName(),
             resource.getTypeId(),
             resource.getFlags(),
@@ -78,11 +78,9 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
 
     /**
      * Constructor, creates a new CmsFolder object.<p>
-     *
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
      * @param parentId the id of this resources parent folder
-     * @param fileId the id of this resources content record
      * @param name the filename of this resouce
      * @param type the type of this resource
      * @param flags the flags of this resource
@@ -100,7 +98,6 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
         CmsUUID structureId,
         CmsUUID resourceId,
         CmsUUID parentId,
-        CmsUUID fileId,
         String name,
         int type,
         int flags,
@@ -118,7 +115,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             structureId,
             resourceId,
             parentId,
-            fileId,
+            CmsUUID.getNullUUID(),
             name,
             type,
             flags,
@@ -146,7 +143,6 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             getStructureId(),
             getResourceId(),
             getParentStructureId(),
-            getFileId(),
             getName(),
             getTypeId(),
             getFlags(),
