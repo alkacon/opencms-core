@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+	<LISTENTRY>
+	<![CDATA[
+		<tr>
+			<td valign=top>&nbsp;</td>
+			<td colspan=2>]]><PROCESS>DATE</PROCESS><![CDATA[ / ]]><PROCESS>USER</PROCESS><![CDATA[</td>
+		</tr>
+		<tr>
+			<td>]]><PROCESS>ICON</PROCESS><![CDATA[</td>
+			<td class=wizardbold colspan=2>]]><PROCESS>HEADLINE</PROCESS><![CDATA[</td>
+		</tr>
+		<tr>
+			<td valign=top>&nbsp;</td>
+			<td colspan=2>
+			]]><PROCESS>MESSAGE</PROCESS><![CDATA[
+			</td>
+		</tr>
+    ]]>
+	</LISTENTRY>
+	
+	
+	<ICON100><![CDATA[<img src="]]><METHOD name="picsUrl">ic_taskdoku_start.gif</METHOD><![CDATA[" border=0 width=16 height=16>]]></ICON100>
+	<ICON101><![CDATA[<img src="]]><METHOD name="picsUrl">ic_taskdoku_accepted.gif</METHOD><![CDATA[" border=0 width=16 height=16>]]></ICON101>
+	<ICON102><![CDATA[<img src="]]><METHOD name="picsUrl">iic_taskdoku_comment.gif</METHOD><![CDATA[" border=0 width=16 height=16>]]></ICON102>
+	<ICON103><![CDATA[<img src="]]><METHOD name="picsUrl">iic_taskdoku_takeover.gif</METHOD><![CDATA[" border=0 width=16 height=16>]]></ICON103>
+	<ICON104><![CDATA[<img src="]]><METHOD name="picsUrl">ic_task_ok.gif</METHOD><![CDATA[" border=0 width=16 height=16>]]></ICON104>
+	<ICON105><![CDATA[<img src="]]><METHOD name="picsUrl">ic_taskdoku_recycle.gif</METHOD><![CDATA[" border=0 width=16 height=16>]]></ICON105>
+	<ICON106><![CDATA[<img src="]]><METHOD name="picsUrl">ic_taskdoku_forward.gif</METHOD><![CDATA[" border=0 width=16 height=16>]]></ICON106>
+	<ICON107><![CDATA[<img src="]]><METHOD name="picsUrl">ic_taskdoku_request.gif</METHOD><![CDATA[" border=0 width=16 height=16>]]></ICON107>
+	<ICON108><![CDATA[<img src="]]><METHOD name="picsUrl">ic_timer.gif</METHOD><![CDATA[" border=0 width=16 height=16>]]></ICON108>
+	<ICON109><![CDATA[<img src="]]><METHOD name="picsUrl">ic_taskdoku_prio.gif</METHOD><![CDATA[" border=0 width=16 height=16>]]></ICON109>
+	
+	
+</WORKPLACE>
