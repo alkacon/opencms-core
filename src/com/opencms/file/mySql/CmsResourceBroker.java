@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/22 13:22:49 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/08/24 15:31:14 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,6 +37,7 @@ import source.org.apache.java.util.*;
 
 import com.opencms.core.*;
 import com.opencms.file.*;
+import com.opencms.template.*;
 
 
 /**
@@ -48,7 +49,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2000/08/22 13:22:49 $
+ * @version $Revision: 1.24 $ $Date: 2000/08/24 15:31:14 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1278,6 +1279,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		m_propertyCache.clear();
 		m_propertyDefCache.clear();
 		m_propertyDefVectorCache.clear();
+
+		CmsTemplateClassManager.clearCache();
+
 	}
 	/**
 	 * Copies a file in the Cms. <br>
