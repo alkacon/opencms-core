@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/25 16:19:35 $
-* Version: $Revision: 1.292 $
+* Date   : $Date: 2003/06/26 15:33:37 $
+* Version: $Revision: 1.293 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.292 $
+ * @version $Revision: 1.293 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -753,7 +753,7 @@ public void copyFolder(String source, String destination) throws CmsException {
      * @throws CmsException if operation was not successful.
  */
 public void copyResourceToProject(String resource) throws CmsException {
-    CmsResource res = readFileHeader(resource);
+    CmsResource res = readFileHeader(resource, I_CmsConstants.C_PROJECT_ONLINE_ID);
     I_CmsResourceType rt = getResourceType(res.getType());
     rt.copyResourceToProject(this, resource);
 }
