@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.3.39 Bela Tegeuse - xx July 2001
+OpenCms 4.3.39 Bela Tegeuse - 02 August 2001
 * Fixed bug: when deleting folders all subfolders must be deleted too, starting with the last
   folder in the foldertree
 * Fixed bug when synchronize resources: do not throw an exception if the resource is already 
