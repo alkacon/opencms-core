@@ -64,7 +64,7 @@ top.help_url='Administration/logfileviewer.html';
                     <tr><td class=dialogtxt>
                         <table cellspacing=0 border=0 cellpadding=5 width=100%>
                             <tr>
-                                <td class=formular align=center width=100%>]]><SUBMITBUTTON class="button" name="step" value="ok" width="100" action="selectAll(SYNCPROP.new_ressources);" /><![CDATA[</td>
+                                <td class=formular align=center width=100%>]]><SUBMITBUTTON class="button" name="step" value="ok" width="100" action="" /><![CDATA[</td>
                             </tr>
                         </table>
                     </td></tr>

@@ -64,7 +64,7 @@ top.help_url='Administration/cronmanagement.html';
                     <tr><td class=dialogtxt>
                         <table cellspacing=0 border=0 cellpadding=5 width=100%>
                             <tr>
-                                <td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="step" value="ok" width="100" action="selectAll(SYNCPROP.new_ressources);" /><![CDATA[</td>
+                                <td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="step" value="ok" width="100" action="" /><![CDATA[</td>
                                 <td class=formular align=left width=50%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="100" action="location.href='index.html?step=cancel'" /><![CDATA[</td>
                             </tr>
                         </table>
