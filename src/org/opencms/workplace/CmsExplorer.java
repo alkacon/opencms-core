@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/08/01 17:04:03 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2003/08/01 17:57:01 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 5.1
  */
@@ -501,7 +501,7 @@ public class CmsExplorer extends CmsWorkplace {
                     lockedInProject = res.getProjectId();
                 } else {
                     // resource is locked and unchanged
-                    lockedInProject = getCms().getRequestContext().currentProject().getId();
+                    lockedInProject = lock.getProjectId();
                 }
             }
 
