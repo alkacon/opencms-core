@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2004/07/18 16:27:12 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2004/08/06 16:17:42 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,8 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
-import org.opencms.i18n.CmsMessages;
+import org.opencms.mail.CmsMailTransport;
+import org.opencms.mail.CmsSimpleMail;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsDateUtil;
@@ -44,9 +45,14 @@ import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Vector;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -55,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.54 $ $Date: 2004/07/18 16:27:12 $
+ * @version $Revision: 1.55 $ $Date: 2004/08/06 16:17:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -111,9 +117,9 @@ public class CmsTaskAction implements I_CmsWpConstants {
                 cms.readOwner(task)
             };
             try {
-                org.opencms.util.CmsMail mail = new org.opencms.util.CmsMail(cms, cms.readAgent(task),
-                        users, subject, contentBuf.toString(), "text/plain");
-                mail.start();
+                CmsSimpleMail mail = createMail(cms.readAgent(task),
+                        users, subject, contentBuf.toString());
+                new CmsMailTransport(mail).send();
             }
             catch(Exception exc) {
                 if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
@@ -198,9 +204,9 @@ public class CmsTaskAction implements I_CmsWpConstants {
         CmsUser[] users =  {
             cms.readAgent(task)
         };
-        org.opencms.util.CmsMail mail = null;
+        CmsSimpleMail mail = null;
         try {
-            mail = new org.opencms.util.CmsMail(cms, cms.readOwner(task), users, subject, contentBuf.toString(), "text/plain");
+            mail = createMail(cms.readOwner(task), users, subject, contentBuf.toString());
         }
         catch(CmsException e) {
             if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
@@ -215,8 +221,10 @@ public class CmsTaskAction implements I_CmsWpConstants {
             // the news deliver always "checked" or ""
             if(cms.getTaskPar(task.getId(), C_TASKPARA_ALL).equals("checked")) {
                 try {
-                    mail = new org.opencms.util.CmsMail(cms, cms.readOwner(task), cms.readGroup(task),
-                            subject, contentBuf.toString(), "text/plain");
+                    CmsGroup group = cms.readGroup(task);
+                    Vector groupUser = cms.getUsersOfGroup(group.getName());
+                    mail = createMail(cms.readOwner(task), groupUser,
+                            subject, contentBuf.toString(), true);
                 }
                 catch(CmsException e) {
                     if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
@@ -226,9 +234,95 @@ public class CmsTaskAction implements I_CmsWpConstants {
                 }
             }
         }
-        if(mail != null) {
-            mail.start();
+        if (mail != null) {
+            new CmsMailTransport(mail).send();
         }
+    }
+    
+    /**
+     * Helper method to create an email object.<p>
+     * 
+     * @param from the mail sender
+     * @param to the mail receivers
+     * @param subject the mail subject
+     * @param content the mail content
+     * @return the mail object to send
+     * @throws CmsException if creating the mail object fails
+     */
+    public static CmsSimpleMail createMail(CmsUser from, CmsUser[] to, String subject, String content) throws CmsException {
+        Vector v = new Vector(to.length);
+        for (int i = 0; i < to.length; i++) {
+            if (to[i].getEmail() == null) {
+                continue;
+            }
+            if (to[i].getEmail().equals("")) {
+                continue;
+            }
+            if (to[i].getEmail().indexOf("@") == -1 || to[i].getEmail().indexOf(".") == -1) {
+                throw new CmsException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email, Invalid recipient email address: " + to[i].getEmail(), CmsException.C_BAD_NAME);
+            }
+            try {
+                v.addElement(new InternetAddress(to[i].getEmail()));
+            } catch (AddressException e) {
+                throw new CmsException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email, Invalid recipient email address: " + to[i].getEmail(), CmsException.C_BAD_NAME);
+            }
+        }
+        
+        if (v.size() == 0) {
+            throw new CmsException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
+        }
+        return createMail(from, v, subject, content, false);
+    }
+    
+    /**
+     * Helper method to create an email object.<p>
+     * @param from the mail sender
+     * @param to the mail receivers
+     * @param subject the mail subject
+     * @param content the mail content
+     * @param createAddresses if true, the Vector of receivers contains CmsUsers and they are transformed into Internetaddresses
+     * 
+     * @return the mail object to send
+     * @throws CmsException if creating the mail object fails
+     */
+    public static CmsSimpleMail createMail(CmsUser from, Vector to, String subject, String content, boolean createAddresses) throws CmsException {
+        CmsSimpleMail mail = new CmsSimpleMail();
+        //      check sender email address
+        String fromAddress = from.getEmail();
+        if (fromAddress == null || fromAddress.equals("")) {
+            fromAddress = OpenCms.getSystemInfo().getMailSettings().getMailFromDefault();
+        }
+        if (fromAddress == null || fromAddress.equals("")) {            
+            throw new CmsException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email,Unknown sender email address.", CmsException.C_BAD_NAME);
+        }
+        if (fromAddress.indexOf("@") == -1 || fromAddress.indexOf(".") == -1) {
+            throw new CmsException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email,Unknown sender email address: " + fromAddress, CmsException.C_BAD_NAME);
+        }
+        
+        if (to.size() == 0) {
+            throw new CmsException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
+        } else if (createAddresses) {
+            List receivers = new ArrayList(to.size());
+            for (int i=0; i<to.size(); i++) {
+                CmsUser rec = (CmsUser)to.get(i);
+                try {
+                    receivers.add(new InternetAddress(rec.getEmail()));
+                } catch (AddressException e) {
+                    throw new CmsException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email, invalid recipient email address.", CmsException.C_BAD_NAME);
+                }
+            }
+            mail.setTo(receivers);
+        } else {
+            mail.setTo(to);    
+        }
+        try {
+            mail.setFrom(fromAddress);
+        } catch (MessagingException e) {
+            throw new CmsException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email, invalid sender email address.", CmsException.C_BAD_NAME);
+        }
+        mail.setSubject(subject == null ? "" : subject);
+        mail.setMsg(content == null ? "" : content);
+        return mail;
     }
 
     /**
@@ -309,9 +403,9 @@ public class CmsTaskAction implements I_CmsWpConstants {
                 cms.readOwner(task)
             };
             try {
-                org.opencms.util.CmsMail mail = new org.opencms.util.CmsMail(cms, cms.readAgent(task),
-                        users, subject, contentBuf.toString(), "text/plain");
-                mail.start();
+                CmsSimpleMail mail = createMail(cms.readAgent(task),
+                        users, subject, contentBuf.toString());
+                new CmsMailTransport(mail).send();
             }
             catch(Exception exc) {
                 if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
@@ -383,9 +477,11 @@ public class CmsTaskAction implements I_CmsWpConstants {
             // if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
             if(cms.getTaskPar(task.getId(), C_TASKPARA_ALL) != null) {
                 try {
-                    org.opencms.util.CmsMail mail = new org.opencms.util.CmsMail(cms, cms.getRequestContext().currentUser(),
-                            cms.readGroup(task), subject, contentBuf.toString(), "text/plain");
-                    mail.start();
+                    CmsGroup group = cms.readGroup(task);
+                    Vector users = cms.getUsersOfGroup(group.getName());
+                    CmsSimpleMail mail = createMail(cms.getRequestContext().currentUser(),
+                        users, subject, contentBuf.toString(), true);
+                    new CmsMailTransport(mail).send();
                 }
                 catch(Exception exc) {
                     if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
@@ -400,9 +496,9 @@ public class CmsTaskAction implements I_CmsWpConstants {
                     cms.readAgent(task)
                 };
                 try {
-                    org.opencms.util.CmsMail mail1 = new org.opencms.util.CmsMail(cms,
-                            cms.getRequestContext().currentUser(), user, subject, contentBuf.toString(), "text/plain");
-                    mail1.start();
+                    CmsSimpleMail mail1 = createMail(cms.getRequestContext().currentUser(), 
+                            user, subject, contentBuf.toString());
+                    new CmsMailTransport(mail1).send();
                 }
                 catch(Exception exc) {
                     if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
@@ -415,9 +511,9 @@ public class CmsTaskAction implements I_CmsWpConstants {
                     cms.readOwner(task)
                 };
                 try {
-                    org.opencms.util.CmsMail mail2 = new org.opencms.util.CmsMail(cms, cms.getRequestContext().currentUser(),
-                            owner, subject, contentBuf.toString(), "text/plain");
-                    mail2.start();
+                    CmsSimpleMail mail2 = createMail(cms.getRequestContext().currentUser(),
+                            owner, subject, contentBuf.toString());
+                    new CmsMailTransport(mail2).send();
                 }
                 catch(Exception exc) {
                     if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
@@ -509,9 +605,8 @@ public class CmsTaskAction implements I_CmsWpConstants {
             cms.readAgent(task)
         };
         try {
-            org.opencms.util.CmsMail mail = new org.opencms.util.CmsMail(cms,
-                    cms.readOwner(task), users, subject, contentBuf.toString(), "text/plain");
-            mail.start();
+            CmsSimpleMail mail = createMail(cms.readOwner(task), users, subject, contentBuf.toString());
+            new CmsMailTransport(mail).send();
         }
         catch(Exception exc) {
             if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
@@ -594,9 +689,9 @@ public class CmsTaskAction implements I_CmsWpConstants {
             cms.readOwner(task)
         };
         try {
-            org.opencms.util.CmsMail mail = new org.opencms.util.CmsMail(cms, cms.readAgent(task),
-                    users, subject, contentBuf.toString(), "text/plain");
-            mail.start();
+            CmsSimpleMail mail = createMail(cms.readAgent(task),
+                    users, subject, contentBuf.toString());
+            new CmsMailTransport(mail).send();
         }
         catch(Exception exc) {
             if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
@@ -681,16 +776,18 @@ public class CmsTaskAction implements I_CmsWpConstants {
         CmsUser[] users =  {
             cms.readAgent(task)
         };
-        org.opencms.util.CmsMail mail;
-        mail = new org.opencms.util.CmsMail(cms, cms.readOwner(task), users, subject, contentBuf.toString(), "text/plain");
+        CmsSimpleMail mail;
+        mail = createMail(cms.readOwner(task), users, subject, contentBuf.toString());
 
         // if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
         if(cms.getTaskPar(task.getId(), C_TASKPARA_ALL) != null) {
-            mail = new org.opencms.util.CmsMail(cms, cms.readOwner(task), cms.readGroup(task),
-                    subject, contentBuf.toString(), "text/plain");
+            CmsGroup group = cms.readGroup(task);
+            Vector groupUsers = cms.getUsersOfGroup(group.getName());
+            mail = createMail(cms.readOwner(task), groupUsers,
+                    subject, contentBuf.toString(), true);
         }
         try {
-            mail.start();
+            new CmsMailTransport(mail).send();
         }
         catch(Exception exc) {
             if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
@@ -753,9 +850,9 @@ public class CmsTaskAction implements I_CmsWpConstants {
             cms.readAgent(task)
         };
         try {
-            org.opencms.util.CmsMail mail = new org.opencms.util.CmsMail(cms, cms.readOwner(task),
-                    users, subject, contentBuf.toString(), "text/plain");
-            mail.start();
+            CmsSimpleMail mail = createMail(cms.readOwner(task),
+                    users, subject, contentBuf.toString());
+            new CmsMailTransport(mail).send();
         }
         catch(Exception exc) {
             if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {

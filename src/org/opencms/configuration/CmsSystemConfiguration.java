@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2004/07/18 16:31:32 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/08/06 16:17:42 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@
 package org.opencms.configuration;
 
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.mail.CmsMailHost;
+import org.opencms.mail.CmsMailSettings;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;

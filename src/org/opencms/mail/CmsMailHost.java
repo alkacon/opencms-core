@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/Attic/CmsMailHost.java,v $
- * Date   : $Date: 2004/07/18 16:31:32 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsMailHost.java,v $
+ * Date   : $Date: 2004/08/06 16:17:42 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
  
-package org.opencms.configuration;
+package org.opencms.mail;
 
 /**
  * Contains the configuration of an individual mail host.<p>

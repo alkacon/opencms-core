@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsLinkCheck.java,v $
- * Date   : $Date: 2004/07/18 16:27:12 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/08/06 16:17:42 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,11 +34,13 @@ package com.opencms.defaults;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.types.CmsResourceTypePointer;
+import org.opencms.mail.CmsHtmlMail;
+import org.opencms.mail.CmsMailTransport;
+import org.opencms.mail.CmsSimpleMail;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.scheduler.I_CmsScheduledJob;
-import org.opencms.util.CmsMail;
 
 import com.opencms.legacy.CmsRegistry;
 import com.opencms.template.CmsXmlTemplate;
@@ -56,12 +58,18 @@ import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.collections.ExtendedProperties;
 
@@ -140,31 +148,54 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
      */
     private void generateEmail(
         String mailFrom, 
-        String[] mailTo, 
-        String[] mailCc, 
-        String[] mailBcc, 
+        List mailTo, 
+        List mailCc, 
+        List mailBcc, 
         String mailSubject, 
         String mailContent, 
         String mailType
     ) throws CmsException {
-        // create a new CmsMail object and start sending the mails
-        CmsMail mail = null;
-        if (CmsMail.checkEmail(mailFrom)) {
-            if (CmsMail.checkEmail(mailTo[0])) {
-                if (mailCc.length > 0 && mailBcc.length > 0) {
-                    mail = new CmsMail(mailFrom, mailTo, mailCc, mailBcc, mailSubject, mailContent, mailType);
-                    mail.start();
-                } else if (mailBcc.length > 0) {
-                    mail = new CmsMail(mailFrom, mailTo, mailBcc, mailSubject, mailContent, mailType);
-                    mail.start();
-                } else {
-                    mail = new CmsMail(mailFrom, mailTo, mailSubject, mailContent, mailType);
-                    mail.start();
-                }
-            } else {
-                // do nothing
+        // create a new CmsMail object and start sending the mails        
+        if (mailType.toLowerCase().indexOf("html") != -1) {
+            CmsHtmlMail mail = new CmsHtmlMail();
+            try {
+                mail.setFrom(mailFrom);
+            } catch (MessagingException e) {
+                throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email, invalid recipient email address.", CmsException.C_BAD_NAME);
             }
-        }
+            mail.setSubject(mailSubject);
+            mail.setHtmlMsg(mailContent);
+            mail.setTextMsg(mailContent);
+            if (mailTo != null) {
+                mail.setTo(mailTo);    
+            }
+            if (mailCc != null) {
+                mail.setCc(mailCc);
+            }
+            if (mailBcc != null) {
+                mail.setCc(mailBcc);
+            }
+            new CmsMailTransport(mail).send();
+        } else {
+            CmsSimpleMail mail = new CmsSimpleMail();
+            try {
+                mail.setFrom(mailFrom);
+            } catch (MessagingException e) {
+                throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email, invalid recipient email address.", CmsException.C_BAD_NAME);
+            }
+            mail.setSubject(mailSubject);
+            mail.setMsg(mailContent);
+            if (mailTo != null) {
+                mail.setTo(mailTo);    
+            }
+            if (mailCc != null) {
+                mail.setCc(mailCc);
+            }
+            if (mailBcc != null) {
+                mail.setCc(mailBcc);
+            }
+            new CmsMailTransport(mail).send();
+        }       
     }
 
     /**
@@ -245,22 +276,22 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
      * @param receivers The string that contains the receivers
      * @return String[] The receivers as elements in an string array
      */
-    private String[] getReceiverArray(String receivers) {
-        String[] retArray = null;
+    private List getReceiverList(String receivers) {
+        List retArray = new ArrayList();
         if (receivers != null) {
             if (!"".equals(receivers.trim())) {
                 StringTokenizer tokens = new StringTokenizer(receivers, ";");
-                Vector vec = new Vector();
+                retArray = new ArrayList();
                 while (tokens.hasMoreElements()) {
-                    vec.addElement(tokens.nextElement());
+                    try {
+                        retArray.add(new InternetAddress((String)tokens.nextElement()));
+                    } catch (AddressException e) {
+                        if (OpenCms.getLog(this).isErrorEnabled()) {
+                            OpenCms.getLog(this).error(e);
+                        }   
+                    }
                 }
-                retArray = new String[vec.size()];
-                vec.copyInto(retArray);
-            } else {
-                retArray = new String[] {};
             }
-        } else {
-            retArray = new String[] {};
         }
         return retArray;
     }
@@ -396,10 +427,10 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
                         // get the email data
                         String mailSubject = template.getProcessedDataValue("emailsubject");
                         String mailFrom = (String)emailValues.get("mailfrom");
-                        String[] mailCc = getReceiverArray(template.getDataValue("emailcc"));
-                        String[] mailBcc = getReceiverArray(template.getDataValue("emailbcc"));
+                        List mailCc = getReceiverList(template.getDataValue("emailcc"));
+                        List mailBcc = getReceiverList(template.getDataValue("emailbcc"));
                         String mailType = template.getDataValue("emailtype");
-                        generateEmail(mailFrom, getReceiverArray(mailTo), mailCc, mailBcc, mailSubject, ownerContent.toString(), mailType);
+                        generateEmail(mailFrom, getReceiverList(mailTo), mailCc, mailBcc, mailSubject, ownerContent.toString(), mailType);
                     }
                 }
             } else {
@@ -426,9 +457,9 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
                         // get the eMail information
                         String mailSubject = template.getProcessedDataValue("emailsubject");
                         String mailFrom = (String)emailValues.get("mailfrom");
-                        String[] mailTo = getReceiverArray((String)emailValues.get("mailto"));
-                        String[] mailCc = getReceiverArray(template.getDataValue("emailcc"));
-                        String[] mailBcc = getReceiverArray(template.getDataValue("emailbcc"));
+                        List mailTo = getReceiverList((String)emailValues.get("mailto"));
+                        List mailCc = getReceiverList(template.getDataValue("emailcc"));
+                        List mailBcc = getReceiverList(template.getDataValue("emailbcc"));
                         String mailType = template.getDataValue("emailtype");
                         generateEmail(mailFrom, mailTo, mailCc, mailBcc, mailSubject, mailContent.toString(), mailType);
                     } else {

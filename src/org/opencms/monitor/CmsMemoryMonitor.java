@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2004/08/03 07:19:04 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/08/06 16:17:42 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,9 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexCache.CmsFlexCacheVariation;
+import org.opencms.mail.CmsMailTransport;
+import org.opencms.mail.CmsSimpleMail;
 import org.opencms.main.CmsEvent;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionInfoManager;
 import org.opencms.main.I_CmsEventListener;
@@ -50,10 +51,10 @@ import org.opencms.scheduler.I_CmsScheduledJob;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsDateUtil;
-import org.opencms.util.CmsMail;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
@@ -63,13 +64,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
 
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.31 $ $Date: 2004/08/03 07:19:04 $
+ * @version $Revision: 1.32 $ $Date: 2004/08/06 16:17:42 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -649,16 +652,24 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         content += "\nTotal size of cache memory monitored: " + totalSize + " (" + totalSize / 1048576 + ")\n\n";
         
         String from = m_emailSender;
-        String[] to = m_emailReceiver;        
+        String[] to = m_emailReceiver;   
         try {
             if (from != null && to != null) {
-                CmsMail email = new CmsMail(from, to, subject, content, "text/plain");
-                email.start();                
+                List receivers = new ArrayList(to.length);
+                for (int i=0; i<to.length; i++) {
+                    receivers.add(new InternetAddress(to[i]));    
+                }               
+                CmsSimpleMail email =  new CmsSimpleMail();
+                email.setFrom(from);
+                email.setTo(receivers);
+                email.setSubject(subject);
+                email.setMsg(content);
+                new CmsMailTransport(email).send();                
             }            
             if (OpenCms.getLog(this).isInfoEnabled()) {
                 OpenCms.getLog(this).info(", Memory Monitor " + (warning?"warning":"status") + " email send");
             }
-        } catch (CmsException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
