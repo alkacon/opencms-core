@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResent.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/04/18 13:30:26 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.3 $ $Date: 2000/04/18 13:30:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectResent extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -80,6 +80,12 @@ public class CmsAdminProjectResent extends CmsWorkplaceDefault implements I_CmsC
         }
 		
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+		
+		// delete the oldProjectId
+        HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();    
+        HttpSession session = orgReq.getSession(true);
+		session.removeValue("oldProjectId");
+		
 
 		// Now load the template file and start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);

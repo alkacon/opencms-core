@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
- * Date   : $Date: 2000/04/17 16:11:36 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/04/18 13:30:26 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/04/17 16:11:36 $
+ * @version $Revision: 1.13 $ $Date: 2000/04/18 13:30:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWpMain extends CmsWorkplaceDefault {
@@ -88,9 +88,6 @@ public class CmsWpMain extends CmsWorkplaceDefault {
         String newGroup = (String)parameters.get("group");
         String newProject = (String)parameters.get("project");
         String newView = (String)parameters.get(C_PARA_VIEW);
-        
-        
-        System.err.println("Project is: "+newProject);
         
         // Check if the user requested a group change
         if(newGroup != null && !("".equals(newGroup))) {

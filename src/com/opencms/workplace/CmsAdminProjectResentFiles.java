@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResentFiles.java,v $
- * Date   : $Date: 2000/04/13 19:48:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/04/18 13:30:26 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/04/13 19:48:08 $
+ * @version $Revision: 1.2 $ $Date: 2000/04/18 13:30:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
@@ -75,7 +75,6 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
      */
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         
-		System.err.println(cms.getRequestContext().currentProject().toString());
 		// get the session
         HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();    
         HttpSession session = orgReq.getSession(true);
@@ -84,6 +83,8 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		String filter = (String)parameters.get("filter");
 		String action = (String)parameters.get("action");
+		
+		xmlTemplateDocument.setData("onload", "");
 		
 		if("restoreproject".equals(action)) {
 			// restore the old project..
@@ -98,9 +99,9 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
 			
 			// redirect to the needed headfile.
 			try {
-				cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath() + "administration_head_2.html");
+				cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath() + "administration_head_5.html");
 			} catch(IOException exc) {
-				throw new CmsException("Could not redirect to administration_head_2.html", exc);
+				throw new CmsException("Could not redirect to administration_head_5.html", exc);
 			}
 			
 			return "".getBytes();
@@ -121,9 +122,6 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
 				// update the head-frame
 				xmlTemplateDocument.setData("onload", "window.top.body.admin_head.location.href='administration_head_4.html';");
 			}
-		} else {
-			// don't update the head-frame
-			xmlTemplateDocument.setData("onload", "");
 		}
 		
 		// store the chosen filter into the session
