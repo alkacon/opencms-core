@@ -146,7 +146,7 @@ top.head.helpUrl='administration/index.html';
 </form>
 
 
-<h2>Clear Flex Cache options</h2>
+<h2>Clear Cache options</h2>
 
 <form method="POST" action="index.html">
 <table border="0" cellpadding="3" cellspacing="0">
@@ -177,14 +177,16 @@ top.head.helpUrl='administration/index.html';
     }
 %>
 
-<h3>Purge repository</h3>
+<h2>JSP options</h2>
+
 <table border="0" cellpadding="3" cellspacing="0">
 <tr>
     <td><input type="submit" name="action" value="<%= label_9 %>"></td>
 </tr>
 </table>
 
-<h2>Cached resources options</h2>
+<h2>Currently cached resources</h2>
+
 <table border="0" cellpadding="3" cellspacing="0">
 <tr>
     <td><input type="submit" name="action" value="<%= label_3 %>"></td>
@@ -265,7 +267,11 @@ top.head.helpUrl='administration/index.html';
                 if (offline.size() == 0) out.write("There are no cached offline resources!");
 
             } else {
-                Iterator i = set.iterator();
+          		List online = new ArrayList();
+          		online.addAll(set);
+        		Collections.sort(online);
+        		
+                Iterator i = online.iterator();
                 while(i.hasNext()) {
                     String resource = (String)i.next();
                     out.write("Resource: " + resource + " &nbsp; Key: " + cache.getCachedKey(resource, cms) + "<br>");
