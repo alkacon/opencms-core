@@ -111,3 +111,25 @@ function hidelyr(welche)
 		//shown = false;
 }
 
+//------------------------------------------------------------------------------------
+// content exchange between 2 layers (used in explorer_files_neu_ordner.html)
+// m.schreiber 21.02.2000
+//------------------------------------------------------------------------------------
+var data1=null;
+var data2=null;
+
+function saveLayerData(from,to,srcLayer,destLayer) {
+	
+	if (ie) {
+		data1 = document.forms[from].NEUNAME.value;
+		data2 = document.forms[from].NEUTITEL.value;
+		document.forms[to].NEUNAME.value = data1;
+		document.forms[to].NEUTITEL.value = data2;
+	}
+	else if (ns) {
+		data1 = document[srcLayer].document.forms[from].NEUNAME.value;
+		data2 = document[srcLayer].document.forms[from].NEUTITEL.value;
+		document[destLayer].document.forms[to].NEUNAME.value = data1;
+		document[destLayer].document.forms[to].NEUTITEL.value = data2;
+	}
+}
