@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/02/05 22:27:14 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/02/09 10:27:12 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,6 +99,12 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /** Groups to create during import are stored here */
     protected Stack m_groupsToCreate = new Stack();
+    
+    /** The id of the legacy resource type "newpage" */
+    protected static final int C_RESOURCE_TYPE_NEWPAGE_ID = 9;
+    
+    /** The name of the legacy resource type "newpage" */
+    protected static final String C_RESOURCE_TYPE_NEWPAGE_NAME = "newpage";
 
     /**
      * In this vector we store the imported pages (as Strings from getAbsolutePath()),

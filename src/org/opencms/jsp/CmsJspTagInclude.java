@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/02/09 10:27:12 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
  
 package org.opencms.jsp;
 
+import org.opencms.flex.CmsFlexController;
+import org.opencms.flex.CmsFlexResponse;
 import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.main.OpenCms;
@@ -41,10 +43,7 @@ import org.opencms.workplace.editor.I_CmsEditorActionHandler;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsResource;
-import com.opencms.file.CmsResourceTypeNewPage;
 import com.opencms.file.CmsResourceTypePage;
-import org.opencms.flex.CmsFlexController;
-import org.opencms.flex.CmsFlexResponse;
 import com.opencms.template.CmsXmlTemplate;
 import com.opencms.workplace.I_CmsWpConstants;
 
@@ -62,7 +61,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -384,15 +383,11 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         }
                        
         // try to figure out if the target is a page, a new page or a XMLTemplate file        
-        boolean isPageTarget = false;         
-        boolean isNewPageTarget = false;         
+        boolean isPageTarget = false;                 
         try {
             target = CmsLinkManager.getAbsoluteUri(target, controller.getCurrentRequest().getElementUri());
             CmsResource resource = controller.getCmsObject().readFileHeader(target);
-            isNewPageTarget = (CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID  == resource.getType());
-            if (! isNewPageTarget) {
-                isPageTarget = ((CmsResourceTypePage.C_RESOURCE_TYPE_ID == resource.getType()));
-            }
+            isPageTarget = ((CmsResourceTypePage.C_RESOURCE_TYPE_ID == resource.getType()));
         } catch (CmsException e) {
             // any exception here and we will treat his as non-Page file
             throw new JspException("File not found: " + target, e);
@@ -407,7 +402,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                     target = I_CmsWpConstants.C_VFS_PATH_BODIES + target.substring(1);
                 }                          
             }
-            if (isPageTarget || isNewPageTarget) {
+            if (isPageTarget) {
                 // save target as "element replace" parameter for body loader
                 addParameter(parameterMap, CmsXmlTemplateLoader.C_ELEMENT_REPLACE, "body:" + target, true);  
                 target = C_BODYLOADER_URI;                   
@@ -421,7 +416,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 // redirect target to body loader
                 target = C_BODYLOADER_URI;                
             } else {
-                if (isPageTarget || isNewPageTarget) {
+                if (isPageTarget) {
                     // add body file path to target 
                     if (isPageTarget && ! target.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES)) {
                         target = I_CmsWpConstants.C_VFS_PATH_BODIES + target.substring(1);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/02/05 22:27:14 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/02/09 10:27:12 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,19 +32,17 @@
 package org.opencms.importexport;
 
 import org.opencms.main.OpenCms;
+import org.opencms.page.CmsXmlPage;
+import org.opencms.report.I_CmsReport;
+import org.opencms.util.CmsUUID;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
-import com.opencms.file.CmsResourceTypeNewPage;
 import com.opencms.file.CmsResourceTypePage;
 import com.opencms.file.CmsResourceTypeXmlPage;
-
-import org.opencms.page.CmsXmlPage;
-import org.opencms.report.I_CmsReport;
-import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -314,7 +312,11 @@ public class CmsImportVersion3 extends A_CmsImport {
                 destination = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESTINATION);
                 // <type>
                 type = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
-                resType = m_cms.getResourceTypeId(type);
+                if (C_RESOURCE_TYPE_NEWPAGE_NAME.equals(type)) {
+                    resType = C_RESOURCE_TYPE_NEWPAGE_ID;
+                } else {
+                    resType = m_cms.getResourceTypeId(type);
+                }
                 // <uuidstructure>
                 uuidstructure = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDSTRUCTURE);
                 // <uuidresource>
@@ -500,7 +502,7 @@ public class CmsImportVersion3 extends A_CmsImport {
 
             // convert to xml page if wanted
             if (m_convertToXmlPage 
-                && (resType == CmsResourceTypePage.C_RESOURCE_TYPE_ID || resType == CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID)) {
+                && (resType == CmsResourceTypePage.C_RESOURCE_TYPE_ID || resType == C_RESOURCE_TYPE_NEWPAGE_ID)) {
                 
                 if (content != null) {
                     CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(content), "body", getLocale(destination, properties));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/02/05 22:27:14 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/02/09 10:27:12 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.importexport;
 
-import org.opencms.loader.CmsPageLoader;
 import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
@@ -360,7 +359,11 @@ public class CmsImportVersion2 extends A_CmsImport {
                 source = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_SOURCE);
                 destination = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESTINATION);
                 type = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
-                resType = m_cms.getResourceTypeId(type);
+                if (C_RESOURCE_TYPE_NEWPAGE_NAME.equals(type)) {
+                    resType = C_RESOURCE_TYPE_NEWPAGE_ID;
+                } else {
+                    resType = m_cms.getResourceTypeId(type);
+                }
                 uuid = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDSTRUCTURE);
                 uuidfile = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDCONTENT);
                 uuidresource = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE);
@@ -438,7 +441,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 CmsResource newpage = null;
                 
                 try {
-                    newpage = m_cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "restypes/" + CmsResourceTypeNewPage.C_RESOURCE_TYPE_NAME);
+                    newpage = m_cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "restypes/" + CmsResourceTypeXmlPage.C_RESOURCE_TYPE_NAME);
                 } catch (CmsException e1) {
                     // do nothing, 
                 }
@@ -648,10 +651,10 @@ public class CmsImportVersion2 extends A_CmsImport {
 
         // check if the template property exists. If not, create it.
         try {
-            m_cms.readPropertydefinition(I_CmsConstants.C_PROPERTY_TEMPLATE, CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
+            m_cms.readPropertydefinition(I_CmsConstants.C_PROPERTY_TEMPLATE, CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID);
         } catch (CmsException e) {
             // the template propertydefintion does not exist. So create it.
-            m_cms.createPropertydefinition(I_CmsConstants.C_PROPERTY_TEMPLATE, CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
+            m_cms.createPropertydefinition(I_CmsConstants.C_PROPERTY_TEMPLATE, CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID);
         }
         // copy all propertydefinitions of the old page to the new page
         Vector definitions = m_cms.readAllPropertydefinitions(CmsResourceTypePage.C_RESOURCE_TYPE_ID);
@@ -663,9 +666,9 @@ public class CmsImportVersion2 extends A_CmsImport {
             CmsPropertydefinition definition = (CmsPropertydefinition)j.next();
             // check if this propertydef already exits
             try {
-                m_cms.readPropertydefinition(definition.getName(), CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
+                m_cms.readPropertydefinition(definition.getName(), CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID);
             } catch (Exception e) {
-                m_cms.createPropertydefinition(definition.getName(), CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
+                m_cms.createPropertydefinition(definition.getName(), CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID);
             }
         }
 
@@ -795,13 +798,6 @@ public class CmsImportVersion2 extends A_CmsImport {
                     pagefile.setType(CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID);
                     pagefile.setLoaderId(CmsXmlPageLoader.C_RESOURCE_LOADER_ID);
                 }
-            } else {
-                
-                pagefile.setContents(bodyfile.getContents());
-                
-                // set the type to 'newpage'                               
-                pagefile.setType(CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
-                pagefile.setLoaderId(CmsPageLoader.C_RESOURCE_LOADER_ID);
             }
  
             // write all changes                     

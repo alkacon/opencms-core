@@ -11141,20 +11141,6 @@
             <accesscontrol/>
         </file>
         <file>
-            <source>system/workplace/resources/ic_file_newpage.gif</source>
-            <destination>system/workplace/resources/ic_file_newpage.gif</destination>
-            <type>image</type>
-            <uuidresource>29f43a5d-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-            <uuidcontent>29f43a5c-c0f9-11d7-8d80-80884c2772a5</uuidcontent>
-            <datelastmodified>1046214000000</datelastmodified>
-            <userlastmodified>Admin</userlastmodified>
-            <datecreated>1046214000000</datecreated>
-            <usercreated>Admin</usercreated>
-            <flags>0</flags>
-            <properties/>
-            <accesscontrol/>
-        </file>
-        <file>
             <source>system/workplace/resources/ic_file_othertype.gif</source>
             <destination>system/workplace/resources/ic_file_othertype.gif</destination>
             <type>image</type>
@@ -12341,20 +12327,6 @@
             <datelastmodified>1046214000000</datelastmodified>
             <userlastmodified>Admin</userlastmodified>
             <datecreated>1046214000000</datecreated>
-            <usercreated>Admin</usercreated>
-            <flags>0</flags>
-            <properties/>
-            <accesscontrol/>
-        </file>
-        <file>
-            <source>system/workplace/restypes/newpage</source>
-            <destination>system/workplace/restypes/newpage</destination>
-            <type>plain</type>
-            <uuidresource>f3b80ec4-bc45-11d7-8ef3-9d279ec8e7e0</uuidresource>
-            <uuidcontent>f3b80ec5-bc45-11d7-8ef3-9d279ec8e7e0</uuidcontent>
-            <datelastmodified>1058879465000</datelastmodified>
-            <userlastmodified>Admin</userlastmodified>
-            <datecreated>1058879465000</datecreated>
             <usercreated>Admin</usercreated>
             <flags>0</flags>
             <properties/>
