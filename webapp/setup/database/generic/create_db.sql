@@ -2,10 +2,11 @@
 # replacer = "${database}"
 ############################
 
-create user ${user} identified by ${password}
-default tablespace ${defaultTablespace}
-temporary tablespace ${temporaryTablespace}
-quota unlimited on ${defaultTablespace}
-quota unlimited on ${temporaryTablespace};
+CREATE USER ${user} 
+	IDENTIFIED BY ${password}
+	DEFAULT TABLESPACE ${defaultTablespace}
+	TEMPORARY TABLESPACE ${temporaryTablespace}
+	QUOTA UNLIMITED ON ${defaultTablespace}
+	QUOTA UNLIMITED ON ${temporaryTablespace};
 
-grant connect, resource to ${user} ;
+GRANT CONNECT, RESOURCE TO ${user};
