@@ -11,6 +11,7 @@ Legend:
 OpenCms 4.3.32 Bela Tegeuse - ?? July 2001
 ! Added a ecmascript-engine to the OpenCms-shell. You can start it with like this:
   cmsshell -mode=ecmascript
+! It is now possible to switch off the lock dialogs in the user start settings.
 * Fixed bug about ubloading folders.
 * Fixed bug about uploading and unzipping zip-archives.
 * Fixed bug in the synchronize administration
