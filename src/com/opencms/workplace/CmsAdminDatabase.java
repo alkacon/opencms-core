@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2002/05/31 13:20:58 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2002/06/03 08:08:32 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.25 $ $Date: 2002/05/31 13:20:58 $
+ * @version $Revision: 1.26 $ $Date: 2002/06/03 08:08:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -196,7 +196,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
         if((action != null) && ("working".equals(action))) {
             // still working?
             Thread doTheWork = (Thread)session.getValue(C_DATABASE_THREAD);
-            if(doTheWork.isAlive()) {
+            if(doTheWork != null && doTheWork.isAlive()) {
                 String time = (String)parameters.get("time");
                 int wert = Integer.parseInt(time);
                 wert += 20;
