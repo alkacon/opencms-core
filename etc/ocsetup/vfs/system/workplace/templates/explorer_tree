@@ -13,7 +13,7 @@
 <!-- begin of folder tree -->
 <table cellspacing=0 cellpadding=0 border=0>
 	 <tr>
- 		<td align=left><p class=einzug><A href="#"><IMG border=0  src="../pics/ic_tree_start.gif" width=16 height=16></a> <a href="#" class="treefolder">]]><LABEL value="title.rootfolder" /><![CDATA[</a></p></td>
+ 		<td align=left><p class=einzug><A href="#"><IMG border=0  src="]]><METHOD name="picsUrl">ic_tree_start.gif</METHOD><![CDATA[" width=16 height=16></a> <a href="#" class="treefolder">]]><LABEL value="title.rootfolder" /><![CDATA[</a></p></td>
 	</tr>
 	]]><METHOD name="getTree"></METHOD><![CDATA[
 	
@@ -27,23 +27,21 @@
 <TREELINE>
 <![CDATA[
 <tr>
-	<td valign=bottom>
-	   <p class=tree> ]]><PROCESS>TREETAB</PROCESS><![CDATA[  ]]><PROCESS>TREESWITCH</PROCESS><![CDATA[  ]]><PROCESS>TREEFOLDER</PROCESS><![CDATA[&nbsp;]]><PROCESS>TREEENTRY</PROCESS><![CDATA[		
-	</td>
+	<td align=left><p class=einzug>]]><PROCESS>TREETAB</PROCESS><![CDATA[  ]]><PROCESS>TREESWITCH</PROCESS><![CDATA[  ]]><PROCESS>TREEFOLDER</PROCESS><![CDATA[&nbsp;<a href="#" class="]]><PROCESS>TREESTYLE</PROCESS><![CDATA[">]]><PROCESS>TREEENTRY</PROCESS><![CDATA[</a></p></td>	
 </tr>
 ]]>
 </TREELINE>
 
-<TREEIMG_EMPTY0><![CDATA[<img src="../pics/empty.gif" border=0 vspace=0 hspace=0 width=0 height=16 align=left>]]></TREEIMG_EMPTY0>
-<TREEIMG_EMPTY><![CDATA[<img src="../pics/empty.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_EMPTY>
-<TREEIMG_VERT><![CDATA[<img src="../pics/ic_tree_vert.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_VERT>
-<TREEIMG_FOLDEROPEN><![CDATA[<img src="../pics/ic_tree_folderopen.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_FOLDEROPEN>
-<TREEIMG_FOLDERCLOSE><![CDATA[<img src="../pics/ic_tree_folder.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_FOLDERCLOSE>
-<TREEIMG_CROSS><![CDATA[<img src="../pics/ic_tree_kreuz.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_CROSS>
-<TREEIMG_PCROSS><![CDATA[<img src="../pics/ic_tree_pkreuz.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_PCROSS>
-<TREEIMG_MCROSS><![CDATA[<img src="../pics/ic_tree_mkreuz.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_MCROSS>
-<TREEIMG_END><![CDATA[<img src="../pics/ic_tree_end.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_END>
-<TREEIMG_PEND><![CDATA[<img src="../pics/ic_tree_pend.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_PEND>
-<TREEIMG_MEND><![CDATA[<img src="../pics/ic_tree_mend.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_MEND>
+<TREEIMG_EMPTY0><![CDATA[<img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 vspace=0 hspace=0 width=0 height=16 align=left>]]></TREEIMG_EMPTY0>
+<TREEIMG_EMPTY><![CDATA[<img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_EMPTY>
+<TREEIMG_VERT><![CDATA[<img src="]]><METHOD name="picsUrl">ic_tree_vert.gif</METHOD><![CDATA[" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_VERT>
+<TREEIMG_FOLDEROPEN><![CDATA[<img src="]]><METHOD name="picsUrl">ic_tree_folderopen.gif</METHOD><![CDATA[" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_FOLDEROPEN>
+<TREEIMG_FOLDERCLOSE><![CDATA[<img src="]]><METHOD name="picsUrl">ic_tree_folder.gif</METHOD><![CDATA[" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_FOLDERCLOSE>
+<TREEIMG_CROSS><![CDATA[<img src="]]><METHOD name="picsUrl">ic_tree_kreuz.gif</METHOD><![CDATA[" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_CROSS>
+<TREEIMG_PCROSS><![CDATA[<a href="]]><PROCESS>TREELINK</PROCESS><![CDATA["><img src="]]><METHOD name="picsUrl">ic_tree_pkreuz.gif</METHOD><![CDATA[" border=0 vspace=0 hspace=0 width=16 height=16 align=left></a>]]></TREEIMG_PCROSS>
+<TREEIMG_MCROSS><![CDATA[<a href="]]><PROCESS>TREELINK</PROCESS><![CDATA["><img src="]]><METHOD name="picsUrl">ic_tree_mkreuz.gif</METHOD><![CDATA[" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_MCROSS>
+<TREEIMG_END><![CDATA[<img src="]]><METHOD name="picsUrl">ic_tree_end.gif</METHOD><![CDATA[" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_END>
+<TREEIMG_PEND><![CDATA[<a href="]]><PROCESS>TREELINK</PROCESS><![CDATA["><img src="]]><METHOD name="picsUrl">ic_tree_pend.gif</METHOD><![CDATA[" border=0 vspace=0 hspace=0 width=16 height=16 align=left></a>]]></TREEIMG_PEND>
+<TREEIMG_MEND><![CDATA[<a href="]]><PROCESS>TREELINK</PROCESS><![CDATA["><img src="]]><METHOD name="picsUrl">ic_tree_mend.gif</METHOD><![CDATA[" border=0 vspace=0 hspace=0 width=16 height=16 align=left></a>]]></TREEIMG_MEND>
 
 </WORKPLACE>

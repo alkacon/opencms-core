@@ -29,7 +29,7 @@
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
 	<tr>
-		<td><IMG alt=OpenCMS border=0 hspace=0 src="../pics/opencms.gif"></td>
+		<td><IMG alt=OpenCMS border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
 	</tr>
 </table>
 <!-- End Logo opencms -->

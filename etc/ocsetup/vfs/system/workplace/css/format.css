@@ -11,6 +11,13 @@ P
     FONT-SIZE: 8pt;
     TEXT-INDENT: 15px
 }
+P.aktordner
+{
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    TEXT-INDENT: 5px;
+	FONT-WEIGHT: bold;
+}
 .allgtext
 {
     COLOR: #000000;
@@ -189,12 +196,6 @@ P.einzug
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt;
     TEXT-INDENT: 5px
-}
-P.tree
-{
-    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
-    FONT-SIZE: 8pt;
-    TEXT-INDENT: 0px
 }
 P.tab
 {
@@ -376,7 +377,45 @@ a:hover.taskalertok
 	TEXT-DECORATION: line-through;
 }
 
-
+/* styles for the tree						*/
+a.treefolder
+{
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+a:visited.treefolder
+{
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+a:hover.treefolder
+{
+    BACKGROUND-COLOR: #000066;
+	COLOR: white;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+a.treefoldernip
+{
+    COLOR: silver;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+a:visited.treefoldernip
+{
+    COLOR: silver;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+a:hover.treefoldernip
+{
+    BACKGROUND-COLOR: #000066;
+	COLOR: silver;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
 
 /* styles for the filelist					*/
 TD.dateigeloescht
@@ -543,4 +582,16 @@ TD.inaktiv
     COLOR: #838383;
 	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt;
+}
+/*============================================*/
+/* Styles for timer							  */
+/*============================================*/
+DIV.timer_day
+{
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    LEFT: 60px;
+	TOP: 100px;
+    VISIBILITY: hidden;
+    Z-INDEX: 1;
 }
