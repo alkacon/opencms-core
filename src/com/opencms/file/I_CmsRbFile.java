@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRbFile.java,v $
- * Date   : $Date: 2000/02/24 14:45:04 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/02/25 16:55:09 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/02/24 14:45:04 $
+ * @version $Revision: 1.12 $ $Date: 2000/02/25 16:55:09 $
  */
  interface I_CmsRbFile {
 	
@@ -280,6 +280,30 @@ import com.opencms.core.*;
 	public void deleteFile(A_CmsProject project, String filename)
 		throws CmsException;
 	
+     /**
+	 * Undeletes a file in the Cms.<br>
+	 *
+     * A file can only be deleted in an offline project.
+     * Only files with the state DELETED can be undeleted. 
+     * A file is deleted by setting its state to CHANGED (3). <br> 
+     * 
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callinUser</li>
+	 * </ul>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param filename The complete path of the file.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void undeleteFile(A_CmsProject project, String filename)
+		throws CmsException;
+    
     /**
 	 * Removes a file in the Cms.<br>
 	 *
@@ -320,7 +344,7 @@ import com.opencms.core.*;
 	 * </ul>
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can read and write the sourceresource</li>

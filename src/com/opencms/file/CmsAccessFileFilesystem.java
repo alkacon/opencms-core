@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileFilesystem.java,v $
- * Date   : $Date: 2000/02/24 14:45:03 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/02/25 16:55:08 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/02/24 14:45:03 $
+ * @version $Revision: 1.17 $ $Date: 2000/02/25 16:55:08 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -388,6 +388,22 @@ import com.opencms.core.*;
          }
      }
 	
+     /**
+	 * Undeletes the file. <br>
+	 * This function is not possible in the filesystem yet.
+	 * 
+     * @param project The project in which the resource will be used.
+	 * @param filename The complete path of the file.
+	 * 
+     * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void undeleteFile(A_CmsProject project, String filename)
+         throws CmsException {
+         // this function is not possible, so throw an excection 
+         throw new CmsException("[" + this.getClass().getName() + "] "+filename,CmsException.C_FILESYSTEM_ERROR);
+     }
+     
+     
   
      /**
       * Deletes a file in the filesytem.

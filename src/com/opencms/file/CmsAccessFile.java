@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFile.java,v $
- * Date   : $Date: 2000/02/24 14:45:03 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/02/25 16:55:08 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/02/24 14:45:03 $
+ * @version $Revision: 1.11 $ $Date: 2000/02/25 16:55:08 $
  */
 class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -261,7 +261,21 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
          throws CmsException {
          getFilesystem(filename).deleteFile(project,filename);
      }
-	
+
+     /**
+	 * Undeletes the file.
+	 *  
+     * @param project The project in which the resource will be used.
+	 * @param filename The complete path of the file.
+	 * 
+     * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void undeleteFile(A_CmsProject project, String filename)
+         throws CmsException {
+         getFilesystem(filename).undeleteFile(project,filename);
+     }
+     
+     
       /**
       * Deletes a file.
       * In difference to the deleteFile method the given file is physically deleted and

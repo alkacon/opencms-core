@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsAccessFile.java,v $
- * Date   : $Date: 2000/02/24 14:45:04 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/02/25 16:55:09 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/02/24 14:45:04 $
+ * @version $Revision: 1.13 $ $Date: 2000/02/25 16:55:09 $
  */
 interface I_CmsAccessFile {
 
@@ -200,6 +200,17 @@ interface I_CmsAccessFile {
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
 	 public void deleteFile(A_CmsProject project, String filename)
+		throws CmsException;
+     
+     /**
+	 * Undeletes the file.
+	 * 
+     * @param project The project in which the resource will be used.
+	 * @param filename The complete path of the file.
+	 * 
+     * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void undeleteFile(A_CmsProject project, String filename)
 		throws CmsException;
      
       /**

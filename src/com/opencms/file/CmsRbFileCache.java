@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFileCache.java,v $
- * Date   : $Date: 2000/02/24 14:45:03 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/02/25 16:55:09 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/02/24 14:45:03 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/25 16:55:09 $
  */
  class CmsRbFileCache extends CmsRbFile {
      
@@ -97,14 +97,13 @@ import com.opencms.core.*;
          // not found in cache, so get it from the database and add it to cache
          if (res == null) {
              res=m_accessFile.readFileHeader(project,filename);
-             if (res.getLength()<C_MAXFILESIZE) {
-                   m_filecache.put(key,res);
-             }
+             m_filecache.put(key,res);
           }
          return res;
      }
-    
-      /**
+       
+     
+     /**
 	 * Writes the fileheader to the Cms.<br>
 	 * 
 	 * A file header can only be written to an offline project.<br>
@@ -133,12 +132,42 @@ import com.opencms.core.*;
                                 CmsFile file,boolean changed)
 		throws CmsException{
         String key=C_FILE+project.getId()+file.getAbsolutePath();
-        // check for max filesize, add it to cache if file is not too big
-        if (file.getLength()<C_MAXFILESIZE) {
-            m_filecache.put(key,file);
-        }
         m_accessFile.writeFileHeader(project,onlineProject,file,changed);
-     }
+        m_filecache.put(key,file);
+        }
+    
+    	 /**
+	 * Writes a file to the Cms.<br>
+	 * 
+	 * A file can only be written to an offline project.<br>
+	 * The state of the resource is set to  CHANGED (1). The file content of the file
+	 * is either updated (if it is already existing in the offline project), or created
+	 * in the offline project (if it is not available there).<br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param file The file to write.
+	 * @param changed Flag indicating if the file state must be set to changed.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void writeFile(A_CmsProject project,
+                          A_CmsProject onlineProject,
+                          CmsFile file, boolean changed)
+		throws CmsException{
+        String key=C_FILE+project.getId()+file.getAbsolutePath();
+        m_accessFile.writeFile(project,onlineProject,file,changed);
+        m_filecache.put(key,file);
+    }
+    
     
   /**
 	 * Deletes a file in the Cms.<br>

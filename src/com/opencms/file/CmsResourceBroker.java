@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/24 14:45:03 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2000/02/25 16:55:09 $
+ * Version: $Revision: 1.73 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,8 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michaela Schleich
- * @version $Revision: 1.72 $ $Date: 2000/02/24 14:45:03 $
+ * @author Michael Emmerich
+ * @version $Revision: 1.73 $ $Date: 2000/02/25 16:55:09 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2958,6 +2959,7 @@ System.err.println(">>> readFile(2) error for\n" +
 		}
 	}
 	
+       
 	/**
 	 * Copies a file in the Cms. <br>
 	 * 

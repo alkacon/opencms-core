@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/02/20 11:42:09 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/02/25 16:55:09 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2000/02/20 11:42:09 $
+ * @version $Revision: 1.24 $ $Date: 2000/02/25 16:55:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -574,7 +574,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
              accessFlags.append("-");
          }
          if ((access & C_ACCESS_INTERNAL_READ) > 0){
-             accessFlags.append("v");
+             accessFlags.append("i");
          } else {
              accessFlags.append("-");
          }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/02/24 16:42:11 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2000/02/25 16:55:09 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.33 $ $Date: 2000/02/24 16:42:11 $
+ * @version $Revision: 1.34 $ $Date: 2000/02/25 16:55:09 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -728,6 +728,7 @@ import com.opencms.util.*;
            try {   
              // update the file header in the RESOURCE database.
              writeFileHeader(project,onlineProject,file,changed);
+             file.setState(C_STATE_CHANGED);
              // update the file content in the FILES database.
              PreparedStatement statementFileUpdate=m_Con.prepareStatement(C_FILE_UPDATE);
              //FILE_CONTENT
@@ -759,14 +760,14 @@ import com.opencms.util.*;
            ResultSet res;
            ResultSet tmpres;
            byte[] content;
-           
+                    
            try {  
                 // check if the file content for this file is already existing in the
                 // offline project. If not, load it from the online project and add it
                 // to the offline project.
                 //System.err.println("WFH] Try to write File header for "+file.getAbsolutePath());
                   
-               if (file.getState() == C_STATE_UNCHANGED) {
+               if ((file.getState() == C_STATE_UNCHANGED) && (changed == true) ) {
                     // read file content form the online project
     
                     PreparedStatement statementFileRead=m_Con.prepareStatement(C_FILE_READ);
@@ -878,7 +879,32 @@ import com.opencms.util.*;
          }        
      }
      
-       
+    
+     /**
+	 * Undeletes the file.
+	 * 
+     * @param project The project in which the resource will be used.
+	 * @param filename The complete path of the file.
+	 * 
+     * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void undeleteFile(A_CmsProject project, String filename)
+         throws CmsException {
+         try { 
+           PreparedStatement statementResourceRemove=m_Con.prepareStatement(C_RESOURCE_REMOVE);  
+           // mark the file as deleted       
+           statementResourceRemove.setInt(1,C_STATE_CHANGED);
+           statementResourceRemove.setInt(2,C_UNKNOWN_ID);
+           statementResourceRemove.setString(3,absoluteName(filename));
+           statementResourceRemove.setInt(4,project.getId());
+           statementResourceRemove.executeUpdate();               
+          
+         } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }        
+     }
+     
+     
      /**
       * Deletes a file in the database. 
       * This method is used to physically remove a file form the database.

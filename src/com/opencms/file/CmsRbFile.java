@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFile.java,v $
- * Date   : $Date: 2000/02/24 16:42:11 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/02/25 16:55:09 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/02/24 16:42:11 $
+ * @version $Revision: 1.17 $ $Date: 2000/02/25 16:55:09 $
  */
  class CmsRbFile implements I_CmsRbFile, I_CmsConstants {
 	
@@ -307,6 +307,32 @@ import com.opencms.core.*;
 	public void deleteFile(A_CmsProject project, String filename)
 		throws CmsException{
         m_accessFile.deleteFile(project,filename);
+     }
+    
+    /**
+	 * Undeletes a file in the Cms.<br>
+	 *
+     * A file can only be deleted in an offline project.
+     * Only files with the state DELETED can be undeleted. 
+     * A file is deleted by setting its state to CHANGED . <br> 
+     * 
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callinUser</li>
+	 * </ul>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param filename The complete path of the file.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void undeleteFile(A_CmsProject project, String filename)
+		throws CmsException{
+        m_accessFile.undeleteFile(project,filename);
      }
     
      /**

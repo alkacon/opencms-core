@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/02/22 12:02:31 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/02/25 16:55:09 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/02/22 12:02:31 $
+ * @version $Revision: 1.14 $ $Date: 2000/02/25 16:55:09 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -128,10 +128,8 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                    // should not be loaded 
                    cms.lockResource(contentFile.getAbsolutePath());
                    
-                   // TODO: This does not work yet. Change it when the bug in the RB or access module is removed
-                   //contentfile.setAccessFlags(contentfile.getAccessFlags()+C_ACCESS_INTERNAL_READ);
-                   //cms.writeFile(contentfile);
-                   
+                   cms.chmod(contentFile.getAbsolutePath(), contentFile.getAccessFlags()+C_ACCESS_INTERNAL_READ);
+                                   
                    // now check if navigation informations have to be added to the new page.
                    if (navtitle != null) {
                         cms.writeMetainformation(file.getAbsolutePath(),C_METAINFO_NAVTITLE,navtitle);                       
