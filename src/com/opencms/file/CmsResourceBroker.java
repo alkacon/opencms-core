@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/20 19:08:38 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2000/02/20 19:44:16 $
+ * Version: $Revision: 1.71 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michaela Schleich
- * @version $Revision: 1.70 $ $Date: 2000/02/20 19:08:38 $
+ * @version $Revision: 1.71 $ $Date: 2000/02/20 19:44:16 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3829,7 +3829,6 @@ System.err.println(">>> readFile(2) error for\n" +
 		 }
 		 // create the timestamp
 		 java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
-		System.err.println("RB createproject2");
 		 return m_taskRb.createProject(currentUser, projectname, projectType, 
 									   role, timestamp, priority);
 		 
