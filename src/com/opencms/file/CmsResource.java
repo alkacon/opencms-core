@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/07/22 08:11:55 $
-* Version: $Revision: 1.70 $
+* Date   : $Date: 2003/07/23 07:54:10 $
+* Version: $Revision: 1.71 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  *
  * @author Michael Emmerich
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.70 $ $Date: 2003/07/22 08:11:55 $
+ * @version $Revision: 1.71 $ $Date: 2003/07/23 07:54:10 $
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
     
@@ -844,4 +844,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         return getVfsLinkType() == I_CmsConstants.C_VFS_LINK_TYPE_MASTER;
     }
 
+    public void setVfsLinkType(int newType) {
+        m_vfsLinkType = newType;
+    }
 }

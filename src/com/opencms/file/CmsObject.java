@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/22 17:13:33 $
-* Version: $Revision: 1.348 $
+* Date   : $Date: 2003/07/23 07:54:10 $
+* Version: $Revision: 1.349 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.348 $
+ * @version $Revision: 1.349 $
  */
 public class CmsObject extends Object {
 
@@ -1138,7 +1138,7 @@ public class CmsObject extends Object {
      * has not the appropriate rights to copy the file.
      */
     protected void doCopyFile(String source, String destination, boolean lockCopy) throws CmsException {
-        m_driverManager.copyFile(m_context, addSiteRoot(source), addSiteRoot(destination), lockCopy);
+        m_driverManager.copyFile(m_context, addSiteRoot(source), addSiteRoot(destination), lockCopy, false);
     }
 
     /**
@@ -1151,7 +1151,7 @@ public class CmsObject extends Object {
      * user has not the appropriate rights to copy the folder.
      */
     protected void doCopyFolder(String source, String destination, boolean lockCopy) throws CmsException {
-        m_driverManager.copyFolder(m_context, addSiteRoot(source), addSiteRoot(destination), lockCopy);
+        m_driverManager.copyFolder(m_context, addSiteRoot(source), addSiteRoot(destination), lockCopy, false);
     }
 
     /**
@@ -1361,10 +1361,9 @@ public class CmsObject extends Object {
      * @throws CmsException if the user has not the rights to move this resource,
      * or if the file couldn't be moved.
      */
-    /*
     protected void doMoveResource(String source, String destination) throws CmsException {
         m_driverManager.moveResource(m_context, addSiteRoot(source), addSiteRoot(destination));
-    }*/
+    }
 
     /**
      * Renames the resource to the new name.
@@ -4177,9 +4176,9 @@ public class CmsObject extends Object {
      * @param acEntries			a vector of access control entries
      * @throws CmsException		if something goes wrong
      */
-    public void writeAccessControlEntries(CmsResource resource, Vector acEntries) throws CmsException {
+    public void importAccessControlEntries(CmsResource resource, Vector acEntries) throws CmsException {
         // TODO: force the access control entries to belong to the given resource
-        m_driverManager.writeAccessControlEntries(m_context, resource, acEntries);
+        m_driverManager.importAccessControlEntries(m_context, resource, acEntries);
     }
 
     /**

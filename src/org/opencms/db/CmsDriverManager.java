@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/22 17:13:33 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2003/07/23 07:54:11 $
+ * Version: $Revision: 1.83 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.82 $ $Date: 2003/07/22 17:13:33 $
+ * @version $Revision: 1.83 $ $Date: 2003/07/23 07:54:11 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1053,14 +1053,14 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public void copyFile(CmsRequestContext context, String source, String destination, boolean lockCopy) throws CmsException {
+    public void copyFile(CmsRequestContext context, String source, String destination, boolean lockCopy, boolean copyAsLink) throws CmsException {
         String destinationFileName = null;
         String destinationFolderName = null;
         CmsResource newResource = null;
         Map newResourceProps = null;
 
         if (destination.endsWith("/")) {
-            copyFolder(context, source, destination, lockCopy);
+            copyFolder(context, source, destination, lockCopy, copyAsLink);
             return;
         }
 
@@ -1079,24 +1079,27 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, sourceFile, I_CmsConstants.C_READ_ACCESS);
         checkPermissions(context, destinationFolder, I_CmsConstants.C_WRITE_ACCESS);
 
-        // create a copy of the source file in the destination parent folder      
-        newResource = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, sourceFile.getFlags(), destinationFolder.getId(), sourceFile.getContents(), getResourceType(sourceFile.getType()));
-
-        // remove any possibly cached resources of the destination
-        clearResourceCache();
-
-        // copy the metainfos/properties
+        // read the source properties
         newResourceProps = readProperties(context, source, null, false);
-        writeProperties(context, destination, newResourceProps);
-
-        // copy the access control entries
-        ListIterator aceList = m_userDriver.getAccessControlEntries(context.currentProject(), sourceFile.getResourceAceId(), false).listIterator();
-        while (aceList.hasNext()) {
-            CmsAccessControlEntry ace = (CmsAccessControlEntry) aceList.next();
-            m_userDriver.createAccessControlEntry(context.currentProject(), newResource.getResourceAceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
-
-        }
         
+        // create a copy of the source file in the destination parent folder      
+        if (copyAsLink)
+            createVfsLink(context, destination, source, newResourceProps, I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
+        else {
+            newResource = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, sourceFile.getFlags(), destinationFolder.getId(), sourceFile.getContents(), getResourceType(sourceFile.getType()));
+
+            // copy the properties
+            writeProperties(context, destination, newResourceProps);
+            
+            // copy the access control entries
+            ListIterator aceList = m_userDriver.getAccessControlEntries(context.currentProject(), sourceFile.getResourceAceId(), false).listIterator();
+            while (aceList.hasNext()) {
+                CmsAccessControlEntry ace = (CmsAccessControlEntry) aceList.next();
+                m_userDriver.createAccessControlEntry(context.currentProject(), newResource.getResourceAceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
+
+            }
+        }
+
         if (lockCopy) {
             lockResource(context, destination, true);
         }
@@ -1127,7 +1130,8 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public void copyFolder(CmsRequestContext context, String source, String destination, boolean lockCopy) throws CmsException {
+    // TODO: implement copyAsLink
+    public void copyFolder(CmsRequestContext context, String source, String destination, boolean lockCopy, boolean copyAsLink) throws CmsException {
         CmsResource newResource = null;
 
         // the name of the folder.
@@ -1711,6 +1715,10 @@ public class CmsDriverManager extends Object {
     }
 
     public CmsResource createVfsLink(CmsRequestContext context, String linkName, String targetName, Map linkProperties) throws CmsException {
+        return createVfsLink(context, linkName, targetName, linkProperties, I_CmsConstants.C_VFS_LINK_TYPE_SLAVE);
+    }
+    
+    public CmsResource createVfsLink(CmsRequestContext context, String linkName, String targetName, Map linkProperties, int vfsLinkType) throws CmsException {
         CmsResource targetResource = null;
         CmsFile linkResource = null;
         String parentFolderName = null;
@@ -1725,6 +1733,11 @@ public class CmsDriverManager extends Object {
         // read the parent folder
         parentFolder = this.readFolder(context, parentFolderName, false);
 
+        // if the desired vfsLinkType is master, the target has to be the current master
+        if (vfsLinkType == I_CmsConstants.C_VFS_LINK_TYPE_MASTER && !targetResource.isHardLink()) {
+            throw new CmsException("[" + this.getClass().getName() + "] " + targetName +  " is not hard link", CmsException.C_NO_ACCESS);
+        }
+        
         // for the parernt folder is write access required
         checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS);
 
@@ -1756,10 +1769,17 @@ public class CmsDriverManager extends Object {
                 I_CmsConstants.C_VFS_LINK_TYPE_SLAVE);
 
         // write the link
-        linkResource = m_vfsDriver.createFile(context.currentProject(), linkResource, context.currentUser().getId(), parentFolder.getId(), resourceName, true);
+        linkResource = m_vfsDriver.createFile(context.currentProject(), linkResource, context.currentUser().getId(), parentFolder.getId(), resourceName, vfsLinkType);
         // write its properties
         m_vfsDriver.writeProperties(linkProperties, context.currentProject().getId(), linkResource, linkResource.getType());
 
+        // if the desired vfsLinkType is master, the target is changed to be a softlink
+        if (vfsLinkType == I_CmsConstants.C_VFS_LINK_TYPE_MASTER) {
+            targetResource.setVfsLinkType(I_CmsConstants.C_VFS_LINK_TYPE_SLAVE);
+            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile)targetResource, C_UPDATE_STRUCTURE);    
+        }
+        
+        // if the source
         clearResourceCache();
 
         return linkResource;
@@ -4643,27 +4663,23 @@ public class CmsDriverManager extends Object {
      */
     public void moveResource(CmsRequestContext context, String sourceName, String destinationName) throws CmsException {
         
-        //
-        // move is now copy/delete, since the structure ids should be different
-        //
-        
         // read the source file
         CmsResource source = readFileHeader(context, sourceName);
 
-        if (source.isFile()) { 
-            copyFile(context, sourceName, destinationName, true);
-            deleteFile(context, sourceName, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
-        } else {
-            copyFolder(context, sourceName, destinationName, true);
-            deleteFolder(context, sourceName);
-        }
-
-        /*
         // read the parent folder of the destination
         String parentResourceName = CmsResource.getParent(destinationName);
         String resourceName = destinationName.substring(destinationName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1);
         CmsFolder destinationFolder = readFolder(context, parentResourceName);
 
+        if (source.isFile()) {
+            copyFile(context, sourceName, destinationName, true, true);
+            this.deleteFile(context, sourceName, I_CmsConstants.C_DELETE_OPTION_PRESERVE_VFS_LINKS);
+        } else {
+            copyFolder(context, sourceName, destinationName, true, true);
+            deleteFolder(context,sourceName);
+        }
+        
+        /*
         // check if the user has write access
         checkPermissions(context, source, I_CmsConstants.C_WRITE_ACCESS);
         checkPermissions(context, destinationFolder, I_CmsConstants.C_WRITE_ACCESS);
@@ -7328,7 +7344,10 @@ public class CmsDriverManager extends Object {
         fileSystemChanged(isFolder);
     */
         CmsResource res = readFileHeader(context, resourceName);
-        touchResource(context, res, timestamp);
+        if (res.isFile())
+            touchResource(context, res, timestamp);
+        //else
+            touchStructure(context, res, timestamp);
     }
 
     /**
@@ -7353,27 +7372,27 @@ public class CmsDriverManager extends Object {
         fileSystemChanged(res.isFolder());
     }
     
-//    /**
-//     * Access the driver underneath to change the timestamp of a resource.
-//     * 
-//     * @param context.currentUser() the currentuser who requested this method
-//     * @param context.currentProject() the current project of the user 
-//     * @param resourceName the name of the resource to change
-//     * @param timestamp timestamp the new timestamp of the changed resource
-//     */
-//    private void touchStructure(CmsRequestContext context, CmsResource res, long timestamp) throws CmsException {
-//        
-//        // NOTE: this is the new way to update the state !
-//        if (res.getState() < I_CmsConstants.C_STATE_CHANGED)
-//            res.setState(I_CmsConstants.C_STATE_CHANGED);
-//                
-//        res.setDateLastModified(timestamp);
-//        res.setUserLastModified(context.currentUser().getId());
-//        m_vfsDriver.updateResourcestate(res, C_UPDATE_STRUCTURE);
-//        
-//        clearResourceCache();
-//        fileSystemChanged(res.isFolder());        
-//    }
+    /**
+     * Access the driver underneath to change the timestamp of a resource.
+     * 
+     * @param context.currentUser() the currentuser who requested this method
+     * @param context.currentProject() the current project of the user 
+     * @param resourceName the name of the resource to change
+     * @param timestamp timestamp the new timestamp of the changed resource
+     */
+    private void touchStructure(CmsRequestContext context, CmsResource res, long timestamp) throws CmsException {
+        
+        // NOTE: this is the new way to update the state !
+        if (res.getState() < I_CmsConstants.C_STATE_CHANGED)
+            res.setState(I_CmsConstants.C_STATE_CHANGED);
+                
+        res.setDateLastModified(timestamp);
+        res.setUserLastModified(context.currentUser().getId());
+        m_vfsDriver.updateResourcestate(res, C_UPDATE_STRUCTURE);
+        
+        clearResourceCache();
+        fileSystemChanged(res.isFolder());        
+    }
     
     /**
      * Removes the deleted mark for all access control entries of a given resource
@@ -7807,7 +7826,7 @@ public class CmsDriverManager extends Object {
      * @param acEntries			vector of access control entries applied to the resource
      * @throws CmsException		if something goes wrong
      */
-    public void writeAccessControlEntries(CmsRequestContext context, CmsResource resource, Vector acEntries) throws CmsException {
+    public void importAccessControlEntries(CmsRequestContext context, CmsResource resource, Vector acEntries) throws CmsException {
 
         checkPermissions(context, resource, I_CmsConstants.C_CONTROL_ACCESS);
 
@@ -7819,7 +7838,6 @@ public class CmsDriverManager extends Object {
         }
 
         clearAccessControlListCache();
-        touchResource(context, resource, System.currentTimeMillis());
     }
 
     /**

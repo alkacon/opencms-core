@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2003/07/22 17:13:33 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2003/07/23 07:54:10 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.StringTokenizer;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.89 $
+ * @version $Revision: 1.90 $
  * @since 5.1
  */
 public class CmsResourceTypePage implements I_CmsResourceType {
@@ -337,15 +337,11 @@ public class CmsResourceTypePage implements I_CmsResourceType {
     public void moveResource(CmsObject cms, String resourcename, String destination) throws CmsException {
         CmsFile file = cms.readFile(resourcename);
         String bodyPath = checkBodyPath(cms, file);
-        // cms.doMoveResource(resourcename, destination);
-        this.copyResource(cms, resourcename, destination, true, true);
-        this.deleteResource(cms,resourcename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+        cms.doMoveResource(resourcename, destination);
         if (bodyPath != null) {
             String hbodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + destination;
             checkFolders(cms, destination.substring(0, destination.lastIndexOf("/")));
-            // cms.doMoveResource(bodyPath, hbodyPath);
-            this.copyResource(cms, bodyPath, hbodyPath, true, true);
-            this.deleteResource(cms,resourcename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+            cms.doMoveResource(bodyPath, hbodyPath);
             changeContent(cms, destination, hbodyPath);
         }
 

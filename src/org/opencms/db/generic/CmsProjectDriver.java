@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/22 00:29:22 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2003/07/23 07:54:11 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.30 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.31 $ $Date: 2003/07/23 07:54:11 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1440,7 +1440,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         if (exc.getType() == CmsException.C_NOT_FOUND) {                        
                             // create a new File
                             currentFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                            onlineFile = m_driverManager.getVfsDriver().createFile(onlineProject, currentFile, context.currentUser().getId(), currentFile.getParentId(), currentFile.getResourceName(), currentFile.isHardLink());
+                            onlineFile = m_driverManager.getVfsDriver().createFile(onlineProject, currentFile, context.currentUser().getId(), currentFile.getParentId(), currentFile.getResourceName(), currentFile.getVfsLinkType());
                         }
                     }
     
@@ -1501,7 +1501,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     try {
                         newFile = (CmsFile) currentFile.clone();
                         newFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                        m_driverManager.getVfsDriver().createFile(onlineProject, newFile, context.currentUser().getId(), newFile.getParentId(), newFile.getResourceName(), newFile.isHardLink());
+                        m_driverManager.getVfsDriver().createFile(onlineProject, newFile, context.currentUser().getId(), newFile.getParentId(), newFile.getResourceName(), newFile.getVfsLinkType());
                     } catch (CmsException e) {
                         if (e.getType() == CmsException.C_FILE_EXISTS) {
                             CmsFile onlineFile = null;

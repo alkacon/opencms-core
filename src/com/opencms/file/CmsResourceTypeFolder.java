@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/22 17:13:33 $
-* Version: $Revision: 1.77 $
+* Date   : $Date: 2003/07/23 07:54:10 $
+* Version: $Revision: 1.78 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.77 $
+ * @version $Revision: 1.78 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -218,7 +218,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         for (int i = 0; i < allSubFiles.size(); i++) {
             CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
             if (curFile.getState() != I_CmsConstants.C_STATE_DELETED) {
-                String curDest = destination + cms.readAbsolutePath(curFile).substring(source.length());
+                // both destination and readAbsolutePath have a trailing/leading slash !
+                String curDest = destination + cms.readAbsolutePath(curFile).substring(source.length() + 1);
                 cms.copyResource(cms.readAbsolutePath(curFile), curDest, keepFlags, false);
             }
         }
@@ -440,9 +441,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
      * @see com.opencms.file.I_CmsResourceType#moveResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
     public void moveResource(CmsObject cms, String source, String destination) throws CmsException {
-        // cms.doMoveResource(source, destination);
-        this.copyResource(cms, source, destination, true, true);
-        this.deleteResource(cms,source, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+        cms.doMoveResource(source, destination);
     }
 
     /**

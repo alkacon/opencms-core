@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/22 17:13:34 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/07/23 07:54:11 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.17 $ $Date: 2003/07/22 17:13:34 $
+ * @version $Revision: 1.18 $ $Date: 2003/07/23 07:54:11 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -108,7 +108,7 @@ public interface I_CmsVfsDriver {
      */    
     // CmsFile createCmsFileFromResultSet(ResultSet res, int projectId, boolean hasProjectIdInResultSet, boolean hasFileContentInResultSet) throws SQLException, CmsException;
     
-    CmsFile createFile(CmsProject project, CmsFile file, CmsUUID userId, CmsUUID parentId, String filename, boolean isVfsLink) throws CmsException;
+    CmsFile createFile(CmsProject project, CmsFile file, CmsUUID userId, CmsUUID parentId, String filename, int vfsLinkType /* boolean isVfsLink */) throws CmsException;
     
     /**
      * Creates a new file with the given content and resourcetype.<p>
@@ -385,7 +385,7 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if something goes wrong
      * @return the number of affected resources (should be 1 in a consistent database)
      */
-    int moveResource(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsResource destinationFolder, String resourceName) throws CmsException;
+    void moveResource(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsResource destinationFolder, String resourceName) throws CmsException;
     
     /**
      * Replaces the content and properties of an existing resource.<p>
