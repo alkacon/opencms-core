@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/07/23 11:19:20 $
- * Version: $Revision: 1.209 $
+ * Date   : $Date: 2001/07/24 12:12:53 $
+ * Version: $Revision: 1.210 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.209 $ $Date: 2001/07/23 11:19:20 $ *
+ * @version $Revision: 1.210 $ $Date: 2001/07/24 12:12:53 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -4703,7 +4703,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				try {
 					newFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getAbsolutePath());
 					newFolder.setState(C_STATE_UNCHANGED);
-					writeFolder(onlineProject, newFolder, false);
+					updateResourcestate(newFolder);
 				} catch (CmsException e) {
 					// if the folder already exists in the onlineProject then update the onlineFolder
 					if (e.getType() == CmsException.C_FILE_EXISTS) {
@@ -4775,7 +4775,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                 }
                 // set the state of current folder in the offline project to unchanged
                 currentFolder.setState(C_STATE_UNCHANGED);
-                writeFolder(currentProject, currentFolder, false);
+                updateResourcestate(currentFolder);
 				// C_STATE_CHANGED
             } else if (currentFolder.getState() == C_STATE_CHANGED){
                 changedResources.addElement(currentFolder.getAbsolutePath());
@@ -4800,7 +4800,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                         // create the new folder
 						onlineFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getAbsolutePath());
 						onlineFolder.setState(C_STATE_UNCHANGED);
-						writeFolder(onlineProject, onlineFolder, false);
+						updateResourcestate(onlineFolder);
                     } else {
                         throw exc;
                     }
@@ -4863,7 +4863,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                 }
                 // set the state of current folder in the offline project to unchanged
                 currentFolder.setState(C_STATE_UNCHANGED);
-                writeFolder(currentProject, currentFolder, false);
+                updateResourcestate(currentFolder);
 			} // end of else if
 		} // end of for(...
 
@@ -4997,7 +4997,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                 }
                 // set the file state to unchanged
                 currentFile.setState(C_STATE_UNCHANGED);
-                writeFileHeader(currentProject, currentFile, false);
+                updateResourcestate(currentFile);
 			// C_STATE_NEW
             } else if (currentFile.getState() == C_STATE_NEW) {
 				// export to filesystem if necessary
@@ -5016,7 +5016,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				try {
 				    newFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getAbsolutePath(), false);
 					newFile.setState(C_STATE_UNCHANGED);
-					writeFileHeader(onlineProject, newFile, false);
+					updateResourcestate(newFile);
                 } catch (CmsException e) {
 					if (e.getType() == CmsException.C_FILE_EXISTS) {
 						CmsFile onlineFile = null;
@@ -5091,7 +5091,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                 }
                 // set the file state to unchanged
                 currentFile.setState(C_STATE_UNCHANGED);
-                writeFileHeader(currentProject, currentFile, false);
+                updateResourcestate(currentFile);
             }
         } // end of for(...
 		// now delete the "deleted" folders
@@ -9301,7 +9301,56 @@ public CmsTask readTask(int id) throws CmsException {
 	 * @param res com.opencms.file.CmsResource
 	 * @exception com.opencms.core.CmsException The exception description.
 	 */
-    public void updateLockstate(CmsResource res) throws CmsException {
+    public void updateLockstate(CmsResource res, int projectId) throws CmsException {
+
+	    PreparedStatement statement = null;
+		Connection con = null;
+        String usedPool;
+        String usedStatement;
+        //int onlineProject = getOnlineProject(res.getProjectId()).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
+        if (projectId == onlineProject) {
+            usedPool = m_poolNameOnline;
+            usedStatement = "_ONLINE";
+        } else {
+            usedPool = m_poolName;
+            usedStatement = "";
+        }
+        try {
+			con = DriverManager.getConnection(usedPool);
+			statement = con.prepareStatement(m_cq.get("C_RESOURCES_UPDATE_LOCK"+usedStatement));
+			statement.setInt(1, res.isLockedBy());
+            statement.setInt(2, projectId);
+			statement.setInt(3, res.getResourceId());
+			statement.executeUpdate();
+        } catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+        } finally {
+			// close all db-resources
+			if(statement != null) {
+			    try {
+					statement.close();
+                } catch(SQLException exc) {
+					// nothing to do here
+                }
+            }
+			if(con != null) {
+				try {
+					con.close();
+                } catch(SQLException exc) {
+					// nothing to do here
+                }
+            }
+        }
+	}
+
+	/**
+	 * Updates the state of a Resource.
+	 *
+	 * @param res com.opencms.file.CmsResource
+	 * @exception com.opencms.core.CmsException The exception description.
+	 */
+    public void updateResourcestate(CmsResource res) throws CmsException {
 
 	    PreparedStatement statement = null;
 		Connection con = null;
@@ -9318,10 +9367,9 @@ public CmsTask readTask(int id) throws CmsException {
         }
         try {
 			con = DriverManager.getConnection(usedPool);
-			statement = con.prepareStatement(m_cq.get("C_RESOURCES_UPDATE_LOCK"+usedStatement));
-			statement.setInt(1, res.isLockedBy());
-            statement.setInt(2, res.getProjectId());
-			statement.setInt(3, res.getResourceId());
+			statement = con.prepareStatement(m_cq.get("C_RESOURCES_UPDATE_STATE"+usedStatement));
+			statement.setInt(1, res.getState());
+			statement.setInt(2, res.getResourceId());
 			statement.executeUpdate();
         } catch( SQLException exc ) {
 			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);

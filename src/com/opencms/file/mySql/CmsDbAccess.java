@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/07/23 11:23:38 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2001/07/24 12:14:15 $
+ * Version: $Revision: 1.60 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -50,7 +50,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.59 $ $Date: 2001/07/23 11:23:38 $ *
+ * @version $Revision: 1.60 $ $Date: 2001/07/24 12:14:15 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -566,7 +566,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
 				try {
 					newFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getAbsolutePath());
 					newFolder.setState(C_STATE_UNCHANGED);
-					writeFolder(onlineProject, newFolder, false);
+					updateResourcestate(newFolder);
 				} catch (CmsException e) {
 					if (e.getType() == CmsException.C_FILE_EXISTS) {
 						// the folder already exists
@@ -643,7 +643,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                 }
                 // set the state of current folder in the offline project to unchanged
                 currentFolder.setState(C_STATE_UNCHANGED);
-                writeFolder(currentProject, currentFolder, false);
+                updateResourcestate(currentFolder);
 				// C_STATE_CHANGED
 			}
 			else
@@ -679,7 +679,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
 							// create the new folder
 							onlineFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getAbsolutePath());
 							onlineFolder.setState(C_STATE_UNCHANGED);
-							writeFolder(onlineProject, onlineFolder, false);
+							updateResourcestate(onlineFolder);
 						}
 						else
 						{
@@ -754,7 +754,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                     }
                     // set the state of current folder in the offline project to unchanged
                     currentFolder.setState(C_STATE_UNCHANGED);
-                    writeFolder(currentProject, currentFolder, false);
+                    updateResourcestate(currentFolder);
                 } // end of else if
 	} // end of for(...
 
@@ -936,7 +936,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                     }
                     // set the file state to unchanged
                     currentFile.setState(C_STATE_UNCHANGED);
-                    writeFileHeader(currentProject, currentFile, false);
+                    updateResourcestate(currentFile);
 					// C_STATE_NEW
 				}
 				else
@@ -962,7 +962,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                         // create the new file
 						CmsFile newFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getAbsolutePath(), false);
 						newFile.setState(C_STATE_UNCHANGED);
-						writeFileHeader(onlineProject, newFile, false);
+						updateResourcestate(newFile);
 
 						// copy properties
                         Hashtable props = null;
@@ -984,7 +984,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                         }
                         // set the file state to unchanged
                         currentFile.setState(C_STATE_UNCHANGED);
-                        writeFileHeader(currentProject, currentFile, false);
+                        updateResourcestate(currentFile);
 					}
 	} // end of for(...
 	// now delete the "deleted" folders
