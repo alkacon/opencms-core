@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/05/24 17:21:25 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/06/06 08:49:05 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderIncludeExtension {
     
@@ -260,11 +260,11 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("absolutePath=" + absolutePath);
         }
-        String templateProp = cms.readProperty(absolutePath, I_CmsConstants.C_PROPERTY_TEMPLATE);
+        String templateProp = cms.readPropertyObject(absolutePath, I_CmsConstants.C_PROPERTY_TEMPLATE, false).getValue();
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("templateProp=" + templateProp);
         }
-        String templateClassProp = cms.readProperty(absolutePath, I_CmsConstants.C_PROPERTY_BODY_CLASS, false, I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS);
+        String templateClassProp = cms.readPropertyObject(absolutePath, I_CmsConstants.C_PROPERTY_BODY_CLASS, false).getValue(I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS);
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("templateClassProp=" + templateClassProp);
         }
@@ -759,7 +759,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             org.opencms.file.CmsFile fx = cms.readFile(cms.readAbsolutePath(file));            
             // care about encoding issues
             String dnc = OpenCms.getSystemInfo().getDefaultEncoding().trim();
-            String enc = cms.readProperty(cms.readAbsolutePath(fx), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true, dnc).trim();
+            String enc = cms.readPropertyObject(cms.readAbsolutePath(fx), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true).getValue(dnc).trim();
             // fake the called URI (otherwise XMLTemplate / ElementCache would not work)
             // cms.getRequestContext().setUri(cms.readAbsolutePath(fx));            
             cms_req.setOriginalRequest((HttpServletRequest)req);

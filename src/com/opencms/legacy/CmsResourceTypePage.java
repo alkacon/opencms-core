@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2004/06/04 10:48:53 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/06 08:49:05 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,14 +37,13 @@ import org.opencms.file.CmsResource;
 import org.opencms.importexport.A_CmsImport;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Describes the resource type "page".<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.1
  */
 public class CmsResourceTypePage extends A_CmsResourceType {
