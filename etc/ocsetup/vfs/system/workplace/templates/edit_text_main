@@ -121,28 +121,17 @@
 </table>
 
 <!-- Inhalt -->
-
-<!-- <tr> -->
-<!-- 	<td width="100%" colspan="6" class="texteditor" valign="top"> -->
 	<!-- write the text area -->
 	<script language="JavaScript">
 	<!--
 		getDimensions();
 		
 		str = '<textarea class="textarea" name="edit1" onfocus=setTextDelayed(); rows='+windowHeight+' cols='+windowWidth+' wrap=virtual></textarea>';
-		document.open();
 		document.write(str);
-		document.close();
 	//-->
-	</script>	
+	</script>
 	
-	<INPUT TYPE=HIDDEN NAME="content">
-	<INPUT TYPE=HIDDEN NAME="action">
-	<INPUT TYPE=HIDDEN NAME="file" value="' + filename + '">
-	<!-- </td>
-</tr>
-</table> -->
-
+	
 ]]>
 </TEMPLATE>
 </WORKPLACE>
