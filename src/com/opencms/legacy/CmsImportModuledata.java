@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2005/02/18 15:18:52 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2005/03/29 16:05:34 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
+import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsUUID;
 
 import com.opencms.defaults.master.*;
@@ -71,7 +72,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.15 $ $Date: 2005/02/18 15:18:52 $
+ * @version $Revision: 1.16 $ $Date: 2005/03/29 16:05:34 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -265,8 +266,10 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      */
     protected CmsMasterDataSet getMasterDataSet(int subId, Element masterElement) throws CmsException {
         String datasetfile = null, username = null, groupname = null, accessFlags = null, 
-            publicationDate = null, purgeDate = null, flags = null, feedId = null, 
-            feedReference = null, feedFilename = null, title = null, master_id = null;
+            publicationDate = null, purgeDate = null, creationDate = null, flags = null, 
+            feedId = null, feedReference = null, feedFilename = null, title = null,
+            master_id = null;
+            
         CmsMasterDataSet newDataset = new CmsMasterDataSet();
 
         // get the file with the dataset of the master
@@ -334,6 +337,13 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         purgeDate = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_PURGEDATE);
         try {
             newDataset.m_purgeDate = convertDate(purgeDate);
+        } catch (Exception e) {
+            // ignore
+        }
+        // set the creation date if possible
+        try {
+        creationDate = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_CREATEDATE);
+            newDataset.m_dateCreated = convertDate(creationDate);
         } catch (Exception e) {
             // ignore
         }
@@ -579,13 +589,21 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @return long converted date
      */
     private long convertDate(String date) {
+       
         java.text.SimpleDateFormat formatterFullTime = new SimpleDateFormat("M/d/yy h:mm a");
         long adate = 0;
         try {
             adate = formatterFullTime.parse(date).getTime();
         } catch (ParseException e) {
+            java.text.SimpleDateFormat formatterFullTimeDe = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+            try {
+                adate = formatterFullTimeDe.parse(date).getTime();
+            } catch (ParseException e2) {
             // ignore
+            }
         }
+
+
         return adate;
     }
 
