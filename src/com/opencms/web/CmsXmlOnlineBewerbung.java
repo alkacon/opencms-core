@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbung.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/19 12:49:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/02/19 17:09:24 $
+ * Version: $Revision: 1.3 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -42,7 +42,7 @@ import java.io.*;
  * possible to send the application form as a mail.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.2 $ $Date: 2000/02/19 12:49:02 $
+ * @version $Name:  $ $Revision: 1.3 $ $Date: 2000/02/19 17:09:24 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
@@ -177,22 +177,21 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
                              elementName, Hashtable parameters, String 
                              templateSelector) throws CmsException {
 		
-		// read parameter values
-		System.err.println("1:");
+		// read parameter values		
 		String errorMessage="";
 		String text=destroyCmsXmlTag((String)parameters.get(C_TEXT));
 		String certificates=destroyCmsXmlTag((String)parameters.get(C_FILE1));
 		String certificatesContent=destroyCmsXmlTag((String)parameters.get(C_FILE1_CONTENT));
 		String oldPosition=destroyCmsXmlTag((String)parameters.get(C_OLDPOSITION));
 		String newPosition=destroyCmsXmlTag((String)parameters.get(C_NEWPOSITION));
-		String base=destroyCmsXmlTag((String)parameters.get(C_BASE));
-		String entry=destroyCmsXmlTag((String)parameters.get(C_ENTRY));
-		String salary=destroyCmsXmlTag((String)parameters.get(C_SALARY));
-		String how=destroyCmsXmlTag((String)parameters.get(C_HOW));
+		String base=destroyCmsXmlTag((String)parameters.get(C_BASE));	
+		String entry=destroyCmsXmlTag((String)parameters.get(C_ENTRY));		
+		String salary=destroyCmsXmlTag((String)parameters.get(C_SALARY));		
+		String how=destroyCmsXmlTag((String)parameters.get(C_HOW));		
 		String anrede=destroyCmsXmlTag((String)parameters.get(C_ANREDE));		
-		String titel=destroyCmsXmlTag((String)parameters.get(C_TITEL));
-		String firstname=destroyCmsXmlTag((String)parameters.get(C_FIRSTNAME));
-		String surname=destroyCmsXmlTag((String)parameters.get(C_SURNAME));
+		String titel=destroyCmsXmlTag((String)parameters.get(C_TITEL));		
+		String firstname=destroyCmsXmlTag((String)parameters.get(C_FIRSTNAME));		
+		String surname=destroyCmsXmlTag((String)parameters.get(C_SURNAME));		
 		String birthdate=destroyCmsXmlTag((String)parameters.get(C_BIRTHDATE));
 		String citizen=destroyCmsXmlTag((String)parameters.get(C_CITIZEN));
 		String family=destroyCmsXmlTag((String)parameters.get(C_FAMILY));
@@ -205,11 +204,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		String mobileFon=destroyCmsXmlTag((String)parameters.get(C_MOBILEFON));
 		String fax=destroyCmsXmlTag((String)parameters.get(C_FAX));
 		String email=destroyCmsXmlTag((String)parameters.get(C_EMAIL));
-		String url=destroyCmsXmlTag((String)parameters.get(C_URL));
-		if (!certificates.toLowerCase().trim().equals("unknown")) {
-			certificates="";
-		}
-		System.err.println("2:");
+		String url=destroyCmsXmlTag((String)parameters.get(C_URL));	
 		// errorNumber is the number of errors that is occured so it contains
 		// the number of site that it have to go back.
 		String errorNumber=destroyCmsXmlTag((String)parameters.get(C_ERRORNUMBER));
@@ -244,17 +239,21 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		url=(url==null?"":url);
 		errorNumber=(errorNumber==null?"":errorNumber);
 		action=(action==null?"":action);
-				
-		System.err.println("3:");
+		if (!certificates.toLowerCase().trim().equals("unknown")) {
+			certificates="";
+		}
 		// CententDefinition
-		CmsXmlOnlineBewerbungContentDefinition datablock=null;		
+		System.err.println("****->"+templateFile);
+		CmsXmlOnlineBewerbungContentDefinition datablock=new CmsXmlOnlineBewerbungContentDefinition(cms,templateFile);		
 		// for the first time there is no Parameter therefore get
 		// the default value.
 		// decodeField method converts umlaute letters from HTML format 
 		// in original form (e.g. &auml -> ä).
-		System.err.println("4:");
+		System.err.println("3:");
 		if (newPosition.equals("")){
+			System.err.println("4:");
 			newPosition=decodeField(datablock.getNewPosition(1));
+			System.err.println("4a:"+newPosition);
 		}
 		System.err.println("5:");
 		// build the selectbox dynamic and choose the selected option

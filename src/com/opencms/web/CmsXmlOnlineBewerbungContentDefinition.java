@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbungContentDefinition.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/19 12:49:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/02/19 17:09:24 $
+ * Version: $Revision: 1.3 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -36,7 +36,7 @@ import java.io.*;
  * This class is used to access the application form's XML-datablocks.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.2 $ $Date: 2000/02/19 12:49:02 $
+ * @version $Name:  $ $Revision: 1.3 $ $Date: 2000/02/19 17:09:24 $
  * @see com.opencms.template.CmsXmlTemplateFile
  */
 public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
@@ -364,6 +364,7 @@ public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
      * @return It returns the value of newPosition datablock.
      */
     public String getNewPosition(int i) throws CmsException {
+		System.err.println("->"+C_NEWPOSITION+i);
         return getDataValue(C_NEWPOSITION+i);
 	}
 	
