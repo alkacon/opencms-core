@@ -2,6 +2,8 @@
 <workplace>
 <template>
 <![CDATA[
+
+
 <table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
 		<td class=menu>]]><BUTTON href="javascript:doEditHTML(2);" name="bt_saveclose" action="" alt="saveclose"/><![CDATA[</td>
@@ -73,8 +75,11 @@
 		<td class=menu>]]><BUTTON href="#" name="bt_image" action="doEditHTML(42);" alt="image"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_imagelist" action="doEditHTML(43);" alt="imagelist"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_download" action="doEditHTML(44);" alt="downloadlist"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_extlinkgallery" action="window.open('linkbrowser.html?initial=true','LinkBrowser', 'width=550, height=500, resizable=yes, top=200, left=450');" alt="linklist"/><![CDATA[</td>
-
+		
+		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_details" action="doEditHTML(47);" alt="toggledetails"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_chars" action="doEditHTML(48);" alt="specialchars"/><![CDATA[</td>
+				
 		]]><PROCESS>linklist</PROCESS><![CDATA[
 				
 		<td class=menu width="100%">&nbsp;</td>
@@ -91,7 +96,7 @@
 				height="100%"
 				VIEWASTEXT>
 				<param name=Scrollbars value=true>
-				<param name=ShowBorders value=true>				
+				<param name=ShowBorders value=true>							
 			</OBJECT>
 			<!-- DEInsertTableParam Object -->
 			<object ID="ObjTableInfo" CLASSID="clsid:47B0DFC7-B7A3-11D1-ADC5-006008A5848C" VIEWASTEXT>

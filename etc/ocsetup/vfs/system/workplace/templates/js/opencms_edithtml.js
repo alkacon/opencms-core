@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edithtml.js,v $
-* Date   : $Date: 2002/05/02 06:31:38 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2002/05/02 06:59:57 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -371,7 +371,8 @@ function doEditHTML(para)
           checkTableSelection();
         break;          
     case 41:
-        DECMD_HYPERLINK_onclick();
+//        DECMD_HYPERLINK_onclick();
+        link = window.open('edit_html_link.html','SetLink', "width=450, height=300, resizable=no,status=no, top=300, left=250");
         break;      
     case 42:
         DECMD_IMAGE_onclick();
@@ -387,9 +388,15 @@ function doEditHTML(para)
         DECMD_HYPERLINK_NODIALOG_onclick();
         break;
     case 46:
-        vfslink = window.open('edit_html_vfslink.html','SelColor', "width=450, height=150, resizable=no, top=300, left=250");
-        vfslink.focus();
+        vfslink = window.open('edit_html_vfslink.html','SetLink', "width=450, height=300, resizable=no, top=300, left=250");
         break;  
+    case 47:
+        EDITOR.EDIT_HTML.showDetails = !EDITOR.EDIT_HTML.showDetails; 
+        break;   
+    case 48:
+        specchar = window.open('edit_html_chars.html','characters', "width=450, height=300, resizable=no, status=yes, top=300, left=250");
+        specchar.focus();
+        break;                    
     default:
         alert("Sorry, leider kann die Funktion nicht ausgeführt werden.");          
     }   

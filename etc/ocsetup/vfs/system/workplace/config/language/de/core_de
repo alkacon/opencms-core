@@ -67,9 +67,11 @@
             <send>Senden</send>
             <submit>Übernehmen</submit>
             <showdetails>Details anzeigen</showdetails>
+            <specialchars>Sonderzeichen</specialchars>
             <syncfolder>Ordner synchronisieren</syncfolder>
             <table>Tabelle</table>
             <test>Testen</test>
+            <toggledetails>Details ein- / ausschalten</toggledetails>            
             <ul>Aufzählung</ul>
             <underline>Unterstrichen</underline>
             <undo>Rückgängig</undo>
@@ -130,6 +132,15 @@
                 <testresult>Ergebnis:</testresult>
             </label>
         </staticexport>
+        
+        <flex>
+            <cache>
+                <label>
+                    <title>Flex Cache Administration</title>
+                </label>
+            </cache>
+        </flex>
+
         <elementcache>
             <label>
                 <title>Elementcache Löschen</title>
@@ -164,12 +175,10 @@
                 <adduser> Leider konnte der Benutzer nicht angelegt werden.</adduser>
                 <addgroup>Die Gruppe konnte nicht angelegt werden.</addgroup>
                 <database>Leider konnte die Datenbank nicht exportiert oder importiert werden.</database>
-                <linkcheckerror>Zu der angegebenen URL konnte keine Verbindung aufgebaut werden. Sie haben die Möglichkeit, die Verknüpfung trotzdem speichern oder sie zu korrigieren.</linkcheckerror>
                 <lock>Leider konnte die Datei nicht auf Sie gesperrt werden.</lock>
                 <lockchange>Leider konnte die Dateisperrung nicht übernommen werden.</lockchange>
                 <login>Der Benutzer konnte nicht im System angemeldet werden.</login> 
                 <projectlockchange>Leider konnte das Projekt nicht wieder freigegeben werden.</projectlockchange>
-                <newlink>Leider konnte die Verknüpfung nicht angelegt werden.</newlink>
                 <newproject>Leider konnte das Projekt nicht angelegt werden.</newproject>
                 <newprop>Die neue Eigenschaft konnte leider nicht angelegt werden.</newprop>
                 <newextension>Die neue Dateiendung konnte leider nicht zugeordnet werden.</newextension>
@@ -232,7 +241,6 @@
                 <projectlockchange>Es ist ein Fehler aufgetreten.</projectlockchange>
                 <namemissing>Bitte geben Sie einen Namen ein.</namemissing>
                 <titlemissing>Bitte geben Sie einen Titel ein.</titlemissing>
-                <newlink>Sie haben eventuell keine Berechtigung, einen Link anzulegen oder es existiert bereits eine Datei gleichen Names.</newlink>
                 <newproject>Die Projektdaten sind ungültig oder falsch eingegeben.</newproject>
                 <newextformat>Ihre Eingabe war im falschen Format.</newextformat>
                 <newprop>siehe Details</newprop>
@@ -287,7 +295,6 @@
                 <login>Bitte überprüfen Sie Ihre Eingabe oder wenden Sie sich an den Systemadministrator.</login>
                 <picnogallery>Bitte legen Sie erst eine Galerie unter dem Menüpunkt Administration/Bildergalerien an.</picnogallery>
                 <projectlockchange>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</projectlockchange>
-                <newlink>Bitte überprüfen Sie Ihre Eingaben oder wenden Sie sich an den Systemadministrator.</newlink>
                 <newproject>Bitte überprüfen Sie Ihre Eingabe oder wenden Sie sich an den Systemadministrator.</newproject>
                 <newprop>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</newprop>
                 <newextformat>Geben Sie immer nur eine Endung auf einmal ein. Sternchen oder Punkt brauchen nicht eingegeben zu werden.</newextformat>
@@ -333,7 +340,6 @@
                 <lockchange>Datei Sperrung übernehmen</lockchange>
                 <login>Anmeldungsfehler</login>
                 <projectlockchange>Dateisperrungen für Projekt aufheben</projectlockchange>
-                <newlink>Neue Verknüpfung anlegen</newlink>
                 <newproject>Neues Projekt</newproject>
                 <newprop>Neue Eigenschaft für Dateityp</newprop>
                 <newextension>Neue Dateiendung zuordnen</newextension>
@@ -357,7 +363,6 @@
         <fileicon>
             <binary>Binär</binary>
             <compatiblePlain>compatiblePlain</compatiblePlain>
-            <externallink>Externe Verknüpfung</externallink>
             <folder>Ordner</folder>
             <image>Bild</image>
             <linkto>Verknüpfung</linkto>
@@ -380,16 +385,13 @@
             <downloadgallery>Downloadgalerien<![CDATA[<br>]]>verwalten</downloadgallery>
             <export>Export</export>
             <exportmoduledata>Export Moduldaten</exportmoduledata>
-            <extlinkgallery>Externe Links<![CDATA[<br>]]>verwalten</extlinkgallery>
             <groups>Gruppe</groups>
             <imagelist>Bilderliste</imagelist>
             <import>Import</import>
-            <linkcheckviewer>LinkCheck Viewer</linkcheckviewer>
             <logfileviewer>Logfileviewer</logfileviewer>
             <module>Modul- verwaltung</module>
             <mountpoint>Mountpoint- </mountpoint>
             <newgallery>Neue Galerie</newgallery>
-            <newlink>Neue externe Verknüpfung</newlink>
             <newproject>Neues Projekt</newproject>
             <picgallery>Bildergalerien<![CDATA[<br>]]>verwalten</picgallery>
             <processmanagement>Vorgangs- verwaltung</processmanagement>
@@ -515,8 +517,15 @@
             <lastelement>an letzter Position</lastelement>
             <lastname>Name</lastname>
             <left>Links</left>
+            <linkname>Linkname</linkname>
             <linkto>Verknüpfung</linkto>
-            <nochange>Wert beibehalten</nochange>
+            <linktarget>Linkziel</linktarget>
+            <linktargetself>Gleiches Fenster</linktargetself>
+            <linktargetblank>Neues Fenster</linktargetblank>
+            <linktargettop>Oberstes Fenster</linktargettop>
+            <linkanchor>Ankerlink</linkanchor>
+            <linkstyle>Styleangaben</linkstyle>
+            <linkstyleclass>Stylesheet Klasse</linkstyleclass>            
             <nolinkvalue>Bitte geben Sie die Verknüpfung an!</nolinkvalue>
             <lockedby>Gesperrt durch</lockedby>
             <lockuser>Benutzer sperren</lockuser>
@@ -539,6 +548,7 @@
             <newpwd>Neues Kennwort</newpwd>     
             <newpwdrepeat>Kennwort bestätigen</newpwdrepeat>    
             <next>nach</next>
+			<nochange>Wert beibehalten</nochange>
             <none>-- keine --</none>
             <oldpwd>Aktuelles Kennwort</oldpwd>
             <owner>Eigentümer</owner>
@@ -657,6 +667,7 @@
             <search>Suchen</search>
             <selectfolder>Ordner auswählen...</selectfolder>
             <size>Größe</size>
+            <specialchar>Sonderzeichen einfügen</specialchar>
             <state>Status</state>
             <suredeletingproject1>Sind Sie sicher, dass sie das Projekt</suredeletingproject1>
             <suredeletingproject2>löschen und damit alle nicht veröffentlichten Änderungen in diesem Projekt verwerfen wollen?</suredeletingproject2>
@@ -1067,8 +1078,8 @@ Für Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
             <access>Rechte</access>
             <admindatatypes>Verwaltung von Dateitypen</admindatatypes>
             <adminproperties>Verwaltung von Eigenschaften</adminproperties>
-            <changetable>Tabelle bearbeiten</changetable>
             <changelink>Verknüpfung ändern</changelink>
+            <changetable>Tabelle bearbeiten</changetable>
             <changed>Geändert am</changed>
             <chgrp>Gruppe ändern von</chgrp>
             <chmod>Zugriff ändern von</chmod>

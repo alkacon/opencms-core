@@ -131,6 +131,15 @@
                 <testresult>Risultato:</testresult>
             </label>
         </staticexport>
+        
+        <flex>
+            <cache>
+                <label>
+                    <title>Flex Cache Administration</title>
+                </label>
+            </cache>
+        </flex>
+
         <elementcache>
             <label>
                 <title>Ripulisci cache<![CDATA[<BR>]]>elementi</title>
@@ -166,12 +175,10 @@
                 <adduser>Spiacente, l'utente non ha potuto essere creato.</adduser>
                 <addgroup>Spiacente, il gruppo non ha potuto essere creato.</addgroup>
                 <database>Spiacente, il database non ha potuto essere importato / esportato.</database>
-                <linkcheckerror>The url could not be connected. You can store the link now or you can change it.</linkcheckerror>
                 <lock>Spiacente, il file non ha potuto essere bloccato.</lock>
                 <lockchange>Spiacente, il blocco sul file non ha potuto essere rubato.</lockchange>
                 <login>Spiacente, l'utente non ha potuto accedere al sistema.</login>
                 <projectlockchange>Spiacente, il progetto non ha potuto essere sbloccato.</projectlockchange>
-                <newlink>Sorry, the link could not be created.</newlink>
                 <newproject>Spiacente, il nuovo progetto non ha potuto essere creato.</newproject>
                 <newprop>Spiacente, la nuova definizione di proprietà non ha potuto essere creata.</newprop>
                 <newextension>Spiacente, la nuova estensione di file non ha potuto essere assegnata.</newextension>
@@ -235,7 +242,6 @@
                 <projectlockchange>C'è stato un errore.</projectlockchange>
                 <namemissing>Il campo Nome deve essere riempito.</namemissing>
                 <titlemissing>Il campo Titolo deve essere riempito.</titlemissing>
-                <newlink>Maybe you don't have the needed permissions or this link already exist.</newlink>
                 <newproject>I dati introdotti per il progetto non sono validi.</newproject>
                 <newextformat>I dati da te introdotti erano nel formato errato.</newextformat>
                 <newprop>vedere dettagli</newprop>
@@ -288,7 +294,6 @@
                 <login>Per favore controlla i dati introdotti o contatta il tuo amministratore di sistema.</login>
                 <picnogallery>Per favore crea prima una galleria con la voce di menu Amministrazione/Gallerie di Immagini.</picnogallery>
                 <projectlockchange>Per favore riprova più tardi, o contatta il tuo amministratore di sistema.</projectlockchange>
-                <newlink>Please check the entered data or contact your system administrator.</newlink>
                 <newproject>Per favore controlla i dati introdotti o contatta il tuo amministratore di sistema.</newproject>
                 <newprop>Per favore riprova più tardi, o contatta il tuo amministratore di sistema.</newprop>
                 <newextformat>Introduci per favore solo un'estensione di file alla volta. Non hai bisogno di introdurre l'asterisco e il punto.</newextformat>
@@ -335,7 +340,6 @@
                 <lockchange>Ruba Blocco</lockchange>
                 <login>Errore di Accesso</login>
                 <projectlockchange>Rilasciare il blocco per il progetto</projectlockchange>
-                <newlink>New Link</newlink>
                 <newprop>Nuova proprietà per il tipo di risorsa</newprop>
                 <newextension>Associa nuova estensione di file</newextension>
                 <newproject>Nuovo Progetto</newproject>
@@ -359,7 +363,6 @@
         <fileicon>
                 <binary>Binario</binary>
                 <compatiblePlain>compatibile semplice</compatiblePlain>
-                <externallink>External Link</externallink>
                 <folder>Cartella</folder>
                 <image>Immagine</image>
                 <linkto>Collegamento</linkto>
@@ -382,16 +385,13 @@
             <downloadgallery>Gestione Gallerie<![CDATA[<BR>]]>di Download</downloadgallery>
             <export>Esporta</export>
             <exportmoduledata>Esporta dati del Modulo</exportmoduledata>
-            <extlinkgallery>External links<![CDATA[<br>]]>management</extlinkgallery>
             <groups>Modifica Gruppi</groups>
             <imagelist>lista immagini</imagelist>
             <import>Importa</import>
-            <linkcheckviewer>LinkCheck Viewer</linkcheckviewer>
             <logfileviewer>Visualizzatore<![CDATA[<BR>]]>file registro</logfileviewer>
             <module>Gestione Moduli</module>
             <mountpoint>Punti di Mount</mountpoint>
             <newgallery>nuova galleria</newgallery>
-            <newlink>New external link</newlink>
             <newproject>Nuovo Progetto</newproject>
             <picgallery>Gestione Gallerie<![CDATA[<BR>]]>di immagini</picgallery>
             <processmanagement>Pianificatore</processmanagement>
@@ -539,8 +539,8 @@
             <newpwd>Nuova Password</newpwd>
             <newpwdrepeat>Conferma Password</newpwdrepeat>
             <next>successivo</next>
-            <nochange>No changes</nochange>
-            <nolinkvalue>Per favore inserisci il collegamento!</nolinkvalue>
+            <nochange>No change</nochange>
+			<nolinkvalue>Per favore inserisci il collegamento!</nolinkvalue>
             <none>-- nessuno --</none>
             <oldpwd>Password Attuale</oldpwd>
             <owner>Proprietario</owner>
