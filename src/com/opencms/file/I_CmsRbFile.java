@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/01/11 11:26:51 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/11 16:34:00 $
  */
  interface I_CmsRbFile {
 	
@@ -630,9 +630,10 @@ import com.opencms.core.*;
      *
      * @param project The project to be published.
 	 * @param onlineProject The online project of the OpenCms.
+	 * @return Vector of all resource names that are published.
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
-    public void publishProject(A_CmsProject project, A_CmsProject onlineProject)
+    public Vector publishProject(A_CmsProject project, A_CmsProject onlineProject)
         throws CmsException;
 	
 }

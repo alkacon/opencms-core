@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/01/11 11:26:51 $
+ * @version $Revision: 1.12 $ $Date: 2000/01/11 16:34:00 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -45,7 +45,7 @@ import com.opencms.core.*;
                                                      +"RESOURCE_FLAGS,USER_ID,"
                                                      +"GROUP_ID,ACCESS_FLAGS,STATE,"
                                                      +"LOCKED_BY,LAUNCHER_TYPE,LAUNCHER_CLASSNAME,"
-                                                     +"DATE_CREATED,DATE_LASTMODIFIED,SIZE"
+                                                     +"DATE_CREATED,DATE_LASTMODIFIED,SIZE, "
                                                      +"FILES.FILE_CONTENT FROM RESOURCES,FILES "
                                                      +"WHERE RESOURCES.RESOURCE_NAME = FILES.RESOURCE_NAME "
                                                      +"AND RESOURCES.PROJECT_ID = FILES.PROJECT_ID "
@@ -106,21 +106,33 @@ import com.opencms.core.*;
                                                    +"STATE = ? "
                                                    +"WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
 
-    /**
-     * SQL Command for renaming a resource. 
-     */   
-    private static final String C_RESOURCE_RENAME  ="UPDATE RESOURCES SET "
-                                                   +"RESOURCE_NAME = ? , "
-                                                   +"DATE_LASTMODIFIED = ? "
-                                                   +"WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
-    
      /**
-     * SQL Command for renaming a file. 
+     * SQL Command for reading all files of a project. 
      */   
-    private static final String C_FILE_RENAME  ="UPDATE FILES SET "
-                                               +"RESOURCE_NAME = ? "
-                                               +"WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
-                                                                                          
+    private static final String C_PROJECT_READ_FILES= "SELECT RESOURCES.RESOURCE_NAME, "
+                                                     +"RESOURCE_TYPE,"
+                                                     +"RESOURCE_FLAGS,USER_ID,"
+                                                     +"GROUP_ID,ACCESS_FLAGS,STATE,"
+                                                     +"LOCKED_BY,LAUNCHER_TYPE,LAUNCHER_CLASSNAME,"
+                                                     +"DATE_CREATED,DATE_LASTMODIFIED,SIZE,"
+                                                     +"FILES.FILE_CONTENT FROM RESOURCES,FILES "
+                                                     +"WHERE RESOURCES.RESOURCE_NAME = FILES.RESOURCE_NAME "
+                                                     +"AND RESOURCES.PROJECT_ID = FILES.PROJECT_ID "
+                                                     +"AND RESOURCES.PROJECT_ID = ?";
+    
+    /**
+     * SQL Command for reading all folders of a project. 
+     */   
+    private static final String C_PROJECT_READ_FOLDER= "SELECT RESOURCE_NAME, "
+                                                     +"RESOURCE_TYPE,"
+                                                     +"RESOURCE_FLAGS,USER_ID,"
+                                                     +"GROUP_ID,ACCESS_FLAGS,STATE,"
+                                                     +"LOCKED_BY,LAUNCHER_TYPE,LAUNCHER_CLASSNAME,"
+                                                     +"DATE_CREATED,DATE_LASTMODIFIED,SIZE "
+                                                     +"FROM RESOURCES "
+                                                     +"WHERE  RESOURCES.PROJECT_ID = ? "
+                                                     +"AND RESOURCE_TYPE = ?";
+                                                                                                                                    
      /**
      * SQL Command for deleteing a resource.
      */   
@@ -207,9 +219,9 @@ import com.opencms.core.*;
     private static final String C_PROJECT_ID_RESOURCES="RESOURCES.PROJECT_ID";
  
      /**
-     * Name of the column PROJECT_ID in the SQL tables FILES.
+     * Name of the column PROJECT_ID 
      */
-    private static final String C_PROJECT_ID_FILES="FILES.PROJECT_ID";
+    private static final String C_PROJECT_ID="PROJECT_ID";
     
     /**
      * Name of the column ACCESS_FLAGS in the SQL table RESOURCE.
@@ -305,24 +317,22 @@ import com.opencms.core.*;
     * Prepared SQL Statement for removing a resource.
     */
     private PreparedStatement m_statementResourceRemove;
-    
-    
+       
     /**
     * Prepared SQL Statement for deleting a file.
     */
     private PreparedStatement m_statementFileDelete;
     
     /**
-    * Prepared SQL Statement for renaming a resource.
+    * Prepared SQL Statement for getting all files of a project.
     */
-    private PreparedStatement m_statementResourceRename;
+    private PreparedStatement m_statementProjectReadFiles;    
     
     /**
-    * Prepared SQL Statement for renameing a file.
+    * Prepared SQL Statement for getting all folders of a project.
     */
-    private PreparedStatement m_statementFileRename;
-
-
+    private PreparedStatement m_statementProjectReadFolders;    
+        
     /**
      * Constructor, creartes a new CmsAccessFileMySql object and connects it to the
      * user information database.
@@ -555,7 +565,6 @@ import com.opencms.core.*;
          int projectId;
          
          ResultSet res =null;
-           
          try {
              // if the actual prject is the online project read file header and content
              // from the online project
@@ -982,8 +991,43 @@ import com.opencms.core.*;
                                    CmsFolder folder,
                                    String foldername)
          throws CmsException {
-         // to be implemeneted
-         return null;
+             try {   
+               synchronized ( m_statementResourceWrite) {
+                // write new resource to the database
+                //RESOURCE_NAME
+                m_statementResourceWrite.setString(1,absoluteName(folder.getAbsolutePath()));
+                //RESOURCE_TYPE
+                m_statementResourceWrite.setInt(2,folder.getType());
+                //RESOURCE_FLAGS
+                m_statementResourceWrite.setInt(3,folder.getFlags());
+                //USER_ID
+                m_statementResourceWrite.setInt(4,folder.getOwnerId());
+                //GROUP_ID
+                m_statementResourceWrite.setInt(5,folder.getGroupId());
+                //PROJECT_ID
+                m_statementResourceWrite.setInt(6,project.getId());
+                //ACCESS_FLAGS
+                m_statementResourceWrite.setInt(7,folder.getAccessFlags());
+                //STATE
+                m_statementResourceWrite.setInt(8,C_STATE_NEW);
+                //LOCKED_BY
+                m_statementResourceWrite.setInt(9,folder.isLockedBy());
+                //LAUNCHER_TYPE
+                m_statementResourceWrite.setInt(10,folder.getLauncherType());
+                //LAUNCHER_CLASSNAME
+                m_statementResourceWrite.setString(11,folder.getLauncherClassname());
+                //DATE_CREATED
+                m_statementResourceWrite.setLong(12,folder.getDateCreated());
+                //DATE_LASTMODIFIED
+                m_statementResourceWrite.setLong(13,System.currentTimeMillis());
+                //SIZE
+                m_statementResourceWrite.setInt(14,0);
+                m_statementResourceWrite.executeUpdate();
+               }
+            } catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }
+         return readFolder(project,folder.getAbsolutePath());
      }
 
 	 /**
@@ -1192,13 +1236,13 @@ import com.opencms.core.*;
          ResultSet res =null;
          
            try {
-            //  get all subfolders
+            //  get all files in folder
              Statement s = m_Con.createStatement();		
   
              res =s.executeQuery(C_RESOURCE_GETFILESINFOLDER1+absoluteName(foldername)
                                 +C_RESOURCE_GETFILESINFOLDER2+project.getId()+
                                  C_RESOURCE_GETFILESINFOLDER3);
-            // create new folder objects
+            // create new file objects
 		    while ( res.next() ) {
                      file = new CmsFile(res.getString(C_RESOURCE_NAME),
                                            res.getInt(C_RESOURCE_TYPE),
@@ -1228,7 +1272,7 @@ import com.opencms.core.*;
            return files;
      }
 
-      /**
+     /**
      * Copies a resource from the online project to a new, specified project.<br>
      *
      * @param project The project to be published.
@@ -1250,11 +1294,104 @@ import com.opencms.core.*;
      *
      * @param project The project to be published.
 	 * @param onlineProject The online project of the OpenCms.
+	 * @return Vector of all resource names that are published.
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
-    public void publishProject(A_CmsProject project, A_CmsProject onlineProject)
+    public Vector publishProject(A_CmsProject project, A_CmsProject onlineProject)
         throws CmsException {
-        // to be implemented
+        
+        Vector resources = new Vector();
+        CmsFile file;
+        CmsFolder folder;
+        
+        ResultSet res;
+        
+        try {
+            // read all files that are in the requested project
+            synchronized (m_statementProjectReadFiles) {
+                   //get all files from the actual project
+                    m_statementProjectReadFiles.setInt(1,project.getId());
+                    res=m_statementProjectReadFiles.executeQuery();               
+                  }
+            // create new file objects
+		    while ( res.next() ) {
+                     file = new CmsFile(res.getString(C_RESOURCE_NAME),
+                                           res.getInt(C_RESOURCE_TYPE),
+                                           res.getInt(C_RESOURCE_FLAGS),
+                                           res.getInt(C_USER_ID),
+                                           res.getInt(C_GROUP_ID),
+                                           onlineProject.getId(),
+                                           res.getInt(C_ACCESS_FLAGS),
+                                           res.getInt(C_STATE),
+                                           res.getInt(C_LOCKED_BY),
+                                           res.getInt(C_LAUNCHER_TYPE),
+                                           res.getString(C_LAUNCHER_CLASSNAME),
+                                           res.getLong(C_DATE_CREATED),
+                                           res.getLong(C_DATE_LASTMODIFIED),
+                                           res.getBytes(C_FILE_CONTENT),
+                                           res.getInt(C_SIZE)
+                                           );
+             // check the state of the file
+             // new or changed files are copied to the online project, those files
+             // marked as deleted are deleted in the online project.
+             if ((file.getState()== C_STATE_CHANGED) || 
+                 (file.getState() == C_STATE_NEW)) {
+                 // delete an exitsing old file in the online project
+                 deleteFile(file);
+                 // write the new file
+                 createFile(onlineProject,onlineProject,file,file.getAbsolutePath());
+                 resources.addElement(file.getAbsolutePath()); 
+             } else if (file.getState() == C_STATE_DELETED) {
+                  deleteFile(file);
+                  resources.addElement(file.getAbsolutePath()); 
+             }
+             
+             }
+            // read all folders that are in the requested project
+            synchronized (m_statementProjectReadFolders) {
+                   //get all folders from the actual project
+                    m_statementProjectReadFolders.setInt(1,project.getId());
+                    m_statementProjectReadFolders.setInt(2,C_TYPE_FOLDER);
+                    res=m_statementProjectReadFolders.executeQuery();               
+                  }
+            // create new folder objects
+		    while ( res.next() ) {
+                     folder = new CmsFolder(res.getString(C_RESOURCE_NAME),
+                                               res.getInt(C_RESOURCE_TYPE),
+                                               res.getInt(C_RESOURCE_FLAGS),
+                                               res.getInt(C_USER_ID),
+                                               res.getInt(C_GROUP_ID),
+                                               onlineProject.getId(),
+                                               res.getInt(C_ACCESS_FLAGS),
+                                               res.getInt(C_STATE),
+                                               res.getInt(C_LOCKED_BY),
+                                               res.getLong(C_DATE_CREATED),
+                                               res.getLong(C_DATE_LASTMODIFIED)
+                                               );
+                     // check the state of the folder
+                     // Any folder in the offline project is written to the online project
+                     // to keep the filesystem structure consistant.
+                     // Folders that are marked as DELETED are physically deleted 
+                     // in the online project.
+                    if ((folder.getState()== C_STATE_CHANGED) || 
+                        (folder.getState() == C_STATE_NEW) ||
+                        (folder.getState() == C_STATE_UNCHANGED )){
+                        // delete an exitsing old folder in the online project
+                        deleteFolder(folder);
+                        // write the new folder
+                        createFolder(onlineProject,folder,folder.getAbsolutePath());
+                        resources.addElement(folder.getAbsolutePath()); 
+                    } else if (folder.getState() == C_STATE_DELETED) {
+                        deleteFolder(folder);
+                        resources.addElement(folder.getAbsolutePath()); 
+                }
+            }
+         
+            
+         } catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);		
+         }
+           return resources;
     }
      
      /**
@@ -1309,6 +1446,56 @@ import com.opencms.core.*;
         return file;
        }
     
+     
+     /**
+      * Deletes a file in the database. 
+      * This method is used to physically remove a file form the database, therefore it
+      * can only be accessed from within the access module.
+      * 
+      * @param file The file to be deleted.
+      * @exception CmsException Throws CmsException if operation was not succesful
+      */
+     private void deleteFile(CmsFile file) 
+        throws CmsException{
+            try { 
+            // delete the file header
+            synchronized ( m_statementResourceDelete) {
+                    m_statementResourceDelete.setString(1,absoluteName(file.getAbsolutePath()));
+                    m_statementResourceDelete.setInt(2,file.getProjectId());
+                    m_statementResourceDelete.executeUpdate();               
+                  }
+            // delete the file content
+            synchronized ( m_statementFileDelete) {
+                    m_statementFileDelete.setString(1,absoluteName(file.getAbsolutePath()));
+                    m_statementFileDelete.setInt(2,file.getProjectId());
+                    m_statementFileDelete.executeUpdate();               
+                  }
+               } catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }         
+     }
+     
+      /**
+      * Deletes a folder in the database. 
+      * This method is used to physically remove a folder form the database, therefore it
+      * can only be accessed from within the access module.
+      * 
+      * @param folder The folder to be deleted.
+      * @exception CmsException Throws CmsException if operation was not succesful
+      */
+     private void deleteFolder(CmsFolder folder) 
+        throws CmsException{
+            try { 
+            // delete the folder
+            synchronized ( m_statementResourceDelete) {
+                    m_statementResourceDelete.setString(1,absoluteName(folder.getAbsolutePath()));
+                    m_statementResourceDelete.setInt(2,folder.getProjectId());
+                    m_statementResourceDelete.executeUpdate();               
+                  }
+              } catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }         
+     }
     
      /**
      * This method creates all preparted SQL statements required in this class.
@@ -1324,14 +1511,14 @@ import com.opencms.core.*;
             m_statementFileReadOnline=m_Con.prepareStatement(C_FILE_READ_ONLINE);
             m_statementFileRead=m_Con.prepareStatement(C_FILE_READ);
             m_statementFileWrite=m_Con.prepareStatement(C_FILE_WRITE);
-            m_statementResourceRemove=m_Con.prepareStatement(C_RESOURCE_REMOVE);
-            
+            m_statementResourceRemove=m_Con.prepareStatement(C_RESOURCE_REMOVE);        
             m_statementResourceUpdate=m_Con.prepareStatement(C_RESOURCE_UPDATE);
             m_statementFileUpdate=m_Con.prepareStatement(C_FILE_UPDATE);
+            m_statementProjectReadFiles=m_Con.prepareStatement(C_PROJECT_READ_FILES);
+            m_statementProjectReadFolders=m_Con.prepareStatement(C_PROJECT_READ_FOLDER);
             m_statementResourceDelete=m_Con.prepareStatement(C_RESOURCE_DELETE);
             m_statementFileDelete=m_Con.prepareStatement(C_FILE_DELETE);
-            m_statementResourceRename=m_Con.prepareStatement(C_RESOURCE_RENAME);
-            m_statementFileRename=m_Con.prepareStatement(C_FILE_RENAME);
+  
            } catch (SQLException e){
            
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
@@ -1359,7 +1546,7 @@ import com.opencms.core.*;
 	 * Calculates the absolute path to a file mounted in this database.
 	 * 
 	 * @param filename Name of a file in the MhtCms system.
-	 * @return apsolute path of a the file in the disk filesystem.
+	 * @return absolute path of a the file in the database.
 	 */
 	private String absoluteName(String filename){
         

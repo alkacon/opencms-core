@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/01/11 11:26:51 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/11 16:34:00 $
  */
 class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -400,11 +400,35 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
      *
      * @param project The project to be published.
 	 * @param onlineProject The online project of the OpenCms.
+	 * @return Vector of all resource names that are published.
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
-    public void publishProject(A_CmsProject project, A_CmsProject onlineProject)
+    public Vector publishProject(A_CmsProject project, A_CmsProject onlineProject)
         throws CmsException {
-        // to be implemented
+        
+        Vector resources;
+        Vector allResources=new Vector();
+        String mountpoint;
+        I_CmsAccessFile accessFile=null;
+        
+        // initatite the publish process for all access modules
+        Enumeration e = m_mountpointStorage.keys();
+	  	 while (e.hasMoreElements()) {
+		   mountpoint=(String)e.nextElement();
+           accessFile=(I_CmsAccessFile)m_mountpointStorage.get(mountpoint);
+           System.err.println(accessFile.toString());
+           // publish the project data that is a attached to this specific mountpoint
+           resources=accessFile.publishProject(project,onlineProject);
+           // collect all the publishing information
+           if (resources !=null) {
+               Enumeration enu=resources.elements();
+               while (enu.hasMoreElements()) {
+                    allResources.addElement((String)enu.nextElement());           
+               }
+           }
+         }
+        
+        return allResources;
     }
      
      
