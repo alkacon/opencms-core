@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2003/09/15 10:51:15 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/10/06 10:35:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -390,27 +390,21 @@ public abstract class A_CmsImport implements I_CmsImport {
      * Gets all properties from one file node in the manifest.xml.<p>
      * 
      * @param currentElement the current file node
-     * @param type the resource type of this node
+     * @param resType the resource type of this node
      * @param propertyName name of a property to be added to all resources
      * @param propertyValue value of that property
      * @param deleteProperties the list of properies to be deleted
      * @return HashMap with all properties blonging to the resource
      * @throws CmsException if something goes wrong
      */
-    protected HashMap getPropertiesFromXml(Element currentElement, String type, String propertyName, String propertyValue, List deleteProperties) throws CmsException {
-
-        Vector types = new Vector(); // stores the file types for which the property already exists
+    protected HashMap getPropertiesFromXml(Element currentElement, int resType, String propertyName, String propertyValue, List deleteProperties) throws CmsException {
         // get all properties for this file
         NodeList propertyNodes = currentElement.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_PROPERTY);
         // clear all stores for property information
         HashMap properties = new HashMap();
         // add the module property to properties
-        int resType = m_cms.getResourceTypeId(type);
         if (propertyName != null && propertyValue != null && !"".equals(propertyName)) {
-            if (!types.contains(type)) {
-                types.addElement(type);
-                createPropertydefinition(propertyName, resType);
-            }
+            createPropertydefinition(propertyName, resType);
             properties.put(propertyName, propertyValue);
         }
         // walk through all properties

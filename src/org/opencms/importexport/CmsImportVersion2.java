@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2003/09/15 10:51:15 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/10/06 10:35:53 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -298,6 +298,7 @@ public class CmsImportVersion2 extends A_CmsImport {
         Element currentElement, currentEntry;
         String source, destination, type, timestamp, uuid, uuidfile, uuidresource;
         long lastmodified = 0;
+        int resType;
         Map properties = null;
 
         if (m_importingChannelData) {
@@ -351,6 +352,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 source = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_SOURCE);
                 destination = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESTINATION);
                 type = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
+                resType = m_cms.getResourceTypeId(type);
                 uuid = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDSTRUCTURE);
                 uuidfile = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDCONTENT);
                 uuidresource = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE);
@@ -381,10 +383,11 @@ public class CmsImportVersion2 extends A_CmsImport {
 
                     // print out the information to the report
                     m_report.print(m_report.key("report.importing"), I_CmsReport.C_FORMAT_NOTE);
-                    m_report.print(translatedName + " ");
+                    m_report.print(translatedName);
+                    m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
 
                     // get all properties
-                    properties = getPropertiesFromXml(currentElement, type, propertyName, propertyValue, deleteProperties);
+                    properties = getPropertiesFromXml(currentElement, resType, propertyName, propertyValue, deleteProperties);
 
                     // import the specified file 
                     CmsResource res = importResource(source, destination, uuid, uuidfile, uuidresource, type, lastmodified, properties, writtenFilenames, fileCodes);
