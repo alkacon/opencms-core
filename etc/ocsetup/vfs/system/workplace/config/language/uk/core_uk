@@ -507,6 +507,7 @@
 			<rows>Rows</rows> 
 			<search>Search</search>
 			<settings>Settings</settings>
+			<showlockdialog>Show lock dialog</showlockdialog>
 			<size>Size</size>
 			<spacing>Spacing</spacing>
 			<spacinginfo>Pixel between the Cells</spacinginfo>

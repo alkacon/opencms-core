@@ -116,7 +116,13 @@ Other Preference input forms will be added here
 		<td class=dialogtxt>
 			]]><SELECT class="textfeld" name="dgroup" width="150" method="getDefaultGroup" /><![CDATA[
 		</td>
-		</tr>
+	</tr>
+	<tr>
+		<td class=dialogtxt>
+			<input type=checkbox name="lockdialog" ]]><PROCESS>checklockdialog</PROCESS><![CDATA[>
+			]]><LABEL value="input.showlockdialog" /><![CDATA[:
+		</td>
+	</tr>
 	<tr>
 		<td class=formular colspan=2>]]><LABEL value="input.startupnewfile" /><![CDATA[</td>
 	</tr>

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2001/07/16 13:36:05 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2001/07/23 13:07:04 $
+* Version: $Revision: 1.23 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -55,7 +55,7 @@ import javax.servlet.http.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.22 $ $Date: 2001/07/16 13:36:05 $
+ * @version $Revision: 1.23 $ $Date: 2001/07/23 13:07:04 $
  */
 public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_CmsRequest {
 
@@ -133,10 +133,6 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
         String type = req.getHeader("content-type");
         if((type != null) && type.startsWith("multipart/form-data")&& (req.getContentLength() > -1)) {
             readRequest();
-        }
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && m_req.getQueryString() != null && m_req.getQueryString().indexOf("/") != -1) {
-            A_OpenCms.log(C_OPENCMS_INFO, "WARNING: unescaped \"/\" found in URL parameter! This may cause problems with some servlet environments.");
-            A_OpenCms.log(C_OPENCMS_INFO, javax.servlet.http.HttpUtils.getRequestURL(m_req).toString());
         }
         if(m_req.getPathInfo().indexOf("?") != -1) {
 	        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && m_req.getQueryString() != null && m_req.getQueryString().indexOf("/") != -1) {

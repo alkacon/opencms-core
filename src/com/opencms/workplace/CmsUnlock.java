@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
-* Date   : $Date: 2001/06/29 13:44:06 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2001/07/23 13:07:41 $
+* Version: $Revision: 1.35 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,7 +44,7 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.34 $ $Date: 2001/06/29 13:44:06 $
+ * @version $Revision: 1.35 $ $Date: 2001/07/23 13:07:41 $
  */
 
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -85,8 +85,8 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I
             session.putValue(C_PARA_FILE, filename);
         }
 
-        //check if the unlock parameter was included in the request
-        // if not, the unlock page is shown for the first time
+        //check if the user wants the lock dialog
+        // if yes, the lock page is shown for the first time
         filename = (String)session.getValue(C_PARA_FILE);
         CmsResource file = (CmsResource)cms.readFileHeader(filename);
 
@@ -97,7 +97,12 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I
         else {
             template = "folder";
         }
-        if(unlock == null && checkJavaProperty("opencms.dialog", "hide")) {
+        Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
+        String showLockDialog = "on";
+        if(startSettings!=null){
+            showLockDialog = (String)startSettings.get(C_START_LOCKDIALOG);
+        }
+        if(unlock == null && !"on".equals(showLockDialog)) {
             unlock = "true";
         }
         if(unlock != null) {

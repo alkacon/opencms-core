@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2001/07/20 13:48:14 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2001/07/23 13:07:41 $
+* Version: $Revision: 1.32 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,123 +43,97 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  *
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2001/07/20 13:48:14 $
+ * @version $Revision: 1.32 $ $Date: 2001/07/23 13:07:41 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
-
     /** Datablock value for checked */
     private static final String C_CHECKED = "CHECKED";
-
 
     /** Datablock value for checkbox title */
     private static final String C_CHECKTITLE = "CHECKTITLE";
 
-
     /** Datablock value for checkbox type */
     private static final String C_CHECKTYPE = "CHECKTYPE";
-
 
     /** Datablock value for checkbox changed */
     private static final String C_CHECKCHANGED = "CHECKCHANGED";
 
-
     /** Datablock value for checkbox size */
     private static final String C_CHECKSIZE = "CHECKSIZE";
-
 
     /** Datablock value for checkbox state */
     private static final String C_CHECKSTATE = "CHECKSTATE";
 
-
     /** Datablock value for checkbox owner */
     private static final String C_CHECKOWNER = "CHECKOWNER";
-
 
     /** Datablock value for checkbox group */
     private static final String C_CHECKGROUP = "CHECKGROUP";
 
-
     /** Datablock value for checkbox access */
     private static final String C_CHECKACCESS = "CHECKACCESS";
-
 
     /** Datablock value for checkbox lockedby */
     private static final String C_CHECKLOCKEDBY = "CHECKLOCKEDBY";
 
-
     /** Datablock value for checkbox view all */
     private static final String C_CHVIEWALL = "CHVIEWALL";
-
 
     /** Datablock value for checkbox message accepted */
     private static final String C_CHMESSAGEACCEPTED = "CHMESSAGEACCEPTED";
 
-
     /** Datablock value for checkbox message forwared */
     private static final String C_CHMESSAGEFORWARDED = "CHMESSAGEFORWARDED";
-
 
     /** Datablock value for checkbox message completed */
     private static final String C_CHMESSAGECOMPLETED = "CHMESSAGECOMPLETED";
 
-
     /** Datablock value for checkbox message memebers */
     private static final String C_CHMESSAGEMEMEBERS = "CHMESSAGEMEMEBERS";
-
 
     /** Datablock value for checkbox user read */
     private static final String C_CHECKUR = "CHECKUR";
 
-
     /** Datablock value for checkbox user write */
     private static final String C_CHECKUW = "CHECKUW";
-
 
     /** Datablock value for checkbox user visible */
     private static final String C_CHECKUV = "CHECKUV";
 
-
     /** Datablock value for checkbox group read */
     private static final String C_CHECKGR = "CHECKGR";
-
 
     /** Datablock value for checkbox group write */
     private static final String C_CHECKGW = "CHECKGW";
 
-
     /** Datablock value for checkbox group visible */
     private static final String C_CHECKGV = "CHECKGV";
-
 
     /** Datablock value for checkbox public read */
     private static final String C_CHECKPR = "CHECKPR";
 
-
     /** Datablock value for checkbox public write */
     private static final String C_CHECKPW = "CHECKPW";
-
 
     /** Datablock value for checkbox public visible */
     private static final String C_CHECKPV = "CHECKPV";
 
-
     /** Datablock value for checkbox internal flag */
     private static final String C_CHECKIF = "CHECKIF";
 
+    /** Datablock value for checkbox internal flag */
+    private static final String C_LOCKDIALOG = "checklockdialog";
 
     /** Constant for filter */
     private static final String C_TASK_FILTER = "task.filter.";
 
-
     /** Constant for filter */
     private static final String C_SPACER = "------------------------------------------------";
 
-
     /** Vector storing all view names */
     Vector m_viewNames = null;
-
 
     /** Vector storing all view values */
     Vector m_viewLinks = null;
@@ -210,7 +184,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         if((parameters.get(C_PARA_SUBMIT) != null) || (parameters.get(C_PARA_OK) != null)) {
 
             // get the data values form the active panel and store them in the session.
-
             // this is nescessary to save this data in the next step.
             if(panel != null) {
 
@@ -771,6 +744,11 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         startSettings.put(C_START_PROJECT, new Integer(Integer.parseInt((String)parameters.get("project"))));
         startSettings.put(C_START_VIEW, (String)parameters.get("view"));
         startSettings.put(C_START_DEFAULTGROUP, (String)parameters.get("dgroup"));
+        String lockstuff = (String)parameters.get("lockdialog");
+        if (lockstuff == null){
+            lockstuff = "";
+        }
+        startSettings.put(C_START_LOCKDIALOG, lockstuff);
         cms.getRequestContext().setCurrentProject(Integer.parseInt((String)parameters.get("project")));
 
         // get all access flags from the request
@@ -1144,6 +1122,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             }
             startSettings.put(C_START_VIEW, currentView);
             startSettings.put(C_START_DEFAULTGROUP, reqCont.currentUser().getDefaultGroup().getName());
+            startSettings.put(C_START_LOCKDIALOG, "on");
             startSettings.put(C_START_ACCESSFLAGS, new Integer(C_ACCESS_DEFAULT_FLAGS));
         }
 
@@ -1155,10 +1134,15 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         else {
             xmlTemplateDocument.setData(C_CHECKUR, " ");
         }
+        String lockD = (String)startSettings.get(C_START_LOCKDIALOG);
+        if (lockD!=null && "on".equals(lockD)){
+            xmlTemplateDocument.setData(C_LOCKDIALOG, C_CHECKED);
+        }else{
+            xmlTemplateDocument.setData(C_LOCKDIALOG, " ");
+        }
         if((flags & C_ACCESS_OWNER_WRITE) > 0) {
             xmlTemplateDocument.setData(C_CHECKUW, C_CHECKED);
-        }
-        else {
+        }else {
             xmlTemplateDocument.setData(C_CHECKUW, " ");
         }
         if((flags & C_ACCESS_OWNER_VISIBLE) > 0) {

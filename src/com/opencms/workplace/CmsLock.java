@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLock.java,v $
-* Date   : $Date: 2001/06/29 13:44:06 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2001/07/23 13:07:41 $
+* Version: $Revision: 1.36 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,7 +44,7 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.35 $ $Date: 2001/06/29 13:44:06 $
+ * @version $Revision: 1.36 $ $Date: 2001/07/23 13:07:41 $
  */
 
 public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants{
@@ -99,8 +99,8 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
             session.putValue(C_PARA_FILE, filename);
         }
 
-        //check if the lock parameter was included in the request
-        // if not, the lock page is shown for the first time
+        //check if the user wants the lock dialog
+        // if yes, the lock page is shown for the first time
         filename = (String)session.getValue(C_PARA_FILE);
         CmsResource file = (CmsResource)cms.readFileHeader(filename);
 
@@ -111,7 +111,12 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
         else {
             template = "folder";
         }
-        if(lock == null && checkJavaProperty("opencms.dialog", "hide")) {
+        Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
+        String showLockDialog = "on";
+        if(startSettings!=null){
+            showLockDialog = (String)startSettings.get(C_START_LOCKDIALOG);
+        }
+        if(lock == null && !"on".equals(showLockDialog)) {
             lock = "true";
         }
         boolean hlock = true;

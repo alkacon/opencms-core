@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/07/18 13:37:23 $
-* Version: $Revision: 1.179 $
+* Date   : $Date: 2001/07/23 13:07:04 $
+* Version: $Revision: 1.180 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -37,7 +37,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.179 $ $Date: 2001/07/18 13:37:23 $
+ * @version $Revision: 1.180 $ $Date: 2001/07/23 13:07:04 $
  */
 public interface I_CmsConstants {
 
@@ -828,6 +828,9 @@ public interface I_CmsConstants {
 
     /** Start preferenses DefaultGroup */
     public static final String C_START_DEFAULTGROUP = "StartDefaultGroup";
+
+    /** Start preferenses lock dialog */
+    public static final String C_START_LOCKDIALOG = "StartLockDialog";
 
     /** Start preferenses AccessFlags */
     public static final String C_START_ACCESSFLAGS = "StartAccessFlags";

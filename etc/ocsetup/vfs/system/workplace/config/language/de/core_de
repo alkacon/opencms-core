@@ -507,6 +507,7 @@
             <rows>Zeilen</rows>
             <search>Suche</search>
             <settings>Einstellungen</settings>
+			<showlockdialog>Sperr Dialoge anzeigen</showlockdialog>
             <size>Größe</size>
             <spacing>Abstand</spacing>
             <spacinginfo>Bildschirmpunkte zwischen Zellen</spacinginfo>
