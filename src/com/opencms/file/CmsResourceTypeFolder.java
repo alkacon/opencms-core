@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2001/12/20 08:32:13 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2002/08/24 08:42:37 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -491,14 +491,14 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     public void copyResourceToProject(CmsObject cms, String resourceName) throws CmsException {
         // copy the folder to the current project
         cms.doCopyResourceToProject(resourceName);
-        // try to copy the corresponding folder in /content/bodys/ to the project
+        // try to copy the corresponding folder in C_CONTENTBODYPATH to the project
         try{
             CmsResource contentFolder = (CmsResource)cms.readFolder(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/"))+resourceName, true);
             if (contentFolder != null){
                 cms.doCopyResourceToProject(contentFolder.getAbsolutePath());
             }
         } catch(CmsException e){
-            // cannot read the folder in /content/bodys/ so do nothing
+            // cannot read the folder in C_CONTENTBODYPATH so do nothing
         }
     }
 
@@ -559,7 +559,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
 
         // finaly the folder
         cms.doDeleteFolder(folder);
-        // delete the corresponding folder in /content/bodys/
+        // delete the corresponding folder in C_CONTENTBODYPATH
         String bodyFolder = C_CONTENTBODYPATH.substring(0,
                     C_CONTENTBODYPATH.lastIndexOf("/")) + folder;
         try {
@@ -601,7 +601,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         }
         // finally the folder
         cms.doUndeleteFolder(folder);
-        // undelete the corresponding folder in /content/bodys/
+        // undelete the corresponding folder in C_CONTENTBODYPATH
         String bodyFolder = C_CONTENTBODYPATH.substring(0,
                     C_CONTENTBODYPATH.lastIndexOf("/")) + folder;
         try {
@@ -709,7 +709,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * It will also be thrown, if there is a existing lock and force was set to false.
     */
     public void lockResource(CmsObject cms, String resource, boolean force) throws CmsException{
-        // first lock the folder in the /content/bodys/ path if it exists.
+        // first lock the folder in the C_CONTENTBODYPATH path if it exists.
         try{
             cms.doLockResource(C_CONTENTBODYPATH  + resource.substring(1), force);
         }catch(CmsException e){
@@ -841,7 +841,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         }
         // first undo changes of the folder
         cms.doUndoChanges(resource);
-        // undo changes in the corresponding folder in /content/bodys
+        // undo changes in the corresponding folder in C_CONTENTBODYPATH
         cms.doUndoChanges(C_CONTENTBODYPATH  + resource.substring(1));
         // now undo changes of the subfolders
         for (int i=0; i<allSubFolders.size(); i++){
@@ -898,7 +898,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * to unlock this resource.
     */
     public void unlockResource(CmsObject cms, String resource) throws CmsException{
-        // first unlock the folder in the /content/bodys/ path if it exists.
+        // first unlock the folder in the C_CONTENTBODYPATH path if it exists.
         try{
             cms.doUnlockResource(C_CONTENTBODYPATH  + resource.substring(1));
         }catch(CmsException e){
@@ -1009,7 +1009,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         }
         // finally the folder
         cms.doChangeLockedInProject(newProjectId, resourcename);
-        // change the corresponding folder in /content/bodys/
+        // change the corresponding folder in C_CONTENTBODYPATH
         String bodyFolder = C_CONTENTBODYPATH.substring(0,
                     C_CONTENTBODYPATH.lastIndexOf("/")) + resourcename;
         try {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeCompatiblePlain.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/08/24 08:42:37 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,12 +37,12 @@ import com.opencms.file.genericSql.*;
 
 /**
  * The resource type compatible plain is a system used resourcetype to show
- * that the resource does not stick to the rules. This only concersns resouorces
+ * that the resource does not stick to the rules. This only concerns resources
  * in the /content path or the /system/modules/... path. These resources can only
  * copied or deleted.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.3 $Date: 2001/07/12 09:09:52 $
+ * @version $Revision: 1.4 $Date: 2001/07/31 15:50:13 $
  *
  */
 public class CmsResourceTypeCompatiblePlain extends CmsResourceTypePlain {
