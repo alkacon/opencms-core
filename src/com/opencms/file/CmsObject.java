@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/11/10 17:10:08 $
-* Version: $Revision: 1.432 $
+* Date   : $Date: 2004/02/10 12:53:12 $
+* Version: $Revision: 1.432.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.432 $
+ * @version $Revision: 1.432.2.1 $
  */
 public class CmsObject {
 
@@ -2019,16 +2019,27 @@ public class CmsObject {
     }
 
     /**
-     * Gets all groups of a user.
+     * Returns the groups of a Cms user.<p>
      *
-     * @param username the name of the user to get all groups for.
-     * @return Vector of all groups of a user.
-     *
+     * @param username the name of the user
+     * @return a vector of Cms groups
      * @throws CmsException if operation was not succesful.
      */
     public Vector getGroupsOfUser(String username) throws CmsException {
-        return (m_driverManager.getGroupsOfUser(m_context, username));
+        return m_driverManager.getGroupsOfUser(m_context, username);
     }
+    
+    /**
+     * Returns the groups of a Cms user filtered by the specified IP address.<p>
+     *
+     * @param username the name of the user
+     * @param remoteAddress the IP address to filter the groups in the result vector
+     * @return a vector of Cms groups filtered by the specified IP address
+     * @throws CmsException if operation was not succesful.
+     */
+    public Vector getGroupsOfUser(String username, String remoteAddress) throws CmsException {
+        return m_driverManager.getGroupsOfUser(m_context, username, remoteAddress);
+    }    
 
     /**
      * This is the port the workplace access is limited to. With the opencms.properties

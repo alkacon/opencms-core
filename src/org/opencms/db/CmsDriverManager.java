@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/11/21 14:04:05 $
- * Version: $Revision: 1.298 $
+ * Date   : $Date: 2004/02/10 12:53:12 $
+ * Version: $Revision: 1.298.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.298 $ $Date: 2003/11/21 14:04:05 $
+ * @version $Revision: 1.298.2.1 $ $Date: 2004/02/10 12:53:12 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -3421,7 +3421,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     /**
      * Returns all groups.<p>
      *
-     * All users are granted, except the anonymous user.
+     * The IP address of the current request context is used to filter the groups in the result 
+     * vector.<p>
      *
      * @param context the current request context
      * @return users a Vector of all existing groups
@@ -3435,21 +3436,32 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             throw new CmsSecurityException("[" + getClass().getName() + "] getGroups()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
-
+    
     /**
-     * Returns a list of groups of a user.<p>
-     *
-     * All users are granted.
+     * Returns the groups of a Cms user.<p>
      *
      * @param context the current request context
-     * @param username the name of the user.
-     * @return vector of groups
+     * @param username the name of the user
+     * @return a vector of Cms groups filtered by the specified IP address
      * @throws CmsException if operation was not succesful
      */
     public Vector getGroupsOfUser(CmsRequestContext context, String username) throws CmsException {
+        return getGroupsOfUser(context, username, context.getRemoteAddress());
+    }
+
+    /**
+     * Returns the groups of a Cms user filtered by the specified IP address.<p>
+     *
+     * @param context the current request context
+     * @param username the name of the user
+     * @param remoteAddress the IP address to filter the groups in the result vector
+     * @return a vector of Cms groups
+     * @throws CmsException if operation was not succesful
+     */
+    public Vector getGroupsOfUser(CmsRequestContext context, String username, String remoteAddress) throws CmsException {
 
         CmsUser user = readUser(username);
-        String cacheKey = m_keyGenerator.getCacheKeyForUserGroups("", context, user);
+        String cacheKey = m_keyGenerator.getCacheKeyForUserGroups(remoteAddress, context, user);
 
         Vector allGroups = (Vector)m_userGroupsCache.get(cacheKey);
         if ((allGroups == null) || (allGroups.size() == 0)) {
@@ -3457,7 +3469,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             CmsGroup subGroup;
             CmsGroup group;
             // get all groups of the user
-            Vector groups = m_userDriver.readGroupsOfUser(user.getId(), context.getRemoteAddress());
+            Vector groups = m_userDriver.readGroupsOfUser(user.getId(), remoteAddress);
             allGroups = new Vector();
             // now get all childs of the groups
             Enumeration enu = groups.elements();
