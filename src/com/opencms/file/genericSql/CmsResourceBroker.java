@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/19 09:43:33 $
-* Version: $Revision: 1.368 $
+* Date   : $Date: 2003/03/19 11:22:40 $
+* Version: $Revision: 1.369 $
 
 *
 * This library is part of OpenCms -
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.368 $ $Date: 2003/03/19 09:43:33 $
+ * @version $Revision: 1.369 $ $Date: 2003/03/19 11:22:40 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -6124,7 +6124,6 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
                 CmsException.C_NO_ACCESS);
         }
         
-        property = property.toLowerCase();
         search = search && (siteRoot != null);
         // check if we have the result already cached
         String cacheKey = getCacheKey(property + search, null, new CmsProject(currentProject.getId(), -1), res.getResourceName());
@@ -6139,9 +6138,10 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
                 // map of properties already read, look up value there 
                 value = (String)allProperties.get(property);
                 if (value == null) {
-                    // unfortunatly, the Map is case sentitive, so to make really sure we must 
-                    // look up all the entries in the map manually, which should be faster 
-                    // then a check in the DB nevertheless
+                    // unfortunatly, the Map is always case sentitive, but in MySQL 
+                    // using readProperty() is not, so to make really sure a property is found
+                    // we  must look up all the entries in the map manually, which should be faster 
+                    // then a connect to the DB nevertheless
                     Iterator i = allProperties.keySet().iterator();
                     while (i.hasNext()) {
                         String key = (String)i.next();
