@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edithtml.js,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2002/02/18 15:32:42 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -384,6 +384,10 @@ function doEditHTML(para)
         break;
     case 45:
         DECMD_HYPERLINK_NODIALOG_onclick();
+        break;
+    case 46:
+        vfslink = window.open('edit_html_vfslink.html','SelColor', "width=450, height=150, resizable=no, top=300, left=250");
+        vfslink.focus();
         break;  
     default:
         alert("Sorry, leider kann die Funktion nicht ausgeführt werden.");          
@@ -729,7 +733,7 @@ function DECMD_IMAGE_onclick()
   EDITOR.EDIT_HTML.focus();
 }
 function DECMD_HYPERLINK_NODIALOG_onclick()
-{  
+{
   EDITOR.EDIT_HTML.ExecCommand(DECMD_HYPERLINK,OLECMDEXECOPT_DONTPROMPTUSER, EDITOR.URL.value);
   EDITOR.EDIT_HTML.focus();
 }
@@ -751,10 +755,9 @@ function getChars(value) {
 // sends URL string from seperate browser window to a hidden field within the opener document
 function sendURLString(destFormName,destFieldName,strURL){  
     var obj1='top.window.opener.self.document.'+ destFormName;
-    var obj2='top.window.opener.self.document.'+ destFormName +'.'+ destFieldName;
-    
+    var obj2='top.window.opener.self.document.'+ destFormName +'.'+ destFieldName;   
     if (eval(obj1) && eval(obj2)) { 
-        eval(obj2 +'.value="'+strURL+'"');   
+        eval(obj2 +'.value="'+strURL+'"'); 
         top.window.opener.doEditHTML(45); 
     }
 }

@@ -1857,6 +1857,33 @@
             <properties/>
         </file>
         <file>
+            <source>pics/system/bt_vfslink_off.gif</source>
+            <destination>pics/system/bt_vfslink_off.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/bt_vfslink_on.gif</source>
+            <destination>pics/system/bt_vfslink_on.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/bt_vfslink_push.gif</source>
+            <destination>pics/system/bt_vfslink_push.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
             <source>pics/system/circle.gif</source>
             <destination>pics/system/circle.gif</destination>
             <type>image</type>
@@ -3232,6 +3259,15 @@
             <properties/>
         </file>
         <file>
+            <source>system/workplace/action/edit_html_vfslink.html</source>
+            <destination>system/workplace/action/edit_html_vfslink.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
             <source>system/workplace/action/edit_page.html</source>
             <destination>system/workplace/action/edit_page.html</destination>
             <type>XMLTemplate</type>
@@ -4172,7 +4208,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[1]]></value>
+                    <value><![CDATA[2]]></value>
                 </property>
             </properties>
         </file>
@@ -4219,7 +4255,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[2]]></value>
+                    <value><![CDATA[3]]></value>
                 </property>
             </properties>
         </file>
@@ -10111,6 +10147,15 @@
         <file>
             <source>system/workplace/templates/edit_html_selcolor</source>
             <destination>system/workplace/templates/edit_html_selcolor</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/templates/edit_html_vfslink</source>
+            <destination>system/workplace/templates/edit_html_vfslink</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
