@@ -10,6 +10,9 @@ function show_help()
 {
 	return '2_1_2_2_2.html';
 }
+
+var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
+
 //-->
 </script>
 
@@ -69,7 +72,7 @@ function show_help()
 			<tr><td class=dialogtxt>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=center><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='explorer_files.html'"></td>
+					<td class=formular align=center><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href=lasturl"></td>
 				</tr>
 				</table>
 			</td>

@@ -217,7 +217,7 @@ function doAction(action) {
 			location.href='chtype.html?file='+ kontextparam;
 			break;
 		} case 12: {
-		    location.href='property.html?file='+ kontextparam;
+		    location.href='property.html?lasturl=' + location.href + '&file='+ kontextparam;
 			break;
 		}
 		case 13:
@@ -270,7 +270,7 @@ function doAction(action) {
 			location.href='explorer_files_deletef.html';
 			break;
 		} case 40:{
-		    location.href='history.html?file='+ kontextparam;
+		    location.href='history.html?lasturl=' + location.href + '&file='+ kontextparam;
 			break;
 		}
 		case 41:
