@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterDataSet.java,v $
  * Author : $Author: e.falkenhan $
- * Date   : $Date: 2001/11/02 14:42:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2001/11/05 08:46:03 $
+ * Version: $Revision: 1.2 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -33,8 +33,8 @@ import java.util.Vector;
  * should only be used within this mastermodule.
  *
  * @author A. Schouten $
- * $Revision: 1.1 $
- * $Date: 2001/11/02 14:42:43 $
+ * $Revision: 1.2 $
+ * $Date: 2001/11/05 08:46:03 $
  */
 public class CmsMasterDataSet implements Serializable {
 
@@ -117,9 +117,6 @@ public class CmsMasterDataSet implements Serializable {
 
     //// generic "data members" ////
 
-    /** data memeber for String values type LONG */
-    public String[] m_dataLong = new String[5];
-
     /** data memeber for String values type VARCHAR2(4000) */
     public String[] m_dataBig = new String[5];
 
@@ -188,8 +185,6 @@ public class CmsMasterDataSet implements Serializable {
         returnValue.append("m_feedId="+m_feedId+";");
         returnValue.append("m_feedReference="+m_feedReference+";");
         returnValue.append("m_feedFilename="+m_feedFilename+";");
-        returnValue.append("m_dataLong=[");
-        helperToString(m_dataLong, returnValue);
         returnValue.append("];");
         returnValue.append("m_dataBig=[");
         helperToString(m_dataBig, returnValue);

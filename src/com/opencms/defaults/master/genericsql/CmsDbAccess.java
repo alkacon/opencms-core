@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
- * Author : $Author: a.schouten $
- * Date   : $Date: 2001/11/05 08:12:20 $
- * Version: $Revision: 1.2 $
+ * Author : $Author: e.falkenhan $
+ * Date   : $Date: 2001/11/05 08:46:19 $
+ * Version: $Revision: 1.3 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -660,7 +660,6 @@ public class CmsDbAccess {
             stmnt.setString(i++,dataset.m_title);
         }
         //// GENERIC DATA ////
-        i = sqlSetTextArray(stmnt, dataset.m_dataLong, i);
         i = sqlSetTextArray(stmnt, dataset.m_dataBig, i);
         i = sqlSetTextArray(stmnt, dataset.m_dataMedium, i);
         i = sqlSetTextArray(stmnt, dataset.m_dataSmall, i);
@@ -704,7 +703,6 @@ public class CmsDbAccess {
         dataset.m_feedFilename = res.getString(i++);
         dataset.m_title = res.getString(i++);;
         //// GENERIC DATA ////
-        i = sqlSetTextArray(res, dataset.m_dataLong, i);
         i = sqlSetTextArray(res, dataset.m_dataBig, i);
         i = sqlSetTextArray(res, dataset.m_dataMedium, i);
         i = sqlSetTextArray(res, dataset.m_dataSmall, i);
@@ -1279,7 +1277,6 @@ public class CmsDbAccess {
         dataset.m_accessFlags = backup.m_accessFlags;
         dataset.m_dataBig = backup.m_dataBig;
         dataset.m_dataInt = backup.m_dataInt;
-        dataset.m_dataLong = backup.m_dataLong;
         dataset.m_dataMedium = backup.m_dataMedium;
         dataset.m_dataReference = backup.m_dataReference;
         dataset.m_dataSmall = backup.m_dataSmall;
