@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2004/01/19 16:00:16 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/01/21 15:02:09 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 5.1
  */
@@ -74,7 +74,7 @@ public class CmsDialog extends CmsWorkplace {
     /** Request parameter value for the action: update the report */
     public static final String REPORT_UPDATE = "reportupdate";
     /** Request parameter value for the action: end the report */
-    public static final String REPORT_END    = "reportend";    
+    public static final String REPORT_END    = "reportend";   
     
     /** Constant for the "OK" button in the build button methods */
     public static final int BUTTON_OK = 0;
@@ -761,71 +761,99 @@ public class CmsDialog extends CmsWorkplace {
      * @return the html for the button row under the dialog content area, including buttons
      */
     public String dialogButtonRow(int[] buttons, String[] attributes) {
-        StringBuffer result = new StringBuffer(256);
+        StringBuffer result = new StringBuffer(256);        
         result.append(dialogButtonRow(HTML_START));
+        
         for (int i=0; i<buttons.length; i++)  {
-            String curAttributes = writeAttribute(attributes[i]);
-            switch (buttons[i]) {
-                case BUTTON_OK:
-                    result.append("<input name=\"ok\" type=\"submit\" value=\"");
-                    result.append(key("button.ok"));
-                    result.append("\" class=\"dialogbutton\"");
-                    result.append(curAttributes);
-                    result.append(">\n");
-                    break;
-                case BUTTON_OK_NO_SUBMIT:
-                    result.append("<input name=\"ok\" type=\"button\" value=\"");
-                    result.append(key("button.ok"));
-                    result.append("\" class=\"dialogbutton\"");
-                    result.append(curAttributes);
-                    result.append(">\n");
-                    break;
-                case BUTTON_CANCEL:
-                    result.append("<input name=\"cancel\" type=\"button\" value=\"");
-                    result.append(key("button.cancel")+"\"");
-                    if ("".equals(curAttributes)) {
-                        result.append(" ");
-                        result.append(buttonActionCancel());
-                    }
-                    result.append(" class=\"dialogbutton\"");
-                    result.append(curAttributes);
-                    result.append(">\n");
-                    break;
-                case BUTTON_CLOSE:
-                    result.append("<input name=\"close\" type=\"button\" value=\"");
-                    result.append(key("button.close")+"\"");
-                    if ("".equals(curAttributes)) {
-                        result.append(" ");
-                        result.append(buttonActionClose());
-                    }
-                    result.append(" class=\"dialogbutton\"");
-                    result.append(curAttributes);
-                    result.append(">\n");
-                    break;
-                case BUTTON_ADVANCED:
-                    result.append("<input name=\"advanced\" type=\"button\" value=\"");
-                    result.append(key("button.advanced")+"\"");
-                    result.append(" class=\"dialogbutton\"");
-                    result.append(curAttributes);
-                    result.append(">\n");
-                    break;
-                case BUTTON_SET:
-                    result.append("<input name=\"set\" type=\"button\" value=\"");
-                    result.append(key("button.submit")+"\"");
-                    result.append(" class=\"dialogbutton\"");
-                    result.append(curAttributes);
-                    result.append(">\n");
-                    break;
-                default:
-                    // not a valid button code, just insert a warning in the HTML
-                    result.append("<!-- invalid button code: ");
-                    result.append(buttons[i]);
-                    result.append(" -->\n");
-            }
+            dialogButtonRowHtml(result, buttons[i], attributes[i]);
+        }        
+        
+        result.append(dialogButtonRow(HTML_END));        
+        return result.toString();
+    }
+    
+    /**
+     * Appends a space char. between tag attribs.<p>
+     * 
+     * @param attribute a tag attribute
+     * @return the tag attribute with a leading space char.
+     */
+    protected String appendDelimiter(String attribute) {
+        if (attribute != null && !"".equals(attribute) && !attribute.startsWith(" ")) {
+            // add a delimiter space between the beginning button HTML and the button tag attribs.
+            return " " + attribute;
         }
         
-        result.append(dialogButtonRow(HTML_END));
-        return result.toString();
+        return "";
+    }
+    
+    /**
+     * Renders the HTML for a single input button of a specified type.<p>
+     * 
+     * @param result a string buffer where the rendered HTML gets appended to
+     * @param button a integer key to identify the button
+     * @param attribute an optional string with possible tag attributes, or null
+     */
+    protected void dialogButtonRowHtml(StringBuffer result, int button, String attribute) {
+        attribute = appendDelimiter(attribute);
+        
+        switch (button) {
+            case BUTTON_OK :
+                result.append("<input name=\"ok\" type=\"submit\" value=\"");
+                result.append(key("button.ok"));
+                result.append("\" class=\"dialogbutton\"");
+                result.append(attribute);
+                result.append(">\n");
+                break;
+            case BUTTON_OK_NO_SUBMIT :
+                result.append("<input name=\"ok\" type=\"button\" value=\"");
+                result.append(key("button.ok"));
+                result.append("\" class=\"dialogbutton\"");
+                result.append(attribute);
+                result.append(">\n");
+                break;
+            case BUTTON_CANCEL :
+                result.append("<input name=\"cancel\" type=\"button\" value=\"");
+                result.append(key("button.cancel") + "\"");
+                if ("".equals(attribute)) {
+                    result.append(" ");
+                    result.append(buttonActionCancel());
+                }
+                result.append(" class=\"dialogbutton\"");
+                result.append(attribute);
+                result.append(">\n");
+                break;
+            case BUTTON_CLOSE :
+                result.append("<input name=\"close\" type=\"button\" value=\"");
+                result.append(key("button.close") + "\"");
+                if ("".equals(attribute)) {
+                    result.append(" ");
+                    result.append(buttonActionClose());
+                }
+                result.append(" class=\"dialogbutton\"");
+                result.append(attribute);
+                result.append(">\n");
+                break;
+            case BUTTON_ADVANCED :
+                result.append("<input name=\"advanced\" type=\"button\" value=\"");
+                result.append(key("button.advanced") + "\"");
+                result.append(" class=\"dialogbutton\"");
+                result.append(attribute);
+                result.append(">\n");
+                break;
+            case BUTTON_SET :
+                result.append("<input name=\"set\" type=\"button\" value=\"");
+                result.append(key("button.submit") + "\"");
+                result.append(" class=\"dialogbutton\"");
+                result.append(attribute);
+                result.append(">\n");
+                break;
+            default :
+                // not a valid button code, just insert a warning in the HTML
+                result.append("<!-- invalid button code: ");
+                result.append(button);
+                result.append(" -->\n");
+        }
     }
     
     /**
@@ -980,20 +1008,6 @@ public class CmsDialog extends CmsWorkplace {
             return "<div class=\"dialogrow\">";
         } else {
             return "</div>\n";
-        }
-    }
-    
-    /**
-     * Checks the String parameter and returns it if its not null or empty.<p>
-     * 
-     * @param attribute the attribute String 
-     * @return the attribute if the String is not empty
-     */
-    private String writeAttribute(String attribute) {
-        if (attribute != null && !"".equals(attribute)) {
-            return " "+attribute;
-        } else {
-            return ""; 
         }
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2004/01/14 10:00:04 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/01/21 15:02:09 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,11 +44,26 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1.10
  */
-public class CmsReport extends CmsDialog {       
+public class CmsReport extends CmsDialog {     
+    
+    /** Request parameter key for the type of the report */
+    public static final String PARAM_REPORT_TYPE = "reporttype";
+    
+    /** Request parameter value that this report should create a "simple" output */
+    public static final String REPORT_TYPE_SIMPLE = "simple";   
+    
+    /** Request parameter value that this report should create an "extended" output */
+    public static final String REPORT_TYPE_EXTENDED = "extended";     
+    
+    /** Constant for the "Details" button in the build button method */
+    public static final int BUTTON_DETAILS = 101;
+    
+    /** The type of this report */
+    private String m_paramReportType;
     
     /** Max. byte size of report output on client */
     public static final int REPORT_UPDATE_SIZE = 512000;
@@ -104,7 +119,21 @@ public class CmsReport extends CmsDialog {
         }           
         return wp;
     } 
-   
+    
+    /**
+     * Returns the type of this report.<p>
+     * 
+     * @return the type of this report
+     */
+    public String getParamReportType() {
+        if (m_paramReportType == null) {
+            // the default report type is the extended report
+            setParamReportType(REPORT_TYPE_EXTENDED);
+        }
+
+        return m_paramReportType;
+    }
+    
     /**
      * Returns the Thread id to display in this report.<p>
      * 
@@ -156,7 +185,7 @@ public class CmsReport extends CmsDialog {
     public String htmlStart(boolean loadStyles) {
         return pageHtml(HTML_START, loadStyles);
     }
-        
+    
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
@@ -183,6 +212,15 @@ public class CmsReport extends CmsDialog {
         } else {
             return false;
         }
+    }
+    
+    /**
+     * Checks whether this is a simple report.<p>
+     * 
+     * @return true, if the type of this report is a "simple"
+     */
+    public boolean isSimpleReport() {
+        return getParamReportType().equalsIgnoreCase(REPORT_TYPE_SIMPLE);
     }
     
     /**
@@ -213,6 +251,15 @@ public class CmsReport extends CmsDialog {
             return "</html>";
         }
     }
+    
+    /**
+     * Sets the type of this report.<p>
+     * 
+     * @param value the type of this report
+     */
+    public void setParamReportType(String value) {
+        m_paramReportType = value;
+    }
 
     /**
      * Sets the Thread id to display in this report.<p>
@@ -239,4 +286,33 @@ public class CmsReport extends CmsDialog {
             return dialogButtonRow(new int[] {BUTTON_OK_NO_SUBMIT}, new String[] {getParamOkLink()});
         }
     }
+    
+    /**
+     * @see org.opencms.workplace.CmsDialog#dialogButtonRowHtml(java.lang.StringBuffer, int, java.lang.String)
+     */
+    protected void dialogButtonRowHtml(StringBuffer result, int button, String attribute) {
+        attribute = appendDelimiter(attribute);
+
+        switch (button) {
+            case BUTTON_DETAILS :
+                result.append("<input name=\"details\" type=\"button\" value=\"");
+                result.append(key("button.detail"));
+                result.append("\" class=\"dialogbutton\"");
+                result.append(attribute);
+                result.append(">\n");
+                break;
+            default :
+                super.dialogButtonRowHtml(result, button, attribute);
+        }
+    }
+    
+    /**
+     * Builds a button row with an "Ok" and a "Details" button.<p>
+     * 
+     * @return the button row
+     */
+    public String dialogButtonRowOkDetails() {
+        return dialogButtonRow(new int[] {BUTTON_OK, BUTTON_DETAILS}, new String[] {"", "onClick='switchOutputFormat()'"});
+    }    
+    
 }

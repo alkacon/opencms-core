@@ -14,19 +14,61 @@ case CmsReport.ACTION_REPORT_UPDATE:
 <script language=JavaScript>
 <!--
 
+function a(message) {
+	parent.append(message);
+}
+
+function aH(message) {
+	parent.appendHead(message);
+}
+
+function aW(message) {
+	parent.appendWarning(message);
+}
+
+function aN(message) {
+	parent.appendNote(message);
+}
+
+function aO(message) {
+	parent.appendOk(message);
+}
+
+function aB() {
+	parent.appendBr();
+}
+
+<%
+
+String str = new String(wp.getReportUpdate());
+// System.err.println(str);
+
+%>
+
+var active = null;
+
 function init() {
+	if (active != null) {
+		clearTimeout(active);
+	}
+	
     var alive=<%= wp.isAlive() %>;
-	var value="<%= wp.getReportUpdate() %>";
-    parent.update(value);
+    
+    parent.flushArray();
+
+<%= str %>
+	
+    parent.update();
+    
 	if (alive) {
-    	setTimeout('reload();', <%= wp.REPORT_UPDATE_TIME %>);
+    	active = setTimeout('reload();', <%= wp.REPORT_UPDATE_TIME %>);
    	} else {
-   		setTimeout('parent.stop();', 10);
+   		active = setTimeout('parent.stop();', 10);
    	}
 }
 
 function reload() {
-	location.href="<%= wp.getDialogUri() %>?<%= wp.PARAM_ACTION %>=<%= wp.REPORT_UPDATE %>&<%= wp.PARAM_THREAD %>=<%= wp.getParamThread() %>";
+	location.href="<%= wp.getDialogUri() %>?<%= wp.PARAM_ACTION %>=<%= wp.REPORT_UPDATE %>&<%= wp.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= wp.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>";
 }
 
 // -->
@@ -43,12 +85,113 @@ default:
 wp.setParamAction(CmsReport.REPORT_END);
 
 %><%= wp.htmlStart() %>
-<script language=JavaScript>
+<script type="text/javascript" language="JavaScript">
 <!--
-var pageStart =
+
+// saves the HTML of the extended report format, 
+// built from the server-side generated JavaScripts
+var htmlText = "";
+
+// boolean flag whether this report is still running
+var isRunning = false;
+
+// boolean flag whether this report received the output of a warning/error message
+var hasError = false;
+
+// saves the last received headline in the report output
+var lastHeadline = "";
+
+// saves the last received warning/error message in the report output
+var lastError = "";
+
+// array to save the formats of the last received messages
+var reportOutputFormats = new Array();
+
+// array to save the last received messages
+var reportOutputMessages = new Array();
+
+// format flags for the HTML formatting of the messages
+var FORMAT_DEFAULT = 0;
+var FORMAT_WARNING = 1;
+var FORMAT_HEADLINE = 2;
+var FORMAT_NOTE = 3;
+var FORMAT_OK = 4;
+var FORMAT_NEWLINE = 5;
+
+// saves the type of this report, which is either {simple|extended}
+var reportType = "<%= wp.getParamReportType() %>";
+
+function append(message) {
+	reportOutputFormats.push(FORMAT_DEFAULT);
+	reportOutputMessages.push(message);
+}
+
+function appendHead(message) {
+	reportOutputFormats.push(FORMAT_HEADLINE);
+	reportOutputMessages.push(message);
+	lastHeadline = "" + message;
+}
+
+function appendWarning(message) {
+	reportOutputFormats.push(FORMAT_WARNING);
+	reportOutputMessages.push(message);
+	hasError = true;
+	lastError = message;
+}
+
+function appendNote(message) {
+	reportOutputFormats.push(FORMAT_NOTE);
+	reportOutputMessages.push(message);
+}
+
+function appendOk(message) {
+	reportOutputFormats.push(FORMAT_OK);
+	reportOutputMessages.push(message);
+}
+
+function appendBr() {
+	reportOutputFormats.push(FORMAT_NEWLINE);
+	reportOutputMessages.push("");
+}
+
+var report_running = new Image();
+report_running.src = "<%= wp.getSkinUri() %>explorer/report_running.gif";
+
+var report_ok = new Image();
+report_ok.src = "<%= wp.getSkinUri() %>explorer/report_ok.gif";
+
+var report_error = new Image();
+report_error.src = "<%= wp.getSkinUri() %>explorer/report_error.gif";
+
+// toggles between the simple and extended output format
+function switchOutputFormat() {
+	reportType = (reportType == "<%= CmsReport.REPORT_TYPE_EXTENDED %>") ? "<%= CmsReport.REPORT_TYPE_SIMPLE %>" : "<%= CmsReport.REPORT_TYPE_EXTENDED %>";
+
+	updateReport();	
+	updateReportImage();
+}
+
+var pageStartSimple =
+    "<html>\n<head>\n" +
+    "<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=<%= wp.getEncoding() %>'>\n" + 
+    "<link rel='stylesheet' type='text/css' href='<%= wp.getSkinUri() %>files/css_workplace.css'>\n" +
+    "</head>\n" +
+    "<body style='border: 0px solid #c0c0c0; background-color:#c0c0c0;'>\n" +   
+    "<center><table border='0' width='100%' height='100%'><tr><td valign='middle'>\n"+
+    "<table border='0' width='100%'>\n" + 
+    "<tr><td width='40' align='center' valign='middle'><img name='report_img' src='<%= wp.getSkinUri() %>explorer/report_running.gif' width='32' height='32' alt=''></td>\n" + 
+    "<td valign='middle'>";
+    
+var pageEndSimple = 
+	"</td></tr>\n" +
+	"</td></tr>\n" +
+	"</table></center>\n" +
+	"</body>\n</html>";    
+
+var pageStartExtended =
     "<html>\n<head>\n" +
     "<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=<%= wp.getEncoding() %>'>\n"+ 
-    "<style type='text/css'>\n<!--\n" +
+    "<style type='text/css'>\n" +
     
     "body       { color: #000000; background-color:#ffffff; font-family: sans-serif; font-size: 11px; }\n" +
     "div.main   { color: #000000; font-family: sans-serif; font-size: 11px; white-space: nowrap; }\n" +
@@ -61,38 +204,135 @@ var pageStart =
     "span.link2 { color: #666666; padding-left: 40px; }\n" +    
     "span.link2 { color: #990000; }\n" +          
     
-    "-->\n</style>\n" +
+    "</style>\n" +
     "</head>\n" +
-    "<body style='margin:0px 0px 0px 3px;'>\n<div class='main'>\n";
-                                               
-var pageEnd = "</div>\n</body>\n</html>\n";
-
-var pageBody = "";
+    "<body style='margin:0px 0px 0px 3px;'>\n" +  
+    "<div class='main'>\n";
+    
+var pageEndExtended = 
+	"</div>\n" +
+	"</body>\n" +
+	"</html>\n";                                
 
 function start() {
+	isRunning = true;
+	
 	document.getElementById("ok").disabled = true;
-	update("");
+	document.getElementById("details").disabled = false;
+	
+	//update("");
+	updateReportImage();
 }
 
 function stop() {
+	isRunning = false;
+	
     document.getElementById("ok").disabled = false;
+	document.getElementById("details").disabled = false;  
+	
+	updateReportImage();
 }
 
-function update(text) {
+// sets the report image correct depending on the current state of the report
+function updateReportImage() {
+	if (reportType != "simple") {
+		// return if the report is in not in "simple" mode currently
+		return;
+	}
+	
+	if (isRunning) {
+		report.document.images["report_img"].src = report_running.src;
+	} else {
+		if (hasError) {
+			report.document.images["report_img"].src = report_error.src;
+		} else {
+			report.document.images["report_img"].src = report_ok.src;
+		}	
+	}	
+}
+
+// flush the arrays with the report formats and messages
+function flushArray() {	
+    reportOutputFormats = new Array();
+	reportOutputMessages = new Array();	
+}
+
+// updates the report, builds the HTML string from the JavaScript input
+function update() {
 	var size = <%= wp.REPORT_UPDATE_SIZE %>; 
-    if (pageBody.length > size) {
-        pageBody = pageBody.substring(pageBody.length - size, pageBody.length);
-        var pos = pageBody.indexOf("\n"); 
+
+	// resize the HTML string
+    if (htmlText.length > size) {
+        htmlText = htmlText.substring(htmlText.length - size, htmlText.length);
+        var pos = htmlText.indexOf("\n"); 
         if (pos > 0) {
             // cut output at the first linebreak to have a "nice" start
-            pageBody = pageBody.substring(pos, pageBody.length);      
+            htmlText = htmlText.substring(pos, htmlText.length);      
         }
+    }    	
+	
+	// append the HTML of the extended report format to the HTML string
+    htmlText += getContentExtended();
+		
+	// write the HTML output to the iframe
+	updateReport();
+}
+
+// writes the HTML output to the iframe
+// this function gets also invoked when the report output format is toggled
+function updateReport() {
+    if (reportType == "<%= CmsReport.REPORT_TYPE_SIMPLE %>") {
+    	pageBody = pageStartSimple + lastHeadline + pageEndSimple;
+    } else {
+    	pageBody = pageStartExtended + htmlText + pageEndExtended;
     }
-    pageBody += text;
-    report.document.open();
-    report.document.write(pageStart + pageBody + pageEnd);
+
+    report.document.open();    
+    report.document.write(pageBody);
     report.document.close();
+    
     setTimeout('doScroll();', 1);
+}
+
+// builds the HTML string from the JavaScript input
+function getContentExtended() {
+	var htmlStr = "";
+	var i = 0;
+	
+	for (i=0;i<reportOutputFormats.length && i<reportOutputMessages.length;i++) {		
+		switch (reportOutputFormats[i]) {
+			case FORMAT_WARNING :
+				htmlStr += "<span class='warn'>";
+				htmlStr += reportOutputMessages[i];
+				htmlStr += "</span>";
+				break;
+			case FORMAT_HEADLINE :
+				htmlStr += "<span class='head'>";
+				htmlStr += reportOutputMessages[i];
+				htmlStr += "</span>";			
+				break;
+			case FORMAT_NOTE :
+				htmlStr += "<span class='note'>";
+				htmlStr += reportOutputMessages[i];
+				htmlStr += "</span>";			
+				break;
+			case FORMAT_OK :
+				htmlStr += "<span class='ok'>";
+				htmlStr += reportOutputMessages[i];
+				htmlStr += "</span>";			
+				break;	
+			case FORMAT_NEWLINE :
+				htmlStr += "\n";
+				break;	
+			case FORMAT_DEFAULT :			
+			default :
+				htmlStr += "<span>";
+				htmlStr += reportOutputMessages[i];			
+				htmlStr += "</span>";							
+		}
+	}
+	
+	return htmlStr;
 }
 
 function doScroll() {
@@ -120,8 +360,8 @@ function doScroll() {
 
 <table width="100%" border="0" cellpadding="0" cellspacing="0"><tr>
 <td><span style="height:20px; width:20px; display:block"></span></td>
-<td width="100%"><%= wp.dialogButtonRowReportOk() %></td>
-<td><iframe src="<%= wp.getDialogUri() %>?<%= wp.PARAM_ACTION %>=<%= wp.REPORT_UPDATE %>&<%= wp.PARAM_THREAD %>=<%= wp.getParamThread() %>" name="update" style="width:20px; height:20px; margin: 0px;" marginwidth="0" marginheight="0" frameborder="0" framespacing="0" scrolling="no"></iframe></td>
+<td width="100%"><%= wp.dialogButtonRowOkDetails() %></td>
+<td><iframe src="<%= wp.getDialogUri() %>?<%= wp.PARAM_ACTION %>=<%= wp.REPORT_UPDATE %>&<%= wp.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= wp.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>" name="update" style="width:20px; height:20px; margin: 0px;" marginwidth="0" marginheight="0" frameborder="0" framespacing="0" scrolling="no"></iframe></td>
 </tr></table>
 
 </form>

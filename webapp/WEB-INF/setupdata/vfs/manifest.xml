@@ -3431,11 +3431,6 @@
                     <value><![CDATA[-60]]></value>
                 </property>
                 <property>
-                    <name>visiblemethod</name>
-                    <type>0</type>
-                    <value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isAdminFalse]]></value>
-                </property>
-                <property>
                     <name>NavText</name>
                     <type>0</type>
                     <value><![CDATA[icon.linkmanagement]]></value>
@@ -3473,73 +3468,11 @@
             <accesscontrol/>
         </file>
         <file>
-            <source>system/workplace/administration/linkmanagement/htmllinks/empty.html</source>
-            <destination>system/workplace/administration/linkmanagement/htmllinks/empty.html</destination>
-            <type>plain</type>
-            <uuidresource>1d8f77c1-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-            <uuidcontent>1d8f77c0-c0f9-11d7-8d80-80884c2772a5</uuidcontent>
-            <datelastmodified>1046214000000</datelastmodified>
-            <userlastmodified>Admin</userlastmodified>
-            <datecreated>1046214000000</datecreated>
-            <usercreated>Admin</usercreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[ ]]></value>
-                </property>
-            </properties>
-            <accesscontrol/>
-        </file>
-        <file>
-            <source>system/workplace/administration/linkmanagement/htmllinks/index</source>
-            <destination>system/workplace/administration/linkmanagement/htmllinks/index</destination>
-            <type>plain</type>
-            <uuidresource>1d98eda7-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-            <uuidcontent>1d98eda6-c0f9-11d7-8d80-80884c2772a5</uuidcontent>
-            <datelastmodified>1046214000000</datelastmodified>
-            <userlastmodified>Admin</userlastmodified>
-            <datecreated>1046214000000</datecreated>
-            <usercreated>Admin</usercreated>
-            <flags>0</flags>
-            <properties/>
-            <accesscontrol/>
-        </file>
-        <file>
             <source>system/workplace/administration/linkmanagement/htmllinks/index.html</source>
             <destination>system/workplace/administration/linkmanagement/htmllinks/index.html</destination>
-            <type>XMLTemplate</type>
+            <type>jsp</type>
             <uuidresource>1da4fb9d-c0f9-11d7-8d80-80884c2772a5</uuidresource>
             <uuidcontent>1da4fb9c-c0f9-11d7-8d80-80884c2772a5</uuidcontent>
-            <datelastmodified>1046214000000</datelastmodified>
-            <userlastmodified>Admin</userlastmodified>
-            <datecreated>1046214000000</datecreated>
-            <usercreated>Admin</usercreated>
-            <flags>0</flags>
-            <properties/>
-            <accesscontrol/>
-        </file>
-        <file>
-            <source>system/workplace/administration/linkmanagement/htmllinks/result</source>
-            <destination>system/workplace/administration/linkmanagement/htmllinks/result</destination>
-            <type>plain</type>
-            <uuidresource>1db0e183-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-            <uuidcontent>1db0e182-c0f9-11d7-8d80-80884c2772a5</uuidcontent>
-            <datelastmodified>1046214000000</datelastmodified>
-            <userlastmodified>Admin</userlastmodified>
-            <datecreated>1046214000000</datecreated>
-            <usercreated>Admin</usercreated>
-            <flags>0</flags>
-            <properties/>
-            <accesscontrol/>
-        </file>
-        <file>
-            <source>system/workplace/administration/linkmanagement/htmllinks/result.html</source>
-            <destination>system/workplace/administration/linkmanagement/htmllinks/result.html</destination>
-            <type>XMLTemplate</type>
-            <uuidresource>1dba5769-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-            <uuidcontent>1dba5768-c0f9-11d7-8d80-80884c2772a5</uuidcontent>
             <datelastmodified>1046214000000</datelastmodified>
             <userlastmodified>Admin</userlastmodified>
             <datecreated>1046214000000</datecreated>
@@ -3569,6 +3502,11 @@
                     <type>0</type>
                     <value><![CDATA[ic_linkmanagement]]></value>
                 </property>
+                <property>
+                    <name>visiblemethod</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isAdminFalse]]></value>
+                </property>                
             </properties>
             <accesscontrol/>
         </file>
@@ -14846,6 +14784,48 @@
             <properties/>
             <accesscontrol/>
         </file>
+		<file>
+			<source>system/workplace/skins/modern/explorer/report_running.gif</source>
+			<destination>system/workplace/skins/modern/explorer/report_running.gif</destination>
+			<type>image</type>
+			<uuidresource>c228b70a-4b29-11d8-9930-ae519dc36ff9</uuidresource>
+			<uuidcontent>c228b70b-4b29-11d8-9930-ae519dc36ff9</uuidcontent>
+			<datelastmodified>1074590373000</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1074590373000</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/skins/modern/explorer/report_ok.gif</source>
+			<destination>system/workplace/skins/modern/explorer/report_ok.gif</destination>
+			<type>image</type>
+			<uuidresource>c2349ded-4b29-11d8-9930-ae519dc36ff9</uuidresource>
+			<uuidcontent>c2349dee-4b29-11d8-9930-ae519dc36ff9</uuidcontent>
+			<datelastmodified>1074590373000</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1074590373000</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/skins/modern/explorer/report_error.gif</source>
+			<destination>system/workplace/skins/modern/explorer/report_error.gif</destination>
+			<type>image</type>
+			<uuidresource>c20c2e57-4b29-11d8-9930-ae519dc36ff9</uuidresource>
+			<uuidcontent>c20c2e58-4b29-11d8-9930-ae519dc36ff9</uuidcontent>
+			<datelastmodified>1074590372000</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1074590372000</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>        
         <file>
             <destination>system/workplace/skins/modern/files</destination>
             <type>folder</type>
