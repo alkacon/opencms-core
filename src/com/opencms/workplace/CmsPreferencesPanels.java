@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2001/07/19 19:13:20 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2001/07/20 13:48:14 $
+* Version: $Revision: 1.31 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  *
  * @author Michael Emmerich
- * @version $Revision: 1.30 $ $Date: 2001/07/19 19:13:20 $
+ * @version $Revision: 1.31 $ $Date: 2001/07/20 13:48:14 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -774,9 +774,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         cms.getRequestContext().setCurrentProject(Integer.parseInt((String)parameters.get("project")));
 
         // get all access flags from the request
-        String ur = (String)parameters.get("ur");
-        String uw = (String)parameters.get("uw");
-        String uv = (String)parameters.get("uv");
         String gr = (String)parameters.get("gr");
         String gw = (String)parameters.get("gw");
         String gv = (String)parameters.get("gv");
@@ -787,21 +784,9 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         int flag = 0;
 
         // now check and set all flags
-        if(ur != null) {
-            if(ur.equals("on")) {
-                flag += C_ACCESS_OWNER_READ;
-            }
-        }
-        if(uw != null) {
-            if(uw.equals("on")) {
-                flag += C_ACCESS_OWNER_WRITE;
-            }
-        }
-        if(uv != null) {
-            if(uv.equals("on")) {
-                flag += C_ACCESS_OWNER_VISIBLE;
-            }
-        }
+        flag += C_ACCESS_OWNER_READ;
+        flag += C_ACCESS_OWNER_WRITE;
+        flag += C_ACCESS_OWNER_VISIBLE;
         if(gr != null) {
             if(gr.equals("on")) {
                 flag += C_ACCESS_GROUP_READ;
