@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/02/16 09:21:00 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/02/16 10:44:16 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -65,7 +65,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.17 $ $Date: 2000/02/16 09:21:00 $  
+* @version $Revision: 1.18 $ $Date: 2000/02/16 10:44:16 $  
 * 
 */
 
@@ -268,7 +268,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
              
                 // get the username
                 user=m_sessionStorage.getUserName(session.getId());
-                System.err.println("Session authentifcation "+user.toString());
+                //System.err.println("Session authentifcation "+user.toString());
                              
                 //check if a user was returned, i.e. the user is authenticated
                 if (user != null) {
@@ -304,7 +304,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
 				            // autheification in the DB
                             try {
                             user=cms.loginUser(username,password); 
-                            System.err.println("HTTP authentifcation "+user.toString());
+                            // System.err.println("HTTP authentifcation "+user.toString());
                             // authentification was successful create a session 
                             session=req.getSession(true);
                             OpenCmsServletNotify notify = new OpenCmsServletNotify(session.getId(),m_sessionStorage);
@@ -314,7 +314,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
                                 if (e.getType() == CmsException.C_NO_ACCESS){
                                     // authentification failed, so display a login screen
                                     requestAuthorization(req, res);
-                                    System.err.println("HTTP authentifcation login required");
+                                    // System.err.println("HTTP authentifcation login required");
                                 } else {
                                     throw e;               
                                 }                                                                                                    

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/02/15 17:53:48 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2000/02/16 10:44:16 $
+ * Version: $Revision: 1.35 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.34 $ $Date: 2000/02/15 17:53:48 $
+ * @version $Revision: 1.35 $ $Date: 2000/02/16 10:44:16 $
  */
 public interface I_CmsConstants
 {
@@ -142,10 +142,20 @@ public interface I_CmsConstants
 	static final int C_METADEF_TYPE_MANDATORY	= 2;
 
     /**
-     * Metainformation for resourc etitle
+     * Metainformation for resource title
      */
     static final String C_METAINFO_TITLE="Title";
-        
+
+     /**
+     * Metainformation for resource navigation title
+     */
+    static final String C_METAINFO_NAVTITLE="NavTitle";
+   
+    /**
+     * Metainformation for resource navigation position
+     */
+    static final String C_METAINFO_NAVPOS="NavPos";
+    
 	/**
 	 * This is the group for guests.
 	 */
