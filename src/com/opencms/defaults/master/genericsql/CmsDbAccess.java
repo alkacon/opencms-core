@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/21 09:56:08 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/05/21 11:44:07 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.flex.util.CmsUUID;
-import com.opencms.util.Utils;
 
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Constructor;
@@ -51,10 +50,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Properties;
 import java.util.Vector;
 
 /**
@@ -64,14 +59,11 @@ public class CmsDbAccess {
 
     public static final String C_COS_PREFIX = "/" + I_CmsConstants.C_ROOTNAME_COS;
 
-    /** The query properties for this accessmodule */
-    protected Properties m_queries;
-
     /** The root channel of the module */
     protected String m_rootChannel = "/";
     
     /** TODO: delete this after successful change of dbpool */
-    private String m_interimOfflinePoolUrl;
+    private String m_poolUrl;
     
     /**
      * 'Constants' file.
@@ -81,7 +73,6 @@ public class CmsDbAccess {
     /**
      * Public empty constructor, call "init()" on this class afterwards.
      * This allows more flexible custom module development.
-     * FLEX: Made the constructor public!
      */
     public CmsDbAccess() {
     }
@@ -92,22 +83,16 @@ public class CmsDbAccess {
      * @param onlinePoolName the pool to access the online ressources.
      * @param backupPoolName the pool to access the backup ressources.
      */
-    public CmsDbAccess(String poolName, String onlinePoolName, String backupPoolName) {
-        init(poolName, onlinePoolName, backupPoolName);
+    public CmsDbAccess(String dbPool) {
+        init(dbPool);
     }
     
     /**
      * Initializes the DBAccessObject.
      */
-    public void init(String offline, String online, String backup) {
-        
-        m_SqlQueries = initQueries(offline, getClass());
-        
-        m_interimOfflinePoolUrl = offline;
-        m_queries = new Properties();
-        // collect all query.properties in all packages of superclasses
-        //loadQueries(getClass());
-        //combineQueries();        
+    public void init(String dbPool) {      
+        m_SqlQueries = initQueries(dbPool, getClass());
+        m_poolUrl = dbPool;
     }
     
     /**
@@ -733,160 +718,9 @@ public class CmsDbAccess {
     public String toString() {
         StringBuffer returnValue = new StringBuffer();
         returnValue.append(this.getClass().getName() + "{");
-        returnValue.append("poolName="+m_interimOfflinePoolUrl+";");
-        returnValue.append("m_queries="+m_queries + "}");
+        returnValue.append("poolName="+m_poolUrl+";");
         return returnValue.toString();
     }
-
-//    /**
-//     * Loads recursively all query.properties from all packages of the
-//     * superclasses. This method calls recuresively itself with the superclass
-//     * (if exists) as parameter.
-//     *
-//     * @param the currentClass of the dbaccess module.
-//     */
-//    private void loadQueries(Class currentClass) {
-//        // creates the queryFilenam from the packagename and
-//        // filename query.properties
-//        String className = currentClass.getName();
-//        String queryFilename = className.substring(0, className.lastIndexOf('.'));
-//        queryFilename = queryFilename.replace('.','/') + "/query.properties";
-//        // gets the superclass and calls this method recursively
-//        Class superClass = currentClass.getSuperclass();
-//        if(superClass != java.lang.Object.class) {
-//            loadQueries(superClass);
-//        }
-//        try {
-//            // load the queries. Entries of the most recent class will overwrite
-//            // entries of superclasses.
-//            m_queries.load(getClass().getClassLoader().getResourceAsStream(queryFilename));
-//        } catch(Exception exc) {
-//            // no query.properties found - write to logstream.
-//            if(CmsBase.isLogging()) {
-//                CmsBase.log(CmsBase.C_MODULE_DEBUG, "[CmsDbAccess] Couldn't load " + queryFilename + " errormessage: " + exc.getMessage());
-//            }
-//        }
-//    }
-//
-//    /**
-//     * Combines the queries in the properties to complete quereis. Therefor a
-//     * replacement is needed: The follwing Strings will be replaces
-//     * automatically by the corresponding property-entrys:
-//     * ${property_key}
-//     */
-//    private void combineQueries() {
-//        Enumeration keys = m_queries.keys();
-//        while(keys.hasMoreElements()) {
-//            String key = (String)keys.nextElement();
-//            // replace while there has benn repacements performaend
-//            while(replace(key));
-//        }
-//    }
-//
-//    /**
-//     * Computes one run of the replacement for one query.
-//     * Stores the new value into m_queries.
-//     * @param key the key for the query to compute.
-//     * @return if in this run replacements are done.
-//     */
-//    private boolean replace(String key) {
-//        boolean retValue = false;
-//        String value = m_queries.getProperty(key);
-//        String newValue = new String();
-//        int index = 0;
-//        int lastIndex = 0;
-//        // run as long as there are "${" strings found
-//        while(index != -1) {
-//            index = value.indexOf("${", lastIndex);
-//            if(index != -1) {
-//                retValue = true;
-//                int nextIndex = value.indexOf('}', index);
-//                if(nextIndex != -1) {
-//                    // get the replacer key
-//                    String replacer = value.substring(index+2, nextIndex);
-//                    // copy the first part of the query
-//                    newValue += value.substring(lastIndex, index);
-//                    // copy the replcement-value
-//                    newValue += m_queries.getProperty(replacer, "");
-//                    // set up lastindex
-//                    lastIndex = nextIndex+1;
-//                } else {
-//                    // no key found, just copy the query-part
-//                    newValue += value.substring(lastIndex, index+2);
-//                    // set up lastindex
-//                    lastIndex = index+2;
-//                }
-//            } else {
-//                // end of the string, copy the tail into new value
-//                newValue += value.substring(lastIndex);
-//            }
-//        }
-//        // put back the new query to the queries
-//        m_queries.put(key, newValue);
-//        // returns true, if replacements were made in this run
-//        return retValue;
-//    }
-//
-//    /**
-//     * Creates a new connection and prepares a statement.
-//     * @param cms the CmsObject to get access to cms-ressources.
-//     * @param con the Connection to use.
-//     * @param queryKey the key for the query to use. The query will be get
-//     * by m_queries.getParameter(key)
-//     */
-//    protected PreparedStatement sqlPrepare(CmsObject cms, Connection con, String queryKey) throws SQLException {
-//        return this.sqlPrepare(cms, con, queryKey, null);
-//    }
-//    
-//    /**
-//     * Replaces in a SQL statement $XXX tokens by strings and returns a prepared statement.
-//     * 
-//     * @param cms the current user's CmsObject instance
-//     * @param conn the JDBC connection
-//     * @param queryKey the name of the SQL statement (in query.properties)
-//     * @param optionalSqlTokens a HashMap with optional SQL tokens to be replaced in the SQL statement
-//     * @return a new PreparedStatement
-//     * @throws SQLException
-//     */
-//    protected PreparedStatement sqlPrepare(CmsObject cms, Connection conn, String queryKey, HashMap optionalSqlTokens) throws SQLException {
-//        String statement = null;
-//        String moduleMaster = null;
-//        String channelRel = null;
-//        String media = null;
-//
-//        // get the string of the SQL statement
-//        statement = m_queries.getProperty(queryKey, "");
-//
-//        // choose the right tables depending on the online/offline project
-//        if (isOnlineProject(cms)) {
-//            moduleMaster = "CMS_MODULE_ONLINE_MASTER";
-//            channelRel = "CMS_MODULE_ONLINE_CHANNEL_REL";
-//            media = "CMS_MODULE_ONLINE_MEDIA";
-//        } else {
-//            moduleMaster = "CMS_MODULE_MASTER";
-//            channelRel = "CMS_MODULE_CHANNEL_REL";
-//            media = "CMS_MODULE_MEDIA";
-//        }
-//
-//        // replace in the SQL statement the table names
-//        statement = Utils.replace(statement, "$CMS_MODULE_MASTER", moduleMaster);
-//        statement = Utils.replace(statement, "$CMS_MODULE_CHANNEL_REL", channelRel);
-//        statement = Utils.replace(statement, "$CMS_MODULE_MEDIA", media);
-//
-//        // replace in the SQL statement further optional SQL tokens
-//        if (optionalSqlTokens != null) {
-//            Iterator optionalSqlKeys = optionalSqlTokens.keySet().iterator();
-//            while (optionalSqlKeys.hasNext()) {
-//                String currentKey = (String) optionalSqlKeys.next();
-//                String currentValue = (String) optionalSqlTokens.get(currentKey);
-//                statement = Utils.replace(statement, currentKey, currentValue);
-//            }
-//        }
-//
-//        //System.err.println(statement);
-//
-//        return conn.prepareStatement(statement);
-//    }
 
     /**
      * Inserts all values to the statement for insert and update.
@@ -1323,7 +1157,7 @@ public class CmsDbAccess {
             stmt = m_SqlQueries.getPreparedStatement(conn, "insert_media_offline");
             for(int i = 0; i < mediaToAdd.size(); i++) {
                 CmsMasterMedia media = (CmsMasterMedia) mediaToAdd.get(i);
-                media.setId(CmsIdGenerator.nextId(m_interimOfflinePoolUrl, "CMS_MODULE_MEDIA"));
+                media.setId(CmsIdGenerator.nextId(m_poolUrl, "CMS_MODULE_MEDIA"));
                 media.setMasterId(masterId);
                 sqlFillValues(stmt, media);
                 stmt.executeUpdate();
