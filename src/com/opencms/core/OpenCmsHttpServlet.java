@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/12/20 08:32:13 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2002/01/03 14:56:35 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2001/12/20 08:32:13 $
+ * @version $Revision: 1.24 $ $Date: 2002/01/03 14:56:35 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -555,6 +555,28 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
               case CmsException.C_SERVICE_UNAVAILABLE:
                   if(canWrite) {
                     res.sendError(res.SC_SERVICE_UNAVAILABLE, e.toString());
+                  }
+                  break;
+
+              // https page and http request - display 404 error.
+              case CmsException.C_HTTPS_PAGE_ERROR:
+                  if(canWrite) {
+                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                        A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Trying to get a http page with a https request. "+e.getMessage());
+                    }
+                    res.setContentType("text/HTML");
+                    res.sendError(res.SC_NOT_FOUND);
+                  }
+                  break;
+
+              // https request and http page - display 404 error.
+              case CmsException.C_HTTPS_REQUEST_ERROR:
+                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                        A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Trying to get a https page with a http request. "+e.getMessage());
+                    }
+                  if(canWrite) {
+                    res.setContentType("text/HTML");
+                    res.sendError(res.SC_NOT_FOUND);
                   }
                   break;
 

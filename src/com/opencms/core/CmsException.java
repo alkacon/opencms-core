@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
-* Date   : $Date: 2001/12/20 08:32:13 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2002/01/03 14:56:35 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import java.util.*;
  * This exception is thrown for security reasons in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.42 $ $Date: 2001/12/20 08:32:13 $
+ * @version $Revision: 1.43 $ $Date: 2002/01/03 14:56:35 $
  */
 public class CmsException extends Exception {
 
@@ -229,6 +229,14 @@ public class CmsException extends Exception {
      * Definition of error code for HTTP sreaming error
      */
     public final static int C_STREAMING_ERROR = 36;
+    /**
+     * Definition of error code for HTTP sreaming error
+     */
+    public final static int C_HTTPS_PAGE_ERROR = 37;
+    /**
+     * Definition of error code for HTTP sreaming error
+     */
+    public final static int C_HTTPS_REQUEST_ERROR = 38;
 
     public final static String C_EXTXT[] =  {
         "Unknown exception", "Access denied", "Not found",
@@ -244,7 +252,8 @@ public class CmsException extends Exception {
         "Error while launching template class", "OpenCms class loader error",
         "New password is too short", "Access denied to resource",
         "Resource deleted", "Resourcebroker-init error", "Registry error",
-        "User already exists", "HTTP streaming error"
+        "User already exists", "HTTP streaming error",
+        "text1 C_HTTPS_PAGE_ERROR", "text2 C_HTTPS_REQUEST_ERROR"
     };
 
     /**

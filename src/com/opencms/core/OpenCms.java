@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/12/20 15:29:37 $
-* Version: $Revision: 1.72 $
+* Date   : $Date: 2002/01/03 14:56:35 $
+* Version: $Revision: 1.73 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.72 $ $Date: 2001/12/20 15:29:37 $
+ * @version $Revision: 1.73 $ $Date: 2002/01/03 14:56:35 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -633,6 +633,18 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 A_OpenCms.log(C_OPENCMS_INFO, "[OpenCms] " + errorMessage);
             }
             throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
+        }
+        // test if ssl is active
+        String httpsProp = cms.readProperty(file.getAbsolutePath(),C_PROPERTY_EXPORT);
+        boolean httpsResource = "https".equalsIgnoreCase(httpsProp);
+        String scheme = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();
+        boolean httpsReq = "https".equalsIgnoreCase(scheme);
+        if(httpsResource != httpsReq){
+            if(httpsReq){
+                throw new CmsException(" "+file.getAbsolutePath()+" needs a http request", CmsException.C_HTTPS_PAGE_ERROR);
+            }else{
+                throw new CmsException(" "+file.getAbsolutePath()+" needs a https request", CmsException.C_HTTPS_REQUEST_ERROR);
+            }
         }
         cms.setLauncherManager(m_launcherManager);
         launcher.initlaunch(cms, file, startTemplateClass, this);
