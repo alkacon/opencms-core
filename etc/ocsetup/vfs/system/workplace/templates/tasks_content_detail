@@ -205,6 +205,7 @@ function show_help()
 </TEMPLATE>
 
 	<!-- Priorities -->
+	<priority0><LABEL value="task.label.prioritylevel.middle" /></priority0>
 	<priority1><![CDATA[<IMG border=0 width=16 height=16 src="]]><METHOD name="picsUrl">ic_task_priohigh.gif</METHOD><![CDATA[">&nbsp;]]><LABEL value="task.label.prioritylevel.high" /><![CDATA[]]></priority1>
 	<priority2><LABEL value="task.label.prioritylevel.middle" /></priority2>
 	<priority3><![CDATA[<IMG border=0 width=16 height=16 src="]]><METHOD name="picsUrl">ic_task_priolow.gif</METHOD><![CDATA[">&nbsp;]]><LABEL value="task.label.prioritylevel.low" /><![CDATA[]]></priority3>

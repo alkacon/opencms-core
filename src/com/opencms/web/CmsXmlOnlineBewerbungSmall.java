@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbungSmall.java,v $ 
- * Author : $Author: m.emmerich $
- * Date   : $Date: 2000/02/23 20:09:58 $
- * Version: $Revision: 1.5 $
+ * Author : $Author: a.schouten $
+ * Date   : $Date: 2000/02/24 15:16:44 $
+ * Version: $Revision: 1.6 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -41,8 +41,8 @@ import java.io.*;
  * This class is used to display the application form of mindfact and makes it
  * possible to send the application form as a mail.
  * 
- * @author $Author: m.emmerich $
- * @version $Name:  $ $Revision: 1.5 $ $Date: 2000/02/23 20:09:58 $
+ * @author $Author: a.schouten $
+ * @version $Name:  $ $Revision: 1.6 $ $Date: 2000/02/24 15:16:44 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
@@ -563,8 +563,8 @@ public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
 			int tasktyperef = cms.getTaskType("StartApplication");
 			int followingtasktyperef = cms.getTaskType("CheckApplication");
 			
-			String projname = "Bewerbung auf der CeBIT ";
-			String taskname = "Bewerbung von " + recname;
+			String projname = "Messekontakt auf der CeBIT ";
+			String taskname = "Messekontakt von " + recname;
 			
 			String taskcomment = "Emailadresse: " + recemail + "<BR>\n";
 			taskcomment += "Firma: " + co + "<BR>\n";

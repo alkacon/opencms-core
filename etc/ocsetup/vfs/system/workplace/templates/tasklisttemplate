@@ -17,6 +17,7 @@
 	</defaulttasklist>
 	
 	<!-- Priorities -->
+	<priority0></priority0>
 	<priority1><![CDATA[<img src="]]><METHOD name="picsUrl">ic_task_priohigh.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.prioritylevel.high" /><![CDATA[">]]></priority1>
 	<priority2></priority2>
 	<priority3><![CDATA[<img src="]]><METHOD name="picsUrl">ic_task_priolow.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.prioritylevel.low" /><![CDATA[">]]></priority3>
