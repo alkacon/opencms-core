@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/03/22 09:22:35 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/03/22 09:35:20 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/03/22 09:22:35 $
+ * @version $Revision: 1.19 $ $Date: 2000/03/22 09:35:20 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -243,15 +243,17 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
             throws CmsException {
 
             Vector files=cms.getFilesInFolder(C_CONTENTTEMPLATEPATH);
-             Enumeration enum=files.elements();
+            Enumeration enum=files.elements();
             while (enum.hasMoreElements()) {
                 CmsFile file =(CmsFile)enum.nextElement();
-                String nicename=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
-                if (nicename == null) {
-                       nicename=file.getName();
+                if (file.getState() != C_STATE_DELETED) {
+                    String nicename=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
+                    if (nicename == null) {
+                        nicename=file.getName();
+                    }
+                    names.addElement(nicename);
+                    values.addElement(file.getAbsolutePath());
                 }
-                names.addElement(nicename);
-                values.addElement(file.getAbsolutePath());
             }
             return new Integer(0);           
       }
