@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/07 13:17:52 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2000/07/07 17:35:52 $
+ * Version: $Revision: 1.92 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,9 +50,9 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
 <<<<<<< CmsDbAccess.java
- * @version $Revision: 1.91 $ $Date: 2000/07/07 13:17:52 $ * 
+ * @version $Revision: 1.92 $ $Date: 2000/07/07 17:35:52 $ * 
 =======
- * @version $Revision: 1.91 $ $Date: 2000/07/07 13:17:52 $ * 
+ * @version $Revision: 1.92 $ $Date: 2000/07/07 17:35:52 $ * 
 >>>>>>> 1.88
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
@@ -4788,7 +4788,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		CmsGroup guests = createGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
         CmsGroup administrators = createGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED|C_FLAG_GROUP_PROJECTMANAGER, null);            
 		CmsGroup projectleader = createGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group",C_FLAG_ENABLED|C_FLAG_GROUP_PROJECTMANAGER|C_FLAG_GROUP_PROJECTCOWORKER|C_FLAG_GROUP_ROLE,null);
-        createGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED|C_FLAG_GROUP_ROLE|C_FLAG_GROUP_PROJECTCOWORKER, C_GROUP_GUEST);
+        CmsGroup users = createGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED|C_FLAG_GROUP_ROLE|C_FLAG_GROUP_PROJECTCOWORKER, C_GROUP_GUEST);
                
 		// add the users
         CmsUser guest = addUser(C_USER_GUEST, "", "the guest-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), guests, "", "", C_USER_TYPE_SYSTEMUSER); 
@@ -4801,7 +4801,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		CmsProject online = createProject(admin, guests, projectleader, task, C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL);
 		
 		// create the root-folder
-		createFolder(admin, online, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
+		CmsFolder rootFolder = createFolder(admin, online, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
+		rootFolder.setUserId(users.getId());
+		writeFolder(online, rootFolder, false);
 	}
 	
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
- * Date   : $Date: 2000/06/20 09:50:44 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/07/07 17:35:52 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import java.io.*;
  * This is a general helper class.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2000/06/20 09:50:44 $
+ * @version $Revision: 1.15 $ $Date: 2000/07/07 17:35:52 $
  */
 public class Utils implements I_CmsConstants, I_CmsLogChannels {
 
@@ -299,8 +299,8 @@ public class Utils implements I_CmsConstants, I_CmsLogChannels {
 			}
 		}
 		
-		writer.close();
 		try {
+			writer.close();
 			stringWriter.close();
 		} catch (Exception err) {
 			// ignore 

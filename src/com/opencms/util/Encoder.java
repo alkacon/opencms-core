@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
- * Date   : $Date: 2000/05/18 12:24:05 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/07/07 17:35:52 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * replaxed with <code>%hex</code> where hex is a two digit hex number.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/05/18 12:24:05 $
+ * @version $Revision: 1.9 $ $Date: 2000/07/07 17:35:52 $
  */
 public class Encoder { 
 	
@@ -59,7 +59,7 @@ public class Encoder {
   /**
    * Constructor
    */
-  public void Encoder()
+  public Encoder()
   {
   }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/07/03 14:54:02 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/07/07 17:35:52 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import source.org.apache.java.util.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/07/03 14:54:02 $
+ * @version $Revision: 1.7 $ $Date: 2000/07/07 17:35:52 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -104,24 +104,29 @@ public class CmsShell implements I_CmsConstants {
 	 * The commandlineinterface.
 	 */
 	private void commands() {
-		try{
-			Reader reader = new FileReader(java.io.FileDescriptor.in);
-			StreamTokenizer tokenizer = new StreamTokenizer(reader);
-			tokenizer.eolIsSignificant(true);
-			Vector input;
+		try{			
+			FileReader fr = new FileReader(FileDescriptor.in);
+			LineNumberReader lnr = new LineNumberReader(fr);
 			System.out.println("Type help to get a list of commands.");
 			for(;;) { // ever
-				System.out.print("> ");
-				input = new Vector();
-				while(tokenizer.nextToken() != tokenizer.TT_EOL) {
-					if(tokenizer.ttype == tokenizer.TT_NUMBER) {
-						input.addElement(tokenizer.nval + "");
+				System.out.print(">");
+				String line = lnr.readLine();
+				line.trim();
+				StringReader reader = new StringReader(line + "\n");
+				StreamTokenizer st = new StreamTokenizer(reader);
+				st.eolIsSignificant(true);
+				//put all tokens into a vector.
+				Vector args = new Vector();
+				while(st.nextToken() != st.TT_EOL) {
+					if(st.ttype == st.TT_NUMBER) {
+						args.addElement(new Double(st.nval).intValue() + "");
 					} else {
-						input.addElement(tokenizer.sval);
+						args.addElement(st.sval);
 					}
 				}
-				// call the command
-				call(input);
+				reader.close();
+				//exec the command
+				call(args);
 			}
 		}catch(Exception exc){
             

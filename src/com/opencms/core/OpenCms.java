@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/06/20 11:47:11 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2000/07/07 17:35:52 $
+ * Version: $Revision: 1.29 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.28 $ $Date: 2000/06/20 11:47:11 $  
+* @version $Revision: 1.29 $ $Date: 2000/07/07 17:35:52 $  
 * 
 * */
 
@@ -258,7 +258,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 	 */
 	private void printCopyrightInformation(CmsObject cms) {
 		System.err.println(cms.version());
-		System.out.println(cms.version());
         if(c_servletLogging) {
             this.log(C_OPENCMS_INFO, cms.version());
         }
@@ -267,7 +266,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 		
 		for(int i = 0; i < copy.length; i++) {
 			System.err.println(copy[i]);
-			System.out.println(copy[i]);
             if(c_servletLogging) {
                 this.log(C_OPENCMS_INFO, copy[i]);
             }

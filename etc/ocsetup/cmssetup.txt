@@ -1,39 +1,39 @@
 login Admin admin
-addResourceType plain "1" ""
-addResourceType XMLTemplate "3" ""
-addResourceType page "3" ""
-addResourceType binary "1" ""
-addResourceType image "1" ""
-addResourceType script "1" ""
-addResourceType link "4" ""
-addResourceType newspage "3" ""
-createPropertydefinition "Title" "plain" "0"
-createPropertydefinition "Title" "page" "0"
-createPropertydefinition "Title" "XMLTemplate" "0"
-createPropertydefinition "Title" "binary" "0"
-createPropertydefinition "Title" "script" "0"
-createPropertydefinition "Title" "image" "0"
-createPropertydefinition "Title" "link" "0"
-createPropertydefinition "NavText" "page" "0"
-createPropertydefinition "NavPos" "page" "0"
-createPropertydefinition "NavText" "plain" "0"
-createPropertydefinition "NavPos" "plain" "0"
-createPropertydefinition "NavText" "folder" "0"
-createPropertydefinition "NavPos" "folder" "0"
-createPropertydefinition "Title" "folder" "0"
-addFileExtension "doc" "binary"
-addFileExtension "pdf" "binary"
-addFileExtension "zip" "binary"
-addFileExtension "txt" "plain"
-addFileExtension "html" "plain"
-addFileExtension "htm" "plain"
-addFileExtension "jpeg" "image"
-addFileExtension "jpg" "image"
-addFileExtension "gif" "image"
-addFileExtension "js" "script"
+addResourceType plain 1 ""
+addResourceType XMLTemplate 3 ""
+addResourceType page 3 ""
+addResourceType binary 1 ""
+addResourceType image 1 ""
+addResourceType script 1 ""
+addResourceType link 4 ""
+addResourceType newspage 3 ""
+createPropertydefinition Title plain 0
+createPropertydefinition Title page 0
+createPropertydefinition Title XMLTemplate 0
+createPropertydefinition Title binary 0
+createPropertydefinition Title script 0
+createPropertydefinition Title image 0
+createPropertydefinition Title link 0
+createPropertydefinition NavText page 0
+createPropertydefinition NavPos page 0
+createPropertydefinition NavText plain 0
+createPropertydefinition NavPos plain 0
+createPropertydefinition NavText folder 0
+createPropertydefinition NavPos folder 0
+createPropertydefinition Title folder 0
+addFileExtension doc binary
+addFileExtension pdf binary
+addFileExtension zip binary
+addFileExtension txt plain
+addFileExtension html plain
+addFileExtension htm plain
+addFileExtension jpeg image
+addFileExtension jpg image
+addFileExtension gif image
+addFileExtension js script
 createProject  "__setupproj" "The project to setup the cms" Administrators Administrators
-setCurrentProject "2"
+setCurrentProject 2
 copyResourceToProject "/"
-writeExportPath "C:/work41/"
-addUser "d.heckmann" "test" Users "Developer" D Heckmann "andreas.schouten@framfab.de"
-
+importResources "../opencms/workplace/" "/"
+publishProject "2"
+writeExportPath "c:/temp/export/"
