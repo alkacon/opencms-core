@@ -11,10 +11,11 @@ import java.util.*;
 
 
 /**
- * Definition of workplace label handling.
+ * Class for building workplace labels. <BR>
+ * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;LABEL&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/01/26 09:15:40 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/26 09:55:48 $
  */
 public class CmsLabel extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
@@ -30,7 +31,7 @@ public class CmsLabel extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpC
      * @exception CmsException
      */
     public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
-        String labelValue = n.getAttribute("value");
+        String labelValue = n.getAttribute(C_LABEL_VALUE);
         String outputValue=null;
         
         CmsXmlWpLabelDefFile labeldef = getLabelDefinitions(cms);

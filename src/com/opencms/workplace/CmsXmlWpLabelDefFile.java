@@ -10,10 +10,10 @@ import org.xml.sax.*;
 import java.util.*;
 
 /**
- * Content definition for label template files.
+ *  Content definition for the workplace label element definition file.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/01/26 09:15:40 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/26 09:55:48 $
  */
 public class CmsXmlWpLabelDefFile extends A_CmsXmlContent implements I_CmsLogChannels ,
                                                                      I_CmsWpConstants {
@@ -66,14 +66,15 @@ public class CmsXmlWpLabelDefFile extends A_CmsXmlContent implements I_CmsLogCha
     }
     
     /**
-     * Gets a label.
+     * Gets the processed data for a label.
      * @param value The value of this label.
-     * @return 
+     * @return Processed label.
+     * @exception CmsException
      */
-    public String getLabel(String value)
+     public String getLabel(String value)
         throws CmsException {
         setData(C_LABEL_VALUE, value);
-        return getProcessedDataValue("label");                
-    }        
+        return getProcessedDataValue(C_TAG_LABEL);                
+    }     
 
 }

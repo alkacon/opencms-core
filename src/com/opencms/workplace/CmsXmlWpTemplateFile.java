@@ -13,7 +13,9 @@ import java.util.*;
  * Content definition for Workplace template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/01/26 09:40:49 $
+
+ * @author Michael Emmerich
+ * @version $Revision: 1.5 $ $Date: 2000/01/26 09:55:48 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels {
 
@@ -88,6 +90,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
         registerTag("BUTTON", CmsXmlWpTemplateFile.class, "handleAnyTag", C_REGISTER_MAIN_RUN);            
         registerTag("BUTTONSEPARATOR", CmsXmlWpTemplateFile.class, "handleAnyTag", C_REGISTER_MAIN_RUN);    
         registerTag("LABEL", CmsXmlWpTemplateFile.class, "handleAnyTag", C_REGISTER_MAIN_RUN);  
+        registerTag("INPUTFIELD", CmsXmlWpTemplateFile.class, "handleAnyTag", C_REGISTER_MAIN_RUN);    
     }    
     
     /**
@@ -146,6 +149,8 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
             classname = "com.opencms.workplace.CmsButtonSeparator";
         } else if(tagname.equals("label")) {
             classname = "com.opencms.workplace.CmsLabel";
+        } else if(tagname.equals("inputfield")) {
+            classname = "com.opencms.workplace.CmsInput";
         } else {
             throwException("Don't know which class handles " + tagname + " tags.");            
         }        
