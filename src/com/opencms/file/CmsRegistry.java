@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/09/15 09:46:47 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/09/15 14:09:13 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -33,6 +33,7 @@ import java.util.*;
 import java.util.zip.*;
 import java.text.*;
 import java.security.*;
+import java.lang.reflect.*;
 import org.w3c.dom.*;
 import com.opencms.template.*;
 import com.opencms.core.*;
@@ -41,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/09/15 09:46:47 $
+ * @version $Revision: 1.12 $ $Date: 2000/09/15 14:09:13 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -75,6 +76,13 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
 	 *  A message digest to check the resource-codes
 	 */
 	private MessageDigest m_digest;
+
+	/**
+	 *  Declaration of Module event-method names.
+	 */
+	private static final String C_UPLOAD_EVENT_METHOD_NAME = "moduleWasUploaded";
+	private static final String C_UPDATE_PARAMETER_EVENT_METHOD_NAME = "moduleParameterWasUpdated";
+	private static final String C_DELETE_EVENT_METHOD_NAME = "moduleWasDeleted";
 
 /**
  * Creates a new CmsRegistry for a user. The cms-object represents the current state of the current user.
@@ -344,8 +352,6 @@ public synchronized void deleteModule(String module, Vector exclusion) throws Cm
 		throw new CmsException("No access to perform the action 'deleteModule'", CmsException.C_REGISTRY_ERROR);
 	}
 
-	// TODO: invoke the event-method
-
 	// check, if deletion is allowed
 	Vector deps = deleteCheckDependencies(module);
 	if(deps.size() != 0) {
@@ -353,6 +359,18 @@ public synchronized void deleteModule(String module, Vector exclusion) throws Cm
 		throw new CmsException("There are dependencies for the module " + module + ": deletion is not allowed.", CmsException.C_REGISTRY_ERROR);
 	}
 
+	// try to invoke the event-method for delete on this calss.
+	Class eventClass = getModuleMaintenanceEventClass(module);
+
+	try {
+		Class declaration[] = {CmsObject.class};
+		Object arguments[] = {m_cms};
+		Method eventMethod = eventClass.getMethod(C_DELETE_EVENT_METHOD_NAME, declaration);
+		eventMethod.invoke(null, arguments);
+	} catch(Exception exc) {
+		// ignore the exception.
+	}
+	
 	// get the files, that are belonging to the module.
 	Vector resourceNames = new Vector();
 	Vector missingFiles = new Vector();
@@ -563,7 +581,11 @@ public int getModuleFiles(String modulename, Vector retNames, Vector retCodes) {
  * @return java.lang.Class that receives all maintenance-events for the module.
  */
 public Class getModuleMaintenanceEventClass(String modulname) {
-	return null;
+	try {
+		return java.lang.Class.forName(getModuleData(modulname, "maintenance_class"));
+	} catch(Exception exc) {
+		return null;
+	}
 }
 /**
  * Returns the names of all available modules.
@@ -1193,12 +1215,22 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
 	regModules.appendChild(newNode);
 	saveRegistry();
 
-	// TODO: invoke the event-method
-
 	try {
 		init();
 	} catch (Exception exc) {
 		throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
+	}
+
+	// try to invoke the event-method for upload on this calss.
+	Class eventClass = getModuleMaintenanceEventClass(newModuleName);
+
+	try {
+		Class declaration[] = {CmsObject.class};
+		Object arguments[] = {m_cms};
+		Method eventMethod = eventClass.getMethod(C_UPLOAD_EVENT_METHOD_NAME, declaration);
+		eventMethod.invoke(null, arguments);
+	} catch(Exception exc) {
+		// ignore the exception.
 	}
 }
 /**
@@ -1375,6 +1407,20 @@ public void setModuleParameter(String modulename, String parameter, String value
 		}
 		param.getElementsByTagName("value").item(0).getFirstChild().setNodeValue(value);
 		saveRegistry();
+
+		// try to invoke the event-method for setting parameters on this class.
+		Class eventClass = getModuleMaintenanceEventClass(modulename);
+
+		try {
+			Class declaration[] = {CmsObject.class};
+			Object arguments[] = {m_cms};
+			Method eventMethod = eventClass.getMethod(C_UPDATE_PARAMETER_EVENT_METHOD_NAME, declaration);
+			eventMethod.invoke(null, arguments);
+		} catch(Exception exc) {
+			// ignore the exception.
+		}
+
+		
 	} catch (CmsException exc) {
 		throw exc;
 	} catch (Exception exc) {
