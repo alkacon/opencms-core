@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsCacheDirectives.java,v $
-* Date   : $Date: 2001/05/08 13:16:46 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/05/08 13:56:41 $
+* Version: $Revision: 1.5 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -39,7 +39,7 @@ import java.util.*;
  * used keys.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2001/05/08 13:16:46 $
+ * @version $Revision: 1.5 $ $Date: 2001/05/08 13:56:41 $
  */
 public class CmsCacheDirectives implements I_CmsLogChannels {
 
@@ -114,6 +114,16 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
         m_cd |= stream?C_CACHE_STREAM:0;
 
         m_changeCd = false;
+    }
+
+    /**
+     * Constructor
+     * @param internal Initial value for "internal cacheable" property.
+     * @param stream Initial value for "streamable" property.
+     */
+    public CmsCacheDirectives(boolean internal, boolean stream) {
+        setExternalCaching(internal, true, true, true, stream);
+        autoSetExternalCache();
     }
 
     /**
