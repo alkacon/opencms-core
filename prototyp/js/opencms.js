@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/opencms.js,v $
- * Date   : $Date: 2000/03/23 09:07:34 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/03/23 15:20:20 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -150,7 +150,7 @@ function openwin(url, name, w, h) //opens a new window with parameter URL, Windo
 	if(w==0) w=screen.availWidth-20;
 	if(h==0) h=screen.availHeight-100;
 
-	workplace = window.open(url,name, 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,width='+w+',height='+h);
+	workplace = window.open(url,name, 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=175,left=425,width='+w+',height='+h);
 	if(workplace != null)
 	   {
 	      if (workplace.opener == null)
@@ -162,7 +162,8 @@ function openwin(url, name, w, h) //opens a new window with parameter URL, Windo
 	{
 		workplace.moveTo(0,0);
 	}
-	workplace.focus();
+	//workplace.focus();
+	return workplace;
 	
 }
 

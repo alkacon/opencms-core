@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/opencms_edithtml.js,v $
- * Date   : $Date: 2000/03/22 16:59:32 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/03/23 15:20:20 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -30,6 +30,8 @@
 // Script for  html editcontrol
 //------------------------------------------------------//
 
+var piclist=null;
+var binlist=null;
 // Definition of constants, which button is clicked
 var CLOSE=1;
 var SAVECLOSE=2;
@@ -181,9 +183,13 @@ function doEditHTML(para)
 	switch (para)
 	{
 	case 1:
+		if (piclist!=null) piclist.close();
+		if (binlist!=null) binlist.close();
 		history.back();
 		break;
 	case 2:
+		if (piclist!=null) piclist.close();
+		if (binlist!=null) binlist.close();
 		history.back();
 		break;
 	case 3:
@@ -278,10 +284,12 @@ function doEditHTML(para)
 		DECMD_IMAGE_onclick();
 		break;		
     case 43:
-        openwin('edit_html_piclist.html','piclist',450,550);
+        piclist = openwin('edit_html_piclist.html','piclist',450,550);
+        piclist.focus();
         break;
 	case 44:
-        openwin('edit_html_download.html','binlist',525,550);
+        binlist = openwin('edit_html_download.html','binlist',525,550);
+        binlist.focus();
         break;
     case 45:
 		DECMD_HYPERLINK_NODIALOG_onclick();
