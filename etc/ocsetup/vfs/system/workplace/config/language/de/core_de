@@ -177,7 +177,7 @@
 				<downbrowser>Der Ordner für die Downloadgalerien existiert noch nicht.</downbrowser>
 				<downnogallery>Es existiert noch keine Downloadgalerie.</downnogallery>
 				<extinuse>Diese Endung ist bereits einem Dateitypen zugewiesen.</extinuse>
-				<extNav1>Das ausgewählte Hauptlogo ist keine gültige Image-Datei oder der Pfad existiert nicht.</extNav1>
+				<extNav1>Das ausgewählte Hauptlogo oder Verzeichnislogo ist keine gültige Image-Datei oder der Pfad existiert nicht.</extNav1>
 				<extNav2>Um einen Link in der stat. Navigation hinzuzufügen,  sind ein Linktext und ein gültiger Pfad erforderlich.</extNav2>
 				<extNav3>Die Farbauswahl ist nicht im Format #00000000 bis #FFFFFFFF angegeben.</extNav3>
 				<foldercreate>Eventuell existiert schon ein Ordner mit diesem Namen.</foldercreate>
