@@ -1,9 +1,9 @@
 package com.opencms.file.genericSql;
 
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/08/29 15:42:51 $
- * Version: $Revision: 1.62 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQuerys.java,v $
+ * Date   : $Date: 2000/09/06 15:50:05 $
+ * Version: $Revision: 1.1 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,12 +34,12 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.62 $ $Date: 2000/08/29 15:42:51 $
+ * @version $Revision: 1.1 $ $Date: 2000/09/06 15:50:05 $
  */
-public interface I_CmsQuerys {
+public abstract class CmsQuerys {
 	
 	// Common constants   
-	static String C_DATABASE_PREFIX = "CMS_";
+	protected static String C_DATABASE_PREFIX = "CMS_";
 	
 	// Constants for resources tables
 	public static final String C_RESOURCES_RESOURCE_ID="RESOURCE_ID";

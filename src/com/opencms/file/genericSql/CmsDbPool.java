@@ -3,8 +3,8 @@ package com.opencms.file.genericSql;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2000/08/30 08:41:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/09/06 15:50:05 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * @author u.roland
  * @author a.schouten
  */
-public class CmsDbPool {
+public class CmsDbPool implements I_CmsDbPool {
 	
 	/**
 	 * A Key for a simple statement in the hashtable.

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsConnectionGuard.java,v $
- * Date   : $Date: 2000/08/08 14:08:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/09/06 15:50:04 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,24 +42,24 @@ import java.sql.*;
  * 
  * @author Alexander Lucas
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/08/08 14:08:24 $
+ * @version $Revision: 1.10 $ $Date: 2000/09/06 15:50:04 $
  */
 public class CmsConnectionGuard extends Thread implements I_CmsLogChannels {
 	/** The keep-alive statement */
-	private static String C_KEEP_ALIVE_STATEMENT = "select 1";
+	protected static String C_KEEP_ALIVE_STATEMENT = "select 1";
 	
 	/** Time to sleep */
-	private long m_sleep;
+	protected long m_sleep;
 	
 	/** Reference to the pool used for queries.*/
-	private CmsDbPool m_pool;
+	protected I_CmsDbPool m_pool;
 	
 	/**
 	 * Constructor for the Scheduler.
 	 * @param pool pool the scheduler uses for database queries.
 	 * @param sleep time the scheduler has to pause between two actions.
 	 */
-	public CmsConnectionGuard(CmsDbPool pool, long sleep) {
+	public CmsConnectionGuard(I_CmsDbPool pool, long sleep) {
 		m_pool = pool;
 		m_sleep=60000*sleep;
 	}
@@ -96,7 +96,7 @@ public class CmsConnectionGuard extends Thread implements I_CmsLogChannels {
 			} 
 			
 			// get all connections
-			m_pool.keepAlive();
+			( (com.opencms.file.genericSql.CmsDbPool)m_pool ).keepAlive();
 		}
 	}
 }

@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsConnectionGuard.java,v $
- * Date   : $Date: 2000/08/08 14:08:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/09/06 15:50:06 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -30,6 +30,8 @@ package com.opencms.file.mySql;
 
 import com.opencms.file.utils.*;
 import com.opencms.core.*;
+import com.opencms.file.genericSql.I_CmsDbPool;
+
 
 import java.util.*;
 import java.sql.*;
@@ -42,33 +44,17 @@ import java.sql.*;
  * 
  * @author Alexander Lucas
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/08/08 14:08:26 $
+ * @version $Revision: 1.4 $ $Date: 2000/09/06 15:50:06 $
  */
-public class CmsConnectionGuard extends Thread implements I_CmsLogChannels {
-	/** The keep-alive statement */
-	private static String C_KEEP_ALIVE_STATEMENT = "select 1";
-	
-	/** Time to sleep */
-	private long m_sleep;
-	
-	/** Reference to the pool used for queries.*/
-	private CmsDbPool m_pool;
-	
-	/**
+public class CmsConnectionGuard extends com.opencms.file.genericSql.CmsConnectionGuard {
+/**
 	 * Constructor for the Scheduler.
 	 * @param pool pool the scheduler uses for database queries.
 	 * @param sleep time the scheduler has to pause between two actions.
 	 */
-	public CmsConnectionGuard(CmsDbPool pool, long sleep) {
-		m_pool = pool;
-		m_sleep=60000*sleep;
-	}
-	/**
-	 * Destroys the Thread.
-	 */
-	public void destroy() {
-	    super.stop();
-	}
+	public CmsConnectionGuard(I_CmsDbPool pool, long sleep) {
+		super(pool,sleep);
+}
 	/**
 	 * Main loop of the Scheduler.
 	 * So far, it only has one task, to keep querying different results from 
@@ -96,7 +82,7 @@ public class CmsConnectionGuard extends Thread implements I_CmsLogChannels {
 			} 
 			
 			// get all connections
-			connections = m_pool.getAllConnections();
+			connections = ( (com.opencms.file.mySql.CmsDbPool) m_pool).getAllConnections();
 			
 			for(int i = 0; i < connections.size(); i++) {
 				try {

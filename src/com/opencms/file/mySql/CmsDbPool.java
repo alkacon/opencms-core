@@ -3,8 +3,8 @@ package com.opencms.file.mySql;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2000/08/08 14:08:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/09/06 15:50:07 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -31,6 +31,7 @@ package com.opencms.file.mySql;
 
 import java.sql.*;
 import java.util.*; 
+import com.opencms.file.genericSql.I_CmsDbPool; 
 
 import com.opencms.core.*;
 
@@ -40,7 +41,7 @@ import com.opencms.core.*;
  * @author u.roland
  * @author a.schouten
  */
-public class CmsDbPool {
+public class CmsDbPool implements I_CmsDbPool {
 	
 	/*
 	 * maximum of connections to the database
