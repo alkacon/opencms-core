@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2003/08/30 11:30:08 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/09/16 12:06:07 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,9 +28,9 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -154,10 +154,10 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
      * @param templateSelector template section that should be processed.
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(OpenCms.isLogging(C_OPENCMS_DEBUG) && C_DEBUG ) {
-            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName == null) ? "<root>" : elementName));
-            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
-            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
+        if(OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN) && C_DEBUG ) {
+            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName() + "getting content of element " + ((elementName == null) ? "<root>" : elementName));
+            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName() + "template file is: " + templateFile);
+            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
         }
         CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         CmsRegistry reg = cms.getRegistry();
@@ -431,9 +431,9 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
                 reg.setModuleType( name, CmsRegistry.C_MODULE_TYPE_TRADITIONAL );
             }               
         }catch(CmsException e) {
-             if(OpenCms.isLogging(I_CmsLogChannels.C_MODULE_DEBUG)) {
-                 OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG,
-                    "Error while module administrating: " + e.toString());
+             if(OpenCms.isLogging(CmsLog.CHANNEL_MODULE, CmsLog.LEVEL_WARN)) {
+                 OpenCms.log(CmsLog.CHANNEL_MODULE,
+                    CmsLog.LEVEL_WARN, "Error while module administrating: " + e.toString());
              }
         }
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2003/08/27 08:58:56 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2003/09/16 12:06:06 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,6 @@
 
 package com.opencms.workplace;
 
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -47,6 +46,7 @@ import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsTree;
 import org.opencms.workplace.CmsWorkplaceAction;
@@ -59,11 +59,11 @@ import org.opencms.workplace.CmsWorkplaceAction;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.62 $ $Date: 2003/08/27 08:58:56 $
+ * @version $Revision: 1.63 $ $Date: 2003/09/16 12:06:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
-public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstants, I_CmsWpConstants, I_CmsLogChannels {
+public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstants, I_CmsWpConstants {
 
     /** URL of the pics folder in the webserver's docroot */
     private static String m_resourcesUri = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2003/09/15 13:30:42 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/09/16 12:06:10 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public final class OpenCms {
     
@@ -307,27 +307,25 @@ public final class OpenCms {
     }
 
     /**
-     * Checks if the system logging is active for the selected channel.<p>
+     * Checks if a log channel is active for the selected level.<p>
      * 
-     * @param channel the channel where to log the message to
+     * @param channel the channel to log the message on
+     * @param level the log level to use
      * @return <code>true</code> if the logging is active for the channel, <code>false</code> otherwise.
      */
-    public static boolean isLogging(String channel) {
-        return OpenCmsCore.getInstance().isLogging(channel);
+    public static boolean isLogging(String channel, int level) {
+        return OpenCmsCore.getInstance().isLogging(channel, level);
     }
 
     /**
-     * Logs a message into the OpenCms logfile.<p>
+     * Prints a message on the selected channel for the selected level.<p>
      * 
-     * If the logfile was not initialized (e.g. due tue a missing
-     * ServletConfig while working with the console)
-     * any log output will be written to <code>System.err</code>.
-     * 
-     * @param channel The channel the message is logged into
-     * @param message The message to be logged.
+     * @param channel the channel to log the message on
+     * @param level the log level to use
+     * @param message the message to log
      */
-    public static void log(String channel, String message) {
-        OpenCmsCore.getInstance().log(channel, message);
+    public static void log(String channel, int level, String message) {
+        OpenCmsCore.getInstance().log(channel, level, message);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsExportPointDriver.java,v $
- * Date   : $Date: 2003/09/01 09:09:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/16 12:06:09 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,9 @@
 
 package org.opencms.db;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 
 import java.io.File;
@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsExportPointDriver {
 
@@ -87,8 +87,8 @@ public class CmsExportPointDriver {
         File discFolder = new File(absoluteName(foldername, exportpoint));
         if (!discFolder.exists()) {
             boolean success = discFolder.mkdirs();
-            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO) && (!success)) {
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsExportPointDriver] Couldn't create folder " + absoluteName(foldername, exportpoint) + ".");
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN) && (!success)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsExportPointDriver] Couldn't create folder " + absoluteName(foldername, exportpoint) + ".");
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2003/09/10 07:20:04 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/09/16 12:06:06 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,11 +35,11 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.47 $ $Date: 2003/09/10 07:20:04 $
+ * @version $Revision: 1.48 $ $Date: 2003/09/16 12:06:06 $
  */
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -251,8 +251,8 @@ public class CmsXmlLanguageFile {
         
         // key was not found
         if (DEBUG > 1) System.err.println("CmsXmlLanguageFile.getLanguageValue(): '" + keyName + "' not found at all (this is bad)");
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, this.getClass().getName() + 
+        if (OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClass().getName() + 
                 ".getLanguageValue() - Missing value for locale key: " + keyName);
         }        
         return "??? " + keyName + " ???";	

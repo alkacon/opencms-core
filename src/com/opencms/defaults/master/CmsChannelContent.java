@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/09/15 10:51:13 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2003/09/16 12:06:10 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,10 +29,10 @@
 package com.opencms.defaults.master;
 
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.exceptions.CmsPlausibilizationException;
@@ -56,8 +56,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.55 $
- * $Date: 2003/09/15 10:51:13 $
+ * $Revision: 1.56 $
+ * $Date: 2003/09/16 12:06:10 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsExtendedContentDefinition{
 
@@ -160,8 +160,8 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
             m_properties = m_cms.readProperties(cms.readAbsolutePath(m_channel));
             m_channelId = (String) m_properties.get(I_CmsConstants.C_PROPERTY_CHANNELID);
         } catch (CmsException exc) {
-            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Could not get channel " + channelId);
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsChannelContent] Could not get channel " + channelId);
             }
         } finally {
             m_cms.getRequestContext().restoreSiteRoot();
@@ -250,8 +250,8 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         try{
             cms.undeleteResource(cms.readAbsolutePath(m_channel));
         } catch (CmsException exc){
-            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO) ) {
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Could not undelete channel "+cms.readAbsolutePath(m_channel));
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN) ) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsChannelContent] Could not undelete channel "+cms.readAbsolutePath(m_channel));
             }
         } finally {
             cms.getRequestContext().restoreSiteRoot();
@@ -264,8 +264,8 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * @param cms the CmsObject to use.
      */
     public void publishResource(CmsObject cms) {
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO) ) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Channels can't be published directly!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN) ) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsChannelContent] Channels can't be published directly!");
         }
     }
 
@@ -276,8 +276,8 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * @param versionId The id of the version to restore
      */
     public void restore(CmsObject cms, int versionId) {
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO) ) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Channels can't be restored from history!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN) ) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsChannelContent] Channels can't be restored from history!");
         }
     }
 
@@ -288,8 +288,8 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * @param owner the new owner of the cd.
      */
     public void chown(CmsObject cms, CmsUUID owner) {
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO) ) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Permissions of Channels can be changed only in EditBackoffice!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN) ) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsChannelContent] Permissions of Channels can be changed only in EditBackoffice!");
         }
     }
 
@@ -300,8 +300,8 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * @param group the new group of the cd.
      */
     public void chgrp(CmsObject cms, CmsUUID group) {
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO) ) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Permissions of Channels can be changed only in EditBackoffice!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN) ) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsChannelContent] Permissions of Channels can be changed only in EditBackoffice!");
         }
     }
 
@@ -312,8 +312,8 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * @param accessflags the new access flags of the cd.
      */
     public void chmod(CmsObject cms, int accessflags) {
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO) ) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Permissions of Channels can be changed only in EditBackoffice!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN) ) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsChannelContent] Permissions of Channels can be changed only in EditBackoffice!");
         }
     }
     /**
@@ -323,8 +323,8 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * @return int The id of the new content definition
      */
     public CmsUUID copy(CmsObject cms) {
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO) ) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Channels can be copied!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN) ) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsChannelContent] Channels can be copied!");
         }
         return CmsUUID.getNullUUID();
     }
@@ -708,8 +708,8 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * @return Vector The history of a cd
      */
     public Vector getHistory(CmsObject cms) {
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO) ) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Channels have no history!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN) ) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsChannelContent] Channels have no history!");
         }
         return null;
     }
@@ -723,8 +723,8 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * @return Object The object with the version of the cd
      */
     public Object getVersionFromHistory(CmsObject cms, int versionId){
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO) ) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsChannelContent] Channels have no history!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN) ) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsChannelContent] Channels have no history!");
         }
         return null;
     }
@@ -908,8 +908,8 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
             getAllResources(cms, "/", content);
         } catch(CmsException e) {
             // ignore the exception
-            if (OpenCms.isLogging(I_CmsLogChannels.C_MODULE_INFO)) {
-                OpenCms.log(I_CmsLogChannels.C_MODULE_INFO, "[CmsChannelContent]: error when reading subfolders of cos root: "+e.getMessage());
+            if (OpenCms.isLogging(CmsLog.CHANNEL_MODULE, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.CHANNEL_MODULE, CmsLog.LEVEL_WARN, "[CmsChannelContent]: error when reading subfolders of cos root: "+e.getMessage());
             }
         } finally {
             cms.getRequestContext().restoreSiteRoot();

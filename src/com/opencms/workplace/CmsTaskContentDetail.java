@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
-* Date   : $Date: 2003/08/30 11:30:08 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/09/16 12:06:08 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.workflow.CmsTask;
 
@@ -52,7 +53,7 @@ import java.util.Hashtable;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.33 $ $Date: 2003/08/30 11:30:08 $
+ * @version $Revision: 1.34 $ $Date: 2003/09/16 12:06:08 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -97,11 +98,11 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
     
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, 
             String templateSelector) throws CmsException {
-        if(OpenCms.isLogging(C_OPENCMS_DEBUG) && C_DEBUG) {
-            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " 
+        if(OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN) && C_DEBUG) {
+            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName() + "getting content of element " 
                     + ((elementName == null) ? "<root>" : elementName));
-            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
-            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " 
+            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName() + "template file is: " + templateFile);
+            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName() + "selected template section is: " 
                     + ((templateSelector == null) ? "<default>" : templateSelector));
         }
         CmsRequestContext context = cms.getRequestContext();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/09/15 13:30:42 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/09/16 12:06:10 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,11 @@ import org.opencms.loader.CmsPageLoader;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.I_CmsEventListener;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
 import org.opencms.security.CmsSecurityException;
 
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
@@ -68,7 +68,7 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -193,8 +193,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                                     if (exportFile.exists() && exportFile.canWrite()) {
                                         exportFile.delete();
                                         // write log message
-                                        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_STATICEXPORT)) {
-                                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "Deleted exported rfs file '" + rfsName + "'");
+                                        if (OpenCms.isLogging(CmsLog.CHANNEL_STATICEXPORT, CmsLog.LEVEL_WARN)) {
+                                            OpenCms.log(CmsLog.CHANNEL_STATICEXPORT, CmsLog.LEVEL_WARN, "Deleted exported rfs file '" + rfsName + "'");
                                         }
                                     }    
                                 } catch (Throwable t) {
@@ -287,8 +287,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         exportStream.close();    
         
         // log export success 
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_STATICEXPORT)) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "Exported vfs file '" + vfsName + "' to rfs file '" + rfsName + "'");
+        if (OpenCms.isLogging(CmsLog.CHANNEL_STATICEXPORT, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.CHANNEL_STATICEXPORT, CmsLog.LEVEL_WARN, "Exported vfs file '" + vfsName + "' to rfs file '" + rfsName + "'");
         }
     }    
     

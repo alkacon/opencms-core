@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2003/09/05 12:22:25 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/09/16 12:06:06 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,18 +28,17 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.report.A_CmsReportThread;
+import org.opencms.threads.CmsModuleExportThread;
 
 import com.opencms.boot.CmsBase;
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRegistry;
-import org.opencms.report.A_CmsReportThread;
-import org.opencms.threads.*;
-
 import com.opencms.util.Utils;
 
 import java.util.ArrayList;
@@ -79,10 +78,10 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault {
 	 * @param templateSelector template section that should be processed.
 	 */
 	public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-		if (OpenCms.isLogging(C_OPENCMS_DEBUG) && C_DEBUG) {
-			OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName == null) ? "<root>" : elementName));
-			OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
-			OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
+		if (OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN) && C_DEBUG) {
+			OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName() + "getting content of element " + ((elementName == null) ? "<root>" : elementName));
+			OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName() + "template file is: " + templateFile);
+			OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
 		}
         
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
@@ -191,8 +190,8 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault {
 				}
 				catch (CmsException e) {
                     // resource did not exist / could not be read
-					if (OpenCms.isLogging(I_CmsLogChannels.C_MODULE_DEBUG)) {
-						OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG, "error exporting module: couldn't add " + res + " to Module\n" + Utils.getStackTrace(e));
+					if (OpenCms.isLogging(CmsLog.CHANNEL_MODULE, CmsLog.LEVEL_WARN)) {
+						OpenCms.log(CmsLog.CHANNEL_MODULE, CmsLog.LEVEL_WARN, "error exporting module: couldn't add " + res + " to Module\n" + Utils.getStackTrace(e));
 					}
                     if (DEBUG > 0) {
                         System.err.println("couldn't add " + res);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsSession.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/09/16 12:06:10 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,6 @@ package com.opencms.core;
 
 import org.opencms.main.*;
 
-import com.opencms.boot.I_CmsLogChannels;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -46,7 +45,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Michael Emmerich
  *
- * @version $Revision: 1.25 $ $Date: 2003/08/14 15:37:24 $
+ * @version $Revision: 1.26 $ $Date: 2003/09/16 12:06:10 $
  */
 public class CmsSession implements I_CmsSession {
 
@@ -113,8 +112,8 @@ public class CmsSession implements I_CmsSession {
             // indicate, that the session should be stored after the request.
             m_session.setAttribute(I_CmsConstants.C_SESSION_IS_DIRTY, new Boolean(true));
         } catch (Exception exc) {
-            if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsSession] Error marking session as dirty " + exc.getClass().getName() + " " + exc.getMessage());
+            if(OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, "[CmsSession] Error marking session as dirty " + exc.getClass().getName() + " " + exc.getMessage());
             }
         }
     }

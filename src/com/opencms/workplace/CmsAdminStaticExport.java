@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2003/09/05 12:22:25 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/09/16 12:06:06 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,14 +28,14 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.report.A_CmsReportThread;
+import org.opencms.threads.CmsStaticExportThread;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
-import org.opencms.report.A_CmsReportThread;
-import org.opencms.threads.*;
-
 import com.opencms.util.Encoder;
 
 import java.util.Hashtable;
@@ -48,7 +48,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -70,10 +70,10 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault {
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && OpenCms.isLogging(C_OPENCMS_DEBUG)) {
-            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()+"getting content of element "+((elementName == null) ? "<root>" : elementName));
-            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()+"template file is: " + templateFile);
-            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()+"selected template section is: "+((templateSelector == null) ? "<default>" : templateSelector));
+        if(C_DEBUG && OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName()+"getting content of element "+((elementName == null) ? "<root>" : elementName));
+            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName()+"template file is: " + templateFile);
+            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName()+"selected template section is: "+((templateSelector == null) ? "<default>" : templateSelector));
         }
 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);

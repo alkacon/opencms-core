@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/08/25 12:35:27 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/09/16 12:06:09 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,6 @@
  */
 package org.opencms.workplace;
 
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsPropertydefinition;
 import com.opencms.file.CmsResource;
@@ -49,6 +48,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 /**
@@ -60,7 +60,7 @@ import org.opencms.main.OpenCms;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.1
  */
@@ -379,8 +379,8 @@ public class CmsProperty extends CmsDialog {
         } catch (CmsException e) {
             lock = CmsLock.getNullLock();
         
-            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) { 
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, this.getClass().getName() + " error getting lock state for resource " + resourceName + " " + e.getMessage());
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) { 
+                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, this.getClass().getName() + " error getting lock state for resource " + resourceName + " " + e.getMessage());
             }             
         }
     

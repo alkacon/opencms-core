@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/09/16 12:06:09 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,10 +30,10 @@
  */
 package com.opencms.defaults.master.genericsql;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringSubstitution;
 
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.file.CmsObject;
 
 import java.sql.Connection;
@@ -58,7 +58,7 @@ import java.util.Properties;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2003/09/15 10:51:14 $
+ * @version $Revision: 1.10 $ $Date: 2003/09/16 12:06:09 $
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     
@@ -101,8 +101,8 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
             m_queries.load(getClass().getClassLoader().getResourceAsStream(queryFilename));
         } catch(Exception exc) {
             // no query.properties found - write to logstream.
-            if(OpenCms.isLogging(I_CmsLogChannels.C_MODULE_DEBUG)) {
-                OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Couldn't load " + queryFilename + " errormessage: " + exc.getMessage());
+            if(OpenCms.isLogging(CmsLog.CHANNEL_MODULE, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.CHANNEL_MODULE, CmsLog.LEVEL_WARN, "[CmsProjectDriver] Couldn't load " + queryFilename + " errormessage: " + exc.getMessage());
             }
         }
     }
@@ -230,8 +230,8 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     public String get(String queryKey) {              
         String value = null;
         if ((value = m_queries.getProperty(queryKey)) == null) {
-            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + getClass().getName() + "] query '" + queryKey + "' not found!");
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR)) {
+                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, "[" + getClass().getName() + "] query '" + queryKey + "' not found!");
             }
         }
         return value;

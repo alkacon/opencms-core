@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminElementCache.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/09/16 12:06:07 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.workplace;
 
 import org.opencms.loader.CmsXmlTemplateLoader;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.CmsException;
@@ -42,7 +43,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.8 $ $Date: 2003/08/14 15:37:24 $
+ * @version $Revision: 1.9 $ $Date: 2003/09/16 12:06:07 $
  */
 public class CmsAdminElementCache extends CmsWorkplaceDefault {
 
@@ -60,13 +61,13 @@ public class CmsAdminElementCache extends CmsWorkplaceDefault {
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && OpenCms.isLogging(C_OPENCMS_DEBUG)) {
-            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()
+        if(C_DEBUG && OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName()
                     + "getting content of element "
                             + ((elementName == null) ? "<root>" : elementName));
-            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()
+            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName()
                     + "template file is: " + templateFile);
-            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()
+            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName()
                     + "selected template section is: "
                             + ((templateSelector == null) ? "<default>" : templateSelector));
         }

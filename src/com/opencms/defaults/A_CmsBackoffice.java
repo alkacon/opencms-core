@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2003/09/15 10:51:15 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2003/09/16 12:06:10 $
+* Version: $Revision: 1.68 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.defaults;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
@@ -75,7 +76,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.67 $
+ * @version $Revision: 1.68 $
  */
 public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
 
@@ -601,23 +602,23 @@ protected Object getContentDefinition(CmsObject cms, Class contentClass, CmsUUID
         Constructor c = contentClass.getConstructor(new Class[] {CmsObject.class, CmsUUID.class});
         o = c.newInstance(new Object[] {cms, contentId});
     } catch (InvocationTargetException ite) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
         }
     } catch (NoSuchMethodException nsm) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Requested method was not found!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice contentDefinitionConstructor: Requested method was not found!");
         }
     } catch (InstantiationException ie) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: the reflected class is abstract!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice contentDefinitionConstructor: the reflected class is abstract!");
         }
     } catch (Exception e) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Other exception! " + e);
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice contentDefinitionConstructor: Other exception! " + e);
         }
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, e.getMessage());
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, e.getMessage());
         }
     }
     return o;
@@ -636,23 +637,23 @@ protected Object getContentDefinition(CmsObject cms, Class cdClass) {
         Constructor c = cdClass.getConstructor(new Class[] {CmsObject.class});
         o = c.newInstance(new Object[] {cms});
     } catch (InvocationTargetException ite) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
         }
     } catch (NoSuchMethodException nsm) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Requested method was not found!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice contentDefinitionConstructor: Requested method was not found!");
         }
     } catch (InstantiationException ie) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: the reflected class is abstract!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice contentDefinitionConstructor: the reflected class is abstract!");
         }
     } catch (Exception e) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Other exception! " + e);
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice contentDefinitionConstructor: Other exception! " + e);
         }
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, e.getMessage());
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, e.getMessage());
         }
     }
     return o;
@@ -672,23 +673,23 @@ protected Object getContentDefinition(CmsObject cms, Class cdClass, String id) {
         Constructor c = cdClass.getConstructor(new Class[] {CmsObject.class, String.class});
         o = c.newInstance(new Object[] {cms, id});
     } catch (InvocationTargetException ite) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
         }
     } catch (NoSuchMethodException nsm) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Requested method was not found!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice contentDefinitionConstructor: Requested method was not found!");
         }
     } catch (InstantiationException ie) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: the reflected class is abstract!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice contentDefinitionConstructor: the reflected class is abstract!");
         }
     } catch (Exception e) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Other exception! " + e);
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice contentDefinitionConstructor: Other exception! " + e);
         }
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, e.getMessage());
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, e.getMessage());
         }
     }
     return o;
@@ -793,7 +794,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
 //                ((A_CmsContentDefinition) o).delete(cms);
 //            } catch (Exception e1) {
 //                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-//                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: delete method throwed an exception!");
+//                    A_OpenCms.log(CmsLog.C_OPENCMS_INFO, getClassName() + ": Backoffice: delete method throwed an exception!");
 //                }
 //                templateSelector = "deleteerror";
 //                template.setData("deleteerror", e1.getMessage());
@@ -868,7 +869,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
 //                ((I_CmsExtendedContentDefinition) o).undelete(cms);
 //            } catch (Exception e1) {
 //                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-//                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: undelete method throwed an exception!");
+//                    A_OpenCms.log(CmsLog.C_OPENCMS_INFO, getClassName() + ": Backoffice: undelete method throwed an exception!");
 //                }
 //                templateSelector = "undeleteerror";
 //                template.setData("undeleteerror", e1.getMessage());
@@ -1050,7 +1051,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
 //                        ((I_CmsExtendedContentDefinition) o).publishResource(cms);
 //                    } catch (Exception e1) {
 //                        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-//                            A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: publish method throwed an exception!");
+//                            A_OpenCms.log(CmsLog.C_OPENCMS_INFO, getClassName() + ": Backoffice: publish method throwed an exception!");
 //                        }
 //                        templateSelector = "publisherror";
 //                        template.setData("publisherror", e1.getMessage());
@@ -1182,8 +1183,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
                         template.setData("setaction", "");
                     }
                 } catch (Exception e) {
-                    if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: history method throwed an exception! "+e.getMessage());
+                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice: history method throwed an exception! "+e.getMessage());
                     }
                     templateSelector = "historyerror";
                     template.setData("historyerror", e.getMessage());
@@ -1221,8 +1222,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
                 try {
                     ((I_CmsExtendedContentDefinition)o).restore(cms, Integer.parseInt(versionId));
                 } catch (Exception e) {
-                    if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: restore method throwed an exception! "+e.getMessage());
+                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice: restore method throwed an exception! "+e.getMessage());
                     }
                     templateSelector = "historyerror";
                     template.setData("historyerror", e.getMessage());
@@ -1267,8 +1268,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
             try {
                 cdHistory = ((I_CmsExtendedContentDefinition) o).getHistory(cms);
             } catch (Exception e) {
-                if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                    OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: history method throwed an exception!");
+                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                    OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice: history method throwed an exception!");
                 }
             }
             // fill the names and values
@@ -1284,8 +1285,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
                     names.addElement(output);
                     values.addElement(curCd.getVersionId()+"");
                 } catch (Exception e) {
-                    if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: history method throwed an exception!");
+                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice: history method throwed an exception!");
                     }
                 }
             }
@@ -1387,8 +1388,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
                     ((I_CmsExtendedContentDefinition) o).chmod(cms, newAccessFlags);
                 }
             } catch (Exception e) {
-                if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                    OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: changing permissions method throwed an exception!");
+                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                    OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice: changing permissions method throwed an exception!");
                 }
                 templateSelector = "permissionserror";
                 template.setData("permissionserror", e.getMessage());
@@ -1660,8 +1661,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       tableContent = (Vector) cdClass.getMethod("applyFilter", new Class[] {CmsObject.class, CmsFilterMethod.class, String.class}).invoke(null, new Object[] {cms, filterMethod, filterParam});
     } catch (InvocationTargetException ite) {
       //error occured while applying the filter
-      if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter throwed an InvocationTargetException!");
+      if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice: apply filter throwed an InvocationTargetException!");
       }
       templateSelector = "error";
       template.setData("filtername", filterMethodName);
@@ -1672,8 +1673,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       session.removeValue(sessionFilterParam);
       //session.removeValue("filter");
     } catch (NoSuchMethodException nsm) {
-      if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter method was not found!");
+      if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice: apply filter method was not found!");
       }
       templateSelector = "error";
       template.setData("filtername", filterMethodName);
@@ -1681,8 +1682,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       session.removeValue(sessionFilterParam);
       //session.removeValue("filterparameter");
     } catch (Exception e) {
-      if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter: Other Exception! "+e);
+      if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice: apply filter: Other Exception! "+e);
       }
       templateSelector = "error";
       template.setData("filtername", filterMethodName);
@@ -1699,8 +1700,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
     try {
       fieldMethods = (Vector) cdClass.getMethod("getFieldMethods", new Class[] {CmsObject.class}).invoke(null, new Object[] {cms});
     } catch (Exception exc) {
-      if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentList: getFieldMethods throwed an exception");
+      if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice getContentList: getFieldMethods throwed an exception");
       }
       templateSelector = "error";
       template.setData("filtername", filterMethodName);
@@ -1726,8 +1727,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       getMethod = (Method) fieldMethods.elementAt(j);
 
     } catch (Exception e) {
-      if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Could not get field method for "+(String)columnsVector.elementAt(j)+" - check for correct spelling!");
+      if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Could not get field method for "+(String)columnsVector.elementAt(j)+" - check for correct spelling!");
       }
     }
     try {
@@ -1742,20 +1743,20 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
               fieldEntry = null;
             }
         } catch (InvocationTargetException ite) {
-      if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice content definition object throwed an InvocationTargetException!");
+      if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice content definition object throwed an InvocationTargetException!");
       }
     } catch (Exception e) {
-      if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice content definition object: Other exception! "+e);
+      if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice content definition object: Other exception! "+e);
       }
     }
 
     try {
           id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
     } catch (Exception e) {
-      if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
+      if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
           }
     }
 
@@ -1788,8 +1789,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       try {
         id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
       } catch (Exception e) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-      OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+      OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
     }
       }
 
@@ -1924,8 +1925,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
             tableContent = (Vector) cdClass.getMethod("applyFilter", new Class[] {CmsObject.class, CmsFilterMethod.class, String.class}).invoke(null, new Object[] {cms, filterMethod, filterParam});
         } catch (InvocationTargetException ite) {
             //error occured while applying the filter
-            if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter throwed an InvocationTargetException!");
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice: apply filter throwed an InvocationTargetException!");
             }
             templateSelector = "error";
             template.setData("filtername", filterMethodName);
@@ -1936,8 +1937,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
             session.removeValue(sessionFilterParam);
             //session.removeValue("filter");
         } catch (NoSuchMethodException nsm) {
-            if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter method was not found!");
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice: apply filter method was not found!");
             }
             templateSelector = "error";
             template.setData("filtername", filterMethodName);
@@ -1945,8 +1946,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
             session.removeValue(sessionFilterParam);
             //session.removeValue("filterparameter");
         } catch (Exception e) {
-            if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter: Other Exception! "+e);
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice: apply filter: Other Exception! "+e);
             }
             templateSelector = "error";
             template.setData("filtername", filterMethodName);
@@ -1962,8 +1963,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
         try {
             fieldMethods = (Vector) cdClass.getMethod("getFieldMethods", new Class[] {CmsObject.class}).invoke(null, new Object[] {cms});
         } catch (Exception exc) {
-            if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentList: getFieldMethods throwed an exception");
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice getContentList: getFieldMethods throwed an exception");
             }
             templateSelector = "error";
             template.setData("filtername", filterMethodName);
@@ -1995,8 +1996,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
                 try {
                     getMethod = (Method) fieldMethods.elementAt(j);
                 } catch (Exception e) {
-                    if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Could not get field method for "+(String)columnsVector.elementAt(j)+" - check for correct spelling!");
+                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Could not get field method for "+(String)columnsVector.elementAt(j)+" - check for correct spelling!");
                     }
                 }
                 try {
@@ -2009,19 +2010,19 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
                         fieldEntry = null;
                     }
                 } catch (InvocationTargetException ite) {
-                    if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice content definition object throwed an InvocationTargetException!");
+                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice content definition object throwed an InvocationTargetException!");
                     }
                 } catch (Exception e) {
-                    if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice content definition object: Other exception! "+e);
+                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice content definition object: Other exception! "+e);
                     }
                 }
                 try {
                     id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
                 } catch (Exception e) {
-                    if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
+                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
                     }
                 }
 
@@ -2064,8 +2065,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
             try {
                 id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
             } catch (Exception e) {
-                if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                    OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
+                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                    OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
                 }
             }
 
@@ -2217,8 +2218,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
         try {
           lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
         } catch (Exception e) {
-          if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, e.getMessage());
+          if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, e.getMessage());
           }
         }
       } else {
@@ -2226,8 +2227,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
         try {
           lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
         } catch (Exception e) {
-            if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                OpenCms.log(C_OPENCMS_INFO, e.getMessage());
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, e.getMessage());
             }
         }
       }
@@ -2283,7 +2284,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
 //        lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
 //      } catch (Exception ex) {
 //        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-//          A_OpenCms.log(C_OPENCMS_INFO, ex.getMessage() );
+//          A_OpenCms.log(CmsLog.C_OPENCMS_INFO, ex.getMessage() );
 //        }
 //      }
 //    }
@@ -2294,8 +2295,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       try {
         lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
       } catch (Exception e) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-         OpenCms.log(C_OPENCMS_INFO, e.getMessage());
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+         OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, e.getMessage());
         }
       }    
       
@@ -2305,7 +2306,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
 //        lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
 //      } catch (Exception e) {
 //        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-//         A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
+//         A_OpenCms.log(CmsLog.C_OPENCMS_INFO, e.getMessage() );
 //        }
 //      }
 //    } else {
@@ -2315,15 +2316,15 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
 //        lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
 //      } catch (Exception e) {
 //        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-//          A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
+//          A_OpenCms.log(CmsLog.C_OPENCMS_INFO, e.getMessage() );
 //        }
 //      }
 //    }
     try {
       lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
     } catch (Exception e) {
-      if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-        OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method getLockstate throwed an exception!");
+      if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + " Backoffice getContentLock: Method getLockstate throwed an exception!");
       }
     }
 
@@ -2338,8 +2339,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
             try {
                 lockedInProject = ((I_CmsExtendedContentDefinition) o).getLockedInProject();
             } catch (Exception e) {
-                if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                    OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method getLockstate throwed an exception!");
+                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                    OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + " Backoffice getContentLock: Method getLockstate throwed an exception!");
                 }
             }
             if (curProjectId == lockedInProject) {
@@ -2347,8 +2348,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
                 try {
                     ((A_CmsContentDefinition) o).setLockstate(CmsUUID.getNullUUID());
                 } catch (Exception e) {
-                    if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                        OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method setLockstate throwed an exception!");
+                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + " Backoffice getContentLock: Method setLockstate throwed an exception!");
                     }
                 }
             } else {
@@ -2356,8 +2357,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
                 try {
                     ((A_CmsContentDefinition) o).setLockstate(actUserId);
                 } catch (Exception e) {
-                    if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                        OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method setLockstate throwed an exception!");
+                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + " Backoffice getContentLock: Method setLockstate throwed an exception!");
                     }
                 }
             }
@@ -2367,8 +2368,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
             try {
                 ((A_CmsContentDefinition) o).setLockstate(CmsUUID.getNullUUID());
             } catch (Exception e) {
-                if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                    OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method setLockstate throwed an exception!");
+                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                    OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + " Backoffice getContentLock: Method setLockstate throwed an exception!");
                 }
             }
         }
@@ -2376,8 +2377,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       try {
         ((A_CmsContentDefinition) o).write(cms);   // reflection is not neccessary!
       } catch (Exception e) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-      OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method write throwed an exception!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+      OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + " Backoffice getContentLock: Method write throwed an exception!");
     }
       }
       templateSelector = "done";
@@ -2387,16 +2388,16 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
         try {
           ((A_CmsContentDefinition) o).setLockstate(actUserId);
         } catch (Exception e) {
-      if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
+      if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
       }
     }
     //write to DB
     try {
           ((A_CmsContentDefinition) o).write(cms);
     } catch (Exception e) {
-      if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
+      if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
       }
     }
     templateSelector = "done";
@@ -2405,16 +2406,16 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       try {
         ((A_CmsContentDefinition) o).setLockstate(actUserId);
       } catch (Exception e) {
-    if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-      OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
+    if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+      OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
     }
       }
       //write to DB/VFS
       try {
         ((A_CmsContentDefinition) o).write(cms);
       } catch (Exception e) {
-    if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-      OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not write to content definition!");
+    if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+      OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice getContentLock: Could not write to content definition!");
         }
       }
     }
@@ -2443,17 +2444,17 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         try {
             retObject = cdClass.getMethod(method, paramClasses).invoke(null, params);
         } catch (InvocationTargetException ite) {
-            if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                OpenCms.log(C_OPENCMS_INFO, getClassName() + method + " throwed an InvocationTargetException!");
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + method + " throwed an InvocationTargetException!");
             }
             ite.getTargetException().printStackTrace();
         } catch (NoSuchMethodException nsm) {
-            if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                OpenCms.log(C_OPENCMS_INFO, getClassName() + method + ": Requested method was not found!");
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + method + ": Requested method was not found!");
             }
         } catch (Exception e) {
-            if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                OpenCms.log(C_OPENCMS_INFO, getClassName() + method + ": Other Exception!");
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + method + ": Other Exception!");
             }
         }
     }
@@ -2564,16 +2565,16 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         //get the returned object
         laObject = laMethod.invoke(null, null);
     } catch (InvocationTargetException ite) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method isLockable throwed an Invocation target exception!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setLockstates: Method isLockable throwed an Invocation target exception!");
         }
     } catch (NoSuchMethodException nsm) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Requested method isLockable was not found!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setLockstates: Requested method isLockable was not found!");
         }
     } catch (Exception e) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method isLockable throwed an exception: " + e.toString());
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setLockstates: Method isLockable throwed an exception: " + e.toString());
         }
     }
 
@@ -2585,8 +2586,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             template.setData("backofficecontextmenue", "backofficeedit");
             template.setData("lockedby", template.getDataValue("nolock"));
         } catch (Exception e) {
-            if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates:'not lockable' section hrowed an exception!");
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setLockstates:'not lockable' section hrowed an exception!");
             }
         }
     } else {
@@ -2596,8 +2597,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             lockedByUserId = ((A_CmsContentDefinition) entryObject).getLockstate();
             hasWriteAccess = ((A_CmsContentDefinition) entryObject).hasWriteAccess(cms);
         } catch (Exception e) {
-            if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method getLockstate throwed an exception: " + e.toString());
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setLockstates: Method getLockstate throwed an exception: " + e.toString());
             }
         }
         try {
@@ -2632,8 +2633,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
                 }
             }
         } catch (Exception e) {
-            if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates throwed an exception: " + e.toString());
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setLockstates throwed an exception: " + e.toString());
             }
         }
     }
@@ -2669,16 +2670,16 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         //get the returned object
         laObject = laMethod.invoke(null, null);
     } catch (InvocationTargetException ite) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method isLockable throwed an Invocation target exception!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setLockstates: Method isLockable throwed an Invocation target exception!");
         }
     } catch (NoSuchMethodException nsm) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Requested method isLockable was not found!");
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setLockstates: Requested method isLockable was not found!");
         }
     } catch (Exception e) {
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-            OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method isLockable throwed an exception: "+e.toString());
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setLockstates: Method isLockable throwed an exception: "+e.toString());
         }
     }
 
@@ -2690,8 +2691,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             template.setData("backofficecontextmenue", "backofficeedit");
             template.setData("lockedby", template.getDataValue("nolock"));
         } catch  (Exception e) {
-            if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates:'not lockable' section hrowed an exception!");
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setLockstates:'not lockable' section hrowed an exception!");
             }
         }
     } else {
@@ -2701,8 +2702,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             lockedByUserId = ((A_CmsContentDefinition) entryObject).getLockstate();
             hasWriteAccess = ((A_CmsContentDefinition) entryObject).hasWriteAccess(cms);
         } catch (Exception e) {
-            if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method getLockstate throwed an exception: "+e.toString());
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setLockstates: Method getLockstate throwed an exception: "+e.toString());
             }
         }
         try {
@@ -2716,8 +2717,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
                     //get the method lockstate
                     lockedInProject = ((I_CmsExtendedContentDefinition) entryObject).getLockedInProject();
                 } catch (Exception e) {
-                    if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method getLockedInProject throwed an exception: "+e.toString());
+                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setLockstates: Method getLockedInProject throwed an exception: "+e.toString());
                     }
                 }
                 if (lockedInProject == curProjectId) {
@@ -2746,8 +2747,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
                 }
             }
         } catch (Exception e) {
-            if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates throwed an exception: "+e.toString());
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setLockstates throwed an exception: "+e.toString());
             }
         }
     }
@@ -2774,8 +2775,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         try {
             template.setData("projectflag", template.getDataValue("noproject"));
         } catch  (Exception e) {
-            if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setProjectFlag:'no project' section throwed an exception!");
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setProjectFlag:'no project' section throwed an exception!");
             }
         }
 
@@ -2783,8 +2784,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         try {
             state = ((I_CmsExtendedContentDefinition)entryObject).getState();
         } catch (Exception e) {
-            if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setProjectFlag: Method getState throwed an exception: "+e.toString());
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setProjectFlag: Method getState throwed an exception: "+e.toString());
             }
         }
 
@@ -2793,8 +2794,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
                 //the entry is not changed, so do not set the project flag
                 template.setData("projectflag", template.getDataValue("noproject"));
             } catch  (Exception e) {
-                if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                    OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setProjectFlag:'no project' section throwed an exception!");
+                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                    OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setProjectFlag:'no project' section throwed an exception!");
                 }
             }
         } else {
@@ -2803,8 +2804,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             try {
                 projectId = ((I_CmsExtendedContentDefinition)entryObject).getLockedInProject();
             } catch (Exception e) {
-                if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                    OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setProjectFlag: Method getLockedInProject throwed an exception: "+e.toString());
+                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                    OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setProjectFlag: Method getLockedInProject throwed an exception: "+e.toString());
                 }
             }
             try {
@@ -2826,8 +2827,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
                     template.setData("projectflag", projectFlag);
                 }
             } catch (Exception e) {
-                if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                    OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates throwed an exception: "+e.toString());
+                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                    OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setLockstates throwed an exception: "+e.toString());
                 }
             }
         }
@@ -2854,8 +2855,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         try {
             projectId = ((I_CmsExtendedContentDefinition)entryObject).getProjectId();
         } catch (Exception e) {
-            if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setFontFormat: Method getProjectId throwed an exception: "+e.toString());
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setFontFormat: Method getProjectId throwed an exception: "+e.toString());
             }
         }
 
@@ -2869,16 +2870,16 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             try {
                 ((A_CmsContentDefinition)entryObject).getLockstate();
             } catch (Exception e) {
-                if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                    OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setFontFormat: Method getLockstate throwed an exception: "+e.toString());
+                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                    OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setFontFormat: Method getLockstate throwed an exception: "+e.toString());
                 }
             }
             // get the state of an entry: if its unchanged do not change the font
             try {
                 state = ((I_CmsExtendedContentDefinition)entryObject).getState();
             } catch (Exception e) {
-                if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                    OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setFontFormat: Method getState throwed an exception: "+e.toString());
+                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                    OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setFontFormat: Method getState throwed an exception: "+e.toString());
                 }
             }
 
@@ -2921,8 +2922,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         try {
             projectId = ((I_CmsExtendedContentDefinition)entryObject).getProjectId();
         } catch (Exception e) {
-            if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setContextMenu: Method getProjectId throwed an exception: "+e.toString());
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setContextMenu: Method getProjectId throwed an exception: "+e.toString());
             }
         }
 
@@ -2936,16 +2937,16 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             try {
                 lockedByUserId = ((A_CmsContentDefinition)entryObject).getLockstate();
             } catch (Exception e) {
-                if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                    OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setContextMenu: Method getLockstate throwed an exception: "+e.toString());
+                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                    OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setContextMenu: Method getLockstate throwed an exception: "+e.toString());
                 }
             }
             // get the state of an entry: if its unchanged do not change the font
             try {
                 state = ((I_CmsExtendedContentDefinition)entryObject).getState();
             } catch (Exception e) {
-                if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                    OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setContextMenu: Method getState throwed an exception: "+e.toString());
+                if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                    OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setContextMenu: Method getState throwed an exception: "+e.toString());
                 }
             }
             if (lockedByUserId.isNullUUID()) {
@@ -2961,8 +2962,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
                 try {
                     lockedInProject = ((I_CmsExtendedContentDefinition)entryObject).getLockedInProject();
                 } catch (Exception e) {
-                    if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-                        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setContextMenu: Method getLockedInProject throwed an exception: "+e.toString());
+                    if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+                        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice setContextMenu: Method getLockedInProject throwed an exception: "+e.toString());
                     }
                 }
                 if (lockedInProject == actProjectId) {
@@ -3050,16 +3051,16 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
       filterMethods = (Vector) cdClass.getMethod("getFilterMethods", new Class[] {CmsObject.class}).invoke(null, new Object[] {cms});
     } catch (InvocationTargetException ite) {
       //error occured while applying the filter
-      if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-        OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentHead: InvocationTargetException!");
+      if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+        OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice getContentHead: InvocationTargetException!");
       }
     } catch (NoSuchMethodException nsm) {
-      if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-    OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentHead: Requested method was not found!");
+      if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+    OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice getContentHead: Requested method was not found!");
       }
     } catch (Exception e) {
-      if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-    OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentHead: Problem occured with your filter methods: "+e.toString());
+      if (OpenCms.isLogging(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN)) {
+    OpenCms.log(CmsLog.C_OPENCMS_INFO, CmsLog.LEVEL_WARN, getClassName() + ": Backoffice getContentHead: Problem occured with your filter methods: "+e.toString());
       }
     }
    return filterMethods;
@@ -3447,8 +3448,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         session.removeValue("selectedmediaCD");
         session.removeValue("media_position");
         session.removeValue("weShallDisplayThePreviewButton");
-        if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-          OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while saving data to Content Definition "+ex.toString());
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR)) {
+          OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, getClassName() + "Error while saving data to Content Definition "+ex.toString());
         }
         throw new CmsException(ex.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, ex);
       }
@@ -3478,8 +3479,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
           // there the backoffice url of the module will be called
           return "done";
         } catch (Exception e) {
-           if (OpenCms.isLogging(C_OPENCMS_INFO)) {
-             OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while doing redirect "+e.toString());
+           if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR)) {
+             OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, getClassName() + "Error while doing redirect "+e.toString());
           }
           throw new CmsException(e.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, e);
         }
@@ -3606,8 +3607,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         }
         template.setData(datablockName+"escaped", escapedValue);
       } catch (Exception e) {
-        if (OpenCms.isLogging(C_OPENCMS_CRITICAL)) {
-            OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error during automatic call method '"+methodName+"':"+e.toString());
+        if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, getClassName() + "Error during automatic call method '"+methodName+"':"+e.toString());
         }
       } // try
     } //for
@@ -3672,8 +3673,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
                 contentMethod.invoke(contentDefinition, new Object[] {content});
               }
             } catch (Exception e) {
-              if (OpenCms.isLogging(C_OPENCMS_CRITICAL)) {
-                OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error during automatic call method '"+m.getName()+"':"+e.toString());
+              if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR)) {
+                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_ERROR, getClassName() + "Error during automatic call method '"+m.getName()+"':"+e.toString());
               }
             } // try
           } //if

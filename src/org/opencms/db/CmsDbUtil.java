@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsDbUtil.java,v $
- * Date   : $Date: 2003/09/15 10:51:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/16 12:06:09 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,9 @@
 
 package org.opencms.db;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 
@@ -49,7 +49,7 @@ import java.util.Hashtable;
  * This class is used to create primary keys as integers for Cms database tables that
  * don't have a UUID primary key.<p>
  * 
- * @version $Revision: 1.1 $ $Date: 2003/09/15 10:51:13 $
+ * @version $Revision: 1.2 $ $Date: 2003/09/16 12:06:09 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -309,8 +309,8 @@ public final class CmsDbUtil extends Object {
                 if (i >= 10) {
                     throw exc;
                 } else {
-                    if (OpenCms.isLogging(I_CmsLogChannels.C_MODULE_INFO)) {
-                        OpenCms.log(I_CmsLogChannels.C_MODULE_INFO, "Trying to get timestamp "
+                    if (OpenCms.isLogging(CmsLog.CHANNEL_MODULE, CmsLog.LEVEL_WARN)) {
+                        OpenCms.log(CmsLog.CHANNEL_MODULE, CmsLog.LEVEL_WARN, "Trying to get timestamp "
                                 + column + " #" + i);
                     }
                 }

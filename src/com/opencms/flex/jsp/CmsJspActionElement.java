@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/09/15 13:30:42 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2003/09/16 12:06:10 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,10 +37,10 @@ import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsPointerLoader;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.loader.I_CmsResourceLoader;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
@@ -81,7 +81,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 5.0 beta 2
  */
@@ -755,8 +755,8 @@ public class CmsJspActionElement {
      * @param t the Throwable that was catched
      */
     private void handleException(Throwable t) {
-        if (OpenCms.isLogging(I_CmsLogChannels.C_FLEX_LOADER)) {
-            OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, Utils.getStackTrace(t));
+        if (OpenCms.isLogging(CmsLog.CHANNEL_FLEX, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.CHANNEL_FLEX, CmsLog.LEVEL_WARN, Utils.getStackTrace(t));
         } 
         if (! (m_handleExceptions || getRequestContext().currentProject().isOnlineProject())) {    
             if (DEBUG > 0) {        

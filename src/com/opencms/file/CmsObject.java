@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/16 09:15:50 $
-* Version: $Revision: 1.407 $
+* Date   : $Date: 2003/09/16 12:06:10 $
+* Version: $Revision: 1.408 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.I_CmsEventListener;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
@@ -46,7 +47,6 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsCoreSession;
 import com.opencms.core.CmsException;
 import com.opencms.core.CmsExportRequest;
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.407 $
+ * @version $Revision: 1.408 $
  */
 public class CmsObject {
 
@@ -2718,10 +2718,10 @@ public class CmsObject {
                     }
                 }
             }
-            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp1);
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp2);
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/1] Exception: " + e);
+            if (OpenCms.isLogging(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, stamp1);
+                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, stamp2);
+                OpenCms.log(CmsLog.C_OPENCMS_CRITICAL, CmsLog.LEVEL_WARN, "[" + this.getClass().getName() + ".publishProject()/1] Exception: " + e);
             }
         } finally {
             if (changedResources == null || changedResources.size() < 1) {
@@ -2734,10 +2734,10 @@ public class CmsObject {
                     System.err.println(stamp2);
                     System.err.println(stamp3);
                 }
-                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {
-                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp1);
-                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp2);
-                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp3);
+                if (OpenCms.isLogging(CmsLog.C_OPENCMS_DEBUG, CmsLog.LEVEL_WARN)) {
+                    OpenCms.log(CmsLog.C_OPENCMS_DEBUG, CmsLog.LEVEL_WARN, stamp1);
+                    OpenCms.log(CmsLog.C_OPENCMS_DEBUG, CmsLog.LEVEL_WARN, stamp2);
+                    OpenCms.log(CmsLog.C_OPENCMS_DEBUG, CmsLog.LEVEL_WARN, stamp3);
                 }
                 success = false;
             }

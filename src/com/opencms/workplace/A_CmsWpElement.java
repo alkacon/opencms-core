@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsWpElement.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/09/16 12:06:06 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,9 +28,9 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 
@@ -47,11 +47,11 @@ import com.opencms.file.CmsObject;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.39 $ $Date: 2003/08/14 15:37:24 $
+ * @version $Revision: 1.40 $ $Date: 2003/09/16 12:06:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
-public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement, I_CmsWpConstants {
+public abstract class A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
 
 
     /**
@@ -386,8 +386,8 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      */
 
     protected void throwException(String errorMessage, int type) throws CmsException {
-        if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
-            OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+        if(OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN) ) {
+            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, getClassName() + errorMessage);
         }
         throw new CmsException(errorMessage, type);
     }

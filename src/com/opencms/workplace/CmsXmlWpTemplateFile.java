@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
-* Date   : $Date: 2003/08/18 15:11:21 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2003/09/16 12:06:06 $
+* Version: $Revision: 1.67 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,9 +29,9 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
@@ -47,7 +47,7 @@ import org.w3c.dom.Element;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.66 $ $Date: 2003/08/18 15:11:21 $
+ * @version $Revision: 1.67 $ $Date: 2003/09/16 12:06:06 $
  */
 
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile {
@@ -95,8 +95,8 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile {
      * Clears the internal language cache
      **/
     public static void clearcache() {
-        if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO) ) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "clear language file cache");
+        if(OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN) ) {
+            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, "clear language file cache");
         }
     }
 
@@ -237,8 +237,8 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile {
         }catch(Exception e) {
             String errorMessage = "Error while building workplace element \"" + tagname + "\": " + e;
             if(e instanceof CmsException) {
-                if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+                if(OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN)) {
+                    OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, getClassName() + errorMessage);
                 }
                 throw (CmsException)e;
             }else {
