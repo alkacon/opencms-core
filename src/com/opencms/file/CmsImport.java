@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/02/27 10:00:52 $
-* Version: $Revision: 1.76 $
+* Date   : $Date: 2003/02/27 13:17:44 $
+* Version: $Revision: 1.77 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Schouten
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.76 $ $Date: 2003/02/27 10:00:52 $
+ * @version $Revision: 1.77 $ $Date: 2003/02/27 13:17:44 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -1028,7 +1028,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             String xmlTag = content.substring(0, content.indexOf(">") + 1);
             if (xmlTag.toLowerCase().indexOf("encoding") == -1) {
                 content = content.substring(content.indexOf(">") + 1);
-                content = "<?XML version=\"1.0\" encoding=\"" + encoding + "\"?>" + content;
+                content = "<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>" + content;
             }
         }
         return content;
