@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/06/03 13:14:28 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,12 +35,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.1
  */
@@ -194,13 +189,7 @@ public class CmsTouch extends CmsDialog {
      */
     public String getCurrentDateTime() {
         // get the current date & time 
-        Locale locale = getLocale();
-        TimeZone zone = TimeZone.getDefault();
-        GregorianCalendar cal = new GregorianCalendar(zone, locale);
-        cal.setTimeInMillis(System.currentTimeMillis());
-        // format it nicely according to the localized pattern
-        DateFormat df = new SimpleDateFormat(getCalendarJavaDateFormat(key("calendar.dateformat") + " " + key("calendar.timeformat")));
-        return df.format(cal.getTime());
+        return getCalendarLocalizedTime(System.currentTimeMillis());
     }
         
     /**

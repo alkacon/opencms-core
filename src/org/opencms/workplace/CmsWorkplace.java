@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2004/06/03 13:14:28 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,14 +51,17 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -75,7 +78,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.74 $
+ * @version $Revision: 1.75 $
  * 
  * @since 5.1
  */
@@ -478,6 +481,23 @@ public abstract class CmsWorkplace {
             result.append("\n");
         }
         return result.toString();
+    }
+    
+    /**
+     * Returns the given timestamp as String formatted in a localized pattern.<p>
+     * 
+     * @param timestamp the time to format
+     * @return the given timestamp as String formatted in a localized pattern
+     */
+    public String getCalendarLocalizedTime(long timestamp) {
+        // get the current date & time 
+        Locale locale = getLocale();
+        TimeZone zone = TimeZone.getDefault();
+        GregorianCalendar cal = new GregorianCalendar(zone, locale);
+        cal.setTimeInMillis(timestamp);
+        // format it nicely according to the localized pattern
+        DateFormat df = new SimpleDateFormat(getCalendarJavaDateFormat(key("calendar.dateformat") + " " + key("calendar.timeformat")));
+        return df.format(cal.getTime());
     }
     
     /**
