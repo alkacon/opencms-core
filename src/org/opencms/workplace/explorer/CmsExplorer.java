@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2004/12/08 14:30:30 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/12/10 08:48:07 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.galleries.CmsGallery;
 import org.opencms.workplace.commons.CmsTouch;
 
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -307,9 +308,8 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\",");
 
             // position 2: path
-            if (projectView || showVfsLinks) {
+            if (projectView || showVfsLinks || galleryView) {
                 content.append("\"");
-                // TODO: Check this (won't work with new repository)
                 content.append(path);
                 content.append("\",");
             } else {
@@ -722,6 +722,11 @@ public class CmsExplorer extends CmsWorkplace {
                 }
                 return Collections.EMPTY_LIST;
             }
+        }  else if (C_VIEW_GALLERY.equals(getSettings().getExplorerMode())) { 
+        
+            // select galleries
+            CmsGallery gallery = CmsGallery.createInstance("imagegallery", getJsp());
+            return gallery.getGalleries();
         } else {
             // default is to return a list of all files in the folder
             try {
