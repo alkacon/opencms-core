@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/08 17:12:56 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2000/06/09 09:40:45 $
+ * Version: $Revision: 1.79 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.78 $ $Date: 2000/06/08 17:12:56 $
+ * @version $Revision: 1.79 $ $Date: 2000/06/09 09:40:45 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -199,7 +199,7 @@ public interface I_CmsResourceBroker {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public Vector publishProject(CmsUser currentUser, CmsProject currentProject,
+	public void publishProject(CmsUser currentUser, CmsProject currentProject,
 								 int id)
 		throws CmsException;
     
@@ -267,6 +267,21 @@ public interface I_CmsResourceBroker {
 	public void unlockProject(CmsUser currentUser, CmsProject currentProject, int id)
 		throws CmsException;
 
+	/**
+	 * Counts the locked resources in this project.
+	 * 
+	 * <B>Security</B>
+	 * Only the admin or the owner of the project can do this.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param id The id of the project
+	 * @return the amount of locked resources in this project.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public int countLockedResources(CmsUser currentUser, CmsProject currentProject, int id)
+		throws CmsException;
 	
 	// Methods working with properties and propertydefinitions
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/09 08:31:25 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2000/06/09 09:40:46 $
+ * Version: $Revision: 1.41 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.40 $ $Date: 2000/06/09 08:31:25 $ * 
+ * @version $Revision: 1.41 $ $Date: 2000/06/09 09:40:46 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -1605,7 +1605,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		 throws CmsException {
 		 // TODO: delete the files
 		 // TODO: delete the reosureces
+
 		 // TODO: delete the properties
+		 deleteAllProjectProperties(project);
 		 
 		 // finally delete the project
 		 PreparedStatement statement = null;
@@ -1621,11 +1623,46 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 				 CmsException.C_SQL_ERROR, exc);
 		 } finally {
 			if( statement != null) {
-				m_pool.putPreparedStatement(C_PROJECTS_READ_BYFLAG_KEY, statement);
+				m_pool.putPreparedStatement(C_PROJECTS_DELETE_KEY, statement);
 			}
 		 }	
 	 }
 	 
+	 /**
+	  * Deletes a project from the cms.
+	  * Therefore it deletes all files, resources and properties.
+	  * 
+	  * @param project the project to delete.
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void writeProject(CmsProject project)
+		 throws CmsException {
+
+		 PreparedStatement statement = null;
+
+		 try {			 
+			 // create the statement
+			 statement = m_pool.getPreparedStatement(C_PROJECTS_WRITE_KEY);
+
+			 statement.setInt(1,project.getOwnerId());
+			 statement.setInt(2,project.getGroupId());
+			 statement.setInt(3,project.getManagerGroupId());
+			 statement.setInt(4,project.getFlags());
+			 statement.setTimestamp(5,new Timestamp(project.getPublishingDate()));
+			 statement.setInt(6,project.getPublishedBy());
+			 statement.setInt(7,project.getId());
+			 
+			 statement.executeUpdate();
+		 } catch( Exception exc ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				 CmsException.C_SQL_ERROR, exc);
+		 } finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_PROJECTS_WRITE_KEY, statement);
+			}
+		 }	
+	 }
+	
     // methods working with systemproperties
     
     /**
@@ -2516,7 +2553,74 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 				}
 			 }	
 	}
+
+	/**
+	 * Unlocks all resources in this project.
+	 * 
+	 * @param project The project to be unlocked.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void unlockProject(CmsProject project)
+		throws CmsException {
+		 PreparedStatement statement = null;
+
+		 try {			 
+			 // create the statement
+			 statement = m_pool.getPreparedStatement(C_RESOURCES_UNLOCK_KEY);
+
+			 statement.setInt(1,project.getId());
+			 
+			 statement.executeUpdate();
+		 } catch( Exception exc ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				 CmsException.C_SQL_ERROR, exc);
+		 } finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_RESOURCES_UNLOCK_KEY, statement);
+			}
+		 }	
+	}
 	
+	/**
+	 * Counts the locked resources in this project.
+	 * 
+	 * @param project The project to be unlocked.
+	 * @return the amount of locked resources in this project.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public int countLockedResources(CmsProject project)
+		throws CmsException {
+		 PreparedStatement statement = null;
+		 ResultSet res = null;
+		 int retValue;
+
+		 try {			 
+			 // create the statement
+			 statement = m_pool.getPreparedStatement(C_RESOURCES_COUNTLOCKED_KEY);
+
+			 statement.setInt(1,project.getId());
+			 
+			 res = statement.executeQuery();
+			 
+			 if(res.next()) {
+				 retValue = res.getInt(1);
+			 } else {
+				res.close();
+				throw new CmsException("["+this.getClass().getName()+"] countLockedResources for project "+project.getName(),CmsException.C_NOT_FOUND);
+			 }
+			 res.close();			 
+		 } catch( Exception exc ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				 CmsException.C_SQL_ERROR, exc);
+		 } finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_RESOURCES_COUNTLOCKED_KEY, statement);
+			}
+		 }
+		 return retValue;
+	}
 	 
 	/**
 	 * Private method to init all statements in the pool.
@@ -2530,8 +2634,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         m_pool.initPreparedStatement(C_RESOURCES_WRITE_KEY,C_RESOURCES_WRITE);
         m_pool.initPreparedStatement(C_RESOURCES_GET_LOST_ID_KEY,C_RESOURCES_GET_LOST_ID);
         m_pool.initPreparedStatement(C_FILE_DELETE_KEY,C_FILE_DELETE);
-        	
-        // init statements for groups
+        m_pool.initPreparedStatement(C_RESOURCES_UNLOCK_KEY,C_RESOURCES_UNLOCK);
+        m_pool.initPreparedStatement(C_RESOURCES_COUNTLOCKED_KEY,C_RESOURCES_COUNTLOCKED);
+
+		// init statements for groups
 		m_pool.initPreparedStatement(C_GROUPS_MAXID_KEY,C_GROUPS_MAXID);
         m_pool.initPreparedStatement(C_GROUPS_READGROUP_KEY,C_GROUPS_READGROUP);
 	    m_pool.initPreparedStatement(C_GROUPS_READGROUP2_KEY,C_GROUPS_READGROUP2);
@@ -2568,6 +2674,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		m_pool.initPreparedStatement(C_PROJECTS_READ_BYFLAG_KEY, C_PROJECTS_READ_BYFLAG);
 		m_pool.initPreparedStatement(C_PROJECTS_READ_BYMANAGER_KEY, C_PROJECTS_READ_BYMANAGER);
 		m_pool.initPreparedStatement(C_PROJECTS_DELETE_KEY, C_PROJECTS_DELETE);
+		m_pool.initPreparedStatement(C_PROJECTS_WRITE_KEY, C_PROJECTS_WRITE);
 
 		// init statements for systemproperties
 		m_pool.initPreparedStatement(C_SYSTEMPROPERTIES_MAXID_KEY, C_SYSTEMPROPERTIES_MAXID);

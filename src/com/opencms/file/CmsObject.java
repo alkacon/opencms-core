@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/08 17:12:56 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2000/06/09 09:40:45 $
+ * Version: $Revision: 1.81 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.80 $ $Date: 2000/06/08 17:12:56 $ 
+ * @version $Revision: 1.81 $ $Date: 2000/06/09 09:40:45 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -298,10 +298,10 @@ public class CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public Vector publishProject(int id)
+	public void publishProject(int id)
 		throws CmsException { 
-		 return( c_rb.publishProject(m_context.currentUser(), 
-									 m_context.currentProject(), id) );
+		 c_rb.publishProject(m_context.currentUser(), 
+							 m_context.currentProject(), id);
 	}
 	
 	/**
@@ -314,6 +314,19 @@ public class CmsObject implements I_CmsConstants {
 	public void unlockProject(int id)
 		throws CmsException {
 		c_rb.unlockProject(m_context.currentUser(), m_context.currentProject(), id);
+	}
+	
+	/**
+	 * Counts the locked resources in this project.
+	 * 
+	 * @param id The id of the project
+	 * @return the amount of locked resources in this project.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public int countLockedResources(int id)
+		throws CmsException {
+		return c_rb.countLockedResources(m_context.currentUser(), m_context.currentProject(), id);
 	}
 	
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/09 08:31:25 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2000/06/09 09:40:46 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.33 $ $Date: 2000/06/09 08:31:25 $
+ * @version $Revision: 1.34 $ $Date: 2000/06/09 09:40:46 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -349,10 +349,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public Vector publishProject(CmsUser currentUser, CmsProject currentProject,
+	public void publishProject(CmsUser currentUser, CmsProject currentProject,
 								 int id)
         throws CmsException {
-     return null;
+		// TODO: implement this     
     }
     
 	/**
@@ -436,14 +436,44 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			isManagerOfProject(currentUser, project) || 
 			(project.getFlags() == C_PROJECT_STATE_UNLOCKED )) {
 			
-			// TODO: unlock all resources in the project
-			// m_dbAccess.unlockProject(project);
+			// unlock all resources in the project
+			m_dbAccess.unlockProject(project);
 		} else {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + id, 
 				CmsException.C_NO_ACCESS);
 		}
     }
 
+	/**
+	 * Counts the locked resources in this project.
+	 * 
+	 * <B>Security</B>
+	 * Only the admin or the owner of the project can do this.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param id The id of the project
+	 * @return the amount of locked resources in this project.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public int countLockedResources(CmsUser currentUser, CmsProject currentProject, int id)
+		throws CmsException {
+		// read the project.
+		CmsProject project = readProject(currentUser, currentProject, id);
+
+		// check the security
+		if( isAdmin(currentUser, currentProject) || 
+			isManagerOfProject(currentUser, project) || 
+			(project.getFlags() == C_PROJECT_STATE_UNLOCKED )) {
+			
+			// count locks
+			return m_dbAccess.countLockedResources(project);
+		} else {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + id, 
+				CmsException.C_NO_ACCESS);
+		}
+    }
 	
 	// Methods working with properties and propertydefinitions
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/06/08 17:12:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/06/09 09:40:45 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import source.org.apache.java.util.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/06/08 17:12:56 $
+ * @version $Revision: 1.5 $ $Date: 2000/06/09 09:40:45 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -655,6 +655,19 @@ public class CmsShell implements I_CmsConstants {
 	}
 
 	/**
+	 * Deletes a project.
+	 * 
+	 * @param id The id of the project to delete.
+	 */
+	public void deleteProject(String id) {
+		try {
+			m_cms.deleteProject(Integer.parseInt(id));
+		} catch( Exception exc ) {
+			printException(exc);
+		}		
+	}
+	
+	/**
 	 * Reads a project from the Cms.
 	 * 
 	 * @param name The id of the project to read.
@@ -1210,10 +1223,7 @@ public class CmsShell implements I_CmsConstants {
 	public void publishProject(String id) {
 		try {
 			int projectId = Integer.parseInt(id);
-			Vector resources = m_cms.publishProject(projectId);
-			for( int i = 0; i < resources.size(); i++ ) {
-				System.out.println( (String)resources.elementAt(i) );
-			}
+			m_cms.publishProject(projectId);
 		} catch( Exception exc ) {
 			printException(exc);
 		}

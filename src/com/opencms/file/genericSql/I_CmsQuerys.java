@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/09 07:50:59 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/06/09 09:40:46 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.27 $ $Date: 2000/06/09 07:50:59 $
+ * @version $Revision: 1.28 $ $Date: 2000/06/09 09:40:46 $
  */
 public interface I_CmsQuerys {
     
@@ -79,6 +79,14 @@ public interface I_CmsQuerys {
 	public static final String C_RESOURCES_GET_LOST_ID = "SELECT A.FILE_ID FROM "+C_DATABASE_PREFIX+"FILES A LEFT JOIN "
 										+C_DATABASE_PREFIX+"RESOURCES B ON A.FILE_ID=B.FILE_ID WHERE B.FILE_ID is NULL";
     
+    public static final Integer C_RESOURCES_UNLOCK_KEY = new Integer(120);
+	public static final String C_RESOURCES_UNLOCK = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET "
+													+"LOCKED_BY = " + I_CmsConstants.C_UNKNOWN_ID
+													+"WHERE PROJECT_ID = ?";	
+
+	public static final Integer C_RESOURCES_COUNTLOCKED_KEY = new Integer(121);
+	public static final String C_RESOURCES_COUNTLOCKED = "SELECT MAX(RESOURCE_ID) FROM " + C_DATABASE_PREFIX + "RESOURCES where LOCKED_BY <> " + 
+														 I_CmsConstants.C_UNKNOWN_ID + " and PROJECT_ID = ?";
 	
 	// Constants for files table
 	public static final String C_FILE_ID="FILE_ID";
@@ -294,7 +302,17 @@ public interface I_CmsQuerys {
 
 	public static final Integer C_PROJECTS_DELETE_KEY = new Integer(408);
 	public static final String C_PROJECTS_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "PROJECTS where PROJECT_ID = ?";
-	
+
+	public static final Integer C_PROJECTS_WRITE_KEY = new Integer(409);
+	public static final String C_PROJECTS_WRITE = "UPDATE " + C_DATABASE_PREFIX + "PROJECTS " + 
+												  "set USER_ID = ?, " +
+												  "set GROUP_ID = ?, " +
+												  "set MANAGERGROUP_ID = ?, " +
+												  "set PROJECT_FLAGS = ?, " +
+												  "set PROJECT_PUBLISHDATE = ?, " +
+												  "set PROJECT_PUBLISHED_BY = ? " + 
+												  "where PROJECT_ID = ?";
+
 	// Constants for Users table
 	public static final String C_USERS_USER_ID = "USER_ID";
 	public static final String C_USERS_USER_NAME = "USER_NAME";
