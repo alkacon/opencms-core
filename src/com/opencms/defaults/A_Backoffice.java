@@ -404,7 +404,12 @@ private byte[] getContentHead(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 
 	//if getCreateUrl equals null, the "create new entry" button 
 	//will not be displayed in the template
-	String createButton = (String) getCreateUrl();
+	String createButton = null;
+	try
+	{
+		createButton = (String) getCreateUrl(cms, null, null, null);
+	} catch (Exception e) {}
+	
 	if (createButton == null) {
 		String cb = template.getDataValue("nowand");
 		template.setData("createbutton", cb);
@@ -781,16 +786,10 @@ public byte[] getContentNew(CmsObject cms, CmsXmlWpTemplateFile templateFile, St
  * @returns a string with the create url
  */
  
-public abstract String getCreateUrl();
-/**
- * gets the create url by using the cms object
- * @returns a string with the create url
- */
- 
 public abstract String getCreateUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception;
 /**
  * gets the delete url by using the cms object
- * @returns a string with the delete url
+ * @returns a string with the create url
  */
  
 public abstract String getDeleteUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception;
@@ -800,6 +799,12 @@ public abstract String getDeleteUrl(CmsObject cms, String tagcontent, A_CmsXmlCo
  */
  
 public abstract String getEditUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception;
+/**
+ * gets the lock url by using the cms object
+ * @returns a string with the create url
+ */
+ 
+public abstract String getLockUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception;
 /**
  *set the lockstates in the list output 
  */
