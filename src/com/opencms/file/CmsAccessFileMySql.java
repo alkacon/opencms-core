@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/04/03 10:48:29 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2000/04/07 15:22:16 $
+ * Version: $Revision: 1.47 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.46 $ $Date: 2000/04/03 10:48:29 $
+ * @version $Revision: 1.47 $ $Date: 2000/04/07 15:22:16 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -1318,7 +1318,7 @@ import com.opencms.util.*;
 		} catch( Exception exc ) {
 			throw new CmsException("getSubFolders "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
-         return folders;
+         return SortEntrys(folders);
      }
 	
 	/**
@@ -1370,7 +1370,7 @@ import com.opencms.util.*;
 		} catch( Exception exc ) {
 			throw new CmsException("getFilesInFolder "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
-           return files;
+           return SortEntrys(files);
      }
 
      /**
@@ -1643,4 +1643,39 @@ import com.opencms.util.*;
  
 	   return name;
 	}
+    
+     /**
+	 * Sorts a vector of files or folders alphabetically. 
+	 * This method uses an insertion sort algorithem.
+	 * 
+	 * @param unsortedList Array of strings containing the list of files or folders.
+	 * @return Array of sorted strings.
+	 */
+	private Vector SortEntrys(Vector list) {
+		int in,out;
+		int nElem = list.size();
+		
+        A_CmsResource[] unsortedList = new A_CmsResource[list.size()];
+        for (int i=0;i<list.size();i++) {
+            unsortedList[i]=(A_CmsResource)list.elementAt(i);
+        }
+        
+ 		for(out=1; out < nElem; out++) {
+			 A_CmsResource temp= unsortedList[out];
+			in = out;
+			while (in >0 && unsortedList[in-1].getAbsolutePath().compareTo(temp.getAbsolutePath()) >= 0){
+				unsortedList[in]=unsortedList[in-1];
+				--in;
+			}
+			unsortedList[in]=temp;
+		}
+        
+        Vector sortedList=new Vector();
+        for (int i=0;i<list.size();i++) {
+            sortedList.addElement(unsortedList[i]);
+        }
+               
+		return sortedList;
+	}
+    
 }

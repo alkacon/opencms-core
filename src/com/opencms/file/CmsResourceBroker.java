@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/06 12:39:03 $
- * Version: $Revision: 1.97 $
+ * Date   : $Date: 2000/04/07 15:22:17 $
+ * Version: $Revision: 1.98 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.97 $ $Date: 2000/04/06 12:39:03 $
+ * @version $Revision: 1.98 $ $Date: 2000/04/07 15:22:17 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2344,8 +2344,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 									  A_CmsProject currentProject,
                                       String resource)
         throws CmsException {
-		
-		// read the onlineproject
+		       
+    	// read the onlineproject
 		A_CmsProject online = onlineProject(currentUser, currentProject);
 		
 		// is the current project the onlineproject?
@@ -2356,34 +2356,42 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			(currentProject.getFlags() == C_PROJECT_STATE_UNLOCKED)) {
 			// is offlineproject and is owner
 			
-			helperCopyResourceToProject(online, currentProject, resource);
-			
-			// walk rekursively throug all parents and copy them, too
-			// read the online-resource
-			A_CmsResource onlineRes = m_fileRb.readFileHeader(online, resource);
-			// read the offline-resource
-			A_CmsResource offlineRes = m_fileRb.readFileHeader(currentProject, resource);
-
-			resource = onlineRes.getParent();
-			try {
-				while(resource != null) {
-					// read the online-resource
-					onlineRes = m_fileRb.readFileHeader(online, resource);
+            A_CmsResource onlineRes= m_fileRb.readFileHeader(online, resource);
+            A_CmsResource offlineRes=null;
+            
+            // walk rekursively through all parents and copy them, too
+            String parent = onlineRes.getParent();
+            Stack resources=new Stack();
+	
+                // go through all partens and store them on a stack
+				while(parent != null) {
+            		// read the online-resource
+                   	onlineRes = m_fileRb.readFileHeader(online, parent);
+                    resources.push(onlineRes);
+                    // get the parent
+					parent = onlineRes.getParent();
+                }          
+                // now create all parent folders, starting at the root folder
+                while (resources.size()>0){                
+                    onlineRes=(A_CmsResource)resources.pop();
+                    parent=onlineRes.getAbsolutePath();                    
 					// copy it to the offlineproject
-					m_fileRb.copyResourceToProject(currentProject, online, resource);				
-					// inform about the file-system-change
-					fileSystemChanged(currentProject.getName(), resource);
-					// read the offline-resource
-					offlineRes = m_fileRb.readFileHeader(currentProject, resource);
-					// copy the metainfos			
-					m_metadefRb.writeMetainformations(offlineRes,
-						m_metadefRb.readAllMetainformations(onlineRes));
-					// get the parent
-					resource = onlineRes.getParent();
+                    try {
+					    m_fileRb.copyResourceToProject(currentProject, online, parent);				
+					    // inform about the file-system-change
+					    fileSystemChanged(currentProject.getName(), parent);
+					    // read the offline-resource
+					    offlineRes = m_fileRb.readFileHeader(currentProject, parent);
+					    // copy the metainfos			
+					    m_metadefRb.writeMetainformations(offlineRes,
+					    m_metadefRb.readAllMetainformations(onlineRes));
+                   	} catch (CmsException exc) {
+         	    	// if the subfolder exists already - all is ok
+			        }
 				}
-			} catch (CmsException exc) {
-				// if the subfolder exists already - all is ok
-			}
+
+			helperCopyResourceToProject(online, currentProject, resource);
+
 		} else {
 			// no changes on the onlineproject!
 			throw new CmsException("[" + this.getClass().getName() + "] " + currentProject.getName(), 
@@ -2475,11 +2483,6 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// acces to all subfolders was granted - return the file.
 			return(cmsFile);
 		} else {
-System.err.println(">>> readFile(2) error for\n" +
-				   currentUser.toString() + "\n" +
-				   currentProject.toString() + "\n" + 
-				   filename + "\n" +
-				   cmsFile + " <<<");
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
 				 CmsException.C_ACCESS_DENIED);
 		}
@@ -2736,10 +2739,10 @@ System.err.println(">>> readFile(2) error for\n" +
 		throws CmsException {
 		Vector folders = new Vector();
 		
-		// try to get the folders in the current project
+       // try to get the folders in the current project
 		try {
 			folders = helperGetSubFolders(currentUser, currentProject, foldername);
-		} catch (CmsException exc) {
+    	} catch (CmsException exc) {
 			// no folders, ignoring them
 		}
 		
@@ -2751,7 +2754,7 @@ System.err.println(">>> readFile(2) error for\n" +
 					helperGetSubFolders(currentUser, 
 										onlineProject(currentUser, currentProject), 
 										foldername);
-				// merge the resources
+               	// merge the resources
 				folders = mergeResources(folders, onlineFolders);
 			} catch(CmsException exc) {
 				// no onlinefolders, ignoring them
@@ -2777,30 +2780,32 @@ System.err.println(">>> readFile(2) error for\n" +
 	private Vector mergeResources(Vector offline, Vector online) {
 		
 		// create a vector for the merged offline
+        
+        
 		Vector merged = new Vector(offline.size() + online.size());
 		// merge the online to the offline, use the correct sorting
 		while( (offline.size() != 0) && (online.size() != 0) ) {
-			int compare = 
+            int compare = 
 				((A_CmsResource)offline.firstElement()).getAbsolutePath().compareTo(
 					((A_CmsResource)online.firstElement()).getAbsolutePath());
 			if( compare < 0 ) {
-				merged.addElement(offline.firstElement());
+               	merged.addElement(offline.firstElement());
 				offline.removeElementAt(0);
 			} else if( compare == 0) {
-				merged.addElement(offline.firstElement());
-				offline.removeElementAt(0);
+               	merged.addElement(offline.firstElement());
+                offline.removeElementAt(0);
 				online.removeElementAt(0);
 			} else {
-				merged.addElement(online.firstElement());
+               	merged.addElement(online.firstElement());
 				online.removeElementAt(0);
 			}
 		}
 		while(offline.size() != 0) {
-			merged.addElement(offline.firstElement());
+           	merged.addElement(offline.firstElement());
 			offline.removeElementAt(0);
 		}
 		while(online.size() != 0) {
-			merged.addElement(online.firstElement());
+           	merged.addElement(online.firstElement());
 			online.removeElementAt(0);
 		}
 		return(merged);
@@ -2885,9 +2890,10 @@ System.err.println(">>> readFile(2) error for\n" +
                              String resourcename, boolean force)
 		throws CmsException {
 
+           
 		// read the resource, that shold be locked
-		A_CmsResource cmsResource = m_fileRb.readFileHeader(currentProject, 
-															resourcename);
+        A_CmsResource  cmsResource = m_fileRb.readFileHeader(currentProject,resourcename);
+
 		// check, if the user may lock the resource
 		if( accessLock(currentUser, currentProject, cmsResource) ) {
 				

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2000/03/09 09:36:22 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/04/07 15:22:17 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -29,6 +29,7 @@
 package com.opencms.file;
 
 import java.util.*;
+import java.io.*;
 import com.opencms.core.*;
 
 /**
@@ -36,10 +37,11 @@ import com.opencms.core.*;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/03/09 09:36:22 $
+ * @version $Revision: 1.14 $ $Date: 2000/04/07 15:22:17 $
  */
  public class CmsResource extends A_CmsResource implements I_CmsConstants,
-                                                           Cloneable {
+                                                           Cloneable,
+                                                           Serializable {
      
      /**
       * The name of this resource.

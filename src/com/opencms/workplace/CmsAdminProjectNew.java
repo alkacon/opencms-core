@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/04/06 15:56:41 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/04/07 15:22:18 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/04/06 15:56:41 $
+ * @version $Revision: 1.17 $ $Date: 2000/04/07 15:22:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -142,6 +142,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 			
 			// create new Project
 			try {
+
                 //test if the given folder is existing and writeable
                 
 				if(checkWriteable(cms, cms.readFolder(newFolder))) {

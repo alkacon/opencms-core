@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2000/04/03 10:48:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/04/07 15:22:18 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/04/03 10:48:32 $
+ * @version $Revision: 1.5 $ $Date: 2000/04/07 15:22:18 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -94,7 +94,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         filename=(String)session.getValue(C_PARA_FILE);
         propertydef=(String)session.getValue(C_PARA_PROPERTYDEF);    
 		
-        CmsFile file=(CmsFile)cms.readFileHeader(filename);
+        A_CmsResource file=(A_CmsResource)cms.readFileHeader(filename);
         
         String edit=(String)parameters.get("EDIT");
         String delete=(String)parameters.get("DELETE");
@@ -237,7 +237,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      * @param lang The content definition language file.
      * @return Formated state string.
      */
-     private String getState(A_CmsObject cms, CmsResource file,CmsXmlLanguageFile lang)
+     private String getState(A_CmsObject cms, A_CmsResource file,CmsXmlLanguageFile lang)
          throws CmsException {
          StringBuffer output=new StringBuffer();
          
@@ -343,7 +343,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
        
         String filename=(String)session.getValue(C_PARA_FILE);       
         if (filename != null) {
-             CmsFile file=(CmsFile)cms.readFileHeader(filename);
+             A_CmsResource file=(A_CmsResource)cms.readFileHeader(filename);
              A_CmsResourceType type=cms.getResourceType(file.getType());
              // get all propertydefinitions for this type
              Vector propertydef =cms.readAllPropertydefinitions(type.getResourceName());
@@ -388,7 +388,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
        
         String filename=(String)session.getValue(C_PARA_FILE);       
         if (filename != null) {
-             CmsFile file=(CmsFile)cms.readFileHeader(filename);
+             A_CmsResource file=(A_CmsResource)cms.readFileHeader(filename);
              A_CmsResourceType type=cms.getResourceType(file.getType());
              // get all propertydefinitions for this type
              Vector propertydef =cms.readAllPropertydefinitions(type.getResourceName());

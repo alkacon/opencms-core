@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChown.java,v $
- * Date   : $Date: 2000/04/06 09:26:34 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/07 15:22:18 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/04/06 09:26:34 $
+ * @version $Revision: 1.6 $ $Date: 2000/04/07 15:22:18 $
  */
 public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -90,7 +90,7 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
         //check if the lock parameter was included in the request
         // if not, the lock page is shown for the first time
         filename=(String)session.getValue(C_PARA_FILE);
-		CmsFile file=(CmsFile)cms.readFileHeader(filename);
+		A_CmsResource file=(A_CmsResource)cms.readFileHeader(filename);
 		
         // a new owner was given in the request so try to change it
         if (newowner != null) {
@@ -104,7 +104,7 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			    //if so delete the file body and content
 			    // else delete only file
 			    if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
-				    String bodyPath=getBodyPath(cms, file);
+				    String bodyPath=getBodyPath(cms, (CmsFile)file);
 				    int help = C_CONTENTBODYPATH.lastIndexOf("/");
 				    String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath());
 				    if (hbodyPath.equals(bodyPath)){
@@ -167,7 +167,7 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
         String filename=(String)session.getValue(C_PARA_FILE);
 
         if (filename != null) {
-            CmsFile file=(CmsFile)cms.readFileHeader(filename);
+            A_CmsResource file=(A_CmsResource)cms.readFileHeader(filename);
     
 	    	// fill the names and values
     		for(int z = 0; z < users.size(); z++) {
@@ -206,7 +206,7 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
      * @param lang The content definition language file.
      * @return Formated state string.
      */
-     private String getState(A_CmsObject cms, CmsResource file,CmsXmlLanguageFile lang)
+     private String getState(A_CmsObject cms, A_CmsResource file,CmsXmlLanguageFile lang)
          throws CmsException {
          StringBuffer output=new StringBuffer();
          

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/I_CmsNewsConstants.java,v $
- * Date   : $Date: 2000/04/04 09:59:22 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/04/07 15:22:16 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.examples.news;
  * into a <code>news.ini</code> file.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2000/04/04 09:59:22 $
+ * @version $Revision: 1.7 $ $Date: 2000/04/07 15:22:16 $
  */
 public interface I_CmsNewsConstants {
     
@@ -53,7 +53,7 @@ public interface I_CmsNewsConstants {
     public static final String C_NEWS_ROLE = "Users";     
 
     /** Name of the user managing news */
-    public static final String C_NEWS_USER = "Admin";     
+    public static final String C_NEWS_USER = "a.kandzior";     
     
     /** Text of the "active" state */
     public static final String C_NEWS_STATE_ACTIVE = "active";     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2000/03/28 13:51:16 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/04/07 15:22:18 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
-  * @version $Revision: 1.12 $ $Date: 2000/03/28 13:51:16 $
+  * @version $Revision: 1.13 $ $Date: 2000/04/07 15:22:18 $
  */
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -93,7 +93,7 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
             session.putValue(C_PARA_FILE,filename);        
         }
         filename=(String)session.getValue(C_PARA_FILE);
-		CmsFile file=(CmsFile)cms.readFileHeader(filename);
+		A_CmsResource file=(A_CmsResource)cms.readFileHeader(filename);
 
         if (file.isFile()) {
             template="file";
@@ -113,7 +113,7 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			    //if so delete the file body and content
 			    // else delete only file
 			    if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
-				    String bodyPath=getBodyPath(cms, file);
+				    String bodyPath=getBodyPath(cms, (CmsFile)file);
 					try {
 	    			    int help = C_CONTENTBODYPATH.lastIndexOf("/");
     	          	    String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath());
@@ -124,7 +124,7 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
 	    				//TODO: ErrorHandling
 		    		}
 			    } else if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_NEWSPAGE_NAME) ){
-					String newsContentPath = getNewsContentPath(cms, file);
+					String newsContentPath = getNewsContentPath(cms, (CmsFile) file);
 					try {
 						CmsFile newsContentFile=(CmsFile)cms.readFileHeader(newsContentPath);
 						if((newsContentFile.isLocked()) && (newsContentFile.isLockedBy()==cms.getRequestContext().currentUser().getId()) ){

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFile.java,v $
- * Date   : $Date: 2000/03/21 15:07:10 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/04/07 15:22:16 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/03/21 15:07:10 $
+ * @version $Revision: 1.14 $ $Date: 2000/04/07 15:22:16 $
  */
 class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -146,7 +146,6 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
                              A_CmsProject onlineProject,
                              String filename)
          throws CmsException {
-         //System.err.println("###read file "+filename);
          return getFilesystem(filename).readFile(project,onlineProject,filename);
      }
 	
@@ -165,7 +164,6 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 	 public CmsFile readFileHeader(A_CmsProject project, String filename)
          throws CmsException {
          
-         //System.err.println("###read file header"+filename);
          return getFilesystem(filename).readFileHeader(project,filename);
      }
 	
@@ -431,8 +429,24 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 	 */
 	 public Vector getSubFolders(A_CmsProject project, String foldername)
          throws CmsException {
+                  
+         Vector folders=getFilesystem(foldername).getSubFolders(project,foldername);
          
-         return getFilesystem(foldername).getSubFolders(project,foldername);
+       /*  System.err.println("");
+         System.err.println("");
+         System.err.println("### Get Subfolders from "+foldername);
+         System.err.println("### The project is "+project);*/
+         for (int i=0;i<folders.size();i++) {             
+             CmsFolder folder=(CmsFolder)folders.elementAt(i);
+             /*System.err.println("### Checking folder "+folder);*/
+             if (getFilesystem(foldername) != getFilesystem(folder.getAbsolutePath())) {
+                 CmsFolder newFolder=readFolder(project,folder.getAbsolutePath());
+                 /*System.err.println("### Getting folder from other mountpoint "+newFolder);*/
+                 folders.setElementAt(newFolder,i);
+             }                         
+         }
+         
+         return folders;
      }
 	
 	/**
@@ -463,8 +477,23 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
      public void copyResourceToProject(A_CmsProject project,
                                        A_CmsProject onlineProject,
                                        String resourcename) 
-         throws CmsException {
+         throws CmsException {         
          getFilesystem(resourcename).copyResourceToProject(project,onlineProject,resourcename);
+         // If the resource is a folder, test if it is a mountpoint.
+         // If it is a mountpoint, an anchor in the parent folder has to be set.
+         if (resourcename.endsWith("/")) {
+             CmsFolder folder=readFolder(project,resourcename);
+             // get the parent folder
+             String parentfolder=folder.getParent();
+             if (parentfolder != null) {
+                     // Check if the filesystem for the resource and the parent are different.
+                     // If so, the resource is a mountpoint, so create the anchor in the parent
+                     // folder.
+                     if (getFilesystem(resourcename) != getFilesystem(parentfolder)) {
+                        getFilesystem(parentfolder).copyResourceToProject(project,onlineProject,resourcename);
+                    }
+             }
+         }             
      }
      
      /**
@@ -487,9 +516,11 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
         Enumeration e = m_mountpointStorage.keys();
 	  	 while (e.hasMoreElements()) {
 		   mountpoint=(String)e.nextElement();
+
            accessFile=(I_CmsAccessFile)m_mountpointStorage.get(mountpoint);
            // publish the project data that is a attached to this specific mountpoint
            resources=accessFile.publishProject(project,onlineProject);
+ 
            // collect all the publishing information
            if (resources !=null) {
                Enumeration enu=resources.elements();
@@ -509,12 +540,11 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
       * @param name The name of the file or folder in the Cms.
       * @return CmsAccessFile module that can access the file or folder.
       */
-     private I_CmsAccessFile getFilesystem(String name)
-	{
+     private I_CmsAccessFile getFilesystem(String name)	{
 		String mountpoint=null;
 		String bestmatch=new String("");
 		I_CmsAccessFile accessFile=null;
-		
+	        
         // calaculate the path to the file or folder
 		String path=null;
 		if (name.endsWith("/")) {
@@ -523,23 +553,23 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 			path = name.substring(0,name.lastIndexOf("/")+1);
 		}
 		
-		// now check all available 
+		// now check all available mountpoints
 		Enumeration e = m_mountpointStorage.keys();
 		while (e.hasMoreElements()) {
 		  mountpoint=(String)e.nextElement();
           // is the path of the file covered by this mountpoint?
-		  if (path.indexOf(mountpoint) != -1) {
+		  if ((path.indexOf(mountpoint) != -1)) {
             // is there a better mathch already existing?  
 			if (mountpoint.length() > bestmatch.length()) {
                 // the path must start with the moutpoint
                 if(path.startsWith(mountpoint)) {
-                    // set this mountpoint as the new bestmatch
-					bestmatch=mountpoint;
+                       // set this mountpoint as the new bestmatch
+					    bestmatch=mountpoint; 
 				}
 			}
 		 } 
 		}
-	    accessFile = (I_CmsAccessFile)m_mountpointStorage.get(bestmatch);
+	    accessFile = (I_CmsAccessFile)m_mountpointStorage.get(bestmatch);   
 	  return  accessFile;
 	}
 	

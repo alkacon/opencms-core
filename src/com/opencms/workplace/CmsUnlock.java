@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
- * Date   : $Date: 2000/04/05 13:04:48 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/04/07 15:22:18 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.16 $ $Date: 2000/04/05 13:04:48 $
+ * @version $Revision: 1.17 $ $Date: 2000/04/07 15:22:18 $
  */
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -97,7 +97,7 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         //check if the unlock parameter was included in the request
         // if not, the unlock page is shown for the first time
         filename=(String)session.getValue(C_PARA_FILE);
-		CmsFile file=(CmsFile)cms.readFileHeader(filename);
+		A_CmsResource file=(A_CmsResource)cms.readFileHeader(filename);
         
         // select the template to be displayed
         if (file.isFile()) {
@@ -113,7 +113,7 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         if (unlock != null) {
             if (unlock.equals("true")) {
 				if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
-					String bodyPath = getBodyPath(cms, file);
+					String bodyPath = getBodyPath(cms, (CmsFile)file);
 					try {
 						CmsFile bodyFile=(CmsFile)cms.readFileHeader(bodyPath);
 						if(bodyFile.isLocked() && (bodyFile.isLockedBy()==file.isLockedBy())){
@@ -123,7 +123,7 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
 						//TODO: ErrorHandling
 					}
 				} else if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_NEWSPAGE_NAME) ){
-					String newsContentPath = getNewsContentPath(cms, file);
+					String newsContentPath = getNewsContentPath(cms, (CmsFile)file);
 					try {
 						CmsFile newsContentFile=(CmsFile)cms.readFileHeader(newsContentPath);
 						if(newsContentFile.isLocked() && (newsContentFile.isLockedBy()==file.isLockedBy())){

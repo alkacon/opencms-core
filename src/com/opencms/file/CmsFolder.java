@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFolder.java,v $
- * Date   : $Date: 2000/02/20 11:42:09 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/04/07 15:22:17 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -29,14 +29,16 @@
 package com.opencms.file;
 
 import com.opencms.core.*;
+import java.io.*;
 /**
  * This class describes a folder in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/02/20 11:42:09 $
+ * @version $Revision: 1.8 $ $Date: 2000/04/07 15:22:17 $
  */
 public class CmsFolder extends CmsResource implements I_CmsConstants,
-                                                      Cloneable {
+                                                      Cloneable,
+                                                      Serializable {
      
      /**
       * Constructor, creates a new CmsFolder object.

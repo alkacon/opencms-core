@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResource.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/04/07 15:22:16 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import java.util.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.12 $ $Date: 2000/04/07 15:22:16 $
  */
 public abstract class A_CmsResource  {
 	/**
@@ -192,7 +192,7 @@ public abstract class A_CmsResource  {
 	 * 
 	 * @return the accessflags of this resource.
 	 */
-    abstract int getAccessFlags();
+    abstract public int getAccessFlags();
    
      /**
 	 * Sets the accessflags of this resource.

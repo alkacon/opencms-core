@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFile.java,v $
- * Date   : $Date: 2000/03/21 15:07:11 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/04/07 15:22:17 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/03/21 15:07:11 $
+ * @version $Revision: 1.19 $ $Date: 2000/04/07 15:22:17 $
  */
  class CmsRbFile implements I_CmsRbFile, I_CmsConstants {
 	
@@ -155,7 +155,13 @@ import com.opencms.core.*;
 	 */
 	 public A_CmsResource readFileHeader(A_CmsProject project, String filename)
 		 throws CmsException {
-         return m_accessFile.readFileHeader(project,filename);
+         A_CmsResource res=null;
+         if (filename.endsWith("/")) {
+             res=m_accessFile.readFolder(project,filename);
+         } else {
+             res=m_accessFile.readFileHeader(project,filename);
+         }
+         return res;
      }
 	
      /**
@@ -873,6 +879,7 @@ import com.opencms.core.*;
                                       A_CmsProject onlineProject,
                                       String resource)
         throws CmsException {
+      
         m_accessFile.copyResourceToProject(project, onlineProject, resource);
     }
     
