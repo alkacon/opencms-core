@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2004/10/14 15:05:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/10/14 15:58:20 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -275,10 +275,12 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
             value = CmsEncoder.adjustHtmlEncoding(value, encoding);
         }
         
-        // do some processing to remove unneccessary tags
-        String contentConversion = document.getConversion();         
-        CmsHtmlConverter converter = new CmsHtmlConverter(encoding, contentConversion);
-        value = converter.convertToStringSilent(value);
+        // do some processing to remove unnecessary tags if necessary
+        String contentConversion = document.getConversion();    
+        if (CmsHtmlConverter.isConversionEnabled(contentConversion)) {
+            CmsHtmlConverter converter = new CmsHtmlConverter(encoding, contentConversion);
+            value = converter.convertToStringSilent(value);
+        }
 
         if (linkProcessor != null) {
             try {

@@ -20,6 +20,7 @@ createPropertydefinition export
 createPropertydefinition exportname
 createPropertydefinition default-file
 createPropertydefinition content-encoding
+createPropertydefinition content-conversion
 createPropertydefinition internal
 createPropertydefinition cache
 createPropertydefinition stream
@@ -60,3 +61,4 @@ importModulesFromSetupBean
 updateIndex
 
 exit
+

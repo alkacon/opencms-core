@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2004/10/14 15:05:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/10/14 15:58:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.w3c.tidy.Tidy;
  * Html cleaner, used to clean up html code (e.g. remove word tags) and created xhtml output.<p>
  *  *  
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsHtmlConverter {
     
@@ -155,6 +155,21 @@ public class CmsHtmlConverter {
         return contentConversion;
     }
 
+    /**
+     * Tests if the content conversion is enabled.<p>
+     * 
+     * @param conversionMode the content conversion mode string
+     * @return ture or false
+     */
+    public static boolean isConversionEnabled(String conversionMode) {
+        boolean value = true;
+        if ((conversionMode == null) || (conversionMode.indexOf(C_MODE_DISABLED) != -1)) {
+            value = false;
+        }
+        return value;
+    }
+    
+    
     /**
      * Adjusts the html input code in WORD mode if nescessary.<p>
      * 
