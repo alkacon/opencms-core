@@ -129,7 +129,7 @@ function show_help()
 <HEAD>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../templates/js/opencms.js"></SCRIPT>
 </HEAD>
-<BODY onload="window.top.head.location.reload();"> 
+<BODY onload="window.top.head.location.href='../../../action/head.html';"> 
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
