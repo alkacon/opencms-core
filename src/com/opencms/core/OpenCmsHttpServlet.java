@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2002/10/30 10:15:32 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2002/11/17 16:42:56 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.34 $ $Date: 2002/10/30 10:15:32 $
+ * @version $Revision: 1.35 $ $Date: 2002/11/17 16:42:56 $
  */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
 
@@ -123,6 +123,10 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      * Flag for debugging.
      */
     private static final boolean DEBUG = false;
+    
+    /**
+     * Prefix for error messages for initialization errors.       */
+    private static final String C_ERRORMSG = "OpenCms initialization error!\n\n";
 
     /**
      * Initialization of the OpenCms servlet (overloaded Servlet API method).<p>
@@ -146,7 +150,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
             if (DEBUG) System.err.println("No OpenCms home folder given. Trying to guess...");
             base = CmsMain.searchBaseFolder(config.getServletContext().getRealPath("/"));
             if(base == null || "".equals(base)) {
-                throw new ServletException("OpenCms base folder could not be guessed. Please define init parameter \"opencms.home\" in servlet engine configuration.");
+                throw new ServletException(C_ERRORMSG + "OpenCms base folder could not be guessed. Please define init parameter \"opencms.home\" in servlet engine configuration.\n\n");
             }
         }
         base = CmsBase.setBasePath(base);        
@@ -159,7 +163,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
             extendedProperties = new ExtendedProperties(CmsBase.getPropertiesPath(true));
         }
         catch(Exception e) {
-            throw new ServletException(e.getMessage() + ". Property file is: " + CmsBase.getPropertiesPath(true));
+            throw new ServletException(C_ERRORMSG + "Trouble reading property file " + CmsBase.getPropertiesPath(true) + ".\n\n", e);
         }
         
         // Change path to log file, if given path is not absolute
@@ -201,8 +205,12 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         try {
             // create the OpenCms object
             m_opencms = new OpenCms(m_configurations);
+        } catch (CmsException cmsex) {
+            if (cmsex.getType() == CmsException.C_RB_INIT_ERROR) {
+                throw new ServletException(C_ERRORMSG + "Could not connect to the database. Is the database up and running?\n\n", cmsex);                
+            }
         } catch(Exception exc) {
-            throw new ServletException(Utils.getStackTrace(exc));
+            throw new ServletException(C_ERRORMSG + "Trouble creating the com.opencms.core.CmsObject. Please check the root cause for more information.\n\n", exc);
         }
 
         // initalize the session storage

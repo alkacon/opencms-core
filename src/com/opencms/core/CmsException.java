@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
-* Date   : $Date: 2002/08/29 17:28:29 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2002/11/17 16:42:56 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.*;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.47 $ $Date: 2002/08/29 17:28:29 $
+ * @version $Revision: 1.48 $ $Date: 2002/11/17 16:42:56 $
  */
 public class CmsException extends Exception {
 
@@ -189,7 +189,7 @@ public class CmsException extends Exception {
     public final static int C_FLEX_OTHER = 41;
 
     /** Default prefix for a CmsException message */
-    public static final String C_CMS_EXCEPTION_PREFIX = "[CmsException]";
+    public static final String C_CMS_EXCEPTION_PREFIX = "com.opencms.core.CmsException";
 
     /**
      * This array provides descriptions for the error codes stored as
@@ -413,6 +413,8 @@ public class CmsException extends Exception {
 	        if(m_rootCause != null) {
 	            StringWriter _sw = new StringWriter();
 	            PrintWriter _pw = new PrintWriter(_sw);
+                _pw.println("-----------");                
+                _pw.println("Root cause:");                
 	            m_rootCause.printStackTrace(_pw);
 	            _pw.close();
 	            try {
@@ -424,7 +426,11 @@ public class CmsException extends Exception {
 	            }
 	            StringTokenizer st = new StringTokenizer(_sw.toString(), "\n");
 	            while(st.hasMoreElements()) {
-	                pw.println(">" + st.nextElement());
+                    String s = ">" + (String)st.nextElement();
+                    while ( (s != null) && (! "".equals(s)) && ((s.endsWith("\r") || s.endsWith("\n") || s.endsWith(">"))) ) {
+                        s = s.substring(0, s.length()-1);
+                    } 
+                    if ((s != null) && (! "".equals(s))) pw.println(s);
 	            }
 	        }
 	    }
@@ -486,11 +492,13 @@ public class CmsException extends Exception {
         output.append(C_CMS_EXCEPTION_PREFIX + ": ");
         output.append(m_type + " ");
         output.append(CmsException.C_EXTXT[m_type] + ". ");
-        output.append("Detailed Error: ");
-        output.append(m_message + ". ");
+        if (m_message != null && (!"".equals(m_message))) {
+            output.append("Detailed error: ");
+            output.append(m_message + ". ");
+        }
         if(m_rootCause != null) {
-            output.append("Caught Exception: >");
-            output.append(m_rootCause + "<");
+            output.append("\nroot cause was ");
+            output.append(m_rootCause);
         }
         return output.toString();
     }

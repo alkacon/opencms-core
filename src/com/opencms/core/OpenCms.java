@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/10/30 10:06:43 $
-* Version: $Revision: 1.98 $
+* Date   : $Date: 2002/11/17 16:42:56 $
+* Version: $Revision: 1.99 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import com.opencms.template.cache.*;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.98 $ $Date: 2002/10/30 10:06:43 $
+ * @version $Revision: 1.99 $ $Date: 2002/11/17 16:42:56 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
 
@@ -207,11 +207,24 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             }
             cms = new CmsObject();
             m_sessionFailover = conf.getBoolean("sessionfailover.enabled", false);
-            
+        } catch(Exception e) {
+            if(C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) log(C_OPENCMS_CRITICAL, "[OpenCms] Startup init failed - " + e.getMessage());
+            // any exception here is fatal and will cause a stop in processing
+            throw e;
+        }
+        
+        try {           
             // init the rb via the manager with the configuration
             // and init the cms-object with the rb.
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] initializing the main resource-broker");
             c_rb = CmsRbManager.init(conf);
+        } catch(Exception e) {
+            if(C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) log(C_OPENCMS_CRITICAL, "[OpenCms] Database init failed - " + e.getMessage());
+            // any exception here is fatal and will cause a stop in processing
+            throw new CmsException("Database init failed", CmsException.C_RB_INIT_ERROR, e);
+        }
+        
+        try {       
             printCopyrightInformation(cms);
 
             // initalize the Hashtable with all available mimetypes
@@ -232,9 +245,8 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             } else {
                 if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCmsServlet] CmsCronScheduler is disabled!");
             }
-        }
-        catch(Exception e) {
-            if(C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) log(C_OPENCMS_CRITICAL, "[OpenCms] " + e.getMessage());
+        } catch(Exception e) {
+            if(C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) log(C_OPENCMS_CRITICAL, "[OpenCms] Type init falied - " + e.getMessage());
             // any exception here is fatal and will cause a stop in processing
             throw e;
         }
