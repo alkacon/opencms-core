@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
- * Date   : $Date: 2000/02/17 09:57:39 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/02/19 14:23:14 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2000/02/17 09:57:39 $
+ * @version $Revision: 1.32 $ $Date: 2000/02/19 14:23:14 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
                                                                         I_CmsWpConstants {
@@ -230,6 +230,26 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
     }
     
    /**
+    * Fast method to replace a datablock.
+    * <P>
+    * <b>USE WITH CARE!</b>
+    * <P>
+    * Using this method only if
+    * <ul>
+    * <li>The tag name is given in lowercase</li>
+    * <li>The datablock already exists (it may be empty)</li>
+    * <li>Neither tag nor data are <code>null</code></li>
+    * <li>You are sure, there will occure no errors</li>
+    * </ul>
+    * 
+    * @param tag Key for this datablock.
+    * @param data String to be put in the datablock.
+    */
+    public void fastSetXmlData(String tag, String data) {
+        fastSetData(tag, data);
+    }
+
+    /**
     * Creates a datablock consisting of a single TextNode containing 
     * data and stores this block into the datablock-hashtable.
     * 

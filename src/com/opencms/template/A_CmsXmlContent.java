@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
- * Date   : $Date: 2000/02/15 18:02:44 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/02/19 14:23:03 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -72,7 +72,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2000/02/15 18:02:44 $
+ * @version $Revision: 1.16 $ $Date: 2000/02/19 14:23:03 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -917,8 +917,31 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 	protected Hashtable getAllData() {
 		return m_blocks;
 	}
-
-   
+  
+   /**
+    * Fast method to replace a datablock.
+    * <P>
+    * <b>USE WITH CARE!</b>
+    * <P>
+    * Using this method only if
+    * <ul>
+    * <li>The tag name is given in lowercase</li>
+    * <li>The datablock already exists (it may be empty)</li>
+    * <li>Neither tag nor data are <code>null</code></li>
+    * <li>You are sure, there will occure no errors</li>
+    * </ul>
+    * 
+    * @param tag Key for this datablock.
+    * @param data String to be put in the datablock.
+    */
+    protected void fastSetData(String tag, String data) {
+        Element originalBlock = (Element)(m_blocks.get(tag));
+        while(originalBlock.hasChildNodes()) {
+            originalBlock.removeChild(originalBlock.getFirstChild());
+        }
+        originalBlock.appendChild(m_content.createTextNode(data));
+    }
+    
    /**
     * Creates a datablock consisting of a single TextNode containing 
     * data and stores this block into the datablock-hashtable.
