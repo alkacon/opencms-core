@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2003/02/15 11:14:54 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/02/24 09:07:18 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.41 $ $Date: 2003/02/15 11:14:54 $
+ * @version $Revision: 1.42 $ $Date: 2003/02/24 09:07:18 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -662,7 +662,7 @@ public class CmsStaticExport implements I_CmsConstants{
             if (exc.getType() == CmsException.C_NOT_FOUND) {
                 // resource was not found in VFS, probably the link does not exist, do 
                 // not display an exception but a warning message
-                m_report.println(m_report.key("report.file_does_not_exist_skipping_export"), I_CmsReport.C_FORMAT_WARNING);
+                m_report.println(m_report.key("report.file_does_not_exist_skipping_export"), I_CmsReport.C_FORMAT_NOTE);
             } else {
                 m_report.println(exc);
                 if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_STATICEXPORT)) {
