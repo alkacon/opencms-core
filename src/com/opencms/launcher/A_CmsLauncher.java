@@ -31,7 +31,7 @@ import javax.servlet.http.*;
  * </UL>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/01/25 14:01:19 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/26 15:49:23 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
         
@@ -105,12 +105,18 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
             if("all".equals(clearcache) || "class".equals(clearcache)) {
                 CmsTemplateClassManager.clearCache();
             }
-            
+        }
+        if(clearcache != null) {
+            if("all".equals(clearcache) || "file".equals(clearcache)) {
+                A_CmsXmlContent.clearFileCache();                
+            }        
+        }
+        if(clearcache != null) {
             if("all".equals(clearcache) || "template".equals(clearcache)) {
                 m_templateCache.clearCache();
-            }
+            }        
         }
-
+        
         launch(cms, file, startTemplateClass);
     }
 
@@ -175,10 +181,8 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
         // Print out some error messages
         if(A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorText);
-            if(!(e instanceof CmsException)) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "--> Exception was NO CmsException: " + e);
-                e.printStackTrace();
-            }
+            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "--> Exception: " + e);
+            e.printStackTrace();
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "--> Cannot create output for this file. Must send error. Sorry.");
         }        
 
