@@ -107,7 +107,7 @@ import java.util.*;
  *
  * @see source.org.apache.java.util.Configurations
  * @author <a href="mailto:stefano@apache.org">Stefano Mazzocchi</a>
- * @version $Revision: 1.3 $ $Date: 2003/01/20 23:59:32 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/13 10:56:35 $
  */
 public class ExtendedProperties extends ConfigurationsRepository {
 
@@ -119,10 +119,19 @@ public class ExtendedProperties extends ConfigurationsRepository {
 	 */
 	class PropertiesReader extends LineNumberReader {
 
+        /**
+         * Return the reader.<p>
+         * @param reader the reader
+         */
 		public PropertiesReader(Reader reader) {
 			super(reader);
 		}
 
+        /**
+         * Read a property.<p>
+         * @return the value read
+         * @throws IOException if something goes wring
+         */
 		public String readProperty() throws IOException {
 			StringBuffer buffer = new StringBuffer();
 
@@ -154,14 +163,26 @@ public class ExtendedProperties extends ConfigurationsRepository {
 	 */
 	class PropertiesTokenizer extends StringTokenizer {
 
+        /**
+         * Creates a new tokenizer.<p>
+         * @param string the string
+         */
 		public PropertiesTokenizer(String string) {
 			super(string, ",");
 		}
 
+        /**
+         * Returns true if the tokenizer has more tokens.<p>
+         * @return true if the tokenizer has more tokens
+         */
 		public boolean hasMoreTokens() {
 			return super.hasMoreTokens();
 		}
-
+        
+        /**
+         * Returns the next token.<p>
+         * @return the next token
+         */
 		public String nextToken() {
 			StringBuffer buffer = new StringBuffer();
 
@@ -184,14 +205,20 @@ public class ExtendedProperties extends ConfigurationsRepository {
 	 * Creates an empty extended properties object.
 	 */
 	public ExtendedProperties () {}
+    
 	/**
 	 * Creates and loads the extended properties from the specified file.
+     * @param file the file
+     * @throws IOException if something goes wring
 	 */
 	public ExtendedProperties (String file) throws IOException {
 		this.load(new FileInputStream(file));
 	}
+    
 	/**
 	 * Load the properties from the given input stream.
+     * @param input the stream to load from
+     * @throws IOException if something goes wrong
 	 */
 	public synchronized void load(InputStream input) throws IOException {
 		PropertiesReader reader = new PropertiesReader(new InputStreamReader(input));
@@ -228,9 +255,13 @@ public class ExtendedProperties extends ConfigurationsRepository {
 			return;
 		}
 	}
-	/**
-	 * Save the properties to the given outputstream.
-	 */
+    
+    /**
+     * Saves to an input stream.<p>
+     * @param output the stream to save to
+     * @param Header the header
+     * @throws IOException if something goes wrong
+     */
 	public synchronized void save(OutputStream output, String Header)
 			throws IOException {
 		throw new NoSuchMethodError("This method is not yet implemented");

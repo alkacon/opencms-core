@@ -65,19 +65,19 @@ import java.util.Vector;
  * logging.
  *
  * @author <a href="vt@freehold.crocodile.org">Vadim Tkachenko</a>
- * @version $Revision: 1.3 $ $Date: 2003/01/20 23:59:32 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/13 10:56:35 $
  */
 public class SimpleQueue {
 	/**
 	 * Data holder.
 	 */
-	private Vector theQueue;
+	private Vector m_queue;
 
 	/**
 	 * Default constructor.
 	 */
 	public SimpleQueue() {
-		theQueue = new Vector();
+		m_queue = new Vector();
 	}
 	/**
 	 * Get the object waiting in the queue.
@@ -87,7 +87,7 @@ public class SimpleQueue {
 	public synchronized Object get() {
 		Object  found = peekAtHead();
 		if (found != null) {
-			theQueue.removeElementAt(0);
+			m_queue.removeElementAt(0);
 		} else {
 			return found;
 		}
@@ -96,20 +96,21 @@ public class SimpleQueue {
 	}
 	/**
 	 * Find out if the queue is empty.
+     * @return true if the queue is empty
 	 */
 	public boolean isEmpty() {
-		return theQueue.isEmpty();
+		return m_queue.isEmpty();
    }   
 	/**
 	 * Get the object at the head of the queue.
 	 * @return null if the queue is empty.
 	 */
 	public synchronized Object peekAtHead() {
-		if (theQueue.isEmpty()) {
+		if (m_queue.isEmpty()) {
 			return null;
 		}
 
-		return theQueue.elementAt(0);
+		return m_queue.elementAt(0);
 	}
 	/**
 	 * Put the object into the queue.
@@ -117,14 +118,15 @@ public class SimpleQueue {
 	 * @param toPut the object to put
 	 */
 	public synchronized void put(Object toPut) {
-		theQueue.addElement(toPut);
+		m_queue.addElement(toPut);
 		notify();
 	}
    /**
 	* Get the number of elements in the queue.
+    * @return the number of elements in the queue
 	*/
    public int size() {
-	   return theQueue.size();
+	   return m_queue.size();
    }   
 	/**
 	 * Wait until the object appears in the queue, then return it.

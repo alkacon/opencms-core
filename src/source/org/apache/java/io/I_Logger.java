@@ -59,43 +59,51 @@ package source.org.apache.java.io;
  * This interface represents a simple logger
  * (LogWriter is an implementation).
  *
- * @version $Revision: 1.3 $ $Date: 2003/01/20 23:59:32 $
+ * @version $Revision: 1.1 $ $Date: 2003/06/13 10:56:35 $
  * @see source.org.apache.java.io.LogWriter
  */
-public interface Logger {
+public interface I_Logger {
 	/**
 	 * Flush the log.
 	 *
 	 * Write any pending messages into the log media.
 	 */
-	public void flush();
+	void flush();
+    
 	/**
 	 * Tells if it is active.
+     * 
+     * @return true if the logger is active
 	 */
-	public boolean isActive();
+	boolean isActive();
+    
 	/**
-	 * Tells if the given channel is active.
+	 * Tells if the given channel is active
 	 *
-	 * @param  channel  the channel to test.
+	 * @param  channel  the channel to test
+     * @return true if the logging for the provided channel is active
 	 */
-	public boolean isActive(String channel);
+	boolean isActive(String channel);
+    
 	/**
-	 * Prints the log message on the right channel.
-	 * <p>
+	 * Prints the log message on the right channel.<p>
+	 * 
 	 * A "channel" is a virtual log that may be enabled or disabled by
 	 * setting the property "identifier".channel.???=true where ??? is the
 	 * channel identifier that must be passed with the message.
 	 * If a channel is not recognized or its property is set to false
 	 * the message is not written.
 	 *
-	 * @param   channel       the channel to put the message on.
-	 * @param   name          the message to log.
+	 * @param   channel       the channel to put the message on
+	 * @param   message       the message to log
 	 */
-	public void log(String channel, String message);
+	void log(String channel, String message);
+    
 	/**
 	 * Prints the error message and stack trace if channel enabled.
 	 *
+     * @param   channel       the channel to put the message on
 	 * @param t the error thrown.
 	 */
-	public void log(String channel, Throwable t);
+	void log(String channel, Throwable t);
 }

@@ -84,19 +84,19 @@ import java.util.Vector;
  * and faster transition between different configuration syntax.
  *
  * @author <a href="mailto:stefano@apache.org">Stefano Mazzocchi</a>
- * @version $Revision: 1.4 $ $Date: 2003/01/20 23:59:32 $
+ * @version $Revision: 1.5 $ $Date: 2003/06/13 10:56:35 $
  */
 public class Configurations {
 
 	/**
 	 * Default configurations repository.
 	 */
-	private Configurations defaults;
+	private Configurations m_defaults;
 
 	/**
 	 * Configuration repository.
 	 */
-	private ConfigurationsRepository repository;
+	private ConfigurationsRepository m_repository;
 
 	/**
 	 * Creates an empty configuration repository
@@ -105,6 +105,7 @@ public class Configurations {
 	public Configurations() {
 		this(null, null);
 	}
+    
 	/**
 	 * Creates an empty configuration repository with
 	 * the specified defaults.
@@ -114,6 +115,7 @@ public class Configurations {
 	public Configurations(Configurations defaults) {
 		this(null, defaults);
 	}
+    
 	/**
 	 * Creates a configuration repository encapsulating
 	 * the given properties with no default values.
@@ -127,11 +129,12 @@ public class Configurations {
 	 * Merge the given properties object as configurations.
 	 *
 	 * @param properties the properties file to merge
+     * @param defaults the defaults
 	 */
 	public Configurations(ConfigurationsRepository properties,
 			Configurations defaults) {
-		this.repository = properties;
-		this.defaults = defaults;
+		this.m_repository = properties;
+		this.m_defaults = defaults;
 	}
 	/**
 	 * Get a boolean associated with the given configuration key.
@@ -163,17 +166,17 @@ public class Configurations {
 	 * object that is not a Boolean.
 	 */
 	public Boolean getBoolean(String key, Boolean defaultValue) {
-		Object value = repository.get(key);
+		Object value = m_repository.get(key);
 
 		if (value instanceof Boolean) {
 			return (Boolean) value;
 		} else if (value instanceof String) {
 			Boolean b = new Boolean((String) value);
-			repository.put(key, b);
+			m_repository.put(key, b);
 			return b;
 		} else if (value == null) {
-			if (defaults != null) {
-				return defaults.getBoolean(key, defaultValue);
+			if (m_defaults != null) {
+				return m_defaults.getBoolean(key, defaultValue);
 			} else {
 				return defaultValue;
 			}
@@ -242,17 +245,17 @@ public class Configurations {
 	 * mapped by the key has not a valid number format.
 	 */
 	public Byte getByte(String key, Byte defaultValue) {
-		Object value = repository.get(key);
+		Object value = m_repository.get(key);
 
 		if (value instanceof Byte) {
 			return (Byte) value;
 		} else if (value instanceof String) {
 			Byte b = new Byte((String) value);
-			repository.put(key, b);
+			m_repository.put(key, b);
 			return b;
 		} else if (value == null) {
-			if (defaults != null) {
-				return defaults.getByte(key, defaultValue);
+			if (m_defaults != null) {
+				return m_defaults.getByte(key, defaultValue);
 			} else {
 				return defaultValue;
 			}
@@ -309,17 +312,17 @@ public class Configurations {
 	 * mapped by the key has not a valid number format.
 	 */
 	public Double getDouble(String key, Double defaultValue) {
-		Object value = repository.get(key);
+		Object value = m_repository.get(key);
 
 		if (value instanceof Double) {
 			return (Double) value;
 		} else if (value instanceof String) {
 			Double d = new Double((String) value);
-			repository.put(key, d);
+			m_repository.put(key, d);
 			return d;
 		} else if (value == null) {
-			if (defaults != null) {
-				return defaults.getDouble(key, defaultValue);
+			if (m_defaults != null) {
+				return m_defaults.getDouble(key, defaultValue);
 			} else {
 				return defaultValue;
 			}
@@ -376,17 +379,17 @@ public class Configurations {
 	 * mapped by the key has not a valid number format.
 	 */
 	public Float getFloat(String key, Float defaultValue) {
-		Object value = repository.get(key);
+		Object value = m_repository.get(key);
 
 		if (value instanceof Float) {
 			return (Float) value;
 		} else if (value instanceof String) {
 			Float f = new Float((String) value);
-			repository.put(key, f);
+			m_repository.put(key, f);
 			return f;
 		} else if (value == null) {
-			if (defaults != null) {
-				return defaults.getFloat(key, defaultValue);
+			if (m_defaults != null) {
+				return m_defaults.getFloat(key, defaultValue);
 			} else {
 				return defaultValue;
 			}
@@ -443,17 +446,17 @@ public class Configurations {
 	 * mapped by the key has not a valid number format.
 	 */
 	public Integer getInteger(String key, Integer defaultValue) {
-		Object value = repository.get(key);
+		Object value = m_repository.get(key);
 
 		if (value instanceof Integer) {
 			return (Integer) value;
 		} else if (value instanceof String) {
 			Integer i = new Integer((String) value);
-			repository.put(key, i);
+			m_repository.put(key, i);
 			return i;
 		} else if (value == null) {
-			if (defaults != null) {
-				return defaults.getInteger(key, defaultValue);
+			if (m_defaults != null) {
+				return m_defaults.getInteger(key, defaultValue);
 			} else {
 				return defaultValue;
 			}
@@ -462,13 +465,16 @@ public class Configurations {
 				+ " doesn't map to a Integer object");
 		}
 	}
+    
 	/**
 	 * Get the list of the keys contained in the
 	 * configuration repository.
+     * @return the list of the keys 
 	 */
 	public Enumeration getKeys() {
-		return this.repository.keys();
+		return this.m_repository.keys();
 	}
+    
 	/**
 	 * Get a list of strings associated with the
 	 * given configuration key.
@@ -481,6 +487,7 @@ public class Configurations {
 	public Enumeration getList(String key) {
 		return this.getVector(key, null).elements();
 	}
+    
 	/**
 	 * Get a long associated with the given configuration key.
 	 *
@@ -529,17 +536,17 @@ public class Configurations {
 	 * mapped by the key has not a valid number format.
 	 */
 	public Long getLong(String key, Long defaultValue) {
-		Object value = repository.get(key);
+		Object value = m_repository.get(key);
 
 		if (value instanceof Long) {
 			return (Long) value;
 		} else if (value instanceof String) {
 			Long l = new Long((String) value);
-			repository.put(key, l);
+			m_repository.put(key, l);
 			return l;
 		} else if (value == null) {
-			if (defaults != null) {
-				return defaults.getLong(key, defaultValue);
+			if (m_defaults != null) {
+				return m_defaults.getLong(key, defaultValue);
 			} else {
 				return defaultValue;
 			}
@@ -565,6 +572,7 @@ public class Configurations {
 	 * Get a list of properties associated with the given configuration key.
 	 *
 	 * @param key the configuration key.
+     * @param defaults the defaults
 	 * @return the associated properties if key is found
 	 * @throws ClassCastException is thrown if the key maps to an
 	 * object that is not a String/Vector
@@ -591,12 +599,16 @@ public class Configurations {
 
 	return props;
 	}
+    
 	/**
 	 * Get encapsulated configuration repository.
+     * 
+     * @return the encapsulated configuration repository
 	 */
 	public Hashtable getRepository() {
-		return this.repository;
+		return this.m_repository;
 	}
+    
 	/**
 	 * Get a short associated with the given configuration key.
 	 *
@@ -618,6 +630,7 @@ public class Configurations {
 				+ " doesn't map to an existing object");
 		}
 	}
+    
 	/**
 	 * Get a short associated with the given configuration key.
 	 *
@@ -631,17 +644,17 @@ public class Configurations {
 	 * mapped by the key has not a valid number format.
 	 */
 	public Short getShort(String key, Short defaultValue) {
-		Object value = repository.get(key);
+		Object value = m_repository.get(key);
 
 		if (value instanceof Short) {
 			return (Short) value;
 		} else if (value instanceof String) {
 			Short s = new Short((String) value);
-			repository.put(key, s);
+			m_repository.put(key, s);
 			return s;
 		} else if (value == null) {
-			if (defaults != null) {
-				return defaults.getShort(key, defaultValue);
+			if (m_defaults != null) {
+				return m_defaults.getShort(key, defaultValue);
 			} else {
 				return defaultValue;
 			}
@@ -650,6 +663,7 @@ public class Configurations {
 				+ " doesn't map to a Short object");
 		}
 	}
+    
 	/**
 	 * Get a short associated with the given configuration key.
 	 *
@@ -664,6 +678,7 @@ public class Configurations {
 	public short getShort(String key, short defaultValue) {
 		return this.getShort(key, new Short(defaultValue)).shortValue();
 	}
+    
 	/**
 	 * Get a string associated with the given configuration key.
 	 *
@@ -675,6 +690,7 @@ public class Configurations {
 	public String getString(String key) {
 		return this.getString(key, null);
 	}
+    
 	/**
 	 * Get a string associated with the given configuration key.
 	 *
@@ -686,13 +702,13 @@ public class Configurations {
 	 * object that is not a String.
 	 */
 	public String getString(String key, String defaultValue) {
-		Object value = repository.get(key);
+		Object value = m_repository.get(key);
 
 		if (value instanceof String) {
 			return (String) value;
 		} else if (value == null) {
-			if (defaults != null) {
-				return defaults.getString(key, defaultValue);
+			if (m_defaults != null) {
+				return m_defaults.getString(key, defaultValue);
 			} else {
 				return defaultValue;
 			}
@@ -701,6 +717,7 @@ public class Configurations {
 				+ " doesn't map to a String object");
 		}
 	}
+    
 	/**
 	 * Get an array of strings associated with the given configuration key.
 	 *
@@ -710,7 +727,7 @@ public class Configurations {
 	 * object that is not a String/Vector
 	 */
 	public String[] getStringArray(String key) {
-		Object value = repository.get(key);
+		Object value = m_repository.get(key);
 
 	// What's your vector, Victor?
 	Vector vector;
@@ -720,8 +737,8 @@ public class Configurations {
 		} else if (value instanceof Vector) {
 	  vector = (Vector)value;
 	} else if (value == null) {
-	  if (defaults != null) {
-		return defaults.getStringArray(key);
+	  if (m_defaults != null) {
+		return m_defaults.getStringArray(key);
 	  } else {
 		return new String[0];
 	  }
@@ -735,6 +752,7 @@ public class Configurations {
 
 	return tokens;
 	}
+    
 	/**
 	 * Get a Vector of strings associated with the
 	 * given configuration key.
@@ -747,6 +765,7 @@ public class Configurations {
 	public Vector getVector(String key) {
 		return this.getVector(key, null);
 	}
+    
 	/**
 	 * Get a Vector of strings associated with the
 	 * given configuration key.
@@ -758,18 +777,18 @@ public class Configurations {
 	 * object that is not a Vector.
 	 */
 	public Vector getVector(String key, Vector defaultValue) {
-		Object value = repository.get(key);
+		Object value = m_repository.get(key);
 
 		if (value instanceof Vector) {
 			return (Vector) value;
 		} else if (value instanceof String) {
 			Vector v = new Vector(1);
 			v.addElement((String) value);
-			repository.put(key, v);
+			m_repository.put(key, v);
 			return v;
 		} else if (value == null) {
-			if (defaults != null) {
-				return defaults.getVector(key, defaultValue);
+			if (m_defaults != null) {
+				return m_defaults.getVector(key, defaultValue);
 			} else {
 				return ((defaultValue == null)
 					? new Vector() : defaultValue);

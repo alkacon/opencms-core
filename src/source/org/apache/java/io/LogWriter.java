@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/source/org/apache/java/io/Attic/LogWriter.java,v $
-* Date   : $Date: 2003/01/20 17:56:43 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/06/13 10:56:35 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -104,11 +104,11 @@ import source.org.apache.java.util.*;
  *
  * @author <a href="mailto:stefano@apache.org">Stefano Mazzocchi</a>
  * @author <a href="mailto:vt@freehold.crocodile.org">Vadim Tkachenko</a>
- * @version $Revision: 1.7 $ $Date: 2003/01/20 17:56:43 $
+ * @version $Revision: 1.8 $ $Date: 2003/06/13 10:56:35 $
  */
 
 public class LogWriter 
-  implements Logger {
+  implements I_Logger {
 
     /**
      * This string identifies this log writer and its used to
@@ -156,12 +156,12 @@ public class LogWriter
     /**
      * Configuration parameters.
      */
-    public Configurations configurations;
+    public Configurations m_configurations;
 
     /**
      * Tells if this log is active
      */
-    public boolean active = false;
+    public boolean m_active = false;
 
     /**
      * Maximum age of a queued log record, in milliseconds.
@@ -174,7 +174,7 @@ public class LogWriter
      * <p>
      * Default is hardcoded to 5000 ms.
      */
-    public long queue_maxage;
+    public long m_queueMaxage;
 
     /**   
      * Maximum size of a log queue.
@@ -187,30 +187,30 @@ public class LogWriter
      *
      * Default is 1000.
      */
-    protected long queue_maxsize;
+    protected long m_queueMaxsize;
 
     /**
      * This string identifies this log writer and its used to
      * discriminate between configuration parameters.
      */
-    private String identifier;
+    private String m_identifier;
 
     /**
      * Tells if the log message should be started by a time stamp.
      * Default is false.
      */
-    public boolean timestamp;
+    public boolean m_timestamp;
 
     /**
      * Tells if the log message should contain the current memory state.
      * Default is false.
      */
-    private boolean memory;
+    private boolean m_memory;
         
     /**
      * The timestamp formatter.
      */
-    public SimpleDateFormat formatter;
+    public SimpleDateFormat m_formatter;
 
     /**
      * Format of the channels.
@@ -226,18 +226,18 @@ public class LogWriter
     /**
      * The writer encapsulated.
      */
-    public PrintWriter writer;
+    public PrintWriter m_writer;
 
     /**
      * Background logger thread.
      */
-    public Agent logDaemon;
+    public Agent m_logDaemon;
     
     /**
      * Tells if the log message should contain a channel.
      * Default is false.
      */
-    public  boolean logChannel;
+    public  boolean m_logChannel;
     
     /**
      * Log message queue.
@@ -245,7 +245,7 @@ public class LogWriter
      * Supposed to keep the messages until they get processed by the
      * background logger thread.
      */
-    protected SimpleQueue logQueue = new SimpleQueue();
+    protected SimpleQueue m_logQueue = new SimpleQueue();
 
     /**
      * Class implementing the background logging.
@@ -262,10 +262,10 @@ public class LogWriter
 
             while (true) {
                 try {
-                    LogRecord lr = (LogRecord) logQueue.waitObject();
+                    LogRecord lr = (LogRecord) m_logQueue.waitObject();
                     write(lr);
                     
-                    if ((System.currentTimeMillis() - lr.date) > queue_maxage) {
+                    if ((System.currentTimeMillis() - lr.m_date) > m_queueMaxage) {
                     
                         Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
                         
@@ -275,7 +275,7 @@ public class LogWriter
                         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
                     }
                 } catch (InterruptedException iex) {
-                    if (!logQueue.isEmpty()) {
+                    if (!m_logQueue.isEmpty()) {
                         write(new LogRecord(CH_EXCEPTION_TRACING, "Logger thread interrupted, flushing...", iex));
                         flush();
                         write(new LogRecord(CH_EXCEPTION_TRACING, "Flushed, logging stopped.", null));
@@ -287,30 +287,32 @@ public class LogWriter
 
         /**
          * Write the log record on the log stream.
+         * 
+         * @param lr the record to log
          */
         public synchronized void write(LogRecord lr) {
-            if (isActive(lr.channel)) {
-                if (timestamp) {
-                    writer.print(formatter.format(new Date(lr.date)));
+            if (isActive(lr.m_channel)) {
+                if (m_timestamp) {
+                    m_writer.print(m_formatter.format(new Date(lr.m_date)));
                 }
                 
-                if (logChannel && lr.channel!=null) {
-                    writer.print(m_channelStart);
-                    writer.print(lr.channel);
-                    writer.print(m_channelEnd);
+                if (m_logChannel && lr.m_channel!=null) {
+                    m_writer.print(m_channelStart);
+                    m_writer.print(lr.m_channel);
+                    m_writer.print(m_channelEnd);
                 }
                 
-                writer.print(m_channelSeperator);
+                m_writer.print(m_channelSeperator);
 
-                if (lr.message != null) {
-                    writer.println(lr.message);
+                if (lr.m_message != null) {
+                    m_writer.println(lr.m_message);
                 }
 
-                if (lr.t != null) {
-                    lr.t.printStackTrace(writer);
+                if (lr.m_t != null) {
+                    lr.m_t.printStackTrace(m_writer);
                 }
 
-                writer.flush();
+                m_writer.flush();
             }
         }
 
@@ -322,34 +324,39 @@ public class LogWriter
             // Double locking to prevent the NullPointerException starting
             // to happen quite a lot as the priorities grow.
             
-            while (!logQueue.isEmpty()) {
-                LogRecord next = (LogRecord) logQueue.get();
+            while (!m_logQueue.isEmpty()) {
+                LogRecord next = (LogRecord) m_logQueue.get();
                 if (next != null) write(next);
             }
         }
     }
+    
     /**
      * Constructs this class with the output stream to encapsulate.
      * The log identifier is used to discriminate between configuration
      * parameters.
      *
-     * @param   output        the output stream to encapsulate.
-     * @param   identifier    the identifier for this log writer.
-     * @param   configurations    the configurations needed at initialization.
+     * @param   output        the output stream to encapsulate
+     * @param   identifier    the identifier for this log writer
+     * @param   configurations    the configurations needed at initialization
+     * @throws IOException if something goes wrong
      */
     public LogWriter (OutputStream output, String identifier, Configurations configurations) throws IOException {
         this(new BufferedWriter(new OutputStreamWriter(output)), identifier, configurations);
     }
+    
     /**
      * Constructs this class with the output stream to encapsulate using
      * default identifier.
      *
      * @param   output        the output stream to encapsulate.
      * @param   configurations    the configurations needed at initialization.
+     * @throws IOException if something goes wrong
      */
     public LogWriter (OutputStream output, Configurations configurations) throws IOException {
         this(new BufferedWriter(new OutputStreamWriter(output)), DEFAULT_IDENTIFIER, configurations);
     }
+    
     /**
      * Constructs this class with the output writer to encapsulate.
      * The log identifier is used to discriminate between configuration
@@ -358,22 +365,23 @@ public class LogWriter
      * @param   output        the output writer to encapsulate.
      * @param   identifier    the identifier for this log writer.
      * @param   configurations    the configurations needed at initialization.
+     * @throws IOException if something goes wrong
      */
     public LogWriter (Writer output, String identifier, Configurations configurations) throws IOException {
         if (configurations == null) {
             return;
         } else {
-            this.configurations = configurations;
+            this.m_configurations = configurations;
         }
 
         if (identifier == null) {
-            this.identifier = DEFAULT_IDENTIFIER;
+            this.m_identifier = DEFAULT_IDENTIFIER;
         } else {
-            this.identifier = identifier;
+            this.m_identifier = identifier;
         }
 
-        this.active = configurations.getBoolean(identifier, false);
-        this.logChannel = configurations.getBoolean(identifier+"."+KEYWORD_CHANNEL, false);
+        this.m_active = configurations.getBoolean(identifier, false);
+        this.m_logChannel = configurations.getBoolean(identifier+"."+KEYWORD_CHANNEL, false);
         
         this.m_channelSeperator = configurations.getString(identifier + "." + C_KEYWORD_SEPERATOR, C_DEFAULT_SEPERATOR);
         if (m_channelSeperator == null) m_channelSeperator = "";
@@ -388,7 +396,7 @@ public class LogWriter
         m_channelStart = m_channelSeperator + channelStamp.substring(0, pos);
         m_channelEnd = channelStamp.substring(pos + C_TOKEN_CHANNELFORMAT.length());
         
-        if (active) {
+        if (m_active) {
             if ((output == null)) {
                 String logFileName = configurations.getString(identifier + "." + KEYWORD_FILE);
                 if (logFileName == null) {
@@ -410,75 +418,82 @@ public class LogWriter
                         File parent = new File(file.getParent());
                         if (!parent.canWrite()) {
                             throw new IOException("Directory not writable: "
-                                + parent.getAbsolutePath() );
+                                + parent.getAbsolutePath());
                         }
                     } catch (NullPointerException e) {
                         // This means that the file doesn't have a parent.
                     }
                 }
 
-                this.writer = new PrintWriter(new FileWriter(file.getAbsolutePath(), true));
+                this.m_writer = new PrintWriter(new FileWriter(file.getAbsolutePath(), true));
             } else {
-                this.writer = new PrintWriter(output);
+                this.m_writer = new PrintWriter(output);
             }
 
-            this.timestamp = configurations.getBoolean(identifier + "." + KEYWORD_TIMESTAMP, false);
-            if (timestamp) {
+            this.m_timestamp = configurations.getBoolean(identifier + "." + KEYWORD_TIMESTAMP, false);
+            if (m_timestamp) {
                 String dateFormat = configurations.getString(identifier + "." + KEYWORD_DATEFORMAT, DEFAULT_DATEFORMAT);
-                formatter = new SimpleDateFormat(dateFormat);
+                m_formatter = new SimpleDateFormat(dateFormat);
                 /*
                  * This is a workaround for the bug in SimpleDateFormat that
                  * doesn't use TimeZone.getDefault() when constructing
                  * its format. They use an hard coded PST.
                  */
-                formatter.setTimeZone(TimeZone.getDefault());
+                m_formatter.setTimeZone(TimeZone.getDefault());
             }
 
-            this.memory = configurations.getBoolean(identifier + "." + KEYWORD_MEMORY, false);            
+            this.m_memory = configurations.getBoolean(identifier + "." + KEYWORD_MEMORY, false);            
             
-            this.queue_maxage = configurations.getInteger(KEYWORD_QUEUE_MAXAGE, 5000);
-            this.queue_maxsize = configurations.getInteger(KEYWORD_QUEUE_MAXSIZE, 10000);
+            this.m_queueMaxage = configurations.getInteger(KEYWORD_QUEUE_MAXAGE, 5000);
+            this.m_queueMaxsize = configurations.getInteger(KEYWORD_QUEUE_MAXSIZE, 10000);
 
-            this.logDaemon = new Agent();
-            this.logDaemon.setDaemon(true);
-            this.logDaemon.start();
+            this.m_logDaemon = new Agent();
+            this.m_logDaemon.setDaemon(true);
+            this.m_logDaemon.start();
         }
     }
+    
     /**
      * Constructs this class with the output writer to encapsulate using
      * default identifier.
      *
-     * @param   output        the output writer to encapsulate.
-     * @param   configurations    the configurations needed at initialization.
+     * @param   output        the output writer to encapsulate
+     * @param   configurations    the configurations needed at initialization
+     * @throws IOException if something goes wrong
      */
     public LogWriter (Writer output, Configurations configurations) throws IOException {
         this(output, DEFAULT_IDENTIFIER, configurations);
     }
+    
     /**
      * Constructs this class using identifier to discriminate between
      * configuration parameters and gets output file from configurations.
      *
-     * @param   identifier    the identifier for this log writer.
-     * @param   configurations    the configurations needed at initialization.
+     * @param   identifier    the identifier for this log writer
+     * @param   configurations    the configurations needed at initialization
+     * @throws IOException if something goes wrong
      */
     public LogWriter (String identifier, Configurations configurations) throws IOException {
         this((Writer) null, identifier, configurations);
     }
+    
     /**
      * Constructs this class and gets output file from configurations.
      *
-     * @param   configurations    the configurations needed at initialization.
+     * @param   configurations    the configurations needed at initialization
+     * @throws IOException if something goes wrong
      */
     public LogWriter (Configurations configurations) throws IOException {
         this((Writer) null, DEFAULT_IDENTIFIER, configurations);
     }
+    
     /**
      * Flush the log.
      *
      * Write any pending messages into the log media.
      */
     public void flush() {
-        if (logDaemon != null) {
+        if (m_logDaemon != null) {
             
             // It would be a very bad idea to make the unfortunate thread
             // which triggered the queue overflow condition suffer, so
@@ -488,33 +503,46 @@ public class LogWriter
             Runnable plumber = new Runnable() {
                 public void run() {
                     Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-                    logDaemon.flush();
+                    m_logDaemon.flush();
                 }
             };
             
             (new Thread(plumber)).start();
         }
     }
-    public String getMem() 
-    {
+    
+    /**
+     * Returns the free memory on the server 
+     * 
+     * @return the free memory on the server 
+     */
+    public String getMem() {
         long total=Runtime.getRuntime().totalMemory()/1024;
         long free=Runtime.getRuntime().freeMemory()/1024;
         return ("["+total
                 +"/"+free
                 +"/"+(total-free)+"]");
     }
+    
     /**
      * Tells if it is active.
+     * 
+     * @return true if it is active
      */
-    public boolean isActive() { return active; }
+    public boolean isActive() { 
+        return m_active; 
+    }
+    
     /**
-     * Tells if the given channel is active.
+     * Tells if the given channel is active
      *
-     * @param  channel  the channel to test.
+     * @param  channel  the channel to test
+     * @return true if the given channel is active
      */
     public boolean isActive(String channel) {
-        return ((channel != null) && (configurations.getBoolean(identifier + "." + KEYWORD_CHANNEL + "." + channel, false)));
+        return ((channel != null) && (m_configurations.getBoolean(m_identifier + "." + KEYWORD_CHANNEL + "." + channel, false)));
     }
+    
     /**
      * Prints the log message on the right channel.
      * <p>
@@ -525,41 +553,37 @@ public class LogWriter
      * the message is not written.
      *
      * @param   channel       the channel to put the message on.
-     * @param   name          the message to log.
+     * @param   message       the message to log.
      */
     public void log(String channel, String message) {
-        if (active) {
+        if (m_active) {
             String mem = "";
-            if (memory) {
+            if (m_memory) {
                 mem = getMem();
             }
                 
-            this.logQueue.put(new LogRecord(channel,mem+message, null));
+            this.m_logQueue.put(new LogRecord(channel,mem+message, null));
 
-            if (this.logQueue.size() > queue_maxsize) {
-                this.logQueue.put(new LogRecord(CH_QUEUE_STATUS, "Log queue size limit exceeded", null));
+            if (this.m_logQueue.size() > m_queueMaxsize) {
+                this.m_logQueue.put(new LogRecord(CH_QUEUE_STATUS, "Log queue size limit exceeded", null));
                 flush();
             }
         }
     }
+    
     /**
      * Prints the error message and stack trace if channel enabled.
      *
-     * @param t the error thrown.
+     * @param   channel       the channel to put the message on.
+     * @param t the error thrown
      */
     public void log(String channel, Throwable t) {
-        if (active) {
-            this.logQueue.put(new LogRecord(channel == null? CH_EXCEPTION_TRACING : channel, null, t));
-            if ( this.logQueue.size() > queue_maxsize ) {
-                this.logQueue.put(new LogRecord(CH_QUEUE_STATUS, "Log queue size limit exceeded", null));
+        if (m_active) {
+            this.m_logQueue.put(new LogRecord(channel == null? CH_EXCEPTION_TRACING : channel, null, t));
+            if (this.m_logQueue.size() > m_queueMaxsize) {
+                this.m_logQueue.put(new LogRecord(CH_QUEUE_STATUS, "Log queue size limit exceeded", null));
                 flush();
             }
         }
-    }
-   /**
-    * @deprecated
-    */
-    public void log(Throwable t) {
-        log(null, t);
     }
 }

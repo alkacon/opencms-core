@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsLog.java,v $
-* Date   : $Date: 2003/06/13 10:04:21 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/06/13 10:56:35 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
 
 package com.opencms.boot;
 
-import source.org.apache.java.io.Logger;
+import source.org.apache.java.io.I_Logger;
 import source.org.apache.java.io.LogWriter;
 import source.org.apache.java.util.Configurations;
 import java.io.*;
@@ -39,9 +39,9 @@ import java.io.*;
  * (de)activated by the log settings in the proerty file.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2003/06/13 10:04:21 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/13 10:56:35 $
  */
-public class CmsLog implements Logger {
+public class CmsLog implements I_Logger {
 
     /** The internal m_logger */
     private LogWriter m_logger = null;
@@ -54,7 +54,7 @@ public class CmsLog implements Logger {
         m_logger = null;
         try {
             m_logger = new LogWriter(identifier, confs);
-            m_active = m_logger.active;
+            m_active = m_logger.m_active;
         }
         catch(IOException e) {
             e.printStackTrace();
@@ -75,7 +75,7 @@ public class CmsLog implements Logger {
      * @return <code>true</code> the log is active, <code>false</code> otherwise.
      */
     public boolean isActive() {
-        return (m_logger != null) ? m_logger.active : false;
+        return (m_logger != null) ? m_logger.m_active : false;
     }
 
     /**

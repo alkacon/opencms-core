@@ -64,7 +64,7 @@ package source.org.apache.java.io;
  * <li>Name of the thread which issued the log message.
  * <li>Name of the object on whose behalf the message was issued.
  * </ul>
- * @version $Revision: 1.3 $ $Date: 2003/01/20 23:59:32 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/13 10:56:35 $
  * @author <a href="mailto:vt@freehold.crocodile.org">Vadim Tkachenko</a>
  */
 
@@ -73,23 +73,23 @@ public class LogRecord {
 	/**
 	 * Creation time.
 	 */
-	public long date;
+	public long m_date;
 
 	/**
 	 * Log channel.
 	 * To be used in the log filters.
 	 */
-	public String channel;
+	public String m_channel;
 
 	/**
 	 * Message to log, if any.
 	 */
-	 public String message;
+	 public String m_message;
 
 	/**
 	 * Exception to log, if any.
 	 */
-	public Throwable t;
+	public Throwable m_t;
 
 	/**
 	 * Constructor.
@@ -101,10 +101,8 @@ public class LogRecord {
 	 * <li>Stores the exception, if any.
 	 * </ul>
 	 * @param t Owner thread
-	 * @param target Owner object
-	 * @param ll Log Level
-	 * @param message Message to log
-	 * @see source.org.apache.java.io.LogWriter
+     * @param channel the channel to put the message on
+     * @param message the message to log
 	 */
 	public LogRecord(String channel, String message, Throwable t) {
 
@@ -112,9 +110,9 @@ public class LogRecord {
 		//  You can do whatever you want with it later, in the logging
 		//  thread.
 
-		date = System.currentTimeMillis();
-		this.channel = channel;
-		this.message = message;
-		this.t = t;
+		m_date = System.currentTimeMillis();
+		this.m_channel = channel;
+		this.m_message = message;
+		this.m_t = t;
 	}
 }

@@ -69,7 +69,7 @@ import java.util.*;
  * a sequence of strings.
  *
  * @author <a href="mailto:stefano@apache.org">Stefano Mazzocchi</a>
- * @version $Revision: 1.2 $ $Date: 2000/08/08 14:01:44 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/13 10:56:35 $
  */
 public abstract class ConfigurationsRepository extends Hashtable {
 
@@ -77,13 +77,13 @@ public abstract class ConfigurationsRepository extends Hashtable {
 	 * The file connected to this repository (holding comments and such)
 	 * @serial 
 	 */
-	protected String file;
+	protected String m_file;
 	
 	/**
 	 * The file that contains the model of this repository
 	 * @serial
 	 */
-	protected String model;
+	protected String m_model;
 
 	/**
 	 * Creates an empty configuration repository.
@@ -91,23 +91,43 @@ public abstract class ConfigurationsRepository extends Hashtable {
 	public ConfigurationsRepository() {
 		super();
 	}
+    
 	/**
 	 * Creates a configuration repository parsing given file.
+     * @param file the file
+     * @throws IOException if something goes wrong
 	 */
 	public ConfigurationsRepository(String file) throws IOException {
 		this(file, null);
 	}
+    
 	/**
 	 * Creates a configuration repository parsing given file and
 	 * using given model.
+     * @param file the file
+     * @param model the model
+     * @throws IOException if something goes wrong
 	 */
 	public ConfigurationsRepository(String file, String model)
 			throws IOException {
 		super();
-		this.file = file;
-		this.model = model;
+		this.m_file = file;
+		this.m_model = model;
 		this.load(new FileInputStream(file));
 	}
+    
+    /**
+     * Loads from an input stream.<p>
+     * @param input the stream to load from
+     * @throws IOException if something goes wrong
+     */
 	public abstract void load(InputStream input) throws IOException;
+    
+    /**
+     * Saves to an input stream.<p>
+     * @param output the stream to save to
+     * @param Header the header
+     * @throws IOException if something goes wrong
+     */
 	public abstract void save(OutputStream output, String Header) throws IOException;
 }
