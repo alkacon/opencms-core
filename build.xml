@@ -1,82 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <project name="OpenCms" default="compile" basedir=".">
 
-    <property environment="env"/>
-
-    <!-- The version-number ${version.number} is automatically set to the
-    current date and time. For official builds this should be set to a proper
-    value at the command line.
-    Set it like this: ant all -Dversion.number=5.0.0   
-    You can also uncomment the line below. -->
-    <property name="version.number"             value="5.1.11"/>
+    <property name="version.number"             		value="5.1.11" />    
+    <property name="version.name"               		value="Salusa Secundus" />
     
-    <property name="version.name"               value="Salusa Secundus"/>
-    <property name="app.name"                   value="opencms"/>
-
-    <property name="destdir"                    location="../"/>
-        
-    <property name="zip.home"                   location="${destdir}/zip"/>
-    <property name="build.home"                 location="${destdir}/build"/>
+	<property name="app.name" 							value="opencms" />
     
-    <property name="build.classes"              location="${build.home}/classes"/>
-    <property name="build.inputlib"             location="web/lib"/>
-    <property name="build.externlib"            location="${destdir}/lib"/>
-    <property name="build.web"                  location="${build.home}/${app.name}"/>
-    <property name="build.webinf"               location="${build.web}/WEB-INF"/>
-    <property name="build.metainf"              location="${build.web}/META-INF"/>
-    <property name="build.lib"                  location="${build.webinf}/lib"/>
-    <property name="build.local"                location="${destdir}/local"/>
+    <property name="opencms.input" 						location="${basedir}" />
+    <property name="opencms.output"						location="${basedir}/../" />    	
 
-    <property name="build.inputlib.servlet"     value="${build.inputlib}/servlet.jar"/>
-    <property name="build.inputlib.activation"  value="${build.inputlib}/activation.jar"/>
-    <property name="build.inputlib.mail"        value="${build.inputlib}/mail.jar"/>
-    <property name="build.inputlib.xerces"      value="${build.inputlib}/xerces-1_4_4.jar"/>
-    <property name="build.inputlib.mysql"       value="${build.inputlib}/mysql-connector-java-3.0.7-stable-bin.jar"/>          
-    <property name="build.inputlib.oro"         value="${build.inputlib}/jakarta-oro-2_0_6.jar"/>
-    <property name="build.inputlib.tidy"        value="${build.inputlib}/tidy.jar"/>
-    <property name="build.inputlib.uuid"        value="${build.inputlib}/jug.jar"/>
-    <property name="build.inputlib.dbcp"        value="${build.inputlib}/commons-dbcp.jar"/>
-    <property name="build.inputlib.pool"        value="${build.inputlib}/commons-pool.jar"/>    
+    <property name="opencms.output.classes"             location="${opencms.output}/build/classes-core" />
+    <property name="opencms.output.jars"                location="${opencms.output}/build/jars-core" />
+    <property name="opencms.output.warfiles"            location="${opencms.output}/build/${app.name}" />
+    <property name="opencms.output.distfiles"           location="${opencms.output}/zip" />    
 
-    <property name="build.inputlib.oracle"      value="${build.externlib}/classes12.zip"/>
-    <property name="build.inputlib.oracle9"		value="${build.externlib}/ojdbc14.jar"/>  
+    <property name="opencms.input.warfiles"            	location="${opencms.input}/webapp" />
+    <property name="opencms.input.libs" 				location="${opencms.input.warfiles}/WEB-INF/lib" />
+    <property name="opencms.input.externlibs" 			location="${opencms.output}/lib" />
         
-    <property name="build.version.propertyfile" value="${build.classes}/com/opencms/core/version.properties"/>
-    <property name="build.version.jsfile"       value="${build.webinf}/ocsetup/vfs/system/login/version.js"/>
-    <property name="build.version.setupfile"    value="${build.web}/ocsetup/versions.txt"/>
+    <property name="opencms.inputlib.servlet"     		location="${opencms.input.libs}/servlet.jar" />
+    <property name="opencms.inputlib.activation"  		location="${opencms.input.libs}/activation.jar" />
+    <property name="opencms.inputlib.mail"        		location="${opencms.input.libs}/mail.jar" />
+    <property name="opencms.inputlib.xerces"      		location="${opencms.input.libs}/xerces-1_4_4.jar" />
+    <property name="opencms.inputlib.mysql"       		location="${opencms.input.libs}/mysql-connector-java-3.0.7-stable-bin.jar" />
+    <property name="opencms.inputlib.oro"         		location="${opencms.input.libs}/jakarta-oro-2_0_6.jar" />
+    <property name="opencms.inputlib.tidy"        		location="${opencms.input.libs}/tidy.jar" />
+    <property name="opencms.inputlib.uuid"        		location="${opencms.input.libs}/jug.jar" />
+    <property name="opencms.inputlib.dbcp"        		location="${opencms.input.libs}/commons-dbcp.jar" />
+    <property name="opencms.inputlib.pool"        		location="${opencms.input.libs}/commons-pool.jar" />    
+    <property name="opencms.inputlib.logging"     		location="${opencms.input.libs}/commons-logging.jar" /> 
+    <property name="opencms.inputlib.oracle"      		location="${opencms.input.externlibs}/ojdbc14.jar" /> 
+ 
+	<property name="drivers.vfs"						value="db" />
+	<property name="drivers.project"					value="db" />
+	<property name="drivers.user"						value="db" />
+	<property name="drivers.workflow"					value="db" />
+	<property name="drivers.backup"						value="db" />
 
-    <property name="build.tmpexcludes"          value=""/>
-    <property name="excludes"                   value="**/CVS/*,**/.nbattrs,**/.project,**/.classpath"/>
-        
+    <property name="excludes"                   		value="**/CVS/*,**/.nbattrs,**/.project,**/.classpath" />
+    
+    <property environment="env" />
+
     <target name="init" 
     	description="Checks if all required libraries are available">
     	
         <condition property="libsAvailable">
             <and>
-                <available file="${build.inputlib.servlet}"/>
-                <available file="${build.inputlib.activation}"/>
-                <available file="${build.inputlib.mail}"/>
-                <available file="${build.inputlib.xerces}"/>
-                <available file="${build.inputlib.mysql}"/>
-                <available file="${build.inputlib.oro}"/>
-                <available file="${build.inputlib.tidy}"/>
-                <available file="${build.inputlib.uuid}"/>                
-                <available file="${build.inputlib.pool}"/> 
-                <available file="${build.inputlib.dbcp}"/> 
+                <available file="${opencms.inputlib.servlet}"/>
+                <available file="${opencms.inputlib.activation}"/>
+                <available file="${opencms.inputlib.mail}"/>
+                <available file="${opencms.inputlib.xerces}"/>
+                <available file="${opencms.inputlib.mysql}"/>
+                <available file="${opencms.inputlib.oro}"/>
+                <available file="${opencms.inputlib.tidy}"/>
+                <available file="${opencms.inputlib.uuid}"/>                
+                <available file="${opencms.inputlib.pool}"/> 
+                <available file="${opencms.inputlib.logging}"/> 
+                <available file="${opencms.inputlib.dbcp}"/> 
             </and>
         </condition>
-        
+
         <condition property="build.excludes" value="org/opencms/db/oracle/**">
-            <not><or>
-            	<available file="${build.inputlib.oracle}"/>
-            	<available file="${build.inputlib.oracle9}"/>
-            </or></not>
+            <not>
+            	<available file="${opencms.inputlib.oracle}"/>
+            </not>
         </condition>           
         
         <condition property="build.excludes" value="">
             <or>
-            	<available file="${build.inputlib.oracle}"/>
-            	<available file="${build.inputlib.oracle9}"/>
+            	<available file="${opencms.inputlib.oracle}"/>
            	</or>
         </condition> 
         
@@ -95,214 +88,214 @@
         
         <echo message="Building OpenCms ${version.number} (${version.name})" />
         <echo message=" " />
-        <echo message="Working directory is: ${basedir}" />
-        <echo message="Destination directory is: ${destdir}" />
-        <echo message="Local additions in: ${build.local}" />
+        <echo message="OpenCms input directory is: ${opencms.input}" />
+        <echo message="OpenCms output directory is: ${opencms.output}" />
+        <echo message="Java version detected: ${ant.java.version}"/>
         <echo message="Tomcat home is: ${tomcat.home}" />        
         <echo message="Excluding from build: ${build.excludes}" />
-        <echo message=" " />
     </target>
     
     
-    <target name="initmsg" depends="init" unless="libsAvailable" 
-    	description="Stop target if libraries required for compilation are missing">
+    <target name="checklibs" 
+    	depends="init" unless="libsAvailable" description="Stop target if libraries required for compilation are missing">
     	
         <fail>
         
 Error: Some of the required libraries are not available.
 
 To comile OpenCms, you need the following libaries:
-${build.inputlib.servlet}
-${build.inputlib.activation}
-${build.inputlib.mail}
-${build.inputlib.xerces}
-${build.inputlib.mysql}
-${build.inputlib.oro}
-${build.inputlib.tidy}
-${build.inputlib.uuid}
-${build.inputlib.pool}
-${build.inputlib.dbcp}
+${opencms.inputlib.servlet}
+${opencms.inputlib.activation}
+${opencms.inputlib.mail}
+${opencms.inputlib.xerces}
+${opencms.inputlib.mysql}
+${opencms.inputlib.oro}
+${opencms.inputlib.tidy}
+${opencms.inputlib.uuid}
+${opencms.inputlib.pool}
+${opencms.inputlib.logging}
+${opencms.inputlib.dbcp}
 
         </fail>
-    </target>
-
-
-    <target name="prepare" depends="initmsg" 
-    	description="Create required output directories">
-    	
-        <mkdir dir="${build.classes}"/>
-        <mkdir dir="${build.home}"/>
-        <mkdir dir="${build.lib}"/>
-        <mkdir dir="${zip.home}"/>      
     </target>
 
 
     <target name="clean" 
     	description="Delete existing ouput directories">
     	
-        <delete dir="${build.home}"/>
+        <delete dir="${opencms.output.classes}" />
+        <delete dir="${opencms.output.jars}" />
+        <delete dir="${opencms.output.warfiles}" />
+        <delete dir="${opencms.output}/build" />
     </target>
-
-    <target name="cleanclasses" 
-    	description="Delete existing class directory (for full recompile)">
-        <delete dir="${build.classes}"/>
-    </target>        
-
-
-    <target name="compileclasses" depends="prepare" if="libsAvailable" 
-    	description="Compile the OpenCms classes">
+    
+    		
+    <target name="compile" 
+    	depends="checklibs" if="libsAvailable" description="Compile the OpenCms classes">
     	
-       <javac
-            srcdir="src"
-            destdir="${build.classes}"
+        <mkdir dir="${opencms.output.classes}" />    	
+    	
+        <uptodate property="classesUpToDate" targetfile="${opencms.output.jars}/opencms.jar">
+        	<srcfiles dir= "${opencms.input}/src" includes="**/*.java" excludes="${build.excludes},${excludes}"/>
+        	<srcfiles dir= "${opencms.input}/src" includes="**/*.properties,**/*.txt" excludes="${excludes}" />
+        </uptodate>
+            	
+       	<javac
+            srcdir="${opencms.input}/src"
+            destdir="${opencms.output.classes}"
             excludes="${build.excludes}"
-            classpath=" ${build.inputlib.servlet}:
-                        ${build.inputlib.activation}:
-                        ${build.inputlib.mail}:
-                        ${build.inputlib.xerces}:
-                        ${build.inputlib.oracle}:
-                        ${build.inputlib.oracle9}:
-                        ${build.inputlib.mysql}:
-                        ${build.inputlib.oro}:
-                        ${build.inputlib.tidy}:
-                        ${build.inputlib.dbcp}:
-                        ${build.inputlib.pool}:
-                        ${build.inputlib.uuid}"
+            classpath="${opencms.inputlib.servlet}:
+                       ${opencms.inputlib.activation}:
+                       ${opencms.inputlib.mail}:
+                       ${opencms.inputlib.xerces}:
+                       ${opencms.inputlib.oracle}:
+                       ${opencms.inputlib.oracle9}:
+                       ${opencms.inputlib.mysql}:
+                       ${opencms.inputlib.oro}:
+                       ${opencms.inputlib.tidy}:
+                       ${opencms.inputlib.dbcp}:
+                       ${opencms.inputlib.pool}:
+                       ${opencms.inputlib.logging}:
+                       ${opencms.inputlib.uuid}"
             debug="on"
             optimize="on"
-            deprecation="off"
-            />
-
-        <copy todir="${build.classes}">
-            <fileset dir="src" includes="**/*.properties,**/*.txt" excludes="${excludes}"/>
-        </copy>
-        <!-- generate version infos-->
-        <echo file="${build.version.propertyfile}">version.number=${version.number}
-</echo>
-        <echo file="${build.version.propertyfile}" append="on">version.name=${version.name}</echo>
+            deprecation="on" />
+		
+        <copy todir="${opencms.output.classes}">
+            <fileset dir="${opencms.input}/src" includes="**/*.properties,**/*.txt" excludes="${excludes}"/>
+        </copy>              
+                
+        <antcall target="versioninfo" />        
     </target>
-    
 
-    <target name="jar" depends="compileclasses" 
-    	description="Generate the OpenCms .jar files">
+    
+    <target name="versioninfo" 
+    	unless="classesUpToDate" description="Generate version information files">
+
+        <echo file="${opencms.output.classes}/com/opencms/core/version.properties">
+version.number=${version.number}
+version.name=${version.name}
+		</echo>
+
+       	<echo file="${opencms.output.classes}/version.js">var version = '${version.number} ${version.name}';
+		</echo>
+
+		<copy 
+			file="${opencms.input.warfiles}/setup/versions.txt" 
+			todir="${opencms.output.classes}" overwrite="true">			
+    		<filterset>
+      			<filter token="OPENCMS_VERSION" value="OpenCms ${version.number}"/>
+    		</filterset>			
+		</copy>
+       	
+	   	<copy 
+	   		file="${opencms.input.warfiles}/WEB-INF/config/opencms.properties" 
+	   		todir="${opencms.output.classes}" overwrite="true">	   		
+    		<filterset>
+      			<filter token="DRIVERS_VFS" value="${drivers.vfs}"/>
+      			<filter token="DRIVERS_PROJECT" value="${drivers.project}"/>
+      			<filter token="DRIVERS_USER" value="${drivers.user}"/>
+      			<filter token="DRIVERS_WORKFLOW" value="${drivers.workflow}"/>
+      			<filter token="DRIVERS_BACKUP" value="${drivers.backup}"/>
+    		</filterset>	   		
+	   	</copy>       	  
+    </target>
+    		    
+    		    
+    <target name="jar" 
+    	depends="compile" description="Generate the OpenCms .jar files">
     	
+        <mkdir dir="${opencms.output.jars}" />
+            	
         <jar
-            jarfile="${build.lib}/opencms.jar"
-            basedir="${build.classes}"
+            jarfile="${opencms.output.jars}/opencms.jar"
+            basedir="${opencms.output.classes}"
             includes="org/opencms/**,com/opencms/**,source/**"
-            excludes="com/opencms/build/**"
-            >            
-            <metainf dir="etc" includes="opencms.tld"/>
-        </jar>            
-    </target>
-
-
-    <target name="copy" depends="jar" 
-    	description="Creates OpenCms .war file structure and copies required files to it">
-    	
-       <copy todir="${build.home}">
-            <fileset dir="." includes="*.*" excludes="build.xml,build_flex.xml,.*,${excludes}"/>
-       </copy>
-
-        <copy todir="${build.lib}">
-            <fileset dir="${build.inputlib}">
-                <include name="**/*.jar"/>
-                <include name="**/*.zip"/>
-                <exclude name="servlet.jar"/>
-                <exclude name="junit.jar"/>                
-                <exclude name="${excludes}" />
-            </fileset>
-        </copy>
-
-       <copy todir="${build.webinf}">
-            <fileset dir="etc" excludes="MANIFEST.MF,${excludes}"/>
-       </copy>
-
-       <copy file="etc/MANIFEST.MF" todir="${build.metainf}"/>
-
-       <copy todir="${build.web}">
-            <fileset dir="web" excludes="${excludes}"/>
-       </copy>
-       
-       <mkdir dir="${build.local}"/>
-       
-       <touch>
-            <fileset dir="${build.local}"/>
-       </touch>
-       
-       <copy todir="${build.web}" includeEmptyDirs="true" verbose="false">
-            <fileset dir="${build.local}" excludes="${excludes}"/>
-       </copy>       
-
-       <!-- create version-info for the workplace-->
-       <echo file="${build.version.jsfile}">var version = '${version.number} ${version.name}';
-</echo>
-       <!-- create version-info for the setup versions.txt -->
-       <echo file="${build.version.setupfile}" append="on">OpenCms ${version.number}
-</echo>
+            excludes="com/opencms/build/**" >            
+            <metainf dir="${opencms.input.warfiles}/WEB-INF" includes="opencms.tld"/>
+        </jar>        	            
     </target>
     
 
-    <target name="war" depends="copy" 
-    	description="Builds the opencms.war">
-    	
-        <zip zipfile="${build.home}/${app.name}.war">
-            <zipfileset dir="${build.web}/META-INF" prefix="META-INF"/>
-            <zipfileset dir="${build.web}/WEB-INF" prefix="WEB-INF"/>
-            <zipfileset dir="${build.web}/ocsetup" prefix="ocsetup"/>
-            <zipfileset dir="${build.web}/export" prefix="export"/>
-        </zip>
+    <target name="war" 
+    	depends="jar" description="Builds the opencms.war">
+        
+        <war 
+        	destfile="${opencms.output}/build/${app.name}.war" 
+        	webxml="${opencms.input.warfiles}/WEB-INF/web.xml"
+        	manifest="${opencms.input.warfiles}/META-INF/MANIFEST.MF">
+        	     		
+       		<lib dir="${opencms.output.jars}">
+       			<include name="*.jar" />
+       		</lib>
+       		<lib dir="${opencms.input.libs}">
+       			<exclude name="servlet.jar" />
+       			<exclude name="junit.jar" />
+       			<exclude name="${libexcludes1}" />
+       			<exclude name="${libexcludes2}" />
+       			<exclude name="${libexcludes3}" />
+       			<exclude name="${excludes}" />       			
+       		</lib>     		
+       		<fileset dir="${opencms.input.warfiles}">       		
+       			<exclude name="WEB-INF/web.xml" />
+       			<exclude name="WEB-INF/lib/*" />
+       			<exclude name="WEB-INF/config/opencms.properties" />
+       			<exclude name="WEB-INF/setupdata/vfs/system/login/version.js" />
+       			<exclude name="setup/versions.txt" />
+       			<exclude name="build.xml,.*,${excludes}" />
+       		</fileset>
+  			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="opencms.properties" />
+  			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/setupdata/vfs/system/login" includes="version.js" />
+  			<zipfileset dir="${opencms.output.classes}" prefix="setup" includes="versions.txt" />
+        </war>        
     </target>
     
-
-    <target name="zip" depends="war" 
-    	description="Creates a binary distribution ZIP">
-    	
-        <zip
-            zipfile="${zip.home}/opencms_${version.number}.zip"
-            basedir="${build.home}"
-            excludes="**/classes/,**/opencms/,${excludes}" />
-    </target>
-
-
-    <target name="all" depends="bindist, srcdist" 
-    	description="Creates binary and source distribution ZIPs"/>
-
-
-    <target name="compile" depends="copy" 
-    	description="Default compile target"/>
-
 
     <target name="tomcat.copy" 
     	description="Copy updated files to Tomcat directorys">
-    	
+
+       	<copy todir="${tomcat.home}/webapps/${app.name}/WEB-INF/lib">
+            <fileset dir="${opencms.input.libs}">
+                <include name="**/*.jar"/>
+                <include name="**/*.zip"/>
+            </fileset>
+        </copy>    	
         <copy todir="${tomcat.home}/webapps/${app.name}/WEB-INF/lib">
-            <fileset dir="${build.lib}">
+            <fileset dir="${opencms.output.jars}">
                 <include name="*.jar"/>
                 <include name="*.zip"/>
                 <exclude name="servlet.jar"/>
                 <exclude name="${excludes}" />
             </fileset>
-        </copy>    
-        <copy file="${basedir}/etc/web.xml" todir="${tomcat.home}/webapps/${app.name}/WEB-INF"/>
-        <copy file="${basedir}/etc/opencms.tld" todir="${tomcat.home}/webapps/${app.name}/WEB-INF"/>
+        </copy>     
+        <copy file="webapp/WEB-INF/web.xml" todir="${tomcat.home}/webapps/${app.name}/WEB-INF"/>
+        <copy file="webapp/WEB-INF/opencms.tld" todir="${tomcat.home}/webapps/${app.name}/WEB-INF"/>       
     </target>     
     
     
-    <target name="tomcat.update" depends="jar, tomcat.copy" 
-    	description="Recompile changed classes and install in Tomcat webapps directory"/>      
+    <target name="tomcat.update" 
+    	depends="jar, tomcat.copy" description="Recompile changed classes and install in Tomcat webapps directory"/>      
 
 
-    <target name="tomcat.all" depends="cleanclasses, tomcat.update" 
-    	description="Do a complete recompile of all classes and install in Tomcat webapps directory"/>              
+    <target name="tomcat.all" 
+    	depends="clean, tomcat.update" description="Do a complete recompile of all classes and install in Tomcat webapps directory"/>              
     
     
-    <target name="bindist" depends="clean,zip" 
-    	description="Builds from scratch and creates a binary distribution ZIP including the required libaries"/>        
+    <target name="bindist" 
+    	depends="clean, war" description="Creates a binary distribution ZIP">
+    	
+        <mkdir dir="${opencms.output.distfiles}" />                    
+    	
+        <zip destfile="${opencms.output.distfiles}/opencms_${version.number}.zip">
+            <zipfileset dir="${opencms.output}/build" includes="${app.name}.war"/>
+            <zipfileset dir="${opencms.input}" includes="install.html,license.txt,history.txt"/>
+        </zip>
+
+    </target>
+        
     
-    
-    <target name="srcdist" depends="clean" 
-    	description="Clean the output folder and creates a source distribution ZIP including the required libaries">
+    <target name="srcdist" 
+    	description="Creates a source distribution ZIP">
     	
         <tstamp>
             <format property="timestamp" pattern="yyyy-MM-dd-HH-mm"/>
@@ -311,57 +304,17 @@ ${build.inputlib.dbcp}
         
         <echo message="Building OpenCms ${version.number} (${version.name})  source distribution " />
         <echo message=" " />
-        <echo message="Working directory is: ${basedir}" />
-        <echo message="Destination directory is: ${destdir}" />
-        <echo message="Local additions in: ${build.local}" />        
-        <echo message=" " />
-
-        <property name="build.srcdist"              value="${build.home}/srcdist"/>
-        <property name="build.srcdist.main"         value="${build.srcdist}/opencms"/>
-        <property name="build.srcdist.src"          value="${build.srcdist.main}/src"/>
-        <property name="build.srcdist.etc"          value="${build.srcdist.main}/etc"/>
-        <property name="build.srcdist.web"          value="${build.srcdist.main}/web"/>
-        <property name="build.srcdist.local"        value="${build.srcdist}/local"/>
-        <property name="build.srcdist.externlib"    value="${build.srcdist}/lib"/>
-                
-        <mkdir dir="${build.srcdist}"/>     
-        <mkdir dir="${build.srcdist.main}"/>     
-        <mkdir dir="${build.srcdist.src}"/>    
-        <mkdir dir="${build.srcdist.etc}"/>     
-        <mkdir dir="${build.srcdist.web}"/>     
-        <mkdir dir="${build.srcdist.local}"/>             
-        <mkdir dir="${build.srcdist.externlib}"/>        
-        <mkdir dir="${zip.home}"/>
-
-        <copy todir="${build.srcdist.src}">
-            <fileset dir="src" excludes="${excludes}"/>
-        </copy>
-        
-        <copy todir="${build.srcdist.etc}">
-            <fileset dir="etc" excludes="${excludes}"/>
-        </copy>
-
-        <copy todir="${build.srcdist.web}">
-            <fileset dir="web" excludes="${excludes}"/>
-        </copy>         
-
-        <copy todir="${build.srcdist.main}">
-            <fileset dir="." includes="*.*" excludes="${excludes}"/>
-        </copy>
-        
-        <mkdir dir="${build.local}"/>       
-        
-        <touch>
-            <fileset dir="${build.local}"/>
-        </touch>
-       
-        <copy todir="${build.srcdist.local}" includeEmptyDirs="true" verbose="false">
-            <fileset dir="${build.local}" excludes="${excludes}"/>
-        </copy>  
-       
-        <zip
-            zipfile="${zip.home}/opencms_src_${version.number}.zip"
-            basedir="${build.srcdist}"/>
+        <echo message="OpenCms input directory is: ${opencms.input}" />
+        <echo message="OpenCms output directory is: ${opencms.output}" />
+		
+        <mkdir dir="${opencms.output.distfiles}" />                    
+		
+        <zip destfile="${opencms.output.distfiles}/opencms_src_${version.number}.zip">
+        	<zipfileset dir="${opencms.input}/src" excludes="${excludes}" prefix="src" />
+            <zipfileset dir="${opencms.input}/test" excludes="${excludes}" prefix="test" />
+            <zipfileset dir="${opencms.input.warfiles}" excludes="${excludes}" prefix="webapp" />
+            <zipfileset dir="${opencms.input}" includes="build.xml,install.html,license.txt,history.txt"/>
+        </zip>
     </target>
 
 </project>
