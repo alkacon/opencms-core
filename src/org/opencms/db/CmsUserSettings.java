@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2004/10/15 12:22:00 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/01/28 16:53:51 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,11 +49,14 @@ import java.util.Map;
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1.12
  */
 public class CmsUserSettings {
+        
+    /** Identifier for the workplace report type setting key. */
+    public static final String C_WORKPLACE_REPORTTYPE = "WORKPLACE_REPORTTYPE";
     
     /** The default button style. */
     private static final int C_BUTTONSTYLE_DEFAULT = 1;
@@ -63,20 +66,14 @@ public class CmsUserSettings {
     
     /** Identifier prefix for all keys in the user additional info table. */
     private static final String C_PREFERENCES = "USERPREFERENCES_";
-        
-    /** Identifier for the workplace report type setting key. */
-    public static final String C_WORKPLACE_REPORTTYPE = "WORKPLACE_REPORTTYPE";
-
-    /** The user object for the current settings. */
-    private CmsUser m_user;
-
-    /** Member variables to store all the data of the user settings. */
-    private int m_workplaceButtonStyle;
-    private String m_workplaceReportType;
+    
     private boolean m_dialogDirectpublish;
     private int m_dialogFileCopy;
     private int m_dialogFileDelete;
     private int m_dialogFolderCopy;
+    private boolean m_dialogPermissionsInheritOnFolder;
+    private boolean m_dialogShowInheritedPermissions;
+    private boolean m_dialogShowUserPermissions;
     private int m_directeditButtonStyle;
     private int m_editorButtonStyle;
     private HashMap m_editorSettings; 
@@ -93,7 +90,14 @@ public class CmsUserSettings {
     private boolean m_taskShowProjects;
     private String m_taskStartupfilter;
     private boolean m_uploadApplet;
+
+    /** The user object for the current settings. */
+    private CmsUser m_user;
     private String m_view;
+
+    /** Member variables to store all the data of the user settings. */
+    private int m_workplaceButtonStyle;
+    private String m_workplaceReportType;
 
     /**
      * Creates an empty new user settings object.<p>
@@ -147,6 +151,16 @@ public class CmsUserSettings {
     }
     
     /**
+     * Returns the default setting for inheriting permissions on folders.<p>
+     * 
+     * @return true if permissions should be inherited on folders, otherwise false
+     */
+    public boolean getDialogPermissionsInheritOnFolder() {
+        
+        return m_dialogPermissionsInheritOnFolder;
+    }
+    
+    /**
      * Returns the default setting for direct publishing.<p>
      * 
      * @return the default setting for direct publishing: true if siblings should be published, otherwise false
@@ -156,12 +170,32 @@ public class CmsUserSettings {
     }
     
     /**
+     * Returns the default setting for showing inherited permissions in the dialog.<p>
+     * 
+     * @return true if inherited permissions should be displayed, otherwise false
+     */
+    public boolean getDialogShowInheritedPermissions() {
+        
+        return m_dialogShowInheritedPermissions;
+    }
+    
+    /**
      * Determines if the lock dialog should be shown.<p>
      * 
      * @return true if the lock dialog is shown, otherwise false
      */
     public boolean getDialogShowLock() {
         return m_showLock;
+    }
+    
+    /**
+     * Returns the default setting for showing the users permissions in the dialog.<p>
+     * 
+     * @return true if the users permissions should be displayed, otherwise false
+     */
+    public boolean getDialogShowUserPermissions() {
+    
+        return m_dialogShowUserPermissions;
     }
     
     /**
@@ -468,7 +502,25 @@ public class CmsUserSettings {
             m_showLock = ((Boolean)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWLOCK)).booleanValue();
         } catch (Throwable t) {
             m_showLock  = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogShowLock();           
+        }       
+        // dialog permissions inheritation mode
+        try {
+            m_dialogPermissionsInheritOnFolder = ((Boolean)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_PERMISSIONSINHERITONFOLDER)).booleanValue();
+        } catch (Throwable t) {
+            m_dialogPermissionsInheritOnFolder  = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogPermissionsInheritOnFolder();           
         }
+        // dialog show inherited permissions mode
+        try {
+            m_dialogShowInheritedPermissions = ((Boolean)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWPERMISSIONSINHERITED)).booleanValue();
+        } catch (Throwable t) {
+            m_dialogShowInheritedPermissions  = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogShowInheritedPermissions();           
+        }
+        // dialog show users permissions mode
+        try {
+            m_dialogShowUserPermissions = ((Boolean)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWPERMISSIONSUSER)).booleanValue();
+        } catch (Throwable t) {
+            m_dialogShowUserPermissions  = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogShowUserPermissions();           
+        }       
         // editor button style
         try {
             m_editorButtonStyle = ((Integer)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EDITORGENERALOPTIONS + CmsWorkplaceConfiguration.N_BUTTONSTYLE)).intValue();
@@ -623,12 +675,30 @@ public class CmsUserSettings {
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_DIRECTPUBLISH);
         }
-        // dialog directpublish mode
+        // dialog show lock mode
         if (getDialogShowLock() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogShowLock()) {       
             m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWLOCK, new Boolean(getDialogShowLock()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWLOCK);
         }
+        // dialog permissions inheritation mode
+        if (getDialogPermissionsInheritOnFolder() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogPermissionsInheritOnFolder()) {       
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_PERMISSIONSINHERITONFOLDER, new Boolean(getDialogPermissionsInheritOnFolder()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_PERMISSIONSINHERITONFOLDER);
+        }
+        // dialog show inherited permissions mode
+        if (getDialogShowInheritedPermissions() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogShowInheritedPermissions()) {       
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWPERMISSIONSINHERITED, new Boolean(getDialogShowInheritedPermissions()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWPERMISSIONSINHERITED);
+        }
+        // dialog show users permissions mode
+        if (getDialogShowUserPermissions() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogShowUserPermissions()) {       
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWPERMISSIONSUSER, new Boolean(getDialogShowUserPermissions()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWPERMISSIONSUSER);
+        }       
         // editor button style    
         if (getEditorButtonStyle() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getEditorButtonStyle()) {          
             m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EDITORGENERALOPTIONS + CmsWorkplaceConfiguration.N_BUTTONSTYLE, new Integer(getEditorButtonStyle()));
@@ -720,6 +790,16 @@ public class CmsUserSettings {
     }
     
     /**
+     * Sets the default setting for inheriting permissions on folders.<p>
+     *
+     * @param dialogPermissionsInheritOnFolder the default setting for inheriting permissions on folders
+     */
+    public void setDialogPermissionsInheritOnFolder(boolean dialogPermissionsInheritOnFolder) {
+
+        m_dialogPermissionsInheritOnFolder = dialogPermissionsInheritOnFolder;
+    }
+    
+    /**
      * Sets the default setting for direct publishing.<p>
      * 
      * @param publishSiblings the default setting for direct publishing: true if siblings should be published, otherwise false
@@ -729,12 +809,32 @@ public class CmsUserSettings {
     }
     
     /**
+     * Sets the default setting for showing inherited permissions in the dialog.<p>
+     *
+     * @param dialogShowInheritedPermissions the default setting for showing inherited permissions in the dialog
+     */
+    public void setDialogShowInheritedPermissions(boolean dialogShowInheritedPermissions) {
+
+        m_dialogShowInheritedPermissions = dialogShowInheritedPermissions;
+    }
+    
+    /**
      *  Sets if the lock dialog should be shown.<p>
      * 
      * @param show true if the lock dialog should be shown, otherwise false
      */
     public void setDialogShowLock(boolean show) {
         m_showLock = show;
+    }
+    
+    /**
+     * Sets the default setting for showing the users permissions in the dialog.<p>
+     *
+     * @param dialogShowUserPermissions the default setting for showing the users permissions in the dialog
+     */
+    public void setDialogShowUserPermissions(boolean dialogShowUserPermissions) {
+
+        m_dialogShowUserPermissions = dialogShowUserPermissions;
     }
     
     /**
@@ -830,6 +930,15 @@ public class CmsUserSettings {
     public void setShowExplorerFileDateCreated(boolean show) {
         setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_DATE_CREATED);
     }
+    
+    /**
+     * Sets if the file expire date should be shown in explorer view.<p>
+     * 
+     * @param show true if the file expire date should be shown, otherwise false
+     */
+    public void setShowExplorerFileDateExpired(boolean show) {
+        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_DATE_EXPIRED);
+    }
 
     /**
      * Sets if the file last modified date should be shown in explorer view.<p>
@@ -847,15 +956,6 @@ public class CmsUserSettings {
      */
     public void setShowExplorerFileDateReleased(boolean show) {
         setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_DATE_RELEASED);
-    }
-    
-    /**
-     * Sets if the file expire date should be shown in explorer view.<p>
-     * 
-     * @param show true if the file expire date should be shown, otherwise false
-     */
-    public void setShowExplorerFileDateExpired(boolean show) {
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_DATE_EXPIRED);
     }
     
     /**
@@ -1076,12 +1176,30 @@ public class CmsUserSettings {
     }
     
     /**
+     * Determines if the file date expired should be shown in explorer view.<p>
+     * 
+     * @return true if the file date expired should be shown, otherwise false
+     */
+    public boolean showExplorerFileDateExpired() {
+        return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_DATE_EXPIRED) > 0); 
+    }
+    
+    /**
      * Determines if the file last modified date should be shown in explorer view.<p>
      * 
      * @return true if the file last modified date should be shown, otherwise false
      */
     public boolean showExplorerFileDateLastModified() {
         return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_DATE_LASTMODIFIED) > 0); 
+    }
+    
+    /**
+     * Determines if the file date released should be shown in explorer view.<p>
+     * 
+     * @return true if the file date released should be shown, otherwise false
+     */
+    public boolean showExplorerFileDateReleased() {
+        return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_DATE_RELEASED) > 0); 
     }
     
     /**
@@ -1147,24 +1265,6 @@ public class CmsUserSettings {
         return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_USER_CREATED) > 0); 
     }
     
-    /**
-     * Determines if the file date released should be shown in explorer view.<p>
-     * 
-     * @return true if the file date released should be shown, otherwise false
-     */
-    public boolean showExplorerFileDateReleased() {
-        return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_DATE_RELEASED) > 0); 
-    }
-    
-    /**
-     * Determines if the file date expired should be shown in explorer view.<p>
-     * 
-     * @return true if the file date expired should be shown, otherwise false
-     */
-    public boolean showExplorerFileDateExpired() {
-        return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_DATE_EXPIRED) > 0); 
-    }
-    
    /**
     * Determines if the file last modified by should be shown in explorer view.<p>
     * 
@@ -1211,5 +1311,4 @@ public class CmsUserSettings {
             m_taskMessages &= ~setting;
         }
     }
-    
 }

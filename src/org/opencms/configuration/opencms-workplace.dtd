@@ -466,7 +466,10 @@
 								   foldercopy,
 								   filedeletion,
 								   directpublish,
-								   showlock)>
+								   showlock,
+								   show-permissionsuser,
+								   show-permissionsinherited,
+								   permissions-inheritonfolder)>
 <!--
 # The default setting of the file copy dialog. This dialog displays different options how
 # a file should be copied. Possible values are: [createsibling|createresource]
@@ -493,9 +496,24 @@
 <!ELEMENT directpublish (#PCDATA)>	
 
 <!--
-# If this element is set to "true", the lock dialog is shonw on each lock operation.
+# If this element is set to "true", the lock dialog is shown on each lock operation.
 -->	
-<!ELEMENT showlock (#PCDATA)>	
+<!ELEMENT showlock (#PCDATA)>
+
+<!--
+# If this element is set to "true", the permission dialog shows the users permission when opened.
+-->	
+<!ELEMENT show-permissionsuser (#PCDATA)>
+
+<!--
+# If this element is set to "true", the permission dialog shows the inherited permission when opened.
+-->	
+<!ELEMENT show-permissionsinherited (#PCDATA)>
+
+<!--
+# If this element is set to "true", the permission dialog inherits the set permissions per default on folders.
+-->	
+<!ELEMENT permissions-inheritonfolder (#PCDATA)>
 
 <!--
 # The editor preferences define the default appareance and seletion of the editors used in the

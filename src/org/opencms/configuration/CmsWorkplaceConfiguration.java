@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/11/04 13:57:30 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/01/28 16:53:51 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -168,6 +168,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The name of the new resource node. */
     public static final String N_NEWRESOURCE = "newresource";
     
+    /** The name of the inherit permissions on folder node. */
+    public static final String N_PERMISSIONSINHERITONFOLDER = "permissions-inheritonfolder";
+    
     /** The node name of the project node. */
     public static final String N_PROJECT = "project";
 
@@ -180,7 +183,13 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The name of the separator node. */
     public static final String N_SEPARATOR = "separator";
     
-    /** The node name of the file copy node. */
+    /** The name of the show inherited permissions node. */
+    public static final String N_SHOWPERMISSIONSINHERITED = "show-permissionsinherited";
+    
+    /** The name of the show user permissions node. */
+    public static final String N_SHOWPERMISSIONSUSER = "show-permissionsuser";
+    
+    /** The node name of the show lock node. */
     public static final String N_SHOWLOCK = "showlock";
     
     /** The node name of the showprojects node. */
@@ -590,7 +599,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
         // add dialog preferences rules
         digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_DIALOGSPREFERENCES + "/"+ N_DIALOGSDEFAULTSETTINGS + "/"  + N_FILECOPY,
-                                "setDialogCopyFileMode", 0);
+                "setDialogCopyFileMode", 0);
         digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_DIALOGSPREFERENCES + "/"+ N_DIALOGSDEFAULTSETTINGS + "/"  + N_FOLDERCOPY,
                 "setDialogCopyFolderMode", 0);
         digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_DIALOGSPREFERENCES + "/"+ N_DIALOGSDEFAULTSETTINGS + "/"  + N_FILEDELETION,
@@ -598,7 +607,13 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_DIALOGSPREFERENCES + "/"+ N_DIALOGSDEFAULTSETTINGS + "/"  + N_DIRECTPUBLISH,
                 "setDialogPublishSiblings", 0);
         digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_DIALOGSPREFERENCES + "/"+ N_DIALOGSDEFAULTSETTINGS + "/"  + N_SHOWLOCK,
-                "setShowLockDialog", 0); 
+                "setShowLockDialog", 0);      
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_DIALOGSPREFERENCES + "/"+ N_DIALOGSDEFAULTSETTINGS + "/"  + N_PERMISSIONSINHERITONFOLDER,
+                "setDialogPermissionsInheritOnFolder", 0); 
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_DIALOGSPREFERENCES + "/"+ N_DIALOGSDEFAULTSETTINGS + "/"  + N_SHOWPERMISSIONSINHERITED,
+                "setDialogShowInheritedPermissions", 0); 
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_DIALOGSPREFERENCES + "/"+ N_DIALOGSDEFAULTSETTINGS + "/"  + N_SHOWPERMISSIONSUSER,
+                "setDialogShowUserPermissions", 0); 
         
         // add editor generaloptions rules
         digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_EDITORPREFERENCES + "/"+ N_EDITORGENERALOPTIONS + "/" + N_BUTTONSTYLE,
@@ -760,59 +775,65 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         Element explorerPreferences = defaultPreferences.addElement(N_EXPLORERPREFERENCES);
         // add the <explorer-generaloptions> node
         Element explorerGeneraloptions = explorerPreferences.addElement(N_EXPLORERGENERALOPTIONS);
-        //  add the <buttonstyle> node
+        // add the <buttonstyle> node
         explorerGeneraloptions.addElement(N_BUTTONSTYLE).setText(m_workplaceManager.getDefaultUserSettings().getExplorerButtonStyleString());
         // add the <reporttype> node
         explorerGeneraloptions.addElement(N_ENTRIES).setText("" + m_workplaceManager.getDefaultUserSettings().getExplorerFileEntries());
         // add the <explorer-displayoption> node
         Element explorerDisplayoptions = explorerPreferences.addElement(N_EXPLORERDISPLAYOPTIONS);
-        //  add the <show-title> node
+        // add the <show-title> node
         explorerDisplayoptions.addElement(N_TITLE).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileTitle());
-        //  add the <show-type> node
+        // add the <show-type> node
         explorerDisplayoptions.addElement(N_TYPE).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileType());
-        //  add the <show-datelastmodified> node
+        // add the <show-datelastmodified> node
         explorerDisplayoptions.addElement(N_DATELASTMODIFIED).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileDateLastModified());
-        //  add the <show-datecreated> node
+        // add the <show-datecreated> node
         explorerDisplayoptions.addElement(N_DATECREATED).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileDateCreated());
-        //  add the <show-lockedby> node
+        // add the <show-lockedby> node
         explorerDisplayoptions.addElement(N_LOCKEDBY).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileLockedBy());
-        //  add the <show-permissions> node
+        // add the <show-permissions> node
         explorerDisplayoptions.addElement(N_PERMISSIONS).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFilePermissions());
-        //  add the <show-size> node
+        // add the <show-size> node
         explorerDisplayoptions.addElement(N_SIZE).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileSize());
-        //  add the <show-state> node
+        // add the <show-state> node
         explorerDisplayoptions.addElement(N_STATE).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileState());
-        //  add the <show-userlastmodified> node
+        // add the <show-userlastmodified> node
         explorerDisplayoptions.addElement(N_USERLASTMODIFIED).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileUserLastModified());
-        //  add the <show-usercreated> node
+        // add the <show-usercreated> node
         explorerDisplayoptions.addElement(N_USERCREATED).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileUserCreated());
-        //  add the <show-datereleased> node
+        // add the <show-datereleased> node
         explorerDisplayoptions.addElement(N_DATERELEASED).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileDateReleased());
-        //  add the <show-dateexpired> node
+        // add the <show-dateexpired> node
         explorerDisplayoptions.addElement(N_DATEEXPIRED).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileDateExpired());
       
-        //  add the <dialog-preferences> node
+        // add the <dialog-preferences> node
         Element dialogPreferences = defaultPreferences.addElement(N_DIALOGSPREFERENCES);
         // add the <dialog-defaultsettings> node
         Element dialogDefaultSettings = dialogPreferences.addElement(N_DIALOGSDEFAULTSETTINGS);
-        //  add the <filecopy> node
+        // add the <filecopy> node
         dialogDefaultSettings.addElement(N_FILECOPY).setText(m_workplaceManager.getDefaultUserSettings().getDialogCopyFileModeString());
-        //  add the <foldercopy> node
+        // add the <foldercopy> node
         dialogDefaultSettings.addElement(N_FOLDERCOPY).setText(m_workplaceManager.getDefaultUserSettings().getDialogCopyFolderModeString());
-        //  add the <filedeletion> node
+        // add the <filedeletion> node
         dialogDefaultSettings.addElement(N_FILEDELETION).setText(m_workplaceManager.getDefaultUserSettings().getDialogDeleteFileModeString());
-        //  add the <directpublish> node
+        // add the <directpublish> node
         dialogDefaultSettings.addElement(N_DIRECTPUBLISH).setText(m_workplaceManager.getDefaultUserSettings().getDialogPublishSiblingsString());
-        //  add the <showlock> node
+        // add the <showlock> node
         dialogDefaultSettings.addElement(N_SHOWLOCK).setText(m_workplaceManager.getDefaultUserSettings().getDialogShowLockString());
+        // add the <show-permissionsuser> node
+        dialogDefaultSettings.addElement(N_SHOWPERMISSIONSUSER).setText(m_workplaceManager.getDefaultUserSettings().getDialogShowUserPermissionsString());
+        // add the <show-permissionsinherited> node
+        dialogDefaultSettings.addElement(N_SHOWPERMISSIONSINHERITED).setText(m_workplaceManager.getDefaultUserSettings().getDialogShowInheritedPermissionsString());
+        // add the <permissions-inheritonfolder> node
+        dialogDefaultSettings.addElement(N_PERMISSIONSINHERITONFOLDER).setText(m_workplaceManager.getDefaultUserSettings().getDialogPermissionsInheritOnFolderString());
         
         // add the <editors-preferences> node
         Element editorsPreferences = defaultPreferences.addElement(N_EDITORPREFERENCES);
         // add the <editors-generaloptions> node
         Element editorGeneraloptions = editorsPreferences.addElement(N_EDITORGENERALOPTIONS);
-        //  add the <buttonstyle> node
+        // add the <buttonstyle> node
         editorGeneraloptions.addElement(N_BUTTONSTYLE).setText(m_workplaceManager.getDefaultUserSettings().getEditorButtonStyleString());
-        //  add the <directedit> node
+        // add the <directedit> node
         editorGeneraloptions.addElement(N_DIRECTEDITSTYLE).setText(m_workplaceManager.getDefaultUserSettings().getDirectEditButtonStyleString());
         // add the <editors-preferrededitors> node
         Element editorPreferrededitors = editorsPreferences.addElement(N_EDITORPREFERREDEDITORS);

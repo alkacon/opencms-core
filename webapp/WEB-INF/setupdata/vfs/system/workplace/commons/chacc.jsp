@@ -91,11 +91,8 @@ function toggleDetail(id) {
 <!-- ###################################### current users rights ###################################### -->
 
 <%= wp.buildErrorMessages() %>
-<%= wp.dialogSubheadline(wp.key("dialog.permission.headline.user")) %>
 
-<%= wp.dialogWhiteBoxStart() %>
 <%= wp.buildCurrentPermissions() %>
-<%= wp.dialogWhiteBoxEnd() %>
 
 <!-- ###################################### Inherited rights list, add form and own rights list ###################################### -->
 
@@ -112,7 +109,6 @@ function toggleDetail(id) {
 <%= wp.dialogEnd() %>
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>
-
 <%
 }
 %>
