@@ -1,8 +1,8 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/05/15 19:29:05 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2001/05/16 08:07:31 $
+* Version: $Revision: 1.9 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -98,7 +98,10 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
                     cms.readFileHeader(resourcen[i]);
                 }
                 catch(CmsException e) {
-                    System.err.println("error exporting module: couldn't add " + resourcen[i] + " to Module\n" + Utils.getStackTrace(e));
+                     if(A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
+                         A_OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG,
+                            "error exporting module: couldn't add " + resourcen[i] + " to Module\n" + Utils.getStackTrace(e));
+                     }
                     resourcen[i] = resourcen[0];
                 }
             }
@@ -106,7 +109,11 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
                 cms.readFileHeader(resourcen[0]);
             }
             catch(CmsException e) {
-                System.err.println("error exporting module: couldn't add " + resourcen[0] + " to Module\n" + "You dont have this module in this project!");
+                 if(A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
+                     A_OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG,
+                        "error exporting module: couldn't add " + resourcen[0]
+                        + " to Module\n" + "You dont have this module in this project!");
+                 }
                 return startProcessing(cms, templateDocument, elementName, parameters, "done");
             }
 

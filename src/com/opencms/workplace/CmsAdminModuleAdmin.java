@@ -1,11 +1,11 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/05/15 19:29:05 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/05/16 08:07:31 $
+* Version: $Revision: 1.10 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +13,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -59,7 +59,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
     private final String C_ONEDEP = "dependentry";
     private final String C_OPTIONENTRY = "optionentry";
     private final String C_NAME_PARAMETER = "module";
-    
+
     /**
      * fills the data from the module in the hashtable.
      * Creation date: (30.10.00 14:22:22)
@@ -88,7 +88,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
         table.put(C_AUTHOR, getStringValue(reg.getModuleAuthor(module)));
         table.put(C_EMAIL, getStringValue(reg.getModuleAuthorEmail(module)));
         table.put(C_DATE, getStringValue(Utils.getNiceShortDate(reg.getModuleCreateDate(module))));
-        
+
         // get the dependencies
         Vector depNames = new Vector();
         Vector minVersion = new Vector();
@@ -103,7 +103,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             stringDeps.addElement((String)depNames.elementAt(i) + "  Version:" + (String)minVersion.elementAt(i) + " - " + max);
         }
         table.put(C_DEPENDENCY, stringDeps);
-        
+
         // handle the properties
         Vector paraNames = new Vector();
         Vector paraDescr = new Vector();
@@ -121,11 +121,11 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
         table.put(C_SESSION_MODULE_ADMIN_PROP_TYP, paraTyp);
         table.put(C_SESSION_MODULE_ADMIN_PROP_VAL, paraVal);
     }
-    
+
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
-     * with the given parameters. 
-     * 
+     * with the given parameters.
+     *
      * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
@@ -148,7 +148,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
         String packetName = (String)parameters.get(C_NAME_PARAMETER);
         Hashtable sessionData = new Hashtable();
         if((from == null) || "".equals(from)) {
-            
+
             // first call; clear session
             session.removeValue(C_SESSION_MODULE_ADMIN_DATA);
             fillHashtable(cms, reg, sessionData, packetName);
@@ -158,7 +158,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
         else {
             sessionData = (Hashtable)session.getValue(C_SESSION_MODULE_ADMIN_DATA);
             if("first".equals(from)) {
-                
+
                 //  put the data in the session
                 sessionData.put(C_VERSION, getStringValue((String)parameters.get(C_VERSION)));
                 sessionData.put(C_MODULENAME, getStringValue((String)parameters.get(C_MODULENAME)));
@@ -173,14 +173,14 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
                 stepTo = "deps";
             }
             if("deps".equals(from)) {
-                
+
                 // put the data in the session
                 String allData = (String)parameters.get(C_ALLDEPS);
                 Vector allDeps = new Vector();
                 allDeps = parseAllDeps(getStringValue(allData));
                 sessionData.put(C_DEPENDENCY, allDeps);
                 session.putValue(C_SESSION_MODULE_ADMIN_DATA, sessionData);
-                
+
                 // decide if we are going back or forward => set stepTo
                 String back = (String)parameters.get("back");
                 if((back == null) || ("".equals(back))) {
@@ -197,7 +197,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
                 stepTo = "props";
             }
             if("propsready".equals(from)) {
-                
+
                 // ready; save changes in registry
                 updateTheModule(cms, reg, sessionData, packetName);
                 session.removeValue(C_SESSION_MODULE_ADMIN_DATA);
@@ -205,7 +205,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             }
         }
         if("firstpage".equals(stepTo)) {
-            
+
             // show the first page
             templateDocument.setData(C_MODULE_PACKETNAME, (String)sessionData.get(C_MODULE_PACKETNAME));
             templateDocument.setData(C_VERSION, (String)sessionData.get(C_VERSION));
@@ -220,7 +220,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             templateSelector = "";
         }
         if("deps".equals(stepTo)) {
-            
+
             // show the dependencies
             templateDocument.setData(C_MODULE_PACKETNAME, (String)sessionData.get(C_MODULE_PACKETNAME));
             Vector deps = (Vector)sessionData.get(C_DEPENDENCY);
@@ -233,15 +233,15 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             templateSelector = "dependencies";
         }
         if("props".equals(stepTo)) {
-            
+
             // prepare the properties page
             templateSelector = "properties";
         }
-        
+
         // Now load the template file and start the processing
         return startProcessing(cms, templateDocument, elementName, parameters, templateSelector);
     }
-    
+
     /**
      * returns the String or "" if it is null.
      * Creation date: (29.10.00 16:05:38)
@@ -254,12 +254,12 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
         }
         return param;
     }
-    
+
     /**
      * Indicates if the results of this class are cacheable.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
+     * @param templateFile Filename of the template file
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
@@ -268,9 +268,9 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
     public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
-    
+
     /** Parse the string which holds all dependencies
-     *  
+     *
      * @param resources containts the full pathnames of all the resources, separated by semicolons
      * @return A vector with the same resources
      */
@@ -285,7 +285,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
         }
         return ret;
     }
-    
+
     /**
      * Insert the method's description here.
      * Creation date: (03.11.00 08:23:13)
@@ -298,10 +298,10 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             cms.createFolder(folder, newFolder);
         }
         catch(Exception e) {
-            
+
         }
     }
-    
+
     /**
      * fills the data from the hashtable in the module.
      * Creation date: (30.10.00 14:22:22)
@@ -318,12 +318,12 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             reg.setModuleVersion(name, v);
         }
         catch(Exception e) {
-            
+
         }
         try {
             reg.setModuleNiceName(name, (String)table.get(C_MODULENAME));
             reg.setModuleDescription(name, (String)table.get(C_DESCRIPTION));
-            
+
             // the view
             if("".equals((String)table.get(C_VIEW))) {
                 if(!"".equals(getStringValue(reg.getModuleViewName(name)))) {
@@ -331,7 +331,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
                         cms.deleteFolder(modulePath + "view/");
                     }
                     catch(Exception e) {
-                        
+
                     }
                     reg.deleteModuleView(name);
                 }
@@ -342,25 +342,25 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
                     tryToCreateFolder(cms, modulePath, "view");
                 }
             }
-            
+
             // the adminpoint
             if("".equals((String)table.get(C_ADMINPOINT))) {
                 try { // does not work when folder is not empty
                     cms.deleteFolder(modulePath + "administration/");
                 }
                 catch(Exception e) {
-                    
+
                 }
             }
             else {
                 tryToCreateFolder(cms, modulePath, "administration");
             }
-            
+
             // the easy values
             reg.setModuleMaintenanceEventClass(name, (String)table.get(C_MAINTENANCE));
             reg.setModuleAuthor(name, (String)table.get(C_AUTHOR));
             reg.setModuleAuthorEmail(name, (String)table.get(C_EMAIL));
-            
+
             // set the date
             String date = (String)table.get(C_DATE);
             long dateLong = 0;
@@ -371,7 +371,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
                 dateLong = (new Date()).getTime();
             }
             reg.setModuleCreateDate(name, dateLong);
-            
+
             // now the dependnecies
             Vector depNames = new Vector();
             Vector minVersion = new Vector();
@@ -389,7 +389,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
                     minInt = Integer.parseInt(min);
                 }
                 catch(Exception e) {
-                    
+
                 }
                 try {
                     if(!"*".equals(max)) {
@@ -397,13 +397,13 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
                     }
                 }
                 catch(Exception e) {
-                    
+
                 }
                 minVersion.addElement(new Integer(minInt));
                 maxVersion.addElement(new Integer(maxInt));
             }
             reg.setModuleDependencies(name, depNames, minVersion, maxVersion);
-            
+
             // last not least: the properties
             Vector paraNames = (Vector)table.get(C_SESSION_MODULE_ADMIN_PROP_NAMES);
             Vector paraDesc = (Vector)table.get(C_SESSION_MODULE_ADMIN_PROP_DESCR);
@@ -412,7 +412,10 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             reg.setModuleParameterdef(name, paraNames, paraDesc, paraTyp, paraVal);
         }
         catch(CmsException e) {
-            System.err.println("Error while module administrating: " + e.toString());
+             if(A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
+                 A_OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG,
+                    "Error while module administrating: " + e.toString());
+             }
         }
     }
 }
