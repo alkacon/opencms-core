@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/10/11 21:23:27 $
- * Version: $Revision: 1.172 $
+ * Date   : $Date: 2000/10/11 22:16:18 $
+ * Version: $Revision: 1.173 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.172 $ $Date: 2000/10/11 21:23:27 $
+ * @version $Revision: 1.173 $ $Date: 2000/10/11 22:16:18 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3655,7 +3655,7 @@ public Vector getSubFoldersRecursively(CmsUser currentUser, CmsProject currentPr
 									   String foldername)
 		throws CmsException{
 		
-		CmsFolder cmsFolder = readFolder(currentUser,currentProject,foldername);
+		CmsFolder cmsFolder = readFolder(currentUser,currentProject,currentProject.getId(),foldername);
 
 		if( accessRead(currentUser, currentProject, (CmsResource)cmsFolder) ) {
 				
