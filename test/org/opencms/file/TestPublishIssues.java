@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/03/09 12:15:09 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -313,6 +313,9 @@ public class TestPublishIssues extends OpenCmsTestCase {
             "Test project 2nd time", 
             OpenCms.getDefaultUsers().getGroupUsers(), 
             OpenCms.getDefaultUsers().getGroupUsers());
+        
+        // above test fails with OCEE - check table contraints for OCEE drivers
+        int todo = 0;
         
         // check if the projects have different ids
         int id1 = project.getId();
