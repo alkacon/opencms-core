@@ -25,8 +25,8 @@
 	addMenuEntry(resource_id, "language_key(explorer.context.type)", "chtype.html?initial=true", "''","0111022201110");
 	addMenuEntry(resource_id, "language_key(explorer.context.property)", "property.html?initial=true", "''","2222022202220");
 
-	addMenuEntry(resource_id, "-", " ", "_top","2222022202220");
-	addMenuEntry(resource_id, "language_key(explorer.context.copytoproject)", "copy_to_project.html?initial=true", "''","2222022202220");
+	addMenuEntry(resource_id, "-", " ", "_top","4000000000000");
+	addMenuEntry(resource_id, "language_key(explorer.context.copytoproject)", "copy_to_project.html?initial=true", "''","4000000000000");
 	    
 	addMenuEntry(resource_id, "-", " ", "_top","3000000000000");
 	addMenuEntry(resource_id, "language_key(explorer.context.project)", "resource_to_project.html?initial=true", "''","3000000000000");
