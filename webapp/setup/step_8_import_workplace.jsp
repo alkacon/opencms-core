@@ -70,7 +70,7 @@ OpenCms Setup Wizard - Import workplace
 				<td>&nbsp;&nbsp;</td>
 				<td style="width: 100%;">
 					You have not imported the workplace.<br>
-					<b>Warning:</b> OpenCms will not work without the virtual file system!
+					OpenCms will not work without the virtual file system!
 				</td>
 			</tr>
 		</table>

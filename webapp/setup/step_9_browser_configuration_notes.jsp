@@ -14,7 +14,7 @@
 	String nextPage = "step_10_finished.jsp";
 
 	/* previous page in the setup process */
-	String prevPage = "step_8_import_workplace.jsp";
+	String prevPage = "step_7_save_properties.jsp";
 
 	/* stop possible running threads */
 	Thread.stopLoggingThread();
