@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2001/07/26 13:20:36 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2001/07/26 14:59:30 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -828,7 +828,14 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                 undoChanges(cms, curFolder.getAbsolutePath());
             } else {
                 // if it is a new folder then delete the folder
-                deleteResource(cms, curFolder.getAbsolutePath());
+                try{
+                    deleteResource(cms, curFolder.getAbsolutePath());
+                } catch (CmsException ex){
+                    // do not throw exception when resource not exists
+                    if(ex.getType() != CmsException.C_NOT_FOUND){
+                        throw ex;
+                    }
+                }
             }
         }
         // now undo changes in the files
@@ -842,7 +849,14 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                 cms.undoChanges(curFile.getAbsolutePath());
             } else {
                 // if it is a new file then delete the file
-                cms.deleteResource(curFile.getAbsolutePath());
+                try{
+                    cms.deleteResource(curFile.getAbsolutePath());
+                } catch (CmsException ex){
+                    // do not throw exception when resource not exists
+                    if(ex.getType() != CmsException.C_NOT_FOUND){
+                        throw ex;
+                    }
+                }
             }
         }
 	}
