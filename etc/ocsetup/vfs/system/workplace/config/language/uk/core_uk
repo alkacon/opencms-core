@@ -1051,6 +1051,7 @@ A new task was reactivated for you or your role.</content>
             <adminproperties>Property management</adminproperties>
             <changelink>Change Link</changelink>
             <changed>Date Changed</changed>
+            <changetable>Modify table</changetable>
             <chgrp>Change Group of</chgrp>
             <chmod>Change Permissions of</chmod>
             <chown>Change Owner of</chown>

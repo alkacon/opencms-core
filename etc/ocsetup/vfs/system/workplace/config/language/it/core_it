@@ -1051,6 +1051,7 @@ Un nuovo compito è stato riattivato per te o per il tuo ruolo.</content>
             <adminproperties>Gestione delle proprietà</adminproperties>
             <changelink>Modifica collegamento</changelink>
             <changed>Modificato il</changed>
+            <changetable>Modifica Tabella</changetable>
             <chgrp>Cambia Gruppo di</chgrp>
             <chmod>Cambia Permessi di</chmod>
             <chown>Cambia Proprietario di</chown>

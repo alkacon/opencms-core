@@ -1049,6 +1049,7 @@ Für Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
             <access>Rechte</access>
             <admindatatypes>Verwaltung von Dateitypen</admindatatypes>
             <adminproperties>Verwaltung von Eigenschaften</adminproperties>
+            <changetable>Tabelle bearbeiten</changetable>
             <changelink>Verknüpfung ändern</changelink>
             <changed>Geändert am</changed>
             <chgrp>Gruppe ändern von</chgrp>
