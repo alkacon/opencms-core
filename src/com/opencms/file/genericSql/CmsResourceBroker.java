@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/13 18:03:12 $
- * Version: $Revision: 1.212 $
+ * Date   : $Date: 2000/12/14 17:03:48 $
+ * Version: $Revision: 1.213 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.212 $ $Date: 2000/12/13 18:03:12 $
+ * @version $Revision: 1.213 $ $Date: 2000/12/14 17:03:48 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -114,6 +114,11 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	protected CmsCache m_accessCache = null;
 	protected int m_cachelimit = 0;
 	protected String m_refresh = null;
+
+	/**
+	* Delete published project
+	*/
+	protected boolean m_deletePublishedProject = false;
 
 /**
  * Accept a task from the Cms.
@@ -2030,7 +2035,11 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 		throws CmsException {
 		// read the project that should be deleted.
   		CmsProject deleteProject = readProject(currentUser, currentProject, id);
-
+  		
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "deletePublishedProject");
+			}
+			
 		if(isAdmin(currentUser, currentProject) || 
 		   isManagerOfProject(currentUser, deleteProject)) {
 			 // delete the project
@@ -3435,7 +3444,11 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 		
 		// Store the configuration.
 		m_configuration = config;
-		
+
+		if (config.getString("publishproject.delete", "false").equals("true")) {
+			m_deletePublishedProject = true;
+		}
+			
 		// initialize the access-module.
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] init the dbaccess-module.");
@@ -3456,7 +3469,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 		m_accessCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".access", 1000));
 		m_cachelimit = config.getInteger(C_CONFIGURATION_CACHE + ".maxsize", 20000);
 		m_refresh=config.getString(C_CONFIGURATION_CACHE + ".refresh", "");
-
+		
 		// initialize the registry#
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] init registry.");
@@ -3923,7 +3936,9 @@ public void publishProject(CmsUser currentUser, CmsProject currentProject, int i
 			}
 		}
 		// HACK: now currently we can delete the project to decrease the amount of data in the db
-		deleteProject(currentUser, currentProject, id);
+		if (m_deletePublishedProject) {
+			deleteProject(currentUser, currentProject, id);
+		}
 	} else {
 		throw new CmsException("[" + this.getClass().getName() + "] could not publish project " + id, CmsException.C_NO_ACCESS);
 	}
