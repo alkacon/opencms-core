@@ -404,25 +404,25 @@ function show_help()
 	<style_alertok>taskviewheadalert</style_alertok>
 	
 	<!-- Button1 -->
-	<button_query><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=100 type="button" value="]]><LABEL value="task.button.query"/><![CDATA[" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_dialogquery.html?action=query&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_query>
-	<button_message><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=100 type="button" value="]]><LABEL value="task.button.message"/><![CDATA[" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_dialogmsg.html?action=message&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_message>
+	<button_query><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=170 type="button" value="]]><LABEL value="task.button.query"/><![CDATA[" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_dialogquery.html?action=query&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_query>
+	<button_message><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=170 type="button" value="]]><LABEL value="task.button.message"/><![CDATA[" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_dialogmsg.html?action=message&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_message>
 	
 	<!-- Button2 -->
-	<button_accept><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=100 type="button" value="]]><LABEL value="task.button.accept"/><![CDATA[" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_detail.html?action=accept&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_accept>
-	<button_forward><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=100 type="button" value="]]><LABEL value="task.button.forward"/><![CDATA[" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_dialogforward.html?taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_forward>
-	<button_take><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=100 type="button" value="]]><LABEL value="task.button.take"/><![CDATA[" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_detail.html?action=take&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_take>
+	<button_accept><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=170 type="button" value="]]><LABEL value="task.button.accept"/><![CDATA[" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_detail.html?action=accept&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_accept>
+	<button_forward><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=170 type="button" value="]]><LABEL value="task.button.forward"/><![CDATA[" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_dialogforward.html?taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_forward>
+	<button_take><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=170 type="button" value="]]><LABEL value="task.button.take"/><![CDATA[" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_detail.html?action=take&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_take>
 
 	<!-- Button3 -->
-	<button_due><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=100 type="button" value="]]><LABEL value="task.button.due"/><![CDATA[" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_detail.html?action=due&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_due>
+	<button_due><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=170 type="button" value="]]><LABEL value="task.button.due"/><![CDATA[" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_detail.html?action=due&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_due>
 
 	<!-- Button4 -->
-	<button_priority><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=100 type="button" value="]]><LABEL value="task.button.priority"/><![CDATA[" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_dialogpriority.html?taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_priority>
+	<button_priority><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=170 type="button" value="]]><LABEL value="task.button.priority"/><![CDATA[" id=BUTTON2 name=BUTTON2 onClick="location='tasks_content_dialogpriority.html?taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_priority>
 
 	<!-- Button5 -->
-	<button_comment><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=100 type="button" value="]]><LABEL value="task.button.comment"/><![CDATA[" id=BUTTON5 name=BUTTON5 onClick="location='tasks_content_dialogcomment.html?taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_comment>
+	<button_comment><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=170 type="button" value="]]><LABEL value="task.button.comment"/><![CDATA[" id=BUTTON5 name=BUTTON5 onClick="location='tasks_content_dialogcomment.html?taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_comment>
 
 	<!-- Button6 -->
-	<button_ok><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=100 type="button" value="]]><LABEL value="task.button.ok"/><![CDATA[" id=BUTTON6 name=BUTTON6 onClick="location='tasks_content_detail.html?action=ok&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_ok>
-	<button_reakt><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=100 type="button" value="]]><LABEL value="task.button.reakt"/><![CDATA[" id=BUTTON6 name=BUTTON6 onClick="location='tasks_content_dialogreakt.html?taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_reakt>
+	<button_ok><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=170 type="button" value="]]><LABEL value="task.button.ok"/><![CDATA[" id=BUTTON6 name=BUTTON6 onClick="location='tasks_content_detail.html?action=ok&taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_ok>
+	<button_reakt><![CDATA[<INPUT ]]><PROCESS>disabled</PROCESS><![CDATA[ class=taskviewbutton width=170 type="button" value="]]><LABEL value="task.button.reakt"/><![CDATA[" id=BUTTON6 name=BUTTON6 onClick="location='tasks_content_dialogreakt.html?taskid=]]><PROCESS>taskid</PROCESS><![CDATA[';">]]></button_reakt>
 
 </WORKPLACE>
