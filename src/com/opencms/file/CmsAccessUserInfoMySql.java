@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 1999/12/21 15:08:47 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/12 10:13:53 $
  */
  class CmsAccessUserInfoMySql implements I_CmsAccessUserInfo {
 
@@ -156,7 +156,9 @@ import com.opencms.core.*;
                 ByteArrayInputStream bin= new ByteArrayInputStream(value);
                 ObjectInputStream oin = new ObjectInputStream(bin);
                 info=(Hashtable)oin.readObject();                
-			}	
+		     } else {
+                       throw new CmsException("User ID:"+id,CmsException.C_NO_USER);
+             }
 			
 		}
 		catch (SQLException e){

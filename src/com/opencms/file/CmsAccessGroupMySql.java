@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/01/11 19:07:50 $
+ * @version $Revision: 1.11 $ $Date: 2000/01/12 10:13:53 $
  */
  class CmsAccessGroupMySql implements I_CmsAccessGroup, I_CmsConstants  {
      
@@ -267,6 +267,8 @@ import com.opencms.core.*;
                                    res.getString(C_GROUP_NAME),
                                    res.getString(C_GROUP_DESCRIPTION),
                                    res.getInt(C_GROUP_FLAGS));                                
+             } else {
+                 throw new CmsException(groupname,CmsException.C_NO_GROUP);
              }
        
          } catch (SQLException e){
@@ -302,6 +304,8 @@ import com.opencms.core.*;
                                    res.getString(C_GROUP_NAME),
                                    res.getString(C_GROUP_DESCRIPTION),
                                    res.getInt(C_GROUP_FLAGS));                                
+             } else {
+                 throw new CmsException(group.getName(),CmsException.C_NO_GROUP);
              }
        
          } catch (SQLException e){

@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/01/05 18:15:22 $
+ * @version $Revision: 1.10 $ $Date: 2000/01/12 10:13:53 $
  */
 class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
      
@@ -193,7 +193,10 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
                 user=new CmsUser(res.getInt(C_USER_ID),
                                  res.getString(C_USER_NAME),
                                  res.getString(C_USER_DESCRIPTION));                                                        
+             } else {
+                 throw new CmsException("User ID:"+userid,CmsException.C_NO_USER);
              }
+             
        
          } catch (SQLException e){
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
@@ -229,6 +232,8 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
                 user=new CmsUser(res.getInt(C_USER_ID),
                                  res.getString(C_USER_NAME),
                                  res.getString(C_USER_DESCRIPTION));                                                        
+             } else {
+               throw new CmsException(username,CmsException.C_NO_ACCESS);  
              }
        
          } catch (SQLException e){

@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/01/11 16:34:00 $
+ * @version $Revision: 1.13 $ $Date: 2000/01/12 10:13:53 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -419,7 +419,7 @@ import com.opencms.core.*;
                 m_statementFileWrite.executeUpdate();
                    
                }
-         } catch (SQLException e){
+         } catch (SQLException e){                        
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
          return readFile(project,onlineProject,filename);
@@ -591,7 +591,7 @@ import com.opencms.core.*;
                                             res.getInt(C_SIZE)
                                            );
                      } else {
-                       throw new CmsException(CmsException.C_NOT_FOUND);  
+                       throw new CmsException(filename,CmsException.C_NOT_FOUND);  
                     }
                  }                 
              } else {
@@ -626,7 +626,7 @@ import com.opencms.core.*;
                    if (res.next()) {
                        file.setContents(res.getBytes(C_FILE_CONTENT));
                    } else {
-                         throw new CmsException(CmsException.C_NOT_FOUND);  
+                         throw new CmsException(filename,CmsException.C_NOT_FOUND);  
                    }
                }               
              }                
@@ -682,10 +682,10 @@ import com.opencms.core.*;
                                            );
                          // check if this resource is marked as deleted
                         if (file.getState() == C_STATE_DELETED) {
-                            throw new CmsException(CmsException.C_NOT_FOUND);  
+                            throw new CmsException(file.getAbsolutePath(),CmsException.C_NOT_FOUND);  
                         }
                } else {
-                 throw new CmsException(CmsException.C_NOT_FOUND);  
+                 throw new CmsException(filename,CmsException.C_NOT_FOUND);  
                }
  
          } catch (SQLException e){
@@ -806,7 +806,7 @@ import com.opencms.core.*;
                         if (res.next()) {
                           content=res.getBytes(C_FILE_CONTENT);
                         } else {
-                          throw new CmsException(CmsException.C_NOT_FOUND);  
+                          throw new CmsException(file.getAbsolutePath(),CmsException.C_NOT_FOUND);  
                         }
                    }
                    // add the file content to the offline project.
@@ -1069,10 +1069,10 @@ import com.opencms.core.*;
                                                );
                         // check if this resource is marked as deleted
                         if (folder.getState() == C_STATE_DELETED) {
-                            throw new CmsException(CmsException.C_NOT_FOUND);  
+                            throw new CmsException(folder.getAbsolutePath(),CmsException.C_NOT_FOUND);  
                         }
                    }else {
-                 throw new CmsException(CmsException.C_NOT_FOUND);  
+                 throw new CmsException(foldername,CmsException.C_NOT_FOUND);  
                }
  
          } catch (SQLException e){
@@ -1437,7 +1437,7 @@ import com.opencms.core.*;
                                            res.getInt(C_SIZE)
                                            );
                } else {
-                 throw new CmsException(CmsException.C_NOT_FOUND);  
+                 throw new CmsException(filename,CmsException.C_NOT_FOUND);  
                }
  
          } catch (SQLException e){

@@ -4,7 +4,7 @@ package com.opencms.core;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/01/11 10:24:30 $
+ * @version $Revision: 1.12 $ $Date: 2000/01/12 10:13:53 $
  */
 public class CmsException extends Exception {
 	
@@ -287,5 +287,16 @@ public class CmsException extends Exception {
 	public Exception getException()	{
 		return m_Exception;
 	}
+    
+    public String toString(){
+         StringBuffer output=new StringBuffer();
+         output.append("[CmsException]: ");
+         output.append(m_Type+" ");
+         output.append(CmsException.C_EXTXT[m_Type]+"\n");
+         output.append("Detailed Error: ");
+         output.append(super.getMessage());
+
+         return output.toString();
+    }
   
 }
