@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceSibling.java,v $
- * Date   : $Date: 2004/04/02 15:52:58 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/04/28 22:30:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,9 +35,10 @@ import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
 
-import java.util.Map;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.3
  */
@@ -105,7 +106,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
     }
 
     /**
-     * Creates the new pointer resource.<p>
+     * Creates the new sibling of a resource.<p>
      * 
      * @throws JspException if inclusion of error dialog fails
      */
@@ -114,16 +115,16 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
             // create the full resource name
             String fullResourceName = computeFullResourceName();
             String newResourceParam = fullResourceName;
-            // the link target
-            String linkTarget = getParamLinkTarget();
-            if (linkTarget == null) {
-                linkTarget = "";
+            // the target
+            String targetName = getParamLinkTarget();
+            if (targetName == null) {
+                targetName = "";
             }
             
             // create the sibling                        
             boolean restoreSiteRoot = false;
             try {
-                if (CmsSiteManager.getSiteRoot(linkTarget) != null) {
+                if (CmsSiteManager.getSiteRoot(targetName) != null) {
                     // add site root to new resource path
                     String siteRootFolder = getCms().getRequestContext().getSiteRoot();
                     if (siteRootFolder.endsWith("/")) {
@@ -137,29 +138,29 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
                 
                 // check if the link target is a file or a folder
                 boolean isFolder = false;               
-                CmsResource targetRes = getCms().readFileHeader(linkTarget);
+                CmsResource targetRes = getCms().readFileHeader(targetName);
                 isFolder = targetRes.isFolder();                 
                 
                 if (isFolder) {                  
                     // link URL is a folder, so copy the folder with all sub resources as siblings
-                    if (linkTarget.endsWith("/")) {
-                        linkTarget = linkTarget.substring(0, linkTarget.length()-1);
+                    if (targetName.endsWith("/")) {
+                        targetName = targetName.substring(0, targetName.length()-1);
                     }                    
                     // copy the folder
-                    getCms().copyResource(linkTarget, fullResourceName, false, true, I_CmsConstants.C_COPY_AS_SIBLING);                                
+                    getCms().copyResource(targetName, fullResourceName, false, true, I_CmsConstants.C_COPY_AS_SIBLING);                                
                 } else {                  
                     // link URL is a file, so create sibling of the link target
-                    Map targetProperties = null; 
+                    List targetProperties = null; 
                     boolean keepProperties = Boolean.valueOf(getParamKeepProperties()).booleanValue();
                     if (keepProperties) {
-                        // keep the properties of the original file
+                        // keep the individual properties of the original file
                         try {
-                            targetProperties = getCms().readProperties(linkTarget);
+                            targetProperties = getCms().readPropertyObjects(targetName, false);
                         } catch (Exception e) {
-                            // ignore
+                            OpenCms.getLog(this).error("Error reading properties of " + targetName, e);
                         }                
                     }
-                    getCms().createSibling(fullResourceName, linkTarget, targetProperties);                   
+                    getCms().createSibling(fullResourceName, targetName, targetProperties);                   
                 }
                 
             } finally {
