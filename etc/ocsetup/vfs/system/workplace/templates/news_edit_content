@@ -14,11 +14,6 @@ function show_help()
 	return '5_2_2_1.html';
 }
 
-function encodeForm()
-{
-	PROJECTNEW.text.value = escape(PROJECTNEW.text.value);
-}
-
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
 //-->
@@ -108,7 +103,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 			<tr><td class=dialogtxt>
 				<table cellspacing=0 border=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="encodeForm();" /><![CDATA[</td>
+					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
 					<td class=formular align=left width=50%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="100" action="window.top.body.location.href=lasturl" /><![CDATA[</td>
 				</tr>
 				</table>
