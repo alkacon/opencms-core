@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/28 11:42:08 $
- * Version: $Revision: 1.143 $
+ * Date   : $Date: 2000/09/28 14:50:18 $
+ * Version: $Revision: 1.144 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.143 $ $Date: 2000/09/28 11:42:08 $
+ * @version $Revision: 1.144 $ $Date: 2000/09/28 14:50:18 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -478,12 +478,11 @@ protected boolean accessOther(CmsUser currentUser, CmsProject currentProject, Cm
 			return false;
 		}
 
-		// TODO: find a way to get this work again
   	// check, if the resource is locked by the current user
-		// if(resource.isLockedBy() != currentUser.getId()) {
+		if(resource.isLockedBy() != currentUser.getId()) {
 			// resource is not locked by the current user, no writing allowed
-			// return(false);					
-		// }
+			return(false);					
+		}
 
 		// check the rights for the current resource
 		if( ! ( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) || 
@@ -1472,7 +1471,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
 			m_subresCache.clear();    
 
 			// write the metainfos
-			writeProperties(currentUser,currentProject,file.getAbsolutePath(), propertyinfos );
+			m_dbAccess.writeProperties(propertyinfos, file.getResourceId(), file.getType());
 
 			// inform about the file-system-change
 			fileSystemChanged();
