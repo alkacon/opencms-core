@@ -1,8 +1,8 @@
 %============================================================================
-\chapter{Building applications with OpenCms}
+\chapter{Building applications with XML templates}
 %============================================================================
 
-\section{Building a navigation with OpenCms (the default navigation class)}
+\section{Building a navigation}
 %============================================================================
 
 In OpenCms, the navigation concept is based on a representation of files and
@@ -31,10 +31,20 @@ from index.html to another name (e.g. news.html), a property
 {\name NavIndex} containing the new file name has to be added to
 the folder.
 
+The OpenCms navigation properties can be easily read from a JSP 
+in OpenCms using the OpenCms taglib or scriptlet API. 
+How to do this is expained in the interactive part of the documentation.
+
+In case you do not want to use JSP, you could also use the OpenCms 
+XML template mechanism to build navigation elements. 
+{\em As of OpenCms 5.0, we recommend the use of JSP to build navigation elements.}
+
+\section{Navigations with XML Templates}
+
 OpenCms brings along a set of methods in the class CmsXmlNav that
 help you build a simple navigation. However, if a navigation with
 extended functionality is needed, a new class extending CmsXmlNav
-has to be written.
+has to be written for with XML Templates (this is not required if you use JSP)
 
 To display the navigation, an element {\name nav} must be defined
 in the frametemplate of the files. In the element definition of
@@ -505,7 +515,7 @@ name is {\name nav.gif}, then the mouse over picture would be nav\_light.gif. \\
 \section{Frames}
 %============================================================================
 
-\subsection{Frames in OpenCms}
+\subsection{Frames with XML templates}
 %============================================================================
 
  \index{frames}
@@ -694,7 +704,7 @@ figure~\ref{frames1}.
 \end{center}
 \end{figure}
 
-\subsection{Frames- and noframes versions of a website}
+\subsection{Frames- and noframes versions of a website with XML templates}
 
 Often a website has to be build in two versions: one with frames,
 and one without frames. This way users with older browsers are

@@ -1,16 +1,14 @@
 \section{The Projectmechanism}
 \index{Projectmechanism}
 
-Since version 4.4 OpenCms contains the new projectmechanism where the offline
-resources only exist once. The projects that can be created are
-views on the offline resources.
+OpenCms contains a projectmechanism where all resources exist at least twice -
+once for the "Online" project and once for all offline projects. If you 
+have enabled versioning, the historic versions of the resources are also 
+saved in a separate backup table space.
 
-The advantages are:
-\begin{itemize}
-\item The offline resources are created only once. They do not have to be copied for each project and no project must be deleted after the resources are published. This saves time when creating new projects and there are less entries in the database.
-\item Because there are at least as much offline resources as online resources it is not necessary to consider the online resources when reading the resources for a project.
-\item In each project always the last version of a resource is shown. So you can not loose changes when publishing a resource that is referenced by more than one project.
-\end{itemize}
+The projects that can be created with the project management are views on a shared set of offline resources.
+If a resource is published, it is copied from the offline space to the online space
+and from the online space to the backup (history) space.
 
 \subsection{Data structure}
 \index{resources data structure} \index{resources online}

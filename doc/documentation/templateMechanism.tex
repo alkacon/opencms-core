@@ -1,9 +1,18 @@
 %==========================================================
 % The template mechanism
 %==========================================================
-\chapter{The template mechanism}
+\chapter{The proprietary XML template mechanism}
 
 \textbf{Since Version 5 of OpenCms, we suggest to build templates and all sub-elements based on Java Server Pages (JSP).} 
+
+The first versions OpenCms supported only a proprietary template mechanism based on XML.
+When the OpenCms project was started there where no open source JSP implementations available. 
+Since this has changed very much today, OpenCms now supports standard JSP for building templates
+and interactive functionality.
+
+The full documentation for the JSP integration is available as an interactive module. 
+Please refer to the introduction chapter of this document for more information on how to obtain 
+this part of the documentation.
 
 Using templates based on JSP offers you some important advantages:
 \begin{itemize}
@@ -15,13 +24,16 @@ Using templates based on JSP offers you some important advantages:
 \item{ JSP templates/elements are localized by using standard Java resource bundles.}
 \end{itemize}
 
-\section{Introduction to the template mechanism}
+The proprietary XML template mechanism is still a part of OpenCms for backward compatibility reasons.
+We recommend the use of JSP templates for new projects.
+
+\section{Introduction to the XML template mechanism}
 %============================================================================
 
 \subsection{The master- frame- and contenttemplate}
 %============================================================================
 
-In this chapter, we start with showing the template mechanism by some examples that should be
+In this chapter, we start with showing the XML template mechanism by some examples that should be
 modified by you. This way you should get used to the system and see that most templates can
 easily be modified from the interface point of view. Thus, it is no problem if you don´t
 understand all tags and functions that are used at the beginning, they will all be explained
@@ -226,7 +238,7 @@ the {\name Hello, world!} text from the contenttemplate. The title
 of the page is the title that was defined in the frametemplate.
 
 
-\subsection{Using methods in templates}
+\subsection{Using methods in XML templates}
 %============================================================================
 
 We will now create a new frametemplate that uses a method of the OpenCms system 
@@ -489,7 +501,7 @@ standard HTML features as e.g. tables and the XML tags together.
 You can now try to change the layout of the page and edit the
 frametemplate and contenttemplate. 
 
-\section{Templates and directories}
+\section{XML templates and directories}
 %============================================================================
 
 \subsection{The XML structure of a template}
@@ -616,7 +628,7 @@ navigation element.
 \clearpage 
 
 
-\section{Details of the template mechanism}
+\section{Details of the proprietary XML template mechanism}
 %============================================================================
 
 \subsection{Using data blocks}
@@ -1682,7 +1694,7 @@ template as a template with the special name "script" as follows:
 </XMLTEMPLATE>\\
 \end{xml}
 
-\subsection{Standard methods of the OpenCms template mechanism}
+\subsection{Methods of the proprietary XML template mechanism}
 %============================================================================
 
 The class {\class com.opencms.template.CmsXmlTemplate} defines a number of basic
@@ -1881,10 +1893,18 @@ Starts creating the content of a template file.\\ \hline
 \label{element cache}
 \index{element cache}
 \index{caching}
+
 The creation of dynamic content in OpenCms is a relatively performance and
-time consuming task. Therefore OpenCms provides an element caching mechanism 
-to speed up the delivery of pages created with OpenCms.
-If the caching is activated the content of elements will only be created dynamically 
+time consuming task (especially because the medicore runtime performance of the XML template mechanism). 
+Therefore OpenCms provides an element caching mechanism 
+to speed up the delivery of pages created with the XML templates.
+
+{\em Please note:} The element cache is only required if you use XML templates, in case you use 
+JSP based templates you do not need to bother about it. 
+For JSP templates there is a new cache available called the FlexCache. 
+The FlexCache is described in detail in the interactice part of the documentation.
+
+If the element caching is activated the content of elements will only be created dynamically 
 when a specific element is used the first time. At the second request 
 the content of the element will be fetched from the element cache. The caching
 only affects resources in the online project, resources in offline projects are not cached.
