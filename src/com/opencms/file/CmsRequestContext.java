@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/07/14 18:43:54 $
-* Version: $Revision: 1.79 $
+* Date   : $Date: 2003/07/16 18:08:55 $
+* Version: $Revision: 1.80 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.79 $ $Date: 2003/07/14 18:43:54 $
+ * @version $Revision: 1.80 $ $Date: 2003/07/16 18:08:55 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -562,25 +562,23 @@ public class CmsRequestContext implements I_CmsConstants {
     }
 
     /**
-     * Returns the adjusted full site root for a resoure.<p>
+     * Returns the adjusted site root for a resoure that has the full path 
+     * set, e.g. /default/vfs/system/.<p>
      * 
      * @param resourcename the resource name to get the full adjusted site root for
-     * @return the full adjusted site root for a resoure
+     * @return the adjusted site root for a resoure
      */      
     public String getAdjustedFullSiteRoot(String resourcename) {
-        String siteRoot;
-        
         if (resourcename.startsWith(C_VFS_DEFAULT + "/system/")) {
-            siteRoot = C_VFS_DEFAULT;
+            return C_VFS_DEFAULT;
         } else {
-            siteRoot = m_siteRoot;
+            return m_siteRoot;
         }
-        
-        return siteRoot;
     }
     
     /**
-     * Returns the adjusted site root for a resoure.<p>
+     * Returns the adjusted site root for a resoure that has not the full path
+     * set, e.g. /system/.<p>
      * 
      * @param resourcename the resource name to get the adjusted site root for
      * @return the adjusted site root for a resoure
@@ -590,7 +588,7 @@ public class CmsRequestContext implements I_CmsConstants {
             return C_VFS_DEFAULT;
         } else {
             return m_siteRoot;
-        }        
+        }  
     }
     
     /**
@@ -607,7 +605,12 @@ public class CmsRequestContext implements I_CmsConstants {
      * @param root the name of the new root directory
      */
     public void setSiteRoot(String root) {
-        m_siteRoot = root;
+        // site roots must never end with a "/"
+        if (root.endsWith("/")) {
+            m_siteRoot = root.substring(0, root.length()-1);
+        } else {        
+            m_siteRoot = root;
+        }
     }
     
     /**

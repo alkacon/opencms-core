@@ -22,6 +22,7 @@ createPropertydefinition Description folder
 createPropertydefinition Keywords folder
 createPropertydefinition ChannelId folder
 createPropertydefinition relativeroot folder
+createPropertydefinition siteroot folder
 createPropertydefinition TemplateType plain
 createPropertydefinition TemplateType compatiblePlain
 createPropertydefinition TemplateType XMLTemplate

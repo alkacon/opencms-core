@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/15 18:42:07 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2003/07/16 18:08:55 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -56,6 +56,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
 
     /** Internal debug flag */
     private static final int DEBUG = 0;
+    
+    /** Flag for support of old duplicate "/system/bodies/" folder */
+    private static final boolean C_BODY_MIRROR = false;
 
     /**
      * @see com.opencms.file.I_CmsResourceType#getResourceType()
@@ -154,12 +157,14 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             // touch the folder itself
             cms.doTouch(cms.readAbsolutePath(currentFolder), timestamp);
 
-            // touch its counterpart under content/bodies
-            String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + cms.readAbsolutePath(currentFolder);
-            try {
-                cms.readFolder(bodyFolder);
-                cms.doTouch(bodyFolder, timestamp);
-            } catch (CmsException e) { }
+            if (C_BODY_MIRROR) {
+                // touch its counterpart under content/bodies
+                String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + cms.readAbsolutePath(currentFolder);
+                try {
+                    cms.readFolder(bodyFolder);
+                    cms.doTouch(bodyFolder, timestamp);
+                } catch (CmsException e) { }
+            }
         }
 
         // touch the files/resources that we collected before
@@ -221,12 +226,14 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
                 cms.copyResource(cms.readAbsolutePath(curFile), curDest, keepFlags);
             }
         }
-        // copy the content bodys
-        try {
-            copyResource(cms, I_CmsWpConstants.C_VFS_PATH_BODIES + source.substring(1), I_CmsWpConstants.C_VFS_PATH_BODIES + destination.substring(1), keepFlags);
-            // finaly lock the copy in content bodys if it exists.
-            cms.lockResource(I_CmsWpConstants.C_VFS_PATH_BODIES + destination.substring(1));
-        } catch (CmsException e) { }
+        if (C_BODY_MIRROR) {
+            // copy the content bodys
+            try {
+                copyResource(cms, I_CmsWpConstants.C_VFS_PATH_BODIES + source.substring(1), I_CmsWpConstants.C_VFS_PATH_BODIES + destination.substring(1), keepFlags);
+                // finaly lock the copy in content bodys if it exists.
+                cms.lockResource(I_CmsWpConstants.C_VFS_PATH_BODIES + destination.substring(1));
+            } catch (CmsException e) { }
+        }
     }
 
     /**
@@ -235,14 +242,16 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     public void copyResourceToProject(CmsObject cms, String resourceName) throws CmsException {
         // copy the folder to the current project
         cms.doCopyResourceToProject(resourceName);
-        // try to copy the corresponding folder in C_VFS_PATH_BODIES to the project
-        try {
-            CmsResource contentFolder = (CmsResource)cms.readFolder(I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + resourceName, true);
-            if (contentFolder != null) {
-                cms.doCopyResourceToProject(cms.readAbsolutePath(contentFolder));
+        if (C_BODY_MIRROR) {
+            // try to copy the corresponding folder in C_VFS_PATH_BODIES to the project
+            try {
+                CmsResource contentFolder = (CmsResource)cms.readFolder(I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + resourceName, true);
+                if (contentFolder != null) {
+                    cms.doCopyResourceToProject(cms.readAbsolutePath(contentFolder));
+                }
+            } catch (CmsException e) {
+                // cannot read the folder in C_VFS_PATH_BODIES so do nothing
             }
-        } catch (CmsException e) {
-            // cannot read the folder in C_VFS_PATH_BODIES so do nothing
         }
     }
 
@@ -289,13 +298,15 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
 
         // finaly the folder
         cms.doDeleteFolder(folder);
-        // delete the corresponding folder in C_VFS_PATH_BODIES
-        String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + folder;
-        try {
-            cms.readFolder(bodyFolder);
-            cms.deleteResource(bodyFolder);
-        } catch (CmsException ex) {
-            // no folder is there, so do nothing
+        if (C_BODY_MIRROR) {
+            // delete the corresponding folder in C_VFS_PATH_BODIES
+            String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + folder;
+            try {
+                cms.readFolder(bodyFolder);
+                cms.deleteResource(bodyFolder);
+            } catch (CmsException ex) {
+                // no folder is there, so do nothing
+            }
         }
     }
 
@@ -328,14 +339,16 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         if (folder.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES)) {
             return;
         }
-
-        // undelete the corresponding folder in C_VFS_PATH_BODIES
-        String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + folder;
-        try {
-            cms.readFolder(bodyFolder, true);
-            cms.undeleteResource(bodyFolder);
-        } catch (CmsException ex) {
-            // no folder is there, so do nothing
+    
+        if (C_BODY_MIRROR) {
+            // undelete the corresponding folder in C_VFS_PATH_BODIES
+            String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + folder;
+            try {
+                cms.readFolder(bodyFolder, true);
+                cms.undeleteResource(bodyFolder);
+            } catch (CmsException ex) {
+                // no folder is there, so do nothing
+            }
         }
     }
 
@@ -430,11 +443,13 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
      * @see com.opencms.file.I_CmsResourceType#lockResource(com.opencms.file.CmsObject, java.lang.String, boolean)
      */
     public void lockResource(CmsObject cms, String resource, boolean force) throws CmsException {
-        // first lock the folder in the C_VFS_PATH_BODIES path if it exists.
-        try {
-            cms.doLockResource(I_CmsWpConstants.C_VFS_PATH_BODIES + resource.substring(1), force);
-        } catch (CmsException e) {
-            // ignore the error. this folder doesent exist.
+        if (C_BODY_MIRROR) {
+            // first lock the folder in the C_VFS_PATH_BODIES path if it exists.
+            try {
+                cms.doLockResource(I_CmsWpConstants.C_VFS_PATH_BODIES + resource.substring(1), force);
+            } catch (CmsException e) {
+                // ignore the error. this folder doesent exist.
+            }
         }
         // now lock the folder
         cms.doLockResource(resource, force);
@@ -456,11 +471,13 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         // rename the folder itself
         cms.doRenameResource(oldname, newname);
 
-        oldname = oldname.substring(1);
-        String bodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES + oldname;
+        if (C_BODY_MIRROR) {
+            oldname = oldname.substring(1);
+            String bodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES + oldname;
 
-        // rename the corresponding body folder
-        cms.doRenameResource(bodyPath, newname);
+            // rename the corresponding body folder
+            cms.doRenameResource(bodyPath, newname);
+        }
     }
 
     /**
@@ -486,18 +503,20 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         // first undo changes of the folder
         cms.doUndoChanges(resource);
 
-        // check if there is a corrosponding body folder
-        String bodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES + resource.substring(1);
-        boolean hasBodyFolder = false;
-        try {
-            cms.readFileHeader(bodyPath);
-            hasBodyFolder = true;
-        } catch (CmsException e) {
-            // body folder not found or no access, so ignore it
-        }
-        // undo changes in the corresponding folder in C_VFS_PATH_BODIES          
-        if (hasBodyFolder) {
-            cms.doUndoChanges(bodyPath);
+        if (C_BODY_MIRROR) {
+            // check if there is a corrosponding body folder
+            String bodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES + resource.substring(1);
+            boolean hasBodyFolder = false;
+            try {
+                cms.readFileHeader(bodyPath);
+                hasBodyFolder = true;
+            } catch (CmsException e) {
+                // body folder not found or no access, so ignore it
+            }
+            // undo changes in the corresponding folder in C_VFS_PATH_BODIES          
+            if (hasBodyFolder) {
+                cms.doUndoChanges(bodyPath);
+            }
         }
 
         // TODO: Implement optional "recurse" function 
@@ -549,11 +568,13 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
      * @see com.opencms.file.I_CmsResourceType#unlockResource(com.opencms.file.CmsObject, java.lang.String, boolean)
      */
     public void unlockResource(CmsObject cms, String resource, boolean forceRecursive) throws CmsException {
-        // first unlock the folder in the C_VFS_PATH_BODIES path if it exists.
-        try {
-            cms.doUnlockResource(I_CmsWpConstants.C_VFS_PATH_BODIES + resource.substring(1));
-        } catch (CmsException e) {
-            // ignore the error. this folder doesent exist.
+        if (C_BODY_MIRROR) {
+            // first unlock the folder in the C_VFS_PATH_BODIES path if it exists.
+            try {
+                cms.doUnlockResource(I_CmsWpConstants.C_VFS_PATH_BODIES + resource.substring(1));
+            } catch (CmsException e) {
+                // ignore the error. this folder doesent exist.
+            }
         }
         // now unlock the folder
         cms.doUnlockResource(resource);
@@ -600,13 +621,15 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         }
         // finally the folder
         cms.doChangeLockedInProject(newProjectId, resourcename);
-        // change the corresponding folder in C_VFS_PATH_BODIES
-        String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + resourcename;
-        try {
-            cms.readFolder(bodyFolder, true);
-            changeLockedInProject(cms, newProjectId, bodyFolder);
-        } catch (CmsException ex) {
-            // no folder is there, so do nothing
+        if (C_BODY_MIRROR) {
+            // change the corresponding folder in C_VFS_PATH_BODIES
+            String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + resourcename;
+            try {
+                cms.readFolder(bodyFolder, true);
+                changeLockedInProject(cms, newProjectId, bodyFolder);
+            } catch (CmsException ex) {
+                // no folder is there, so do nothing
+            }
         }
     }
 

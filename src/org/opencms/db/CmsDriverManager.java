@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/16 16:34:49 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2003/07/16 18:08:55 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.58 $ $Date: 2003/07/16 16:34:49 $
+ * @version $Revision: 1.59 $ $Date: 2003/07/16 18:08:55 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -6372,7 +6372,11 @@ public class CmsDriverManager extends Object {
 
         // read the (optional) last file resource in the path /x.html
         if (lastResourceIsFile) {
-            currentResourceName = tokens.nextToken();
+            if (tokens.hasMoreTokens()) {
+                // this will only be false if a resource in the 
+                // top level root folder (e.g. "/index.html") was requested
+                currentResourceName = tokens.nextToken();
+            }
             currentPath += currentResourceName;
 
             // read the file

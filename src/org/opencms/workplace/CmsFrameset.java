@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2003/07/15 12:30:13 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/07/16 18:08:55 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,8 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.site.CmsSite;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
@@ -40,6 +42,7 @@ import com.opencms.util.LinkSubstitution;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -56,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1
  */
@@ -215,23 +218,25 @@ public class CmsFrameset extends CmsWorkplace {
      * @return a html select box filled with the current users accessible sites
      */
     public String getSiteSelect(String htmlAttributes) {
-        
-        // this is just a first dummy implementation, so we use the existing constants
-        String[] sites = new String[] {I_CmsConstants.C_VFS_DEFAULT, I_CmsConstants.C_COS_DEFAULT, I_CmsConstants.C_VFS_DEFAULT + "/release"};
-        
+
         List options = new ArrayList();
         List values = new ArrayList();    
-        int selectedIndex = 0;           
-        
-        for (int i = 0; i < sites.length; i++) {  
-            values.add(sites[i]);
-            options.add(sites[i]);
-            
-            if (sites[i].equals(getSettings().getSite())) {
+        int selectedIndex = 0;                   
+
+        List sites = CmsSite.getAvailableSites(getCms());
+
+        Iterator i = sites.iterator();
+        int pos = 0;
+        while (i.hasNext()) {
+            CmsSite site = (CmsSite)i.next();
+            values.add(site.getSiteRoot());
+            options.add(site.getName());
+            if (site.getSiteRoot().equals(getSettings().getSite())) { 
                 // this is the user's current site
-                selectedIndex = i;
+                selectedIndex = pos;
             }
-        }          
+            pos++;
+        }
         
         return buildSelect(htmlAttributes, options, values, selectedIndex);
     }    
