@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/20 15:20:22 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/05/20 16:36:24 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -81,6 +81,9 @@ public class CmsDbAccess {
 
     /** The root channel of the module */
     protected String m_rootChannel = "/";
+    
+    /** TODO: delete this after successful change of dbpool */
+    private String m_interimOfflinePoolUrl;
 
     /**
      * Public empty constructor, call "init()" on this class afterwards.
@@ -104,9 +107,10 @@ public class CmsDbAccess {
      * Initializes the DBAccessObject.
      */
     public void init(String offline, String online, String backup) {
-        m_poolName = online;
-        m_onlinePoolName = offline;
-        m_backupPoolName = backup;
+        m_interimOfflinePoolUrl = offline;
+        m_poolName = CmsDbcp.C_DBCP_JDBC_URL_PREFIX+ offline;
+        m_onlinePoolName = CmsDbcp.C_DBCP_JDBC_URL_PREFIX+online;
+        m_backupPoolName = CmsDbcp.C_DBCP_JDBC_URL_PREFIX+backup;
         m_queries = new Properties();
         // collect all query.properties in all packages of superclasses
         loadQueries(getClass());
@@ -159,20 +163,20 @@ public class CmsDbAccess {
         dataset.m_dateCreated = currentTime;
         dataset.m_dateLastModified = currentTime;
 
-        PreparedStatement stmnt = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(CmsDbcp.C_DBCP_JDBC_URL_PREFIX + m_poolName);
-            stmnt = sqlPrepare(con, "insert_offline");
-            sqlFillValues(stmnt, content.getSubId(), dataset);
-            stmnt.executeUpdate();
+            conn = DriverManager.getConnection(m_poolName);
+            stmt = sqlPrepare(conn, "insert_offline");
+            sqlFillValues(stmt, content.getSubId(), dataset);
+            stmt.executeUpdate();
             // after inserting the row, we have to update media and channel tables
             updateMedia(dataset.m_masterId, dataset.m_mediaToAdd, new Vector(), new Vector());
             updateChannels(cms, dataset.m_masterId, dataset.m_channelToAdd, dataset.m_channelToDelete);
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, null);
+            sqlClose(conn, stmt, null);
         }
     }
 
@@ -216,20 +220,20 @@ public class CmsDbAccess {
         dataset.m_dateCreated = currentTime;
         dataset.m_dateLastModified = currentTime;
 
-        PreparedStatement stmnt = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            stmnt = sqlPrepare(con, "insert_offline");
-            sqlFillValues(stmnt, content.getSubId(), dataset);
-            stmnt.executeUpdate();
+            conn = DriverManager.getConnection(m_poolName);
+            stmt = sqlPrepare(conn, "insert_offline");
+            sqlFillValues(stmt, content.getSubId(), dataset);
+            stmt.executeUpdate();
             // after inserting the row, we have to update media and channel tables
             updateMedia(dataset.m_masterId, mediaToAdd, new Vector(), new Vector());
             updateChannels(cms, dataset.m_masterId, channelToAdd, new Vector());
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, null);
+            sqlClose(conn, stmt, null);
         }
         return newMasterId;
     }
@@ -257,24 +261,24 @@ public class CmsDbAccess {
         } else {
         */
         if (!dataset.m_lockedBy.isNullUUID()) {
-            // lock the ressource into the current project
+            // lock the resource into the current project
             dataset.m_lockedInProject = cms.getRequestContext().currentProject().getId();
         }
 
-        PreparedStatement stmnt = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            stmnt = sqlPrepare(con, "update_lockstate_offline");
-            stmnt.setString(1, dataset.m_lockedBy.toString());
-            stmnt.setInt(2, dataset.m_lockedInProject);
-            stmnt.setString(3, dataset.m_masterId.toString());
-            stmnt.setInt(4, content.getSubId());
-            stmnt.executeUpdate();
+            conn = DriverManager.getConnection(m_poolName);
+            stmt = sqlPrepare(conn, "update_lockstate_offline");
+            stmt.setString(1, dataset.m_lockedBy.toString());
+            stmt.setInt(2, dataset.m_lockedInProject);
+            stmt.setString(3, dataset.m_masterId.toString());
+            stmt.setInt(4, content.getSubId());
+            stmt.executeUpdate();
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, null);
+            sqlClose(conn, stmt, null);
         }
     }
 
@@ -319,22 +323,22 @@ public class CmsDbAccess {
         dataset.m_lastModifiedBy = currentUserId;
         dataset.m_dateLastModified = currentTime;
 
-        PreparedStatement stmnt = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            stmnt = sqlPrepare(con, "update_offline");
-            int rowcounter = sqlFillValues(stmnt, content.getSubId(), dataset);
-            stmnt.setString(rowcounter++, dataset.m_masterId.toString());
-            stmnt.setInt(rowcounter++, content.getSubId());
-            stmnt.executeUpdate();
+            conn = DriverManager.getConnection(m_poolName);
+            stmt = sqlPrepare(conn, "update_offline");
+            int rowcounter = sqlFillValues(stmt, content.getSubId(), dataset);
+            stmt.setString(rowcounter++, dataset.m_masterId.toString());
+            stmt.setInt(rowcounter++, content.getSubId());
+            stmt.executeUpdate();
             // after inserting the row, we have to update media and channel tables
             updateMedia(dataset.m_masterId, dataset.m_mediaToAdd, dataset.m_mediaToUpdate, dataset.m_mediaToDelete);
             updateChannels(cms, dataset.m_masterId, dataset.m_channelToAdd, dataset.m_channelToDelete);
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, null);
+            sqlClose(conn, stmt, null);
         }
     }
 
@@ -356,15 +360,15 @@ public class CmsDbAccess {
             poolToUse = m_onlinePoolName;
         }
 
-        PreparedStatement stmnt = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(poolToUse);
-            stmnt = sqlPrepare(con, statement_key);
-            stmnt.setString(1, contentId.toString());
-            stmnt.setInt(2, content.getSubId());
-            res = stmnt.executeQuery();
+            conn = DriverManager.getConnection(poolToUse);
+            stmt = sqlPrepare(conn, statement_key);
+            stmt.setString(1, contentId.toString());
+            stmt.setInt(2, content.getSubId());
+            res = stmt.executeQuery();
             if(res.next()) {
                 sqlFillValues(res, cms, dataset);
             } else {
@@ -376,7 +380,7 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, res);
+            sqlClose(conn, stmt, res);
         }
     }
 
@@ -387,15 +391,15 @@ public class CmsDbAccess {
      * @param subId the subId of this cd
      */
     protected void readLockstate(CmsMasterDataSet dataset, int subId) throws CmsException {
-        PreparedStatement stmnt = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            stmnt = sqlPrepare(con, "read_lockstate_offline");
-            stmnt.setString(1, dataset.m_masterId.toString());
-            stmnt.setInt(2, subId);
-            res = stmnt.executeQuery();
+            conn = DriverManager.getConnection(m_poolName);
+            stmt = sqlPrepare(conn, "read_lockstate_offline");
+            stmt.setString(1, dataset.m_masterId.toString());
+            stmt.setInt(2, subId);
+            res = stmt.executeQuery();
             if(res.next()) {
                 // update the values
                 dataset.m_lockedInProject = res.getInt(1);
@@ -406,7 +410,7 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, res);
+            sqlClose(conn, stmt, res);
         }
     }
 
@@ -430,14 +434,14 @@ public class CmsDbAccess {
             poolToUse = m_onlinePoolName;
         }
 
-        PreparedStatement stmnt = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(poolToUse);
-            stmnt = sqlPrepare(con, statement_key);
-            stmnt.setString(1, content.getId().toString());
-            res = stmnt.executeQuery();
+            conn = DriverManager.getConnection(poolToUse);
+            stmt = sqlPrepare(conn, statement_key);
+            stmt.setString(1, content.getId().toString());
+            res = stmt.executeQuery();
             while(res.next()) {
                 int i = 1;
                 retValue.add(new CmsMasterMedia (
@@ -458,7 +462,7 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, res);
+            sqlClose(conn, stmt, res);
         }
         return retValue;
     }
@@ -483,14 +487,14 @@ public class CmsDbAccess {
             poolToUse = m_onlinePoolName;
         }
 
-        PreparedStatement stmnt = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(poolToUse);
-            stmnt = sqlPrepare(con, statement_key);
-            stmnt.setString(1, content.getId().toString());
-            res = stmnt.executeQuery();
+            conn = DriverManager.getConnection(poolToUse);
+            stmt = sqlPrepare(conn, statement_key);
+            stmt.setString(1, content.getId().toString());
+            res = stmt.executeQuery();
             while(res.next()) {
                 // get the channel id
                 int channeldId = res.getInt(1);
@@ -514,7 +518,7 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, res);
+            sqlClose(conn, stmt, res);
         }
         return retValue;
     }
@@ -535,15 +539,15 @@ public class CmsDbAccess {
             poolToUse = m_onlinePoolName;
         }
 
-        PreparedStatement stmnt = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(poolToUse);
-            stmnt = sqlPrepare(con, statement_key);
-            stmnt.setInt(1, subId);
-            stmnt.setInt(2, channelId);
-            res = stmnt.executeQuery();
+            conn = DriverManager.getConnection(poolToUse);
+            stmt = sqlPrepare(conn, statement_key);
+            stmt.setInt(1, subId);
+            stmt.setInt(2, channelId);
+            res = stmt.executeQuery();
             while(res.next()) {
                 CmsMasterDataSet dataset = new CmsMasterDataSet();
                 sqlFillValues(res, cms, dataset);
@@ -552,7 +556,7 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, res);
+            sqlClose(conn, stmt, res);
         }
         return theDataSets;
     }
@@ -591,14 +595,14 @@ public class CmsDbAccess {
         if(dataset.m_state == I_CmsConstants.C_STATE_NEW) {
             // this is a new line in this project and can be deleted
             String statement_key = "delete_offline";
-            PreparedStatement stmnt = null;
-            Connection con = null;
+            PreparedStatement stmt = null;
+            Connection conn = null;
             try {
-                con = DriverManager.getConnection(m_poolName);
-                stmnt = sqlPrepare(con, statement_key);
-                stmnt.setString(1, dataset.m_masterId.toString());
-                stmnt.setInt(2, content.getSubId());
-                if(stmnt.executeUpdate() != 1) {
+                conn = DriverManager.getConnection(m_poolName);
+                stmt = sqlPrepare(conn, statement_key);
+                stmt.setString(1, dataset.m_masterId.toString());
+                stmt.setInt(2, content.getSubId());
+                if(stmt.executeUpdate() != 1) {
                     // no line deleted - row wasn't found
                     throw new CmsException("Row not found: " + dataset.m_masterId + " " + content.getSubId(), CmsException.C_NOT_FOUND);
                 }
@@ -608,25 +612,25 @@ public class CmsDbAccess {
             } catch(SQLException exc) {
                 throw new CmsException(CmsException.C_SQL_ERROR, exc);
             } finally {
-                sqlClose(con, stmnt, null);
+                sqlClose(conn, stmt, null);
             }
         } else {
             // set state to deleted and update the line
             dataset.m_state = I_CmsConstants.C_STATE_DELETED;
             dataset.m_lockedBy = CmsUUID.getNullUUID();
-            PreparedStatement stmnt = null;
-            Connection con = null;
+            PreparedStatement stmt = null;
+            Connection conn = null;
             try {
-                con = DriverManager.getConnection(m_poolName);
-                stmnt = sqlPrepare(con, "update_offline");
-                int rowcounter = sqlFillValues(stmnt, content.getSubId(), dataset);
-                stmnt.setString(rowcounter++, dataset.m_masterId.toString());
-                stmnt.setInt(rowcounter++, content.getSubId());
-                stmnt.executeUpdate();
+                conn = DriverManager.getConnection(m_poolName);
+                stmt = sqlPrepare(conn, "update_offline");
+                int rowcounter = sqlFillValues(stmt, content.getSubId(), dataset);
+                stmt.setString(rowcounter++, dataset.m_masterId.toString());
+                stmt.setInt(rowcounter++, content.getSubId());
+                stmt.executeUpdate();
             } catch(SQLException exc) {
                 throw new CmsException(CmsException.C_SQL_ERROR, exc);
             } finally {
-                sqlClose(con, stmnt, null);
+                sqlClose(conn, stmt, null);
             }
         }
     }
@@ -655,19 +659,19 @@ public class CmsDbAccess {
         dataset.m_state = I_CmsConstants.C_STATE_CHANGED;
         dataset.m_lockedBy = cms.getRequestContext().currentUser().getId();
         dataset.m_lockedInProject = cms.getRequestContext().currentProject().getId();
-        PreparedStatement stmnt = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            stmnt = sqlPrepare(con, "update_offline");
-            int rowcounter = sqlFillValues(stmnt, content.getSubId(), dataset);
-            stmnt.setString(rowcounter++, dataset.m_masterId.toString());
-            stmnt.setInt(rowcounter++, content.getSubId());
-            stmnt.executeUpdate();
+            conn = DriverManager.getConnection(m_poolName);
+            stmt = sqlPrepare(conn, "update_offline");
+            int rowcounter = sqlFillValues(stmt, content.getSubId(), dataset);
+            stmt.setString(rowcounter++, dataset.m_masterId.toString());
+            stmt.setInt(rowcounter++, content.getSubId());
+            stmt.executeUpdate();
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, null);
+            sqlClose(conn, stmt, null);
         }
     }
 
@@ -708,24 +712,24 @@ public class CmsDbAccess {
         dataset.m_dateLastModified = System.currentTimeMillis();
         dataset.m_lastModifiedBy = cms.getRequestContext().currentUser().getId();
         // update the line
-        PreparedStatement stmnt = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            stmnt = sqlPrepare(con, "update_permissions_offline");
-            stmnt.setString(1, dataset.m_userId.toString());
-            stmnt.setString(2, dataset.m_groupId.toString());
-            stmnt.setInt(3, dataset.m_accessFlags);
-            stmnt.setInt(4, dataset.m_state);
-            stmnt.setString(5, dataset.m_lastModifiedBy.toString());
-            stmnt.setTimestamp(6, new Timestamp(dataset.m_dateLastModified));
-            stmnt.setString(7, dataset.m_masterId.toString());
-            stmnt.setInt(8, content.getSubId());
-            stmnt.executeUpdate();
+            conn = DriverManager.getConnection(m_poolName);
+            stmt = sqlPrepare(conn, "update_permissions_offline");
+            stmt.setString(1, dataset.m_userId.toString());
+            stmt.setString(2, dataset.m_groupId.toString());
+            stmt.setInt(3, dataset.m_accessFlags);
+            stmt.setInt(4, dataset.m_state);
+            stmt.setString(5, dataset.m_lastModifiedBy.toString());
+            stmt.setTimestamp(6, new Timestamp(dataset.m_dateLastModified));
+            stmt.setString(7, dataset.m_masterId.toString());
+            stmt.setInt(8, content.getSubId());
+            stmt.executeUpdate();
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, null);
+            sqlClose(conn, stmt, null);
         }
     }
 
@@ -1061,15 +1065,15 @@ public class CmsDbAccess {
             String statement_key = "read_channel_offline";
             String poolToUse = m_poolName;
 
-            PreparedStatement stmnt = null;
+            PreparedStatement stmt = null;
             ResultSet res = null;
-            Connection con = null;
+            Connection conn = null;
             try {
                 cms.setContextToCos();
-                con = DriverManager.getConnection(poolToUse);
-                stmnt = sqlPrepare(con, statement_key);
-                stmnt.setString(1, dataset.m_masterId.toString());
-                res = stmnt.executeQuery();
+                conn = DriverManager.getConnection(poolToUse);
+                stmt = sqlPrepare(conn, statement_key);
+                stmt.setString(1, dataset.m_masterId.toString());
+                res = stmt.executeQuery();
                 while(res.next()) {
                     // get the channel id
                     int channeldId = res.getInt(1);
@@ -1092,7 +1096,7 @@ public class CmsDbAccess {
                 }
             } finally {
                 cms.setContextToVfs();
-                sqlClose(con, stmnt, res);
+                sqlClose(conn, stmt, res);
             }
         }
         // no channel found, that belongs to the offlineproject ->
@@ -1320,15 +1324,15 @@ public class CmsDbAccess {
      */
     protected void deleteAllMedia(CmsUUID masterId) throws SQLException {
         String statement_key = "delete_all_media_offline";
-        PreparedStatement stmnt = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            stmnt = sqlPrepare(con, statement_key);
-            stmnt.setString(1, masterId.toString());
-            stmnt.executeUpdate();
+            conn = DriverManager.getConnection(m_poolName);
+            stmt = sqlPrepare(conn, statement_key);
+            stmt.setString(1, masterId.toString());
+            stmt.executeUpdate();
         } finally {
-            sqlClose(con, stmnt, null);
+            sqlClose(conn, stmt, null);
         }
     }
 
@@ -1339,15 +1343,15 @@ public class CmsDbAccess {
      */
     protected void deleteAllChannels(CmsUUID masterId) throws SQLException {
         String statement_key = "delete_all_channel_offline";
-        PreparedStatement stmnt = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            stmnt = sqlPrepare(con, statement_key);
-            stmnt.setString(1, masterId.toString());
-            stmnt.executeUpdate();
+            conn = DriverManager.getConnection(m_poolName);
+            stmt = sqlPrepare(conn, statement_key);
+            stmt.setString(1, masterId.toString());
+            stmt.executeUpdate();
         } finally {
-            sqlClose(con, stmnt, null);
+            sqlClose(conn, stmt, null);
         }
     }
 
@@ -1372,7 +1376,7 @@ public class CmsDbAccess {
             stmnt = sqlPrepare(con, "insert_media_offline");
             for(int i = 0; i < mediaToAdd.size(); i++) {
                 CmsMasterMedia media = (CmsMasterMedia) mediaToAdd.get(i);
-                media.setId(CmsIdGenerator.nextId(m_poolName, "CMS_MODULE_MEDIA"));
+                media.setId(CmsIdGenerator.nextId(m_interimOfflinePoolUrl, "CMS_MODULE_MEDIA"));
                 media.setMasterId(masterId);
                 sqlFillValues(stmnt, media);
                 stmnt.executeUpdate();
@@ -2148,6 +2152,6 @@ public class CmsDbAccess {
         } else {
             poolToUse = m_poolName;
         }
-        return DriverManager.getConnection(CmsDbcp.C_DBCP_JDBC_URL_PREFIX + poolToUse);
+        return DriverManager.getConnection(poolToUse);
     }
 }

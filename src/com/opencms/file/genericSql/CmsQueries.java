@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2003/05/20 13:25:18 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2003/05/20 16:36:24 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import com.opencms.dbpool.CmsDbcp;
 import com.opencms.file.CmsProject;
 
 import java.io.ByteArrayInputStream;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -65,9 +66,9 @@ import java.util.Properties;
  * TODO: multiple instances of this class should not load the same property hashes multiple times.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.51 $ $Date: 2003/05/20 13:25:18 $
+ * @version $Revision: 1.52 $ $Date: 2003/05/20 16:36:24 $
  */
-public class CmsQueries extends Object {
+public class CmsQueries extends Object implements Serializable, Cloneable {
 
     private static Properties m_queries = null;
     

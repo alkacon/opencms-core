@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/20 15:19:38 $
-* Version: $Revision: 1.288 $
+* Date   : $Date: 2003/05/20 16:36:24 $
+* Version: $Revision: 1.289 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.288 $ $Date: 2003/05/20 15:19:38 $ *
+ * @version $Revision: 1.289 $ $Date: 2003/05/20 16:36:24 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
@@ -98,32 +98,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
      * Table-key for max-id
      */
-    protected static String C_TABLE_GROUPS = "CMS_GROUPS";
-
-    /**
-     * Table-key for max-id
-     */
-    protected static String C_TABLE_GROUPUSERS = "CMS_GROUPUSERS";
-
-    /**
-     * Table-key for max-id
-     */
-    protected static String C_TABLE_USERS = "CMS_USERS";
-
-    /**
-     * Table-key for max-id
-     */
     protected static String C_TABLE_PROJECTS = "CMS_PROJECTS";
-
-    /**
-     * Table-key for max-id
-     */
-    protected static String C_TABLE_RESOURCES = "CMS_RESOURCES";
-
-    /**
-     * Table-key for max-id
-     */
-    protected static String C_TABLE_FILES = "CMS_FILES";
 
     /**
      * Table-key for max-id

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/05/20 11:30:51 $
-* Version: $Revision: 1.382 $
+* Date   : $Date: 2003/05/20 16:36:24 $
+* Version: $Revision: 1.383 $
 
 *
 * This library is part of OpenCms -
@@ -35,6 +35,7 @@ import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.dbpool.CmsDbcp;
+import com.opencms.dbpool.CmsIdGenerator;
 import com.opencms.file.*;
 import com.opencms.flex.util.CmsLruHashMap;
 import com.opencms.flex.util.CmsUUID;
@@ -70,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.382 $ $Date: 2003/05/20 11:30:51 $
+ * @version $Revision: 1.383 $ $Date: 2003/05/20 16:36:24 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4172,7 +4173,12 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         String userKey = config.getString(CmsDbcp.C_KEY_DATABASE_POOL + "." + CmsDbcp.C_KEY_USER_POOL_KEY);
         String vfsKey = config.getString(CmsDbcp.C_KEY_DATABASE_POOL + "." + CmsDbcp.C_KEY_VFS_POOL_KEY);
         
-        m_defaultPoolUrl = CmsDbcp.createConnectionPool(config,defaultKey);        
+        m_defaultPoolUrl = CmsDbcp.createConnectionPool(config,defaultKey);
+        
+        // set the pool for the COS
+        A_OpenCms.setRuntimeProperty("cosPoolUrl", m_defaultPoolUrl);
+        CmsIdGenerator.setDefaultPool(m_defaultPoolUrl);
+                
         if (userKey.equals(defaultKey)) {
             m_userPoolUrl = m_defaultPoolUrl;
         } else {

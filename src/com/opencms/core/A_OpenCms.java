@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2003/04/10 15:54:53 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/05/20 16:36:24 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.35 $ $Date: 2003/04/10 15:54:53 $
+ * @version $Revision: 1.36 $ $Date: 2003/05/20 16:36:24 $
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 
@@ -215,7 +215,7 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * @param key The key to add the Object with.
      * @param value The value of the Object to add.
      */
-    public void setRuntimeProperty(Object key, Object value) {
+    public static void setRuntimeProperty(Object key, Object value) {
         if (m_runtimeProperties == null) {
             m_runtimeProperties = Collections.synchronizedMap(new HashMap());
         }
