@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2003/01/30 19:14:13 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/02/03 19:47:28 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.37 $ $Date: 2003/01/30 19:14:13 $
+ * @version $Revision: 1.38 $ $Date: 2003/02/03 19:47:28 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -112,8 +112,8 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
 
         // get request parameters
         String newFolder = (String)parameters.get(C_PARA_NEWFOLDER);
-        String title = (String)parameters.get(C_PARA_TITLE);
-        String navtitle = (String)parameters.get(C_PARA_NAVTEXT);
+        String title = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_TITLE));
+        String navtitle = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_NAVTEXT));
         String navpos = (String)parameters.get(C_PARA_NAVPOS);
 
         // get the current phase of this wizard
