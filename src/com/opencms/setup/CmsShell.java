@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/setup/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/02/29 16:44:46 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2000/03/09 16:45:29 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,15 +39,10 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.30 $ $Date: 2000/02/29 16:44:46 $
+ * @version $Revision: 1.31 $ $Date: 2000/03/09 16:45:29 $
  */
 public class CmsShell implements I_CmsConstants {
 	
-	/**
-	 * The resource broker to get access to the cms.
-	 */
-	private I_CmsResourceBroker m_rb;
-
 	/**
 	 * The resource broker to get access to the cms.
 	 */
@@ -92,9 +87,8 @@ public class CmsShell implements I_CmsConstants {
 	 */
 	private void init(String[] args)
 		throws Exception {
-		m_rb = ((A_CmsInit) Class.forName(args[0]).newInstance() ).init(args[1], args[2]);
 		m_cms = new CmsObject();
-		m_cms.init(m_rb);
+		m_cms.init(((A_CmsInit) Class.forName(args[0]).newInstance() ).init(args[1], args[2]));
 		m_cms.init(null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE);
 	}	
 	
