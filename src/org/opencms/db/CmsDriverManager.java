@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/13 11:01:15 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/06/13 13:17:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/06/13 11:01:15 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/13 13:17:22 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -106,7 +106,12 @@ public class CmsDriverManager implements I_CmsConstants {
         }
     }
 
-    // define the VfsAccessGuard
+    /**
+     * Inner class to define the access policy when checking permissions on vfs operations.
+     * 
+	 * @version $Revision: 1.3 $ $Date: 2003/06/13 13:17:22 $
+	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
+	 */
     class VfsAccessGuard extends CmsAccessGuard {
 
 		/*
@@ -122,14 +127,31 @@ public class CmsDriverManager implements I_CmsConstants {
 		public static final int C_CHECK_DEFAULT = C_CHECK_PROJECT|C_CHECK_RESTYPE|C_CHECK_LOCKSTATE;
 		public static final int C_CHECK_IGNORE_LOCK = C_CHECK_PROJECT|C_CHECK_RESTYPE; 
 				    	
+		/**
+		 * Constructor to create a new access guard to secure vfs access operations for a given user in a given project.
+		 * 
+		 * @param user		the user that requests access (typically the current user)
+		 * @param project	the project in which the permissions are evaluated (typically the current project)
+		 * @param checks	flags to define which permission constraints are performed
+		 */
 		public VfsAccessGuard(CmsUser user, CmsProject project, int checks) {
 			super(user, project, checks);    	
 		}
 		
+		/**
+		 * Evaluates the permissions of the given user on a resource within a given project by 
+		 * calculating a permission set following a certain policy.
+		 * 
+		 * @param resource		the resource on which permissions are required
+		 * @param checks 		flags to define the checks performed when evaluating the permissions
+		 * 
+		 * @return a set of allowed and denied permissions for the given user on the resource  
+		 * @throws CmsException if something goes wrong
+		 * @see org.opencms.security.CmsAccessGuard#evaluatePermissions(com.opencms.file.CmsResource, int)
+		 */
 		public CmsPermissionSet evaluatePermissions(CmsResource resource, int checks)  throws CmsException {
 
 			CmsPermissionSet permissions = null;
-			//int allowed = 0;
             int denied = 0;
 			
 			// if this is the onlineproject, write is rejected 
@@ -140,8 +162,8 @@ public class CmsDriverManager implements I_CmsConstants {
 			// write is only allowed for administrators
 			if ((checks & C_CHECK_RESTYPE) > 0) {
 				I_CmsResourceType resType = getResourceType(getUser(), getProject(), resource.getType());
-				if(( "XMLTemplate".equals(resType.getResourceTypeName())||"jsp".equals(resType.getResourceTypeName()) ) &&
-					!isAdmin(getUser(),getProject()) ) 
+				if(("XMLTemplate".equals(resType.getResourceTypeName())||"jsp".equals(resType.getResourceTypeName())) 
+					&& !isAdmin(getUser(),getProject()))
 					denied |= C_PERMISSION_WRITE;	
 			}
 			
@@ -155,8 +177,8 @@ public class CmsDriverManager implements I_CmsConstants {
 				// if the resource is locked in another project, read and write are rejected
 				// exception: if the current project is the tempfileProject, reading from other projects is allowed
 				// exception: if the resource is locked in the tempfileProject, read and write are allowed
-				if((this.getProject().getId() != resource.getLockedInProject()) &&
-				   !isTempfileProject(readProject(resource.getLockedInProject()))) {
+				if((this.getProject().getId() != resource.getLockedInProject()) 
+					&& !isTempfileProject(readProject(resource.getLockedInProject()))) {
 					
 					if (isTempfileProject(this.getProject())) {
 						denied |= C_PERMISSION_WRITE;
@@ -9053,13 +9075,14 @@ protected void validName(String name, boolean blank) throws CmsException {
 	/**
 	 * Creates a new access control entry for a given resource.
 	 * 
-	 * @param currentUser	 the user requesting the action
-	 * @param currentProject the project in which the action is performed	
-	 * @param resource	the resource 
-	 * @param principal	the id of a group or a user any other entity
-	 * @param allowed	the set of granted permissions
-	 * @param denied	the set of forbidden permissions
-	 * @return	 	 
+	 * @param currentUser	 	the user requesting the action
+	 * @param currentProject 	the project in which the action is performed	
+	 * @param resource			the resource 
+	 * @param principal			the id of a group or a user any other entity
+	 * @param permissions		the set of granted and denied permissions
+	 * @param flags				flags of the new access control entry
+	 * @return	 				the new access control entry	
+	 * @throws	CmsException	if something goes wrong 
 	 */
 	public CmsAccessControlEntry createAccessControlEntry(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsUUID principal, CmsPermissionSet permissions, int flags) throws CmsException {
 		
@@ -9071,11 +9094,11 @@ protected void validName(String name, boolean blank) throws CmsException {
 	/**
 	 * Removes an access control entry for a given resource and principal
 	 * 
-	 * @param currentUser	 the user requesting the action
-	 * @param currentProject the project in which the action is performed		 
-	 * @param resource
-	 * @param principal
-	 * @throws CmsException
+	 * @param currentUser	 	the user requesting the action
+	 * @param currentProject 	the project in which the action is performed		 
+	 * @param resource			the resource
+	 * @param principal			the id of a group or user to identify the access control entry
+	 * @throws CmsException		if something goes wrong
 	 */
 	public void removeAccessControlEntry(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsUUID principal) throws CmsException {
 		
@@ -9086,10 +9109,10 @@ protected void validName(String name, boolean blank) throws CmsException {
 	/**
 	 * Removes all access control entries for a given resource
 	 * 
-	 * @param currentUser	 the user requesting the action
-	 * @param currentProject the project in which the action is performed		  
-	 * @param resource
-	 * @throws CmsException
+	 * @param currentUser	 	the user requesting the action
+	 * @param currentProject	the project in which the action is performed		  
+	 * @param resource			the resource
+	 * @throws CmsException		if something goes wrong
 	 */
 	public void removeAllAccessControlEntries(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
 		
@@ -9100,10 +9123,10 @@ protected void validName(String name, boolean blank) throws CmsException {
 	/**
 	 * Marks all access control entries belonging to a resource as deleted
 	 * 
-	 * @param currentUser	 the user requesting the action
-	 * @param currentProject the project in which the action is performed	
+	 * @param currentUser	 	the user requesting the action
+	 * @param currentProject 	the project in which the action is performed	
 	 * @param resource			the resource
-	 * @throws CmsException
+	 * @throws CmsException		if something goes wrong
 	 */
 	public void deleteAllAccessControlEntries(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
 		
@@ -9114,10 +9137,10 @@ protected void validName(String name, boolean blank) throws CmsException {
 	/**
 	 * Removes the deleted mark for all access control entries of a given resource
 	 *
-	 * @param currentUser	 the user requesting the action
-	 * @param currentProject the project in which the action is performed	
-	 * @param resource
-	 * @throws CmsException
+	 * @param currentUser	 	the user requesting the action
+	 * @param currentProject 	the project in which the action is performed	
+	 * @param resource			the resource
+	 * @throws CmsException		if something goes wrong
 	 */
 	public void undeleteAllAccessControlEntries(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
 		
@@ -9128,9 +9151,11 @@ protected void validName(String name, boolean blank) throws CmsException {
 	/**
 	 * Writes an access control entry to the cms.
 	 * 
-	 * @param currentUser	 the user requesting the action
-	 * @param currentProject the project in which the action is performed	 
-	 * @param acEntry the entry to write
+	 * @param currentUser	 	the user requesting the action
+	 * @param currentProject 	the project in which the action is performed
+	 * @param resource			the resource	 
+	 * @param acEntry 			the entry to write
+	 * @throws CmsException		if something goes wrong
 	 */
 	public void writeAccessControlEntry(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsAccessControlEntry acEntry) throws CmsException {
 
@@ -9138,6 +9163,16 @@ protected void validName(String name, boolean blank) throws CmsException {
 		clearAccessControlListCache();
 	}
 	
+	/**
+	 * Writes a vector of access control entries as new access control entries of a given resource.
+	 * Already existing access control entries of this resource are removed before.
+	 * 
+	 * @param currentUser		the user requesting the action
+	 * @param currentProject	the project in which the action is performed
+	 * @param resource			the resource
+	 * @param acEntries			vector of access control entries applied to the resource
+	 * @throws CmsException		if something goes wrong
+	 */
 	public void writeAccessControlEntries(CmsUser currentUser, CmsProject currentProject, CmsResource resource, Vector acEntries) throws CmsException {
 		removeAllAccessControlEntries(currentUser, currentProject, resource);
 		Iterator i = acEntries.iterator();
@@ -9149,84 +9184,83 @@ protected void validName(String name, boolean blank) throws CmsException {
 	/**
 	 * Reads an access control entry from the cms.
 	 * 
-	 * @param currentUser	 the user requesting the action
-	 * @param currentProject the project in which the action is performed	
-	 * @param resource	the resource
-	 * @param principal	the id of a group or a user any other entity
-	 * @return			an access control entry that defines the permissions of the entity for the given resource
+	 * @param currentUser	 	the user requesting the action
+	 * @param currentProject 	the project in which the action is performed	
+	 * @param resource			the resource
+	 * @param principal			the id of a group or a user any other entity
+	 * @return					an access control entry that defines the permissions of the entity for the given resource
+	 * @throws CmsException		if something goes wrong
 	 */
 	public CmsAccessControlEntry readAccessControlEntry(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsUUID principal) throws CmsException {
 
 		return m_userDriver.readAccessControlEntry(currentProject, resource.getResourceAceId(), principal);
 	}
-	
+		
 	/**
 	 * Reads all relevant access control entries for a given resource.
 	 * 
-	 * @param currentUser	 the user requesting the action
-	 * @param currentProject the project in which the action is performed	
-	 * @param resource	the resource
-	 * @return			a vector of access control entries defining all permissions for the given resource
-	 *//*
-	public Vector getAccessControlEntries(CmsResource resource) throws CmsException {
-		
-		return m_userDriver.getAccessControlEntries(resource.getResourceId(), );
-	}*/
-	
+	 * @param currentUser	 	the user requesting the action
+	 * @param currentProject 	the project in which the action is performed	
+	 * @param resource			the resource
+	 * @param getInherited		true in order to include access control entries inherited by parent folders
+	 * @return					a vector of access control entries defining all permissions for the given resource
+	 * @throws CmsException		if something goes wrong
+	 */
 	public Vector getAccessControlEntries(CmsUser currentUser, CmsProject currentProject, CmsResource resource, boolean getInherited) throws CmsException {
 			
 		CmsResource res = resource;
-		CmsUUID resId = res.getResourceAceId();	
+		CmsUUID resourceId = res.getResourceAceId();	
 		//CmsAccessControlList acList = new CmsAccessControlList();
 		
 		// add the aces of the resource itself
-		Vector acEntries = getAccessControlEntries(currentUser, currentProject, resId);
+		Vector acEntries = m_userDriver.getAccessControlEntries(currentProject, resourceId, false);
 		
 		// add the aces of each predecessor
-		while (getInherited && !(resId = res.getParentId()).isNullUUID()) {
+		while (getInherited && !(resourceId = res.getParentId()).isNullUUID()) {
 			
-			res = m_vfsDriver.readFolder(res.getProjectId(), resId);
-			acEntries.addAll(getAccessControlEntries(currentUser, currentProject, resId, getInherited));
+			res = m_vfsDriver.readFolder(res.getProjectId(), resourceId);
+			acEntries.addAll(m_userDriver.getAccessControlEntries(currentProject, resourceId, getInherited));
 		}
 		
 		return acEntries;
 	}
 	
+	/**
+	 * Copies the access control entries of a given resource to another resorce.
+	 * Already existing access control entries of this resource are removed.
+	 * 
+	 * @param currentUser		the user requesting the action
+	 * @param currentProject	the project in which the action is performed
+	 * @param source			the resource which access control entries are copied
+	 * @param dest				the resource to which the access control entries are applied
+	 * @throws CmsException		if something goes wrong
+	 */
 	public void copyAccessControlEntries(CmsUser currentUser, CmsProject currentProject, CmsResource source, CmsResource dest) throws CmsException {
-		ListIterator acEntries = getAccessControlEntries(currentUser, currentProject, source.getResourceAceId()).listIterator();
+		ListIterator acEntries = m_userDriver.getAccessControlEntries(currentProject, source.getResourceAceId(), false).listIterator();
 		removeAllAccessControlEntries(currentUser, currentProject, dest);
 		while (acEntries.hasNext()) {
 			writeAccessControlEntry(currentUser, currentProject, dest, (CmsAccessControlEntry)acEntries.next());
 		}
 			
 	}
-	
-	// TODO: this is the neccessary method - check if it should be exposed in the interface
-	protected Vector getAccessControlEntries(CmsUser currentUser, CmsProject currentProject, CmsUUID resourceId) throws CmsException {	
-		return m_userDriver.getAccessControlEntries(currentProject, resourceId, false);
-	}
-	
-	protected Vector getAccessControlEntries(CmsUser currentUser, CmsProject currentProject, CmsUUID resourceId, boolean inheritedOnly) throws CmsException {		
-		return m_userDriver.getAccessControlEntries(currentProject, resourceId, inheritedOnly);
-	}
-	
-	//
-	//	Access Control List
-	//
+		
+	/*
+	 *	Access Control List
+	 */
 	
 	/**
 	 * Returns the access control list of a given resource.
 	 * Note: the current project must be the project the resource belongs to !
 	 * 
-	 * @param currentUser	 the user requesting the action
-	 * @param currentProject the project in which the action is performed	
-	 * @param resource
-	 * @return
-	 * @throws CmsException
+	 * @param currentUser	 	the user requesting the action
+	 * @param currentProject 	the project in which the action is performed	
+	 * @param resource			the resource 
+	 * @return					the access control list of the resource
+	 * @throws CmsException		if something goes wrong
 	 */	
 	public CmsAccessControlList getAccessControlList(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
         CmsResource res = resource;
-        CmsUUID resId = res.getResourceAceId();
+        CmsUUID resourceId = res.getResourceAceId();
         CmsAccessControlList acList = (CmsAccessControlList)m_accessControlListCache.get(new CacheId(resource));
 		
 		if (acList != null)
@@ -9235,16 +9269,16 @@ protected void validName(String name, boolean blank) throws CmsException {
 		acList = new CmsAccessControlList();
 		
 		// add the aces of the resource itself
-		ListIterator acEntries = getAccessControlEntries(currentUser, currentProject, resId).listIterator();
+		ListIterator acEntries = m_userDriver.getAccessControlEntries(currentProject, resourceId, false).listIterator();
 		while (acEntries.hasNext()) {
 			acList.add((CmsAccessControlEntry)acEntries.next());
 		}
 		
 		// add the aces of each predecessor
-		while (!(resId = resource.getParentId()).isNullUUID()) {			
-            resource = m_vfsDriver.readFolder(currentProject.getId(), resId);
-            resId = resource.getResourceAceId();
-			acEntries = getAccessControlEntries(currentUser, currentProject, resId, true).listIterator();
+		while (!(resourceId = resource.getParentId()).isNullUUID()) {			
+            resource = m_vfsDriver.readFolder(currentProject.getId(), resourceId);
+            resourceId = resource.getResourceAceId();
+			acEntries = m_userDriver.getAccessControlEntries(currentProject, resourceId, true).listIterator();
 			while (acEntries.hasNext()) {
 				acList.add((CmsAccessControlEntry)acEntries.next());
 			}
@@ -9263,11 +9297,12 @@ protected void validName(String name, boolean blank) throws CmsException {
 	/**
 	 * Returns the current permissions of an user on the given resource
 	 * 
-	 * @param currentUser	 the user requesting the action
-	 * @param currentProject the project in which the action is performed	
-	 * @param resource	the resource
-	 * @param user		the user
-	 * @return			bitset with allowed permissions
+	 * @param currentUser	 	the user requesting the action
+	 * @param currentProject 	the project in which the action is performed	
+	 * @param resource			the resource
+	 * @param user				the user
+	 * @return					bitset with allowed permissions
+	 * @throws CmsException 	if something goes wrong
 	 */	
 	public CmsPermissionSet getPermissions(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsUser user) throws CmsException {
 		
@@ -9282,11 +9317,11 @@ protected void validName(String name, boolean blank) throws CmsException {
 	/**
 	 * Lookup and read the user or group with the given UUID.
 	 * 
-	 * @param currentUser	 the user requesting the action
-	 * @param currentProject the project in which the action is performed	
-	 * @param principalId
-	 * @return
-	 * @throws CmsException
+	 * @param currentUser	 	the user requesting the action
+	 * @param currentProject 	the project in which the action is performed	
+	 * @param principalId		the UUID of the principal to lookup
+	 * @return					the principal (group or user) if found, otherwise null
+	 * @throws CmsException		if something goeas wrong
 	 */
 	public I_CmsPrincipal lookupPrincipal (CmsUser currentUser, CmsProject currentProject, CmsUUID principalId) throws CmsException {
 	
@@ -9314,11 +9349,11 @@ protected void validName(String name, boolean blank) throws CmsException {
 	/**
 	 * Lookup and read the user or group with the given name.
 	 * 
-	 * @param currentUser	 the user requesting the action
-	 * @param currentProject the project in which the action is performed	
-	 * @param principalName
-	 * @return
-	 * @throws CmsException
+	 * @param currentUser	 	the user requesting the action
+	 * @param currentProject 	the project in which the action is performed	
+	 * @param principalName		the name of the principal to lookup
+	 * @return					the principal (group or user) if found, otherwise null
+	 * @throws CmsException		if something goeas wrong	
 	 */
 	public I_CmsPrincipal lookupPrincipal (CmsUser currentUser, CmsProject currentProject, String principalName) throws CmsException {
 		
@@ -9348,7 +9383,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      *
      * @param filename String to check
      *
-     * @throws throws a exception, if the check fails.
+     * @throws CmsException C_BAD_NAME if the check fails.
      */
     public void validFilename( String filename )
         throws CmsException {

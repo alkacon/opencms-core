@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.95 $
+* Date   : $Date: 2003/06/13 13:17:22 $
+* Version: $Revision: 1.96 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.95 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.96 $ $Date: 2003/06/13 13:17:22 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -1046,12 +1046,9 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 		throws CmsException {
 		try {
 			try {
-				m_report.print(m_report.key("report.importing_accesscontrolentries"), I_CmsReport.C_FORMAT_NOTE);
-				m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
 				m_cms.writeAccessControlEntries(res.getAbsolutePath(), m_acEntriesToCreate);
-				m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
 			} catch (CmsException exc){
-				m_report.println(m_report.key("report.not_created"), I_CmsReport.C_FORMAT_OK);
+				m_report.println(m_report.key("report.import_accesscontroldata_failed"), I_CmsReport.C_FORMAT_WARNING);
 			}
 		} catch (Exception exc){
 			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
