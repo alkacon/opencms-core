@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2004/06/28 11:18:09 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/08/10 15:45:31 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,12 +35,14 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.threads.CmsHtmlLinkValidatorThread;
 import org.opencms.threads.CmsPublishThread;
 import org.opencms.util.CmsDateUtil;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Date;
 
@@ -59,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 5.1.12
  */
@@ -70,11 +72,13 @@ public class CmsPublishProject extends CmsReport {
     
     /** Value for the action: show unlock confirmation. */
     public static final int ACTION_UNLOCK_CONFIRMATION = 200;
+    
     /** Value for the action: unlock confirmed. */
     public static final int ACTION_UNLOCK_CONFIRMED = 210;
     
     /** Request parameter value for the action: show unlock confirmation. */
     public static final String DIALOG_UNLOCK_CONFIRMATION = "unlockconfirmation";
+    
     /** Request parameter value for the action: unlock confirmed. */
     public static final String DIALOG_UNLOCK_CONFIRMED = "unlockconfirmed";
 
@@ -256,12 +260,13 @@ public class CmsPublishProject extends CmsReport {
             default:
                 try {
                     CmsResource publishResource = null;
+                    boolean directPublish = Boolean.valueOf(getParamDirectpublish()).booleanValue();
                     
-                    if ("true".equalsIgnoreCase(getParamDirectpublish())) {
+                    if (directPublish) {
                         // get the offline resource in direct publish mode
                         publishResource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
                         // check if the resource is locked in direct publish mode                     
-                        org.opencms.lock.CmsLock lock = getCms().getLock(publishResource);
+                        CmsLock lock = getCms().getLock(publishResource);
                         if (!lock.isNullLock()) {
                             // resource is locked, so unlock it
                             getCms().unlockResource(getParamResource());
@@ -270,7 +275,7 @@ public class CmsPublishProject extends CmsReport {
                     
                     if (showUnlockConfirmation()) {   
                         // some resources are locked, unlock them before publishing                                 
-                        if ("true".equals(getParamDirectpublish())) {
+                        if (directPublish) {
                             // unlock subresources of a folder
                             String folderName = getParamResource();
                             if (!folderName.endsWith("/")) {
@@ -314,7 +319,7 @@ public class CmsPublishProject extends CmsReport {
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
         // set the publishing type: publish project or direct publish
-        if (getParamResource() != null && !"".equals(getParamResource())) {
+        if (! CmsStringUtil.isEmpty(getParamResource())) {
             setParamDirectpublish("true");
         }       
         // set the action for the JSP switch 
@@ -404,7 +409,7 @@ public class CmsPublishProject extends CmsReport {
      */
     private boolean showUnlockConfirmation() {
         try {
-            if ("true".equals(getParamDirectpublish())) {
+            if (Boolean.valueOf(getParamDirectpublish()).booleanValue()) {
                 // direct publish: check sub resources of a folder
                 CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
                 if (res.getState() != I_CmsConstants.C_STATE_DELETED && res.isFolder()) {
@@ -427,31 +432,9 @@ public class CmsPublishProject extends CmsReport {
      * The type of publish thread is determined by the value of the "directpublish" parameter.<p>
      */
     private void startPublishThread() {
-        // start different publish threads for direct publish and publish project  
-        CmsPublishThread thread = null;
-        CmsPublishList publishList = null;              
-
-        publishList = getSettings().getPublishList();
-        
-        if (publishList != null) {
-            thread = new CmsPublishThread(getCms(), publishList);
-        } else {
-            // TODO check if the following code can be removed
-            
-            if ("true".equals(getParamDirectpublish())) {
-                // publish resource directly
-                thread = new CmsPublishThread(getCms(), getParamResource(), "true".equals(getParamPublishsiblings()), getSettings());
-            } else {
-                try {
-                    // switch to project which will be published
-                    int projectId = Integer.parseInt(getParamProjectid());
-                    getCms().getRequestContext().setCurrentProject(getCms().readProject(projectId));
-                } catch (Exception e) {
-                    OpenCms.getLog(this).error("Error switching project for publishing", e);
-                }
-                thread = new CmsPublishThread(getCms());
-            }
-        }
+        // create a publish thread from the current publish list
+        CmsPublishList publishList = getSettings().getPublishList();
+        CmsPublishThread thread = new CmsPublishThread(getCms(), publishList);
         
         // set the new thread id and flag that no thread is following
         setParamThread(thread.getId().toString());
