@@ -15,7 +15,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/02/07 10:42:48 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/08 13:21:04 $
  */
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants  {
 
@@ -140,15 +140,15 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
             // if a filelist was included, overwrite the value in the session for later use.
             filelist=cms.getRequestContext().getRequest().getParameter(C_PARA_FILELIST);
             if (filelist != null) {
-                session.putValue(C_PARA_FILELIST,filelist);
+            session.putValue(C_PARA_FILELIST,filelist);
             }
 
             // get the current folder to be displayed as maximum folder in the tree.
             currentFilelist=(String)session.getValue(C_PARA_FILELIST);
             if (currentFilelist==null) {
                 currentFilelist=cms.getRequestContext().currentFolder().getAbsolutePath();
-            }
-
+            }          
+            
             // get current and root folder
             rootFolder=cms.rootFolder().getAbsolutePath();
             

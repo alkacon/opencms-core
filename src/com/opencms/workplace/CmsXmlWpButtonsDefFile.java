@@ -15,7 +15,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/02/02 10:07:59 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/08 13:21:04 $
  */
 public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent 
         implements I_CmsLogChannels, I_CmsWpConstants {
@@ -79,6 +79,22 @@ public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent
         setData("href", href);
         return getProcessedDataValue("defaultbutton", callingObject);                
     }        
+    
+    /**
+     * Gets the processed data for a javascript button.
+     * @return Processed button.
+     * @exception CmsException
+     */
+    public String getJavascriptButton(String name, String action, String alt, String href, Object callingObject) throws CmsException {
+        setData("name", name);
+        setData("action", action);
+        setData("alt", alt);
+        setData("href", href);
+        return getProcessedDataValue("javascriptbutton", callingObject);                
+    }       
+    
+    
+    
     
     /**
      * Gets the processed data for a button separator.

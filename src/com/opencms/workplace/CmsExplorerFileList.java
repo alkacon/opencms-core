@@ -15,7 +15,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/07 10:42:48 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/08 13:21:04 $
  */
 public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                 I_CmsConstants{    
@@ -90,12 +90,7 @@ public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpC
             if (currentFilelist==null) {
                 currentFilelist=cms.getRequestContext().currentFolder().getAbsolutePath();
             }     
-        
-        System.err.println("########################");
-        System.err.println("filelist "+filelist);
-        System.err.println("currentfilelist "+currentFilelist);
-        System.err.println("########################");
-            
+
         // get all files and folders of the current folder
         folders=cms.getSubFolders(currentFilelist);
         files=cms.getFilesInFolder(currentFilelist);
