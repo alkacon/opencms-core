@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChgrp.java,v $
- * Date   : $Date: 2000/04/07 15:22:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/04/13 21:05:46 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/04/07 15:22:18 $
+ * @version $Revision: 1.7 $ $Date: 2000/04/13 21:05:46 $
  */
 public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -80,6 +80,10 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,
         
         // the template to be displayed
         String template=null;
+        
+        // get the lasturl parameter
+        String lasturl = getLastUrl(cms, parameters);
+
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
         
         String newgroup=(String)parameters.get(C_PARA_NEWGROUP);
@@ -115,7 +119,11 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,
                 session.removeValue(C_PARA_FILE);
                 // return to filelist
                 try {
-		           cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                    if(lasturl == null || "".equals(lasturl)) {
+                        cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                    } else {
+                        ((HttpServletResponse)(cms.getRequestContext().getResponse().getOriginalResponse())).sendRedirect(lasturl);                       
+                    }                            
 			    } catch (Exception e) {
 			        throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
 			    }

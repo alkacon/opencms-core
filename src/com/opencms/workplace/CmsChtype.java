@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChtype.java,v $
- * Date   : $Date: 2000/03/28 13:50:51 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/04/13 21:05:46 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/03/28 13:50:51 $
+ * @version $Revision: 1.3 $ $Date: 2000/04/13 21:05:46 $
  */
 public class CmsChtype extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -89,6 +89,10 @@ public class CmsChtype extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // the template to be displayed
         String template=null;
         
+        
+        // get the lasturl parameter
+        String lasturl = getLastUrl(cms, parameters);
+
         String newtype=(String)parameters.get(C_PARA_NEWTYPE);
  
         // get the filename
@@ -110,7 +114,11 @@ public class CmsChtype extends CmsWorkplaceDefault implements I_CmsWpConstants,
             session.removeValue(C_PARA_FILE);
             // return to filelist 
             try {
-		        cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                if(lasturl == null || "".equals(lasturl)) {
+                    cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                } else {
+                    ((HttpServletResponse)(cms.getRequestContext().getResponse().getOriginalResponse())).sendRedirect(lasturl);                       
+                }                            
 			} catch (Exception e) {
 			    throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
 			}        

@@ -9,6 +9,7 @@
 
 //for the filename to delete
 var js_filename=': ]]><PROCESS>FILENAME</PROCESS><![CDATA[';
+var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
 function show_help()
 {
@@ -80,7 +81,7 @@ function show_help()
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
 					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='delete.html?delete=true';"></td>
-					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href='explorer_files.html'"></td>
+					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href=lasturl"></td>
 				</tr>
 				</table>
 			</td>

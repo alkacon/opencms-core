@@ -10,6 +10,9 @@ function show_help()
 {
 	return '2_2_2_2_7.html';
 }
+
+var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
+
 //-->
 </script>
 
@@ -54,7 +57,7 @@ function show_help()
 			<table cellspacing=0 cellpadding=5 width=100%>
 			<tr>
 					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="loc=check_radio('TYPE','R_NEU',']]><PROCESS>RADIOSIZE</PROCESS><![CDATA[');location='chtype.html?newtype='+loc;"></td>
-				<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
+				<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location.href=lasturl;"></td>
 			</tr>
 			</table>
 		</td>
