@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/01/06 10:12:13 $
- * Version: $Revision: 1.469 $
+ * Date   : $Date: 2005/01/28 09:29:35 $
+ * Version: $Revision: 1.470 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.469 $ $Date: 2005/01/06 10:12:13 $
+ * @version $Revision: 1.470 $ $Date: 2005/01/28 09:29:35 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2978,9 +2978,27 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsDbContext dbc,
         CmsResource resource,
         boolean inheritedOnly) throws CmsException {
+        
+        return getAccessControlList(dbc, resource, inheritedOnly ? 1 : 2);
+    }
+    
+    /**
+     * Returns the access control list of a given resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource
+     * @param depth the depth to include non-inherited access entries, also
+     * 
+     * @return the access control list of the resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private CmsAccessControlList getAccessControlList(
+        CmsDbContext dbc,
+        CmsResource resource,
+        int depth) throws CmsException {
 
-        String cacheKey = getCacheKey(inheritedOnly + "_", dbc.currentProject(), resource.getStructureId()
-            .toString());
+        String cacheKey = getCacheKey(depth + "_", dbc.currentProject(), resource.getStructureId().toString());
         CmsAccessControlList acl = (CmsAccessControlList)m_accessControlListCache.get(cacheKey);
 
         // return the cached acl if already available
@@ -2993,17 +3011,18 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         if (parentPath != null) {
             CmsResource parentResource = m_vfsDriver.readFolder(dbc, dbc.currentProject().getId(), parentPath);
             // recurse
-            acl = (CmsAccessControlList)getAccessControlList(dbc, parentResource, true).clone();
+            acl = (CmsAccessControlList)getAccessControlList(dbc, parentResource, (depth > 0) ? depth-1 : 0).clone();
         } else {
             acl = new CmsAccessControlList();
         }
 
         // add the access control entries belonging to this resource
+        // in case depth
         ListIterator ace = m_userDriver.readAccessControlEntries(
             dbc,
             dbc.currentProject(),
             resource.getResourceId(),
-            inheritedOnly).listIterator();
+            depth <= 0).listIterator();
 
         while (ace.hasNext()) {
             CmsAccessControlEntry acEntry = (CmsAccessControlEntry)ace.next();
