@@ -88,6 +88,7 @@ wp.setParamAction("secure");
     <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value=""> 
     
     <%@ include file="includes/resourceinfo.txt" %>
+    <%= wp.dialogSpacer() %>
 
     <%= wp.dialogBlockStart(wp.key("label.address")) %>
     <%= wp.getResourceUrl() %>
@@ -104,7 +105,7 @@ wp.setParamAction("secure");
       if(CmsSiteManager.getCurrentSite(wp.getCms()).hasSecureServer()) { 
       %>
 
-        <td width="100pt"><%= wp.key("input.secure") %></td>
+        <td><%= wp.key("input.secure") %>&nbsp;</td>
         <td>
           <%= wp.buildRadio(I_CmsConstants.C_PROPERTY_SECURE) %>
         </td>
@@ -119,8 +120,8 @@ wp.setParamAction("secure");
       </tr>
 
       <tr>
-        <td width="100pt"><%= wp.key("input.intern") %></td>
-        <td style="padding-left:10px">
+        <td><%= wp.key("input.intern") %>&nbsp;</td>
+        <td class="maxwidth" style="padding-left: 5px;">
           <input type="checkbox" id="intern" name="intern" value="true" style="text-align:left" onclick="checkNoSecureNorExport()" <%= Boolean.valueOf(wp.readInternProp()).booleanValue() ? "checked=\"checked\"" : "" %>>
           </td>
          
@@ -134,26 +135,23 @@ wp.setParamAction("secure");
        // display export-part of the dialog only if export is enabled
        if(OpenCms.getStaticExportManager().isStaticExportEnabled() && wp.showExportSettings()) { 
     %>
-
+	
+	<%= wp.dialogSpacer() %>
     <%= wp.dialogBlockStart(wp.key("label.exportsettings")) %>
 
     <table border="0">
 
       <tr>
-        <td width="100pt"><%= wp.key("input.export") %></td>
+        <td><%= wp.key("input.export") %>&nbsp;</td>
         <td>
           <%= wp.buildRadio(I_CmsConstants.C_PROPERTY_EXPORT) %>
         </td>
       </tr>
-    </table>
-
-    <table border="0">
+    
       <tr>
-        <td width="100pt">
-          <%= wp.key("input.exportname") %>:
-        </td>
+        <td><%= wp.key("input.exportname") %>&nbsp;</td>
 
-        <td class="maxwidth">
+        <td class="maxwidth" style="padding-left: 5px;">
           <input type="text" id="exportname" name="exportname" class="maxwidth" value="<%= wp.readProperty(I_CmsConstants.C_PROPERTY_EXPORTNAME) %>">
         </td>
       </tr>

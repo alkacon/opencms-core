@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2005/03/30 13:46:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/03/30 15:32:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0
  */
@@ -420,9 +420,9 @@ public class CmsSecure extends CmsDialog {
     public String buildRadio(String propName) throws CmsException {
 
         String propVal = readProperty(propName);
-        StringBuffer result = new StringBuffer("<table style=\"padding:5px\"><tr>");
+        StringBuffer result = new StringBuffer("<table border=\"0\"><tr>");
         result.append("<td><input type=\"radio\" value=\"true\" onClick=\"checkNoIntern()\" name=\"").append(propName).append("\" ").append(
-            "true".equals(propVal) ? "checked=\"checked\"" : "").append("/></td><td  id=\"tablelabel\">true</td>");
+            "true".equals(propVal) ? "checked=\"checked\"" : "").append("/></td><td id=\"tablelabel\">true</td>");
         result.append("<td><input type=\"radio\" value=\"false\" onClick=\"checkNoIntern()\" name=\"").append(propName).append("\" ").append(
             "false".equals(propVal) ? "checked=\"checked\"" : "").append("/></td><td id=\"tablelabel\">false</td>");
         result.append("<td><input type=\"radio\" value=\"\" onClick=\"checkNoIntern()\" name=\"").append(propName).append("\" ").append(
