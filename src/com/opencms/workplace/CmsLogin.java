@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
- * Date   : $Date: 2000/04/20 08:53:32 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/04/20 14:57:11 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2000/04/20 08:53:32 $
+ * @version $Revision: 1.24 $ $Date: 2000/04/20 14:57:11 $
  */
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -120,12 +120,18 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			String actionPath=conf.getWorkplaceActionPath();
 			// Indicates, if this is a request of a guest user.
 			if (!cms.anonymousUser().equals(cms.getRequestContext().currentUser())) {
-				
 				// set current project to a default or to a specified project
 				Integer currentProject=null;
+				session.removeValue(C_PARA_STARTPROJECTID);
 				if (!startProjectId.equals("")) {
 					currentProject = new Integer(startProjectId);
-					if (!cms.accessProject(currentProject.intValue())) {
+					boolean access=true;
+					try {
+						access=cms.accessProject(currentProject.intValue());
+					} catch (Exception e) {
+						access=false;
+					}
+					if (!access) {
 						// check out the user information if a default project is stored there.
 						Hashtable startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
 						if (startSettings != null) {
@@ -148,6 +154,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
 					
 				try {
 					cms.getRequestContext().getResponse().sendCmsRedirect(actionPath+"index.html");
+					return "".getBytes();
 				} catch (Exception e) {
 					throw new CmsException(e.getMessage());	
 				}
@@ -162,6 +169,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // get user name and password
         String name=(String)parameters.get("NAME");
         String password=(String)parameters.get("PASSWORD");
+			
         // try to read this user
         if ((name != null) && (password != null)){
             try {
@@ -194,13 +202,20 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
 				if (startProjectId!=null && (!startProjectId.equals(""))) {
 					currentProject = new Integer(startProjectId);
 					session.removeValue(C_PARA_STARTPROJECTID);
-					if (!cms.accessProject(currentProject.intValue())) {
+					boolean access=true;
+					try {
+						access=cms.accessProject(currentProject.intValue());
+					} catch (Exception e) {
+						access=false;
+					}
+					if (!access) {
 						// check out the user information if a default project is stored there.
 						Hashtable startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
 						if (startSettings != null) {
 							currentProject = (Integer)startSettings.get(C_START_PROJECT);
 						}
 					}
+					
 				} else {
 					// check out the user information if a default project is stored there.
 					Hashtable startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
@@ -227,20 +242,25 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
             // If there is an old session, remove all user variables from this session
             session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(false);
             if(session != null) {
-                String[] valueNames = session.getValueNames();
-                int numValues = valueNames.length;
-                for(int i=0; i<numValues; i++) {
-					if ((!startTaskId.equals("")) && 
-						(valueNames[i].equals(C_PARA_STARTTASKID) ||
-						 valueNames[i].equals(C_PARA_VIEW)) ) {
-						continue;
-					}
-					if ((!startProjectId.equals("")) && 
-						valueNames[i].equals(C_PARA_STARTPROJECTID)) {
-						continue;
-					}
-                    session.removeValue(valueNames[i]);
-                }
+				String projectid=(String)session.getValue(C_PARA_STARTPROJECTID);
+				String taskid=(String)session.getValue(C_PARA_STARTTASKID);
+				String view=(String)session.getValue(C_PARA_VIEW);
+				if (projectid==null) {
+					projectid="";
+				}
+				if (taskid==null) {				
+					taskid="";
+					view="";
+				}
+				session.invalidate();
+				session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
+				if (!projectid.equals("")) {
+					session.putValue(C_PARA_STARTPROJECTID,projectid);
+				}
+				if (!taskid.equals("")) {				
+					session.putValue(C_PARA_STARTTASKID,taskid);
+					session.putValue(C_PARA_VIEW,view);
+				}
             }
         }
         
