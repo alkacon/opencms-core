@@ -2,7 +2,7 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSiteMatrix.java,v $
- * Date   : $Date: 2000/10/05 15:39:55 $
+ * Date   : $Date: 2000/10/06 11:53:26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * Creation date: (09/22/00 13:32:48)
  * @author: Finn Nielsen
  */
-public class CmsSiteMatrix extends com.opencms.template.CmsXmlTemplate {
+public class CmsSiteMatrix extends CmsWorkplaceDefault {
 /**
  * Gets the content of a defined section in a given template file and its subtemplates
  * with the given parameters. 
