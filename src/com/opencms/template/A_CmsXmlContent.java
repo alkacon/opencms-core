@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
- * Date   : $Date: 2000/03/08 14:38:47 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/03/15 13:54:35 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -72,7 +72,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.17 $ $Date: 2000/03/08 14:38:47 $
+ * @version $Revision: 1.18 $ $Date: 2000/03/15 13:54:35 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -152,7 +152,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
     public A_CmsXmlContent() {
         registerAllTags();
     }
-             
+                 
     /**
      * Initialize the XML content class.
      * Load and parse the content of the given CmsFile object.
@@ -255,6 +255,39 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             throwException(errorMessage, CmsException.C_XML_NO_PROCESS_METHOD);            
         }
     }
+    
+    /**
+     * Create a new CmsFile object containing an empty XML file of the
+     * current content type.
+     * The String returned by <code>getXmlDocumentTagName()</code>
+     * will be used to build the XML document element.
+     * @param cms Current cms object used for accessing system resources.
+     * @param filename Name of the file to be created.
+     * @param documentType Document type of the new file.
+     * @exception CmsException if no absolute filename is given or write access failed.
+     */
+    public void createNewFile(A_CmsObject cms, String filename, String documentType) throws CmsException {
+        if(! filename.startsWith("/")) {
+            // this is no absolute filename. 
+            this.throwException("Cannot create new file. Bad name.", CmsException.C_BAD_NAME);
+        }
+        
+        int slashIndex = filename.lastIndexOf("/") + 1;
+        String folder = filename.substring(0, slashIndex);
+        String file = filename.substring(slashIndex);
+        cms.createFile(folder, file, "".getBytes(), documentType);
+        cms.lockResource(filename);
+        m_cms = cms;
+        m_filename = filename;
+        try {
+            m_content = parser.createEmptyDocument(getXmlDocumentTagName());
+        } catch(Exception e) {
+            e.printStackTrace();
+            throwException("Cannot create empty XML document for file " + m_filename + ". ", CmsException.C_XML_PARSING_ERROR);
+        }
+        
+        write();
+    }        
     
     /**
      * Used by the init method to search a template file if only a filename 
@@ -963,13 +996,14 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
     protected void setData(String tag, String data) {
                 
         // create new XML Element to store the data
-        Element newElement = m_content.createElement("DATA");
+        //Element newElement = m_content.createElement("DATA");
         String attribute = tag;
         int dotIndex = tag.lastIndexOf(".");
         if(dotIndex != -1) {
             attribute = attribute.substring(dotIndex + 1);
         }                    
-        newElement.setAttribute("name", attribute);
+        //newElement.setAttribute("name", attribute);
+        Element newElement = m_content.createElement(attribute);
         
         if(data == null || "".equals(data)) {
             // empty string or null are given.
@@ -1450,6 +1484,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         // First check, if this is an extended datablock
         // in <NAME1 name="name2>... format, that has to be inserted
         // as name1.name2
+                             
         String nameAttr = data.getAttribute("name");
         String workTag = null;
         if((!data.getNodeName().toLowerCase().equals("data")) && 
@@ -1459,13 +1494,15 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         } else {
             workTag = tag;
         }
-        
+
+        // Import the node for later inserting
+        Element importedNode = (Element)parser.importNode(m_content, data);
         
         // Check, if this is a simple datablock without hierarchy.
         if(workTag.indexOf(".") == -1) {
             // Fine. We can insert the new Datablock at the of the document
-            m_content.getDocumentElement().appendChild(parser.importNode(m_content, data));
-            m_blocks.put(tag, parser.importNode(m_content, data));
+            m_content.getDocumentElement().appendChild(importedNode);
+            m_blocks.put(tag, importedNode);
         } else {
             // This is a hierachical datablock tag. We have to search for
             // an appropriate place to insert first.
@@ -1488,12 +1525,21 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             // of all datablocks that have to be created, before
             // the new datablock named "tag" can be inserted.
             String datablockPrefix = "";
+            
             if(found) {
                 datablockPrefix = match.substring(1) + ".";
             }            
+            
+            // number of new elements to be created
             int numNewBlocks = newBlocks.size();
+            
+            // used to create the required new elements
             Element newElem = null;
+
+            // Contains the last existing Element in the hierarchy.
             Element lastElem = null;
+            
+            // now create the new elements backwards
             for(int i=numNewBlocks-1; i>=0; i--) {
                 newElem = m_content.createElement("DATA");
                 newElem.setAttribute("name", (String)newBlocks.elementAt(i));
@@ -1508,11 +1554,11 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             // Now all required parent datablocks are created.
             // Finally the given datablock can be inserted.
             if(lastElem != null) {
-                lastElem.appendChild(parser.importNode(m_content, data));
+                lastElem.appendChild(importedNode);
             } else {
-                lastElem = (Element)parser.importNode(m_content, data);
+                lastElem = importedNode;
             }
-            m_blocks.put(datablockPrefix + tag, parser.importNode(m_content, data));
+            m_blocks.put(datablockPrefix + tag, importedNode);
             
             // lastElem now contains the hierarchical tree of all DATA tags to be
             // inserted.
