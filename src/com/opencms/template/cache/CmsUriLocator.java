@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUriLocator.java,v $
-* Date   : $Date: 2001/05/28 15:01:55 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/05/31 12:04:15 $
+* Version: $Revision: 1.5 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -84,4 +84,21 @@ public class CmsUriLocator {
             m_uris.deleteUri((String)invalidUris.elementAt(i));
         }
     }
+
+    /**
+     * Clears the cache compleatly.
+     */
+    public void clearCache(){
+        m_uris.clearCache();
+    }
+
+    /**
+     * Gets the Information of max size and size for the cache.
+     *
+     * @return a Vector whith informations about the size of the cache.
+     */
+    public Vector getCacheInfo(){
+        return m_uris.getCacheInfo();
+    }
+
 }

@@ -1216,6 +1216,53 @@
 				</property>
 			</properties>
 		</file>
+        <file>
+            <destination>system/workplace/administration/elementcache</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>visiblemethod</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.workplace.CmsAdminElementCache.isElementcacheAdmin]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>0</type>
+                    <value><![CDATA[elementcache.label.title]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>0</type>
+                    <value><![CDATA[ic_admin_elementcache]]></value>
+                </property>
+                <property>
+                    <name>NavPos</name>
+                    <type>0</type>
+                    <value><![CDATA[3.7]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>administration/elementcache/index</source>
+            <destination>system/workplace/administration/elementcache/index</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>administration/elementcache/index.html</source>
+            <destination>system/workplace/administration/elementcache/index.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
 		<file>
 			<destination>system/workplace/administration/database</destination>
 			<type>folder</type>
@@ -8199,6 +8246,15 @@
 			<access>15</access>
 			<properties/>
 		</file>
+        <file>
+            <source>pics/ic_admin_elementcache.gif</source>
+            <destination>system/workplace/pics/ic_admin_elementcache.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+			<properties/>
+        </file>
 		<file>
 			<source>pics/system/ic_admin_enter.gif</source>
 			<destination>system/workplace/pics/ic_admin_enter.gif</destination>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2001/05/29 11:09:25 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2001/05/31 12:04:15 $
+* Version: $Revision: 1.12 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -100,6 +100,15 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
     }
 
     /**
+     * Gets the Information of max size and size for the cache.
+     *
+     * @return a Vector whith informations about the size of the cache.
+     */
+    public Vector getCacheInfo(){
+        return m_elements.getCacheInfo();
+    }
+
+    /**
      * deletes all elements in the cache that depend on one of the invalid Templates.
      * @param invalidTemplates A vector with the ablolute path of the templates (String)
      */
@@ -108,5 +117,12 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
         for(int i=0; i < invalidTemplates.size(); i++){
             m_elements.deleteElementsByTemplate((String)invalidTemplates.elementAt(i)) ;
         }
+    }
+
+    /**
+     * Clears the cache compleatly.
+     */
+    public void clearCache(){
+        m_elements.clearCache();
     }
 }

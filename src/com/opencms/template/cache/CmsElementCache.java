@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementCache.java,v $
-* Date   : $Date: 2001/05/29 11:09:25 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/05/31 12:04:15 $
+* Version: $Revision: 1.5 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -68,9 +68,36 @@ public class CmsElementCache {
         return m_elementLocator;
     }
 
+    /**
+     * Deletes all the content of the caches that depend on the changed resources
+     * after publishProject.
+     * @param changedResources A vector with the resources that have changed during publishing.
+     */
     public void cleanupCache(Vector changedResources){
         m_uriLocator.deleteUris(changedResources);
         m_elementLocator.cleanupElementCache(changedResources);
+    }
+
+    /**
+     * Clears the uri and the element cache compleatly.
+     */
+    public void clearCache(){
+        m_elementLocator.clearCache();
+        m_uriLocator.clearCache();
+    }
+
+    /**
+     * Gets the Information of max size and size for the uriCache and the
+     * element cache.
+     * @return a Vector whith informations about the size of the caches.
+     */
+    public Vector getCacheInfo(){
+        Vector uriInfo = m_uriLocator.getCacheInfo();
+        Vector elementInfo = m_elementLocator.getCacheInfo();
+        for (int i=0; i < elementInfo.size(); i++){
+            uriInfo.addElement(elementInfo.elementAt(i));
+        }
+        return uriInfo;
     }
 
     public byte[] callCanonicalRoot(CmsObject cms, Hashtable parameters) throws CmsException {

@@ -119,6 +119,14 @@
 				<filename>Export to</filename>
 			</label>
 		</staticexport>
+		<elementcache>
+			<label>
+				<title>Clear elementcache</title>
+				<uri>Uri Cache</uri>
+				<element>Element Cache</element>
+				<text>Do you really want to clear the cache?</text>
+			</label>
+		</elementcache>
 		
 		<error>
 			<message>

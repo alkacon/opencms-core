@@ -1,8 +1,8 @@
 package com.opencms.template.cache;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsLruCache.java,v $
- * Date   : $Date: 2001/05/29 11:09:25 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2001/05/31 12:04:15 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -27,6 +27,7 @@ package com.opencms.template.cache;
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 import com.opencms.template.CmsCacheDirectives;
+import java.util.*;
 
 /**
  * This class implements a LRU cache. It uses a Hashtable algorithm with the
@@ -253,6 +254,7 @@ public class CmsLruCache {
                 tail.next = null;
             }
         }
+        m_size--;
     }
 
     /**
@@ -313,6 +315,43 @@ public class CmsLruCache {
             item = item.next;
         }
     }
+
+    /**
+     * Clears the cache completly.
+     */
+    public void clearCache(){
+        if(C_DEBUG){
+            System.err.println("--LruCache restarted");
+        }
+        m_cache = new CacheItem[m_maxSize];
+        m_size = 0;
+        head = null;
+        tail = null;
+    }
+
+    /**
+     * Gets the Information of max size and size for the cache.
+     *
+     * @return a Vector whith informations about the size of the cache.
+     */
+    public Vector getCacheInfo(){
+
+        if(C_DEBUG){
+            System.err.println("...Cache size should be:"+ m_size + " by a max size of "+m_maxSize);
+            int count = 0;
+            CacheItem item = head;
+            while (item != null){
+                count++;
+                item = item.next;
+            }
+            System.err.println("...Cache size is:"+count);
+        }
+        Vector info = new Vector();
+        info.addElement(new Integer(m_maxSize ));
+        info.addElement(new Integer(m_size));
+        return info;
+    }
+
 
     /**
      * used for debuging only. Checks if the Cache is in a valid condition.

@@ -119,6 +119,14 @@
 				<filename>Exportieren nach</filename>
 			</label>
 		</staticexport>
+		<elementcache>
+			<label>
+				<title>Elementcache Löschen</title>
+				<uri>Uri Cache</uri>
+				<element>Element Cache</element>
+				<text>Wollen Sie den Cache wirklich löschen?</text>
+			</label>
+		</elementcache>
 		<error>		
 			<message>
 				<accessdenied>Leider konnte auf die Resource nicht zugegriffen werden.</accessdenied>
