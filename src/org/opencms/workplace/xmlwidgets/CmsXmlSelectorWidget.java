@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlSelectorWidget.java,v $
- * Date   : $Date: 2005/01/18 13:06:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/01/18 15:48:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.StringTokenizer;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.3
  */
 public class CmsXmlSelectorWidget extends A_CmsXmlWidget {
@@ -84,10 +84,10 @@ public class CmsXmlSelectorWidget extends A_CmsXmlWidget {
         result.append(id);
         result.append("\" id=\"");
         result.append(id);
-        result.append("\">");
+        result.append("\">"); 
         
         // get select box options from default value String
-        String defaultValue = value.getContentDefinition().getContentHandler().getDefault(cms, value, value.getLocale());
+        String defaultValue = value.getContentDefinition().getContentHandler().getDefault(cms, value, widgetDialog.getLocale());
         if (CmsStringUtil.isEmpty(defaultValue)) {
             defaultValue = "";
         }
