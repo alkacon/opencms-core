@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/03/04 18:48:06 $
-* Version: $Revision: 1.70 $
+* Date   : $Date: 2003/03/07 20:53:10 $
+* Version: $Revision: 1.71 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.70 $ $Date: 2003/03/04 18:48:06 $
+ * @version $Revision: 1.71 $ $Date: 2003/03/07 20:53:10 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
 
@@ -587,7 +587,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
                 additionalResourceTokens = new StringTokenizer( additionalResources, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR ); 
                                        
                 while (additionalResourceTokens.hasMoreTokens()) {
-                    String currentResource = additionalResourceTokens.nextToken();
+                    String currentResource = additionalResourceTokens.nextToken().trim();
                     
                     if (DEBUG>0) {
                         System.err.println( "Adding resource: " + currentResource );
