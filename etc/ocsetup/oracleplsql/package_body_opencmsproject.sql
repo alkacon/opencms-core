@@ -234,7 +234,7 @@ PACKAGE BODY OpenCmsProject IS
                  where resource_name = opencmsResource.getParent(recFolders.resource_name);
         EXCEPTION
           WHEN NO_DATA_FOUND THEN
-            vParentId := opencmsConstants.C_UNKNOWN_ID;
+            usererrors.raiseUserError(-20002);
         END;
         BEGIN
           opencmsResource.createFolder(pUserId, pOnlineProjectId, pOnlineProjectId, recFolders,
@@ -297,7 +297,7 @@ PACKAGE BODY OpenCmsProject IS
                    where resource_name = opencmsResource.getParent(recFolders.resource_name);
           EXCEPTION
             WHEN NO_DATA_FOUND THEN
-              vParentId := opencmsConstants.C_UNKNOWN_ID;
+              usererrors.raiseUserError(-20002);
           END;
           opencmsResource.createFolder(pUserId, pOnlineProjectId, pOnlineProjectId, recFolders,
                                        vParentId, recFolders.resource_name, curNewFolder);
@@ -383,7 +383,7 @@ PACKAGE BODY OpenCmsProject IS
                  where resource_name = opencmsResource.getParent(recFiles.resource_name);
         EXCEPTION
           WHEN NO_DATA_FOUND THEN
-            vParentId := opencmsConstants.C_UNKNOWN_ID;
+            usererrors.raiseUserError(-20002);
         END;
         BEGIN
           opencmsResource.createFile(pOnlineProjectId, pOnlineProjectId, recFiles, pUserId, vParentId,
@@ -448,7 +448,7 @@ PACKAGE BODY OpenCmsProject IS
                    where resource_name = opencmsResource.getParent(recFiles.resource_name);
           EXCEPTION
             WHEN NO_DATA_FOUND THEN
-              vParentId := opencmsConstants.C_UNKNOWN_ID;
+              usererrors.raiseUserError(-20002);
           END;
           opencmsResource.createFile(pOnlineProjectId, pOnlineProjectId, recFiles, pUserId,
                                      vParentId, recFiles.resource_name, 'FALSE', curNewFile);
