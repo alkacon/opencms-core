@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2004/05/14 15:59:19 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/05/17 07:06:46 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 5.1
  */
@@ -833,7 +833,7 @@ public class CmsChacc extends CmsDialog {
     private String buildInternalForm() {
         StringBuffer retValue = new StringBuffer(256);    
  
-        CmsResource resource;
+        CmsResource resource = null;
         boolean internal = false;
         
         // try to read the internal flag from the resource
@@ -847,30 +847,32 @@ public class CmsChacc extends CmsDialog {
             }  
         }
  
-        retValue.append(dialogSpacer());
-        retValue.append("<form action=\""+getDialogUri()+"\" method=\"post\" name=\"internal\" class=\"nomargin\">\n");        
-        retValue.append("<table border=\"0\" width=\"100%\">\n");
-        retValue.append("<tr>\n");
-        retValue.append("\t<td class=\"dialogpermissioncell textcenter\">"+key("dialog.permission.internal"));
-        retValue.append(" <input type=\"checkbox\" name=\"internal\" value=\"true\"");
-        if (internal) {
-            retValue.append(" checked=\"checked\"");
+        if ((resource != null) && (resource.isFile())) {
+            retValue.append(dialogSpacer());
+            retValue.append("<form action=\""+getDialogUri()+"\" method=\"post\" name=\"internal\" class=\"nomargin\">\n");        
+            retValue.append("<table border=\"0\" width=\"100%\">\n");
+            retValue.append("<tr>\n");
+            retValue.append("\t<td class=\"dialogpermissioncell textcenter\">"+key("dialog.permission.internal"));
+            retValue.append(" <input type=\"checkbox\" name=\"internal\" value=\"true\"");
+            if (internal) {
+                retValue.append(" checked=\"checked\"");
+            }
+            if (!getEditable()) {
+                retValue.append(" disabled=\"disabled\"");            
+            }
+            retValue.append(" ></td>\n");
+            if (getEditable()) { 
+                retValue.append("<td><input  type=\"submit\" class=\"dialogbutton\" value=\""+key("button.submit")+"\">");
+            }
+            retValue.append("</td>\n");
+            retValue.append("</tr>\n");
+            retValue.append("</table>\n"); 
+            setParamAction(DIALOG_INTERNALUSE);
+            setParamType(null);
+            setParamName(null);
+            retValue.append(paramsAsHidden());
+            retValue.append("</form>\n");
         }
-        if (!getEditable()) {
-            retValue.append(" disabled=\"disabled\"");            
-        }
-        retValue.append(" ></td>\n");
-        if (getEditable()) { 
-            retValue.append("<td><input  type=\"submit\" class=\"dialogbutton\" value=\""+key("button.submit")+"\">");
-        }
-        retValue.append("</td>\n");
-        retValue.append("</tr>\n");
-        retValue.append("</table>\n"); 
-        setParamAction(DIALOG_INTERNALUSE);
-        setParamType(null);
-        setParamName(null);
-        retValue.append(paramsAsHidden());
-        retValue.append("</form>\n");
         return retValue.toString();
         
     }
