@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/02/17 12:47:21 $
- * Version: $Revision: 1.605 $
+ * Date   : $Date: 2005/02/20 16:30:23 $
+ * Version: $Revision: 1.606 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.7.1 Caladan (aka 6.0 beta 1) - February xx, 2005
+OpenCms 5.7.1 Corrin (aka 6.0 beta 1) - February xx, 2005
 ! Static export "file scrubbing" can now be customized implementing I_CmsStaticExportHandler
 ! Added logging option to site manager for debugging site configuration
 ! Height of popup windows in WYSIWYG editor now automatically adjusts to content height
@@ -27,15 +27,24 @@ OpenCms 5.7.1 Caladan (aka 6.0 beta 1) - February xx, 2005
   this can also be used to use the OpenCms connection pool for additional DB tables
 ! Permission ACL for folders are not longer automatically inherited to subfolders, only to files in the folder
 ! Added configurable user options to expand permission dialog details
-! Added configurable email form editor to "templateone" demo
-- Improved performance of internal Lucene search by not calculating the exerpts for all files
+! "templateone" demo now features a configurable email form generator
+! "templateone" demo horizontal menu navigation can now be configured to show sub-levels
+- Improved performance of internal Lucene search by not calculating the excerpts for all results
 ! Added selector widget for XML content
 - Updated PDFbox for better results searching in PDF documents
 ! Added "contentcheck" tag to provide information about XML content loops
-! Paramaters to content load tag can now be passed as "macro variables", including request parameters etc.
-! Added support for paging of results to "contentload" tag
+! Paramaters to "contentload" tag can now be passed as macro variables, 
+  including properties, request parameters etc.
+! Added support for paging of results from "contentload" tag
 * Fixed issue with stray locks of deleted new resources sticking in the lock manager
-* Fixed issue with http headers not written according to http spec
+* Fixed issue with http headers not being written according to http spec
+* Fixed issue with "help bubbles" hidden behind input elements in XML content editor
+! First implementation of several parts of the "Administration" screen (not configured by default)
+- Unified the css files of the Workplace in one JSP that generates different css versions
+- The Workplace is in the process of being modularized to allow easier update of individual tools
+- First updated version of documentation modules for 6.0 available
+! New module build.xml file available for easy building of individual modules
+- Modules are now distributed as .zip files to avoid issues with long path names in MS Windows
 
 OpenCms 5.5.4 Caladan (aka 6.0 alpha 3) - December 22, 2004
 * Fixed issue with search engine not correctly indexing pages based on non-ISO encoding
