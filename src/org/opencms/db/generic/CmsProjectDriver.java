@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/04 13:01:21 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2003/09/04 15:00:50 $
+ * Version: $Revision: 1.78 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.77 $ $Date: 2003/09/04 13:01:21 $
+ * @version $Revision: 1.78 $ $Date: 2003/09/04 15:00:50 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1381,7 +1381,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 if (currentFileHeader.getState() == I_CmsConstants.C_STATE_DELETED) {
                     // C_STATE_DELETE
                     report.print(report.key("report.deleting.file"), I_CmsReport.C_FORMAT_NOTE);
-                    report.println("( " + (m++) + " / " + n + ") " + context.removeSiteRoot(currentResourceName));
+                    report.println("( " + (m++) + " / " + n + " ) " + context.removeSiteRoot(currentResourceName));
                                         
                     changedResources.addElement(currentResourceName);
 
@@ -1430,7 +1430,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 } else if (currentFileHeader.getState() == I_CmsConstants.C_STATE_CHANGED) {
                     // C_STATE_CHANGED
                     report.print(report.key("report.publishing.file"), I_CmsReport.C_FORMAT_NOTE);
-                    report.println("( " + (m++) + " / " + n + ") " + context.removeSiteRoot(currentResourceName));
+                    report.println("( " + (m++) + " / " + n + " ) " + context.removeSiteRoot(currentResourceName));
                                         
                     changedResources.addElement(currentResourceName);
 
@@ -1494,7 +1494,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 } else if (currentFileHeader.getState() == I_CmsConstants.C_STATE_NEW) {
                     // C_STATE_NEW
                     report.print(report.key("report.publishing.file"), I_CmsReport.C_FORMAT_NOTE);
-                    report.println("( " + (m++) + " / " + n + ") " + context.removeSiteRoot(currentResourceName));
+                    report.println("( " + (m++) + " / " + n + " ) " + context.removeSiteRoot(currentResourceName));
                                         
                     changedResources.addElement(currentResourceName);
 
@@ -1616,7 +1616,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 currentExportKey = checkExport(currentResourceName, exportpoints);
                 
                 report.print(report.key("report.deleting.folder"), I_CmsReport.C_FORMAT_NOTE);
-                report.println("( " + (m++) + " / " + n + ") " + context.removeSiteRoot(currentResourceName));                
+                report.println("( " + (m++) + " / " + n + " ) " + context.removeSiteRoot(currentResourceName));                
 
                 if (currentExportKey != null) {
                     discAccess.removeResource(currentResourceName, currentExportKey);
