@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2003/08/27 08:58:56 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,9 +29,6 @@
 
 package com.opencms.workplace;
 
-import org.opencms.main.OpenCms;
-import org.opencms.workplace.CmsWorkplaceAction;
-
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
@@ -50,6 +47,10 @@ import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.opencms.main.OpenCms;
+import org.opencms.workplace.CmsTree;
+import org.opencms.workplace.CmsWorkplaceAction;
+
 /**
  * Common template class for displaying OpenCms workplace screens.
  * <P>
@@ -58,7 +59,7 @@ import java.util.Vector;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.61 $ $Date: 2003/08/14 15:37:24 $
+ * @version $Revision: 1.62 $ $Date: 2003/08/27 08:58:56 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -521,6 +522,21 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
      */
     public Object picsUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
         return resourcesUri(cms, tagcontent, doc, userObj);
+    }
+    
+    /**
+     * User method to generate the JavaScript for the tree initialization.<p>
+     * 
+     * @param cms CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XML document <em>(not used here)</em>.
+     * @param userObj Hashtable with parameters <em>(not used here)</em>.
+     * @return String with the JavaScript for the tree initialization
+     * @throws CmsException if something goes wrong
+     */
+    public Object initTree(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {    
+        String skinUri = cms.getRequestContext().getRequest().getWebAppUrl() + "/skins/modern/";
+        return CmsTree.initTree(cms, cms.getRequestContext().getEncoding(), skinUri);
     }
     
     /**

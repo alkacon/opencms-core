@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2003/08/26 10:10:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/08/27 08:58:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFolder;
+import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
@@ -55,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -309,6 +310,43 @@ public class CmsTree extends CmsWorkplace {
         
         setTargetFolder(resource);
         setStartFolder(lastknown);
+    }
+    
+    /**
+     * Returns the HTML for the tree initialization.<p>
+     * 
+     * @return the HTML for the tree initialization
+     */
+    public String initTree() {
+        return initTree(getCms(), getEncoding(), getSkinUri());
+    }
+    
+    /**
+     * Returns the HTML for the tree initialization.<p>
+     * 
+     * @param cms the CmsObject
+     * @param encoding the current encoding
+     * @param skinUri the current skin URI
+     * @return the HTML for the tree initialization
+     */
+    public static String initTree(CmsObject cms, String encoding, String skinUri) {
+        StringBuffer retValue = new StringBuffer(512);
+        String servletUrl = cms.getRequestContext().getRequest().getServletUrl();
+        retValue.append("function initTreeResources() {\n");
+        retValue.append("\tinitResources(\"" + encoding + "\", \"" + skinUri + "\", \"" + servletUrl + "\");\n");
+
+        retValue.append("\taddResourceType(0, \"folder\",\t\"Folder\",\t\"filetypes/folder.gif\");\n");
+        retValue.append("\taddResourceType(2, \"link\",\t\"Link\",\t\"filetypes/link.gif\");\n");
+        retValue.append("\taddResourceType(3, \"plain\",\t\"Text\",\t\"filetypes/plain.gif\");\n");
+        retValue.append("\taddResourceType(4, \"XMLTemplate\",\t\"XML Template\",\t\"filetypes/xmltemplate.gif\");\n");
+        retValue.append("\taddResourceType(5, \"binary\",\t\"Binary\",\t\"filetypes/binary.gif\");\n");
+        retValue.append("\taddResourceType(6, \"image\",\t\"Image\",\t\"filetypes/image.gif\");\n");
+        retValue.append("\taddResourceType(8, \"jsp\",\t\"JSP\",\t\"filetypes/jsp.gif\");\n");
+        retValue.append("\taddResourceType(9, \"page\",\t\"Page\",\t\"filetypes/page.gif\");\n");
+        retValue.append("}\n\n");
+        
+        retValue.append("initTreeResources();\n");
+        return retValue.toString();
     }
 
     /**
