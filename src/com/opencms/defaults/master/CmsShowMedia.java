@@ -24,15 +24,15 @@ import java.io.*;
 public class CmsShowMedia extends CmsXmlTemplate {
 
    static final String C_EMPTY_PICTURE = "empty.gif";
-	static byte[] emptyGIF = new byte[0];
+    static byte[] emptyGIF = new byte[0];
 
-	/**
+    /**
      * Gets the content of a defined section in a given template file and its
      * subtemplates with the given parameters.
      *
-	 * @see getContent(A_CmsObject cms, String templateFile, String elementName,
-	 * Hashtable parameters)
-	 *
+     * @see getContent(A_CmsObject cms, String templateFile, String elementName,
+     * Hashtable parameters)
+     *
      * @param cms A_CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
@@ -43,9 +43,9 @@ public class CmsShowMedia extends CmsXmlTemplate {
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         Hashtable parameters, String templateSelector) throws CmsException {
-		// session will be created or fetched
-		CmsRequestContext req = cms.getRequestContext();
-		byte[] picture = new byte[0];
+        // session will be created or fetched
+        CmsRequestContext req = cms.getRequestContext();
+        byte[] picture = new byte[0];
         CmsMasterContent cd = null;
         CmsMasterMedia media = null;
         String sId = (String) parameters.get("id");
@@ -86,6 +86,7 @@ public class CmsShowMedia extends CmsXmlTemplate {
                     mType = "application/octet-stream";
                 }
                 req.getResponse().setContentType( mType );
+                req.getResponse().setHeader("Content-disposition","filename=" + media.getName());
             } else {
                 // got pos info ...
                 for (int i=0; i< vec.size(); i++) {
@@ -97,6 +98,7 @@ public class CmsShowMedia extends CmsXmlTemplate {
                             mType = "application/octet-stream";
                         }
                         req.getResponse().setContentType( mType );
+                        req.getResponse().setHeader("Content-disposition","filename=" + media.getName());
                         break;
                     }
                 }
@@ -111,19 +113,19 @@ public class CmsShowMedia extends CmsXmlTemplate {
             picture = emptyGIF;
             // set the mimetype ...
             req.getResponse().setContentType("images/gif");
-    	}
+        }
 
-		/*if(req.isStreaming()) {
-			try {
-				OutputStream os = req.getResponse().getOutputStream();
-				os.write(picture);
-			} catch(Exception e) {
-				throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
-			}
-		}*/
+        /*if(req.isStreaming()) {
+            try {
+                OutputStream os = req.getResponse().getOutputStream();
+                os.write(picture);
+            } catch(Exception e) {
+                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
+            }
+        }*/
 
-		return picture;
-	}
+        return picture;
+    }
 
 
     /**
