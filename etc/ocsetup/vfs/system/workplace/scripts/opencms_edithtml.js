@@ -865,7 +865,6 @@ function setStyles(i, name) {
 
 function resetStyles() {
     var sel = document.all.BLOCK;
-    var fops = new Array(); 
     for (i=0; i<foundstyles.length; i++) {
        sel.options[i] = new Option(foundstyles[i], foundstyles[i]);
     }
