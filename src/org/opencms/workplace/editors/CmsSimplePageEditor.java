@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/08 13:57:03 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,14 @@
 package org.opencms.workplace.editors;
 
 
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsHtmlConverter;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
@@ -52,7 +54,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.0
  */
@@ -180,6 +182,18 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
         content = CmsEncoder.adjustHtmlEncoding(content, getFileEncoding());
         if (! save) {
             setParamContent(content);
+        } else {
+            CmsProperty contentConversionProperty;
+            String contentConversion;          
+            try {
+                contentConversionProperty = getJsp().getCmsObject().readPropertyObject(getJsp().getCmsObject().getSitePath(m_file), "content-conversion", true);                
+                contentConversion = contentConversionProperty.getValue();
+            } catch (CmsException e) {
+                // if there was an error reading the property, choose a default value
+               contentConversion = CmsHtmlConverter.C_PARAM_DISABLED;
+            }
+            CmsHtmlConverter converter = new CmsHtmlConverter(getFileEncoding(), contentConversion);
+            content = converter.convertToStringSilent(content);
         }
         return content;
     }  
