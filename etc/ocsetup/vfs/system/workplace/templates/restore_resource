@@ -126,6 +126,6 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/restore_resource.h
 </TEMPLATE>
 
 <TEMPLATE name="error">
-<ERRORPAGE title="error.title.restoreresource" message="error.message.restoreresource" reason="error.reason.restoreresource" suggestion="error.suggestion.restoreresource" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
+<ERRORPAGE title="error.title.restoreresource" message="error.message.restoreresource" reason="error.reason.restoreresource" suggestion="error.suggestion.restoreresource" ref="explorer_files.html" ><process>details</process><process>lasturl</process></ERRORPAGE>
 </TEMPLATE>
 </WORKPLACE>

@@ -76,7 +76,7 @@
 
 <TEMPLATE name="error_system">
 <![CDATA[
-]]><ERRORPAGE title="error.title.chnav" message="error.message.chnav" reason="error.reason.chnav" suggestion="error.suggestion.none" ref="chnav.html?step=fromerror" ><process>details</process></ERRORPAGE><![CDATA[
+]]><ERRORPAGE title="error.title.chnav" message="error.message.chnav" reason="error.reason.chnav" suggestion="error.suggestion.none" ref="chnav.html?step=fromerror" ><process>details</process><process>lasturl</process></ERRORPAGE><![CDATA[
 ]]>
 </TEMPLATE>
 
