@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2004/08/18 11:53:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/09/21 08:09:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -439,7 +439,7 @@ public class CmsModuleXmlHandler {
             // ensure backward compatibility with old (5.0) module names
             OpenCms.getLog(this).error("Invalid module name imported: '" + name + "'");
             moduleName = makeValidJavaClassName(name);
-            OpenCms.getLog(this).error("Corrected module name is: '" + name + "'");                        
+            OpenCms.getLog(this).error("Corrected module name is: '" + moduleName + "'");                        
         } else {
             moduleName = name;
         }
