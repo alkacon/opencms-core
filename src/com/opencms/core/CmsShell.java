@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/08/08 14:08:21 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/08/11 12:57:36 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import source.org.apache.java.util.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.15 $ $Date: 2000/08/08 14:08:21 $
+ * @version $Revision: 1.16 $ $Date: 2000/08/11 12:57:36 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -549,8 +549,9 @@ public class CmsShell implements I_CmsConstants {
 	public void exportAllResources(String exportFile)
 		throws CmsException {
 		// export the resources
+		String [] exportPaths = {C_ROOT};
 		try {
-			m_cms.exportResources(exportFile, C_ROOT, true);
+			m_cms.exportResources(exportFile, exportPaths , true);
 		} catch( Exception exc ) {
 			printException(exc);
 		}
@@ -559,15 +560,26 @@ public class CmsShell implements I_CmsConstants {
 	 * Exports cms-resources to zip.
 	 * 
 	 * @param exportFile the name (absolute Path) of the export resource (zip)
-	 * @param exportPath the name (absolute Path) of folder from which should be exported
+	 * @param pathList the names (absolute Path) of folders from which should be exported
+	 *			separated by semicolons
 	 * 
 	 * @exception Throws CmsException if something goes wrong.
 	 */
-	public void exportResources(String exportFile, String exportPath)
+	public void exportResources(String exportFile, String pathList)
 		throws CmsException {
 		// export the resources
+		StringTokenizer tok = new StringTokenizer(pathList, ";");
+		Vector paths = new Vector();
+		while (tok.hasMoreTokens()) {
+			paths.addElement(tok.nextToken());
+		} 
+		String exportPaths[]= new String[paths.size()];
+		for (int i=0; i< paths.size(); i++) {
+			exportPaths[i] = (String) paths.elementAt(i);
+		} 
+		
 		try {
-			m_cms.exportResources(exportFile, exportPath);
+			m_cms.exportResources(exportFile, exportPaths);
 		} catch( Exception exc ) {
 			printException(exc);
 		}
@@ -834,20 +846,33 @@ public class CmsShell implements I_CmsConstants {
 			printException(exc);
 		}
 	}
-	/**
-	 * Imports a import-resource (folder or zipfile) to the cms.
-	 * 
-	 * @param importFile the name (absolute Path) of the import resource (zip or folder)
-	 * @param importPath the name (absolute Path) of folder in which should be imported
-	 */
-	public void importResources(String importFile, String importPath) {
-		// import the resources
-		try {
-			m_cms.importResources(importFile, importPath);
-		} catch( Exception exc ) {
-			printException(exc);
-		}
+/**
+ * Imports an import-resource (folder or zipfile) to the cms.
+ * Creation date: (09.08.00 16:28:48)
+ * @param importFile java.lang.String the name (absolute Path) of the import resource (zip or folder)
+ */
+public void importResources(String importFile) {
+	// import the resources
+	try {
+		m_cms.importResources(importFile, C_ROOT);
+	} catch (Exception exc) {
+		printException(exc);
 	}
+}
+/**
+ * Imports an import-resource (folder or zipfile) to the cms.
+ * 
+ * @param importFile the name (absolute Path) of the import resource (zip or folder)
+ * @param importPath the name (absolute Path) of folder in which should be imported
+ */
+public void importResources(String importFile, String importPath) {
+	// import the resources
+	try {
+		m_cms.importResources(importFile, importPath);
+	} catch (Exception exc) {
+		printException(exc);
+	}
+}
 	/**
 	 * Imports relevant files of a XML module ("news" for example) to the cms.
 	 * 
