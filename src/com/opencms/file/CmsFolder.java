@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFolder.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/10/16 09:00:35 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -34,7 +34,7 @@ import java.io.*;
  * This class describes a folder in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.14 $ $Date: 2001/10/16 09:00:35 $
  */
 public class CmsFolder extends CmsResource implements I_CmsConstants,
                                                       Cloneable,
@@ -81,7 +81,7 @@ public class CmsFolder extends CmsResource implements I_CmsConstants,
     */
     public Object clone() {
         return new CmsFolder(this.getResourceId(), this.getParentId(), this.getFileId(),
-                             new String(this.getAbsolutePath()),this.getType(),
+                             new String(this.getResourceName()),this.getType(),
                              this.getFlags(), this.getOwnerId(), this.getGroupId(),
                              this.getProjectId(),this.getAccessFlags(),
                              this.getState(),this.isLockedBy(),this.getDateCreated(),

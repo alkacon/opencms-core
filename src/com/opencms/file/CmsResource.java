@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2001/08/30 14:57:17 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2001/10/16 09:00:35 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.core.*;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.36 $ $Date: 2001/08/30 14:57:17 $
+ * @version $Revision: 1.37 $ $Date: 2001/10/16 09:00:35 $
  */
  public class CmsResource implements I_CmsConstants,
                                                            Cloneable,
@@ -216,7 +216,7 @@ import com.opencms.core.*;
         // check if the object is a CmsResource object
         if (obj instanceof CmsResource) {
             // same ID than the current user?
-            if (((CmsResource)obj).getAbsolutePath().equals(m_resourceName)){
+            if (((CmsResource)obj).getResourceName().equals(m_resourceName)){
                 equal = true;
             }
         }
@@ -229,6 +229,26 @@ import com.opencms.core.*;
      * @return the absolute path for this resource.
      */
      public String getAbsolutePath(){
+        int rootIndex = m_resourceName.indexOf("/", m_resourceName.indexOf("/",1)+1);
+        return m_resourceName.substring(rootIndex);
+     }
+    /**
+     * Returns the root name for this resource.<BR/>
+     * Example: returns /Site_a/vfs
+     *
+     * @return the root name for this resource.
+     */
+     public String getRootName(){
+         int rootIndex = m_resourceName.indexOf("/",m_resourceName.indexOf("/",1)+1);
+         return m_resourceName.substring(0, rootIndex);
+     }
+    /**
+     * Returns the resource name for this resource.<BR/>
+     * Example: returns /Site_a/vfs/system/def/language.cms
+     *
+     * @return the resource name for this resource.
+     */
+     public String getResourceName(){
          return m_resourceName;
      }
     /**
@@ -333,12 +353,13 @@ import com.opencms.core.*;
      */
      public String getName() {
          String name= null;
+         String absoluteName = getAbsolutePath();
          // check if this is a file
-         if (!m_resourceName.endsWith("/")) {
-             name=m_resourceName.substring(m_resourceName.lastIndexOf("/")+1,
-                                           m_resourceName.length());
+         if (!absoluteName.endsWith("/")) {
+             name=absoluteName.substring(absoluteName.lastIndexOf("/")+1,
+                                           absoluteName.length());
          }else{
-              name=m_resourceName.substring(0,m_resourceName.length()-1);
+              name=absoluteName.substring(0,absoluteName.length()-1);
               name=name.substring(name.lastIndexOf("/")+1,
                                   name.length());
          }
@@ -362,9 +383,10 @@ import com.opencms.core.*;
      */
      public String getParent(){
          String parent=null;
+         String resourceName = getAbsolutePath();
          // check if this is the root resource
-         if (!m_resourceName.equals(C_ROOT)) {
-                parent=m_resourceName.substring(0,m_resourceName.length()-1);
+         if (!resourceName.equals(C_ROOT)) {
+                parent=resourceName.substring(0,resourceName.length()-1);
                 parent=parent.substring(0,parent.lastIndexOf("/")+1);
          }
          return parent;
@@ -385,7 +407,8 @@ import com.opencms.core.*;
      * @return the path for this resource.
      */
      public String getPath() {
-         return m_resourceName.substring(0,m_resourceName.lastIndexOf("/")+1);
+        int rootIndex = m_resourceName.indexOf("/", m_resourceName.indexOf("/",1)+1);
+        return m_resourceName.substring(rootIndex, m_resourceName.lastIndexOf("/")+1);
      }
     /**
      * Returns the project id for this resource.
