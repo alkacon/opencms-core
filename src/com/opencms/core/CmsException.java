@@ -4,7 +4,7 @@ package com.opencms.core;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/01/25 13:48:52 $
+ * @version $Revision: 1.18 $ $Date: 2000/02/01 08:29:21 $
  */
 public class CmsException extends Exception {
 	
@@ -143,37 +143,37 @@ public class CmsException extends Exception {
     /**
      * Definition of error code for XML process method not found.
      */
-    public final static int C_XML_NO_PROCESS_METHOD = 23;
+    public final static int C_XML_NO_PROCESS_METHOD = 24;
 
     /**
      * Definition of error code for missing XML tag.
      */
-    public final static int C_XML_TAG_MISSING = 24;
+    public final static int C_XML_TAG_MISSING = 25;
     
     /**
      * Definition of error code for wrong XML template class.
      */
-    public final static int C_XML_WRONG_TEMPLATE_CLASS = 25;
+    public final static int C_XML_WRONG_TEMPLATE_CLASS = 26;
 
     /**
      * Definition of error code for no XML template class.
      */
-    public final static int C_XML_NO_TEMPLATE_CLASS = 26;
+    public final static int C_XML_NO_TEMPLATE_CLASS = 27;
 
     /**
      * Definition of error code for launcher errors.
      */
-    public final static int C_LAUNCH_ERROR = 27;
+    public final static int C_LAUNCH_ERROR = 28;
 
     /**
      * Definition of error code for launcher errors.
      */
-    public final static int C_CLASSLOADER_ERROR = 28;
+    public final static int C_CLASSLOADER_ERROR = 29;
     
     /**
      * Definition of error code for error "Password to short".
      */
-    public final static int C_SHORT_PASSWORD = 29;
+    public final static int C_SHORT_PASSWORD = 30;
 	
 	public final static String C_EXTXT[] = {
 							"Unknown exception ",
