@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/08/30 14:01:31 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2001/09/11 15:12:59 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -234,7 +234,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      *  @param proxySettings The CacheDirectives to merge the own CacheDriectives with.
      *  @param parameters A Hashtable with the parameters.
      */
-    public void checkProxySettings(CmsObject cms, CmsCacheDirectives proxySettings, Hashtable parameters){
+    public void checkProxySettings(CmsObject cms, CmsCacheDirectives proxySettings, Hashtable parameters) throws CmsException{
         // first our own cachedirectives are they set or not?
         if (!(m_cacheDirectives.userSetProxyPrivate() && m_cacheDirectives.userSetProxyPublic())){
             // we have to find out manually

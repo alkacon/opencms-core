@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2001/09/11 15:12:59 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -78,7 +78,7 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
      * @param desc - the descriptor to locate the element.
      * @returns the element that was found.
      */
-    public A_CmsElement get(CmsObject cms, CmsElementDescriptor desc, Hashtable parameters) {
+    public A_CmsElement get(CmsObject cms, CmsElementDescriptor desc, Hashtable parameters) throws CmsException{
         A_CmsElement result;
         result = (A_CmsElement)m_elements.get(desc);
         if(result == null) {
@@ -115,7 +115,8 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
                     if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Could not initialize (sub-)element for class \"" + desc.getClassName() + "\". ");
                         A_OpenCms.log(C_OPENCMS_CRITICAL, e.toString());
-                        return null;
+                        throw new CmsException("Could not initialize (sub-)element for class \"" +
+                                             desc.getClassName() + "\".", CmsException.C_CLASSLOADER_ERROR);
                     }
                 }
             }
