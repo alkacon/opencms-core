@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChnav.java,v $
-* Date   : $Date: 2003/02/02 15:59:52 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/05/05 07:50:52 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.9 $ $Date: 2003/02/02 15:59:52 $
+ * @version $Revision: 1.10 $ $Date: 2003/05/05 07:50:52 $
  */
 
 public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -146,11 +146,7 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
             }
         }
         xmlTemplateDocument.setData("frametitle", resource.getName());
-        if(navtext != null){
-            navtext = Encoder.escape(navtext,
-                cms.getRequestContext().getEncoding());
-        }
-        xmlTemplateDocument.setData(C_PARA_NAVTEXT, navtext);
+        xmlTemplateDocument.setData(C_PARA_NAVTEXT, Encoder.escapeXml(navtext));
 
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);

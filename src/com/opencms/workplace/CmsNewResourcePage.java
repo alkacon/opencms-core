@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2003/02/03 19:47:28 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2003/05/05 07:50:52 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.w3c.dom.Node;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.63 $ $Date: 2003/02/03 19:47:28 $
+ * @version $Revision: 1.64 $ $Date: 2003/05/05 07:50:52 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -172,7 +172,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
 
         String templatefile = (String)parameters.get(C_PARA_TEMPLATE);
         String navtitle = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_NAVTEXT));
-        String navpos = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_NAVPOS));
+        String navpos = (String)parameters.get(C_PARA_NAVPOS);
         String layoutFilePath = (String)parameters.get(C_PARA_LAYOUT);
 
         // get the current phase of this wizard
@@ -446,8 +446,8 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
 
             // finally fill the result vectors
             for(int i = 0;i <= count;i++) {
-                names.addElement(nicenames[i]);
-                values.addElement(nicenames[i]);
+                names.addElement(Encoder.escapeHtml(nicenames[i]));
+                values.addElement(Encoder.escapeHtml(nicenames[i]));
             }
         }
         else {

@@ -5,17 +5,10 @@
 
 <html>
 <head>
-<script language="JavaScript">
-<!--
-    function setValues(){
-        var navText = decodeURIComponent(']]><PROCESS>navtitle</PROCESS><![CDATA[');
-        document.navigation.navtitle.value = navText;
-    }
-//-->
-</script>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 </head>
-<body onLoad="javascript:setValues();">
+<body>
 <form name="navigation">
     <table border=2 cellspacing=0 cellpadding=0 width=430px align=center>
         <tr>
@@ -36,7 +29,7 @@
                             ]]><LABEL value="input.navtext" /><![CDATA[:
                         </td>
                         <td class=dialogtxt>
-                            <input type="textfield" id="navtitle" name="navtitle" maxlength=100 style="width:300px;" class="textfeld2" >
+                            <input type="textfield" id="navtitle" name="navtitle" maxlength=100 style="width:300px;" class="textfeld2" value="]]><PROCESS>navtitle</PROCESS><![CDATA[">
                         </td>
                     </tr>
                     <tr>

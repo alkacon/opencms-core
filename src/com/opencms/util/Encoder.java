@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2003/03/20 13:11:37 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/05/05 07:50:52 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -233,6 +233,7 @@ public class Encoder {
     public static String escapeXml(String source) {
         if (source == null) return null;
         StringBuffer result = new StringBuffer(source.length()*2);
+        int terminatorIndex;
         for(int i = 0;i < source.length(); ++i) {
             char ch = source.charAt(i);
             switch (ch) {
@@ -243,7 +244,14 @@ public class Encoder {
                     result.append("&gt;");
                     break;
                 case '&' :
-                    result.append("&amp;");
+                    // Don't escape already escaped international and special characters
+                    if ((terminatorIndex = source.indexOf(";",i)) > 0)
+                        if(source.substring(i + 1, terminatorIndex).matches("#[0-9]+"))
+                            result.append(ch);
+                        else 
+                            result.append("&amp;");
+                    else
+                        result.append("&amp;");
                     break;
                 case '"' :
                     result.append("&quot;");
@@ -268,10 +276,20 @@ public class Encoder {
      * @see #escapeXml(String)
      */
     public static String escapeHtml(String source) {
+        int terminatorIndex;
         if (source == null) return null;
         StringBuffer result = new StringBuffer(source.length()*2);
         for(int i = 0;i < source.length();i++) {
             int ch = source.charAt(i);
+            // Avoid escaping already escaped characters;
+            if((ch == 38) && ((terminatorIndex = source.indexOf(";",i)) > 0)) {
+                if(source.substring(i + 1, terminatorIndex).matches("#[0-9]+|lt|gt|amp|quote")) {
+                    result.append(source.substring(i, terminatorIndex + 1));
+                    // Skip remaining chars up to (and including) ";"
+                    i = terminatorIndex;
+                    continue;
+                }
+            }
             if((ch !=  32) && ((ch > 122) || (ch < 48) || (ch == 60) || (ch == 62))) {
                 result.append("&#");
                 result.append(ch);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2003/02/03 19:47:28 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/05/05 07:50:52 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.38 $ $Date: 2003/02/03 19:47:28 $
+ * @version $Revision: 1.39 $ $Date: 2003/05/05 07:50:52 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -423,8 +423,8 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
 
             // finally fill the result vectors
             for(int i = 0;i <= count;i++) {
-                names.addElement(nicenames[i]);
-                values.addElement(nicenames[i]);
+                names.addElement(Encoder.escapeHtml(nicenames[i]));
+                values.addElement(Encoder.escapeHtml(nicenames[i]));
                 if ((preselect != null) && (preselect.equals(nicenames[i]))){
                     retValue = values.size() -1;
                 }
