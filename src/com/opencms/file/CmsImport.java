@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/09/29 16:48:49 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/10/24 10:38:47 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.26 $ $Date: 2000/09/29 16:48:49 $
+ * @version $Revision: 1.27 $ $Date: 2000/10/24 10:38:47 $
  */
 public class CmsImport implements I_CmsConstants {
 
@@ -183,6 +183,11 @@ public Vector getConflictingFilenames() throws CmsException {
 	} catch (Exception exc) {
 		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 	}
+	try {
+		m_importZip.close();
+	} catch(IOException exc) {
+		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+	}		
 	return conflictNames;
 }
 	/**
@@ -294,6 +299,11 @@ public Vector getResourcesForProject() throws CmsException {
 	} catch (Exception exc) {
 		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 	}
+	try {
+		m_importZip.close();
+	} catch(IOException exc) {
+		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+	}	
 	return resources;
 }
 	/**
@@ -434,7 +444,6 @@ public void importResources() throws CmsException {
  * param propertyValue value of that property
  */
 public void importResources(Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
-	 
 	NodeList fileNodes, propertyNodes;
 	Element currentElement, currentProperty;
 	String source, destination, type, user, group, access;
@@ -487,7 +496,7 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
 				}
 
 				// import the specified file and write maybe put it on the lists writtenFilenames,fileCodes
-				importFile(source, destination, type, user, group, access, properties, writtenFilenames, fileCodes); 
+				importFile(source, destination, type, user, group, access, properties, writtenFilenames, fileCodes);
 			} else {
 				System.out.print("skipping " + destination);
 			}
@@ -495,8 +504,11 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
 	} catch (Exception exc) {
 		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 	}
-	// all is done, unlock the resource 
-	// m_cms.unlockResource(m_importPath);
+	try {
+		m_importZip.close();
+	} catch (IOException exc) {
+		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+	}
 }
 /**
  * Checks whether the path is on the list of files which are excluded from the import
