@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/05/14 15:26:40 $
- * Version: $Revision: 1.543 $
+ * Date   : $Date: 2004/05/21 15:21:48 $
+ * Version: $Revision: 1.544 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 5.3.5 Ix - xx, 2004
+- Important: This version contains changes to the OpenCms VFS database schema
 ! The content of a xmlPage is now verified with the DTD when saving from any editor
 ! Improved error handling when an error occurs during save in the editors,
   it's now possible to go back and correct the errors
@@ -41,7 +42,9 @@ OpenCms 5.3.5 Ix - xx, 2004
   in the opencms-workplace.xml file
 * The "internal use only" flag has been placed on the permission dialog again
 - Refactored package org.opencms.page to org.opencms.xml.page
-  
+! Added "Relase Date" and "Expiration Date" to the structure table of the resource
+- Using long values instead of Timestamps for date infromation in VFS resource tables
+
 OpenCms 5.3.4 Ix - April 14, 2004
 - Updated all jars, also added version numbers to all jars
 - Added new XML configuration as replacement for "registry.xml",
