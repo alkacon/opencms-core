@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2004/03/02 21:51:02 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/04/13 15:30:57 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.log4j.PropertyConfigurator;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsLog implements Log {
 
@@ -123,6 +123,8 @@ public class CmsLog implements Log {
     protected Log getLogger(Object obj) {
         if (obj instanceof String) {
             return LogFactory.getLog((String)obj);
+        } else if (obj instanceof Class) {
+            return LogFactory.getLog((Class)obj);
         } else {
             return LogFactory.getLog(obj.getClass());
         }
