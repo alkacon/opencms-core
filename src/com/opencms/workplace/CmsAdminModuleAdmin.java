@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2004/02/26 11:35:35 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -349,7 +349,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
             if("".equals(table.get(C_VIEW))) {
                 if(!"".equals(getStringValue(reg.getModuleViewName(name)))) {
                     try {
-                        cms.deleteResource(modulePath + "view/", I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+                        cms.deleteResource(modulePath + "view/", I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
                     }catch(Exception e) {
                     }
                     reg.deleteModuleView(name);
@@ -364,7 +364,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
             // the adminpoint
             if("".equals(table.get(C_ADMINPOINT))) {
                 try { // does not work when folder is not empty
-                    cms.deleteResource(modulePath + "administration/", I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+                    cms.deleteResource(modulePath + "administration/", I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
                 }catch(Exception e) {
                 }
             }else {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeLink.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/26 11:35:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * All resource types are created by the factory getResourceType() in CmsObject.
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsResourceTypeLink extends A_CmsResourceType {
 
@@ -145,7 +145,7 @@ public class CmsResourceTypeLink extends A_CmsResourceType {
      * @see org.opencms.file.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, java.lang.String, int)
      */
     public void deleteResource(CmsObject cms, String resourcename, int deleteOption) throws CmsException {
-        super.deleteResource(cms, resourcename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+        super.deleteResource(cms, resourcename, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/02/26 11:35:35 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 5.1
  */
@@ -191,21 +191,44 @@ public class CmsCopy extends CmsDialog {
         } catch (CmsException e) {
             // ignore
         }
+        String checkedAttr = " checked=\"checked\"";
         
         if (isFolder) {
-            // for folders, show an additional option "preserve links", mark "create only links" as default
-            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_LINK + "\" checked=\"checked\"> ");
-            retValue.append(getSettings().getMessages().key("messagebox.option.folder.aslink.copy") + "<br>\n");
-            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_PRESERVE_LINK + "\"> ");
+            // for folders, show an additional option "preserve links"
+            int defaultMode = getSettings().getUserSettings().getDialogCopyFolderMode();
+            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_SIBLING + "\"");
+            if (defaultMode == I_CmsConstants.C_COPY_AS_SIBLING) {
+                retValue.append(checkedAttr);
+            }
+            retValue.append("> ");
+            retValue.append(getSettings().getMessages().key("messagebox.option.folder.assibling.copy") + "<br>\n");
+            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_PRESERVE_SIBLING + "\"");
+            if (defaultMode == I_CmsConstants.C_COPY_PRESERVE_SIBLING) {
+                retValue.append(checkedAttr);
+            }
+            retValue.append("> ");
             retValue.append(getSettings().getMessages().key("messagebox.option.folder.preserve.copy") + "<br>\n");
-            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_NEW + "\"> ");
+            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_NEW + "\"");
+            if (defaultMode == I_CmsConstants.C_COPY_AS_NEW) {
+                retValue.append(checkedAttr);
+            }
+            retValue.append("> ");
             retValue.append(getSettings().getMessages().key("messagebox.option.folder.asnewresource.copy") + "<br>\n");       
             
         } else {
-            // for files, mark "copy as link" as default
-            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_LINK + "\" checked=\"checked\"> ");
-            retValue.append(getSettings().getMessages().key("messagebox.option.file.aslink.copy") + "<br>\n");
-            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_NEW + "\"> ");
+            // for files, show copy option "copy as sibling" and "copy as new resource"
+            int defaultMode = getSettings().getUserSettings().getDialogCopyFileMode();
+            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_SIBLING + "\"");
+            if (defaultMode == I_CmsConstants.C_COPY_AS_SIBLING) {
+                retValue.append(checkedAttr);
+            }
+            retValue.append("> ");
+            retValue.append(getSettings().getMessages().key("messagebox.option.file.assibling.copy") + "<br>\n");
+            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_NEW + "\"");
+            if (defaultMode == I_CmsConstants.C_COPY_AS_NEW) {
+                retValue.append(checkedAttr);
+            }
+            retValue.append("> ");
             retValue.append(getSettings().getMessages().key("messagebox.option.file.asnewresource.copy") + "<br>\n");       
         }
         
@@ -304,7 +327,7 @@ public class CmsCopy extends CmsDialog {
         }
         
         // get the copy mode from request parameter
-        int copyMode = I_CmsConstants.C_COPY_PRESERVE_LINK;
+        int copyMode = I_CmsConstants.C_COPY_PRESERVE_SIBLING;
         try {
             copyMode = Integer.parseInt(getParamCopymode());
         } catch (Exception e) {
@@ -354,7 +377,7 @@ public class CmsCopy extends CmsDialog {
              
             // delete existing target resource if confirmed by the user
             if (DIALOG_CONFIRMED.equals(getParamAction())) {
-                getCms().deleteResource(target, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+                getCms().deleteResource(target, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
             }            
             
             // copy the resource       

@@ -36,14 +36,7 @@ default:
 
 <%= wp.paramsAsHidden() %>
 
-<% if (wp.hasVfsLinks() && wp.hasCorrectLockstate()) { %>
-<%= wp.key("messagebox.vfsLinks") %>
-<p>
-<input type="radio" name="deletevfslinks" value="false" checked="checked">&nbsp;<%= wp.key("messagebox.option.vfsLinksPreserve") %>
-<br>
-<input type="radio" name="deletevfslinks" value="true">&nbsp;<%= wp.key("messagebox.option.vfsLinksDelete") %>
-<p>
-<% } %>
+<%= wp.buildDeleteSiblings() %>
 
 <%= wp.key("messagebox.delete") %>
 

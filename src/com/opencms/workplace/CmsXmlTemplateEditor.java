@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.134 $
+* Date   : $Date: 2004/02/26 11:35:35 $
+* Version: $Revision: 1.135 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.134 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.135 $ $Date: 2004/02/26 11:35:35 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -719,7 +719,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             bodyTemplateFile.removeFromFileCache();
             // deleting the pagefile will delete the bodyfile too
             cms.getRequestContext().setCurrentProject(cms.readProject(tempProject));
-            cms.deleteResource(tempPageFilename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+            cms.deleteResource(tempPageFilename, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
             cms.getRequestContext().setCurrentProject(cms.readProject(curProject));
             try {
                 CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(CmsWorkplaceAction.getWorkplaceUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()));

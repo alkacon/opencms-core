@@ -23,7 +23,7 @@
     addMenuEntry(resource_id, "language_key(explorer.context.undelete)",        "/JSPWORKPLACE/dialogs/undelete.html",           "''",   "rules_key(d d ddda ddda ddda dddd dddd dddd ddda dddd)");
     addMenuEntry(resource_id, "-",                                              " ",                                    "''",   "rules_key(d d aaaa aaaa aaaa dddd dddd dddd aaaa dddd)");
 
-    addMenuEntry(resource_id, "language_key(explorer.context.showvfslinks)",    "/JSPWORKPLACE/explorer_files.html?showlinks=true",        "''",   "rules_key(d d aaai aaai aaai dddd dddd dddd aaai dddd)");
+    addMenuEntry(resource_id, "language_key(explorer.context.showsiblings)",    "/JSPWORKPLACE/explorer_files.html?showlinks=true",        "''",   "rules_key(d d aaai aaai aaai dddd dddd dddd aaai dddd)");
     addMenuEntry(resource_id, "-",                                              " ",                                    "''",   "rules_key(d d aaaa aaaa aaaa dddd dddd dddd aaaa dddd)");
 
     addMenuEntry(resource_id, "language_key(explorer.context.access)",          "/JSPWORKPLACE/dialogs/chacc.html",	              "''",   "rules_key(d d iiii aaai aaai dddd dddd dddd iiii dddd)");

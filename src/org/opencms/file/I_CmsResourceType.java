@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/26 11:35:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -107,8 +107,8 @@ public interface I_CmsResourceType {
      * Possible values for the copyMode parameter are: 
      * <ul>
      * <li>C_COPY_AS_NEW</li>
-     * <li>C_COPY_AS_LINK</li>
-     * <li>C_COPY_PRESERVE_LINK</li>
+     * <li>C_COPY_AS_SIBLING</li>
+     * <li>C_COPY_PRESERVE_SIBLING</li>
      * </ul>
      * 
      * @param cms the current cms context

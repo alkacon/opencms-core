@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/02/24 13:25:22 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/02/26 11:35:35 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -799,7 +799,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             m_cms.unlockResource(resname, false);
             // finally delete the old body file, it is not needed anymore
             m_cms.lockResource(bodyname);
-            m_cms.deleteResource(bodyname, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+            m_cms.deleteResource(bodyname, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
             m_report.println(" " + m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK); 
             
         } else {
@@ -844,7 +844,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                     m_report.print(m_report.key("report.delfolder") + " " , I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(resname, I_CmsReport.C_FORMAT_DEFAULT);
                     m_cms.lockResource(resname);
-                    m_cms.deleteResource(resname, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+                    m_cms.deleteResource(resname, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
                     m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                     counter++;
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/02/22 13:52:28 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/02/26 11:35:35 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 5.1.12
  */
@@ -311,7 +311,7 @@ public abstract class CmsEditor extends CmsDialog {
             // switch to the temporary file project
             switchToTempProject();
             // delete the temporary file
-            getCms().deleteResource(getParamTempfile(), I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+            getCms().deleteResource(getParamTempfile(), I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
             // switch back to the current project
             switchToCurrentProject();
         } catch (CmsException e) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2004/02/26 11:35:35 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.59 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.60 $ $Date: 2004/02/26 11:35:35 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -133,7 +133,7 @@ public class CmsPictureBrowser extends A_CmsGalleryBrowser {
                             if (cms.getLock(res).isNullLock()) {
                                 cms.lockResource(deleteResource, true);
                             }
-                            cms.deleteResource(deleteResource, I_CmsConstants.C_DELETE_OPTION_PRESERVE_VFS_LINKS);
+                            cms.deleteResource(deleteResource, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
                         } catch (CmsException e) {
                             xmlTemplateDocument.setData("ERRORDETAILS", CmsException.getStackTraceAsString(e));
                             templateSelector = "error";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/02/26 11:35:35 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.1
  */
@@ -98,7 +98,38 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
      */
     public CmsDelete(PageContext context, HttpServletRequest req, HttpServletResponse res) {
         this(new CmsJspActionElement(context, req, res));
-    }  
+    } 
+    
+    /**
+     * Returns the html for the "delete siblings" options when deleting a a resource with siblings.<p>
+     * 
+     * @return the html for the "delete siblings" options
+     */
+    public String buildDeleteSiblings() {
+        if (hasVfsLinks() && hasCorrectLockstate()) {         
+            // show only if resource has siblings and correct lock state
+            StringBuffer result = new StringBuffer(512);
+            int defaultMode = getSettings().getUserSettings().getDialogDeleteFileMode();
+            result.append(key("messagebox.siblings"));
+            result.append("<p>");
+            result.append("<input type=\"radio\" name=\"deletevfslinks\" value=\"false\"");
+            if (defaultMode == I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS) {
+                result.append(" checked=\"checked\"");
+            }
+            result.append(">&nbsp;");
+            result.append(key("messagebox.option.siblingsPreserve"));
+            result.append("<br>");
+            result.append("<input type=\"radio\" name=\"deletevfslinks\" value=\"true\"");
+            if (defaultMode == I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS) {
+                result.append(" checked=\"checked\"");
+            }
+            result.append(">&nbsp;");
+            result.append(key("messagebox.option.siblingsDelete"));
+            result.append("<p>");
+            return result.toString();
+        }
+        return "";
+    }
     
     /**
      * @see org.opencms.workplace.I_CmsDialogHandler#getDialogUri(java.lang.String, CmsJspActionElement)
@@ -193,7 +224,7 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
         }
         
         // determine the correct delete option
-        deleteOption = "true".equalsIgnoreCase(getParamDeleteVfsLinks()) ? I_CmsConstants.C_DELETE_OPTION_DELETE_VFS_LINKS : I_CmsConstants.C_DELETE_OPTION_PRESERVE_VFS_LINKS;
+        deleteOption = "true".equalsIgnoreCase(getParamDeleteVfsLinks()) ? I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS : I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS;
          
         // delete the resource
         getCms().deleteResource(getParamResource(), deleteOption);
@@ -205,10 +236,17 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
      * Checks if VFS links are pointing to this resource.
      * 
      * @return true if one or more VFS links are pointing to this resource
-     * @throws CmsException if something goes wrong
      */
-    public boolean hasVfsLinks() throws CmsException {
-        return getCms().getAllVfsSoftLinks(getParamResource()).size() > 0;
+    public boolean hasVfsLinks() {
+        try {
+            return getCms().getAllVfsSoftLinks(getParamResource()).size() > 0;
+        } catch (CmsException e) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error getting siblings of resource " + getParamResource(), e);
+            }
+            return false;
+        }
+        
     }
     
     /**

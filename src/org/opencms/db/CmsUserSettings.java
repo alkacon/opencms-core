@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2004/02/24 17:24:01 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/02/26 11:35:34 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,14 +30,13 @@
  */
 package org.opencms.db;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.I_CmsWpConstants;
-
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsUser;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -47,7 +46,7 @@ import java.util.Locale;
  * Object to conveniently access and modify the users workplace settings.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1.12
  */
@@ -56,6 +55,18 @@ public class CmsUserSettings {
     /** Identifier for the users additional editor settings information */
     public static final String C_ADDITIONAL_INFO_EDITORSETTINGS = "USER_EDITORSETTINGS";
     private static final int C_BUTTONSTYLE_DEFAULT = 1;
+    
+    /** Identifier for the workplace file siblings copy setting key */
+    public static final String C_DIALOG_COPY_FILE_MODE = "DIALOG_COPY_FILE_MODE";
+    
+    /** Identifier for the workplace folder siblings copy setting key */
+    public static final String C_DIALOG_COPY_FOLDER_MODE = "DIALOG_COPY_FOLDER_MODE";
+    
+    /** Identifier for the workplace sibling deletion setting key */
+    public static final String C_DIALOG_DELETE_MODE = "DIALOG_DELETE_MODE";
+    
+    /** Identifier for the workplace publish siblings setting key */
+    public static final String C_DIALOG_PUBLISH_SIBLINGS = "DIALOG_PUBLISH_SIBLINGS";
     
     /** Identifier for the direct editing button style setting key */
     public static final String C_DIRECT_EDIT_BUTTONSTYLE = "DIRECT_EDIT_BUTTONSTYLE";
@@ -80,6 +91,7 @@ public class CmsUserSettings {
     
     /** Identifier for the workplace report type setting key */
     public static final String C_WORKPLACE_REPORTTYPE = "WORKPLACE_REPORTTYPE";
+    
     private HashMap m_editorSettings;
     
     private int m_explorerButtonStyle;
@@ -137,6 +149,64 @@ public class CmsUserSettings {
      */
     public String getAddressZip() {
         return m_zipCode;
+    }
+    
+    /**
+     * Gets the default copy mode when copying a file of the user.<p>
+     * 
+     * @return the default copy mode when copying a file of the user
+     */
+    public int getDialogCopyFileMode() {
+        int mode = I_CmsConstants.C_COPY_AS_SIBLING;
+        try {
+            mode = Integer.parseInt((String)m_workplaceSettings.get(C_DIALOG_COPY_FILE_MODE));
+        } catch (Throwable t) {
+            // ignore this exception
+        }
+        return mode;
+    }
+    
+    /**
+     * Gets the default copy mode when copying a folder of the user.<p>
+     * 
+     * @return the default copy mode when copying a folder of the user
+     */
+    public int getDialogCopyFolderMode() {
+        int mode = I_CmsConstants.C_COPY_AS_SIBLING;
+        try {
+            mode = Integer.parseInt((String)m_workplaceSettings.get(C_DIALOG_COPY_FOLDER_MODE));
+        } catch (Throwable t) {
+            // ignore this exception
+        }
+        return mode;
+    }
+    
+    /**
+     * Returns the default setting for file deletion.<p>
+     * 
+     * @return the default setting for file deletion
+     */
+    public int getDialogDeleteFileMode() {
+        int mode = I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS;
+        try {
+            mode = Integer.parseInt((String)m_workplaceSettings.get(C_DIALOG_DELETE_MODE));
+        } catch (Throwable t) {
+            // ignore this exception
+        }
+        return mode;
+    }
+    
+    /**
+     * Returns the default setting for direct publishing.<p>
+     * 
+     * @return the default setting for direct publishing: true if siblings should be published, otherwise false
+     */
+    public boolean getDialogPublishSiblings() {
+        Boolean publishSiblings = (Boolean)m_workplaceSettings.get(C_DIALOG_PUBLISH_SIBLINGS);
+        if (publishSiblings == null) {
+            return false;
+        }
+        return publishSiblings.booleanValue();
     }
     
     /**
@@ -356,6 +426,42 @@ public class CmsUserSettings {
      */
     public void setAddressZip(String value) {
         m_zipCode = value;
+    }
+    
+    /**
+     * Sets the default copy mode when copying a file of the user.<p>
+     * 
+     * @param mode the default copy mode when copying a file of the user
+     */
+    public void setDialogCopyFileMode(int mode) {
+        m_workplaceSettings.put(C_DIALOG_COPY_FILE_MODE, "" + mode);
+    }
+    
+    /**
+     * Sets the default copy mode when copying a folder of the user.<p>
+     * 
+     * @param mode the default copy mode when copying a folder of the user
+     */
+    public void setDialogCopyFolderMode(int mode) {
+        m_workplaceSettings.put(C_DIALOG_COPY_FOLDER_MODE, "" + mode);
+    }
+    
+    /**
+     * Sets the default setting for file deletion.<p>
+     * 
+     * @param mode the default setting for file deletion
+     */
+    public void setDialogDeleteFileMode(int mode) {
+        m_workplaceSettings.put(C_DIALOG_DELETE_MODE, "" + mode);
+    }
+    
+    /**
+     * Sets the default setting for direct publishing.<p>
+     * 
+     * @param publishSiblings the default setting for direct publishing: true if siblings should be published, otherwise false
+     */
+    public void setDialogPublishSiblings(boolean publishSiblings) {
+        m_workplaceSettings.put(C_DIALOG_PUBLISH_SIBLINGS, new Boolean(publishSiblings));
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2004/02/26 11:35:35 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.60 $ $Date: 2004/02/22 13:52:27 $
+ * @version $Revision: 1.61 $ $Date: 2004/02/26 11:35:35 $
  */
 
 public class CmsDelete extends CmsWorkplaceDefault {
@@ -116,7 +116,7 @@ public class CmsDelete extends CmsWorkplaceDefault {
 
                     // its a file, so delete it
                     try{
-                        cms.deleteResource(cms.readAbsolutePath(file), I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+                        cms.deleteResource(cms.readAbsolutePath(file), I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
                         session.removeValue(C_PARA_DELETE);
                         session.removeValue(C_PARA_RESOURCE);
                     }catch(CmsException e){
@@ -144,7 +144,7 @@ public class CmsDelete extends CmsWorkplaceDefault {
                 else {
                     // its a folder
                     try{
-                        cms.deleteResource(cms.readAbsolutePath(file), I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+                        cms.deleteResource(cms.readAbsolutePath(file), I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
                     }catch(CmsException e){
                         session.removeValue(C_PARA_DELETE);
                         session.removeValue(C_PARA_RESOURCE);

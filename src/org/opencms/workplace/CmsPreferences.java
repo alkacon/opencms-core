@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/02/24 17:24:01 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/02/26 11:35:35 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1.12
  */
@@ -168,17 +168,29 @@ public class CmsPreferences extends CmsTabDialog {
     /** Request parameter name for the workplace button style */
     public static final String PARAM_WORKPLACE_BUTTONSTYLE = "tabwpbuttonstyle";
     
+    /** Request parameter name for the dialog copy file siblings default setting */
+    public static final String PARAM_DIALOGS_COPYFILEMODE = "tabdicopyfilemode";
+    
+    /** Request parameter name for the dialog copy folder siblings default setting */
+    public static final String PARAM_DIALOGS_COPYFOLDERMODE = "tabdicopyfoldermode";
+    
+    /** Request parameter name for the dialog delete file siblings default setting */
+    public static final String PARAM_DIALOGS_DELETEFILEMODE = "tabdideletefilemode";
+    
     /** Request parameter name for the workplace language */
     public static final String PARAM_WORKPLACE_LANGUAGE = "tabwplanguage";
     
     /** Request parameter name for the workplace project */
     public static final String PARAM_WORKPLACE_PROJECT = "tabwpproject";
     
+    /** Request parameter name for the dialog publish file siblings default setting */
+    public static final String PARAM_DIALOGS_PUBLISHFILEMODE = "tabdipublishfilemode";
+    
     /** Request parameter name for the workplace report type */
     public static final String PARAM_WORKPLACE_REPORTTYPE = "tabwpreporttype";
     
-    /** Request parameter name for the workplace show lock */
-    public static final String PARAM_WORKPLACE_SHOWLOCK = "tabwpshowlock";
+    /** Request parameter name for the dialog show lock */
+    public static final String PARAM_DIALOGS_SHOWLOCK = "tabdishowlock";
     
     /** Request parameter name for the workplace use upload applet */
     public static final String PARAM_WORKPLACE_USEUPLOADAPPLET = "tabwpuseuploadapplet";
@@ -348,6 +360,59 @@ public class CmsPreferences extends CmsTabDialog {
         options.add(key("preferences.buttonstyle.txt"));
         String [] vals = new String[] {"0", "1", "2"};
         List values = new ArrayList(java.util.Arrays.asList(vals));
+        return buildSelect(htmlAttributes, options, values, selectedIndex);
+    }
+    
+    /**
+     * Builds the html for the default copy file mode select box.<p>
+     * 
+     * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
+     * @return the html for the default copy file mode select box
+     */
+    public String buildSelectCopyFileMode(String htmlAttributes) {
+        List options = new ArrayList(2);
+        options.add(key("preferences.workplace.default.copy.file.sibling"));
+        options.add(key("preferences.workplace.default.copy.file.asnew"));
+        List values = new ArrayList(2);
+        values.add("" + I_CmsConstants.C_COPY_AS_SIBLING);
+        values.add("" + I_CmsConstants.C_COPY_AS_NEW);
+        int selectedIndex = values.indexOf(getParamTabDiCopyFileMode());
+        return buildSelect(htmlAttributes, options, values, selectedIndex);
+    }
+    
+    /**
+     * Builds the html for the default copy folder mode select box.<p>
+     * 
+     * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
+     * @return the html for the default copy folder mode select box
+     */
+    public String buildSelectCopyFolderMode(String htmlAttributes) {
+        List options = new ArrayList(3);
+        options.add(key("preferences.workplace.default.copy.folder.sibling"));
+        options.add(key("preferences.workplace.default.copy.folder.preserve"));
+        options.add(key("preferences.workplace.default.copy.folder.asnew"));
+        List values = new ArrayList(3);
+        values.add("" + I_CmsConstants.C_COPY_AS_SIBLING);
+        values.add("" + I_CmsConstants.C_COPY_PRESERVE_SIBLING);
+        values.add("" + I_CmsConstants.C_COPY_AS_NEW);
+        int selectedIndex = values.indexOf(getParamTabDiCopyFolderMode());
+        return buildSelect(htmlAttributes, options, values, selectedIndex);
+    }
+    
+    /**
+     * Builds the html for the default delete file mode select box.<p>
+     * 
+     * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
+     * @return the html for the default delete file mode select box
+     */
+    public String buildSelectDeleteFileMode(String htmlAttributes) {
+        List options = new ArrayList(2);
+        options.add(key("preferences.workplace.default.delete.deletesibling"));
+        options.add(key("preferences.workplace.default.delete.preservesibling"));
+        List values = new ArrayList(2);
+        values.add("" + I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
+        values.add("" + I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+        int selectedIndex = values.indexOf(getParamTabDiDeleteFileMode());
         return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
     
@@ -555,6 +620,23 @@ public class CmsPreferences extends CmsTabDialog {
         } catch (CmsException e) {
             return getSettings().getProject() + "";
         }
+    }
+    
+    /**
+     * Builds the html for the default publish siblings mode select box.<p>
+     * 
+     * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
+     * @return the html for the default publish siblings mode select box
+     */
+    public String buildSelectPublishSiblings(String htmlAttributes) {
+        List options = new ArrayList(2);
+        options.add(key("preferences.workplace.default.publish.sibling"));
+        options.add(key("preferences.workplace.default.publish.nosibling"));
+        List values = new ArrayList(2);
+        values.add("true");
+        values.add("false");
+        int selectedIndex = values.indexOf(getParamTabDiPublishFileMode());
+        return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
     
     /**
@@ -929,6 +1011,33 @@ public class CmsPreferences extends CmsTabDialog {
     }
     
     /**
+     * Returns the "copy file default" setting.<p>
+     * 
+     * @return the "copy file default" setting
+     */
+    public String getParamTabDiCopyFileMode() {
+        return "" + m_userSettings.getDialogCopyFileMode();
+    }
+    
+    /**
+     * Returns the "copy folder default" setting.<p>
+     * 
+     * @return the "copy folder default" setting
+     */
+    public String getParamTabDiCopyFolderMode() {
+        return "" + m_userSettings.getDialogCopyFolderMode();
+    }
+    
+    /**
+     * Returns the "delete file default" setting.<p>
+     * 
+     * @return the "delete file default" setting
+     */
+    public String getParamTabDiDeleteFileMode() {
+        return "" + m_userSettings.getDialogDeleteFileMode();
+    }
+    
+    /**
      * Returns the start language setting.<p>
      * 
      * @return the start language setting
@@ -947,6 +1056,15 @@ public class CmsPreferences extends CmsTabDialog {
     }
     
     /**
+     * Returns the "publish file siblings default" setting.<p>
+     * 
+     * @return the "publish file siblings default" setting
+     */
+    public String getParamTabDiPublishFileMode() {
+        return "" + m_userSettings.getDialogPublishSiblings();
+    }
+    
+    /**
      * Returns the "workplace report type" setting.<p>
      * 
      * @return the "workplace report type" setting
@@ -960,7 +1078,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return "true" if the "display lock dialog" input field is checked, otherwise ""
      */
-    public String getParamTabWpShowLock() {
+    public String getParamTabDiShowLock() {
         return isParamEnabled(m_userSettings.showLockDialog());
     }
     
@@ -989,6 +1107,7 @@ public class CmsPreferences extends CmsTabDialog {
         ArrayList orderList = new ArrayList(5);
         orderList.add("tabwp");
         orderList.add("tabex");
+        orderList.add("tabdi");
         orderList.add("tabed");
         orderList.add("tabwf");
         orderList.add("tabup");
@@ -999,9 +1118,10 @@ public class CmsPreferences extends CmsTabDialog {
      * @see org.opencms.workplace.CmsTabDialog#getTabs()
      */
     public List getTabs() {
-        ArrayList tabList = new ArrayList(5);
+        ArrayList tabList = new ArrayList(6);
         tabList.add(key("panel.workplace"));
-        tabList.add(key("panel.explorer"));      
+        tabList.add(key("panel.explorer"));
+        tabList.add(key("panel.dialogs"));
         tabList.add(key("panel.editors"));
         tabList.add(key("panel.task"));
         tabList.add(key("panel.user"));
@@ -1324,6 +1444,45 @@ public class CmsPreferences extends CmsTabDialog {
             // ignore this exception
         }
     }
+    
+    /**
+     * Sets the "copy file default" setting.<p>
+     * 
+     * @param value the "copy file default" setting
+     */
+    public void setParamTabDiCopyFileMode(String value) {
+        try {
+            m_userSettings.setDialogCopyFileMode(Integer.parseInt(value));
+        } catch (Throwable t) {
+            // ignore this exception
+        }
+    }
+    
+    /**
+     * Sets the "copy folder default" setting.<p>
+     * 
+     * @param value the "copy folder default" setting
+     */
+    public void setParamTabDiCopyFolderMode(String value) {
+        try {
+            m_userSettings.setDialogCopyFolderMode(Integer.parseInt(value));
+        } catch (Throwable t) {
+            // ignore this exception
+        }
+    }
+    
+    /**
+     * Sets the "delete file siblings default" setting.<p>
+     * 
+     * @param value the "delete file siblings default" setting
+     */
+    public void setParamTabDiDeleteFileMode(String value) {
+        try {
+            m_userSettings.setDialogDeleteFileMode(Integer.parseInt(value));
+        } catch (Throwable t) {
+            // ignore this exception
+        }
+    }
 
     /**
      * Sets the start language setting.<p>
@@ -1341,6 +1500,15 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public void setParamTabWpProject(String value) {
         m_userSettings.setStartProject(value);
+    }
+    
+    /**
+     * Sets the "publish file siblings default" setting.<p>
+     * 
+     * @param value the "publish file siblings default" setting
+     */
+    public void setParamTabDiPublishFileMode(String value) {
+        m_userSettings.setDialogPublishSiblings("true".equals(value));
     }
 
     /**
@@ -1360,7 +1528,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @param value "true" to enable the "display lock dialog" setting, all others to disable
      */
-    public void setParamTabWpShowLock(String value) {
+    public void setParamTabDiShowLock(String value) {
         m_userSettings.setShowLockDialog("true".equals(value));
     }
 

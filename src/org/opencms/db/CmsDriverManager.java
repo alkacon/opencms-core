@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/02/25 16:45:15 $
- * Version: $Revision: 1.331 $
+ * Date   : $Date: 2004/02/26 11:35:34 $
+ * Version: $Revision: 1.332 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.331 $ $Date: 2004/02/25 16:45:15 $
+ * @version $Revision: 1.332 $ $Date: 2004/02/26 11:35:34 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1250,8 +1250,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * Possible values are: 
      * <ul>
      * <li>C_COPY_AS_NEW</li>
-     * <li>C_COPY_AS_LINK</li>
-     * <li>C_COPY_PRESERVE_LINK</li>
+     * <li>C_COPY_AS_SIBLING</li>
+     * <li>C_COPY_PRESERVE_SIBLING</li>
      * </ul>
      * @throws CmsException if operation was not succesful
      */
@@ -1281,11 +1281,11 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // only check this if the override flag "copyAsLink" is not set.
         if (!copyAsLink) {
             // if we have the copy mode "copy as link, set the override flag to true
-            if (copyMode == I_CmsConstants.C_COPY_AS_LINK) {
+            if (copyMode == I_CmsConstants.C_COPY_AS_SIBLING) {
                 copyAsLink = true;
             }
             // if the mode is "preservre links", we have to check the link counter
-            if (copyMode == I_CmsConstants.C_COPY_PRESERVE_LINK) {
+            if (copyMode == I_CmsConstants.C_COPY_PRESERVE_SIBLING) {
                 if (sourceFile.getLinkCount() > 1) {
                     copyAsLink = true;
                 }
@@ -2303,7 +2303,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         resources.add(resource);
 
         // if selected, add all links pointing to this resource to the list of files that get deleted/removed  
-        if (deleteOption == I_CmsConstants.C_DELETE_OPTION_DELETE_VFS_LINKS) {
+        if (deleteOption == I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS) {
             resources.addAll(readSiblings(context, filename, false, false));
         }
 
@@ -4900,8 +4900,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         if (source.isFile()) {
             // file is copied as link
-            copyFile(context, sourceName, destinationName, true, true, I_CmsConstants.C_COPY_AS_LINK);
-            deleteFile(context, sourceName, I_CmsConstants.C_DELETE_OPTION_PRESERVE_VFS_LINKS);
+            copyFile(context, sourceName, destinationName, true, true, I_CmsConstants.C_COPY_AS_SIBLING);
+            deleteFile(context, sourceName, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
         } else {
             // folder is copied as link
             copyFolder(context, sourceName, destinationName, true, true);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/02/21 17:11:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/26 11:35:34 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.5 $ $Date: 2004/02/21 17:11:42 $
+ * @version $Revision: 1.6 $ $Date: 2004/02/26 11:35:34 $
  */
 public interface I_CmsConstants {
 
@@ -1196,12 +1196,6 @@ public interface I_CmsConstants {
     /** name of the special body element from an XMLTemplate */
     String C_XML_BODY_ELEMENT = "body";
 
-    /** Type ID of a hard VFS link.<p> */
-    int C_VFS_LINK_TYPE_MASTER = 1;
-
-    /** Type ID of a soft VFS link.<p> */
-    int C_VFS_LINK_TYPE_SLAVE = 2;
-
     /** suffix for caching of simple pages */
     String C_XML_CONTROL_FILE_SUFFIX = ".xmlcontrol";
 
@@ -1209,30 +1203,29 @@ public interface I_CmsConstants {
     String C_XML_CONTROL_DEFAULT_CLASS = "com.opencms.template.CmsXmlTemplate";
     
     /** 
-     * Signals that VFS links pointing to this resource should not be 
+     * Signals that siblings of this resource should not be 
      * deleted and will remain unchanged at all.
      */
-    int C_DELETE_OPTION_IGNORE_VFS_LINKS = 0;
+    int C_DELETE_OPTION_IGNORE_SIBLINGS = 0;
     
     /** 
-     * Signals that VFS links pointing to this resource should not be deleted. 
-     * An existing soft link of this resource will be converted into a new hard link. 
+     * Signals that siblings of this resource should not be deleted. 
      */
-    int C_DELETE_OPTION_PRESERVE_VFS_LINKS = 1;
+    int C_DELETE_OPTION_PRESERVE_SIBLINGS = 1;
 
     /** 
-     * Signals that VFS links pointing to this resource should be deleted.
+     * Signals that siblings of this resource should be deleted.
      */
-    int C_DELETE_OPTION_DELETE_VFS_LINKS = 2;
+    int C_DELETE_OPTION_DELETE_SIBLINGS = 2;
 
     /** copy mode for copy resources as new resource */
     int C_COPY_AS_NEW = 1;
 
-    /** copy mode for copy resources as link */
-    int C_COPY_AS_LINK = 2;
+    /** copy mode for copy resources as sibling */
+    int C_COPY_AS_SIBLING = 2;
 
-    /** copy mode to preserve links during copy */
-    int C_COPY_PRESERVE_LINK = 3;
+    /** copy mode to preserve siblings during copy */
+    int C_COPY_PRESERVE_SIBLING = 3;
 
     /** the vfs path of the loast and found folder */
     String C_VFS_LOST_AND_FOUND = "/system/lost-found";

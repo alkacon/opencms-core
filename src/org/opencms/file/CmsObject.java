@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/02/25 16:45:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/26 11:35:34 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsObject {
 
@@ -394,7 +394,7 @@ public class CmsObject {
      * @deprecated Use copyResource instead.
      */
     public void copyFile(String source, String destination) throws CmsException {
-        copyResource(source, destination, false, true, I_CmsConstants.C_COPY_PRESERVE_LINK);
+        copyResource(source, destination, false, true, I_CmsConstants.C_COPY_PRESERVE_SIBLING);
     }
 
     /**
@@ -409,7 +409,7 @@ public class CmsObject {
      * @deprecated Use copyResource instead.
      */
     public void copyFolder(String source, String destination) throws CmsException {
-        copyResource(source, destination, false, false, I_CmsConstants.C_COPY_PRESERVE_LINK);
+        copyResource(source, destination, false, false, I_CmsConstants.C_COPY_PRESERVE_SIBLING);
     }
 
     /**
@@ -422,7 +422,7 @@ public class CmsObject {
      * has not the appropriate rights to copy the file.
      */
     public void copyResource(String source, String destination) throws CmsException {
-        getResourceType(readFileHeader(source).getType()).copyResource(this, source, destination, false, true, I_CmsConstants.C_COPY_PRESERVE_LINK);
+        getResourceType(readFileHeader(source).getType()).copyResource(this, source, destination, false, true, I_CmsConstants.C_COPY_PRESERVE_SIBLING);
     }
 
     /**
@@ -437,8 +437,8 @@ public class CmsObject {
      * Possible values are: 
      * <ul>
      * <li>C_COPY_AS_NEW</li>
-     * <li>C_COPY_AS_LINK</li>
-     * <li>C_COPY_PRESERVE_LINK</li>
+     * <li>C_COPY_AS_SIBLING</li>
+     * <li>C_COPY_PRESERVE_SIBLING</li>
      * </ul>
      * @throws CmsException if the file couldn't be copied, or the user
      * has not the appropriate rights to copy the file.
@@ -837,7 +837,7 @@ public class CmsObject {
      * @deprecated Use deleteResource instead.
      */
     public void deleteFile(String filename) throws CmsException {
-        deleteResource(filename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+        deleteResource(filename, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
     }
 
     /**
@@ -854,7 +854,7 @@ public class CmsObject {
      * @deprecated Use deleteResource instead.
      */
     public void deleteFolder(String foldername) throws CmsException {
-        deleteResource(foldername, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+        deleteResource(foldername, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
     }
 
     /**
@@ -910,9 +910,9 @@ public class CmsObject {
      * @param filename the filename of the resource exlucing the site root
      * @param deleteOption signals how VFS links pointing to this resource should be handled 
      * @throws CmsException if the user has insufficient acces right to delete the resource
-     * @see org.opencms.main.I_CmsConstants#C_DELETE_OPTION_DELETE_VFS_LINKS
-     * @see org.opencms.main.I_CmsConstants#C_DELETE_OPTION_IGNORE_VFS_LINKS
-     * @see org.opencms.main.I_CmsConstants#C_DELETE_OPTION_PRESERVE_VFS_LINKS
+     * @see org.opencms.main.I_CmsConstants#C_DELETE_OPTION_DELETE_SIBLINGS
+     * @see org.opencms.main.I_CmsConstants#C_DELETE_OPTION_IGNORE_SIBLINGS
+     * @see org.opencms.main.I_CmsConstants#C_DELETE_OPTION_PRESERVE_SIBLINGS
      */
     public void deleteResource(String filename, int deleteOption) throws CmsException {
         getResourceType(readFileHeader(filename).getType()).deleteResource(this, filename, deleteOption);
@@ -1012,8 +1012,8 @@ public class CmsObject {
      * Possible values are: 
      * <ul>
      * <li>C_COPY_AS_NEW</li>
-     * <li>C_COPY_AS_LINK</li>
-     * <li>C_COPY_PRESERVE_LINK</li>
+     * <li>C_COPY_AS_SIBLING</li>
+     * <li>C_COPY_PRESERVE_SIBLING</li>
      * </ul>
      * @throws CmsException if the file couldn't be copied, or the user
      * has not the appropriate rights to copy the file.

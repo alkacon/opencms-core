@@ -84,22 +84,18 @@ case 1:
 		<%= wp.dialogSpacer() %>
 		<%= wp.dialogBlockStart(wp.key("preferences.subhead.general")) %>
 		<table border="0" cellpadding="4" cellspacing="0">
-		<tr>
-			<td style="white-space: nowrap;"><%= wp.key("input.workplace.buttonstyle") %></td><td><%= wp.buildSelectWorkplaceButtonStyle("name=\"" + wp.PARAM_WORKPLACE_BUTTONSTYLE + "\" style=\"width: 200px;\"") %></td>
-		</tr>
-		<tr>
-			<td style="white-space: nowrap;"><%= wp.key("input.reporttype") %></td><td><%= wp.buildSelectReportType("name=\"" + wp.PARAM_WORKPLACE_REPORTTYPE + "\" style=\"width: 200px;\"") %></td>
-		</tr>
-		<tr>
-			<td colspan="2" style="white-space: nowrap;"><input type="checkbox" name="<%= wp.PARAM_WORKPLACE_SHOWLOCK %>" value="true"<%= wp.isChecked(wp.getParamTabWpShowLock()) %>> <%= wp.key("input.showlockdialog") %></td>
-		</tr>
-		<tr>
-			<td colspan="2" style="white-space: nowrap;"><input type="checkbox" name="<%= wp.PARAM_WORKPLACE_USEUPLOADAPPLET %>" value="true"<%= wp.isChecked(wp.getParamTabWpUseUploadApplet()) %>> <%= wp.key("input.uploadapplet") %></td>
-		</tr>
-		</table>
+			<tr>
+				<td style="white-space: nowrap;"><%= wp.key("input.workplace.buttonstyle") %></td><td><%= wp.buildSelectWorkplaceButtonStyle("name=\"" + wp.PARAM_WORKPLACE_BUTTONSTYLE + "\" style=\"width: 200px;\"") %></td>
+			</tr>
+			<tr>
+				<td style="white-space: nowrap;"><%= wp.key("input.reporttype") %></td><td><%= wp.buildSelectReportType("name=\"" + wp.PARAM_WORKPLACE_REPORTTYPE + "\" style=\"width: 200px;\"") %></td>
+			</tr>
+			<tr>
+				<td colspan="2" style="white-space: nowrap;"><input type="checkbox" name="<%= wp.PARAM_WORKPLACE_USEUPLOADAPPLET %>" value="true"<%= wp.isChecked(wp.getParamTabWpUseUploadApplet()) %>> <%= wp.key("input.uploadapplet") %></td>
+			</tr>
+		</table>		
 		<%= wp.dialogBlockEnd() %>
 	<%
-default:
 break;
 case 2:
 	// ########## explorer display settings
@@ -170,6 +166,30 @@ case 2:
 	<%
 break;
 case 3:
+	// ########## dialogs settings
+	%>
+		<%= wp.dialogBlockStart(wp.key("preferences.subhead.dialogdefaults")) %>
+		<table border="0" cellpadding="4" cellspacing="0">
+			<tr>
+				<td style="white-space: nowrap;"><%= wp.key("input.workplace.defaults.copyfile") %></td><td><%= wp.buildSelectCopyFileMode("name=\"" + wp.PARAM_DIALOGS_COPYFILEMODE + "\" style=\"width: 250px;\"") %></td>
+			</tr>
+			<tr>
+				<td style="white-space: nowrap;"><%= wp.key("input.workplace.defaults.copyfolder") %></td><td><%= wp.buildSelectCopyFolderMode("name=\"" + wp.PARAM_DIALOGS_COPYFOLDERMODE + "\" style=\"width: 250px;\"") %></td>
+			</tr>
+			<tr>
+				<td style="white-space: nowrap;"><%= wp.key("input.workplace.defaults.deletefile") %></td><td><%= wp.buildSelectDeleteFileMode("name=\"" + wp.PARAM_DIALOGS_DELETEFILEMODE + "\" style=\"width: 250px;\"") %></td>
+			</tr>
+			<tr>
+				<td style="white-space: nowrap;"><%= wp.key("input.workplace.defaults.publishsiblings") %></td><td><%= wp.buildSelectPublishSiblings("name=\"" + wp.PARAM_DIALOGS_PUBLISHFILEMODE + "\" style=\"width: 250px;\"") %></td>
+			</tr>
+			<tr>
+				<td colspan="2" style="white-space: nowrap;"><input type="checkbox" name="<%= wp.PARAM_DIALOGS_SHOWLOCK %>" value="true"<%= wp.isChecked(wp.getParamTabDiShowLock()) %>> <%= wp.key("input.showlockdialog") %></td>
+			</tr>
+		</table>			
+		<%= wp.dialogBlockEnd() %>
+	<%
+break;
+case 4:
 	// ########## editor settings
 	%>
 		<%= wp.dialogBlockStart(wp.key("preferences.subhead.general")) %>
@@ -192,7 +212,7 @@ case 3:
 		<%= wp.dialogBlockEnd() %>
 	<%
 break;
-case 4:
+case 5:
 	// ########## workflow settings
 	%>
 		<%= wp.dialogBlockStart(wp.key("preferences.subhead.general")) %>
@@ -223,7 +243,7 @@ case 4:
 		<%= wp.dialogBlockEnd() %>
 	<%
 break;
-case 5:
+case 6:
 	// ########## user data settings
 	%>
 		<script type="text/javascript">
