@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/03/25 15:08:52 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/03/25 17:16:58 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public class CmsLinkManager {
     
@@ -297,7 +297,7 @@ public class CmsLinkManager {
      * @param vfsName the vfs resource name to check
      * @return true if export is required for the given vfsName
      */
-    private boolean exportRequired(CmsObject cmsParam, String vfsName) {
+    protected boolean exportRequired(CmsObject cmsParam, String vfsName) {
         boolean result = false;
         if (OpenCms.getStaticExportManager().isStaticExportEnabled()) { 
             try {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/03/25 15:08:52 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2004/03/25 17:16:58 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -377,8 +377,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // "export on publish". 
         // if no request and result stream are available, it was called during "export on publish"
         boolean exportOnDemand = ((req != null) && (res != null));
-                
-        
+                        
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Static export starting for resource " + data);
         }
@@ -399,18 +398,23 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             throw new CmsException("Unable to export VFS file " + vfsName + ", loader with id " + loaderId + " does not support static export");
         }
 
-        // make sure all required parent folder exist
-        createExportFolder(rfsName);
-
-        
-        // generate export file instance and output stream
+        FileOutputStream exportStream = null;
+        File exportFile = null;
         String exportFileName = CmsLinkManager.normalizeRfsPath(getExportPath() + rfsName.substring(1));
-        File exportFile = new File(exportFileName);
-        FileOutputStream exportStream;
-        try {
-            exportStream = new FileOutputStream(exportFile);
-        } catch (Throwable t) {
-            throw new CmsException("Creation of static export output stream failed for RFS file " + exportFileName);
+        
+        // only export those resource where the export property is set
+        if (OpenCms.getLinkManager().exportRequired(cms, vfsName)) {
+            // make sure all required parent folder exist
+            createExportFolder(rfsName);
+            
+            // generate export file instance and output stream
+            exportFile = new File(exportFileName);           
+
+            try {
+                exportStream = new FileOutputStream(exportFile);
+            } catch (Throwable t) {
+                throw new CmsException("Creation of static export output stream failed for RFS file " + exportFileName);
+            }            
         }
 
         // ensure we have exactly the same setup as if called "the usual way"
@@ -424,12 +428,22 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                                         
         // do the export
         loader.export(cms, file, exportStream, req, res);
-        
+
+        // update the file with the modification date from the server
+        if (req != null) {
+            Long timestamp = (Long)req.getAttribute(I_CmsConstants.C_HEADER_OPENCMS_EXPORT);
+            if (timestamp != null) {
+                exportFile.setLastModified(timestamp.longValue());
+            }                                      
+        }
+                
         // set unused resources
         file = null;
         
         // close the export stream 
-        exportStream.close();               
+        if (exportStream != null) {
+            exportStream.close();
+        }
        
         // restore context
         // we only have to do this in case of the static export on demand
@@ -571,7 +585,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         // define everything we need to send the requests
         HttpClient client = new HttpClient();       
-        Header exportHeader = new Header(I_CmsConstants.C_HEADER_OPENCMS_EXPORT, "true");                           
+        Header exportHeader = new Header(I_CmsConstants.C_HEADER_OPENCMS_EXPORT, "true");   
+        Header lastModified;
         
         try {
             cms.getRequestContext().saveSiteRoot();
@@ -586,7 +601,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 report.print(report.key("report.dots"));
 
                 url = getExportUrl() + getRfsPrefix() + rfsName;              
-                        
+                
+                
                 // now check the export property for this resource.
                 // depending on its value, the export header will be set, which will later
                 // trigger the export to the rfs. The content of the resource must
@@ -596,7 +612,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 if (url != null) {
                     HttpMethod method = new GetMethod(url);
                     method.addRequestHeader(exportHeader);
-                                                      
+
+                    // get the lastmodification date and add it to the request
+                    String exportFileName = CmsLinkManager.normalizeRfsPath(getExportPath() + rfsName.substring(1));
+                    File exportFile = new File(exportFileName);
+                    if (exportFile != null) {
+                        long timestamp = exportFile.lastModified();
+                        lastModified = new Header(I_CmsConstants.C_HEADER_IF_MODIFIED_SINCE , new Long(timestamp).toString());
+                        method.addRequestHeader(lastModified);
+                    }
+                    
                     // execute the method.                                      
                     client.executeMethod(method);
                     
