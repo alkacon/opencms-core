@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
- * Date   : $Date: 2000/02/21 22:45:22 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/02/23 19:45:21 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2000/02/21 22:45:22 $
+ * @version $Revision: 1.14 $ $Date: 2000/02/23 19:45:21 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -64,6 +64,20 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      */
     private final static String C_CURRENT_LANGUAGE = "de";
     
+    /**
+     * Indicates if the results of this class are cacheable.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file 
+     * @param elementName Element name of this template in our parent template.
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
+     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+     */
+    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+        return true;
+    }
+
     /**
      * Gets the key that should be used to cache the results of
      * this template class. 
