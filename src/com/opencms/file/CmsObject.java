@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/17 11:41:36 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2000/06/18 14:50:33 $
+ * Version: $Revision: 1.88 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.87 $ $Date: 2000/06/17 11:41:36 $ 
+ * @version $Revision: 1.88 $ $Date: 2000/06/18 14:50:33 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -75,6 +75,12 @@ public class CmsObject implements I_CmsConstants {
 		c_rb = resourceBroker;
 	}
 	
+    /**
+     * Clears all internal DB-Caches.
+     */
+    public void clearcache() {
+        c_rb.clearcache();
+    }
     
     /**
      * Destroys the resource borker and required modules and connections.
@@ -300,8 +306,10 @@ public class CmsObject implements I_CmsConstants {
 	 */
 	public void publishProject(int id)
 		throws CmsException { 
+         clearcache();
 		 c_rb.publishProject(m_context.currentUser(), 
 							 m_context.currentProject(), id);
+         clearcache();
 	}
 	
 	/**
@@ -910,7 +918,23 @@ public class CmsObject implements I_CmsConstants {
 		c_rb.chtype(m_context.currentUser(), m_context.currentProject(), 
 				   filename, newType );
 	}
-    
+
+     /**
+	 * Changes the state for this resource<BR/>
+	 * 
+	 * The user may change this, if he is admin of the resource.
+	 * 
+	 * @param filename The complete path to the resource.
+	 * @param state The new state of this resource.
+	 * 
+	 * @exception CmsException will be thrown, if the user has not the rights 
+	 * for this resource. It will also be thrown, if the newOwner doesn't exists.
+	 */
+	public void chstate(String filename, int state)
+		throws CmsException { 
+		c_rb.chstate(m_context.currentUser(), m_context.currentProject(), 
+				   filename, state );
+	}
     
 	/**
 	 * Locks a resource<BR/>
@@ -1447,6 +1471,34 @@ public class CmsObject implements I_CmsConstants {
 							  flags) );
 
 	}
+    
+    
+          
+     /** 
+	 * Adds a user to the Cms.
+	 * 
+	 * 
+	 * @param name The new name for the user.
+	 * @param password The new password for the user.
+	 * @param group The default groupname for the user.
+	 * @param description The description for the user.
+	 * @param additionalInfos A Hashtable with additional infos for the user. These
+	 * Infos may be stored into the Usertables (depending on the implementation).
+	 * @param flags The flags for a user (e.g. C_FLAG_ENABLED)
+	 * 
+	 * @return user The added user will be returned.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public CmsUser addWebUser(String name, String password, String group, 
+							 String description, Hashtable additionalInfos, int flags)
+		throws CmsException { 
+		
+		return( c_rb.addWebUser(m_context.currentUser(), m_context.currentProject(),
+							  name, password, group, description, additionalInfos, 
+							  flags) );
+    }
+    
 	
 	/** 
 	 * Deletes a user from the Cms.
@@ -2006,7 +2058,9 @@ public class CmsObject implements I_CmsConstants {
 	public void importResources(String importFile, String importPath)
 		throws CmsException {
 		// import the resources
+        clearcache();
 		c_rb.importResources(m_context.currentUser(), m_context.currentProject(), importFile, importPath, this);
+        clearcache();
 	}
 	
 	/**

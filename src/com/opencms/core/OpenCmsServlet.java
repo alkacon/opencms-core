@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/06/17 11:41:36 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2000/06/18 14:50:33 $
+ * Version: $Revision: 1.45 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.44 $ $Date: 2000/06/17 11:41:36 $  
+* @version $Revision: 1.45 $ $Date: 2000/06/18 14:50:33 $  
 * 
 * */
 
@@ -302,6 +302,12 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
                 }
             }
 
+            // check for the clearcache parameter
+            loginParameter=cmsReq.getParameter("_clearcache");
+            if (loginParameter != null) {
+                cms.clearcache();
+            }
+            
             // get the actual session
             session=req.getSession(false);
             // there was a session returned, now check if this user is already authorized

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/06/14 10:00:26 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2000/06/18 14:50:33 $
+ * Version: $Revision: 1.86 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.85 $ $Date: 2000/06/14 10:00:26 $
+ * @version $Revision: 1.86 $ $Date: 2000/06/18 14:50:33 $
  */
 public interface I_CmsConstants
 {
@@ -210,7 +210,7 @@ public interface I_CmsConstants
 	 /**
 	  * A user-type
 	  */
-	 static final int C_USER_TYPE_WEBMUSER = 1;
+	 static final int C_USER_TYPE_WEBUSER = 1;
 	 
 	 /**
 	 * Key for additional info address.
@@ -610,9 +610,10 @@ public interface I_CmsConstants
 	public static final int C_TASK_MESSAGES_MEMBERS = 8;
 
 	    
-    public final static String C_FILE="FILE";
+    public final static String C_FILE="FILE";    
     public final static String C_FOLDER="FOLDER";
-     
+    public final static String C_USER="USER";
+    public final static String C_GROUP="GROUP"; 
     
 
 	/**

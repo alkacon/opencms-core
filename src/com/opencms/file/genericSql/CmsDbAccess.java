@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/17 16:00:09 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2000/06/18 14:50:33 $
+ * Version: $Revision: 1.71 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.70 $ $Date: 2000/06/17 16:00:09 $ * 
+ * @version $Revision: 1.71 $ $Date: 2000/06/18 14:50:33 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2413,8 +2413,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
      public void copyResourceToProject(CmsProject project,
                                        CmsProject onlineProject,
                                        CmsResource resource)
-                              
+                           
+        
          throws CmsException {
+  
         // get the parent resource in the offline project
          int id=C_UNKNOWN_ID;
          try {
@@ -2453,14 +2455,16 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		offlineFolders = readFolders(projectId);
 
 		for(int i = 0; i < offlineFolders.size(); i++) {
+           
 			currentFolder = ((CmsFolder)offlineFolders.elementAt(i));
+       
      		// C_STATE_DELETE
 			if (currentFolder.getState() == C_STATE_DELETED){
-
+     
 				deletedFolders.addElement(currentFolder);
 			// C_STATE_NEW	
 			}else if (currentFolder.getState() == C_STATE_NEW){
-      
+       
 				// get parentId for onlineFolder either from folderIdIndex or from the database
 				Integer parentId = (Integer)folderIdIndex.get(new Integer(currentFolder.getParentId()));
 				if (parentId == null){
@@ -2475,8 +2479,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				writeFolder(onlineProject, newFolder, false);
 				folderIdIndex.put(new Integer(currentFolder.getResourceId()), new Integer(newFolder.getResourceId()));		
 
-				// C_STATE_CHANGED	 	
-     
 				// copy properties
 				try {
 					Hashtable props = readAllProperties(currentFolder.getResourceId(), currentFolder.getType());
@@ -2489,12 +2491,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			// C_STATE_CHANGED	 		
 
 			}else if (currentFolder.getState() == C_STATE_CHANGED){
+       
 			   CmsFolder onlineFolder = null;
 			   try{
 					onlineFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
 	           } catch(CmsException exc) {
+             
 					// if folder does not exist create it
 					if (exc.getType() == CmsException.C_NOT_FOUND){
+               
 						// get parentId for onlineFolder either from folderIdIndex or from the database
 						Integer parentId = (Integer)folderIdIndex.get(new Integer(currentFolder.getParentId()));
 						if (parentId == null){
@@ -2551,7 +2556,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				}
 			// C_STATE_UNCHANGED	
 			}else if(currentFolder.getState() == C_STATE_UNCHANGED){
-      
+             
 				CmsFolder onlineFolder = null;
 				try{
 					onlineFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
@@ -3285,12 +3290,16 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
          CmsFile file=null;
          ResultSet res =null;
          PreparedStatement statement = null;  
+
          try {
                statement=m_pool.getPreparedStatement(C_RESOURCES_READ_KEY);
+    
                // read file data from database
                statement.setString(1, filename);
                statement.setInt(2, projectId);
+
                res = statement.executeQuery();
+
                // create new file
                if(res.next()) {
                         file = new CmsFile(res.getInt(C_RESOURCES_RESOURCE_ID),
@@ -3313,9 +3322,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                                            new byte[0],
                                            res.getInt(C_RESOURCES_SIZE)
                                            );
-                          res.close();                 
+                          res.close();    
+         
                          // check if this resource is marked as deleted
-                        if (file.getState() == C_STATE_DELETED) {
+                        if (file.getState() == C_STATE_DELETED) {       
+
                             throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);  
                         }
                } else {
@@ -3432,22 +3443,27 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
            // Test if the file is already there and marked as deleted.
            // If so, delete it
            try {
+
             readFileHeader(project.getId(),filename);     
+
            } catch (CmsException e) {
                // if the file is maked as deleted remove it!
                if (e.getType()==CmsException.C_RESOURCE_DELETED) {
                     removeFile(project.getId(),filename);
+  
                     state=C_STATE_CHANGED;
                }              
            }
-    
+
 		   int	resourceId = nextId(C_TABLE_RESOURCES);
            int fileId = nextId(C_TABLE_FILES);
            
 		   PreparedStatement statement = null;
 		   PreparedStatement statementFileWrite = null;
+    
            try {             
                 statement = m_pool.getPreparedStatement(C_RESOURCES_WRITE_KEY);
+
                 // write new resource to the database
                 statement.setInt(1,resourceId);
                 statement.setInt(2,parentId);
@@ -3468,12 +3484,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                 statement.setInt(17,contents.length);
                 statement.setInt(18,user.getId());
                 statement.executeUpdate();
-                
                 statementFileWrite = m_pool.getPreparedStatement(C_FILES_WRITE_KEY);
                 statementFileWrite.setInt(1,fileId);
                 statementFileWrite.setBytes(2,contents);
                 statementFileWrite.executeUpdate();
-         } catch (SQLException e){                        
+          } catch (SQLException e){                        
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }finally {
 				if( statement != null) {
@@ -3704,8 +3719,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                res.close();
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		} catch( Exception exc ) {
-           throw new CmsException("readFolder "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		//} catch( Exception exc ) {
+        //   throw new CmsException("readFolder "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}finally {
 				if( statement != null) {
 					m_pool.putPreparedStatement(C_RESOURCES_READ_KEY, statement);
@@ -3732,10 +3747,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
            ResultSet res;
            ResultSet tmpres;
            byte[] content;
-      
-           System.err.println(file);
-           System.err.println(changed+" : "+file.getState());
-           
            
            PreparedStatement statementFileRead = null;  
            PreparedStatement statementResourceUpdate = null;

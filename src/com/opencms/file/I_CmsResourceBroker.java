@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/17 13:07:47 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2000/06/18 14:50:33 $
+ * Version: $Revision: 1.86 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.85 $ $Date: 2000/06/17 13:07:47 $
+ * @version $Revision: 1.86 $ $Date: 2000/06/18 14:50:33 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -66,6 +66,12 @@ public interface I_CmsResourceBroker {
      */
     public void destroy() 
         throws CmsException;
+    
+     /**
+     * Clears all internal DB-Caches.
+     */
+    public void clearcache();
+   
     
     
 	// Method to access the configuration
@@ -1085,7 +1091,7 @@ public interface I_CmsResourceBroker {
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
 		throws CmsException;
-    
+  
     
      /** 
 	 * Adds a web user to the Cms. <br>
@@ -2156,6 +2162,29 @@ public interface I_CmsResourceBroker {
                       String filename, String newType)
 		throws CmsException;
     
+    
+     /**
+	 * Changes the state for this resource<BR/>
+	 * 
+	 * The user may change this, if he is admin of the resource.
+	 *  
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user is owner of the resource or is admin</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param filename The complete path to the resource.
+	 * @param state The new state of this resource.
+	 * 
+	 * @exception CmsException will be thrown, if the user has not the rights 
+	 * for this resource. 
+	 */
+	public void chstate(CmsUser currentUser, CmsProject currentProject,
+                        String filename, int state)
+		throws CmsException;
     
 	 /**
 	 * Returns a Vector with all files of a folder.<br>

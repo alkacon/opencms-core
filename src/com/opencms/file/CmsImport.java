@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/06/17 11:41:36 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/06/18 14:50:33 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import org.w3c.dom.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/06/17 11:41:36 $
+ * @version $Revision: 1.7 $ $Date: 2000/06/18 14:50:33 $
  */
 public class CmsImport implements I_CmsConstants {
 	
@@ -217,30 +217,42 @@ public class CmsImport implements I_CmsConstants {
 		try {			
 			String path = m_importPath + destination.substring(0,destination.lastIndexOf("/")+1);
 			String name = destination.substring((destination.lastIndexOf("/")+1),destination.length());
-			String fullname;
-			
+			String fullname=null;;
+	        int state=C_STATE_NEW;
+            
 			if(source == null) {
 				// this is a directory
-                CmsFolder cmsfolder= m_cms.createFolder(path, name, properties);
-       			fullname = cmsfolder.getAbsolutePath();
+                try {
+                   CmsFolder cmsfolder= m_cms.createFolder(path, name, properties);  
+                   fullname = cmsfolder.getAbsolutePath();                             
+                   state=C_STATE_NEW;
+                } catch (CmsException e) {
+                    // an exception is thrown if the folder already exists
+                   state=C_STATE_CHANGED;
+                }
+
 			} else {
 				// this is a file
 				// first delete the file, so it can be overwritten
-				try {
-					m_cms.deleteFile(path + name);
-				} catch(CmsException exc) {
-					// ignore the exception, the file dosen't exist
+				try {         
+                       m_cms.deleteFile(path+name);	
+                       state=C_STATE_CHANGED;
+                } catch(CmsException exc) {
+                       state=C_STATE_NEW;
+                       // ignore the exception, the file dosen't exist
 				}
 				// now create the file
-				fullname = m_cms.createFile(path, name, getFileBytes(source), type, properties).getAbsolutePath();
+          
+                fullname = m_cms.createFile(path, name, getFileBytes(source), type, properties).getAbsolutePath();
+			
 			}
-			// lock the new resource
-    
-			//m_cms.lockResource(fullname);
-		
-            m_cms.chmod(fullname, Integer.parseInt(access));
-			m_cms.chgrp(fullname, group);
-			m_cms.chown(fullname, user);
+          
+            if (fullname!=null) {
+                m_cms.chmod(fullname, Integer.parseInt(access));
+			    m_cms.chgrp(fullname, group);
+			    m_cms.chown(fullname, user); 
+                m_cms.chstate(fullname,state);
+            }
 			System.out.println("OK");
 		} catch(Exception exc) {
 			// an error while importing the file
