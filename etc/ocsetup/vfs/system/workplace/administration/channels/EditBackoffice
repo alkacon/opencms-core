@@ -173,7 +173,7 @@
 	<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../../workplace/templates/js/opencms.js"></SCRIPT>
 </HEAD>
 <HTML>
-	<BODY onLoad="window.top.body.admin_head.location.href='Backoffice.html';">
+	<BODY onLoad="window.top.body.admin_head.location.href=']]><method name="getServletPath"/><method name="getBackofficeUrl"/><![CDATA[';">
 </BODY>
 </HTML>
 ]]>
