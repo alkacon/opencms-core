@@ -25,7 +25,7 @@ The master template only defines which frametemplate and which
 contenttemplate should be used by the page. We will create a
 template set of {\dir /content/templates/template1} (the master
 template), {\dir /content/frametemplates/frametemplate1} and {\dir
-/content/contenttemplates/contenttemplate1}. To create a template
+/content/content\-templates/content\-template1}. To create a template
 you must first create a new text file in the project's {\dir
 content/templates}. Go to the {\dir /content/templates} directory
 in the Explorer view of the new project and start the wizard that
@@ -368,7 +368,7 @@ following code to the frametemplate3:
 \end{verbatim}
 
 You also need a new mastertemplate in {\dir /content/templates}
-where you use the new frametemplate and an empty contenttemplate:
+where you use the new frame\-template and an empty contenttemplate:
 %\input{examples/templateMechanism/template3}
 \begin{verbatim}
 <?xml version="1.0"?> <XMLTEMPLATE>
@@ -660,7 +660,7 @@ Additional methods that can be used as helpful tools in template: \\
   {\tag <method name="getNavFold/>} \\
   {\tag <method name="getNavFold>level</method>} \\
 
-  The level parameter defines the starting point of Navigation from which the navigation must be constructed. For example if the current folder is {\dir /news/sport/football/liga/first/} and the method definition is {\tag <method name="getNavFold>2</method>} then the starting point of navigation would be {\dir /sport/} folder and all elements starting from {\tag /sport/} folder would be displayed.\\
+  The level parameter defines the starting point of Navigation from which the navigation must be constructed. For example if the current folder is {\dir /news/sport/foot\-ball/li\-ga/first/} and the method definition is {\tag <method name="getNavFold>2</method>} then the starting point of navigation would be {\dir /sport/} folder and all elements starting from {\tag /sport/} folder would be displayed.\\
 
   If there is no level as parameter defined then the starting point is set to the root folder. \\
 
@@ -672,11 +672,21 @@ Additional methods that can be used as helpful tools in template: \\
   {\tag <method name="getNavTree>level</method>} \\
   {\tag <method name="getNavTree>level,depth</method>} \\
 
-  The level parameter defines the starting point of Navigation from which the navigation must be constructed. For example if the current folder is {\dir /news/sport/football/liga/first/} and the method definition is {\tag <method name="getNavTree>2</method>} then the starting point of navigation would be {\dir /sport/} folder and all elements starting from {\dir /sport/} folder would be displayed. \\
+  The level parameter defines the starting point of Navigation from which the 
+navigation must be constructed. For example if the current folder is 
+{\dir /news/sport/foot\-ball/li\-ga/first/} and the method definition is 
+{\tag <method name="getNavTree>2</method>} then the starting point of 
+navigation would be {\dir /sport/} folder and all elements starting from 
+{\dir /sport/} folder would be displayed. \\
 
-  If there is no level as parameter defined then the starting point is set to the root folder. \\
+  If there is no level as parameter defined then the starting point is set 
+to the root folder. \\
 
-  The depth parameter defines how many levels of folders must be displayed in the navigation tree. For example if the current Folder is {\dir /news/sport/football/liga/first/} and the method definition is {\tag <method name="getNavTree>1,3</method>} then the starting point of navigation would be {\dir /news/} and it ends in folder {\dir /news/sport/football/}. \\
+  The depth parameter defines how many levels of folders must be displayed 
+in the navigation tree. For example if the current Folder is 
+{\dir /news/sport/football/liga/first/} and the method definition is 
+{\tag <method name="getNavTree>1,3</method>} then the starting point 
+of navigation would be {\dir /news/} and it ends in folder {\dir /news/sport/football/}. \\
 
 \subsubsection{- getNavParent:} \index{getNavParent}
   This method gets the navigation from parent folder depending on the given parameter. For example if the current Folder is {\dir /news/sport/football/liga/first/} and the method definition is {\tag <method name="getNavParent>2</method>} then the navigation in folder {\dir /news/sport/football/} would be displayed (two level back). This method gets only one parameter, if there is no given parameter then the navigation in current folder is displayed. If the number given as parameter exceeded from the sum of the folders then the root folder is chosen. \\
@@ -688,7 +698,7 @@ Additional methods that can be used as helpful tools in template: \\
   This method gets the current folder, this method has the same functionality of method {\name getPathUri} in CmsXmlTemplate class. \\
 
 \subsubsection{- getFolderParent:} \index{getFolderParent}
-  This method gets the parent folder depending on the given parameter. For example if the current folder is {\dir /news/sport/football/liga/first/} and the method definition is {\tag <method name="getFolderParent>2</method>} then the folder returned by this method would be {\dir /news/sport/football/}. This method gets only one parameter, if there is no given parameter then the current folder is returned. If the number given as parameter exceeded from the sum of the folders then the root folder is returned. \\
+  This method gets the parent folder depending on the given parameter. For example if the current folder is {\dir /news/sport/football/liga/first/} and the method definition is {\tag <me\-thod name="get\-Folder\-Parent>2\-</me\-thod>} then the folder returned by this method would be {\dir /news/sport/football/}. This method gets only one parameter, if there is no given parameter then the current folder is returned. If the number given as parameter exceeded from the sum of the folders then the root folder is returned. \\
 
 \subsubsection{- getFolderRoot:} \index{getFolderRoot}
   This method gets the folder starting from root folder depending on the given parameter. For example if the current folder is {\dir /news/sport/football/liga/first/} and the method definition is {\tag <method name="getFolderRoot>2</method>} then the folder {\dir /news/sport/} would be displayed (second level starting from root). This method gets only one parameter, if there is no given parameter then the root folder is returned. If the number given as parameter exceeded from sum of the folders then the current folder is returned. \\
@@ -702,13 +712,13 @@ Additional methods that can be used as helpful tools in template: \\
   This method gets the property of parent folder, depending on the given number. This method is used in the following format:\\
   {\tag <method name="getPropertyParent">level,property</method>} \\
   property is the name of property that must be read. If there is no such property name then nothing would be returned. \\
-  level is the number of parent folder, e.g. if the current folder is {\dir /news/sport/football/liga/first/} and the method definition is {\tag <method name="getPropertyParent">2,NavPic</method>} then the value of {\name NavPic} property of {\dir /news/sport/football/} folder would be returned by this method.If the number given as parameter exceeded from the sum of the folders then the specified property of root folder is read. \\
+  level is the number of parent folder, e.g. if the current folder is {\dir /news/sport/foot\-ball/li\-ga/first/} and the method definition is {\tag <me\-thod name="get\-Property\-Parent">2,NavPic </me\-thod>} then the value of {\name NavPic} property of {\dir /news/sport/football/} folder would be returned by this method.If the number given as parameter exceeded from the sum of the folders then the specified property of root folder is read. \\
 
 \subsubsection{- getPropertyRoot:} \index{getPropertyRoot}
   This method gets the property of the folder starting from root and depending on the given number. This method is used in the following format:\\
   {\tag <method name="getPropertyRoot">level,property</method>} \\
   property is the name of property that must be read. If there is no such property name then nothing is returned.\\
-  level is the number of parent folder, e.g. if the current folder is {\dir /news/sport/football/liga/first/} and the definition of method is {\tag <method name="getPropertyRoot">2,NavPic</method>} then the value of {\name NavPic} property of {\dir /news/sport/} folder would be returned by this method. If the number given as parameter exceeded from sum of the folders then the property of current folder is returned. \\
+  level is the number of parent folder, e.g. if the current folder is {\dir /news/sport/foot\-ball/li\-ga/first/} and the definition of method is {\tag <method name="get\-Property\-Root">2,NavPic </me\-thod>} then the value of {\name NavPic} property of {\dir /news/sport/} folder would be returned by this method. If the number given as parameter exceeded from sum of the folders then the property of current folder is returned. \\
 
 \subsubsection{- getPropertyUri:} \index{getPropertyUri}
   This method returns the specified property of current uri. This method is used in the following format:\\
@@ -1034,7 +1044,7 @@ this text:
 Then program your class like this:
 %\input{examples/templateMechanism/datablocks/CmsExample3}
 \begin{verbatim}
- import com.opencms.template.*;
+import com.opencms.template.*;
 import com.opencms.core.*;
 import com.opencms.file.*;
 
@@ -1045,9 +1055,11 @@ public byte[] getContent(CmsObject cms, String templateFile,
 String elementName, Hashtable parameters, String templateSelector)
 throws CmsException {
 
-    CmsXmlTemplateFile template = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+    CmsXmlTemplateFile template = getOwnTemplateFile(cms, templateFile, 
+      elementName, parameters, templateSelector);
     template.setData("greetings", "Hello from Java Class!");
-    return startProcessing(cms, template, elementName, parameters, templateSelector);
+    return startProcessing(cms, template, elementName, parameters, 
+      templateSelector);
     }
 }
 \end{verbatim}
@@ -1078,13 +1090,14 @@ name {\meth getHello()}:
 
 %\input{examples/templateMechanism/datablocks/CmsExample4}
 \begin{verbatim}
- import com.opencms.template.*;
+import com.opencms.template.*;
 import com.opencms.core.*;
 import com.opencms.file.*;
 
 public class CmsExample4 extends CmsXmlTemplate {
-    public Object getHello(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
-                         throws CmsException {
+    public Object getHello(CmsObject cms, String tagcontent,
+      A_CmsXmlContent doc, Object userObject)
+                        throws CmsException {
         return "Hello World from java!";
     }
 }
@@ -1226,14 +1239,19 @@ file:
 Here is the getContent method of the associated class:
 \begin{verbatim}
 public byte[] getContent(CmsObject cms, String templateFile,
-String elementName, Hashtable parameters, String templateSelector)
-throws CmsException {
-    CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile,
-                                     elementName, parameters, templateSelector);
-    String linkTarget;
-    linkTarget = "link" + String.valueOf((int) (Math.random() * 2 + 1));
-    templateDocument.setData("link", templateDocument.getDataValue(linkTarget));
-    return startProcessing(cms, templateDocument, elementName, parameters, templateFile);
+  String elementName, Hashtable parameters, 
+  String templateSelector) throws CmsException {
+        CmsXmlTemplateFile templateDocument = 
+      getOwnTemplateFile(cms, templateFile,
+                                elementName, parameters, 
+                                templateSelector);
+      String linkTarget;
+      linkTarget = "link" 
+              + String.valueOf((int) (Math.random() * 2 + 1));
+      templateDocument.setData("link", 
+              templateDocument.getDataValue(linkTarget));
+    return startProcessing(cms, 
+              templateDocument, elementName, parameters, templateFile);
 }
 \end{verbatim}
 
@@ -1292,7 +1310,8 @@ as the data block {\name list}. Here again the getContent method:
 public byte[] getContent(CmsObject cms, String templateFile,
 String elementName, Hashtable parameters, String templateSelector)
 throws CmsException {
-    String[] owners = {"Martin", "Thomas", "Andreas", "Bill", "Michael", "Doris"};
+    String[] owners = {"Martin", "Thomas", "Andreas", "Bill", "Michael", 
+           "Doris"};
     String[] animals = {"cat", "dog", "mouse", "rat", "bird", "snake"};
     CmsXmlTemplateFile template = getOwnTemplateFile(cms, templateFile,
                              elementName, parameters, templateSelector);
@@ -1305,7 +1324,8 @@ throws CmsException {
         list += row;
     }
     template.setData("list", list);
-    return startProcessing(cms,template,elementName,parameters,templateSelector);
+    return startProcessing(cms,template,elementName,parameters,
+         templateSelector);
 }
 \end{verbatim}
 
@@ -1410,8 +1430,10 @@ public class CmsExample9 extends CmsXmlTemplate {
 
 public Object getTable(CmsObject cms, String tagcontent,
 A_CmsXmlContent doc, Object userObject) throws CmsException {
-    String[] owners = {"Elmar", "Randolf", "Sandra", "Geoffrey","Claudia","Doris"};
-    String[] animals = {"spider", "eagle", "lion", "cheetah", "scorpion", "snake"};
+    String[] owners = {"Elmar", "Randolf", "Sandra", "Geoffrey",
+           "Claudia","Doris"};
+    String[] animals = {"spider", "eagle", "lion", "cheetah", "scorpion", 
+            "snake"};
     CmsXmlTemplateFile template = (CmsXmlTemplateFile) doc;
     String list = "";
     for (int i = 0; i < animals.length; i++) {
@@ -2261,7 +2283,7 @@ desired. Then the new module can be used as if it were a part of OpenCms.
 \end{center}
 \end{figure}
 
-The administration of modules is done under the administration view(Figure~\ref{AdView}).
+The administration of modules is done under the administration view (see Figure~\ref{AdView}).
 Change to the administration view and then choose the item {\name module}.
 In the next screen a list with the modules that are already installed is shown. Existing
 modules can be deleted, administrated or exported. In this view existing modules can also
@@ -2427,8 +2449,8 @@ displayed when the new item is click on.
 You also have the ability to display several administration items when your item is clicked on,
 as is currently done for the
 {\name User Administration} and {\name Project Administration} items. Simply
-add new subfolders in the\\
-{\dir /system/modules/package\_name/administration/mymodule/} directory, give
+add new subfolders in the
+{\dir /system/modules/package\_name/ad\-minis\-tration/my\-module/} directory, give
 them the same properties as above, an add icons and an index.html page to each subfolder. Please
 notice that every directory that is created within the {\dir /administration/} directory will be
 added as an administration item frome the module mechanism and an error will occur if you add
@@ -2436,9 +2458,9 @@ directories here that don´t follow these conventions.
 In the Administration view there is an additional frame {\name admin\_head} for navigation just below
 the toolbar. If you only want to use the standard frame with the blue back button then let this
 frame be updated when your {\name index.html} is displayed by adding the following onLoad javascipt to
-your body tag:{\code
-<body onLoad="window.top.body.admin\_head.location.href='[path to the /system/workplace/action
-folder]/administration\_head.html';"> }
+your body tag: {\code
+<body onLoad="window.top.body.admin\_head.location.href='[path to the /sys\-tem/\\
+workplace/action folder]/administration\_head.html';"> }
 
 Or create your own {\name admin\_head} frame. You might want to look at the picture or download
 galleries that you can use as examples.

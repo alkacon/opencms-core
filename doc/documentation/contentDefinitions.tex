@@ -238,7 +238,7 @@ fields for user, group and access flags of the ContentDefinition. So you just ha
 these methods in the {\meth isReadable()} and {\meth isWritable()} methods:
 
 \begin{java}
-\jtaba 			/**\\
+\jtaba      /**\\
 \jtaba   \xspace * returns true if the CD is readable for the current user\\
 \jtaba   \xspace * @returns true\\
 \jtaba   \xspace */\\ 
@@ -267,7 +267,7 @@ If you want to implement a different kind of access control
 you can do so by calling your own methods inside the {\meth isReadable()}
 and {\meth isWritable()} methods. If you want to check the access flags you can use
 the constants defined in the {\class I\_CmsConstants} interface. There are constants
-like  C\_ACCESS\_OWNER\_READ, C\_ACCESS\_GROUP\_READ, C\_ACCESS\_PUBLIC\_READ for the read flag for
+like  C\_ACCESS\_OWNER\_READ, C\-\_ACCESS\_GROUP\_READ, C\_ACCESS\_PUBLIC\_READ for the read flag for
 user, group and others. The constants for write access are named respectively. Take a look
 at the methods {\meth hasReadAccess(CmsObject)} and {\meth hasWriteAccess(CmsObject)}
 in the class \\
@@ -425,15 +425,15 @@ The labels in our language-file could look like this:
 \begin{xml}
 <?xml version="1.0"?>\\
 <LANGUAGE>\\
-\xtaba		<mypackage\_NewsBackoffice>\\		
-\xtabb			<label>\\
-\xtabc				<id>ID</id>\\
-\xtabc				<title>Title</title>\\
-\xtabc				<author>Author</author>\\
-\xtabb			</label>\\
-\xtaba		</mypackage\_NewsBackoffice>\\
-\xtaba		...\\
-</LANGUAGE>\\		
+\xtaba    <mypackage\_NewsBackoffice>\\   
+\xtabb      <label>\\
+\xtabc        <id>ID</id>\\
+\xtabc        <title>Title</title>\\
+\xtabc        <author>Author</author>\\
+\xtabb      </label>\\
+\xtaba    </mypackage\_NewsBackoffice>\\
+\xtaba    ...\\
+</LANGUAGE>\\   
 \end{xml}
 
 The labels have to be defined inside a tag named after the Backoffice class that
@@ -570,6 +570,6 @@ The filtermethods in the Content Definition for our example would have the follo
 
 
 
-			
+      
 
 

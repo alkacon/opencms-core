@@ -367,19 +367,19 @@ import java.util.*;\\
 
 public class CmsExample4 extends CmsXmlTemplate \{\\
 \index{getContent}
-public byte[] getContent(CmsObject cms,\
+public byte[] getContent(CmsObject cms,\\
 \jtabd        String templateFile, String elementName,\\
 \jtabd        Hashtable parameters,String templateSelector)\\
 \jtabd        throws CmsException \{\\
-\jtabd        CmsXmlTemplateFile templateDocument =\\
-\jtabd        getOwnTemplateFile(cms, templateFile, elementName,\\
-\jtabd                           parameters,templateSelector);\\
+\jtabe        CmsXmlTemplateFile templateDocument =\\
+\jtabe        getOwnTemplateFile(cms, templateFile, elementName,\\
+\jtabf                           parameters,templateSelector);\\
 
 
-\jtabc        templateDocument.setData("greeting","from Java!");\\
-\jtabc        return startProcessing(cms,\\
-\jtabd                               templateDocument, elementName,\\
-\jtabd                               parameters, templateFile);\\
+\jtabe        templateDocument.setData("greeting","from Java!");\\
+\jtabe        return startProcessing(cms,\\
+\jtabe                               templateDocument, elementName,\\
+\jtabe                               parameters, templateFile);\\
 \jtabb    \}\\
 \}\\
 \end{java}
@@ -464,7 +464,7 @@ template. Another way is to use user-defined methods in the template.
 You have already seen how to use the {\meth getTitle(}) method in a template in
 the second example. If you want to write your own methods, you can
 derive a class from the existing template class
-{\class com.opencms.template.CmsXmlTemplate} and add your own methods.
+{\class com.opencms.template.Cms\-Xml\-Template} and add your own methods.
 
 The master template should contain the following text:
 
@@ -745,7 +745,8 @@ This statement produces a string {\name "Link1"} or {\name "Link2"} based on the
 that is randomly created by the expression {\name (Math.random()*2+1)}.
 The data block link is defined in the following expression:
 
-{\code templateDocument.setData("link",templateDocument.getDataValue(linkTarget));}
+{\code templateDocument.setData("link",\\
+  templateDocument.getDataValue(linkTarget));}
 
 The data block named {\name "link"} is defined with the method {\meth setData()} and
 the content of the data block is the value of the data block that will
@@ -1497,7 +1498,8 @@ no timeout & & & x \\
 no internal flag & x & x & x \\
 \end{tabular}
 
-The proxy public flag for example is set if the internal cacheable flag is set, user/group
+The proxy pub\-lic flag for ex\-am\-ple is set if the in\-ter\-nal cache\-able flag is set, user 
+or group
 are not in the key, the resource is readable for guest-users and no internal flag is set for 
 this resource.
 The determination of these values at runtime slows down the caching mechanism, therefore it is
@@ -1716,8 +1718,8 @@ Following is a short overview of the most important of these methods:{Table~\ref
 \hline
 {\bf Method}&
 {\bf Description}\\ \hline
-{\bf CmsXmlTemplateFile class Methods} &
-{\bf CmsXmlTemplateFile class Methods}\\ \hline
+{\bf CmsXmlTemplateFile Methods} &
+{\bf CmsXmlTemplateFile Methods}\\ \hline
 String getDataValue(String)&
 Returns the text and CDATA content of a data block. \\ \hline
 String getProcessedDataValue(String)&
