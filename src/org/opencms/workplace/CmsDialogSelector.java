@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialogSelector.java,v $
- * Date   : $Date: 2003/11/05 10:33:21 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/07 10:48:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,12 +43,14 @@ import org.opencms.main.OpenCms;
  * <ul>
  * <li>/jsp/dialogs/property_html
  * <li>/jsp/dialogs/delete_html
+ * <li>/jsp/dialogs/lock_html
+ * <li>/jsp/dialogs/unlock_html
  * </ul>
  *
  * @see org.opencms.workplace.I_CmsDialogHandler
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -61,6 +63,7 @@ public class CmsDialogSelector {
     
     // constants for the dialog handler key names used for the runtime properties
     public static final String DIALOG_DELETE = "class_dialog_delete";
+    public static final String DIALOG_LOCK = "class_dialog_lock";
     public static final String DIALOG_PROPERTY = "class_dialog_property";
     
     // debug flag
