@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/OpenCmsSessionManager.java,v $
- * Date   : $Date: 2003/11/11 20:56:50 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/12 11:33:30 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,6 @@
 
 package org.opencms.main;
 
-import javax.servlet.http.HttpSessionAttributeListener;
-import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
@@ -40,16 +38,16 @@ import javax.servlet.http.HttpSessionListener;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1
  */
-public class OpenCmsSessionManager implements HttpSessionListener, HttpSessionAttributeListener {
+public class OpenCmsSessionManager implements HttpSessionListener {
 
     /** counter for the active sessions */
-    private int m_totalSessions;
+    private static int m_totalSessions = 0;
     
     /** counter for all sessions created so far */
-    private int m_currentSessions;
+    private static int m_currentSessions = 0;
     
     /**
      * Returns the number of active sessions.<p>
@@ -75,9 +73,6 @@ public class OpenCmsSessionManager implements HttpSessionListener, HttpSessionAt
     public OpenCmsSessionManager() {
         super();
         
-        m_totalSessions = 0;
-        m_currentSessions = 0;
-        
         // register with the OpenCms context 
         OpenCmsCore.getInstance().setSessionManager(this);
         
@@ -90,8 +85,8 @@ public class OpenCmsSessionManager implements HttpSessionListener, HttpSessionAt
      * @see javax.servlet.http.HttpSessionListener#sessionCreated(javax.servlet.http.HttpSessionEvent)
      */
     public synchronized void sessionCreated(HttpSessionEvent event) {
+        m_currentSessions = (m_currentSessions <= 0)?1:(m_currentSessions + 1);
         m_totalSessions++;
-        m_currentSessions++;
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Session created - Total: " + m_totalSessions + " Current: " + m_currentSessions);
         }           
@@ -101,30 +96,9 @@ public class OpenCmsSessionManager implements HttpSessionListener, HttpSessionAt
      * @see javax.servlet.http.HttpSessionListener#sessionDestroyed(javax.servlet.http.HttpSessionEvent)
      */
     public synchronized void sessionDestroyed(HttpSessionEvent event) {
-        m_currentSessions--;   
+        m_currentSessions = (m_currentSessions <= 0)?0:(m_currentSessions - 1);
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Session destroyed - Total: " + m_totalSessions + " Current: " + m_currentSessions);
         }           
-    }
-
-    /**
-     * @see javax.servlet.http.HttpSessionAttributeListener#attributeAdded(javax.servlet.http.HttpSessionBindingEvent)
-     */
-    public synchronized void attributeAdded(HttpSessionBindingEvent event) {
-        // TODO: Auto-generated method stub        
-    }
-
-    /**
-     * @see javax.servlet.http.HttpSessionAttributeListener#attributeRemoved(javax.servlet.http.HttpSessionBindingEvent)
-     */
-    public synchronized void attributeRemoved(HttpSessionBindingEvent event) {
-        // TODO: Auto-generated method stub       
-    }
-
-    /**
-     * @see javax.servlet.http.HttpSessionAttributeListener#attributeReplaced(javax.servlet.http.HttpSessionBindingEvent)
-     */
-    public synchronized void attributeReplaced(HttpSessionBindingEvent event) {
-        // TODO: Auto-generated method stub        
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsInitException.java,v $
- * Date   : $Date: 2003/08/14 15:37:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/12 11:33:30 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.core.CmsException;
  * Signals that a particular action was invoked on resource with an insufficient lock state.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.4
  */
 public class CmsInitException extends CmsException {
@@ -45,7 +45,10 @@ public class CmsInitException extends CmsException {
     // the allowed type range for this exception is >=400 and <500    
     
     /** Generic init error */
-    public static final int C_INIT_UNSPECIFIED_ERROR = 400; 
+    public static final int C_INIT_UNSPECIFIED_ERROR = 400;
+    
+    /** Wizard still enabled error */
+    public static final int C_INIT_WIZARD_ENABLED = 401; 
         
     /**
      * Default constructor for a CmsInitException.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/11/11 20:56:51 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2003/11/12 11:33:30 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1631,7 +1631,7 @@ public final class OpenCmsCore {
         // check if the wizard is enabled, if so stop initialization     
         if (configuration.getBoolean("wizard.enabled", true)) {
             m_instance = null;
-            throw new CmsInitException("OpenCms setup wizard is enabled, unable to start OpenCms context");
+            throw new CmsInitException("OpenCms setup wizard is enabled, unable to start OpenCms context", CmsInitException.C_INIT_WIZARD_ENABLED);
         }       
 
         // initialize the logging
@@ -2350,7 +2350,9 @@ public final class OpenCmsCore {
         try {
             m_instance.initConfiguration(configuration);                        
         } catch (Throwable t) {
-            t.printStackTrace(System.err);
+            if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).error("Critical error during OpenCms initialization", t);
+            }
             m_instance = null;
         }                  
         return m_instance;
@@ -2371,9 +2373,19 @@ public final class OpenCmsCore {
             setRunLevel(3);
             m_instance.initContext(context);
         } catch (CmsInitException e) {
-            e.printStackTrace(System.err);
+            if (e.getType() != CmsInitException.C_INIT_WIZARD_ENABLED) {
+                // do not output the "wizard enabled" message on the log 
+                if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
+                    getLog(CmsLog.CHANNEL_INIT).error("Critical error during OpenCms initialization", e);
+                }
+            }
             m_instance = null;
-        }        
+        } catch (Throwable t) {
+            if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).error("Critical error during OpenCms initialization", t);
+            }            
+            m_instance = null;            
+        }
         return m_instance;
     }
 
