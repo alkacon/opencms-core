@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsXmlDocument.java,v $
- * Date   : $Date: 2004/11/16 16:57:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/19 09:08:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cms resource 
  * of type <code>CmsResourceTypeXmlContent</code>.<p>
  * 
- * @version $Revision: 1.1 $ $Date: 2004/11/16 16:57:23 $
+ * @version $Revision: 1.2 $ $Date: 2004/11/19 09:08:40 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsXmlDocument extends CmsVfsDocument {
@@ -85,7 +85,6 @@ public class CmsXmlDocument extends CmsVfsDocument {
             CmsFile file = CmsFile.upgrade(resource, m_cms);
             String absolutePath = m_cms.getSitePath(file);
             A_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(m_cms, file);
-            CmsXmlPage page = CmsXmlPageFactory.unmarshal(m_cms, file);
             
             List locales = xmlContent.getLocales();
             if (locales.size() == 0) {
@@ -109,8 +108,9 @@ public class CmsXmlDocument extends CmsVfsDocument {
                 }                
             }
             
-            CmsHtmlExtractor extractor = new CmsHtmlExtractor();
-            rawContent = extractor.extractText(content.toString(), page.getEncoding());
+            rawContent = content.toString();
+            // CmsHtmlExtractor extractor = new CmsHtmlExtractor();
+            //rawContent = extractor.extractText(content.toString(), page.getEncoding());
             
         } catch (Exception exc) {
             throw new CmsIndexException("Reading resource " + resource.getRootPath() + " failed", exc);
