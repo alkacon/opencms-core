@@ -54,13 +54,16 @@ function confirmExit() {
 <%= wp.buttonBarStartTab(0, 5) %>
 <%= wp.button("javascript:buttonAction(2);", null, "save_exit", "button.saveclose", buttonStyle) %>
 <%= wp.button("javascript:buttonAction(3);", null, "save", "button.save", buttonStyle) %>
-<%= wp.buttonBarSeparator(5, 5) %>
+
 
 <%
-if (options.showElement("option.element.language", displayOptions)) {
+
+if (options.showElement("option.element.language", displayOptions) && wp.showElementLanguageSelector()) {
+	out.println(wp.buttonBarSeparator(5, 5));
 	out.println(wp.buttonBarLabel("input.lang"));
 	out.println("<td>" + wp.buildSelectElementLanguage("name=\"" + wp.PARAM_ELEMENTLANGUAGE + "\" width=\"150\" onchange=\"changeElementLanguage();\"") + "</td>");
 }
+
 %>
 	<td class="maxwidth">&nbsp;</td>
 		

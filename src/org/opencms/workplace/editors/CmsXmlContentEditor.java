@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/10/22 11:05:22 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/10/22 13:40:15 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -414,6 +414,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @return the html for the element language selectbox
      */
     public String buildSelectElementLanguage(String attributes) {
+        
         return buildSelectElementLanguage(attributes, getParamResource(), getElementLocale());      
     }
     
@@ -605,6 +606,20 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             m_types.addAll(types);
         }
         return m_types;
+    }
+    
+    /**
+     * Determines if the element language selector is shown dependent on the available Locales.<p>
+     * 
+     * @return true, if more than one Locale is available, otherwise false
+     */
+    public boolean showElementLanguageSelector() {
+        List locales = OpenCms.getLocaleManager().getAvailableLocales(getCms(), getParamResource());
+        if (locales == null || locales.size() < 2) {
+            // for less than two available locales, do not create language selector
+            return false;    
+        }
+        return true;
     }
     
 }
