@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/05/26 15:52:15 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/05/26 15:56:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.5
  */
@@ -126,56 +126,6 @@ public class OpenCmsTestCase extends TestCase {
             fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
         }
     }
-     
-    /**
-     * Compares the current properties of a resource with the stored values.<p>
-     * 
-     * @param cms the CmsObject
-     * @param resourceName the name of the resource to compare
-     */
-    protected void assertPropertyEqual(CmsObject cms, String resourceName) {
-        try {
-            // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
-            String noMatches = compareProperties(cms, resourceName, storedResource, null);   
-            
-            // now see if we have collected any no-matches
-            if (noMatches.length() > 0) {
-                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
-            }   
-            
-        } catch (CmsException e) {
-            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
-        }
-    }
-    
-     /**
-     * Compares the current properties of a resource with the stored values and a given, changed property.<p>
-     * 
-     * @param cms the CmsObject
-     * @param resourceName the name of the resource to compare
-     * @param property the changed property
-     */
-    protected void assertPropertyChanged(CmsObject cms, String resourceName, CmsProperty property) {
-        try {
-            // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
-            
-            // create the exclude list
-            List excludeList = new ArrayList();
-            excludeList.add(property);            
-            
-            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
-            
-            // now see if we have collected any no-matches
-            if (noMatches.length() > 0) {
-                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
-            }   
-            
-        } catch (CmsException e) {
-            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
-        }
-    }
     
     /**
      * Tests if the the current date last modified of a resource is later then a given date.<p>
@@ -196,35 +146,6 @@ public class OpenCmsTestCase extends TestCase {
         } catch (CmsException e) {
             fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
         }
-    }
-    
-    
-    
-    /**
-     * Compares two lists of CmsProperty objects and creates a list of all properties which are
-     * not included in a seperate exclude list.
-     * @param cms the CmsObject
-     * @param resourceName the name of the resource the properties belong to
-     * @param storedResource the stored resource corresponding to the resourcename
-     * @param excludeList the list of properies to exclude in the test or null
-     * @return list of CmsProperty objects 
-     * @throws CmsException if something goes wrong
-     */
-    private String compareProperties(CmsObject cms, String resourceName, OpenCmsTestResourceStorageEntry storedResource, List excludeList) 
-        throws CmsException {
-            String noMatches = "";
-            List storedProperties = storedResource.getProperties();
-            List properties = cms.readPropertyObjects(resourceName, false);
-            List unmatchedProperties;
-            unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(storedProperties, properties, excludeList);
-            if (unmatchedProperties.size() >0 ) {
-                noMatches += "[Properies missing "+unmatchedProperties.toString()+"]";   
-            }
-            unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(properties, storedProperties, excludeList);
-            if (unmatchedProperties.size() >0 ) {
-                noMatches += "[Properies additional "+unmatchedProperties.toString()+"]";   
-            } 
-            return noMatches;
     }
     
     
@@ -411,6 +332,56 @@ public class OpenCmsTestCase extends TestCase {
             if (res.getProjectLastModified() != project.getId()) {
                 fail("[ProjectLastModified "+project.getId() + " <-> "+res.getProjectLastModified() +"]");
             }
+            
+        } catch (CmsException e) {
+            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
+        }
+    }
+    
+     /**
+     * Compares the current properties of a resource with the stored values and a given, changed property.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param property the changed property
+     */
+    protected void assertPropertyChanged(CmsObject cms, String resourceName, CmsProperty property) {
+        try {
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
+            
+            // create the exclude list
+            List excludeList = new ArrayList();
+            excludeList.add(property);            
+            
+            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
+            
+            // now see if we have collected any no-matches
+            if (noMatches.length() > 0) {
+                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
+            }   
+            
+        } catch (CmsException e) {
+            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
+        }
+    }
+     
+    /**
+     * Compares the current properties of a resource with the stored values.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     */
+    protected void assertPropertyEqual(CmsObject cms, String resourceName) {
+        try {
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
+            String noMatches = compareProperties(cms, resourceName, storedResource, null);   
+            
+            // now see if we have collected any no-matches
+            if (noMatches.length() > 0) {
+                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
+            }   
             
         } catch (CmsException e) {
             fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
@@ -806,6 +777,35 @@ public class OpenCmsTestCase extends TestCase {
             } catch (CmsException e) {
                 fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));                
             }
+    }
+    
+    
+    
+    /**
+     * Compares two lists of CmsProperty objects and creates a list of all properties which are
+     * not included in a seperate exclude list.
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource the properties belong to
+     * @param storedResource the stored resource corresponding to the resourcename
+     * @param excludeList the list of properies to exclude in the test or null
+     * @return list of CmsProperty objects 
+     * @throws CmsException if something goes wrong
+     */
+    private String compareProperties(CmsObject cms, String resourceName, OpenCmsTestResourceStorageEntry storedResource, List excludeList) 
+        throws CmsException {
+            String noMatches = "";
+            List storedProperties = storedResource.getProperties();
+            List properties = cms.readPropertyObjects(resourceName, false);
+            List unmatchedProperties;
+            unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(storedProperties, properties, excludeList);
+            if (unmatchedProperties.size() >0 ) {
+                noMatches += "[Properies missing "+unmatchedProperties.toString()+"]";   
+            }
+            unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(properties, storedProperties, excludeList);
+            if (unmatchedProperties.size() >0 ) {
+                noMatches += "[Properies additional "+unmatchedProperties.toString()+"]";   
+            } 
+            return noMatches;
     }
     
     

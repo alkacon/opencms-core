@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceFilter.java,v $
- * Date   : $Date: 2004/05/26 14:58:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/05/26 15:52:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Map;
  * be tested to a new, specified value, the equal test must be disabled in the filter.<p>
  * 
  *  @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class OpenCmsTestResourceFilter {
 
@@ -143,13 +143,16 @@ public class OpenCmsTestResourceFilter {
     
     /**
      * Compares two lists of properties and returns those 
-     * that are included only in the source but not in the targer list.<p>
+     * that are included only in the source but not in the targer list and not
+     * part of a seperade exclude list.<p>
      * 
      * @param source the source properties
      * @param target the target properties
+     * @param exclude the exclude list
+     * @param exclude the exclude list
      * @return list of not matching properties
      */    
-    public List compareProperties(List source, List target) {
+    public static List compareProperties(List source, List target, List exclude) {
         
 		List result = new ArrayList();
 		List targetClone = new ArrayList(target);
@@ -172,6 +175,18 @@ public class OpenCmsTestResourceFilter {
 				targetClone.remove(targetProperty);
 			}
 		}
+        
+        // finally match the result list with the exclude list
+        if ( exclude != null) {
+            Iterator l = exclude.iterator();
+            while (l.hasNext()) {
+                CmsProperty excludeProperty = (CmsProperty) l.next();   
+                if (result.contains(excludeProperty)) {
+                    result.remove(excludeProperty);
+                }
+            }
+        }        
+        
 		return result;
 	}            
     
