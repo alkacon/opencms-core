@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/07/30 13:34:50 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/31 13:14:36 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1
  */
@@ -344,8 +344,9 @@ public class CmsProperty extends CmsDialog {
         if (!lock.isNullLock()) {
             // determine when to show buttons...
             if (lock.getType() != CmsLock.C_TYPE_SHARED_EXCLUSIVE && lock.getType() != CmsLock.C_TYPE_SHARED_INHERITED
-                    && lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
-                // lock is not shared and belongs to current user, so show buttons
+                    && lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())
+                    && getCms().getRequestContext().currentProject().getId() == lock.getProjectId()) {
+                // lock is not shared and belongs to the current user in the current project, so show buttons
                 showButtons = true;
             }
         }
