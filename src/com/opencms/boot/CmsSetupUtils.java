@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/08/01 14:32:00 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -569,7 +569,8 @@ public class CmsSetupUtils {
     public static boolean supportedServletEngine(String thisEngine, String[] supportedEngines)  {
         boolean supported = false;
         engineCheck: for(int i = 0; i < supportedEngines.length; i++)  {
-            if (thisEngine.equals(supportedEngines[i].toString())) {
+            System.out.println("sse " + thisEngine + " -> " + supportedEngines[i] + " -> " + thisEngine.indexOf(supportedEngines[i]));
+            if (thisEngine.indexOf(supportedEngines[i]) >= 0) {
                 supported = true;
                 break engineCheck;
             }
@@ -585,7 +586,8 @@ public class CmsSetupUtils {
      */
     public static int unsupportedServletEngine(String thisEngine, String[] unsupportedEngines)  {
         engineCheck: for(int i = 0; i < unsupportedEngines.length; i++)  {
-            if (thisEngine.equals(unsupportedEngines[i].toString())) {
+            System.out.println("use " + thisEngine + " -> " + unsupportedEngines[i] + " -> " + thisEngine.indexOf(unsupportedEngines[i]));
+            if (thisEngine.indexOf(unsupportedEngines[i]) >= 0) {
                 return i;
             }
         }
