@@ -56,7 +56,7 @@ backup tables
 \end{itemize}
 
 There is another new table named CMS\_PROJECTRESOURCES. This table
-c ontains the ID of a project and the names of the resources that
+contains the ID of a project and the names of the resources that
 were selected when the project was created. The entries describe
 the view of the project on the offline resources.
 
@@ -104,14 +104,15 @@ When creating a new project only the names of the selected
 resources are stored in the new table CMS\_PROJECTRESOURCES and no
 resources are copied. So creating a new project is much faster
 than before. The new project contains the selected resources and
-always the folders /pics/, /download/ and (that's new) the folders
-in /content/bodys/ that correspond with the selected folders.
+always the folders \texttt{/system/galleries/pics/}, \texttt{/system/galleries/download/}, \texttt{/system/galleries/externallinks/}, 
+\texttt{/system/galleries/htmlgalleries/} and  the folders
+in \texttt{/system/bodies/} that correspond with the selected folders.
 
 The project is now a view on the offline resources. If two
 projects reference the same resource the changes on this resource
 will be visible to both projects. If a folder is referenced in
 both projects and a new resource is created in this folder in one
-project, the new resource is accessible in the other project, too.
+project, the new resource is accessible in the other offline project, too.
 
 To avoid that resources that are in work in one project are
 published unintentional by another project it is dissuaded from
@@ -120,7 +121,7 @@ creating projects that reference the same resources.
 \subsection{The view of the project}
 
 The explorer shows all offline resources in an offline project.
-The resources that does not belong to the project are grey. The
+The resources that do not belong to the project are grey. The
 resources that are referenced by more than one project are
 displayed in each of this projects in the same manner: locked
 resources with the lock sign, new resources are colored blue,
@@ -162,6 +163,6 @@ The state of the published resource is set to unchanged.
 The current information of the published project is stored in a
 backup table, too. If the project was created as permanent project
 you can go on working in the same project after it is published.
-You need not to create a new project as it is required in the
+You need not to create a new project as it was required in the
 former projectmechanism. A project that was created as temporary
 project is deleted and is not accessible any longer.

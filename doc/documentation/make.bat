@@ -7,3 +7,5 @@ pdflatex OpenCmsDoc.tex
 pdflatex OpenCmsDoc.tex
 
 del *.aux,*.idx,*.log,*.dvi,*.toc
+
+pause

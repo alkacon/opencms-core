@@ -155,7 +155,7 @@ folder&
 0& Folder&none\\ \hline
 plain&
 1&
-Files that are notprocessed by OpenCms (text files, JavaScript libraries etc.)&
+Files that are not processed by OpenCms (text files, JavaScript libraries etc.)&
 Dump launcher\\ \hline
 XMLTemplate&
 2&
@@ -179,8 +179,12 @@ Designed for JavaScript on the server- side&
 Dump launcher\\ \hline
 newspage&
 7& 
-Representation of a news article, special caseof a page file& 
+Representation of a news article, special case of a page file& 
 XML launcher\\ \hline 
+JSP&
+8& 
+Java Server Page& 
+JSP loader\\ \hline 
 \end{tabular}
 \caption [Resources in OpenCms]{Resources in OpenCms}
 \end{center}
@@ -264,9 +268,9 @@ These are the style sheets used and the images for system elements like buttons 
 The help system.\\ \hline
 
 \end{tabular}
+\end{center}
 \caption [VFS of OpenCms]{VFS of OpenCms}
 \label{VFS}
-\end{center}
 \end{table}
 
 Please note that the VFS structure was modified in the 5.0 release of OpenCms.
@@ -276,7 +280,7 @@ Previous versions had a layout different from the one described above.
 %============================================================================
 The functionality of OpenCms is implemented in many different Java
 classes. The classes are divided into different packages to structure
-the code. Currently, there are 10packages that  cover a certain part
+the code. Currently, there are 10 packages that  cover a certain part
 of the system's functionality.{Table~\ref {Classtruc}}
 
 \begin{table}[h]

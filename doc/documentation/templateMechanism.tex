@@ -113,7 +113,7 @@ contain the following text:
 %\input{examples/templateMechanism/template1}
 %\end{alltt}
 \begin{verbatim}
-<?xml version="1.0"?> 
+<?xml version="1.0" encoding="ISO-8859-1"?> 
 <XMLTEMPLATE>
     <ELEMENTDEF name="contenttemplate">
         <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
@@ -134,7 +134,7 @@ frametemplate1 in the directory {\dir /content/frametemplates/}
 with the text:
 %\input{examples/templateMechanism/frametemplate1}
 \begin{verbatim}
-<?xml version="1.0"?> 
+<?xml version="1.0" encoding="ISO-8859-1"?> 
 <XMLTEMPLATE>
     <TEMPLATE><![CDATA[
         <html>
@@ -153,7 +153,7 @@ At last create the contenttemplate1 in {\dir/content/contenttemplates/}
 with this text:
 %\input{examples/templateMechanism/contenttemplate1}
 \begin{verbatim}
-<?xml version="1.0"?> 
+<?xml version="1.0" encoding="ISO-8859-1"?> 
 <XMLTEMPLATE>
     <TEMPLATE><![CDATA[
             Hello World! <br>
@@ -205,7 +205,7 @@ your frametemplate:
 
 %\input{examples/templateMechanism/frametemplate2}
 \begin{verbatim}
-<?xml version="1.0"?> 
+<?xml version="1.0" encoding="ISO-8859-1"?> 
 <XMLTEMPLATE>
     <TEMPLATE><![CDATA[
         <html>
@@ -227,7 +227,7 @@ Create it in {\dir /content/templates/} as described in the first example:
 
 %\input{examples/templateMechanism/template2}
 \begin{verbatim}
-<?xml version="1.0"?> 
+<?xml version="1.0" encoding="ISO-8859-1"?> 
 <XMLTEMPLATE>
     <ELEMENTDEF name="contenttemplate">
         <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
@@ -403,7 +403,7 @@ You also need a new mastertemplate in {\dir /content/templates/}
 where you use the new frame\-template and an empty contenttemplate:
 %\input{examples/templateMechanism/template3}
 \begin{verbatim}
-<?xml version="1.0"?> 
+<?xml version="1.0" encoding="ISO-8859-1"?> 
 <XMLTEMPLATE>
     <ELEMENTDEF name="contenttemplate">
         <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
@@ -465,7 +465,7 @@ following section explains the structure of a template file.
 Below is the general framework of a template file:
 \index{XML-tags}
 \begin{xml}
-<?xml version="1.0"?>\\
+<?xml version="1.0" encoding="ISO-8859-1"?>\\
 <XMLTEMPLATE>\\
 <!-- user-defined data blocks or elementdefintions -->\\
 <TEMPLATE>\\
@@ -632,7 +632,7 @@ directory with the following text:
 
 %\input{examples/templateMechanism/data blocks/contenttemplate2}
 \begin{verbatim}
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <XMLTEMPLATE>
     <MESSAGE><![CDATA[Hello world!]]></MESSAGE>
     <TEMPLATE><![CDATA[
@@ -683,7 +683,7 @@ associated with the default {\class com.opencms.file.CmsXmlTemplate} class and n
 userdefined class. Here is the text that the contenttemplate should contain:
 
 \begin{verbatim}
-<?xml version=1.0?>
+<?xml version=1.0 encoding="ISO-8859-1"?>
 <XMLTEMPLATE>
 <TEMPLATE>
     <ELEMENT name="example4"/>
@@ -705,7 +705,7 @@ Create a new text file example4 in the folder {\dir /content/elements/}
 with the following content:
 
 \begin{verbatim}
-<?xml version= "1.0"?>
+<?xml version= "1.0" encoding="ISO-8859-1"?>
 <XMLTEMPLATE>
 
 <MESSAGE>
@@ -806,7 +806,7 @@ you want to use the contenttemplate and mastertemplate of the previous example
 you can also just replace the element of the previous example with the following content:
 
 \begin{verbatim}
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <XMLTEMPLATE>
 <TEMPLATE>
     <METHOD name="getHello"/>
@@ -856,7 +856,7 @@ have already been shown before.
 Below is the page-control file for an earlier example:
 
 \begin{xml}
-<?xml version= "1.0 "?>\\
+<?xml version= "1.0" encoding="ISO-8859-1"?>\\
 <page>\\
 \xtaba <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\\
 \xtaba <MASTERTEMPLATE>/content/templates/template5</MASTERTEMPLATE>\\
@@ -908,7 +908,7 @@ at the example of section \ref{using datablocks} on page \pageref{using databloc
 Here is the content of the contenttemplate for this example:
 
 \begin{verbatim}
-<?xml version= "1.0"?>
+<?xml version= "1.0" encoding="ISO-8859-1"?>
 <XMLTEMPLATE>
 <MESSAGE>
     <![CDATA[Hello, World ]]>
@@ -948,7 +948,7 @@ The Java program randomly selects one of two data block values for a link's targ
 Create a new contenttemplate which includes a new element with the following content:
 
 \begin{xml}
-<?xml version="1.0"?>\\
+<?xml version="1.0" encoding="ISO-8859-1"?>\\
 <XMLTEMPLATE>\\
 <LINK1>www.opencms.org</LINK1>\\
 <LINK2>www.yahoo.de</LINK2>\\
@@ -1041,7 +1041,7 @@ layout of the table is defined inside the template. The element template could
 look like this:
 
 \begin{xml}
-<?xml version="1.0"?>\\
+<?xml version="1.0" encoding="ISO-8859-1"?>\\
 <XMLTEMPLATE>\\
 
 <TEMPLATE>\\
@@ -1134,7 +1134,7 @@ without having to change the Java class. This is the template that will
 generate a list instead of a table:
 
 \begin{xml}
-<?xml version="1.0"?>\\
+<?xml version="1.0" encoding="ISO-8859-1"?>\\
 <XMLTEMPLATE>\\
 
 <TEMPLATE>\\
@@ -1194,7 +1194,7 @@ instead. The next example will show how to generate a table with a
 new method {\meth getTable()}. Here is the element template:
 
 \begin{xml}
-<?xml version="1.0"?>\\
+<?xml version="1.0" encoding="ISO-8859-1"?>\\
 <XMLTEMPLATE>\\
 
 <TEMPLATE>
@@ -1394,7 +1394,7 @@ templates from the previous examples.
 This is the contenttemplate for the new example:
 
 \begin {xml}
-<?xml version="1.0"?>\\
+<?xml version="1.0" encoding="ISO-8859-1"?>\\
 <XMLTEMPLATE>\\
 <TEMPLATE>\\
 <![CDATA[\\
@@ -1449,7 +1449,7 @@ element definition in the page-control file. This is the content of
 the original page-control file:
 
 \begin{xml}
-<?xml version= "1.0"?>\\
+<?xml version= "1.0" encoding="ISO-8859-1"?>\\
 <page>\\
 \xtaba <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\\
 \xtaba <MASTERTEMPLATE>/content/templates/template8</MASTERTEMPLATE>\\
@@ -1586,7 +1586,7 @@ stylesheet information and allows the WYSIWYG editor to use them
 as well.
 
 \begin{xml}
-<?xml version="1.0"?>\\
+<?xml version="1.0" encoding="ISO-8859-1"?>\\
 <XMLTEMPLATE>\\
 <stylesheet>system/modules/.../css/style.css</stylesheet>\\
 
@@ -1629,7 +1629,7 @@ file if they are not specified in the element definition. The next
 example template will show how to insert Javascript code in a frametemplate:
 
 \begin{xml}
-<?xml version="1.0"?>\\
+<?xml version="1.0" encoding="ISO-8859-1"?>\\
 <XMLTEMPLATE>\\
 
 <TEMPLATE>\\
@@ -1655,7 +1655,7 @@ The Javascript code is defined in one file together with the body
 template as a template with the special name "script" as follows:
 
 \begin{xml}
-<?xml version="1.0"?>\\
+<?xml version="1.0" encoding="ISO-8859-1"?>\\
 <XMLTEMPLATE>\\
 <TEMPLATE>\\
 <!-- body template -->\\

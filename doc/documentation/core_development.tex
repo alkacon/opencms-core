@@ -23,7 +23,7 @@ However, if you have some experience in Java, Java Servlets, JDBC, XML in
 general and the Apache Xerces API you might take a look. As said before, 
 you should also have already a firm understanding of the OpenCms module API. 
 
-Since this is rather deep stuff more for experts then for beginners, I 
+Since this is rather deep stuff more for experts than for beginners, I 
 will not explain every detail of the process.
 
 \subsection{Before you start}
@@ -58,9 +58,9 @@ Ant runs before proceeding.
 \subsection{Get the OpenCms Source distribution}
 
 Download the latest OpenCms source distribution. It contains all classes 
-neccessary to build the OpenCms core. You can also checkout a OpenCms version
+neccessary to build the OpenCms core. You can also checkout an OpenCms version
 from our CVS tree, but make sure you have downloaded the source distribution 
-before that because the neccessary libaries are not included in the CVS. 
+before that because the necessary libraries are not included in the CVS. 
 
 The source distribution comes in a ZIP file. Unpack this in your working 
 directory, lets say this is called \texttt{/work}. You will then end up with the 
@@ -86,7 +86,7 @@ following structure in your work directory:
 In case you want to use the Oracle database, you need the Oracle JDBC driver
 which you can download from the Oracle Technology Network 
 (\rqhttp{http://otn.oracle.com}{http://otn.oracle.com}). You have to register 
-there to get the dirver. The file 
+there to get the driver. The file 
 you need is the JDBC driver called classes12.zip. Place the file in the 
 directory \texttt{/ExternalComponents} of the OpenCms source tree (see above). If you 
 don't have this file, the OpenCms Oracle Driver 
@@ -133,7 +133,7 @@ is used only for testing and development.
 
 \subsection{Other Ant targets}
 
-There are several more target in the ANT that might be usefull for you.
+There are several more targets in the ANT that might be useful for you.
 Here's a short overview:
 
 \begin{itemize}
@@ -146,7 +146,7 @@ This generates the source distribution ZIP file. Like the one you
 can download. 
 
 \item Ant target: \texttt{tomcat.dist}\\
-This is usefull if you really are in developing core extensions. Provided
+This is useful if you really are in developing core extensions. Provided
 that OpenCms runs on your machine using Tomcat (and that you have all 
 environment variables set up, esp. TOMCAT\_HOME or CATALINA\_HOME), calling 
 this target will have Ant updating the OpenCms classes on your machine. 
@@ -176,8 +176,8 @@ In case you replace files in the Tomcat OpenCms \texttt{webapps} directory witho
 
 \texttt{The version of workplace-templates and workplace-classes are different.\\Please update one.}
 
-Since the worklpace templates make very close usage of the core, this should 
-definitly be fixed on production systems. To remove the message, make a new 
+Since the workplace templates make very close usage of the core, this should 
+definitely be fixed on production systems. To remove the message, make a new 
 setup of the OpenCms database using the installation wizard from your newly 
 generated binary distribution file. If you know what you do, you can ignore 
 this message on development machines. 
