@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/23 14:55:22 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2000/06/23 16:56:05 $
+ * Version: $Revision: 1.69 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.68 $ $Date: 2000/06/23 14:55:22 $
+ * @version $Revision: 1.69 $ $Date: 2000/06/23 16:56:05 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2350,7 +2350,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							   String username, String groupname)
         throws CmsException {
         // Check the security
-		if( isAdmin(currentUser, currentProject) ) {
+		//if( isAdmin(currentUser, currentProject) ) {
 			CmsUser user;
             CmsGroup group;
          
@@ -2371,10 +2371,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                 throw new CmsException("["+this.getClass().getName()+"]"+username,CmsException.C_NO_USER);
             }
 		   
-		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
-				CmsException.C_NO_ACCESS);
-		}
+	//	} else {
+	//		throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+	//			CmsException.C_NO_ACCESS);
+	//	}
     }
 
 	/**
