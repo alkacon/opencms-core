@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/09/01 16:06:21 $
- * Version: $Revision: 1.105 $
+ * Date   : $Date: 2004/09/20 08:18:23 $
+ * Version: $Revision: 1.106 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.105 $ $Date: 2004/09/01 16:06:21 $
+ * @version $Revision: 1.106 $ $Date: 2004/09/20 08:18:23 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -175,7 +175,6 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         PreparedStatement stmt2 = null;
         Connection conn = null;
         CmsBackupResource currentResource = null;
-        int size = existingBackups.size()-1;
         int count = existingBackups.size() - maxVersions;
 
         try {
