@@ -8,6 +8,11 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.2.2 Giedi Prime - 20 June 2001
+
+* Corrected a bug in opencms.properties: If there is no password for a database
+  connection the systems throws a null-pointer exception.
+
 OpenCms 4.2.1 Giedi Prime - 03 April 2001
 
 * Corrected a bug in the pool. There was a deadlock-situation in getting 

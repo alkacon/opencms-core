@@ -3,8 +3,8 @@ package com.opencms.dbpool;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsPool.java,v $
- * Date   : $Date: 2001/05/03 17:01:08 $
- * Version: $Revision: 1.5.2.1 $
+ * Date   : $Date: 2001/06/20 13:16:44 $
+ * Version: $Revision: 1.5.2.2 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -89,7 +89,9 @@ public class CmsPool extends Thread {
 		m_driver = driver;
 		m_url = url;
 		m_user = user;
+        if(m_user == null) m_user = "";
 		m_password = password;
+        if(m_password == null) m_password = "";
 		m_minConn = minConn;
 		m_maxConn = maxConn;
 		m_increaseRate = increasRate;
