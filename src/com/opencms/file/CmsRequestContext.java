@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/07/10 12:28:51 $
-* Version: $Revision: 1.77 $
+* Date   : $Date: 2003/07/11 06:25:23 $
+* Version: $Revision: 1.78 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,10 +61,12 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.77 $ $Date: 2003/07/10 12:28:51 $
+ * @version $Revision: 1.78 $ $Date: 2003/07/11 06:25:23 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
+    
+    public static final String C_USER_SITEROOT = "CmsRequestContext.siteRoot";
 
     /** The rb to get access to the OpenCms */
     private CmsDriverManager m_driverManager;
@@ -152,7 +154,7 @@ public class CmsRequestContext implements I_CmsConstants {
      * @param fileTranslator Translator for new file names (without path)
      * @throws CmsException if operation was not successful.
      */
-    void init (CmsDriverManager driverManager, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId, boolean streaming, CmsElementCache elementCache, CmsResourceTranslator directoryTranslator, CmsResourceTranslator fileTranslator)
+    void init (CmsDriverManager driverManager, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId, String currentSite, boolean streaming, CmsElementCache elementCache, CmsResourceTranslator directoryTranslator, CmsResourceTranslator fileTranslator)
     	throws CmsException {
 
         m_driverManager = driverManager;
@@ -160,6 +162,7 @@ public class CmsRequestContext implements I_CmsConstants {
         m_resp = resp;
         m_links = new Vector();
         m_dependencies = new Vector();
+        m_siteRoot = currentSite;
         
         //CmsProject project = null;
         
@@ -541,15 +544,9 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     public String addSiteRoot(String resourcename) {
         if (resourcename == null) return null;
-//        if (resourcename.startsWith("///")) {
-//            return m_directoryTranslator.translateResource(resourcename.substring(2));
-//        } else if (resourcename.startsWith("//")) {
-//            return m_directoryTranslator.translateResource(C_DEFAULT_SITE + resourcename.substring(1));
-//        } else {
-//            return m_directoryTranslator.translateResource(m_siteRoot + resourcename);
-//        }
-        return m_directoryTranslator.translateResource(m_siteRoot + resourcename);
-    }
+        resourcename = getAdjustedSiteRoot(resourcename) + resourcename;
+        return m_directoryTranslator.translateResource(resourcename);
+    }    
     
     /**
      * Removes the current site root prefix from the absolute path in the resource name,
@@ -559,7 +556,43 @@ public class CmsRequestContext implements I_CmsConstants {
      * @return the resource name adjusted for the current site root
      */   
     public String removeSiteRoot(String resourcename) {
-        return CmsResource.getAbsolutePath(resourcename);
+        String siteRoot = getAdjustedFullSiteRoot(resourcename);
+        if (resourcename.startsWith(siteRoot)) {
+            resourcename = resourcename.substring(siteRoot.length());
+        }
+        return resourcename;
+    }
+
+    /**
+     * Returns the adjusted full site root for a resoure.<p>
+     * 
+     * @param resourcename the resource name to get the full adjusted site root for
+     * @return the full adjusted site root for a resoure
+     */      
+    public String getAdjustedFullSiteRoot(String resourcename) {
+        String siteRoot;
+        
+        if (resourcename.startsWith(C_VFS_DEFAULT + "/system/")) {
+            siteRoot = C_VFS_DEFAULT;
+        } else {
+            siteRoot = m_siteRoot;
+        }
+        
+        return siteRoot;
+    }
+    
+    /**
+     * Returns the adjusted site root for a resoure.<p>
+     * 
+     * @param resourcename the resource name to get the adjusted site root for
+     * @return the adjusted site root for a resoure
+     */
+    public String getAdjustedSiteRoot(String resourcename) {
+        if (resourcename.startsWith("/system/")) {
+            return C_VFS_DEFAULT;
+        } else {
+            return m_siteRoot;
+        }        
     }
     
     /**
@@ -599,7 +632,7 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     public void initEncoding() {
         try {
-            m_encoding = m_driverManager.readProperty(m_user, m_currentProject, addSiteRoot(m_req.getRequestedResource()), m_siteRoot, C_PROPERTY_CONTENT_ENCODING, true);
+            m_encoding = m_driverManager.readProperty(m_user, m_currentProject, addSiteRoot(m_req.getRequestedResource()), getAdjustedSiteRoot(m_req.getRequestedResource()), C_PROPERTY_CONTENT_ENCODING, true);
         } catch (CmsException e) {
             m_encoding = null;
         }

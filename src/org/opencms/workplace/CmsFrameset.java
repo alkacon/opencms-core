@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2003/07/10 08:25:49 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/11 06:25:23 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1
  */
@@ -95,6 +95,12 @@ public class CmsFrameset extends CmsWorkplace {
         if (newView != null) {
             settings.setCurrentView(newView);
         }
+        
+        // check if the user requested a site change
+        String newSite = request.getParameter("wpSite");
+        if (newSite != null) {
+            settings.setSite(newSite);
+        }        
     } 
     
     /**
@@ -201,6 +207,34 @@ public class CmsFrameset extends CmsWorkplace {
         
         return str;
     }
+    
+    /**
+     * Returns a html select box filled with the current users accessible sites.<p>
+     * 
+     * @param htmlAttributes attributes that will be inserted into the generated html 
+     * @return a html select box filled with the current users accessible sites
+     */
+    public String getSiteSelect(String htmlAttributes) {
+        
+        // this is just a first dummy implementation, so we use the existing constants
+        String[] sites = new String[] {I_CmsConstants.C_VFS_DEFAULT, I_CmsConstants.C_COS_DEFAULT, I_CmsConstants.C_VFS_DEFAULT + "/release"};
+        
+        List options = new ArrayList();
+        List values = new ArrayList();    
+        int selectedIndex = 0;           
+        
+        for (int i = 0; i < sites.length; i++) {  
+            values.add(sites[i]);
+            options.add(sites[i]);
+            
+            if (sites[i].equals(getSettings().getSite())) {
+                // this is the user's current site
+                selectedIndex = i;
+            }
+        }          
+        
+        return buildSelect(htmlAttributes, options, values, selectedIndex);
+    }    
     
     /**
      * Returns a html select box filled with the current users accessible projects.<p>

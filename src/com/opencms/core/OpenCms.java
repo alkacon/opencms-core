@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/07/06 13:44:34 $
-* Version: $Revision: 1.130 $
+* Date   : $Date: 2003/07/11 06:25:23 $
+* Version: $Revision: 1.131 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.130 $ $Date: 2003/07/06 13:44:34 $
+ * @version $Revision: 1.131 $ $Date: 2003/07/11 06:25:23 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -599,7 +599,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         //create a valid cms-object
         CmsObject cms = new CmsObject();
         try{
-            initUser(cms, null, null, C_USER_ADMIN, C_GROUP_ADMIN, C_PROJECT_ONLINE_ID, null);
+            initUser(cms, null, null, C_USER_ADMIN, C_GROUP_ADMIN, C_VFS_DEFAULT, C_PROJECT_ONLINE_ID, null);
             new CmsStaticExport(cms, null, false, null, null, null, null);
         }catch(Exception e){
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Dynamic link rules   : non-critical error " + e.toString());
@@ -899,12 +899,12 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
      * @param sessionStorage The session storage for this OpenCms instance
      */
     public void initUser(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes, String user,
-            String group, int project, CmsCoreSession sessionStorage) throws CmsException {
+            String group, String currentSite, int project, CmsCoreSession sessionStorage) throws CmsException {
 
         if((!m_enableElementCache) || (project == C_PROJECT_ONLINE_ID)){
-            cms.init(m_driverManager, cmsReq, cmsRes, user, group, project, m_streaming, c_elementCache, sessionStorage, m_directoryTranslator, m_fileTranslator);
+            cms.init(m_driverManager, cmsReq, cmsRes, user, group, project, currentSite, m_streaming, c_elementCache, sessionStorage, m_directoryTranslator, m_fileTranslator);
         }else{
-            cms.init(m_driverManager, cmsReq, cmsRes, user, group, project, m_streaming, new CmsElementCache(10,200,10), sessionStorage, m_directoryTranslator, m_fileTranslator);
+            cms.init(m_driverManager, cmsReq, cmsRes, user, group, project, currentSite, m_streaming, new CmsElementCache(10,200,10), sessionStorage, m_directoryTranslator, m_fileTranslator);
         }
     }
 
@@ -1009,7 +1009,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         // create a valid cms-object
         CmsObject cms = new CmsObject();
         try {
-            initUser(cms, null, null, entry.getUserName(), entry.getGroupName(), C_PROJECT_ONLINE_ID, null);
+            initUser(cms, null, null, entry.getUserName(), entry.getGroupName(), C_VFS_DEFAULT, C_PROJECT_ONLINE_ID, null);
             // create a new ScheduleJob and start it
             CmsCronScheduleJob job = new CmsCronScheduleJob(cms, entry);
             job.start();

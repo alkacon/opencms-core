@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/10 14:38:59 $
-* Version: $Revision: 1.306 $
+* Date   : $Date: 2003/07/11 06:25:23 $
+* Version: $Revision: 1.307 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.306 $
+ * @version $Revision: 1.307 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -1536,7 +1536,7 @@ public CmsObject getCmsObjectForStaticExport(CmsExportRequest dReq, CmsExportRes
 
     CmsObject cmsForStaticExport = new CmsObject();
     cmsForStaticExport.init(m_driverManager, dReq, dRes, C_USER_GUEST,
-                             C_GROUP_GUEST, C_PROJECT_ONLINE_ID, false, new CmsElementCache(), null, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+                             C_GROUP_GUEST, C_PROJECT_ONLINE_ID, getRequestContext().getSiteRoot(), false, new CmsElementCache(), null, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
     cmsForStaticExport.setLauncherManager(getLauncherManager());
     return cmsForStaticExport;
 }
@@ -2180,11 +2180,11 @@ public void init(CmsDriverManager driverManager) throws CmsException {
  * @param fileTranslator Translator for new file names (without path)
  * @throws CmsException if operation was not successful.
  */
-public void init(CmsDriverManager driverManager, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId, boolean streaming, CmsElementCache elementCache, CmsCoreSession sessionStorage, CmsResourceTranslator directoryTranslator, CmsResourceTranslator fileTranslator) throws CmsException {
+public void init(CmsDriverManager driverManager, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId, String currentSite, boolean streaming, CmsElementCache elementCache, CmsCoreSession sessionStorage, CmsResourceTranslator directoryTranslator, CmsResourceTranslator fileTranslator) throws CmsException {
     m_sessionStorage = sessionStorage;
     m_driverManager = driverManager;
     m_context = new CmsRequestContext();    
-    m_context.init(m_driverManager, req, resp, user, currentGroup, currentProjectId, streaming, elementCache, directoryTranslator, fileTranslator);
+    m_context.init(m_driverManager, req, resp, user, currentGroup, currentProjectId, currentSite, streaming, elementCache, directoryTranslator, fileTranslator);
     try {
         m_linkChecker = new LinkChecker();
     } catch(java.lang.NoClassDefFoundError error) {
@@ -2306,7 +2306,7 @@ public String loginUser(String username, String password) throws CmsException {
     // login the user
     CmsUser newUser = m_driverManager.loginUser(m_context.currentUser(), m_context.currentProject(), username, password, m_context.getRemoteAddress());
     // init the new user
-    init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+    init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
 
     this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
 
@@ -2327,7 +2327,7 @@ public String loginWebUser(String username, String password) throws CmsException
     // login the user
     CmsUser newUser = m_driverManager.loginWebUser(m_context.currentUser(), m_context.currentProject(), username, password, m_context.getRemoteAddress());
     // init the new user
-    init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+    init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
     // return the user-name
     return (newUser.getName());
 }
@@ -3239,7 +3239,7 @@ public Vector readProjectLogs(int projectId) throws CmsException {
      * @throws CmsException in case there where problems reading the property
      */
     public String readProperty(String resource, String property) throws CmsException {
-        return m_driverManager.readProperty(m_context.currentUser(), m_context.currentProject(), m_context.addSiteRoot(resource), m_context.getSiteRoot(), property, false);
+        return m_driverManager.readProperty(m_context.currentUser(), m_context.currentProject(), m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, false);
     }
 
     /**
@@ -3254,7 +3254,7 @@ public Vector readProjectLogs(int projectId) throws CmsException {
      * @throws CmsException in case there where problems reading the property
      */
     public String readProperty(String resource, String property, boolean search) throws CmsException {
-        return m_driverManager.readProperty(m_context.currentUser(), m_context.currentProject(), m_context.addSiteRoot(resource), m_context.getSiteRoot(), property, search);
+        return m_driverManager.readProperty(m_context.currentUser(), m_context.currentProject(), m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
     }
 
     /**
@@ -3273,7 +3273,7 @@ public Vector readProjectLogs(int projectId) throws CmsException {
      * @throws CmsException in case there where problems reading the property
      */
     public String readProperty(String resource, String property, boolean search, String propertyDefault) throws CmsException {
-        return m_driverManager.readProperty(m_context.currentUser(), m_context.currentProject(), m_context.addSiteRoot(resource), m_context.getSiteRoot(), property, search, propertyDefault);
+        return m_driverManager.readProperty(m_context.currentUser(), m_context.currentProject(), m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search, propertyDefault);
     }
     
     /**
@@ -3284,7 +3284,7 @@ public Vector readProjectLogs(int projectId) throws CmsException {
      * @throws CmsException in case there where problems reading the properties
      */    
     public Map readProperties(String resource) throws CmsException {
-        return m_driverManager.readProperties(m_context.currentUser(), m_context.currentProject(), m_context.addSiteRoot(resource), m_context.getSiteRoot(), false);    
+        return m_driverManager.readProperties(m_context.currentUser(), m_context.currentProject(), m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), false);    
     }    
         
     /**
@@ -3297,7 +3297,7 @@ public Vector readProjectLogs(int projectId) throws CmsException {
      * @throws CmsException in case there where problems reading the properties
      */           
     public Map readProperties(String resource, boolean search) throws CmsException {
-        return m_driverManager.readProperties(m_context.currentUser(), m_context.currentProject(), m_context.addSiteRoot(resource), m_context.getSiteRoot(), search);    
+        return m_driverManager.readProperties(m_context.currentUser(), m_context.currentProject(), m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), search);    
     } 
                     
     /**

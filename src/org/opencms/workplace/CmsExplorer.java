@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/07 17:24:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/11 06:25:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */
@@ -117,16 +117,16 @@ public class CmsExplorer extends CmsWorkplace {
         
         // the checksum
         int checksum = -1;
+        int increment = (settings.getExplorerChecksum() == -2)?1:0;
         String check = request.getParameter("check");
         if(check != null) {
             try {
                 checksum = Integer.parseInt(check);
             } catch (NumberFormatException e) {
-                // defaul is -1
+                // default is -1
             }
         }        
-        settings.setExplorerChecksum(checksum);
-
+        settings.setExplorerChecksum(checksum + increment);
     }
     
     /**
@@ -173,8 +173,7 @@ public class CmsExplorer extends CmsWorkplace {
      *
      * @return the html for the explorer file list
      */
-    public String getFileListFunction() {
-        
+    public String getFileListFunction() {        
         // if mode is "listonly", only the list will be shown
         boolean listonly = "listonly".equals(getSettings().getExplorerMode()); 
         // if mode is "projectview", all changed files in that project will be shown
@@ -202,8 +201,7 @@ public class CmsExplorer extends CmsWorkplace {
         }
         
         long check = getCms().getFileSystemFolderChanges();
-        boolean newTreePlease = 
-            getSettings().getExplorerChecksum() != check;
+        boolean newTreePlease = getSettings().getExplorerChecksum() != check;
 
         // get the currentFolder Id
         CmsUUID currentFolderId = CmsUUID.getNullUUID();
@@ -498,7 +496,11 @@ public class CmsExplorer extends CmsWorkplace {
                 if(! CmsProject.isOnlineProject(rootFolder.getProjectId())) {
                     //startAt = 2;
                     grey = false;
-                    idMixer.put((CmsFolder)tree.get(1), rootFolder.getId());
+                    /*
+                    CmsFolder folder = (CmsFolder)tree.get(1);
+                    CmsUUID id = rootFolder.getId();
+                    idMixer.put(folder, id);
+                    */
                 }else {
                     grey = true;
                 }

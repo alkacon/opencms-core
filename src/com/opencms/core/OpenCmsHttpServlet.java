@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2003/07/03 14:34:12 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2003/07/11 06:25:23 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.52 $ $Date: 2003/07/03 14:34:12 $
+ * @version $Revision: 1.53 $ $Date: 2003/07/11 06:25:23 $
  */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
 
@@ -457,8 +457,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
     private CmsObject initUser(I_CmsRequest cmsReq, I_CmsResponse cmsRes) throws IOException {
         HttpSession session = null;
         String user = null;
-        String group = null;
-        Integer project = null;
+
         String loginParameter = null;
 
         // get the original ServletRequest and response
@@ -468,7 +467,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
 
         //set up the default Cms object
         try {
-            m_opencms.initUser(cms, cmsReq, cmsRes, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID, m_sessionStorage);
+            m_opencms.initUser(cms, cmsReq, cmsRes, C_USER_GUEST, C_GROUP_GUEST, C_VFS_DEFAULT, C_PROJECT_ONLINE_ID, m_sessionStorage);
 
             // check if a parameter "opencms=login" was included in the request.
             // this is used to force the HTTP-Authentification to appear.
@@ -527,9 +526,10 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                 user = m_sessionStorage.getUserName(session.getId());
                 //check if a user was returned, i.e. the user is authenticated
                 if(user != null) {
-                    group = m_sessionStorage.getCurrentGroup(session.getId());
-                    project = m_sessionStorage.getCurrentProject(session.getId());
-                    m_opencms.initUser(cms, cmsReq, cmsRes, user, group, project.intValue(), m_sessionStorage);
+                    String group = m_sessionStorage.getCurrentGroup(session.getId());
+                    Integer project = m_sessionStorage.getCurrentProject(session.getId());
+                    String currentSite = m_sessionStorage.getCurrentSite(session.getId());
+                    m_opencms.initUser(cms, cmsReq, cmsRes, user, group, currentSite, project.intValue(), m_sessionStorage);
                 }
             } else {
                 // there was either no session returned or this session was not
@@ -650,6 +650,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                 sessionData.put(C_SESSION_USERNAME, cms.getRequestContext().currentUser().getName());
                 sessionData.put(C_SESSION_CURRENTGROUP, cms.getRequestContext().currentGroup().getName());
                 sessionData.put(C_SESSION_PROJECT, new Integer(cms.getRequestContext().currentProject().getId()));
+                sessionData.put(C_SESSION_CURRENTSITE, cms.getRequestContext().getSiteRoot());
                 Hashtable oldData = (Hashtable)session.getAttribute(C_SESSION_DATA);
                 if(oldData == null) {
                     oldData = new Hashtable();

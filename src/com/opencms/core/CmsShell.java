@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
-* Date   : $Date: 2003/05/21 14:35:55 $
-* Version: $Revision: 1.77 $
+* Date   : $Date: 2003/07/11 06:25:23 $
+* Version: $Revision: 1.78 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.77 $ $Date: 2003/05/21 14:35:55 $
+ * @version $Revision: 1.78 $ $Date: 2003/07/11 06:25:23 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -107,7 +107,7 @@ public class CmsShell implements I_CmsConstants {
 
             m_logMemory = conf.getBoolean("log.memory", false);
             //log in default user.
-            m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID, null);
+            m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_VFS_DEFAULT, C_PROJECT_ONLINE_ID, null);
         }
         catch(Exception exc) {
             printException(exc);

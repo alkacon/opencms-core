@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/07/09 11:38:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/11 06:25:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import com.opencms.file.CmsUser;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */
@@ -57,6 +57,7 @@ public class CmsWorkplaceSettings {
     private int m_explorerChecksum = -1;
     private String m_explorerFlaturl;
     private String m_permissionDetailView;
+    private String m_currentSite = "/default/vfs";
         
     /**
      * Constructor, only package visible.<p>
@@ -117,6 +118,25 @@ public class CmsWorkplaceSettings {
     public synchronized void setCurrentView(String string) {
         m_currentView = string;
     }
+    
+
+    /**
+     * Returns the current site for the user.<p>
+     * 
+     * @return the current site for the user 
+     */
+    public synchronized String getSite() {
+        return m_currentSite;
+    }
+    
+    /**
+     * Sets the current site for the user.<p>
+     * 
+     * @param string the current site for the user
+     */
+    public synchronized void setSite(String value) {
+        m_currentSite = value;
+    }  
 
     /**
      * Returns the currently selected default group of the workplace user.<p>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/07/10 14:38:59 $
-* Version: $Revision: 1.87 $
+* Date   : $Date: 2003/07/11 06:25:23 $
+* Version: $Revision: 1.88 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.87 $ $Date: 2003/07/10 14:38:59 $
+ * @version $Revision: 1.88 $ $Date: 2003/07/11 06:25:23 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -82,7 +82,7 @@ class CmsShellCommands implements I_CmsConstants {
     public CmsShellCommands(OpenCms openCms, CmsObject cms) throws Exception {
         m_openCms = openCms;
         m_cms = cms;
-        m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID, null);
+        m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_VFS_DEFAULT, C_PROJECT_ONLINE_ID, null);
 
         // print the version-string
         version();
