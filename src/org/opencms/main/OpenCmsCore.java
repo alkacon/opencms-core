@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/01/19 08:21:39 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2004/01/19 17:14:14 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,6 +60,7 @@ import org.opencms.flex.CmsFlexCache;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsLoaderManager;
 import org.opencms.loader.I_CmsResourceLoader;
+import org.opencms.locale.CmsLocaleManager;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.security.CmsSecurityException;
@@ -102,7 +103,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.59 $
+ * @version $Revision: 1.60 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -173,6 +174,9 @@ public final class OpenCmsCore {
 
     /** The loader manager used for loading individual resources */
     private CmsLoaderManager m_loaderManager;
+
+    /** The locale manager used for obtaining the current locale */
+    private CmsLocaleManager m_localeManager;
     
     /** The lock manager used for the locking mechanism  */
     private CmsLockManager m_lockManager;
@@ -730,6 +734,15 @@ public final class OpenCmsCore {
      */
     protected CmsLoaderManager getLoaderManager() {
         return m_loaderManager;
+    }
+
+    /**
+     * Returns the locale manager used for obtaining the current locale.<p>
+     * 
+     * @return the locale manager
+     */
+    protected CmsLocaleManager getLocaleManager() {
+        return m_localeManager;
     }
     
     /**
@@ -1359,6 +1372,19 @@ public final class OpenCmsCore {
             }
             // any exception here is fatal and will cause a stop in processing
             // TODO: activate throwing exception: throw e;
+        }
+        
+        // initialize the locale manager
+        try {
+            m_localeManager = new CmsLocaleManager(configuration);
+            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).info(". Available locales    : " + m_localeManager.getAvailableLocaleNames());
+                getLog(CmsLog.CHANNEL_INIT).info(". Default locale       : " + m_localeManager.getDefaultLocaleNames());
+            }
+        } catch (Exception e) {
+            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).warn(". LocaleManager init   : non-critical error " + e.toString());
+            }
         }
         
         // initialize the Thread store

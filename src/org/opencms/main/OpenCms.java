@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/01/19 08:21:40 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/01/19 17:14:14 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import com.opencms.file.CmsRegistry;
 
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.loader.CmsLoaderManager;
+import org.opencms.locale.CmsLocaleManager;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.site.CmsSiteManager;
@@ -54,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public final class OpenCms {
     
@@ -144,16 +145,6 @@ public final class OpenCms {
     public static List getDefaultFilenames() {
         return OpenCmsCore.getInstance().getDefaultFilenames();
     }
-
-    /**
-     * Returns the configured default language.<p>
-     * 
-     * @return the default language as ISO language code
-     */
-    public static String getDefaultLanguage() {
-        // TODO: read the default language from a property
-        return Locale.getDefault().getLanguage();
-    }
     
     /**
      * Returns the configured list of default http headers.<p>
@@ -191,6 +182,15 @@ public final class OpenCms {
      */
     public static CmsLoaderManager getLoaderManager() {
         return OpenCmsCore.getInstance().getLoaderManager();
+    }
+
+    /**
+     * Returns the locale manager used for obtaining the current locale.<p>
+     * 
+     * @return the locale manager
+     */
+    public static CmsLocaleManager getLocaleManager() {
+        return OpenCmsCore.getInstance().getLocaleManager();
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/01/19 16:00:16 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/01/19 17:14:14 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Encoder;
+import com.opencms.util.Utils;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.main.OpenCms;
@@ -57,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.1.12
  */
@@ -198,14 +199,14 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     protected void initBodyElementLanguage() {
         Set languages = m_page.getLanguages();
-        String defaultLanguage;
-        
+        String defaultLanguage = OpenCms.getLocaleManager().getLocale(getCms(), getCms().readAbsolutePath(m_file)).toString();
+        /*
         try {
             defaultLanguage = getCms().getLanguage(getCms().readAbsolutePath(m_file));
         } catch (CmsException exc) {
             defaultLanguage = OpenCms.getDefaultLanguage();
         }
-        
+        */
         if (languages.size() == 0) {
             // no body present, create default body
             if (!m_page.hasElement(I_CmsConstants.C_XML_BODY_ELEMENT, defaultLanguage)) {
@@ -315,6 +316,20 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     public String buildSelectBodyLanguage(String attributes) {
         
+        Locale locales[] = OpenCms.getLocaleManager().getAvailableLocales(getCms(), getCms().readAbsolutePath(m_file));
+
+        List options = new ArrayList(locales.length);
+        List selectList = new ArrayList(locales.length);
+        int currentIndex = -1;
+        for (int counter = 0; counter < locales.length; counter++) {
+            Locale curLocale = locales[counter];
+            selectList.add(curLocale.toString());
+            options.add(curLocale.getDisplayName(new Locale(getSettings().getLanguage())));
+            if (curLocale.toString().equals(getParamBodylanguage())) {
+                currentIndex = counter;
+            }
+        }
+        /*
         String languages[] = null;
         try {
             languages = getCms().getLanguages(getCms().readAbsolutePath(m_file));
@@ -326,15 +341,18 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         List selectList = new ArrayList(languages.length);
         int currentIndex = -1;
         for (int counter = 0; counter < languages.length; counter++) {
-            String curLang = languages[counter];
-            selectList.add(curLang);
-            Locale curLocale = new Locale(curLang);
-            options.add(curLocale.getDisplayLanguage(new Locale(getSettings().getLanguage())));
-            if (curLang.equals(getParamBodylanguage())) {
+            String curLocaleName[] = Utils.split(languages[counter],"_");
+            Locale curLocale = new Locale(
+                    curLocaleName[0], 
+                    (curLocaleName.length > 1) ? curLocaleName[1] : "", 
+                    (curLocaleName.length > 2) ? curLocaleName[2] : "");
+            selectList.add(languages[counter]);            
+            options.add(curLocale.getDisplayName(new Locale(getSettings().getLanguage())));
+            if (languages[counter].equals(getParamBodylanguage())) {
                 currentIndex = counter;
             }
         }
-    
+        */
         if (currentIndex == -1) {
             // no matching body language found, use first body language in list
             if (selectList != null && selectList.size() > 0) {
@@ -383,8 +401,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                 // current body is the displayed one, mark it as selected
                 currentIndex = counter;
             }
-            if (m_page.isEnabled(elementName, getParamBodylanguage())) {
-                // add element only if it is enabled
+            if (!m_page.hasElement(elementName, getParamBodylanguage()) || m_page.isEnabled(elementName, getParamBodylanguage())) {
+                // add element if it is not available or if it is enabled
                 options.add(elementNice);
                 values.add(elementName);
                 counter++;
@@ -602,11 +620,11 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         m_page.setEnabled(body, language, enabled);
         // check if there is already a default element for this body,
         // if not, set this body as default if it has the default language
-        if (!m_page.hasElement(body, null)) {
-            if (language.equals(getCms().getLanguage(getCms().readAbsolutePath(m_file)))) {
-                m_page.setDefault(body, language);
-            }
-        }
+        // if (!m_page.hasElement(body, null)) {
+        //    if (language.equals(getCms().getLanguage(getCms().readAbsolutePath(m_file)))) {
+        //        m_page.setDefault(body, language);
+        //    }
+        // }
         // write the file
         getCms().writeFile(m_page.write(m_file));
     }

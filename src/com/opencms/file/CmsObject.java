@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2004/01/19 09:13:45 $
-* Version: $Revision: 1.439 $
+* Date   : $Date: 2004/01/19 17:14:14 $
+* Version: $Revision: 1.440 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.439 $
+ * @version $Revision: 1.440 $
  */
 public class CmsObject {
 
@@ -4509,42 +4509,6 @@ public class CmsObject {
      */
     public CmsLock getLock(String resourcename) throws CmsException {
         return m_driverManager.getLock(m_context, m_context.addSiteRoot(resourcename));
-    }
-
-    /**
-     * Returns the language for a resource given by name.<p>
-     * The language is defined with the <code>locale</code> property
-     * or the <code>defaultLocale</code> property that is set at the resource
-     * or at one of the parent folders of the resource.
-     * If both properties are not set, the opencms default language is returned.
-     * 
-     * @param resourcename the resource name
-     * @return the language as ISO language code
-     * @throws CmsException if something goes wrong
-     */
-    public String getLanguage(String resourcename) throws CmsException {
-        
-        String language = readProperty(resourcename, I_CmsConstants.C_PROPERTY_LOCALE, true);
-                 
-        if (language == null) {
-            language = readProperty(resourcename, I_CmsConstants.C_PROPERTY_DEFAULT_LOCALE, true, OpenCms.getDefaultLanguage());
-        }
-        
-        return language;
-    }
-
-    /**
-     * Returns an array of allowed languages for a resource given by name.<p>
-     * At least, the default language is allowed.
-     * 
-     * @param resourcename the resource name
-     * @return a <code>String</code> array with the languages as ISO language codes
-     * @throws CmsException if something goes wrong
-     */
-    public String[] getLanguages(String resourcename) throws CmsException {
-        
-        String lang = readProperty(resourcename, I_CmsConstants.C_PROPERTY_LOCALES, true, OpenCms.getDefaultLanguage());
-        return Utils.split(lang, ",");
     }
     
     /**
