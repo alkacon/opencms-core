@@ -8,11 +8,7 @@
 <title>]]><method name="getTitle"/><![CDATA[</title>
 </head>
 <BODY>
-<H1>Here starts the body</H1>
-<TABLE BGCOLOR="#B4B4B4">
-<TR>
-<TD>]]><ELEMENT name="body"/><![CDATA[</TD>
-</TR>
+]]><ELEMENT name="body"/><![CDATA[
 </BODY>
 </html>
 ]]>
