@@ -227,7 +227,7 @@ public class CmsShowContent extends CmsXmlTemplate {
                 throw new CmsException (e.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, e);
             }
         }
-        return null;
+        return "";
     }
 
     /**
