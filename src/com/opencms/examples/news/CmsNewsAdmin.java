@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsAdmin.java,v $
- * Date   : $Date: 2000/03/31 12:30:39 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/04/04 09:58:45 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,6 +34,7 @@ import com.opencms.template.*;
 import com.opencms.workplace.*;
 
 import java.util.*;
+import java.io.*;
 import javax.servlet.http.*;
 
 /**
@@ -43,32 +44,10 @@ import javax.servlet.http.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/03/31 12:30:39 $
+ * @version $Revision: 1.5 $ $Date: 2000/04/04 09:58:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
-public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsNewsConstants,
-                                                                 I_CmsFileListUsers {
-
-    /** Name of the file parameter in the URL */
-    public static final String C_NEWS_PARAM_FILE = "file";
-
-    /** Name of the date parameter in the HTTP get request */
-    public static final String C_NEWS_PARAM_DATE = "date";
-
-    /** Name of the headline parameter in the HTTP get request */
-    public static final String C_NEWS_PARAM_HEADLINE = "headline";
-    
-    /** Name of the shorttext parameter in the HTTP get request */
-    public static final String C_NEWS_PARAM_SHORTTEXT = "shorttext";
-
-    /** Name of the text parameter in the HTTP get request */
-    public static final String C_NEWS_PARAM_TEXT = "text";
-    
-    /** Name of the external link parameter in the HTTP get request */
-    public static final String C_NEWS_PARAM_EXTLINK = "extlink";
-
-    /** Name of the state parameter in the HTTP get request */
-    public static final String C_NEWS_PARAM_STATE = "state";
+public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsNewsConstants, I_CmsFileListUsers {
         
     /** Template selector of the "done" page */
     public static final String C_NEWS_DONE = "done";
@@ -109,19 +88,19 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();    
         HttpSession session = orgReq.getSession(true);
         
-		// read the parameters
+		// read all parameters
         String file = (String)parameters.get(C_NEWS_PARAM_FILE);
         if(file == null) {
             file = (String)session.getValue(C_NEWS_PARAM_FILE);
         } else {
-            session.putValue("file", file);
+            session.putValue(C_NEWS_PARAM_FILE, file);
         }
 
-        String action = (String)parameters.get("action");
+        String action = (String)parameters.get(C_NEWS_PARAM_ACTION);
         if(action == null) {
-            action = (String)session.getValue("action");
+            action = (String)session.getValue(C_NEWS_PARAM_ACTION);
         } else {
-            session.putValue("action", action);
+            session.putValue(C_NEWS_PARAM_ACTION, action);
         }        
         
         String newDate = (String)parameters.get(C_NEWS_PARAM_DATE);
@@ -142,7 +121,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
             if(newHeadline == null && newShorttext == null && newText == null && newExternalLink == null) {
                 if(file != null && ! "".equals(file)) {
                     // the user wants to edit an old article
-                    CmsNewsTemplateFile newsFile = getNewsContentFile(cms, cms.readFile(file));
+                    CmsNewsContentFile newsFile = getNewsContentFile(cms, cms.readFile(file));
                     
                     A_CmsResource newsContentFileObject = cms.readFileHeader(newsFile.getAbsoluteFilename());
                     if (!newsContentFileObject.isLocked()) {
@@ -152,11 +131,11 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
                     parameters.put(C_NEWS_PARAM_DATE, Utils.getNiceShortDate(newsFile.getNewsDate()));
                     parameters.put(C_NEWS_PARAM_HEADLINE, newsFile.getNewsHeadline());
                     parameters.put(C_NEWS_PARAM_SHORTTEXT, newsFile.getNewsShortText());
-                    parameters.put(C_NEWS_PARAM_TEXT, newsFile.getNewsText());
+                    parameters.put(C_NEWS_PARAM_TEXT, newsFile.getNewsText("\n\n"));
                     parameters.put(C_NEWS_PARAM_EXTLINK, newsFile.getNewsExternalLink());
                     parameters.put(C_NEWS_PARAM_STATE, new Boolean(newsFile.isNewsActive()));
-                    xmlTemplateDocument.setXmlData("author", newsFile.getNewsAuthor());
-                    session.putValue("author", newsFile.getNewsAuthor());
+                    xmlTemplateDocument.setXmlData(C_NEWS_PARAM_AUTHOR, newsFile.getNewsAuthor());
+                    session.putValue(C_NEWS_PARAM_AUTHOR, newsFile.getNewsAuthor());
                 } else {
                     // the user requested a new article
 
@@ -175,8 +154,8 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
                         authorText = authorText.trim();
                         authorText = authorText + " (" + initials + ")";
                     }
-                    session.putValue("author", authorText);
-                    xmlTemplateDocument.setXmlData("author", authorText);
+                    session.putValue(C_NEWS_PARAM_AUTHOR, authorText);
+                    xmlTemplateDocument.setXmlData(C_NEWS_PARAM_AUTHOR, authorText);
                     
                     // Get the Sting for the actual date
                     String dateText = Utils.getNiceShortDate(cal.getTime().getTime());
@@ -185,7 +164,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
             } else {
                 // this is the POST result of an user input
                           
-                CmsNewsTemplateFile newsContentFile = null;                 
+                CmsNewsContentFile newsContentFile = null;                 
                 
                 if(file == null || "".equals(file)) {
                     // we have to create a new new file
@@ -195,12 +174,13 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         
                     // Build the new article filename
                     String dateFileText = getDateFileText(cal);        
-                    String newsNumber = this.getNewArticleNumber(cms, dateFileText);
+                    String newsNumber = getNewArticleNumber(cms, dateFileText);
                     String initials =  getInitials(author);               
                     String newsFileName = dateFileText + "-" + newsNumber + "-" + initials.toLowerCase();
                     parameters.put(C_NEWS_PARAM_FILE, newsFileName);
                     
-                    newsContentFile = createNewsFile(cms, newsFileName); //, authorText, dateText, newHeadline, newShorttext, newText, newExternalLink);
+                    // create files
+                    newsContentFile = createNewsFile(cms, newsFileName);
                     createPageFile(cms, newsFileName);
 
                     // check the date parameter
@@ -209,20 +189,20 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
                     }
                     
                     // Create task
-                    CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
-                    HttpServletRequest req = (HttpServletRequest)(cms.getRequestContext().getRequest().getOriginalRequest());
-                    String taskUrl = req.getScheme() + "://" + req.getHeader("HOST") + req.getServletPath() + C_NEWS_FOLDER_PAGE + newsFileName + "/index.html";
-                    String taskcomment = "<A HREF=\"javascript:openwinfull('" + taskUrl + "', 'preview', 0, 0);\"> " + taskUrl + "</A>";
-                    CmsTaskAction.create(cms, C_NEWS_USER, C_NEWS_ROLE, lang.getLanguageValue("task.label.news"), taskcomment, Utils.getNiceShortDate(new Date().getTime() + 345600000), "1", "", "", "", "");                
+                    makeTask(cms, newsFileName);
+                    
                 } else {
                     newsContentFile = getNewsContentFile(cms, cms.readFile(file));                
                 }
                 
-                setNewsFileContent(newsContentFile, (String)session.getValue("author"), newDate, newHeadline, newShorttext, newText, newExternalLink, newState);
-                cms.unlockResource(newsContentFile.getAbsoluteFilename());
+                // Set news content and unlock resource
+                setNewsFileContent(newsContentFile, (String)session.getValue(C_NEWS_PARAM_AUTHOR), newDate, newHeadline, newShorttext, newText, newExternalLink, newState);
+                cms.unlockResource(newsContentFile.getAbsoluteFilename());                                                                             
                 
-                                                             
-                session.removeValue("file");
+                // Session parameters are not needed any more...
+                session.removeValue(C_NEWS_PARAM_FILE);
+                session.removeValue(C_NEWS_PARAM_ACTION);
+                session.removeValue(C_NEWS_PARAM_AUTHOR);
                 templateSelector = C_NEWS_DONE;                
 		    }
         }
@@ -231,6 +211,13 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }
 
+    /**
+     * Used for filling the input field <em>Date</em> in the news editor.
+     * @param cms Cms object for accessing system resources.
+     * @param lang Current language file.
+     * @param parameters User parameters.
+     * @return String containing the date.
+     */
     public String getDate(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) {
         String result = (String)parameters.get(C_NEWS_PARAM_DATE);
         if(result == null) {
@@ -239,6 +226,13 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         return result;
     }
 
+    /**
+     * Used for filling the input field <em>Headline</em> in the news editor.
+     * @param cms Cms object for accessing system resources.
+     * @param lang Current language file.
+     * @param parameters User parameters.
+     * @return String containing the headline of the article.
+     */
     public String getHeadline(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) {
         String result = (String)parameters.get(C_NEWS_PARAM_HEADLINE);
         if(result == null) {
@@ -247,6 +241,13 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         return result;
     }
 
+    /**
+     * Used for filling the input field <em>Short Text</em> in the news editor.
+     * @param cms Cms object for accessing system resources.
+     * @param lang Current language file.
+     * @param parameters User parameters.
+     * @return String containing the short text of the article.
+     */
     public String getShorttext(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) {
         Hashtable parameters = (Hashtable)userObject;
         String result = (String)parameters.get(C_NEWS_PARAM_SHORTTEXT);
@@ -256,6 +257,13 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         return result;
     }
 
+    /**
+     * Used for filling the input field <em>Text</em> in the news editor.
+     * @param cms Cms object for accessing system resources.
+     * @param lang Current language file.
+     * @param parameters User parameters.
+     * @return String containing the article text.
+     */
     public String getText(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) {
         Hashtable parameters = (Hashtable)userObject;
         String result = (String)parameters.get(C_NEWS_PARAM_TEXT);
@@ -265,6 +273,13 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         return result;
     }
         
+    /**
+     * Used for filling the input field <em>External Link</em> in the news editor.
+     * @param cms Cms object for accessing system resources.
+     * @param lang Current language file.
+     * @param parameters User parameters.
+     * @return String containing the external link.
+     */
     public String getExternalLink(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) {
         String result = (String)parameters.get(C_NEWS_PARAM_EXTLINK);
         if(result == null || "".equals(result)) {
@@ -274,6 +289,8 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
     }
     
     /**
+     * Used for filling the values of a radio button.
+     * <P>
      * Gets the resources displayed in the Radiobutton group on the new resource dialog.
      * @param cms The CmsObject.
      * @param lang The langauge definitions.
@@ -290,10 +307,10 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         Boolean state = (Boolean)parameters.get(C_NEWS_PARAM_STATE);        
         names.addElement("");
         names.addElement("");
-        values.addElement("active");
-        values.addElement("inactive");
-        descriptions.addElement(lang.getLanguageValue(C_LANG_LABEL + ".active"));
-        descriptions.addElement(lang.getLanguageValue(C_LANG_LABEL + ".inactive")); 
+        values.addElement(C_NEWS_STATE_ACTIVE);     
+        values.addElement(C_NEWS_STATE_INACTIVE);
+        descriptions.addElement(lang.getLanguageValue(C_LANG_LABEL + "." + C_NEWS_STATE_ACTIVE));
+        descriptions.addElement(lang.getLanguageValue(C_LANG_LABEL + "." + C_NEWS_STATE_INACTIVE)); 
         if(state != null && state.equals(Boolean.TRUE)) {
             return new Integer(0);
         } else {
@@ -302,6 +319,8 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
     }        
 
    /** 
+    * From interface <code>I_CmsFileListUsers</code>.
+    * <P>    
     * Collects all folders and files that are displayed in the file list.
     * @param cms The CmsObject.
     * @return A vector of folder and file objects.
@@ -329,6 +348,8 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
     }
        
     /**
+     * From interface <code>I_CmsFileListUsers</code>.
+     * <P>    
      * Used to modify the bit pattern for hiding and showing columns in
      * the file list.
      * @param cms Cms object for accessing system resources.
@@ -343,6 +364,8 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
     }
     
     /**
+     * From interface <code>I_CmsFileListUsers</code>.
+     * <P>    
      * Fills all customized columns with the appropriate settings for the given file 
      * list entry. Any column filled by this method may be used in the customized template
      * for the file list.
@@ -360,8 +383,8 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         String author = state;
         String name = null;
         if(res instanceof CmsFile) {
-            CmsNewsTemplateFile newsContentFile = getNewsContentFile(cms, res);
-            state = newsContentFile.isNewsActive() ? lang.getLanguageValue(C_LANG_LABEL + ".active") : lang.getLanguageValue(C_LANG_LABEL + ".inactive");
+            CmsNewsContentFile newsContentFile = getNewsContentFile(cms, res);
+            state = newsContentFile.isNewsActive() ? lang.getLanguageValue(C_LANG_LABEL + "." + C_NEWS_STATE_ACTIVE) : lang.getLanguageValue(C_LANG_LABEL + "." + C_NEWS_STATE_INACTIVE);
             author = newsContentFile.getNewsAuthor();
             name = newsContentFile.getNewsHeadline();
         }
@@ -372,16 +395,23 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         }
     }    
 
-    protected CmsNewsTemplateFile getNewsContentFile(A_CmsObject cms, A_CmsResource file) throws CmsException {
+    /**
+     * Get the corresponding news content file for a given newspage file.
+     * @param file File object of the newspage file.
+     * @param cms A_CmsObject for accessing system resources.
+     * @return CmsNewsContentFile object of the corresponding news content file.
+     * @exception CmsException if file access failed.
+     */
+    private CmsNewsContentFile getNewsContentFile(A_CmsObject cms, A_CmsResource file) throws CmsException {
 
         CmsFile newsContentFileObject = null;
-        CmsNewsTemplateFile newsContentFile = null;
+        CmsNewsContentFile newsContentFile = null;
 
         // The given file object contains the news page file.
         // we have to read out the article
         CmsXmlControlFile newsPageFile = new CmsXmlControlFile(cms, (CmsFile)file);
-        String readParam = newsPageFile.getElementParameter("body", "read");
-        String newsfolderParam = newsPageFile.getElementParameter("body", "newsfolder");
+        String readParam = newsPageFile.getElementParameter(C_BODY_ELEMENT, C_NEWS_PARAM_READ);
+        String newsfolderParam = newsPageFile.getElementParameter(C_BODY_ELEMENT, C_NEWS_PARAM_NEWSFOLDER);
         
         if(readParam != null && !"".equals(readParam)) {
             // there is a read parameter given.
@@ -396,12 +426,24 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
                 newsContentFileObject = null;
             }
             if(newsContentFileObject != null) {
-                newsContentFile = new CmsNewsTemplateFile(cms, newsContentFileObject);
+                newsContentFile = new CmsNewsContentFile(cms, newsContentFileObject);
             }
         }
         return newsContentFile;
     }
     
+    /** Create the task for the new news article.
+     * @param cms A_CmsObject for accessing system resources.
+     * @param newsFileName File name of the news article, used to generate a link.
+     * @exception CmsException
+     */
+    private void makeTask(A_CmsObject cms, String newsFileName) throws CmsException {
+        CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+        HttpServletRequest req = (HttpServletRequest)(cms.getRequestContext().getRequest().getOriginalRequest());
+        String taskUrl = req.getScheme() + "://" + req.getHeader("HOST") + req.getServletPath() + C_NEWS_FOLDER_PAGE + newsFileName + "/index.html";
+        String taskcomment = "<A HREF=\"javascript:openwinfull('" + taskUrl + "', 'preview', 0, 0);\"> " + taskUrl + "</A>";
+        CmsTaskAction.create(cms, C_NEWS_USER, C_NEWS_ROLE, lang.getLanguageValue("task.label.news"), taskcomment, Utils.getNiceShortDate(new Date().getTime() + 345600000), "1", "", "", "", "");                
+    }
     
     /**
      * Get the new article number by scanning all existing articles
@@ -495,40 +537,73 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
     }
     
     /**
-     * Create a news content file.
+     * Create a news content file. File flags setted in the user preferences
+     * will be overridden to system default flags.
      * 
      * @param cms A_CmsObject for accessing system resources.
      * @param newsFileName filename to be used
+     * @exception CmsException
+     */
+    private CmsNewsContentFile createNewsFile(A_CmsObject cms, String newsFileName) throws CmsException { //, String author, String date, String headline, 
+        String fullFilename = C_NEWS_FOLDER_CONTENT + newsFileName;
+        CmsNewsContentFile newsTempDoc = new CmsNewsContentFile();
+        newsTempDoc.createNewFile(cms, fullFilename, C_TYPE_PLAIN_NAME);              
+        cms.chmod(fullFilename, C_ACCESS_DEFAULT_FLAGS);
+        return newsTempDoc;
+    }
+   
+    /**
+     * Set the content of the news XML file to the given values.
+     * <p>
+     * The <code>text</code> will be separated into paragraphs, if more than one
+     * following line feeds are found.
+     * @param newsFile CmsNewsContentFile object of the news content file.
      * @param author Author
      * @param date Date
      * @param headline Headline
      * @param shorttext Short news text
      * @param test Complete news text
      * @param extlink External link
-     * @exception CmsException
+     * @param state State of the article. Should be <code>active</code> or <code>inactive</code>
+     * @exception CmsExecption
      */
-    private CmsNewsTemplateFile createNewsFile(A_CmsObject cms, String newsFileName) throws CmsException { //, String author, String date, String headline, 
-                                //String shorttext, String text, String extlink) throws CmsException {
-        String fullFilename = C_NEWS_FOLDER_CONTENT + newsFileName;
-        CmsNewsTemplateFile newsTempDoc = new CmsNewsTemplateFile();
-        newsTempDoc.createNewFile(cms, fullFilename, "plain");
-              
-        cms.chmod(fullFilename, C_ACCESS_DEFAULT_FLAGS);
-        return newsTempDoc;
-    }
-   
-    private void setNewsFileContent(CmsNewsTemplateFile newsFile, String author, String date, String headline, 
+    private void setNewsFileContent(CmsNewsContentFile newsFile, String author, String date, String headline, 
                                 String shorttext, String text, String extlink, String state) throws CmsException {
         newsFile.setNewsAuthor(author);
         if(date != null && !"".equals(date)) {
             // only set date if given
             newsFile.setNewsDate(date);
         }
+        
+        // Divide the text into separate lines.
+        BufferedReader br = new BufferedReader(new StringReader(text));
+        String lineStr = null;
+        StringBuffer sb = new StringBuffer();
+        Vector paragraphs = new Vector();
+        try { 
+            while ((lineStr = br.readLine()) != null) {
+                lineStr = lineStr.trim();
+                if("".equals(lineStr)) {
+                    // If two following line feeds were found, the begin of a new
+                    // paragraph was detected.
+                    paragraphs.addElement(sb.toString());
+                    sb = new StringBuffer();
+                } else {
+                    sb.append(lineStr);
+                    sb.append(" ");
+                }                                
+            }
+            paragraphs.addElement(sb.toString().trim());
+        } catch(Exception e) {
+            throwException("Could not set content of news file " + newsFile.getAbsoluteFilename() + ". " + e);            
+        }                
+                
+        // set all other values
         newsFile.setNewsHeadline(headline);
         newsFile.setNewsShortText(shorttext);
-        newsFile.setNewsText(text);
+        newsFile.setNewsText(paragraphs);
         newsFile.setNewsExternalLink(extlink);               
-        newsFile.setNewsActive("active".equals(state));
+        newsFile.setNewsActive(C_NEWS_STATE_ACTIVE.equals(state));
         newsFile.write();
     }            
         
@@ -543,22 +618,17 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         
         // Create the news folder
         cms.createFolder(C_NEWS_FOLDER_PAGE, newsFileName);
-               
-        /*String fullFolderName = C_NEWS_FOLDER_PAGE + newsFileName + "/";
-        cms.lockResource(fullFolderName);
-        cms.chmod(fullFolderName, C_ACCESS_DEFAULT_FLAGS); 
-        cms.unlockResource(fullFolderName);*/
-    
+                   
         // Create an index file in this folder
         String fullFilename = C_NEWS_FOLDER_PAGE + newsFileName + "/index.html";        
         CmsXmlControlFile pageFile = new CmsXmlControlFile();
-        pageFile.createNewFile(cms, fullFilename, "newspage");
+        pageFile.createNewFile(cms, fullFilename, C_TYPE_NEWSPAGE_NAME);
         pageFile.setTemplateClass("com.opencms.template.CmsXmlTemplate");
         pageFile.setMasterTemplate("/content/templates/xDemoTemplate1");
-        pageFile.setElementClass("body", "com.opencms.examples.news.CmsNewsTemplate");
-        pageFile.setElementTemplate("body", C_PATH_INTERNAL_TEMPLATES + "newsTemplate");
-        pageFile.setElementParameter("body", "newsfolder", C_NEWS_FOLDER_CONTENT);
-        pageFile.setElementParameter("body", "read", newsFileName);
+        pageFile.setElementClass(C_BODY_ELEMENT, "com.opencms.examples.news.CmsNewsTemplate");
+        pageFile.setElementTemplate(C_BODY_ELEMENT, C_PATH_INTERNAL_TEMPLATES + "newsTemplate");
+        pageFile.setElementParameter(C_BODY_ELEMENT, C_NEWS_PARAM_NEWSFOLDER, C_NEWS_FOLDER_CONTENT);
+        pageFile.setElementParameter(C_BODY_ELEMENT, C_NEWS_PARAM_READ, newsFileName);
         pageFile.write();
         cms.chmod(fullFilename, C_ACCESS_DEFAULT_FLAGS);
         cms.unlockResource(fullFilename);

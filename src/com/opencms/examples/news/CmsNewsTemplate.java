@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsTemplate.java,v $
- * Date   : $Date: 2000/03/30 08:01:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/04 09:59:22 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -56,10 +56,17 @@ import javax.servlet.http.*;
  *
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/03/30 08:01:00 $
+ * @version $Revision: 1.6 $ $Date: 2000/04/04 09:59:22 $
  * @see com.opencms.examples.CmsXmlNewsTemplateFile
  */
 public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstants, I_CmsLogChannels {
+    
+    
+    /** XML tag used for the paragraph separator definition */
+    private final static String C_TAG_PARAGRAPHSEP = "paragraphsep";
+
+    /** XML tag used for the news list entry definition */
+    private final static String C_TAG_NEWSLISTENTRY = "newslistentry";
     
     /**
      * Indicates if the results of this class are cacheable.
@@ -95,21 +102,21 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
         String newsNum = (String)parameters.get(elementName + ".newsnum");        
 
         String newsFolder = getNewsFolder(elementName, parameters);
-        CmsNewsTemplateFile newsDoc = null;
+        CmsNewsContentFile newsDoc = null;
         
         if(read != null && ! "".equals(read)) {
             // The read parameter was set. So we have a certain article selected
             templateSelector = "read";
-            newsDoc = new CmsNewsTemplateFile(cms, newsFolder + read);                       
+            newsDoc = new CmsNewsContentFile(cms, newsFolder + read);                       
         } else if(newsNum != null && ! "".equals(newsNum)){
             // The newsNum parameter was set.
             // So we have To get a list of all articles and search
             // for the requested number, beginning with the latest article
             templateSelector = "read";
-            Vector v = CmsNewsTemplateFile.getAllArticles(cms, newsFolder);
+            Vector v = CmsNewsContentFile.getAllArticles(cms, newsFolder);
             int articleNum = new Integer(newsNum).intValue();
             if(articleNum < v.size()) {
-                newsDoc = (CmsNewsTemplateFile)v.elementAt(articleNum);
+                newsDoc = (CmsNewsContentFile)v.elementAt(articleNum);
             }
         }
         
@@ -154,7 +161,8 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
         HttpServletRequest orgReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();
         String servletPath = orgReq.getServletPath();
 
-        CmsNewsTemplateFile article = (CmsNewsTemplateFile)((Hashtable)userObj).get("_ARTICLE_");
+        CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile)doc;
+        CmsNewsContentFile article = (CmsNewsContentFile)((Hashtable)userObj).get("_ARTICLE_");
         String result = null;
         
         if(article != null) {
@@ -172,7 +180,7 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
             } else if(tagcontent.toLowerCase().equals("shorttext")) {
                 result = article.getNewsShortText();
             } else if(tagcontent.toLowerCase().equals("text")) {
-                result = article.getNewsText();
+                result = article.getNewsText(templateFile.getDataValue(C_TAG_PARAGRAPHSEP));
             } else if(tagcontent.toLowerCase().equals("file")) {
                 result = servletPath + C_NEWS_FOLDER_PAGE + article.getFilename() + "/index.html";
             } else if(tagcontent.toLowerCase().equals("linktext")) {
@@ -200,19 +208,20 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
         
         CmsXmlTemplateFile newsTemplateFile = (CmsXmlTemplateFile)doc;
         
+        // Get a vector of all available articles using the news content definition
         String newsFolder = getNewsFolder(elementName, parameters);
-        Vector v = CmsNewsTemplateFile.getAllArticles(cms, newsFolder);
+        Vector v = CmsNewsContentFile.getAllArticles(cms, newsFolder);
         String result = "";
         
+        // Loop through the vector for all articles and generate output for each of them
         for(int i=0; i<v.size(); i++) {
             Object o = v.elementAt(i);
-            CmsNewsTemplateFile doc2 = (CmsNewsTemplateFile)o;
-        
+            CmsNewsContentFile doc2 = (CmsNewsContentFile)o;        
             newsTemplateFile.setData("date", Utils.getNiceShortDate(doc2.getNewsDate()));
             newsTemplateFile.setData("headline", doc2.getNewsHeadline());
             newsTemplateFile.setData("shorttext", doc2.getNewsShortText());        
             newsTemplateFile.setData("link", doc2.getFilename() + "/index.html");
-            result = result + newsTemplateFile.getProcessedDataValue("newslistentry");        
+            result = result + newsTemplateFile.getProcessedDataValue(C_TAG_NEWSLISTENTRY);        
         }                        
         return result;
     }    

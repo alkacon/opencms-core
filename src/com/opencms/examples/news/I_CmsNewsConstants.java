@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/I_CmsNewsConstants.java,v $
- * Date   : $Date: 2000/03/30 08:01:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/04 09:59:22 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.examples.news;
  * into a <code>news.ini</code> file.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/03/30 08:01:00 $
+ * @version $Revision: 1.6 $ $Date: 2000/04/04 09:59:22 $
  */
 public interface I_CmsNewsConstants {
     
@@ -54,6 +54,12 @@ public interface I_CmsNewsConstants {
 
     /** Name of the user managing news */
     public static final String C_NEWS_USER = "Admin";     
+    
+    /** Text of the "active" state */
+    public static final String C_NEWS_STATE_ACTIVE = "active";     
+
+    /** Text of the "inactive" state */
+    public static final String C_NEWS_STATE_INACTIVE = "inactive";     
     
     
     // Names for XML elements in news file of the content type
@@ -81,5 +87,42 @@ public interface I_CmsNewsConstants {
     public static final String C_NEWS_XML_ACTIVE = "active";         
 
     /** Name of the XML tag for "news inactive"*/
-    public static final String C_NEWS_XML_INACTIVE = "inactive";         
+    public static final String C_NEWS_XML_INACTIVE = "inactive";
+    
+    
+    // Names for news parameters used in session storage and
+    // in HTTP requests.
+    
+    /** Name of the file parameter in the URL and the session strage. */
+    public static final String C_NEWS_PARAM_FILE = "file";
+
+    /** Name of the date parameter in the HTTP get request and the session strage. */
+    public static final String C_NEWS_PARAM_DATE = "date";
+
+    /** Name of the headline parameter in the HTTP get request and the session strage. */
+    public static final String C_NEWS_PARAM_HEADLINE = "headline";
+    
+    /** Name of the shorttext parameter in the HTTP get request and the session strage. */
+    public static final String C_NEWS_PARAM_SHORTTEXT = "shorttext";
+
+    /** Name of the text parameter in the HTTP get request and the session strage. */
+    public static final String C_NEWS_PARAM_TEXT = "text";
+    
+    /** Name of the external link parameter in the HTTP get request and the session strage. */
+    public static final String C_NEWS_PARAM_EXTLINK = "extlink";
+
+    /** Name of the state parameter in the HTTP get request and the session strage. */
+    public static final String C_NEWS_PARAM_STATE = "state";    
+
+    /** Name of the action parameter in URL and the session strage.*/
+    public static final String C_NEWS_PARAM_ACTION = "action";    
+
+    /** Name of the author parameter in session storage */
+    public static final String C_NEWS_PARAM_AUTHOR = "author";        
+
+    /** Name of the newsfolder parameter in the newspage file. */
+    public static final String C_NEWS_PARAM_NEWSFOLDER = "newsfolder";    
+
+    /** Name of the read parameter in the newspage file. */
+    public static final String C_NEWS_PARAM_READ = "read";        
 }
