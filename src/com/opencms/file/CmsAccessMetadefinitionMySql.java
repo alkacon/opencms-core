@@ -5,7 +5,7 @@ import java.sql.*;
 
 import com.opencms.core.*;
 
-class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
+class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsConstants {
 	
     /**
      * This is the connection object to the database
@@ -55,12 +55,12 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 	/**
      * SQL Command for creating metainformations.
      */    
-    private static final String C_METAINFO_CREATE = "INSERT INTO METAINFO VALUES(null,?,?,?,?)";
+    private static final String C_METAINFO_CREATE = "INSERT INTO " + C_DATABASE_PREFIX + "METAINFO VALUES(null,?,?,?,?)";
 
 	/**
      * SQL Command for updating metadefinitions.
      */    
-    private static final String C_METAINFO_UPDATE = "UPDATE METAINFO SET " + 
+    private static final String C_METAINFO_UPDATE = "UPDATE " + C_DATABASE_PREFIX + "METAINFO SET " + 
 													C_METAINFO_VALUE + " = ? WHERE " +
 													C_RESOURCE_NAME + " = ? and " +
 													C_PROJECT_ID + " = ? and " +
@@ -69,38 +69,38 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 	/**
      * SQL Command for reading metainformations.
      */    
-    private static final String C_METAINFO_READ = "SELECT METAINFO.* FROM METAINFO, METADEF " + 
-												  "WHERE METAINFO.METADEF_ID = METADEF.METADEF_ID and " +
-												  "METAINFO.RESOURCE_NAME = ? and " +
-												  "METAINFO.PROJECT_ID = ? and " +
-												  "METADEF.METADEF_NAME = ? and " +
-												  "METADEF.RESOURCE_TYPE = ?";
+    private static final String C_METAINFO_READ = "SELECT " + C_DATABASE_PREFIX + "METAINFO.* FROM " + C_DATABASE_PREFIX + "METAINFO, " + C_DATABASE_PREFIX + "METADEF " + 
+												  "WHERE " + C_DATABASE_PREFIX + "METAINFO.METADEF_ID = " + C_DATABASE_PREFIX + "METADEF.METADEF_ID and " +
+												  C_DATABASE_PREFIX + "METAINFO.RESOURCE_NAME = ? and " +
+												  C_DATABASE_PREFIX + "METAINFO.PROJECT_ID = ? and " +
+												  C_DATABASE_PREFIX + "METADEF.METADEF_NAME = ? and " +
+												  C_DATABASE_PREFIX + "METADEF.RESOURCE_TYPE = ?";
 
 	/**
      * SQL Command for reading metainformations.
      */    
-    private static final String C_METAINFO_READALL = "SELECT METAINFO.*, METADEF.METADEF_NAME FROM METAINFO, METADEF " + 
-													 "WHERE METAINFO.METADEF_ID = METADEF.METADEF_ID and " +
-													 "METAINFO.RESOURCE_NAME = ? and " +
-													 "METAINFO.PROJECT_ID = ? and " +
-													 "METADEF.RESOURCE_TYPE = ?";
+    private static final String C_METAINFO_READALL = "SELECT " + C_DATABASE_PREFIX + "METAINFO.*, " + C_DATABASE_PREFIX + "METADEF.METADEF_NAME FROM " + C_DATABASE_PREFIX + "METAINFO, " + C_DATABASE_PREFIX + "METADEF " + 
+													 "WHERE " + C_DATABASE_PREFIX + "METAINFO.METADEF_ID = " + C_DATABASE_PREFIX + "METADEF.METADEF_ID and " +
+													 C_DATABASE_PREFIX + "METAINFO.RESOURCE_NAME = ? and " +
+													 C_DATABASE_PREFIX + "METAINFO.PROJECT_ID = ? and " +
+													 C_DATABASE_PREFIX + "METADEF.RESOURCE_TYPE = ?";
 
 	/**
      * SQL Command for reading metainformations.
      */    
-    private static final String C_METAINFO_READALL_COUNT = "SELECT count(*) FROM METAINFO WHERE " +
+    private static final String C_METAINFO_READALL_COUNT = "SELECT count(*) FROM " + C_DATABASE_PREFIX + "METAINFO WHERE " +
 														   C_METADEF_ID + " = ?";
 	/**
      * SQL Command for reading metainformations.
      */    
-    private static final String C_METAINFO_DELETEALL = "DELETE FROM METAINFO " + 
+    private static final String C_METAINFO_DELETEALL = "DELETE FROM " + C_DATABASE_PREFIX + "METAINFO " + 
 													   "WHERE RESOURCE_NAME = ? and " +
 													   "PROJECT_ID = ?";
 
 	/**
      * SQL Command for reading metainformations.
      */    
-    private static final String C_METAINFO_DELETE = "DELETE FROM METAINFO " + 
+    private static final String C_METAINFO_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "METAINFO " + 
 													"WHERE " + C_METADEF_ID + " = ? and " +
 													C_RESOURCE_NAME + " = ? and " +
 													C_PROJECT_ID + " = ? ";
@@ -108,39 +108,39 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 	/**
      * SQL Command for creating metadefinitions.
      */    
-    private static final String C_METADEF_CREATE = "INSERT INTO METADEF VALUES(null,?,?,?)";
+    private static final String C_METADEF_CREATE = "INSERT INTO " + C_DATABASE_PREFIX + "METADEF VALUES(null,?,?,?)";
 
 	/**
      * SQL Command for updating metadefinitions.
      */    
-    private static final String C_METADEF_UPDATE = "UPDATE METADEF SET " + 
+    private static final String C_METADEF_UPDATE = "UPDATE " + C_DATABASE_PREFIX + "METADEF SET " + 
 												   C_METADEF_TYPE + " = ? WHERE " + 
 												   C_METADEF_ID + " = ? ";
 
 	/**
      * SQL Command for reading metadefinitions.
      */    
-    private static final String C_METADEF_READ = "Select * from METADEF where " + 
+    private static final String C_METADEF_READ = "Select * from " + C_DATABASE_PREFIX + "METADEF where " + 
 												 C_METADEF_NAME + " = ? and " +
 												 C_RESOURCE_TYPE + " = ? ";
 
 	/**
      * SQL Command for reading metadefinitions.
      */    
-    private static final String C_METADEF_READALL_A = "Select * from METADEF where " + 
+    private static final String C_METADEF_READALL_A = "Select * from " + C_DATABASE_PREFIX + "METADEF where " + 
 													  C_RESOURCE_TYPE + " = ? ";
 
 	/**
      * SQL Command for reading metadefinitions.
      */    
-    private static final String C_METADEF_READALL_B = "Select * from METADEF where " + 
+    private static final String C_METADEF_READALL_B = "Select * from " + C_DATABASE_PREFIX + "METADEF where " + 
 													  C_RESOURCE_TYPE + " = ? and " +
 													  C_METADEF_TYPE + " = ? ";
 	
 	/**
      * SQL Command for reading metadefinitions.
      */    
-    private static final String C_METADEF_DELETE = "DELETE FROM METADEF WHERE " + 
+    private static final String C_METADEF_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "METADEF WHERE " + 
 												   C_METADEF_NAME + " = ? and " +
 												   C_METADEF_TYPE + " = ?";
 	

@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/01/25 15:37:31 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/28 17:42:31 $
  */
 interface I_CmsRbProject {
 	
@@ -29,7 +29,7 @@ interface I_CmsRbProject {
 	 * 
 	 * @param name The name of the project to read.
 	 * @param description The description for the new project.
-	 * @param task The globe task.
+	 * @param task The task.
 	 * @param owner The owner to be set.
 	 * @param group the group to be set.
 	 * @param flags The flags to be set.

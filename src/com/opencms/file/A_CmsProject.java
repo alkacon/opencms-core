@@ -5,7 +5,7 @@ package com.opencms.file;
  * one resource.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/01/13 12:27:37 $
+ * @version $Revision: 1.7 $ $Date: 2000/01/28 17:42:30 $
  */
 abstract public class A_CmsProject
 {
@@ -75,6 +75,13 @@ abstract public class A_CmsProject
 	 * @return the taskid of this project.
 	 */
     abstract int getTaskId();
+	
+	/**
+	 * Returns the publishing date of this project.
+	 * 
+	 * @return the publishing date of this project.
+	 */
+    abstract long getPublishingDate();
 	
 	/**
 	 * Returns a string-representation for this object.

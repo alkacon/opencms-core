@@ -8,7 +8,7 @@ import com.opencms.core.*;
  * This class describes the Cms user object and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/01/04 11:56:59 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/28 17:42:31 $
  */
 
 public class CmsUser extends A_CmsUser implements I_CmsConstants {
@@ -37,34 +37,37 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
      * The default group of this user.
      */
     private A_CmsGroup m_defaultGroup= null;
-    
-    /**
-     * Constructor, creates a new Cms user object.
-     * 
-     * @param id The id of the new user.
-     * @param name The name of the new user.
-     * @param description The description of the new user.
-     * @param flags The flags of the new user.
-     * @param group The default user group of the new user.
-     * @param info A Hashtable with additional user information.
-     */
-    public CmsUser (int id, String name, String description, int flags,
-                    A_CmsGroup group, Hashtable info) {
-        m_id=id;
-        m_name=name;
-        m_description=description;
-        m_additionalInfo=info;  
-        m_defaultGroup=group;          
-        
-        //add aditional infos in the hashtable
-        if (m_additionalInfo == null) {
-            m_additionalInfo=new Hashtable();
-        }
-        m_additionalInfo.put(C_ADDITIONAL_INFO_DEFAULTGROUP_ID,new Integer(group.getId()));
-        m_additionalInfo.put(C_ADDITIONAL_INFO_FLAGS,new Integer(flags));
-        m_additionalInfo.put(C_ADDITIONAL_INFO_LASTLOGIN,new Long(0));
-    }
-    
+	
+	/**
+	 * The flags of the user.
+	 */
+	private int m_flags = C_FLAG_ENABLED;
+	
+	/**
+	 * The email of the user.
+	 */
+	private String m_email = "";
+	
+	/**
+	 * The lastused date.
+	 */
+	private long m_lastused = C_UNKNOWN_LONG;
+	
+	/**
+	 * The firstname of the user.
+	 */
+	private String m_firstname = "";
+	
+	/**
+	 * The lastname of the user.
+	 */
+	private String m_lastname = "";
+	
+	/**
+	 * The last login of the user.
+	 */
+	private long m_lastlogin = C_UNKNOWN_LONG;
+    	 
     /**
      * Constructor, creates a new Cms user object.
      * 
@@ -173,6 +176,9 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
      */
     void setDefaultGroup(A_CmsGroup defaultGroup) {
         m_defaultGroup = defaultGroup;
+        m_additionalInfo.put(C_ADDITIONAL_INFO_DEFAULTGROUP_ID, 
+							 new Integer(defaultGroup.getId()));
+
     }
 
 	/**
@@ -254,46 +260,57 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
     }
     
 	/**
-	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_EMAIL);</pre>
+	 * Gets the email.
 	 * 
 	 * @return the USER_EMAIL, or null.
 	 */
 	public String getEmail() {
-        String value=null;
-        value =(String)m_additionalInfo.get(C_ADDITIONAL_INFO_EMAIL);
-        return value;
+        return m_email;
     }
      
     /**
-     * This is a shortcut for: <pre>setAdditionalInfo(C_ADDITIONAL_INFO_EMAIL,value);</pre>
+     * Sets the email.
 	 * 
 	 * @param The new email adress.
      */
     void setEmail(String value) {
-        m_additionalInfo.put(C_ADDITIONAL_INFO_EMAIL,value);
+        m_email = value;
     }
-         
 
 	/**
-	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_FIRSTNAME);</pre>
+	 * Gets the firstname.
 	 * 
 	 * @return the USER_FIRSTNAME, or null.
 	 */
 	public String getFirstname() {
-        String value=null;
-        value =(String)m_additionalInfo.get(C_ADDITIONAL_INFO_FIRSTNAME);
-        return value;
+		return m_firstname ;
     }
 
 	/**
-	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_LASTNAME);</pre>
+	 * Sets the firstname.
+	 * 
+	 * @param the USER_FIRSTNAME.
+	 */
+	void setFirstname(String firstname) {
+		m_firstname = firstname;
+    }
+	
+	/**
+	 * Gets the lastname.
 	 * 
 	 * @return the USER_SURNAME, or null.
 	 */
 	public String getLastname() {
-        String value=null;
-        value =(String)m_additionalInfo.get(C_ADDITIONAL_INFO_LASTNAME);
-        return value;
+        return m_lastname;
+    }
+	
+	/**
+	 * Gets the lastname.
+	 * 
+	 * @return the USER_SURNAME, or null.
+	 */
+	void setLastname(String lastname) {
+        m_lastname = lastname;
     }
 	
 	/**
@@ -337,51 +354,57 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
     }
     
     /**
-	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_LASTLOGIN);</pre>
+	 * Gets the lastlogin.
 	 * 
 	 * @return the USER_LASTLOGIN, or C_UNKNOWN_LONG.
 	 */
 	public long getLastlogin() {
-        long value=C_UNKNOWN_LONG;
-        Long lastlogin=null;
-        lastlogin =((Long)m_additionalInfo.get(C_ADDITIONAL_INFO_LASTLOGIN));
-        if (lastlogin != null) {
-            value=lastlogin.longValue();
-        }
-        return value;
+        return m_lastlogin;
     }
 
-     /**
-	 * This is a shortcut for: <pre>setAdditionalInfo(C_ADDITIONAL_INFO_LASTLOGIN,new Long(value));</pre>
+    /**
+	 * Sets the lastlogin.
 	 * 
 	 * @param value The new user section.
 	 */
     void setLastlogin(long value) {
-        m_additionalInfo.put(C_ADDITIONAL_INFO_LASTLOGIN,new Long(value));
+        m_lastlogin = value;
     }
     
+    /**
+	 * Gets the lastlogin.
+	 * 
+	 * @return the USER_LASTLOGIN, or C_UNKNOWN_LONG.
+	 */
+	public long getLastUsed() {
+        return m_lastused;
+    }
+
+    /**
+	 * Sets the lastlogin.
+	 * 
+	 * @param value The new user section.
+	 */
+    void setLastUsed(long value) {
+        m_lastused = value;
+    }
+	
      /**
-	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_FLAGS);</pre>
+	 * Gets the flags.
 	 * 
 	 * @return the USER_FLAGS, or C_UNKNOWN_INT.
 	 */
 	public int getFlags() {
-        int value=C_UNKNOWN_INT;
-        Integer flags=null;
-        flags =((Integer)m_additionalInfo.get(C_ADDITIONAL_INFO_FLAGS));
-        if (flags != null) {
-            value=flags.intValue();
-        }
-        return value;
+        return m_flags;
     }
  
-     /**
-	 * This is a shortcut for: <pre>serAdditionalInfo(C_ADDITIONAL_INFO_FLAGS,new Integer(value));</pre>
+    /**
+	 * Sets the flags.
 	 * 
 	 * @param value The new user flags.
 	 */
      void setFlags(int value) {
-         m_additionalInfo.put(C_ADDITIONAL_INFO_FLAGS, new Integer(value));
+         m_flags = value;
      }
        
      /**
@@ -394,8 +417,4 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
         value =((Integer)m_additionalInfo.get(C_ADDITIONAL_INFO_DEFAULTGROUP_ID)).intValue();
         return value;
     }
-
 }
-
-    
-

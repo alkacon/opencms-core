@@ -1,13 +1,14 @@
 package com.opencms.file;
 
 import com.opencms.core.*;
+import java.sql.*;
 
 /**
  * This class describes a project. A project is used to handle versions of 
  * one resource.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/01/13 12:27:38 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/28 17:42:31 $
  */
 public class CmsProject extends A_CmsProject implements I_CmsConstants {
 	
@@ -27,9 +28,9 @@ public class CmsProject extends A_CmsProject implements I_CmsConstants {
 	private int m_groupId = C_UNKNOWN_ID;
 	
 	/**
-	 * The globetask_id for this project.
+	 * The task_id for this project.
 	 */
-	private int m_globetaskId = C_UNKNOWN_ID;
+	private int m_taskId = C_UNKNOWN_ID;
 	
 	/**
 	 * The name of this project.
@@ -42,19 +43,29 @@ public class CmsProject extends A_CmsProject implements I_CmsConstants {
 	private String m_description = null;
 	
 	/**
+	 * The publishing date of this project.
+	 */
+	private long m_publishingdate = C_UNKNOWN_LONG;
+	
+	/**
 	 * The state of this project.
 	 */
 	private int m_flags = C_PROJECT_STATE_UNLOCKED;
 
-	CmsProject(int projectId, String name, String description, int globetaskId, 
-			   int ownerId, int groupId, int flags) {
+	CmsProject(int projectId, String name, String description, int taskId, 
+			   int ownerId, int groupId, int flags, Timestamp publishingdate) {
 		m_id = projectId;
 		m_name = name;
 		m_description = description;
-		m_globetaskId = globetaskId;
+		m_taskId = taskId;
 		m_ownerId = ownerId;
 		m_groupId = groupId;
 		m_flags = flags;
+		if( publishingdate != null) {
+			m_publishingdate = publishingdate.getTime();
+		} else {
+			m_publishingdate = C_UNKNOWN_LONG;
+		}
 	}
 	
 	/**
@@ -140,9 +151,18 @@ public class CmsProject extends A_CmsProject implements I_CmsConstants {
 	 * @return the taskid of this project.
 	 */
     int getTaskId() {
-		return(this.m_globetaskId);
+		return(this.m_taskId);
 	}
 
+	/**
+	 * Returns the publishing date of this project.
+	 * 
+	 * @return the publishing date of this project.
+	 */
+	public long getPublishingDate() {
+		return(m_publishingdate);
+	}
+	
 	/**
 	 * Returns a string-representation for this object.
 	 * This can be used for debugging.

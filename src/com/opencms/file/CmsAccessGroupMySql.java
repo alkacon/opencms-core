@@ -12,76 +12,76 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/01/24 19:13:05 $
+ * @version $Revision: 1.16 $ $Date: 2000/01/28 17:42:30 $
  */
  class CmsAccessGroupMySql implements I_CmsAccessGroup, I_CmsConstants  {
      
     /**
     * SQL Command for writing groups.
     */   
-    private static final String C_GROUP_CREATE = "INSERT INTO GROUPS VALUES(?,?,?,?,?)";
+    private static final String C_GROUP_CREATE = "INSERT INTO " + C_DATABASE_PREFIX + "GROUPS VALUES(?,?,?,?,?)";
    
     /**
     * SQL Command for reading groups.
     */   
-    private static final String C_GROUP_READ = "SELECT * FROM GROUPS WHERE GROUP_NAME = ?";
+    private static final String C_GROUP_READ = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS WHERE GROUP_NAME = ?";
   
     /**
     * SQL Command for updating/wrting groups
     */   
-    private static final String C_GROUP_WRITE="UPDATE GROUPS SET GROUP_DESCRIPTION = ?, GROUP_FLAGS = ? WHERE GROUP_ID = ? ";
+    private static final String C_GROUP_WRITE="UPDATE " + C_DATABASE_PREFIX + "GROUPS SET GROUP_DESCRIPTION = ?, GROUP_FLAGS = ? WHERE GROUP_ID = ? ";
 
     /**
     * SQL Command for reading groups.
     */   
-    private static final String C_GROUP_READID = "SELECT * FROM GROUPS WHERE GROUP_ID = ?";
+    private static final String C_GROUP_READID = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS WHERE GROUP_ID = ?";
         
     /**
     * SQL Command for deleting groups.
     */   
-    private static final String C_GROUP_DELETE = "DELETE FROM GROUPS WHERE GROUP_NAME = ?";
+    private static final String C_GROUP_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "GROUPS WHERE GROUP_NAME = ?";
     
     /**
     * SQL Command for getting all childs of a group.
     */   
-    private static final String C_GROUP_CHILDS = "SELECT * FROM GROUPS WHERE PARENT_GROUP_ID = ?";
+    private static final String C_GROUP_CHILDS = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS WHERE PARENT_GROUP_ID = ?";
     
     /**
     * SQL Command for getting the parent group of a group.
     */   
-    private static final String C_GROUP_PARENT = "SELECT * FROM GROUPS WHERE GROUP_ID = ?";
+    private static final String C_GROUP_PARENT = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS WHERE GROUP_ID = ?";
        
     
     /**
     * SQL Command for getting all groups.
     */   
-    private static final String C_GROUP_GETALL = "SELECT * FROM GROUPS";
+    private static final String C_GROUP_GETALL = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS";
     
     /**
     * SQL Command for adding a user to a group.
     */   
-    private static final String C_ADDUSERTOGROUP = "INSERT INTO GROUPUSERS VALUES(?,?,?)";
+    private static final String C_ADDUSERTOGROUP = "INSERT INTO " + C_DATABASE_PREFIX + "GROUPUSERS VALUES(?,?,?)";
 
     /**
     * SQL Command for removing a user from a group.
     */   
-    private static final String C_REMOVEUSERFROMGROUP = "DELETE FROM GROUPUSERS WHERE GROUP_ID = ? AND USER_ID = ?";
+    private static final String C_REMOVEUSERFROMGROUP = "DELETE FROM " + C_DATABASE_PREFIX + "GROUPUSERS WHERE GROUP_ID = ? AND USER_ID = ?";
     
     /**
     * SQL Command for check if user is in a group.
     */   
-    private static final String C_USERINGROUP = "SELECT * FROM GROUPUSERS WHERE GROUP_ID = ? AND USER_ID = ?";
+    private static final String C_USERINGROUP = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPUSERS WHERE GROUP_ID = ? AND USER_ID = ?";
 
     /**
     * SQL Command for getting all user id's of a group.
     */   
-    private static final String C_GETUSERSINGROUP = "SELECT USER_ID FROM GROUPUSERS WHERE GROUP_ID = ?";
+    private static final String C_GETUSERSINGROUP = "SELECT USER_ID FROM " + C_DATABASE_PREFIX + "GROUPUSERS WHERE GROUP_ID = ?";
         
 
     /**
     * SQL Command for getting all groups of a user.
     */   
-    private static final String C_GETGROUPSOFUSER = "SELECT GROUPS.* FROM GROUPS,GROUPUSERS WHERE USER_ID = ? AND GROUPS.GROUP_ID = GROUPUSERS.GROUP_ID";
+    private static final String C_GETGROUPSOFUSER = "SELECT " + C_DATABASE_PREFIX + "GROUPS.* FROM " + C_DATABASE_PREFIX + "GROUPS," + C_DATABASE_PREFIX + "GROUPUSERS WHERE USER_ID = ? AND " + C_DATABASE_PREFIX + "GROUPS.GROUP_ID = " + C_DATABASE_PREFIX + "GROUPUSERS.GROUP_ID";
       
     
     /**

@@ -6,19 +6,24 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @uathor Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2000/01/26 18:48:28 $
+ * @version $Revision: 1.24 $ $Date: 2000/01/28 17:42:30 $
  */
 public interface I_CmsConstants
 {
 	/**
 	 * The version-string for the cvs.
 	 */
-	static String C_VERSION = "Release 3.3 Caladan: Jessica";
+	static String C_VERSION = "Release 3.3 Build 3 'Caladan: Jessica'";
+	
+	/**
+	 * The prefix for all database-tables.
+	 */
+	static String C_DATABASE_PREFIX = "CMS_";
 
 	/**
 	 * The minimum-size of a passwordstring.
 	 */
-	 static final int C_PASSWORD_MINIMUMSIZE = 4;
+	static final int C_PASSWORD_MINIMUMSIZE = 4;
 	 
 	/**
 	 * This flag is set for enabled entrys in the database.
@@ -171,12 +176,12 @@ public interface I_CmsConstants
 	/**
 	 * This constant is used to order the tasks by date.
 	 */
-	 static final int C_ORDER_BY_DATE =		1;
+	 static final int C_TASK_ORDER_BY_DATE =		1;
 
 	/**
 	 * This constant is used to order the tasks by name.
 	 */
-	 static final int C_ORDER_BY_NAME =		2;
+	 static final int C_TASK_ORDER_BY_NAME =		2;
 	
 	// TODO: add order-criteria here.
 

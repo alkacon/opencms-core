@@ -13,30 +13,38 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/01/24 19:13:05 $
+ * @version $Revision: 1.11 $ $Date: 2000/01/28 17:42:31 $
  */
- class CmsAccessUserInfoMySql implements I_CmsAccessUserInfo {
+ class CmsAccessUserInfoMySql implements I_CmsAccessUserInfo, I_CmsConstants {
 
      /**
      * SQL Command for reading additional user information.
      */    
-    private static final String C_USERINFO_READ = "SELECT * FROM USERS_ADDITIONALINFO WHERE USER_ID = ? ";
+    private static final String C_USERINFO_READ = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS_ADDITIONALINFO WHERE USER_ID = ? ";
     
          
     /**
      * SQL Command for writing additional user information.
      */   
-    private static final String C_USERINFO_WRITE = "INSERT INTO USERS_ADDITIONALINFO VALUES(?,?)";
+    private static final String C_USERINFO_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "USERS_ADDITIONALINFO VALUES(?,?,?,?,?,?,?,?)";
     
     /**
      * SQL Command for updating additional user information.
      */   
-    private static final String C_USERINFO_UPDATE="UPDATE USERS_ADDITIONALINFO SET USER_INFO = ? WHERE USER_ID = ? ";
+    private static final String C_USERINFO_UPDATE="UPDATE " + C_DATABASE_PREFIX + "USERS_ADDITIONALINFO " + 
+												  "SET USER_FIRSTNAME = ?, " +
+												  "USER_LASTNAME = ?, " +
+												  "USER_EMAIL = ?, " +
+												  "USER_LASTLOGIN = ?, " +
+												  "USER_LASTUSED = ?, " +
+												  "USER_FLAGS = ?, " +
+												  "USER_INFO = ? " +
+												  "WHERE USER_ID = ? ";
        
      /**
      * SQL Command for deleting user information.
      */   
-    private static final String C_USERINFO_DELETE="DELETE FROM  USERS_ADDITIONALINFO WHERE USER_ID = ?"; 
+    private static final String C_USERINFO_DELETE="DELETE FROM " + C_DATABASE_PREFIX + "USERS_ADDITIONALINFO WHERE USER_ID = ?"; 
     
     
     /**
@@ -44,6 +52,36 @@ import com.opencms.core.*;
      */
     private static final String C_USER_INFO="USER_INFO";
  
+    /**
+     * Name of a column.
+     */
+    private static final String C_USER_FIRSTNAME="USER_FIRSTNAME";
+	
+    /**
+     * Name of a column.
+     */
+    private static final String C_USER_LASTNAME="USER_LASTNAME";
+	
+    /**
+     * Name of a column.
+     */
+    private static final String C_USER_EMAIL="USER_EMAIL";
+	
+    /**
+     * Name of a column.
+     */
+    private static final String C_USER_LASTLOGIN="USER_LASTLOGIN";
+	
+    /**
+     * Name of a column.
+     */
+    private static final String C_USER_LASTUSED="USER_LASTUSED";
+	
+    /**
+     * Name of a column.
+     */
+    private static final String C_USER_FLAGS="USER_FLAGS";
+	
     /**
     * This is the connection object to the database
     */
@@ -70,26 +108,31 @@ import com.opencms.core.*;
 	 * Creates a new hashtable containing additional user information to the user 
 	 * information database.
 	 * 
-	 * @param id The id of the user.
-	 * @param object The hashtable including the user information
+	 * @param user The user to create additional infos for.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void addUserInformation(int id, Hashtable object)
+	public void addUserInformation(A_CmsUser user)
         throws  CmsException {
         byte[] value=null;
         try	{			
             // serialize the hashtable
             ByteArrayOutputStream bout= new ByteArrayOutputStream();            
             ObjectOutputStream oout=new ObjectOutputStream(bout);
-            oout.writeObject(object);
+            oout.writeObject(user.getAdditionalInfo());
             oout.close();
             value=bout.toByteArray();
             // write data to database     
             PreparedStatement statementUserinfoWrite=m_Con.prepareStatement(C_USERINFO_WRITE);
-            statementUserinfoWrite.setInt(1,id);
-            statementUserinfoWrite.setBytes(2,value);
-            statementUserinfoWrite.executeUpdate();          
+            statementUserinfoWrite.setInt(1,user.getId());
+			statementUserinfoWrite.setString(2,user.getFirstname());
+			statementUserinfoWrite.setString(3,user.getLastname());
+			statementUserinfoWrite.setString(4,user.getEmail());
+			statementUserinfoWrite.setTimestamp(5, new Timestamp(user.getLastlogin()) );
+			statementUserinfoWrite.setTimestamp(6, new Timestamp(user.getLastUsed()) );
+			statementUserinfoWrite.setInt(7,user.getFlags());
+            statementUserinfoWrite.setBytes(8,value);
+            statementUserinfoWrite.executeUpdate();         
          }
         catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
@@ -107,13 +150,13 @@ import com.opencms.core.*;
 	 * 
 	 * The hashtable is read from the database and deserialized.
 	 * 
-	 * @param id The id of the user.
+	 * @param user The the user to read the infos from.
 	 * 
-	 * @return object The additional user information.
+	 * @return user The user completed with the addinfos.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public Hashtable readUserInformation(int id)
+	public A_CmsUser readUserInformation(A_CmsUser user)
         throws CmsException {
         
         Hashtable info=null;
@@ -123,17 +166,25 @@ import com.opencms.core.*;
         // get the additional user information data from the database
     	try {
             PreparedStatement statementUserinfoRead=m_Con.prepareStatement(C_USERINFO_READ);
-		    statementUserinfoRead.setInt(1,id);
+		    statementUserinfoRead.setInt(1,user.getId());
        	    res = statementUserinfoRead.executeQuery();
  
             if(res.next()) {
                 value = res.getBytes(C_USER_INFO);
+				// TODO: read all missing infos from database!
                  // now deserialize the object
                 ByteArrayInputStream bin= new ByteArrayInputStream(value);
                 ObjectInputStream oin = new ObjectInputStream(bin);
-                info=(Hashtable)oin.readObject();                
+                info=(Hashtable)oin.readObject();
+				user.setAdditionalInfo(info);
+				user.setFirstname(res.getString(C_USER_FIRSTNAME));
+				user.setLastname(res.getString(C_USER_LASTNAME));
+				user.setEmail(res.getString(C_USER_EMAIL));
+				user.setLastlogin(res.getTimestamp(C_USER_LASTLOGIN).getTime());
+				user.setLastUsed(res.getTimestamp(C_USER_LASTUSED).getTime());
+				user.setFlags(res.getInt(C_USER_FLAGS));
 		     } else {
-                throw new CmsException("["+this.getClass().getName()+"]"+id,CmsException.C_NO_USER);
+                throw new CmsException("["+this.getClass().getName()+"]"+user.getId(),CmsException.C_NO_USER);
              }
 			
 		}
@@ -146,7 +197,7 @@ import com.opencms.core.*;
 	    catch (ClassNotFoundException e){
             throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
 		}	
-        return info;
+        return user;
     }
 
 	/**
@@ -155,27 +206,31 @@ import com.opencms.core.*;
 	 * 
 	 * The hashtable is serialized and written into the databse.
 	 * 
-	 * @param id The id of the user.
-	 * @param infos The additional user information.
+	 * @param user The user to write the additional infos.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public void writeUserInformation(int id , Hashtable infos)
+	 public void writeUserInformation(A_CmsUser user)
          throws CmsException {
-         
         byte[] value=null;
         try	{			
             // serialize the hashtable
             ByteArrayOutputStream bout= new ByteArrayOutputStream();            
             ObjectOutputStream oout=new ObjectOutputStream(bout);
-            oout.writeObject(infos);
+            oout.writeObject(user.getAdditionalInfo());
             oout.close();
             value=bout.toByteArray();
   
             PreparedStatement statementUserinfoUpdate=m_Con.prepareStatement(C_USERINFO_UPDATE);
-            statementUserinfoUpdate.setBytes(1,value);
-            statementUserinfoUpdate.setInt(2,id);
-      		statementUserinfoUpdate.executeUpdate();
+			statementUserinfoUpdate.setString(1,user.getFirstname());
+			statementUserinfoUpdate.setString(2,user.getLastname());
+			statementUserinfoUpdate.setString(3,user.getEmail());
+			statementUserinfoUpdate.setTimestamp(4,new Timestamp(user.getLastlogin()));
+			statementUserinfoUpdate.setTimestamp(5,new Timestamp(user.getLastUsed()));
+			statementUserinfoUpdate.setInt(6,user.getFlags());
+            statementUserinfoUpdate.setBytes(7,value);
+            statementUserinfoUpdate.setInt(8,user.getId());
+			statementUserinfoUpdate.executeUpdate();
          }
         catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			

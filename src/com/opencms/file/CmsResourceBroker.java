@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.36 $ $Date: 2000/01/28 11:39:17 $
+ * @version $Revision: 1.37 $ $Date: 2000/01/28 17:42:31 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -224,7 +224,6 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				}
 			}
 		}
-		
 		// return the vector of projects
 		return(projects);
 	 }	
@@ -704,6 +703,40 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 
 	// user and group stuff
 
+	/**
+	 * Logs a user into the Cms, if the password is correct.
+	 * 
+	 * <B>Security</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The name of the user to be returned.
+	 * @param password The password of the user to be returned.
+	 * @return the logged in user.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public A_CmsUser loginUser(A_CmsUser currentUser, A_CmsProject currentProject, 
+							   String username, String password) 
+		throws CmsException { 
+   		A_CmsUser newUser = m_userRb.readUser(username, password);
+		
+		// is the user enabled?
+		if( newUser.getFlags() == C_FLAG_ENABLED ) {
+			// Yes - log him in!
+			// first write the lastlogin-time.
+			newUser.setLastlogin(new Date().getTime());
+			// TODO: write the user back to the cms.
+			m_userRb.writeUser(newUser);
+			return(newUser);
+		} else {
+			// No Access!
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+				CmsException.C_NO_ACCESS );
+		}		
+	}
+	
 	/**
 	 * Reads the owner of a resource from the OpenCms.
 	 * 

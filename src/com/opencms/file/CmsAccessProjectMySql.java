@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2000/01/25 15:37:31 $
+ * @version $Revision: 1.13 $ $Date: 2000/01/28 17:42:31 $
  */
 class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 
@@ -38,7 +38,7 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	/**
 	 * Column name
 	 */
-	private static final String C_GLOBETASK_ID = "GLOBETASK_ID";
+	private static final String C_TASK_ID = "TASK_ID";
 	
 	/**
 	 * Column name
@@ -56,30 +56,36 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	private static final String C_PROJECT_FLAGS = "PROJECT_FLAGS";
 	
 	/**
+	 * Column name
+	 */
+	private static final String C_PROJECT_PUBLISHDATE = "PROJECT_PUBLISHDATE";
+	
+	/**
      * SQL Command for creating projects.
      */    
-    private static final String C_PROJECT_CREATE = "INSERT INTO PROJECTS VALUES(null,?,?,?,?,?,?)";
+    private static final String C_PROJECT_CREATE = "INSERT INTO " + C_DATABASE_PREFIX + "PROJECTS VALUES(null,?,?,?,?,?,?,null)";
 
 	/**
      * SQL Command for updating projects.
      */    
-    private static final String C_PROJECT_UPDATE = "UPDATE PROJECTS set " + 
+    private static final String C_PROJECT_UPDATE = "UPDATE " + C_DATABASE_PREFIX + "PROJECTS set " + 
 												   C_USER_ID + " = ?, " +
 												   C_GROUP_ID + " = ?, " +
-												   C_GLOBETASK_ID + " = ?, " +
+												   C_TASK_ID + " = ?, " +
 												   C_PROJECT_DESCRIPTION + " = ?, " +
-												   C_PROJECT_FLAGS + " = ? " +
+												   C_PROJECT_FLAGS + " = ?, " +
+												   C_PROJECT_PUBLISHDATE + " = ? " +
 												   "where " + C_PROJECT_NAME + " = ?";
 
 	/**
      * SQL Command for reading projects.
      */    
-    private static final String C_PROJECT_READ = "Select * from PROJECTS where " + C_PROJECT_NAME + " = ?";
+    private static final String C_PROJECT_READ = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where " + C_PROJECT_NAME + " = ?";
 	
 	/**
      * SQL Command for reading projects.
      */    
-    private static final String C_PROJECT_GET_BY_USER = "Select * from PROJECTS where " + 
+    private static final String C_PROJECT_GET_BY_USER = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where " + 
 														C_USER_ID + " = ? and " + 
 														C_PROJECT_FLAGS + " = " + 
 														C_PROJECT_STATE_UNLOCKED;
@@ -87,7 +93,7 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	/**
      * SQL Command for reading projects.
      */    
-    private static final String C_PROJECT_GET_BY_GROUP = "Select * from PROJECTS where " + 
+    private static final String C_PROJECT_GET_BY_GROUP = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where " + 
 														 C_GROUP_ID + " = ? and " +
 														 C_PROJECT_FLAGS + " = " + 
 														 C_PROJECT_STATE_UNLOCKED;
@@ -95,7 +101,7 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	/**
      * SQL Command for reading projects.
      */    
-    private static final String C_PROJECT_GET_BY_FLAG = "Select * from PROJECTS where " + 
+    private static final String C_PROJECT_GET_BY_FLAG = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where " + 
 														 C_PROJECT_FLAGS + " = ?";
 	
 	/**
@@ -137,10 +143,11 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 				 return( new CmsProject(result.getInt(C_PROJECT_ID),
 										result.getString(C_PROJECT_NAME),
 										result.getString(C_PROJECT_DESCRIPTION),
-										result.getInt(C_GLOBETASK_ID),
+										result.getInt(C_TASK_ID),
 										result.getInt(C_USER_ID),
 										result.getInt(C_GROUP_ID),
-										result.getInt(C_PROJECT_FLAGS)));
+										result.getInt(C_PROJECT_FLAGS),
+										result.getTimestamp(C_PROJECT_PUBLISHDATE)));
 			 } else {
 				 // project not found!
 				 throw new CmsException("[" + this.getClass().getName() + "] " + name, 
@@ -157,7 +164,7 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	 * 
 	 * @param name The name of the project to read.
 	 * @param description The description for the new project.
-	 * @param task The globe task.
+	 * @param task The task.
 	 * @param owner The owner of this project.
 	 * @param group The group for this project.
 	 * @param flags The flags for the project (e.g. archive).
@@ -206,7 +213,13 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 			 statementUpdateProject.setInt(3,project.getTaskId());
 			 statementUpdateProject.setString(4,project.getDescription());
 			 statementUpdateProject.setInt(5,project.getFlags());
-			 statementUpdateProject.setString(6,project.getName());
+			 if(project.getPublishingDate() == C_UNKNOWN_LONG) {
+				statementUpdateProject.setNull(6,java.sql.Types.TIMESTAMP);
+			 } else {
+				statementUpdateProject.setTimestamp(6,new Timestamp(project.getPublishingDate()));
+			 }
+			 statementUpdateProject.setString(7,project.getName());
+			 
 			 statementUpdateProject.executeUpdate();
 		 } catch( SQLException exc ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
@@ -240,10 +253,11 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 				 projects.addElement( new CmsProject(result.getInt(C_PROJECT_ID),
 													 result.getString(C_PROJECT_NAME),
 													 result.getString(C_PROJECT_DESCRIPTION),
-													 result.getInt(C_GLOBETASK_ID),
+													 result.getInt(C_TASK_ID),
 													 result.getInt(C_USER_ID),
 													 result.getInt(C_GROUP_ID),
-													 result.getInt(C_PROJECT_FLAGS)));
+													 result.getInt(C_PROJECT_FLAGS),
+													 result.getTimestamp(C_PROJECT_PUBLISHDATE)));
 			 }
 			 return(projects);
 		 } catch( SQLException exc ) {
@@ -277,10 +291,11 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 				 projects.addElement( new CmsProject(result.getInt(C_PROJECT_ID),
 													 result.getString(C_PROJECT_NAME),
 													 result.getString(C_PROJECT_DESCRIPTION),
-													 result.getInt(C_GLOBETASK_ID),
+													 result.getInt(C_TASK_ID),
 													 result.getInt(C_USER_ID),
 													 result.getInt(C_GROUP_ID),
-													 result.getInt(C_PROJECT_FLAGS)));
+													 result.getInt(C_PROJECT_FLAGS),
+													 result.getTimestamp(C_PROJECT_PUBLISHDATE)));
 			 }
 			 return(projects);
 		 } catch( SQLException exc ) {
@@ -314,10 +329,11 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 				 projects.addElement( new CmsProject(result.getInt(C_PROJECT_ID),
 													 result.getString(C_PROJECT_NAME),
 													 result.getString(C_PROJECT_DESCRIPTION),
-													 result.getInt(C_GLOBETASK_ID),
+													 result.getInt(C_TASK_ID),
 													 result.getInt(C_USER_ID),
 													 result.getInt(C_GROUP_ID),
-													 result.getInt(C_PROJECT_FLAGS)));
+													 result.getInt(C_PROJECT_FLAGS),
+													 result.getTimestamp(C_PROJECT_PUBLISHDATE)));
 			 }
 			 return(projects);
 		 } catch( SQLException exc ) {

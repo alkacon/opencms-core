@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/01/04 12:23:27 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/28 17:42:31 $
  */
 interface I_CmsAccessUserInfo {
 
@@ -19,40 +19,40 @@ interface I_CmsAccessUserInfo {
 	 * Creates a new hashtable containing additional user information to the user 
 	 * information database.
 	 * 
-	 * @param id The id of the user.
-	 * @param object The hashtable including the user information
+	 * @param user The user to create additional infos for.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void addUserInformation(int id, Hashtable object)
-		throws  CmsException;
-    
-
+	public void addUserInformation(A_CmsUser user)
+        throws  CmsException;
     
 	/**
 	 * Reads a hashtable containing additional user information to the user 
 	 * information database.
 	 * 
-	 * @param id The id of the user.
+	 * The hashtable is read from the database and deserialized.
 	 * 
-	 * @return object The additional user information.
+	 * @param user The the user to read the infos from.
+	 * 
+	 * @return user The user completed with the addinfos.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public Hashtable readUserInformation(int id)
-		throws CmsException;
+	public A_CmsUser readUserInformation(A_CmsUser user)
+        throws CmsException;
 
 	/**
-	 * Writes or updates a hashtable containing additional user information to the user 
+	 * Writes a hashtable containing additional user information to the user 
 	 * information database.
 	 * 
-	 * @param id The id of the user.
-	 * @param infos The additional user information.
+	 * The hashtable is serialized and written into the databse.
+	 * 
+	 * @param user The user to write the additional infos.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
-	  */
-	public void writeUserInformation(int id , Hashtable infos)
-		throws  CmsException;
+	 */
+	 public void writeUserInformation(A_CmsUser user)
+         throws CmsException;
 
 	/**
 	 * Deletes a hashtable containing additional user information to the user 

@@ -15,45 +15,45 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/01/24 19:13:05 $
+ * @version $Revision: 1.13 $ $Date: 2000/01/28 17:42:31 $
  */
 class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
      
      /**
      * SQL Command for writing users.
      */   
-    private static final String C_USER_WRITE = "INSERT INTO USERS VALUES(?,?,PASSWORD(?),?)";
+    private static final String C_USER_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "USERS VALUES(?,?,PASSWORD(?),?)";
     
      /**
      * SQL Command for reading users.
      */   
-    private static final String C_USER_READ = "SELECT * FROM USERS WHERE USER_NAME = ?";
+    private static final String C_USER_READ = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS WHERE USER_NAME = ?";
     
      /**
      * SQL Command for reading users.
      */   
-    private static final String C_USER_READID = "SELECT * FROM USERS WHERE USER_ID = ?";
+    private static final String C_USER_READID = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS WHERE USER_ID = ?";
     
     
     /**
      * SQL Command for reading users.
      */   
-    private static final String C_USER_READPWD = "SELECT * FROM USERS WHERE USER_NAME = ? AND USER_PASSWORD = PASSWORD(?)";
+    private static final String C_USER_READPWD = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS WHERE USER_NAME = ? AND USER_PASSWORD = PASSWORD(?)";
     
      /**
     * SQL Command for deleting users.
     */   
-    private static final String C_USER_DELETE = "DELETE FROM USERS WHERE USER_NAME = ?";
+    private static final String C_USER_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "USERS WHERE USER_NAME = ?";
     
     /**
     * SQL Command for updating the user password.
     */   
-    private static final String C_USER_SETPWD="UPDATE USERS SET USER_PASSWORD = PASSWORD(?) WHERE USER_NAME = ? ";  
+    private static final String C_USER_SETPWD="UPDATE " + C_DATABASE_PREFIX + "USERS SET USER_PASSWORD = PASSWORD(?) WHERE USER_NAME = ? ";  
    
     /**
     * SQL Command for getting all users.
     */   
-    private static final String C_USER_GETALL = "SELECT * FROM USERS";
+    private static final String C_USER_GETALL = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS";
     
     
     /**

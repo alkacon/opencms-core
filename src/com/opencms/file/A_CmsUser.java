@@ -7,7 +7,7 @@ import java.util.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/01/04 11:56:59 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/28 17:42:30 $
  */
 public abstract class A_CmsUser {
 	
@@ -129,14 +129,14 @@ public abstract class A_CmsUser {
     abstract void setAdditionalInfo(Hashtable additionalInfo);
     
 	/**
-	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_EMAIL);</pre>
+	 * Returns the user email.
 	 * 
 	 * @return the USER_EMAIL, or null.
 	 */
 	abstract public String getEmail();
     
     /**
-     * This is a shortcut for: <pre>setAdditionalInfo(C_ADDITIONAL_INFO_EMAIL,value);</pre>
+     * Sets the user email.
 	 * 
 	 * @param value The new email adress.
      */
@@ -144,14 +144,28 @@ public abstract class A_CmsUser {
 	abstract void setEmail(String value);
 
 	/**
-	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_FIRSTNAME);</pre>
+	 * Sets the firstname.
+	 * 
+	 * @param the USER_FIRSTNAME.
+	 */
+	abstract void setFirstname(String firstname);
+	
+	/**
+	 * Gets the firstname.
 	 * 
 	 * @return the USER_FIRSTNAME, or null.
 	 */
 	abstract public String getFirstname();
 
 	/**
-	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_SURNAME);</pre>
+	 * Sets the lastname.
+	 * 
+	 * @param the USER_SURNAME.
+	 */
+	abstract void setLastname(String lastname);
+	
+	/**
+	 * Gets the lastname.
 	 * 
 	 * @return the USER_SURNAME, or null.
 	 */
@@ -192,32 +206,44 @@ public abstract class A_CmsUser {
 	abstract public int getDefaultGroupId();
     
     /**
-	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_LASTLOGIN);</pre>
+	 * Gets the lastlogin time.
 	 * 
 	 * @return the USER_LASTLOGIN, or C_UNKNOWN_LONG.
 	 */
 	abstract public long getLastlogin();
 
-     /**
-	 * This is a shortcut for: <pre>setAdditionalInfo(C_ADDITIONAL_INFO_LASTLOGIN,new Long (value));</pre>
+    /**
+	 * Sets the lastlogintime.
 	 * 
 	 * @param value The last login of the user.
 	 */
 	abstract void setLastlogin(long value);
     
     /**
-	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_FLAGS);</pre>
+	 * Gets the lastused time.
+	 * 
+	 * @return the USER_LASTLOGIN, or C_UNKNOWN_LONG.
+	 */
+	abstract public long getLastUsed();
+
+    /**
+	 * Sets the last used time.
+	 * 
+	 * @param value The last login of the user.
+	 */
+	abstract void setLastUsed(long value);
+	
+    /**
+	 * Gets the flags.
 	 * 
 	 * @return the USER_FLAGS, or C_UNKNOWN_INT.
 	 */
 	abstract public int getFlags();
 
      /**
-	 * This is a shortcut for: <pre>serAdditionalInfo(C_ADDITIONAL_INFO_FLAGS,new Integer(value));</pre>
+	 * Sets the flags.
 	 * 
 	 * @param value The new user flags.
 	 */
 	abstract void setFlags(int value);
-    
-
 }

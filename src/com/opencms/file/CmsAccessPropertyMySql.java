@@ -14,29 +14,29 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/01/24 19:13:05 $
+ * @version $Revision: 1.7 $ $Date: 2000/01/28 17:42:31 $
  */
-public class CmsAccessPropertyMySql implements I_CmsAccessProperty  {
+public class CmsAccessPropertyMySql implements I_CmsAccessProperty, I_CmsConstants {
 
     /**
      * SQL Command for reading properties.
      */    
-    private static final String C_PROPERTY_READ = "SELECT * FROM PROPERTIES WHERE PROPERTY_NAME = ? ";
+    private static final String C_PROPERTY_READ = "SELECT * FROM " + C_DATABASE_PREFIX + "PROPERTIES WHERE PROPERTY_NAME = ? ";
     
     /**
      * SQL Command for writing properties.
      */   
-    private static final String C_PROPERTY_WRITE = "INSERT INTO PROPERTIES VALUES(?,?)";
+    private static final String C_PROPERTY_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "PROPERTIES VALUES(?,?)";
     
     /**
      * SQL Command for updating properties.
      */   
-    private static final String C_PROPERTY_UPDATE="UPDATE PROPERTIES SET PROPERTY_VALUE = ? WHERE PROPERTY_NAME = ? ";
+    private static final String C_PROPERTY_UPDATE="UPDATE " + C_DATABASE_PREFIX + "PROPERTIES SET PROPERTY_VALUE = ? WHERE PROPERTY_NAME = ? ";
 
      /**
      * SQL Command for deleting properties.
      */   
-    private static final String C_PROPERTY_DELETE="DELETE FROM  PROPERTIES WHERE PROPERTY_NAME = ?";
+    private static final String C_PROPERTY_DELETE="DELETE FROM " + C_DATABASE_PREFIX + "PROPERTIES WHERE PROPERTY_NAME = ?";
     
     /**
      * Name of the column PROPERTY_VALUE in the SQL table PROPERTIES.

@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.27 $ $Date: 2000/01/25 15:37:31 $
+ * @version $Revision: 1.28 $ $Date: 2000/01/28 17:42:31 $
  */
 interface I_CmsResourceBroker {
 
@@ -351,6 +351,24 @@ interface I_CmsResourceBroker {
 
 	// user and group stuff
 	
+	/**
+	 * Logs a user into the Cms, if the password is correct.
+	 * 
+	 * <B>Security</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The name of the user to be returned.
+	 * @param password The password of the user to be returned.
+	 * @return the logged in user.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public A_CmsUser loginUser(A_CmsUser currentUser, A_CmsProject currentProject, 
+							   String username, String password) 
+		throws CmsException;
+							
 	/**
 	 * Reads the owner of a resource from the OpenCms.
 	 * 

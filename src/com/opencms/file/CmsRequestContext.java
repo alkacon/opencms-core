@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/01/28 11:09:43 $
+ * @version $Revision: 1.16 $ $Date: 2000/01/28 17:42:31 $
  * 
  */
 public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConstants {
@@ -97,7 +97,7 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	public CmsFolder currentFolder() 
 		throws CmsException	{
 		// truncate the filename from the pathinformation
-		String folderName = getUri().substring(0, getUri().lastIndexOf("/")+1);
+		String folderName = getUri().substring(0, getUri().lastIndexOf("/") + 1);
 		return( m_rb.readFolder(currentUser(), currentProject(), folderName, "") );
 	}
 

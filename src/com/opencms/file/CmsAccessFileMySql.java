@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/01/26 17:57:00 $
+ * @version $Revision: 1.20 $ $Date: 2000/01/28 17:42:30 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -30,13 +30,13 @@ import com.opencms.core.*;
      * SQL Command for writing a new resource. 
      * A resource includes all data of the fileheader.
      */   
-    private static final String C_RESOURCE_WRITE = "INSERT INTO RESOURCES VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    private static final String C_RESOURCE_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "RESOURCES VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     
      /**
      * SQL Command for reading a resource. 
      * A resource includes all data of the fileheader.
      */   
-    private static final String C_RESOURCE_READ = "SELECT * FROM RESOURCES WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
+    private static final String C_RESOURCE_READ = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
   
      /**
      * SQL Command for reading a file and its content from the online project. 
@@ -46,16 +46,16 @@ import com.opencms.core.*;
                                                      +"GROUP_ID,ACCESS_FLAGS,STATE,"
                                                      +"LOCKED_BY,LAUNCHER_TYPE,LAUNCHER_CLASSNAME,"
                                                      +"DATE_CREATED,DATE_LASTMODIFIED,SIZE, "
-                                                     +"FILES.FILE_CONTENT FROM RESOURCES,FILES "
-                                                     +"WHERE RESOURCES.RESOURCE_NAME = FILES.RESOURCE_NAME "
-                                                     +"AND RESOURCES.PROJECT_ID = FILES.PROJECT_ID "
-                                                     +"AND RESOURCES.RESOURCE_NAME = ? "
-                                                     +"AND RESOURCES.PROJECT_ID = ?";
+                                                     + C_DATABASE_PREFIX + "FILES.FILE_CONTENT FROM " + C_DATABASE_PREFIX + "RESOURCES," + C_DATABASE_PREFIX + "FILES "
+                                                     +"WHERE " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_NAME = " + C_DATABASE_PREFIX + "FILES.RESOURCE_NAME "
+                                                     +"AND " + C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID = " + C_DATABASE_PREFIX + "FILES.PROJECT_ID "
+                                                     +"AND " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_NAME = ? "
+                                                     +"AND " + C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID = ?";
     
     /**
      * SQL Command for reading a file content. 
      */   
-    private static final String C_FILE_READ = "SELECT FILE_CONTENT FROM FILES "
+    private static final String C_FILE_READ = "SELECT FILE_CONTENT FROM " + C_DATABASE_PREFIX + "FILES "
                                               +"WHERE RESOURCE_NAME = ? "                                           
                                               +"AND PROJECT_ID = ?";
                                               
@@ -63,20 +63,20 @@ import com.opencms.core.*;
      * SQL Command for reading all headers of a resource. 
      * A resource includes all data of the fileheader.
      */   
-    private static final String C_RESOURCE_READ_ALL = "SELECT * FROM RESOURCES WHERE RESOURCE_NAME = ?";
+    private static final String C_RESOURCE_READ_ALL = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE RESOURCE_NAME = ?";
 
     
      /**
      * SQL Command for writing a new file.
      */   
-    private static final String C_FILE_WRITE = "INSERT INTO FILES VALUES(?,?,?)";
+    private static final String C_FILE_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "FILES VALUES(?,?,?)";
      
 
     /**
      * SQL Command for updating a resource. 
      * A resource includes all data of the fileheader.
      */   
-    private static final String C_RESOURCE_UPDATE ="UPDATE RESOURCES SET "
+    private static final String C_RESOURCE_UPDATE ="UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET "
                                                +"RESOURCE_TYPE = ? , "
                                                +"RESOURCE_FLAGS = ? , "
                                                +"USER_ID = ? , "
@@ -93,7 +93,7 @@ import com.opencms.core.*;
      /**
      * SQL Command for updating a file. 
      */   
-    private static final String C_FILE_UPDATE ="UPDATE FILES SET "
+    private static final String C_FILE_UPDATE ="UPDATE " + C_DATABASE_PREFIX + "FILES SET "
                                                +"FILE_CONTENT = ? "                                     
                                                +"WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
     
@@ -102,23 +102,23 @@ import com.opencms.core.*;
      * This resource is NOT delete from the database, it is only flaged as
      * deleted!
      */   
-    private static final String C_RESOURCE_REMOVE = "UPDATE RESOURCES SET "
+    private static final String C_RESOURCE_REMOVE = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET "
                                                    +"STATE = ? "
                                                    +"WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
 
      /**
      * SQL Command for reading all files of a project. 
      */   
-    private static final String C_PROJECT_READ_FILES= "SELECT RESOURCES.RESOURCE_NAME, "
+    private static final String C_PROJECT_READ_FILES= "SELECT " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_NAME, "
                                                      +"RESOURCE_TYPE,"
                                                      +"RESOURCE_FLAGS,USER_ID,"
                                                      +"GROUP_ID,ACCESS_FLAGS,STATE,"
                                                      +"LOCKED_BY,LAUNCHER_TYPE,LAUNCHER_CLASSNAME,"
                                                      +"DATE_CREATED,DATE_LASTMODIFIED,SIZE,"
-                                                     +"FILES.FILE_CONTENT FROM RESOURCES,FILES "
-                                                     +"WHERE RESOURCES.RESOURCE_NAME = FILES.RESOURCE_NAME "
-                                                     +"AND RESOURCES.PROJECT_ID = FILES.PROJECT_ID "
-                                                     +"AND RESOURCES.PROJECT_ID = ?";
+                                                     + C_DATABASE_PREFIX + "FILES.FILE_CONTENT FROM " + C_DATABASE_PREFIX + "RESOURCES," + C_DATABASE_PREFIX + "FILES "
+                                                     +"WHERE " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_NAME = " + C_DATABASE_PREFIX + "FILES.RESOURCE_NAME "
+                                                     +"AND " + C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID = " + C_DATABASE_PREFIX + "FILES.PROJECT_ID "
+                                                     +"AND " + C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID = ?";
     
     /**
      * SQL Command for reading all folders of a project. 
@@ -129,19 +129,19 @@ import com.opencms.core.*;
                                                      +"GROUP_ID,ACCESS_FLAGS,STATE,"
                                                      +"LOCKED_BY,LAUNCHER_TYPE,LAUNCHER_CLASSNAME,"
                                                      +"DATE_CREATED,DATE_LASTMODIFIED,SIZE "
-                                                     +"FROM RESOURCES "
-                                                     +"WHERE  RESOURCES.PROJECT_ID = ? "
+                                                     +"FROM " + C_DATABASE_PREFIX + "RESOURCES "
+                                                     +"WHERE " + C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID = ? "
                                                      +"AND RESOURCE_TYPE = ?";
                                                                                                                                     
      /**
      * SQL Command for deleteing a resource.
      */   
-    private static final String C_RESOURCE_DELETE = "DELETE FROM RESOURCES WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
+    private static final String C_RESOURCE_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
 
      /**
      * SQL Command for deleteing a file.
      */   
-    private static final String C_FILE_DELETE = "DELETE FROM FILES WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
+    private static final String C_FILE_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "FILES WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
             
   
      /**
@@ -149,7 +149,7 @@ import com.opencms.core.*;
      * Because of the regular expression in this SQL command, this cannot be made with 
      * a prepared statement.
      */   
-    private static final String C_RESOURCE_GETSUBFOLDERS1 = "SELECT * FROM RESOURCES WHERE RESOURCE_NAME RLIKE '^";
+    private static final String C_RESOURCE_GETSUBFOLDERS1 = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE RESOURCE_NAME RLIKE '^";
      
      /**
      * SQL Command for getting all subfolders.
@@ -171,7 +171,7 @@ import com.opencms.core.*;
      * Because of the regular expression in this SQL command, this cannot be made with 
      * a prepared statement.
      */   
-    private static final String C_RESOURCE_GETFILESINFOLDER1 = "SELECT * FROM RESOURCES WHERE RESOURCE_NAME RLIKE '^";
+    private static final String C_RESOURCE_GETFILESINFOLDER1 = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE RESOURCE_NAME RLIKE '^";
      
      /**
      * SQL Command for getting all files of a folder.
@@ -216,7 +216,7 @@ import com.opencms.core.*;
       /**
      * Name of the column PROJECT_ID in the SQL tables RESOURCE
      */
-    private static final String C_PROJECT_ID_RESOURCES="RESOURCES.PROJECT_ID";
+    private static final String C_PROJECT_ID_RESOURCES=C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID";
  
      /**
      * Name of the column PROJECT_ID 
@@ -335,9 +335,9 @@ import com.opencms.core.*;
                 //LAUNCHER_CLASSNAME
                 statementResourceWrite.setString(11,resourceType.getLauncherClass());
                 //DATE_CREATED
-                statementResourceWrite.setLong(12,System.currentTimeMillis());
+                statementResourceWrite.setTimestamp(12,new Timestamp(System.currentTimeMillis()));
                 //DATE_LASTMODIFIED
-                statementResourceWrite.setLong(13,System.currentTimeMillis());
+                statementResourceWrite.setTimestamp(13,new Timestamp(System.currentTimeMillis()));
                 //SIZE
                 statementResourceWrite.setInt(14,contents.length);
                 statementResourceWrite.executeUpdate();
@@ -399,9 +399,9 @@ import com.opencms.core.*;
                 //LAUNCHER_CLASSNAME
                 statementResourceWrite.setString(11,file.getLauncherClassname());
                 //DATE_CREATED
-                statementResourceWrite.setLong(12,file.getDateCreated());
+                statementResourceWrite.setTimestamp(12,new Timestamp(file.getDateCreated()));
                 //DATE_LASTMODIFIED
-                statementResourceWrite.setLong(13,System.currentTimeMillis());
+                statementResourceWrite.setTimestamp(13,new Timestamp(System.currentTimeMillis()));
                 //SIZE
                 statementResourceWrite.setInt(14,file.getContents().length);
                 statementResourceWrite.executeUpdate();
@@ -463,9 +463,9 @@ import com.opencms.core.*;
                 //LAUNCHER_CLASSNAME
                 statementResourceWrite.setString(11,resource.getLauncherClassname());
                 //DATE_CREATED
-                statementResourceWrite.setLong(12,resource.getDateCreated());
+                statementResourceWrite.setTimestamp(12,new Timestamp(resource.getDateCreated()));
                 //DATE_LASTMODIFIED
-                statementResourceWrite.setLong(13,System.currentTimeMillis());
+                statementResourceWrite.setTimestamp(13,new Timestamp(System.currentTimeMillis()));
                 //SIZE
                 statementResourceWrite.setInt(14,resource.getLength());
                 statementResourceWrite.executeUpdate();
@@ -516,8 +516,8 @@ import com.opencms.core.*;
                                             res.getInt(C_LOCKED_BY),
                                             res.getInt(C_LAUNCHER_TYPE),
                                             res.getString(C_LAUNCHER_CLASSNAME),
-                                            res.getLong(C_DATE_CREATED),
-                                            res.getLong(C_DATE_LASTMODIFIED),
+                                            res.getTimestamp(C_DATE_CREATED).getTime(),
+                                            res.getTimestamp(C_DATE_LASTMODIFIED).getTime(),
                                             (res.getString(C_FILE_CONTENT)).getBytes(),
                                             res.getInt(C_SIZE)
                                            );
@@ -603,8 +603,8 @@ import com.opencms.core.*;
                                            res.getInt(C_LOCKED_BY),
                                            res.getInt(C_LAUNCHER_TYPE),
                                            res.getString(C_LAUNCHER_CLASSNAME),
-                                           res.getLong(C_DATE_CREATED),
-                                           res.getLong(C_DATE_LASTMODIFIED),
+                                           res.getTimestamp(C_DATE_CREATED).getTime(),
+                                           res.getTimestamp(C_DATE_LASTMODIFIED).getTime(),
                                            new byte[0],
                                            res.getInt(C_SIZE)
                                            );
@@ -656,8 +656,8 @@ import com.opencms.core.*;
                                            res.getInt(C_LOCKED_BY),
                                            res.getInt(C_LAUNCHER_TYPE),
                                            res.getString(C_LAUNCHER_CLASSNAME),
-                                           res.getLong(C_DATE_CREATED),
-                                           res.getLong(C_DATE_LASTMODIFIED),
+                                           res.getTimestamp(C_DATE_CREATED).getTime(),
+                                           res.getTimestamp(C_DATE_LASTMODIFIED).getTime(),
                                            new byte[0],
                                            res.getInt(C_SIZE)
                                            );
@@ -763,7 +763,7 @@ import com.opencms.core.*;
                 //LAUNCHER_CLASSNAME
                 statementResourceUpdate.setString(9,file.getLauncherClassname());
                 //DATE_LASTMODIFIED
-                statementResourceUpdate.setLong(10,System.currentTimeMillis());
+                statementResourceUpdate.setTimestamp(10,new Timestamp(System.currentTimeMillis()));
                 //SIZE
                 statementResourceUpdate.setInt(11,file.getContents().length);
                 // set query parameters
@@ -885,9 +885,9 @@ import com.opencms.core.*;
             //LAUNCHER_CLASSNAME
             statementResourceWrite.setString(11,C_UNKNOWN_LAUNCHER);
             //DATE_CREATED
-            statementResourceWrite.setLong(12,System.currentTimeMillis());
+            statementResourceWrite.setTimestamp(12,new Timestamp(System.currentTimeMillis()));
             //DATE_LASTMODIFIED
-            statementResourceWrite.setLong(13,System.currentTimeMillis());
+            statementResourceWrite.setTimestamp(13,new Timestamp(System.currentTimeMillis()));
             //SIZE
             statementResourceWrite.setInt(14,0);
             statementResourceWrite.executeUpdate();
@@ -938,9 +938,9 @@ import com.opencms.core.*;
                 //LAUNCHER_CLASSNAME
                 statementResourceWrite.setString(11,folder.getLauncherClassname());
                 //DATE_CREATED
-                statementResourceWrite.setLong(12,folder.getDateCreated());
+                statementResourceWrite.setTimestamp(12,new Timestamp(folder.getDateCreated()));
                 //DATE_LASTMODIFIED
-                statementResourceWrite.setLong(13,System.currentTimeMillis());
+                statementResourceWrite.setTimestamp(13,new Timestamp(System.currentTimeMillis()));
                 //SIZE
                 statementResourceWrite.setInt(14,0);
                 statementResourceWrite.executeUpdate();
@@ -982,8 +982,8 @@ import com.opencms.core.*;
                                                res.getInt(C_ACCESS_FLAGS),
                                                res.getInt(C_STATE),
                                                res.getInt(C_LOCKED_BY),
-                                               res.getLong(C_DATE_CREATED),
-                                               res.getLong(C_DATE_LASTMODIFIED)
+                                               res.getTimestamp(C_DATE_CREATED).getTime(),
+                                               res.getTimestamp(C_DATE_LASTMODIFIED).getTime()
                                                );
                         // check if this resource is marked as deleted
                         if (folder.getState() == C_STATE_DELETED) {
@@ -1032,7 +1032,7 @@ import com.opencms.core.*;
                 //LAUNCHER_CLASSNAME
                 statementResourceUpdate.setString(9,folder.getLauncherClassname());
                 //DATE_LASTMODIFIED
-                statementResourceUpdate.setLong(10,System.currentTimeMillis());
+                statementResourceUpdate.setTimestamp(10,new Timestamp(System.currentTimeMillis()));
                 //SIZE
                 statementResourceUpdate.setInt(11,0);
                 
@@ -1121,8 +1121,8 @@ import com.opencms.core.*;
                                                res.getInt(C_ACCESS_FLAGS),
                                                res.getInt(C_STATE),
                                                res.getInt(C_LOCKED_BY),
-                                               res.getLong(C_DATE_CREATED),
-                                               res.getLong(C_DATE_LASTMODIFIED)
+                                               res.getTimestamp(C_DATE_CREATED).getTime(),
+                                               res.getTimestamp(C_DATE_LASTMODIFIED).getTime()
                                                );
 			   folders.addElement(folder);             
              }
@@ -1169,8 +1169,8 @@ import com.opencms.core.*;
                                            res.getInt(C_LOCKED_BY),
                                            res.getInt(C_LAUNCHER_TYPE),
                                            res.getString(C_LAUNCHER_CLASSNAME),
-                                           res.getLong(C_DATE_CREATED),
-                                           res.getLong(C_DATE_LASTMODIFIED),
+                                           res.getTimestamp(C_DATE_CREATED).getTime(),
+                                           res.getTimestamp(C_DATE_LASTMODIFIED).getTime(),
                                            new byte[0],
                                            res.getInt(C_SIZE)
                                            );
@@ -1236,8 +1236,8 @@ import com.opencms.core.*;
                                            res.getInt(C_LOCKED_BY),
                                            res.getInt(C_LAUNCHER_TYPE),
                                            res.getString(C_LAUNCHER_CLASSNAME),
-                                           res.getLong(C_DATE_CREATED),
-                                           res.getLong(C_DATE_LASTMODIFIED),
+                                           res.getTimestamp(C_DATE_CREATED).getTime(),
+                                           res.getTimestamp(C_DATE_LASTMODIFIED).getTime(),
                                            res.getBytes(C_FILE_CONTENT),
                                            res.getInt(C_SIZE)
                                            );
@@ -1275,8 +1275,8 @@ import com.opencms.core.*;
                                                res.getInt(C_ACCESS_FLAGS),
                                                res.getInt(C_STATE),
                                                res.getInt(C_LOCKED_BY),
-                                               res.getLong(C_DATE_CREATED),
-                                               res.getLong(C_DATE_LASTMODIFIED)
+                                               res.getTimestamp(C_DATE_CREATED).getTime(),
+                                               res.getTimestamp(C_DATE_LASTMODIFIED).getTime()
                                                );
                      // check the state of the folder
                      // Any folder in the offline project is written to the online project
@@ -1340,8 +1340,8 @@ import com.opencms.core.*;
                                            res.getInt(C_LOCKED_BY),
                                            res.getInt(C_LAUNCHER_TYPE),
                                            res.getString(C_LAUNCHER_CLASSNAME),
-                                           res.getLong(C_DATE_CREATED),
-                                           res.getLong(C_DATE_LASTMODIFIED),
+                                           res.getTimestamp(C_DATE_CREATED).getTime(),
+                                           res.getTimestamp(C_DATE_LASTMODIFIED).getTime(),
                                            res.getInt(C_SIZE)
                                            );
                } else {

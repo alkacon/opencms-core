@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/01/24 19:13:05 $
+ * @version $Revision: 1.12 $ $Date: 2000/01/28 17:42:31 $
  */
  class CmsAccessUserGroup implements I_CmsAccessUserGroup, I_CmsConstants {
 
@@ -52,12 +52,10 @@ import com.opencms.core.*;
 	 public A_CmsUser readUser(String username)
          throws CmsException {
          A_CmsUser user=null;
-         Hashtable infos=null;
          A_CmsGroup defaultGroup=null;
          user=m_accessUser.readUser(username);
          if (user!= null){
-             infos=m_accessUserInfo.readUserInformation(user.getId()); 
-             user.setAdditionalInfo(infos);
+             user=m_accessUserInfo.readUserInformation(user); 
              defaultGroup=m_accessGroup.readGroup(user.getDefaultGroupId());
              user.setDefaultGroup(defaultGroup);
          } else {
@@ -79,13 +77,11 @@ import com.opencms.core.*;
          throws CmsException {
          
          A_CmsUser user=null;
-         Hashtable infos=null;
          A_CmsGroup defaultGroup=null;
          
          user=m_accessUser.readUser(username,password);
          if (user!= null){
-             infos=m_accessUserInfo.readUserInformation(user.getId());
-             user.setAdditionalInfo(infos);
+             user=m_accessUserInfo.readUserInformation(user);
              defaultGroup=m_accessGroup.readGroup(user.getDefaultGroupId());
              user.setDefaultGroup(defaultGroup);
          } else {
@@ -104,12 +100,10 @@ import com.opencms.core.*;
 	public A_CmsUser readUser(int id)
         throws CmsException {
          A_CmsUser user=null;
-         Hashtable infos=null;
          A_CmsGroup defaultGroup=null;
          user=m_accessUser.readUser(id);
          if (user!= null){
-             infos=m_accessUserInfo.readUserInformation(user.getId()); 
-             user.setAdditionalInfo(infos);
+             user=m_accessUserInfo.readUserInformation(user); 
              defaultGroup=m_accessGroup.readGroup(user.getDefaultGroupId());
              user.setDefaultGroup(defaultGroup);
          } else {
@@ -269,10 +263,10 @@ import com.opencms.core.*;
         //add the basic user data in the user database.
         user=m_accessUser.createUser(name,password,description);
         //store the additional information in the additional information database.
-        additionalInfos.put(C_ADDITIONAL_INFO_DEFAULTGROUP_ID,new Integer(defaultGroup.getId()));
-        additionalInfos.put(C_ADDITIONAL_INFO_FLAGS,new Integer(flags));
-        additionalInfos.put(C_ADDITIONAL_INFO_LASTLOGIN,new Long(0));
-        m_accessUserInfo.addUserInformation(user.getId(),additionalInfos);  
+		user.setDefaultGroup(defaultGroup);
+		user.setFlags(flags);
+		user.setLastlogin(0);
+        m_accessUserInfo.addUserInformation(user);  
         //combine user object and additional information to the complete user object.
         user.setAdditionalInfo(additionalInfos);
         user.setDefaultGroup(defaultGroup);
@@ -315,12 +309,10 @@ import com.opencms.core.*;
 	 */
 	  public void writeUser(A_CmsUser user)
          throws CmsException {
-            int userId=C_UNKNOWN_ID;
             //check if this user is existing
             if (user != null) {
                 // write it to database
-                userId=user.getId();
-                m_accessUserInfo.writeUserInformation(userId,user.getAdditionalInfo());               
+                m_accessUserInfo.writeUserInformation(user);               
             } else {
               throw new CmsException("["+this.getClass().getName()+"]"+user.getName(),CmsException.C_NOT_FOUND);
             }   
@@ -450,7 +442,6 @@ import com.opencms.core.*;
         Vector users=null;
         A_CmsUser user;
         A_CmsGroup defaultGroup;
-        Hashtable infos;
         
         // read all basic information form the users database
         users=m_accessUser.getUsers();
@@ -458,8 +449,7 @@ import com.opencms.core.*;
         Enumeration e=users.elements();
         while (e.hasMoreElements()){
             user=(A_CmsUser)e.nextElement();
-            infos=m_accessUserInfo.readUserInformation(user.getId());
-            user.setAdditionalInfo(infos);
+            user=m_accessUserInfo.readUserInformation(user);
             defaultGroup=m_accessGroup.readGroup(user.getDefaultGroupId());
             user.setDefaultGroup(defaultGroup);
         }
