@@ -24,34 +24,31 @@
     var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
      function doEdit(para) {
      
+if(window.top.body.admin_content.doUpdate!=null)window.top.body.admin_content.doUpdate();
 
-     if(window.top.body.admin_content.doUpdate!=null)window.top.body.admin_content.doUpdate();
-     
-     
-     
         switch(para) {
         case 1: {
-                window.top.body.admin_content.Editor.action.value = "exit";
-                if(this.backofficepage)window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;
-                window.top.body.admin_content.Editor.submit();
+                //window.top.body.admin_content.getElementById("Editor").action.value = "exit";
+                parent.frames[1].document.getElementById("Editor").action.value = "exit";
+                if(this.backofficepage)parent.frames[1].document.getElementById("Editor").backofficepage.value = backofficepage.value;
+                parent.frames[1].document.getElementById("Editor").submit();
                 break;
                 }
-        case 2: {   
-                window.top.body.admin_content.Editor.action.value = "saveexit";
-                if(this.backofficepage)window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;
-
-                window.top.body.admin_content.Editor.submit();
+        case 2: {
+                parent.frames[1].document.getElementById("Editor").action.value = "saveexit";
+                if(this.backofficepage)parent.frames[1].document.getElementById("Editor").backofficepage.value = backofficepage.value;
+                parent.frames[1].document.getElementById("Editor").submit();
                 break;
                 }
         case 3: {
-                window.top.body.admin_content.Editor.action.value = "save";
-                if(this.backofficepage)window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;
-                window.top.body.admin_content.Editor.submit();
+                parent.frames[1].document.getElementById("Editor").action.value = "save";
+                if(this.backofficepage)parent.frames[1].document.getElementById("Editor").backofficepage.value = backofficepage.value;
+                parent.frames[1].document.getElementById("Editor").submit();
                 break;
                 }
         case 4: {
-                if(this.backofficepage)window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;
-                window.top.body.admin_content.Editor.submit();
+                if(this.backofficepage)parent.frames[1].document.getElementById("Editor").backofficepage.value = backofficepage.value;
+                parent.frames[1].document.getElementById("Editor").submit();
                 break;
                 }
           }
@@ -84,7 +81,7 @@
         <td class=menu width="10%">&nbsp;&nbsp;&nbsp;&nbsp;</td>]]>
         <PROCESS>BOSELECTOR</PROCESS><![CDATA[
         ]]><PROCESS>prevbut</PROCESS><![CDATA[
-        <td class=menu width = "100%" align = right >]]><BUTTON href="javascript:doEdit(1);" name="bt_close" action="" alt="close"/><![CDATA[</td>          
+        <td class=menu width = "100%" align = right >]]><BUTTON href="javascript:doEdit(1);" name="bt_close" action="" alt="close"/><![CDATA[</td>
     </tr>
 </table>
 </body>
