@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/07/28 14:30:36 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/08/04 14:11:31 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import source.org.apache.java.util.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.13 $ $Date: 2000/07/28 14:30:36 $
+ * @version $Revision: 1.14 $ $Date: 2000/08/04 14:11:31 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -1270,6 +1270,20 @@ public class CmsShell implements I_CmsConstants {
 		}
 	}
 
+	/**
+	 * Unlocks a project.
+	 * 
+	 * @param id The id of the project to be unlocked.
+	 */
+	public void unlockProject(String id) {
+		try {
+			int projectId = Integer.parseInt(id);
+			m_cms.unlockProject(projectId);
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+    
 	/**
 	 * Reads a file header from the Cms.<BR/>
 	 * The reading excludes the filecontent.

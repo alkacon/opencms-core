@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/04 12:57:32 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/08/04 14:11:31 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/08/04 12:57:32 $
+ * @version $Revision: 1.14 $ $Date: 2000/08/04 14:11:31 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -734,6 +734,25 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 (metadef.getPropertydefType() != C_PROPERTYDEF_TYPE_MANDATORY )  ) {
 			// no - delete the information
 			m_dbAccess.deleteProperty(property,res.getResourceId(),res.getType());
+             // set the file-state to changed
+		    if(res.isFile()){
+                m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, true);
+			    if (res.getState()==C_STATE_UNCHANGED) {
+    				res.setState(C_STATE_CHANGED);
+	    		}
+		        // update the cache           
+                m_resourceCache.put(C_FILE+currentProject.getId()+resource,res);
+            } else {
+			    if (res.getState()==C_STATE_UNCHANGED) {
+		            res.setState(C_STATE_CHANGED);
+	            }
+			    m_dbAccess.writeFolder(currentProject, readFolder(currentUser,currentProject, resource), true);
+                // update the cache           
+                m_resourceCache.put(C_FOLDER+currentProject.getId()+resource,(CmsFolder)res);
+		    }
+            m_subresCache.clear();
+
+            
 			m_propertyCache.clear();
 	
 		} else {
