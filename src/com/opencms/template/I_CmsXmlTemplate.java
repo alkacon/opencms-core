@@ -20,12 +20,12 @@ import com.opencms.core.*;
  * of templates (eg. type I_CmsDumpTemplate) as subtemplate.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/01/13 17:50:48 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
  */
 public interface I_CmsXmlTemplate extends I_CmsTemplate {
     
     /**
-     * This method handles any occurence of an "ELEMENT" tag.
+     * Handles any occurence of an "ELEMENT" tag.
      * <P>
      * Every XML template class should use CmsXmlTemplateFile as
      * the interface to the XML file. Since CmsXmlTemplateFile is

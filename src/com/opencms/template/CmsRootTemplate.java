@@ -6,8 +6,34 @@ import com.opencms.file.*;
 import javax.servlet.http.*;
 import java.util.*;
 
+/**
+ * Represents an "empty" page or screen that should be filled with
+ * the content of a master template.
+ * <P>
+ * Every launcher uses this canonical root the invoke the output
+ * generation of the master template class to be used.
+ * 
+ * @author Alexander Lucas
+ * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
+ */
 public class CmsRootTemplate implements I_CmsLogChannels {
-	public byte[] getMasterTemplate(A_CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate, I_CmsTemplateCache cache, Hashtable parameters) throws CmsException {
+    
+    /**
+     * Gets the processed content of the requested master template by calling
+     * the given template class.
+     * <P>
+     * If the result is cacheable, the complete output will be stored
+     * in the template cache for later re-use.
+     * 
+     * @param cms A_CmsObject object for accessing system resources.
+     * @param templateClass Instance of the template class to be called.
+     * @param masterTemplate CmsFile object of the master template file.
+     * @param cache templateCache to be used.
+     * @param parameters Hashtable with all template class parameters.
+     * 
+     * @return Byte array containing the results of the master template.
+     */
+    public byte[] getMasterTemplate(A_CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate, I_CmsTemplateCache cache, Hashtable parameters) throws CmsException {
         
         byte[] result;
         //String cacheKey = cms.getUrl();

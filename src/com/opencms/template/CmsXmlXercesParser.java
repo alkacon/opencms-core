@@ -12,8 +12,22 @@ import source.org.openxml.printer.*;
 
 import com.opencms.core.*;
 
+/**
+ * Implementation of the OpenCms XML parser interface for
+ * the Xerces parser.
+ * 
+ * @author Alexander Kandzior
+ * @author Alexander Lucas
+ * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
+ */
 public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
     
+    /**
+     * Parses the given text with the Xerces parser.
+     * @param in Reader with the input text.
+     * @return Parsed text as DOM document.
+     * @exception Exception
+     */
     public Document parse(Reader in) throws Exception { 
         //return DOMFactory.createParser(in, null).parseDocument();
         DOMParser parser = new DOMParser();
@@ -22,14 +36,30 @@ public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
         return parser.getDocument();
     }    
 
+    /**
+     * Creates an empty DOM XML document.
+     * @return Empty document.
+     */
     public Document createEmptyDocument() {
         return (Document)(new DocumentImpl(null));
     }    
     
+    /**
+     * Used to import a node from a foreign document.
+     * @param doc Destination document that should import the node.
+     * @param node Node to be imported.
+     * @return New node that belongs to the document <code>doc</code>
+     */
     public Node importNode(Document doc, Node node) { 
         return ((org.apache.xerces.dom.DocumentImpl)doc).importNode(node, true);        
     }
 
+    /**
+     * Calls a XML printer for converting a XML DOM document
+     * to a String.
+     * @param doc Document to be printed.
+     * @param out Writer to print to.
+     */
     public void getXmlText(Document doc, Writer out) {
         OutputFormat of = new OutputFormat(doc, OutputFormat.DEFAULT_ENCODING, false);
         
@@ -43,6 +73,12 @@ public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
         }
     }
 
+    /**
+     * Calls a XML printer for converting a XML DOM document
+     * to a String.
+     * @param doc Document to be printed.
+     * @param out OutputStream to print to.
+     */
     public void getXmlText(Document doc, OutputStream out) {
         OutputFormat of = new OutputFormat(doc, OutputFormat.DEFAULT_ENCODING, false);
         
@@ -55,8 +91,11 @@ public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
             }
         }
     }
-
     
+    /**
+     * Gets a description of the parser.
+     * @return Parser description.
+     */
     public String toString() {
         return "Apache Xerces XML Parser";        
     }

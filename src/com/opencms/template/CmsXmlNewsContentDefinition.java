@@ -4,42 +4,91 @@ import com.opencms.file.*;
 import com.opencms.core.*;
 import java.util.*;
 
-public class CmsXmlNewsContentDefinition extends A_CmsXmlContent {
 
+/**
+ * Sample content definition for news articles.
+ * 
+ * @author Alexander Lucas
+ * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
+ */
+ public class CmsXmlNewsContentDefinition extends A_CmsXmlContent {
+
+    /**
+     * Default constructor.
+     */
     public CmsXmlNewsContentDefinition() throws CmsException {
         super();
     }
     
+    /**
+     * Constructor for creating a new object containing the content
+     * of the given filename.
+     * 
+     * @param cms A_CmsObject object for accessing system resources.
+     * @param filename Name of the body file that shoul be read.
+     */        
     public CmsXmlNewsContentDefinition(A_CmsObject cms, CmsFile file) throws CmsException {
         super();
         init(cms, file);
     }
 
+    /**
+     * Constructor for creating a new object containing the content
+     * of the given filename.
+     * 
+     * @param cms A_CmsObject object for accessing system resources.
+     * @param filename Name of the body file that shoul be read.
+     */        
     public CmsXmlNewsContentDefinition(A_CmsObject cms, String filename) throws CmsException {
         super();            
         init(cms, filename);
     }
     
+    /**
+     * Gets the expected tagname for the XML documents of this content type
+     * @return Expected XML tagname.
+     */
     public String getXmlDocumentTagName() {
         return "NEWSARTICLE";
     }
 
+    /**
+     * Gets a description of this content type.
+     * @return Content type description.
+     */
     public String getContentDescription() {
         return "OpenCms news article";
     }
             
+    /**
+     * Gets the content of the headline.
+     * @return Headline
+     */
     public String getNewsHeadline() {
         return getDataValue("HEADLINE");
     }
     
+    /**
+     * Gets the date of the article:
+     * @return Date.
+     */
     public String getNewsDate() {
         return getDataValue("DATE");
     }
     
+    /**
+     * Gets the article text.
+     * @return Article text.
+     */
     public String getNewsText() {
         return getDataValue("TEXT");
     }
     
+    /**
+     * Gets an enumeration of all articles in a folder.
+     * @param cms A_CmsObject object for accessing system resources.
+     * @param folder Name of the folder to scan for articles.
+     */
     public static Enumeration getAllArticles(A_CmsObject cms, String folder) throws CmsException {
         Vector allFiles = null;
         try {

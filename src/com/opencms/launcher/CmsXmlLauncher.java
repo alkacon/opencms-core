@@ -9,8 +9,35 @@ import org.xml.sax.*;
 import java.util.*;      
 import javax.servlet.http.*;
 
+/**
+ * OpenCms launcher class for XML templates.
+ * This can be used generating output for XML body files using XML template and
+ * subtemplate technology.
+ * <P>
+ * The selected body should define a start template class using <BR> <CODE>
+ * &lt;PAGE&gt;<BR>
+ * &nbsp;&nbsp;&lt;CLASS&gt;...&lt;/CLASS&gt;<BR>
+ * &lt;/PAGE&gt;</CODE><P>
+ * 
+ * If no start template is defined, the class given by the parameters
+ * will be used.
+ * <P>
+ * If even this is not defined, CmsXmlTemplate will
+ * be used to create output.
+ * 
+ * @author Alexander Lucas
+ * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
+ */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels { 	
         
+    /**
+ 	 * Starts generating the output.
+ 	 * Calls the canonical root with the appropriate template class.
+ 	 * 
+	 * @param cms A_CmsObject Object for accessing system resources
+	 * @param file CmsFile Object with the selected resource to be shown
+     * @exception CmsException
+	 */	
     protected void launch(A_CmsObject cms, CmsFile file) throws CmsException {
         // get the CmsRequest 
         I_CmsRequest req = cms.getRequestContext().getRequest();
@@ -71,8 +98,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
                 newParameters.put(elementName + "." + paramName, paramValue);
             }     
         }           
-        
-                
+                        
         // Now check URL parameters      
         String datafor = req.getParameter("datafor");
         if(datafor == null) {
@@ -105,6 +131,14 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
         }
     }
 
+    /**
+     * Internal utility method for checking and loading a given template file.
+     * @param cms A_CmsObject for accessing system resources.
+     * @param templateName Name of the requestet template file.
+     * @param doc CmsXmlControlFile object containig the parsed body file.
+     * @return CmsFile object of the requested template file.
+     * @exception CmsException
+     */
     private CmsFile loadMasterTemplateFile(A_CmsObject cms, String templateName, CmsXmlControlFile doc) throws CmsException {
         CmsFile masterTemplate = null;
         try {
@@ -115,13 +149,12 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
         }
         return masterTemplate;
     }
-        
-    
-    
-    
-    
+                    
+    /**
+     * Gets the ID that indicates the type of the launcher.
+     * @return launcher ID
+     */    
     public int getLauncherId() {
 	    return C_TYPE_XML;
-    }
-    
+    }    
 }

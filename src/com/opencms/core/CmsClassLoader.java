@@ -80,7 +80,7 @@ import com.opencms.file.*;
  * with a parent classloader. Normally this should be the classloader 
  * that loaded this loader. 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/01/13 17:42:18 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
@@ -154,7 +154,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
                 CmsFolder repFolder = cms.readFolder(file);
             } catch (Exception exc) {
                 throw new IllegalArgumentException("Repository "
-                    + file + " can't be accessed.");
+                    + file + " could not be accessed while initializing class loader.");
            }
         }
 
@@ -249,7 +249,6 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
             throw new ClassNotFoundException(name);
         }
         
-        // HACK: until CmsFile.getContents doesn't return byte[] we must construct it from String
         byte[] myClassData = classFile.getContents();
             
         // Class data successfully read. Now define a new class using this data

@@ -10,8 +10,27 @@ import org.xml.sax.*;
 import java.util.*;      
 import javax.servlet.http.*;
 
+/**
+ * OpenCms launcher class for starting template classes implementing
+ * the I_CmsDumpTemplate interface.
+ * This can be used for plain text files or files containing graphics.
+ * <P>
+ * If no other start template class is given, CmsDumpTemplate will
+ * be used to create output.
+ * 
+ * @author Alexander Lucas
+ * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
+ */
 public class CmsDumpLauncher extends A_CmsLauncher { 	
         
+    /**
+ 	 * Starts generating the output.
+ 	 * Calls the canonical root with the appropriate template class.
+ 	 * 
+	 * @param cms A_CmsObject Object for accessing system resources
+	 * @param file CmsFile Object with the selected resource to be shown
+     * @exception CmsException
+	 */	
     protected void launch(A_CmsObject cms, CmsFile file) throws CmsException {
         
         byte[] result = null;
@@ -40,6 +59,10 @@ public class CmsDumpLauncher extends A_CmsLauncher {
         }
     }
 
+    /**
+     * Gets the ID that indicates the type of the launcher.
+     * @return launcher ID
+     */
     public int getLauncherId() {
 	    return C_TYPE_DUMP;
     }

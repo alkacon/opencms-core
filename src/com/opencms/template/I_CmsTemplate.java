@@ -12,7 +12,7 @@ import java.util.*;
  * have to be implemtented.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/01/13 17:50:48 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
  */
 public interface I_CmsTemplate {
     /**
@@ -62,7 +62,7 @@ public interface I_CmsTemplate {
     
     /**
      * Tests, if the template cache is setted.
-     * @return <EM>true</EM> if setted, <EM>false</EM> otherwise.
+     * @return <code>true</code> if setted, <code>false</code> otherwise.
      */
     public boolean isTemplateCacheSet();    
     

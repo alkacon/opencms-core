@@ -3,15 +3,44 @@ package com.opencms.launcher;
 import com.opencms.core.*;
 import java.util.*;
 
+/**
+ * Collects all available lauchners at startup and provides
+ * a method for looking up the appropriate launcher class for a
+ * given launcher id.
+ * 
+ * @author Alexander Lucas
+ * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
+ */
 public class CmsLauncherManager implements I_CmsLogChannels {
        
+    /**
+     * Static array of all known launcher.
+     * Not all of these launchers must be integrated into the OpenCms system.
+     * Only really relevant launchers are required.
+     */
     private static final String[] C_KNOWN_LAUNCHERS = {
         "CmsXmlLauncher",
         "CmsDummyLauncher",
         "CmsDumpLauncher"};
     
+    /**
+     * Hashtable to store instances of all launchers.
+     * So they can be re-used and only have to be instantiated
+     * once at startup
+     */
     private Hashtable launchers;
     
+    /**
+     * Constructor for building a new launcher manager.
+     * Uses the C_KNOWN_LAUNCHERS array to scan for all available
+     * launchers.
+     * <P>
+     * When updating to Java 1.2 this should be done by using
+     * the <code>Package</code> class. Then, C_KNOWN_LAUNCHERS is
+     * not needed any more.
+     * 
+     * @exception CmsException
+     */
     public CmsLauncherManager() throws CmsException {
         String launcherPackage = getLauncherPackage();
         Class launcherClass = null;
@@ -76,10 +105,20 @@ public class CmsLauncherManager implements I_CmsLogChannels {
         }
     }
 
+    /**
+     * Looks up the appropriate launcher class instance for the given 
+     * launcher id in the internal hashtable.
+     * @return I_CmsLauncher object for the requested launcher id.
+     */
     public I_CmsLauncher getLauncher(int launcherId) {
         return (I_CmsLauncher)launchers.get(new Integer(launcherId));
     }
     
+    /**
+     * Gets the name of the own package.
+     * Needed to look up all available launchers.
+     * @return Name of the package this class belongs to. 
+     */
     private String getLauncherPackage() {
         String fullClassName = getClass().getName();
         return fullClassName.substring(0, fullClassName.lastIndexOf("."));
