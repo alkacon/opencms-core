@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/04/01 06:24:38 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/04/01 10:21:09 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.file;
  
 import org.opencms.db.CmsDriverManager;
-import org.opencms.db.CmsProperty;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.lock.CmsLock;
@@ -76,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class CmsObject {
 
@@ -887,6 +886,7 @@ public class CmsObject {
      * @param resourcename the name of a resource for which the property should be deleted
      * @param key the name of the property
      * @throws CmsException if something goes wrong
+     * @deprecated use {@link #writePropertyObject(String, CmsProperty)} instead
      */
     public void deleteProperty(String resourcename, String key) throws CmsException {
         CmsProperty property = new CmsProperty();
@@ -3707,6 +3707,7 @@ public class CmsObject {
      * @param resourceName the resource-name of which the Property has to be set.
      * @param properties a Hashtable with property-definitions and property values as Strings.
      * @throws CmsException if operation was not successful
+     * @deprecated use {@link #writePropertyObjects(String, List)} instead
      */
     public void writeProperties(String resourceName, Map properties) throws CmsException {
         m_driverManager.writePropertyObjects(m_context, addSiteRoot(resourceName), CmsProperty.toList(properties));
@@ -3719,6 +3720,7 @@ public class CmsObject {
      * @param properties a Hashtable with property-definitions and property values as Strings.
      * @param addDefinition flag to indicate if unknown definitions should be added
      * @throws CmsException if operation was not successful.
+     * @deprecated use {@link #writePropertyObjects(String, List)} instead
      */
     public void writeProperties(String name, Map properties, boolean addDefinition) throws CmsException {
         m_driverManager.writePropertyObjects(m_context, addSiteRoot(name), CmsProperty.setCreatePropertyDefinitions(CmsProperty.toList(properties), addDefinition));
@@ -3731,6 +3733,7 @@ public class CmsObject {
      * @param key the property-definition name
      * @param value the value for the property to be set
      * @throws CmsException if operation was not successful
+     * @deprecated use {@link #writePropertyObject(String, CmsProperty)} instead
      */
     public void writeProperty(String resourceName, String key, String value) throws CmsException {
         CmsProperty property = new CmsProperty();
@@ -3747,8 +3750,8 @@ public class CmsObject {
      * @param key the property-definition name.
      * @param value the value for the property to be set.
      * @param addDefinition flag to indicate if unknown definitions should be added
-     *
      * @throws CmsException if operation was not successful.
+     * @deprecated use {@link #writePropertyObject(String, CmsProperty)} instead
      */
     public void writeProperty(String name, String key, String value, boolean addDefinition) throws CmsException {
         CmsProperty property = new CmsProperty();
@@ -4072,7 +4075,7 @@ public class CmsObject {
      * @param resource the resource to look up the property for
      * @return Map of Strings representing all properties of the resource
      * @throws CmsException in case there where problems reading the properties
-     * @see CmsProperty#getValue()
+     * @deprecated use {@link #readPropertyObjects(String, boolean)} instead
      */
     public Map readProperties(String resource) throws CmsException {
         List properties = m_driverManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), false);
@@ -4087,7 +4090,7 @@ public class CmsObject {
      * @param search if <code>true</code>, the properties will also be looked up on all parent folders and the results will be merged, if <code>false</code> not (ie. normal property lookup)
      * @return Map of Strings representing all properties of the resource
      * @throws CmsException in case there where problems reading the properties
-     * @see CmsProperty#getValue()
+     * @deprecated use {@link #readPropertyObjects(String, boolean)} instead
      */
     public Map readProperties(String resource, boolean search) throws CmsException {
         List properties = m_driverManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), search);
