@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2004/02/08 20:12:56 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 5.1
  */
@@ -1207,14 +1207,30 @@ public abstract class CmsWorkplace {
      * @return  a variable button bar separator line
      */    
     public String buttonBarLine(int leftPixel, int rightPixel, String className) {
-        StringBuffer result = new StringBuffer(512); 
-        result.append("<td><span class=\"norm\"><span unselectable=\"on\" class=\"txtbutton\" style=\"padding-right: 0px; padding-left: "); 
-        result.append(leftPixel);
-        result.append("px;\"></span></span></td>\n<td><span class=\"");
+        StringBuffer result = new StringBuffer(512);
+        if (leftPixel > 0) {
+            result.append(buttonBarLineSpacer(leftPixel)); 
+        }
+        result.append("<td><span class=\"");
         result.append(className);
         result.append("\"></span></td>\n");
-        result.append("<td><span class=\"norm\"><span unselectable=\"on\" class=\"txtbutton\" style=\"padding-right: 0px; padding-left: ");
-        result.append(rightPixel);
+        if (rightPixel > 0) {
+            result.append(buttonBarLineSpacer(rightPixel)); 
+        }
+        return result.toString();        
+    }
+    
+    /**
+     * Generates a variable button bar separator line spacer.<p>  
+     * 
+     * @param pixel the amount of pixel space
+     * 
+     * @return a variable button bar separator line spacer
+     */       
+    public String buttonBarLineSpacer(int pixel) {
+        StringBuffer result = new StringBuffer(128);
+        result.append("<td><span class=\"norm\"><span unselectable=\"on\" class=\"txtbutton\" style=\"padding-right: 0px; padding-left: "); 
+        result.append(pixel);
         result.append("px;\"></span></span></td>\n");
         return result.toString();        
     }
@@ -1228,7 +1244,11 @@ public abstract class CmsWorkplace {
      * @return a button bar starter tab
      */
     public String buttonBarStartTab(int leftPixel, int rightPixel) {
-        return buttonBarLine(leftPixel, rightPixel, "starttab");
+        StringBuffer result = new StringBuffer(512);
+        result.append(buttonBarLineSpacer(leftPixel)); 
+        result.append("<td><span class=\"starttab\"><span style=\"width:1px; height:1px\"></span></span></td>\n");
+        result.append(buttonBarLineSpacer(rightPixel)); 
+        return result.toString();          
     }
     
     /**
