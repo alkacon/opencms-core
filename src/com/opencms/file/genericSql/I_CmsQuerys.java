@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/06 14:32:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/06/06 14:52:15 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,18 +32,22 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.2 $ $Date: 2000/06/06 14:32:38 $
+ * @version $Revision: 1.3 $ $Date: 2000/06/06 14:52:15 $
  */
 public interface I_CmsQuerys {
     
-    // Common constants
-       
+    // Common constants   
 	static String C_DATABASE_PREFIX = "CMS_";
-        
+
+    // Constants for Groups table
+    public static final String C_GROUPS_GROUP_ID="GROUP_ID";
+    public static final String C_GROUPS_PARENT_GROUP_ID="PARENT_GROUP_ID";
+    public static final String C_GROUPS_GROUP_NAME="GROUP_NAME"; 
+    public static final String C_GROUPS_GROUP_DESCRIPTION="GROUP_DESCRIPTION";      
+    public static final String C_GROUPS_GROUP_FLAGS="GROUP_FLAGS";  
+                         
     // Constants for Groups
- 
     public static final Integer C_GROUPS_READGROUP_KEY = new Integer(200);
-    
     public static final String C_GROUPS_READGROUP = "SELECT * FROM " + C_DATABASE_PREFIX 
                                                   + "GROUPS WHERE GROUP_NAME = ?";
 	

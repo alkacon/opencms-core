@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/06 14:32:38 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/06/06 14:52:15 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.8 $ $Date: 2000/06/06 14:32:38 $ * 
+ * @version $Revision: 1.9 $ $Date: 2000/06/06 14:52:15 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -246,12 +246,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
              res = statement.executeQuery();
              m_pool.putPreparedStatement(C_GROUPS_READGROUP_KEY,statement);
              // create new Cms group object
-			 if(res.next()) {
-             /*  group=new CmsGroup(res.getInt(C_GROUP_ID),
-                                   res.getInt(C_PARENT_GROUP_ID),
-                                   res.getString(C_GROUP_NAME),
-                                   res.getString(C_GROUP_DESCRIPTION),
-                                   res.getInt(C_GROUP_FLAGS)); */                              
+			 if(res.next()) {     
+               group=new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
+                                  res.getInt(C_GROUPS_PARENT_GROUP_ID),
+                                  res.getString(C_GROUPS_GROUP_NAME),
+                                  res.getString(C_GROUPS_GROUP_DESCRIPTION),
+                                  res.getInt(C_GROUPS_GROUP_FLAGS));
              } else {
                  throw new CmsException("[" + this.getClass().getName() + "] "+groupname,CmsException.C_NO_GROUP);
              }
@@ -269,9 +269,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	 */
 	private void initStatements() 
 		throws CmsException {
+        // init statement for groups
+        m_pool.initPreparedStatement(C_GROUPS_READGROUP_KEY,C_GROUPS_READGROUP);
 		
 		m_pool.initPreparedStatement(C_PROJECTS_MAXID_KEY, C_PROJECTS_MAXID);
-		
 	}
 	
 	/**
