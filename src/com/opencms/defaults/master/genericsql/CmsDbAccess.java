@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/20 16:36:24 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/05/21 09:56:08 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.dbpool.CmsDbcp;
 import com.opencms.dbpool.CmsIdGenerator;
 import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
@@ -47,11 +46,9 @@ import com.opencms.util.Utils;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Constructor;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Enumeration;
@@ -67,15 +64,6 @@ public class CmsDbAccess {
 
     public static final String C_COS_PREFIX = "/" + I_CmsConstants.C_ROOTNAME_COS;
 
-    /** The pool to access offline ressources */
-    protected String m_poolName;
-
-    /** The pool to access the online ressources */
-    protected String m_onlinePoolName;
-
-    /** The pool to access the backup ressources */
-    protected String m_backupPoolName;
-
     /** The query properties for this accessmodule */
     protected Properties m_queries;
 
@@ -84,6 +72,11 @@ public class CmsDbAccess {
     
     /** TODO: delete this after successful change of dbpool */
     private String m_interimOfflinePoolUrl;
+    
+    /**
+     * 'Constants' file.
+     */
+   protected com.opencms.defaults.master.genericsql.CmsQueries m_SqlQueries;
 
     /**
      * Public empty constructor, call "init()" on this class afterwards.
@@ -107,14 +100,22 @@ public class CmsDbAccess {
      * Initializes the DBAccessObject.
      */
     public void init(String offline, String online, String backup) {
+        
+        m_SqlQueries = initQueries(offline, getClass());
+        
         m_interimOfflinePoolUrl = offline;
-        m_poolName = CmsDbcp.C_DBCP_JDBC_URL_PREFIX+ offline;
-        m_onlinePoolName = CmsDbcp.C_DBCP_JDBC_URL_PREFIX+online;
-        m_backupPoolName = CmsDbcp.C_DBCP_JDBC_URL_PREFIX+backup;
         m_queries = new Properties();
         // collect all query.properties in all packages of superclasses
-        loadQueries(getClass());
-        combineQueries();        
+        //loadQueries(getClass());
+        //combineQueries();        
+    }
+    
+    /**
+     * retrieve the correct instance of the queries holder.
+     * This method should be overloaded if other query strings should be used.
+     */
+    public com.opencms.defaults.master.genericsql.CmsQueries initQueries(String dbPoolUrl, Class currentClass) {           
+        return new com.opencms.defaults.master.genericsql.CmsQueries(dbPoolUrl, currentClass);
     }
 
     /**
@@ -166,8 +167,8 @@ public class CmsDbAccess {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(m_poolName);
-            stmt = sqlPrepare(conn, "insert_offline");
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "insert_offline");
             sqlFillValues(stmt, content.getSubId(), dataset);
             stmt.executeUpdate();
             // after inserting the row, we have to update media and channel tables
@@ -176,7 +177,7 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(conn, stmt, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -205,7 +206,6 @@ public class CmsDbAccess {
             // no write access
             throw new CmsException("Not writeable", CmsException.C_NO_ACCESS);
         }
-        //int newMasterId = CmsIdGenerator.nextId(m_poolName, "CMS_MODULE_MASTER");
         CmsUUID newMasterId = new CmsUUID();
         int projectId = cms.getRequestContext().currentProject().getId();
         CmsUUID currentUserId = cms.getRequestContext().currentUser().getId();
@@ -223,8 +223,8 @@ public class CmsDbAccess {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(m_poolName);
-            stmt = sqlPrepare(conn, "insert_offline");
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "insert_offline");
             sqlFillValues(stmt, content.getSubId(), dataset);
             stmt.executeUpdate();
             // after inserting the row, we have to update media and channel tables
@@ -233,7 +233,7 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(conn, stmt, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
         return newMasterId;
     }
@@ -268,8 +268,8 @@ public class CmsDbAccess {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(m_poolName);
-            stmt = sqlPrepare(conn, "update_lockstate_offline");
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "update_lockstate_offline");
             stmt.setString(1, dataset.m_lockedBy.toString());
             stmt.setInt(2, dataset.m_lockedInProject);
             stmt.setString(3, dataset.m_masterId.toString());
@@ -278,7 +278,7 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(conn, stmt, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -326,8 +326,8 @@ public class CmsDbAccess {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(m_poolName);
-            stmt = sqlPrepare(conn, "update_offline");
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "update_offline");
             int rowcounter = sqlFillValues(stmt, content.getSubId(), dataset);
             stmt.setString(rowcounter++, dataset.m_masterId.toString());
             stmt.setInt(rowcounter++, content.getSubId());
@@ -338,7 +338,7 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(conn, stmt, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -354,18 +354,16 @@ public class CmsDbAccess {
             throw new CmsException("Not readable", CmsException.C_NO_ACCESS);
         }
         String statement_key = "read_offline";
-        String poolToUse = m_poolName;
         if(isOnlineProject(cms)) {
             statement_key = "read_online";
-            poolToUse = m_onlinePoolName;
         }
 
         PreparedStatement stmt = null;
         ResultSet res = null;
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(poolToUse);
-            stmt = sqlPrepare(conn, statement_key);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, statement_key);
             stmt.setString(1, contentId.toString());
             stmt.setInt(2, content.getSubId());
             res = stmt.executeQuery();
@@ -380,7 +378,7 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(conn, stmt, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
     }
 
@@ -395,8 +393,8 @@ public class CmsDbAccess {
         ResultSet res = null;
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(m_poolName);
-            stmt = sqlPrepare(conn, "read_lockstate_offline");
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "read_lockstate_offline");
             stmt.setString(1, dataset.m_masterId.toString());
             stmt.setInt(2, subId);
             res = stmt.executeQuery();
@@ -410,7 +408,7 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(conn, stmt, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
     }
 
@@ -428,18 +426,16 @@ public class CmsDbAccess {
         }
         Vector retValue = new Vector();
         String statement_key = "read_media_offline";
-        String poolToUse = m_poolName;
         if(isOnlineProject(cms)) {
             statement_key = "read_media_online";
-            poolToUse = m_onlinePoolName;
         }
 
         PreparedStatement stmt = null;
         ResultSet res = null;
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(poolToUse);
-            stmt = sqlPrepare(conn, statement_key);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, statement_key);
             stmt.setString(1, content.getId().toString());
             res = stmt.executeQuery();
             while(res.next()) {
@@ -462,7 +458,7 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(conn, stmt, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return retValue;
     }
@@ -481,18 +477,16 @@ public class CmsDbAccess {
         }
         Vector retValue = new Vector();
         String statement_key = "read_channel_offline";
-        String poolToUse = m_poolName;
         if(isOnlineProject(cms)) {
             statement_key = "read_channel_online";
-            poolToUse = m_onlinePoolName;
         }
 
         PreparedStatement stmt = null;
         ResultSet res = null;
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(poolToUse);
-            stmt = sqlPrepare(conn, statement_key);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, statement_key);
             stmt.setString(1, content.getId().toString());
             res = stmt.executeQuery();
             while(res.next()) {
@@ -518,7 +512,7 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(conn, stmt, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return retValue;
     }
@@ -533,18 +527,16 @@ public class CmsDbAccess {
         throws CmsException {
         Vector theDataSets = new Vector();
         String statement_key = "readallbychannel_offline";
-        String poolToUse = m_poolName;
         if(isOnlineProject(cms)) {
             statement_key = "readallbychannel_online";
-            poolToUse = m_onlinePoolName;
         }
 
         PreparedStatement stmt = null;
         ResultSet res = null;
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(poolToUse);
-            stmt = sqlPrepare(conn, statement_key);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, statement_key);
             stmt.setInt(1, subId);
             stmt.setInt(2, channelId);
             res = stmt.executeQuery();
@@ -556,7 +548,7 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(conn, stmt, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return theDataSets;
     }
@@ -598,8 +590,8 @@ public class CmsDbAccess {
             PreparedStatement stmt = null;
             Connection conn = null;
             try {
-                conn = DriverManager.getConnection(m_poolName);
-                stmt = sqlPrepare(conn, statement_key);
+                conn = m_SqlQueries.getConnection();
+                stmt = m_SqlQueries.getPreparedStatement(conn, statement_key);
                 stmt.setString(1, dataset.m_masterId.toString());
                 stmt.setInt(2, content.getSubId());
                 if(stmt.executeUpdate() != 1) {
@@ -612,7 +604,7 @@ public class CmsDbAccess {
             } catch(SQLException exc) {
                 throw new CmsException(CmsException.C_SQL_ERROR, exc);
             } finally {
-                sqlClose(conn, stmt, null);
+                m_SqlQueries.closeAll(conn, stmt, null);
             }
         } else {
             // set state to deleted and update the line
@@ -621,8 +613,8 @@ public class CmsDbAccess {
             PreparedStatement stmt = null;
             Connection conn = null;
             try {
-                conn = DriverManager.getConnection(m_poolName);
-                stmt = sqlPrepare(conn, "update_offline");
+                conn = m_SqlQueries.getConnection();
+                stmt = m_SqlQueries.getPreparedStatement(conn, "update_offline");
                 int rowcounter = sqlFillValues(stmt, content.getSubId(), dataset);
                 stmt.setString(rowcounter++, dataset.m_masterId.toString());
                 stmt.setInt(rowcounter++, content.getSubId());
@@ -630,7 +622,7 @@ public class CmsDbAccess {
             } catch(SQLException exc) {
                 throw new CmsException(CmsException.C_SQL_ERROR, exc);
             } finally {
-                sqlClose(conn, stmt, null);
+                m_SqlQueries.closeAll(conn, stmt, null);
             }
         }
     }
@@ -662,8 +654,8 @@ public class CmsDbAccess {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(m_poolName);
-            stmt = sqlPrepare(conn, "update_offline");
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "update_offline");
             int rowcounter = sqlFillValues(stmt, content.getSubId(), dataset);
             stmt.setString(rowcounter++, dataset.m_masterId.toString());
             stmt.setInt(rowcounter++, content.getSubId());
@@ -671,7 +663,7 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(conn, stmt, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -715,8 +707,8 @@ public class CmsDbAccess {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(m_poolName);
-            stmt = sqlPrepare(conn, "update_permissions_offline");
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "update_permissions_offline");
             stmt.setString(1, dataset.m_userId.toString());
             stmt.setString(2, dataset.m_groupId.toString());
             stmt.setInt(3, dataset.m_accessFlags);
@@ -729,7 +721,7 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(conn, stmt, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -741,252 +733,208 @@ public class CmsDbAccess {
     public String toString() {
         StringBuffer returnValue = new StringBuffer();
         returnValue.append(this.getClass().getName() + "{");
-        returnValue.append("m_poolName="+m_poolName+";");
-        returnValue.append("m_backupPoolName="+m_backupPoolName+";");
-        returnValue.append("m_onlinePoolName="+m_onlinePoolName+";");
+        returnValue.append("poolName="+m_interimOfflinePoolUrl+";");
         returnValue.append("m_queries="+m_queries + "}");
         return returnValue.toString();
     }
 
-    /**
-     * Loads recursively all query.properties from all packages of the
-     * superclasses. This method calls recuresively itself with the superclass
-     * (if exists) as parameter.
-     *
-     * @param the currentClass of the dbaccess module.
-     */
-    private void loadQueries(Class currentClass) {
-        // creates the queryFilenam from the packagename and
-        // filename query.properties
-        String className = currentClass.getName();
-        String queryFilename = className.substring(0, className.lastIndexOf('.'));
-        queryFilename = queryFilename.replace('.','/') + "/query.properties";
-        // gets the superclass and calls this method recursively
-        Class superClass = currentClass.getSuperclass();
-        if(superClass != java.lang.Object.class) {
-            loadQueries(superClass);
-        }
-        try {
-            // load the queries. Entries of the most recent class will overwrite
-            // entries of superclasses.
-            m_queries.load(getClass().getClassLoader().getResourceAsStream(queryFilename));
-        } catch(Exception exc) {
-            // no query.properties found - write to logstream.
-            if(CmsBase.isLogging()) {
-                CmsBase.log(CmsBase.C_MODULE_DEBUG, "[CmsDbAccess] Couldn't load " + queryFilename + " errormessage: " + exc.getMessage());
-            }
-        }
-    }
-
-    /**
-     * Combines the queries in the properties to complete quereis. Therefor a
-     * replacement is needed: The follwing Strings will be replaces
-     * automatically by the corresponding property-entrys:
-     * ${property_key}
-     */
-    private void combineQueries() {
-        Enumeration keys = m_queries.keys();
-        while(keys.hasMoreElements()) {
-            String key = (String)keys.nextElement();
-            // replace while there has benn repacements performaend
-            while(replace(key));
-        }
-    }
-
-    /**
-     * Computes one run of the replacement for one query.
-     * Stores the new value into m_queries.
-     * @param key the key for the query to compute.
-     * @return if in this run replacements are done.
-     */
-    private boolean replace(String key) {
-        boolean retValue = false;
-        String value = m_queries.getProperty(key);
-        String newValue = new String();
-        int index = 0;
-        int lastIndex = 0;
-        // run as long as there are "${" strings found
-        while(index != -1) {
-            index = value.indexOf("${", lastIndex);
-            if(index != -1) {
-                retValue = true;
-                int nextIndex = value.indexOf('}', index);
-                if(nextIndex != -1) {
-                    // get the replacer key
-                    String replacer = value.substring(index+2, nextIndex);
-                    // copy the first part of the query
-                    newValue += value.substring(lastIndex, index);
-                    // copy the replcement-value
-                    newValue += m_queries.getProperty(replacer, "");
-                    // set up lastindex
-                    lastIndex = nextIndex+1;
-                } else {
-                    // no key found, just copy the query-part
-                    newValue += value.substring(lastIndex, index+2);
-                    // set up lastindex
-                    lastIndex = index+2;
-                }
-            } else {
-                // end of the string, copy the tail into new value
-                newValue += value.substring(lastIndex);
-            }
-        }
-        // put back the new query to the queries
-        m_queries.put(key, newValue);
-        // returns true, if replacements were made in this run
-        return retValue;
-    }
-
-    /**
-     * Creates a new connection and prepares a stement.
-     * @param con the Connection to use.
-     * @param queryKey the key for the query to use. The query will be get
-     * by m_queries.getParameter(key)
-     */
-    protected PreparedStatement sqlPrepare(Connection con, String queryKey) throws SQLException {
-        return con.prepareStatement(m_queries.getProperty(queryKey, ""));
-    }
-
-    /**
-     * Creates a new connection and prepares a stement.
-     * @param cms the CmsObject to get access to cms-ressources.
-     * @param con the Connection to use.
-     * @param queryKey the key for the query to use. The query will be get
-     * by m_queries.getParameter(key)
-     */
-    protected PreparedStatement sqlPrepare(CmsObject cms, Connection con, String queryKey) throws SQLException {
-        return this.sqlPrepare(cms, con, queryKey, null);
-    }
-    
-    /**
-     * Replaces in a SQL statement $XXX tokens by strings and returns a prepared statement.
-     * 
-     * @param cms the current user's CmsObject instance
-     * @param con the JDBC connection
-     * @param queryKey the name of the SQL statement (in query.properties)
-     * @param optionalSqlTokens a HashMap with optional SQL tokens to be replaced in the SQL statement
-     * @return a new PreparedStatement
-     * @throws SQLException
-     */
-    protected PreparedStatement sqlPrepare(CmsObject cms, Connection con, String queryKey, HashMap optionalSqlTokens) throws SQLException {
-        String statement = null;
-        String moduleMaster = null;
-        String channelRel = null;
-        String media = null;
-
-        // get the string of the SQL statement
-        statement = m_queries.getProperty(queryKey, "");
-
-        // choose the right tables depending on the online/offline project
-        if (isOnlineProject(cms)) {
-            moduleMaster = "CMS_MODULE_ONLINE_MASTER";
-            channelRel = "CMS_MODULE_ONLINE_CHANNEL_REL";
-            media = "CMS_MODULE_ONLINE_MEDIA";
-        } else {
-            moduleMaster = "CMS_MODULE_MASTER";
-            channelRel = "CMS_MODULE_CHANNEL_REL";
-            media = "CMS_MODULE_MEDIA";
-        }
-
-        // replace in the SQL statement the table names
-        statement = Utils.replace(statement, "$CMS_MODULE_MASTER", moduleMaster);
-        statement = Utils.replace(statement, "$CMS_MODULE_CHANNEL_REL", channelRel);
-        statement = Utils.replace(statement, "$CMS_MODULE_MEDIA", media);
-
-        // replace in the SQL statement further optional SQL tokens
-        if (optionalSqlTokens != null) {
-            Iterator optionalSqlKeys = optionalSqlTokens.keySet().iterator();
-            while (optionalSqlKeys.hasNext()) {
-                String currentKey = (String) optionalSqlKeys.next();
-                String currentValue = (String) optionalSqlTokens.get(currentKey);
-                statement = Utils.replace(statement, currentKey, currentValue);
-            }
-        }
-
-        //System.err.println(statement);
-
-        return con.prepareStatement(statement);
-    }
-
-    /**
-     * Closes all sql ressources.
-     * @param con the Connection to close.
-     * @param stmnt the SqlStatement to close.
-     * @param resr the ResultSet to close.
-     */
-    protected void sqlClose(Connection con, Statement stmnt, ResultSet res) {
-        try {
-            res.close();
-        } catch (Exception e) {
-            // ignore the exception
-        } finally {
-            res = null;
-        }
-
-        try {
-            stmnt.close();
-        } catch (Exception e) {
-            // ignore the exception
-        } finally {
-            stmnt = null;
-        }
-
-        try {
-            con.close();
-        } catch (Exception e) {
-            // ignore the exception
-        } finally {
-            con = null;
-        }
-    }
+//    /**
+//     * Loads recursively all query.properties from all packages of the
+//     * superclasses. This method calls recuresively itself with the superclass
+//     * (if exists) as parameter.
+//     *
+//     * @param the currentClass of the dbaccess module.
+//     */
+//    private void loadQueries(Class currentClass) {
+//        // creates the queryFilenam from the packagename and
+//        // filename query.properties
+//        String className = currentClass.getName();
+//        String queryFilename = className.substring(0, className.lastIndexOf('.'));
+//        queryFilename = queryFilename.replace('.','/') + "/query.properties";
+//        // gets the superclass and calls this method recursively
+//        Class superClass = currentClass.getSuperclass();
+//        if(superClass != java.lang.Object.class) {
+//            loadQueries(superClass);
+//        }
+//        try {
+//            // load the queries. Entries of the most recent class will overwrite
+//            // entries of superclasses.
+//            m_queries.load(getClass().getClassLoader().getResourceAsStream(queryFilename));
+//        } catch(Exception exc) {
+//            // no query.properties found - write to logstream.
+//            if(CmsBase.isLogging()) {
+//                CmsBase.log(CmsBase.C_MODULE_DEBUG, "[CmsDbAccess] Couldn't load " + queryFilename + " errormessage: " + exc.getMessage());
+//            }
+//        }
+//    }
+//
+//    /**
+//     * Combines the queries in the properties to complete quereis. Therefor a
+//     * replacement is needed: The follwing Strings will be replaces
+//     * automatically by the corresponding property-entrys:
+//     * ${property_key}
+//     */
+//    private void combineQueries() {
+//        Enumeration keys = m_queries.keys();
+//        while(keys.hasMoreElements()) {
+//            String key = (String)keys.nextElement();
+//            // replace while there has benn repacements performaend
+//            while(replace(key));
+//        }
+//    }
+//
+//    /**
+//     * Computes one run of the replacement for one query.
+//     * Stores the new value into m_queries.
+//     * @param key the key for the query to compute.
+//     * @return if in this run replacements are done.
+//     */
+//    private boolean replace(String key) {
+//        boolean retValue = false;
+//        String value = m_queries.getProperty(key);
+//        String newValue = new String();
+//        int index = 0;
+//        int lastIndex = 0;
+//        // run as long as there are "${" strings found
+//        while(index != -1) {
+//            index = value.indexOf("${", lastIndex);
+//            if(index != -1) {
+//                retValue = true;
+//                int nextIndex = value.indexOf('}', index);
+//                if(nextIndex != -1) {
+//                    // get the replacer key
+//                    String replacer = value.substring(index+2, nextIndex);
+//                    // copy the first part of the query
+//                    newValue += value.substring(lastIndex, index);
+//                    // copy the replcement-value
+//                    newValue += m_queries.getProperty(replacer, "");
+//                    // set up lastindex
+//                    lastIndex = nextIndex+1;
+//                } else {
+//                    // no key found, just copy the query-part
+//                    newValue += value.substring(lastIndex, index+2);
+//                    // set up lastindex
+//                    lastIndex = index+2;
+//                }
+//            } else {
+//                // end of the string, copy the tail into new value
+//                newValue += value.substring(lastIndex);
+//            }
+//        }
+//        // put back the new query to the queries
+//        m_queries.put(key, newValue);
+//        // returns true, if replacements were made in this run
+//        return retValue;
+//    }
+//
+//    /**
+//     * Creates a new connection and prepares a statement.
+//     * @param cms the CmsObject to get access to cms-ressources.
+//     * @param con the Connection to use.
+//     * @param queryKey the key for the query to use. The query will be get
+//     * by m_queries.getParameter(key)
+//     */
+//    protected PreparedStatement sqlPrepare(CmsObject cms, Connection con, String queryKey) throws SQLException {
+//        return this.sqlPrepare(cms, con, queryKey, null);
+//    }
+//    
+//    /**
+//     * Replaces in a SQL statement $XXX tokens by strings and returns a prepared statement.
+//     * 
+//     * @param cms the current user's CmsObject instance
+//     * @param conn the JDBC connection
+//     * @param queryKey the name of the SQL statement (in query.properties)
+//     * @param optionalSqlTokens a HashMap with optional SQL tokens to be replaced in the SQL statement
+//     * @return a new PreparedStatement
+//     * @throws SQLException
+//     */
+//    protected PreparedStatement sqlPrepare(CmsObject cms, Connection conn, String queryKey, HashMap optionalSqlTokens) throws SQLException {
+//        String statement = null;
+//        String moduleMaster = null;
+//        String channelRel = null;
+//        String media = null;
+//
+//        // get the string of the SQL statement
+//        statement = m_queries.getProperty(queryKey, "");
+//
+//        // choose the right tables depending on the online/offline project
+//        if (isOnlineProject(cms)) {
+//            moduleMaster = "CMS_MODULE_ONLINE_MASTER";
+//            channelRel = "CMS_MODULE_ONLINE_CHANNEL_REL";
+//            media = "CMS_MODULE_ONLINE_MEDIA";
+//        } else {
+//            moduleMaster = "CMS_MODULE_MASTER";
+//            channelRel = "CMS_MODULE_CHANNEL_REL";
+//            media = "CMS_MODULE_MEDIA";
+//        }
+//
+//        // replace in the SQL statement the table names
+//        statement = Utils.replace(statement, "$CMS_MODULE_MASTER", moduleMaster);
+//        statement = Utils.replace(statement, "$CMS_MODULE_CHANNEL_REL", channelRel);
+//        statement = Utils.replace(statement, "$CMS_MODULE_MEDIA", media);
+//
+//        // replace in the SQL statement further optional SQL tokens
+//        if (optionalSqlTokens != null) {
+//            Iterator optionalSqlKeys = optionalSqlTokens.keySet().iterator();
+//            while (optionalSqlKeys.hasNext()) {
+//                String currentKey = (String) optionalSqlKeys.next();
+//                String currentValue = (String) optionalSqlTokens.get(currentKey);
+//                statement = Utils.replace(statement, currentKey, currentValue);
+//            }
+//        }
+//
+//        //System.err.println(statement);
+//
+//        return conn.prepareStatement(statement);
+//    }
 
     /**
      * Inserts all values to the statement for insert and update.
-     * @param stmnt the Statement to fill the values to.
+     * @param stmt the Statement to fill the values to.
      * @param cms the CmsObject to get access to cms-ressources.
      * @param subId the subid of this module.
      * @param dataset the set of data for this contentdefinition.
      * @return the actual rowcounter.
      */
-    protected int sqlFillValues(PreparedStatement stmnt, int subId, CmsMasterDataSet dataset)
+    protected int sqlFillValues(PreparedStatement stmt, int subId, CmsMasterDataSet dataset)
         throws SQLException {
         // columncounter
         int i = 1;
         //// COREDATA ////
-        stmnt.setString(i++,dataset.m_masterId.toString());
-        stmnt.setInt(i++,subId);
-        stmnt.setString(i++,dataset.m_userId.toString());
-        stmnt.setString(i++,dataset.m_groupId.toString());
-        stmnt.setInt(i++,dataset.m_lockedInProject);
-        stmnt.setInt(i++,dataset.m_accessFlags);
-        stmnt.setInt(i++,dataset.m_state);
-        stmnt.setString(i++,dataset.m_lockedBy.toString());
-        stmnt.setString(i++,dataset.m_lastModifiedBy.toString());
-        stmnt.setTimestamp(i++,new Timestamp(dataset.m_dateCreated));
-        stmnt.setTimestamp(i++,new Timestamp(dataset.m_dateLastModified));
+        stmt.setString(i++,dataset.m_masterId.toString());
+        stmt.setInt(i++,subId);
+        stmt.setString(i++,dataset.m_userId.toString());
+        stmt.setString(i++,dataset.m_groupId.toString());
+        stmt.setInt(i++,dataset.m_lockedInProject);
+        stmt.setInt(i++,dataset.m_accessFlags);
+        stmt.setInt(i++,dataset.m_state);
+        stmt.setString(i++,dataset.m_lockedBy.toString());
+        stmt.setString(i++,dataset.m_lastModifiedBy.toString());
+        stmt.setTimestamp(i++,new Timestamp(dataset.m_dateCreated));
+        stmt.setTimestamp(i++,new Timestamp(dataset.m_dateLastModified));
         //// USERDATA ////
-        stmnt.setTimestamp(i++,new Timestamp(dataset.m_publicationDate));
-        stmnt.setTimestamp(i++,new Timestamp(dataset.m_purgeDate));
-        stmnt.setInt(i++,dataset.m_flags);
-        stmnt.setInt(i++,dataset.m_feedId);
-        stmnt.setInt(i++,dataset.m_feedReference);
+        stmt.setTimestamp(i++,new Timestamp(dataset.m_publicationDate));
+        stmt.setTimestamp(i++,new Timestamp(dataset.m_purgeDate));
+        stmt.setInt(i++,dataset.m_flags);
+        stmt.setInt(i++,dataset.m_feedId);
+        stmt.setInt(i++,dataset.m_feedReference);
         if(dataset.m_feedFilename == null){
-            stmnt.setNull(i++,Types.VARCHAR);
+            stmt.setNull(i++,Types.VARCHAR);
         } else {
-            stmnt.setString(i++,dataset.m_feedFilename);
+            stmt.setString(i++,dataset.m_feedFilename);
         }
         if(dataset.m_title == null){
-            stmnt.setNull(i++,Types.VARCHAR);
+            stmt.setNull(i++,Types.VARCHAR);
         } else {
-            stmnt.setString(i++,dataset.m_title);
+            stmt.setString(i++,dataset.m_title);
         }
         //// GENERIC DATA ////
-        i = sqlSetTextArray(stmnt, dataset.m_dataBig, i);
-        i = sqlSetTextArray(stmnt, dataset.m_dataMedium, i);
-        i = sqlSetTextArray(stmnt, dataset.m_dataSmall, i);
-        i = sqlSetIntArray(stmnt, dataset.m_dataInt, i);
-        i = sqlSetIntArray(stmnt, dataset.m_dataReference, i);
-        i = sqlSetDateArray(stmnt, dataset.m_dataDate, i);
+        i = sqlSetTextArray(stmt, dataset.m_dataBig, i);
+        i = sqlSetTextArray(stmt, dataset.m_dataMedium, i);
+        i = sqlSetTextArray(stmt, dataset.m_dataSmall, i);
+        i = sqlSetIntArray(stmt, dataset.m_dataInt, i);
+        i = sqlSetIntArray(stmt, dataset.m_dataReference, i);
+        i = sqlSetDateArray(stmt, dataset.m_dataDate, i);
         return i;
     }
 
@@ -1063,15 +1011,14 @@ public class CmsDbAccess {
             }
 
             String statement_key = "read_channel_offline";
-            String poolToUse = m_poolName;
 
             PreparedStatement stmt = null;
             ResultSet res = null;
             Connection conn = null;
             try {
                 cms.setContextToCos();
-                conn = DriverManager.getConnection(poolToUse);
-                stmt = sqlPrepare(conn, statement_key);
+                conn = m_SqlQueries.getConnection();
+                stmt = m_SqlQueries.getPreparedStatement(conn, statement_key);
                 stmt.setString(1, dataset.m_masterId.toString());
                 res = stmt.executeQuery();
                 while(res.next()) {
@@ -1096,7 +1043,7 @@ public class CmsDbAccess {
                 }
             } finally {
                 cms.setContextToVfs();
-                sqlClose(conn, stmt, res);
+                m_SqlQueries.closeAll(conn, stmt, res);
             }
         }
         // no channel found, that belongs to the offlineproject ->
@@ -1106,18 +1053,18 @@ public class CmsDbAccess {
 
     /**
      * Sets an array of strings into the stmnt.
-     * @param stmnt the PreparedStatement to set the values into.
+     * @param stmt the PreparedStatement to set the values into.
      * @param array the array of strings to set.
      * @param the columnscounter for the stmnt.
      * @return the increased columnscounter;
      */
-    protected int sqlSetTextArray(PreparedStatement stmnt, String[] array, int columnscounter)
+    protected int sqlSetTextArray(PreparedStatement stmt, String[] array, int columnscounter)
         throws SQLException {
         for(int j = 0; j < array.length; j++) {
             if(array[j] == null) {
-                stmnt.setNull(columnscounter++,Types.LONGVARCHAR);
+                stmt.setNull(columnscounter++,Types.LONGVARCHAR);
             } else {
-                stmnt.setString(columnscounter++,array[j]);
+                stmt.setString(columnscounter++,array[j]);
             }
         }
         return columnscounter;
@@ -1140,15 +1087,15 @@ public class CmsDbAccess {
 
     /**
      * Sets an array of ints into the stmnt.
-     * @param stmnt the PreparedStatement to set the values into.
+     * @param stmt the PreparedStatement to set the values into.
      * @param array the array of ints to set.
      * @param the columnscounter for the stmnt.
      * @return the increased columnscounter;
      */
-    protected int sqlSetIntArray(PreparedStatement stmnt, int[] array, int columnscounter)
+    protected int sqlSetIntArray(PreparedStatement stmt, int[] array, int columnscounter)
         throws SQLException {
         for(int j = 0; j < array.length; j++) {
-            stmnt.setInt(columnscounter++,array[j]);
+            stmt.setInt(columnscounter++,array[j]);
         }
         return columnscounter;
     }
@@ -1170,15 +1117,15 @@ public class CmsDbAccess {
 
     /**
      * Sets an array of ints into the stmnt.
-     * @param stmnt the PreparedStatement to set the values into.
+     * @param stmt the PreparedStatement to set the values into.
      * @param array the array of longs to set.
      * @param the columnscounter for the stmnt.
      * @return the increased columnscounter;
      */
-    protected int sqlSetDateArray(PreparedStatement stmnt, long[] array, int columnscounter)
+    protected int sqlSetDateArray(PreparedStatement stmt, long[] array, int columnscounter)
         throws SQLException {
         for(int j = 0; j < array.length; j++) {
-            stmnt.setTimestamp(columnscounter++,new Timestamp(array[j]));
+            stmt.setTimestamp(columnscounter++,new Timestamp(array[j]));
         }
         return columnscounter;
     }
@@ -1327,12 +1274,12 @@ public class CmsDbAccess {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(m_poolName);
-            stmt = sqlPrepare(conn, statement_key);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, statement_key);
             stmt.setString(1, masterId.toString());
             stmt.executeUpdate();
         } finally {
-            sqlClose(conn, stmt, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -1346,12 +1293,12 @@ public class CmsDbAccess {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(m_poolName);
-            stmt = sqlPrepare(conn, statement_key);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, statement_key);
             stmt.setString(1, masterId.toString());
             stmt.executeUpdate();
         } finally {
-            sqlClose(conn, stmt, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -1369,53 +1316,53 @@ public class CmsDbAccess {
                                Vector mediaToUpdate, Vector mediaToDelete)
         throws SQLException, CmsException {
         // add new media
-        PreparedStatement stmnt = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            stmnt = sqlPrepare(con, "insert_media_offline");
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "insert_media_offline");
             for(int i = 0; i < mediaToAdd.size(); i++) {
                 CmsMasterMedia media = (CmsMasterMedia) mediaToAdd.get(i);
                 media.setId(CmsIdGenerator.nextId(m_interimOfflinePoolUrl, "CMS_MODULE_MEDIA"));
                 media.setMasterId(masterId);
-                sqlFillValues(stmnt, media);
-                stmnt.executeUpdate();
+                sqlFillValues(stmt, media);
+                stmt.executeUpdate();
             }
         } finally {
-            sqlClose(con, stmnt, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
 
         // update existing media
-        stmnt = null;
-        con = null;
+        stmt = null;
+        conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            stmnt = sqlPrepare(con, "update_media_offline");
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "update_media_offline");
             for(int i = 0; i < mediaToUpdate.size(); i++) {
                 CmsMasterMedia media = (CmsMasterMedia) mediaToUpdate.get(i);
                 media.setMasterId(masterId);
-                int rowCounter = sqlFillValues(stmnt, media);
-                stmnt.setInt(rowCounter++, media.getId());
-                stmnt.setString(rowCounter++, masterId.toString());
-                stmnt.executeUpdate();
+                int rowCounter = sqlFillValues(stmt, media);
+                stmt.setInt(rowCounter++, media.getId());
+                stmt.setString(rowCounter++, masterId.toString());
+                stmt.executeUpdate();
             }
         } finally {
-            sqlClose(con, stmnt, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
         // delete unneeded media
-        stmnt = null;
-        con = null;
+        stmt = null;
+        conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            stmnt = sqlPrepare(con, "delete_media_offline");
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "delete_media_offline");
             for(int i = 0; i < mediaToDelete.size(); i++) {
                 CmsMasterMedia media = (CmsMasterMedia) mediaToDelete.get(i);
-                stmnt.setInt(1, media.getId());
-                stmnt.setString(2, masterId.toString());
-                stmnt.executeUpdate();
+                stmt.setInt(1, media.getId());
+                stmt.setString(2, masterId.toString());
+                stmt.executeUpdate();
             }
         } finally {
-            sqlClose(con, stmnt, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -1431,21 +1378,21 @@ public class CmsDbAccess {
     protected void updateChannels(CmsObject cms, CmsUUID masterId, Vector channelToAdd,
         Vector channelToDelete) throws SQLException {
         // add new channel
-        PreparedStatement stmnt = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            stmnt = sqlPrepare(con, "insert_channel_offline");
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "insert_channel_offline");
             for(int i = 0; i < channelToAdd.size(); i++) {
                 try {
-                    stmnt.setString(1, masterId.toString());
+                    stmt.setString(1, masterId.toString());
                     cms.setContextToCos();
-                    stmnt.setInt(2, Integer.parseInt(cms.readProperty(channelToAdd.get(i)+"",
+                    stmt.setInt(2, Integer.parseInt(cms.readProperty(channelToAdd.get(i)+"",
                         I_CmsConstants.C_PROPERTY_CHANNELID)));
                     cms.setContextToVfs();
                     // stmnt.setInt(2, Integer.parseInt(cms.readProperty(C_COS_PREFIX + channelToAdd.get(i),
                     //    I_CmsConstants.C_PROPERTY_CHANNELID)));
-                    stmnt.executeUpdate();
+                    stmt.executeUpdate();
                 } catch(CmsException exc) {
                     // no channel found - write to logfile
                     if(CmsBase.isLogging()) {
@@ -1454,25 +1401,25 @@ public class CmsDbAccess {
                 }
             }
         } finally {
-            sqlClose(con, stmnt, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
 
         // delete unneeded channel
-        stmnt = null;
-        con = null;
+        stmt = null;
+        conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            stmnt = sqlPrepare(con, "delete_channel_offline");
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "delete_channel_offline");
             for(int i = 0; i < channelToDelete.size(); i++) {
                 try {
-                    stmnt.setString(1, masterId.toString());
+                    stmt.setString(1, masterId.toString());
                     cms.setContextToCos();
-                    stmnt.setInt(2, Integer.parseInt(cms.readProperty(channelToDelete.get(i)+"",
+                    stmt.setInt(2, Integer.parseInt(cms.readProperty(channelToDelete.get(i)+"",
                          I_CmsConstants.C_PROPERTY_CHANNELID)));
                     cms.setContextToVfs();
                     // stmnt.setInt(2, Integer.parseInt(cms.readProperty(C_COS_PREFIX + channelToDelete.get(i),
                     //     I_CmsConstants.C_PROPERTY_CHANNELID)));
-                    stmnt.executeUpdate();
+                    stmt.executeUpdate();
                 } catch(CmsException exc) {
                     // no channel found - write to logfile
                     if(CmsBase.isLogging()) {
@@ -1481,33 +1428,33 @@ public class CmsDbAccess {
                 }
             }
         } finally {
-            sqlClose(con, stmnt, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
     /**
      * Fills a prepared statement with media values.
      * 
-     * @param stmnt the statement to fill
+     * @param stmt the statement to fill
      * @param media the data to fill the statement with
      * @return int the number of values set in the statement
      * @throws SQLException if data could not be set in statement
      */
-    protected int sqlFillValues(PreparedStatement stmnt, CmsMasterMedia media)
+    protected int sqlFillValues(PreparedStatement stmt, CmsMasterMedia media)
         throws SQLException {
         int i = 1;
-        stmnt.setInt(i++, media.getId());
-        stmnt.setString(i++, media.getMasterId().toString());
-        stmnt.setInt(i++, media.getPosition());
-        stmnt.setInt(i++, media.getWidth());
-        stmnt.setInt(i++, media.getHeight());
-        stmnt.setInt(i++, media.getSize());
-        stmnt.setString(i++, media.getMimetype());
-        stmnt.setInt(i++, media.getType());
-        stmnt.setString(i++, media.getTitle());
-        stmnt.setString(i++, media.getName());
-        stmnt.setString(i++, media.getDescription());
-        stmnt.setBinaryStream(i++, new ByteArrayInputStream(media.getMedia()), media.getMedia().length);
+        stmt.setInt(i++, media.getId());
+        stmt.setString(i++, media.getMasterId().toString());
+        stmt.setInt(i++, media.getPosition());
+        stmt.setInt(i++, media.getWidth());
+        stmt.setInt(i++, media.getHeight());
+        stmt.setInt(i++, media.getSize());
+        stmt.setString(i++, media.getMimetype());
+        stmt.setInt(i++, media.getType());
+        stmt.setString(i++, media.getTitle());
+        stmt.setString(i++, media.getName());
+        stmt.setString(i++, media.getDescription());
+        stmt.setBinaryStream(i++, new ByteArrayInputStream(media.getMedia()), media.getMedia().length);
         //stmnt.setBytes(i++, media.getMedia());
         return i;
     }
@@ -1523,16 +1470,16 @@ public class CmsDbAccess {
     public Vector getHistory(CmsObject cms, Class contentDefinitionClass, CmsUUID masterId, int subId) throws CmsException{
         Vector retVector = new Vector();
         Vector allBackup = new Vector();
-        PreparedStatement stmnt = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_backupPoolName);
-            stmnt = sqlPrepare(con, "read_all_backup");
-            stmnt.setString(1, masterId.toString());
-            stmnt.setInt(2, subId);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "read_all_backup");
+            stmt.setString(1, masterId.toString());
+            stmt.setInt(2, subId);
             // gets all versions of the master in the backup table
-            res = stmnt.executeQuery();
+            res = stmt.executeQuery();
             while(res.next()) {
                 CmsMasterDataSet dataset = new CmsMasterDataSet();
                 sqlFillValues(res, cms, dataset);
@@ -1546,7 +1493,7 @@ public class CmsDbAccess {
         } catch (SQLException e){
             throw new CmsException(CmsException.C_SQL_ERROR, e);
         } finally {
-            sqlClose(con, stmnt, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return retVector;
     }
@@ -1599,17 +1546,17 @@ public class CmsDbAccess {
      */
     public CmsMasterDataSet getVersionFromHistory(CmsObject cms, CmsUUID masterId, int subId, int versionId) throws CmsException{
         CmsMasterDataSet dataset = new CmsMasterDataSet();
-        PreparedStatement stmnt = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_backupPoolName);
-            stmnt = sqlPrepare(con, "read_backup");
-            stmnt.setString(1, masterId.toString());
-            stmnt.setInt(2, subId);
-            stmnt.setInt(3, versionId);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "read_backup");
+            stmt.setString(1, masterId.toString());
+            stmt.setInt(2, subId);
+            stmt.setInt(3, versionId);
             // gets the master in the backup table with the given versionid
-            res = stmnt.executeQuery();
+            res = stmt.executeQuery();
             if(res.next()) {
                 sqlFillValues(res, cms, dataset);
                 dataset.m_versionId = res.getInt("VERSION_ID");
@@ -1622,7 +1569,7 @@ public class CmsDbAccess {
         } catch (SQLException e){
             throw new CmsException(CmsException.C_SQL_ERROR, e);
         } finally {
-            sqlClose(con, stmnt, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return dataset;
     }
@@ -1636,10 +1583,10 @@ public class CmsDbAccess {
      * @param versionId The version id of the master and media to restore
      */
      public void restore(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset, int versionId) throws CmsException{
-        Connection con = null;
-        Connection con2 = null;
-        PreparedStatement stmnt = null;
-        PreparedStatement stmnt2 = null;
+        Connection conn = null;
+        Connection conn2 = null;
+        PreparedStatement stmt = null;
+        PreparedStatement stmt2 = null;
         ResultSet res = null;
         // first read the version from backup
         CmsMasterDataSet backup = getVersionFromHistory(cms, dataset.m_masterId, content.getSubId(), versionId);
@@ -1695,11 +1642,11 @@ public class CmsDbAccess {
         }
         // copy the media from backup
         try {
-            con = DriverManager.getConnection(m_backupPoolName);
-            stmnt = sqlPrepare(con, "read_media_backup");
-            stmnt.setString(1, dataset.m_masterId.toString());
-            stmnt.setInt(2, versionId);
-            res = stmnt.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "read_media_backup");
+            stmt.setString(1, dataset.m_masterId.toString());
+            stmt.setInt(2, versionId);
+            res = stmt.executeQuery();
             while (res.next()){
                 int i = 1;
                 CmsMasterMedia media = new CmsMasterMedia (
@@ -1717,22 +1664,22 @@ public class CmsDbAccess {
                                             res.getBytes(i++));
                 // store the data in offline table
                 try {
-                    stmnt2 = null;
-                    con2 = null;
-                    con2 = DriverManager.getConnection(m_poolName);
-                    stmnt2 = sqlPrepare(con2, "insert_media_offline");
-                    sqlFillValues(stmnt2, media);
-                    stmnt2.executeUpdate();
+                    stmt2 = null;
+                    conn2 = null;
+                    conn2 = m_SqlQueries.getConnection();
+                    stmt2 = m_SqlQueries.getPreparedStatement(conn2, "insert_media_offline");
+                    sqlFillValues(stmt2, media);
+                    stmt2.executeUpdate();
                 } catch (SQLException ex){
                     throw new CmsException(CmsException.C_SQL_ERROR, ex);
                 } finally {
-                    sqlClose(con2, stmnt2, null);
+                    m_SqlQueries.closeAll(conn2, stmt2, null);
                 }
             }
         } catch (SQLException e){
             throw new CmsException(CmsException.C_SQL_ERROR, e);
         } finally {
-            sqlClose(con, stmnt, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
      }
 
@@ -1775,20 +1722,19 @@ public class CmsDbAccess {
         Vector changedModuleData) throws CmsException {
 
         String statement_key = "read_all_for_publish";
-        String poolToUse = m_poolName;
 
-        PreparedStatement stmnt = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(poolToUse);
-            stmnt = sqlPrepare(con, statement_key);
-            stmnt.setInt(1, subId);
-            stmnt.setInt(2, projectId);
-            stmnt.setInt(3, I_CmsConstants.C_STATE_UNCHANGED);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, statement_key);
+            stmt.setInt(1, subId);
+            stmt.setInt(2, projectId);
+            stmt.setInt(3, I_CmsConstants.C_STATE_UNCHANGED);
             // gets all ressources that are changed int this project
             // and that belongs to this subId
-            res = stmnt.executeQuery();
+            res = stmt.executeQuery();
             while(res.next()) {
                 // create a new dataset to fill the values
                 CmsMasterDataSet dataset = new CmsMasterDataSet();
@@ -1801,7 +1747,7 @@ public class CmsDbAccess {
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
     }
 
@@ -1859,20 +1805,20 @@ public class CmsDbAccess {
         }
 
         // now update state, lockstate and projectId in offline
-        PreparedStatement stmnt = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            stmnt = sqlPrepare(con, "update_state_offline");
-            stmnt.setInt(1, I_CmsConstants.C_STATE_UNCHANGED);
-            stmnt.setString(2, CmsUUID.getNullUUID().toString());
-            stmnt.setString(3, dataset.m_masterId.toString());
-            stmnt.setInt(4, subId);
-            stmnt.executeUpdate();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "update_state_offline");
+            stmt.setInt(1, I_CmsConstants.C_STATE_UNCHANGED);
+            stmt.setString(2, CmsUUID.getNullUUID().toString());
+            stmt.setString(3, dataset.m_masterId.toString());
+            stmt.setInt(4, subId);
+            stmt.executeUpdate();
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
 
         // update changedModuleData Vector
@@ -1884,45 +1830,48 @@ public class CmsDbAccess {
      * @todo: add description here
      */
     protected void publishDeleteData(CmsUUID masterId, int subId, String table) throws CmsException {
-        PreparedStatement stmnt = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        String deleteChannel = "delete_all_channel_" + table;
         // delete channel relation
         try {
-            con = DriverManager.getConnection(m_onlinePoolName);
-            stmnt = sqlPrepare(con, "delete_all_channel_" + table);
-            stmnt.setString(1, masterId.toString());
-            stmnt.executeUpdate();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, deleteChannel);
+            stmt.setString(1, masterId.toString());
+            stmt.executeUpdate();
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
         // delete media
         try {
-            con = null;
-            stmnt = null;
-            con = DriverManager.getConnection(m_onlinePoolName);
-            stmnt = sqlPrepare(con, "delete_all_media_" + table);
-            stmnt.setString(1, masterId.toString());
-            stmnt.executeUpdate();
+            conn = null;
+            stmt = null;
+            String deleteMedia = "delete_all_media_" + table;
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, deleteMedia);
+            stmt.setString(1, masterId.toString());
+            stmt.executeUpdate();
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
         // delete the row
         try {
-            stmnt = null;
-            con = null;
-            con = DriverManager.getConnection(m_onlinePoolName);
-            stmnt = sqlPrepare(con, "delete_" + table);
-            stmnt.setString(1, masterId.toString());
-            stmnt.setInt(2, subId);
-            stmnt.executeUpdate();
+            stmt = null;
+            conn = null;
+            String delete = "delete_" + table;
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, delete);
+            stmt.setString(1, masterId.toString());
+            stmt.setInt(2, subId);
+            stmt.executeUpdate();
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
    }
 
@@ -1930,40 +1879,40 @@ public class CmsDbAccess {
      * @todo: add description here
      */
     protected void publishCopyData(CmsMasterDataSet dataset, int subId ) throws CmsException {
-        PreparedStatement stmnt = null;
-        PreparedStatement stmnt2 = null;
+        PreparedStatement stmt = null;
+        PreparedStatement stmt2 = null;
         ResultSet res = null;
-        Connection con = null;
-        Connection con2 = null;
+        Connection conn = null;
+        Connection conn2 = null;
         CmsUUID masterId = dataset.m_masterId;
         
         // copy the row
         try {
-            stmnt = null;
-            con = DriverManager.getConnection(m_onlinePoolName);
-            stmnt = sqlPrepare(con, "insert_online");
+            stmt = null;
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "insert_online");
             // correct the data in the dataset
             dataset.m_projectId = I_CmsConstants.C_PROJECT_ONLINE_ID;
             dataset.m_lockedInProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
             dataset.m_state = I_CmsConstants.C_STATE_UNCHANGED;
             dataset.m_lockedBy = CmsUUID.getNullUUID();
-            sqlFillValues(stmnt, subId, dataset);
-            stmnt.executeUpdate();
+            sqlFillValues(stmt, subId, dataset);
+            stmt.executeUpdate();
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
         // copy media
         try {
             // read all media of master from offline
-            stmnt = null;
+            stmt = null;
             res = null;
-            con = null;
-            con = DriverManager.getConnection(m_poolName);
-            stmnt = sqlPrepare(con, "read_media_offline");
-            stmnt.setString(1, masterId.toString());
-            res = stmnt.executeQuery();
+            conn = null;
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "read_media_offline");
+            stmt.setString(1, masterId.toString());
+            res = stmt.executeQuery();
             while(res.next()) {
                 // create a new dataset to fill the values
                 int i = 1;
@@ -1982,54 +1931,54 @@ public class CmsDbAccess {
                                                 res.getBytes(i++));
                 // insert media of master into online
                 try {
-                    stmnt2 = null;
-                    con2 = null;
-                    con2 = DriverManager.getConnection(m_onlinePoolName);
-                    stmnt2 = sqlPrepare(con2, "insert_media_online");
-                    sqlFillValues(stmnt2, mediaset);
-                    stmnt2.executeUpdate();
+                    stmt2 = null;
+                    conn2 = null;
+                    conn2 = m_SqlQueries.getConnection();
+                    stmt2 = m_SqlQueries.getPreparedStatement(conn2, "insert_media_online");
+                    sqlFillValues(stmt2, mediaset);
+                    stmt2.executeUpdate();
                 } catch(SQLException ex){
                     throw ex;
                 } finally {
-                    sqlClose(con2, stmnt2, null);
+                    m_SqlQueries.closeAll(conn2, stmt2, null);
                 }
             }
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
 
         // copy channel relation
         try {
-            stmnt = null;
+            stmt = null;
             res = null;
-            con = null;
-            con = DriverManager.getConnection(m_poolName);
+            conn = null;
+            conn = m_SqlQueries.getConnection();
             // read all channel relations for master from offline
-            stmnt = sqlPrepare(con, "read_channel_offline");
-            stmnt.setString(1, masterId.toString());
-            res = stmnt.executeQuery();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "read_channel_offline");
+            stmt.setString(1, masterId.toString());
+            res = stmt.executeQuery();
             while (res.next()){
                 // insert all channel relations for master into online
                 try {
-                    stmnt2 = null;
-                    con2 = null;
-                    con2 = DriverManager.getConnection(m_onlinePoolName);
-                    stmnt2 = sqlPrepare(con2, "insert_channel_online");
-                    stmnt2.setString(1, masterId.toString());
-                    stmnt2.setInt(2, res.getInt(1));
-                    stmnt2.executeUpdate();
+                    stmt2 = null;
+                    conn2 = null;
+                    conn2 = m_SqlQueries.getConnection();
+                    stmt2 = m_SqlQueries.getPreparedStatement(conn2, "insert_channel_online");
+                    stmt2.setString(1, masterId.toString());
+                    stmt2.setInt(2, res.getInt(1));
+                    stmt2.executeUpdate();
                 } catch (SQLException ex){
                     throw ex;
                 } finally {
-                    sqlClose(con2, stmnt2, null);
+                    m_SqlQueries.closeAll(conn2, stmt2, null);
                 }
             }
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
     }
 
@@ -2038,19 +1987,19 @@ public class CmsDbAccess {
      */
     protected void publishBackupData(CmsObject cms, CmsMasterDataSet dataset, int subId,
                                      int versionId, long publishDate ) throws CmsException {
-        PreparedStatement stmnt = null;
-        PreparedStatement stmnt2 = null;
+        PreparedStatement stmt = null;
+        PreparedStatement stmt2 = null;
         ResultSet res = null;
-        Connection con = null;
-        Connection con2 = null;
+        Connection conn = null;
+        Connection conn2 = null;
         CmsUUID masterId = dataset.m_masterId;
         
         // copy the row
         try {
-            stmnt = null;
-            con = null;
-            con = DriverManager.getConnection(m_backupPoolName);
-            stmnt = sqlPrepare(con, "insert_backup");
+            stmt = null;
+            conn = null;
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "insert_backup");
             // correct the data in the dataset
             dataset.m_lockedBy = CmsUUID.getNullUUID();
             dataset.m_dateCreated = publishDate;
@@ -2078,28 +2027,28 @@ public class CmsDbAccess {
             } catch (CmsException ex){
                 userName = "";
             }
-            int lastId = sqlFillValues(stmnt, subId, dataset);
+            int lastId = sqlFillValues(stmt, subId, dataset);
             // set version
-            stmnt.setInt(lastId++, versionId);
-            stmnt.setString(lastId++, ownerName);
-            stmnt.setString(lastId++, groupName);
-            stmnt.setString(lastId++, userName);
-            stmnt.executeUpdate();
+            stmt.setInt(lastId++, versionId);
+            stmt.setString(lastId++, ownerName);
+            stmt.setString(lastId++, groupName);
+            stmt.setString(lastId++, userName);
+            stmt.executeUpdate();
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
         // copy media
         try {
             // read all media of master from offline
-            stmnt = null;
+            stmt = null;
             res = null;
-            con = null;
-            con = DriverManager.getConnection(m_poolName);
-            stmnt = sqlPrepare(con, "read_media_offline");
-            stmnt.setString(1, masterId.toString());
-            res = stmnt.executeQuery();
+            conn = null;
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "read_media_offline");
+            stmt.setString(1, masterId.toString());
+            res = stmt.executeQuery();
             while(res.next()) {
                 // create a new dataset to fill the values
                 int i = 1;
@@ -2118,40 +2067,24 @@ public class CmsDbAccess {
                                                 res.getBytes(i++));
                 // insert media of master into backup
                 try {
-                    con2 = null;
-                    stmnt2 = null;
-                    con2 = DriverManager.getConnection(m_backupPoolName);
-                    stmnt2 = sqlPrepare(con2, "insert_media_backup");
-                    int lastId = sqlFillValues(stmnt2, mediaset);
-                    stmnt2.setInt(lastId, versionId);
-                    stmnt2.executeUpdate();
+                    conn2 = null;
+                    stmt2 = null;
+                    conn2 = m_SqlQueries.getConnection();
+                    stmt2 = m_SqlQueries.getPreparedStatement(conn2, "insert_media_backup");
+                    int lastId = sqlFillValues(stmt2, mediaset);
+                    stmt2.setInt(lastId, versionId);
+                    stmt2.executeUpdate();
                 } catch(SQLException ex){
                     throw ex;
                 } finally {
-                    sqlClose(con2, stmnt2, null);
+                    m_SqlQueries.closeAll(conn2, stmt2, null);
                 }
             }
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            sqlClose(con, stmnt, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
     }
 
-    /**
-     * Returns the correct connection. If this is the onlineproject it returns
-     * the online connection, else it returns the offline connection.
-     * @param cms the CmsObject to get access to cms-ressources.
-     * @return the SQLConnection.
-     * @throws SQLException if the connection can not be returned.
-     */
-    public Connection getConnection(CmsObject cms) throws SQLException {
-        String poolToUse;
-        if(isOnlineProject(cms)) {
-            poolToUse = m_onlinePoolName;
-        } else {
-            poolToUse = m_poolName;
-        }
-        return DriverManager.getConnection(poolToUse);
-    }
 }

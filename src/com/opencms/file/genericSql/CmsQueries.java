@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2003/05/20 16:36:24 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2003/05/21 09:56:08 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import java.util.Properties;
  * TODO: multiple instances of this class should not load the same property hashes multiple times.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.52 $ $Date: 2003/05/20 16:36:24 $
+ * @version $Revision: 1.53 $ $Date: 2003/05/21 09:56:08 $
  */
 public class CmsQueries extends Object implements Serializable, Cloneable {
 
@@ -83,6 +83,17 @@ public class CmsQueries extends Object implements Serializable, Cloneable {
         m_dbPoolUrl = CmsDbcp.C_DBCP_JDBC_URL_PREFIX + dbPoolUrl;
         
         if (m_queries == null) {
+            m_queries = loadProperties(C_PROPERTY_FILENAME);            
+        }
+    }
+    
+    /**
+     * CmsQueries constructor.
+     */
+    public CmsQueries(String dbPoolUrl, boolean loadQueries) {
+        m_dbPoolUrl = CmsDbcp.C_DBCP_JDBC_URL_PREFIX + dbPoolUrl;
+    
+        if (loadQueries && m_queries == null) {
             m_queries = loadProperties(C_PROPERTY_FILENAME);            
         }
     }
