@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/02/16 09:15:18 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/02/21 22:25:09 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2000/02/16 09:15:18 $
+ * @version $Revision: 1.28 $ $Date: 2000/02/21 22:25:09 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -591,7 +591,7 @@ import com.opencms.util.*;
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
  		} catch( Exception exc ) {
-			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+			throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
          return file;
      }
@@ -649,7 +649,7 @@ import com.opencms.util.*;
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		} catch( Exception exc ) {
-			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+			throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
         return file;
        }
@@ -700,7 +700,7 @@ import com.opencms.util.*;
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		} catch( Exception exc ) {
-			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+			throw new CmsException("readAllFileHeaders "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
          return allHeaders;
      }
@@ -756,6 +756,7 @@ import com.opencms.util.*;
                 // check if the file content for this file is already existing in the
                 // offline project. If not, load it from the online project and add it
                 // to the offline project.
+      
                 if (file.getState() == C_STATE_UNCHANGED) {
                     // read file content form the online project
     
@@ -768,7 +769,6 @@ import com.opencms.util.*;
                     } else {
                         throw new CmsException("["+this.getClass().getName()+"]"+file.getAbsolutePath(),CmsException.C_NOT_FOUND);  
                     }
-    
                     // add the file content to the offline project.
                     PreparedStatement statementFileWrite=m_Con.prepareStatement(C_FILE_WRITE);
               
@@ -805,8 +805,7 @@ import com.opencms.util.*;
                 statementResourceUpdate.setString(12,absoluteName(file.getAbsolutePath()));
                 statementResourceUpdate.setInt(13,file.getProjectId());
                 statementResourceUpdate.executeUpdate();               
-                
-               } catch (SQLException e){
+                } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
      }
@@ -1060,7 +1059,7 @@ import com.opencms.util.*;
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		} catch( Exception exc ) {
-			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+			throw new CmsException("readFolder "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
         return folder;
     }
@@ -1219,7 +1218,7 @@ import com.opencms.util.*;
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);		
 		} catch( Exception exc ) {
-			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+			throw new CmsException("getSubFolders "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
          return folders;
      }
@@ -1271,7 +1270,7 @@ import com.opencms.util.*;
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);		
 		} catch( Exception exc ) {
-			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+			throw new CmsException("getFilesInFolder "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
            return files;
      }
@@ -1393,7 +1392,7 @@ import com.opencms.util.*;
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);		
 		} catch( Exception exc ) {
-			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+			throw new CmsException("PublishProject "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
            return resources;
     }
@@ -1446,7 +1445,7 @@ import com.opencms.util.*;
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		} catch( Exception exc ) {
-			throw new CmsException(exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+			throw new CmsException("readResource "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
         return file;
        }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/02/19 10:15:27 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/02/21 22:25:09 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -65,7 +65,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.20 $ $Date: 2000/02/19 10:15:27 $  
+* @version $Revision: 1.21 $ $Date: 2000/02/21 22:25:09 $  
 * 
 */
 
@@ -171,19 +171,19 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 	public void doGet(HttpServletRequest req, HttpServletResponse res) 
 		throws ServletException, IOException {	
         
-        long timer=System.currentTimeMillis();
+        CmsObject cms=null;
         
         CmsRequestHttpServlet cmsReq= new CmsRequestHttpServlet(req);
         CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(req,res);
 
         try {
-           CmsObject cms=initUser(cmsReq,cmsRes);
+           cms=initUser(cmsReq,cmsRes);
            CmsFile file=m_opencms.initResource(cms); 
            m_opencms.setResponse(cms,file);
            m_opencms.showResource(cms,file);
            updateUser(cms,cmsReq,cmsRes);
         } catch (CmsException e) {
-            errorHandling(req,res,e);
+            errorHandling(cms,cmsReq,cmsRes,e);
         } 
     }
 	
@@ -204,6 +204,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		 //Check for content type "form/multipart" and decode it
 		 String type = req.getHeader("content-type");
 
+         CmsObject cms=null;
 	     if ((type != null) && type.startsWith("multipart/form-data")){
 		    req = new CmsMultipartRequest(req);
 		 } 
@@ -212,13 +213,13 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
          CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(req,res);
          
        try {
-            CmsObject cms=initUser(cmsReq,cmsRes);
+            cms=initUser(cmsReq,cmsRes);
             CmsFile file=m_opencms.initResource(cms); 
             m_opencms.setResponse(cms,file);
             m_opencms.showResource(cms,file);
             updateUser(cms,cmsReq,cmsRes);
         } catch (CmsException e) {
-            errorHandling(req,res,e);
+            errorHandling(cms,cmsReq,cmsRes,e);
         } 
 	}
 
@@ -351,7 +352,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
                  }
             } 
        } catch (CmsException e) {
-            errorHandling(req,res,e);
+            errorHandling(cms,cmsReq,cmsRes,e);
        }
         return cms;
     }
@@ -389,6 +390,14 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
                                       cms.getRequestContext().currentUser().getName(),
                                       cms.getRequestContext().currentGroup().getName(),
                                       cms.getRequestContext().currentProject().getName());
+             
+             // check if the session notify is set, it is nescessary to remove the
+             // session from the internal storage on its destruction.             
+             OpenCmsServletNotify notify = (OpenCmsServletNotify)session.getValue("NOTIFY");
+             if (notify == null) {
+                notify = new OpenCmsServletNotify(session.getId(),m_sessionStorage);
+                session.putValue("NOTIFY",notify);                  
+             }
         }                  
      }
     
@@ -411,17 +420,23 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
      * All CmsExetions throns in the OpenCms are forwared to this method and are
      * processed here.
      * 
-	 * @param req   The clints request.
-	 * @param res   The servlets response.
+     * @param cms The CmsObject
+	 * @param cmsReq   The clints request.
+	 * @param cmsRes   The servlets response.
 	 * @param e The CmsException to be processed. 
      */
-    private void errorHandling(HttpServletRequest req, HttpServletResponse res, CmsException e){
+     private void errorHandling(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes,
+                                CmsException e){
         int errorType = e.getType();
+        
+        HttpServletRequest req=(HttpServletRequest)cmsReq.getOriginalRequest();
+        HttpServletResponse res=(HttpServletResponse)cmsRes.getOriginalResponse();
+        
         try{
             switch (errorType) {
             // access denied error - display login dialog
             case CmsException.C_ACCESS_DENIED: 
-                requestAuthorization(req,res);  
+                requestAuthorization(req,res); 
                 //System.err.println(e.toString());
                 e.printStackTrace();
                 break;

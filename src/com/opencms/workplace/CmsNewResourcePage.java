@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/02/21 13:58:39 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/02/21 22:25:09 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/02/21 13:58:39 $
+ * @version $Revision: 1.12 $ $Date: 2000/02/21 22:25:09 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -79,11 +79,14 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
         String template=null;
         String type=null;
         byte[] content=new byte[0];
+        CmsFile contentFile=null;
+        
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
- 
         //get the current filelist
         String currentFilelist=(String)session.getValue(C_PARA_FILELIST);
-        
+        if (currentFilelist==null) {
+                currentFilelist=cms.rootFolder().getAbsolutePath();
+        }   
         // get request parameters
         String newFile=(String)parameters.get(C_PARA_NEWFILE);
         String title=(String)parameters.get(C_PARA_TITLE);
@@ -91,10 +94,8 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
         String templatefile=(String)parameters.get(C_PARA_TEMPLATE);
         String navtitle=(String)parameters.get(C_PARA_NAVTITLE);       
         String navpos=(String)parameters.get(C_PARA_NAVPOS);   
-        
         // get the current phase of this wizard
         String step=cms.getRequestContext().getRequest().getParameter("step");
-       
         if (step != null) {
             if (step.equals("1")) {
                //check if the fielname has a file extension
@@ -110,19 +111,22 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                    checkFolders(cms,currentFilelist);
                    
                    // create the page file
-                   System.err.println("##Creating file "+ currentFilelist);
-                  
                    CmsFile file=cms.createFile(currentFilelist,newFile,content,"page");
                    cms.lockResource(file.getAbsolutePath());
                    cms.writeMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE,title);
                    
                    // now create the page content file
-                   System.err.println("##Creating body "+C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length()));
-                   CmsFile contentfile=cms.createFile(C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length()),newFile,C_DEFAULTBODY.getBytes(),"plain");
-                   
+                    try {
+                        contentFile=cms.readFile(C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length()),newFile);
+                   } catch (CmsException e) {
+                        if (contentFile == null) {
+                             contentFile=cms.createFile(C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length()),newFile,C_DEFAULTBODY.getBytes(),"plain");
+                        }
+                   }
+                        
                    // set the flags for the content file to internal use, the content 
                    // should not be loaded 
-                   cms.lockResource(contentfile.getAbsolutePath());
+                   cms.lockResource(contentFile.getAbsolutePath());
                    
                    // TODO: This does not work yet. Change it when the bug in the RB or access module is removed
                    //contentfile.setAccessFlags(contentfile.getAccessFlags()+C_ACCESS_INTERNAL_READ);
@@ -140,7 +144,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                    
                    
                   } catch (CmsException ex) {
-                    throw new CmsException(ex.getMessage(),ex.getType(),ex);
+                    throw new CmsException("Error while creating new Page"+ex.getMessage(),ex.getType(),ex);
                 }
             
                 // TODO: ErrorHandling
@@ -157,10 +161,8 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
         }
         // get the document to display
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
-    
         // process the selected template 
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
-    
     }
     
     /** 
@@ -447,6 +449,9 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                     cms.writeMetainformation(name,C_METAINFO_NAVPOS,new Integer(pos).toString());
                 }
             } */
+        if (max<20) {
+            max=20;
+        }
         cms.writeMetainformation(newfile.getAbsolutePath(),C_METAINFO_NAVPOS,new Integer(max+1).toString());             
       }
 }
