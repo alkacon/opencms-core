@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2004/03/16 11:19:16 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/04/13 11:36:28 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.1.12
  */
@@ -258,7 +258,7 @@ public class CmsPublishProject extends CmsReport {
                     
                     if ("true".equalsIgnoreCase(getParamDirectpublish())) {
                         // get the offline resource in direct publish mode
-                        publishResource = getCms().readFileHeader(getParamResource());
+                        publishResource = getCms().readFileHeader(getParamResource(), true);
                         // check if the resource is locked in direct publish mode                     
                         org.opencms.lock.CmsLock lock = getCms().getLock(publishResource);
                         if (!lock.isNullLock()) {
@@ -468,11 +468,11 @@ public class CmsPublishProject extends CmsReport {
     public String buildCheckSiblings() {
         CmsResource res = null;
         try {
-            res = getCms().readFileHeader(getParamResource());
+            res = getCms().readFileHeader(getParamResource(), true);
         } catch (CmsException e) {
             // res will be null
         }
-        if ((res != null && res.isFile() && res.getLinkCount() > 1) || (res.isFolder())) {
+        if ((res != null && res.isFile() && res.getLinkCount() > 1) || (res != null && res.isFolder())) {
             // resource is file and has siblings, so create checkbox
             StringBuffer retValue = new StringBuffer(128);
             retValue.append("<tr>\n\t<td>");
