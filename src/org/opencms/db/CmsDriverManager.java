@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/11/17 15:07:38 $
- * Version: $Revision: 1.448 $
+ * Date   : $Date: 2004/11/17 16:11:34 $
+ * Version: $Revision: 1.449 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.448 $ $Date: 2004/11/17 15:07:38 $
+ * @version $Revision: 1.449 $ $Date: 2004/11/17 16:11:34 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -4705,13 +4705,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         int publishProjectId = context.currentProject().getId();
         boolean temporaryProject = (context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
         boolean backupEnabled = OpenCms.getSystemInfo().isVersionHistoryEnabled();
-        int tagId = 0;
+        int backupTagId = 0;
 
         try {
             if (backupEnabled) {
-                tagId = getBackupTagId();
+                backupTagId = getBackupTagId();
             } else {
-                tagId = 0;
+                backupTagId = 0;
             }
 
             int maxVersions = OpenCms.getSystemInfo().getVersionHistoryMaxCount();
@@ -4740,14 +4740,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 readProject(I_CmsConstants.C_PROJECT_ONLINE_ID),
                 publishList,
                 OpenCms.getSystemInfo().isVersionHistoryEnabled(),
-                tagId,
+                backupTagId,
                 maxVersions);
 
             // iterate the initialized module action instances
             Iterator i = OpenCms.getModuleManager().getActionInstances();
             while (i.hasNext()) {
                 I_CmsModuleAction moduleActionInstance = (I_CmsModuleAction)i.next();
-                moduleActionInstance.publishProject(cms, publishList, tagId, report);
+                moduleActionInstance.publishProject(cms, publishList, backupTagId, report);
             }
 
             // the project was stored in the backuptables for history
@@ -5330,7 +5330,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         currentPath = I_CmsConstants.C_ROOT;
         cacheKey = getCacheKey(null, projectId, currentPath);
         if ((currentResource = (CmsResource)m_resourceCache.get(cacheKey)) == null) {
-            currentResource = m_vfsDriver.readFolder(null, projectId, currentPath);
+            currentResource = m_vfsDriver.readFolder(CmsRuntimeInfoFactory.getNullRuntimeInfo(), projectId, currentPath);
             m_resourceCache.put(cacheKey, currentResource);
         }
 
@@ -5350,7 +5350,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             // read the folder
             cacheKey = getCacheKey(null, projectId, currentPath);
             if ((currentResource = (CmsResource)m_resourceCache.get(cacheKey)) == null) {
-                currentResource = m_vfsDriver.readFolder(null, projectId, currentPath);
+                currentResource = m_vfsDriver.readFolder(CmsRuntimeInfoFactory.getNullRuntimeInfo(), projectId, currentPath);
                 m_resourceCache.put(cacheKey, currentResource);
             }
 
@@ -5373,7 +5373,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             // read the file
             cacheKey = getCacheKey(null, projectId, currentPath);
             if ((currentResource = (CmsResource)m_resourceCache.get(cacheKey)) == null) {
-                currentResource = m_vfsDriver.readResource(null, projectId, currentPath, filter.includeDeleted());
+                currentResource = m_vfsDriver.readResource(CmsRuntimeInfoFactory.getNullRuntimeInfo(), projectId, currentPath, filter.includeDeleted());
                 m_resourceCache.put(cacheKey, currentResource);
             }
 
@@ -6953,7 +6953,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                             exportPointDriver.createFolder(currentExportPoint, currentExportPoint);
                             // export the file content online          
                             CmsFile file = getVfsDriver().readFile(
-                                null,
+                                CmsRuntimeInfoFactory.getNullRuntimeInfo(),
                                 I_CmsConstants.C_PROJECT_ONLINE_ID,
                                 false,
                                 currentResource.getStructureId());
@@ -7179,7 +7179,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                         } else {
                             // read the file content online
                             CmsFile file = getVfsDriver().readFile(
-                                null,
+                                CmsRuntimeInfoFactory.getNullRuntimeInfo(),
                                 I_CmsConstants.C_PROJECT_ONLINE_ID,
                                 false,
                                 currentPublishedResource.getStructureId());
