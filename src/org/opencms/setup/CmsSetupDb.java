@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2004/11/25 09:29:59 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/11/25 13:15:38 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2004/11/25 09:29:59 $
+ * @version $Revision: 1.15 $ $Date: 2004/11/25 13:15:38 $
  */
 public class CmsSetupDb extends Object {
     
@@ -131,6 +131,17 @@ public class CmsSetupDb extends Object {
      * 
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
+     */
+    public void dropDatabase(String database, Map replacer) {
+        m_errorLogging = true;
+        executeSql(database, "drop_db.sql", replacer, false);
+    }
+    
+    /**
+     * Calls the drop script for the given database.
+     * 
+     * @param database the name of the database
+     * @param replacer the replacements to perform in the drop script
      * @param abortOnError indicates if the script is aborted if an error occurs
      */
     public void dropDatabase(String database, Map replacer, boolean abortOnError) {
@@ -138,6 +149,17 @@ public class CmsSetupDb extends Object {
         executeSql(database, "drop_db.sql", replacer, abortOnError);
     }
 
+    /**
+     * Calls the create database script for the given database.<p>
+     * 
+     * @param database the name of the database
+     * @param replacer the replacements to perform in the drop script
+     */
+    public void createDatabase(String database, Map replacer) {
+        m_errorLogging = true;
+        executeSql(database, "create_db.sql", replacer, true);
+    }
+    
     /**
      * Calls the create database script for the given database.<p>
      * 
@@ -155,6 +177,17 @@ public class CmsSetupDb extends Object {
      * 
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
+     */
+    public void createTables(String database, Map replacer) {
+        m_errorLogging = true;
+        executeSql(database, "create_tables.sql", replacer, true);
+    }
+    
+    /**
+     * Calls the create tables script for the given database.<p>
+     * 
+     * @param database the name of the database
+     * @param replacer the replacements to perform in the drop script
      * @param abortOnError indicates if the script is aborted if an error occurs
      */
     public void createTables(String database, Map replacer, boolean abortOnError) {
@@ -162,6 +195,27 @@ public class CmsSetupDb extends Object {
         executeSql(database, "create_tables.sql", replacer, abortOnError);
     }
 
+    /**
+     * Calls the drop tables script for the given database.<p>
+     * 
+     * @param database the name of the database
+     */
+    public void dropTables(String database) {
+        m_errorLogging = true;
+        executeSql(database, "drop_tables.sql", null, false);
+    }
+    
+    /**
+     * Calls the drop tables script for the given database.<p>
+     * 
+     * @param database the name of the database
+     * @param replacer the replacements to perform in the drop script
+     */
+    public void dropTables(String database, Map replacer) {
+        m_errorLogging = true;
+        executeSql(database, "drop_tables.sql", replacer, false);
+    }
+    
     /**
      * Calls the drop tables script for the given database.<p>
      * 
@@ -174,6 +228,17 @@ public class CmsSetupDb extends Object {
         executeSql(database, "drop_tables.sql", replacer, abortOnError);
     }
 
+    /**
+     * Calls an update script.<p>
+     * 
+     * @param updateScript the update script code
+     * @param replacers the replacers to use in the script code
+     */
+    public void updateDatabase(String updateScript, Map replacers) {
+        StringReader reader = new StringReader(updateScript);
+        executeSql(reader, replacers, true);
+    }
+    
     /**
      * Calls an update script.<p>
      * 
