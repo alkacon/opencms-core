@@ -211,5 +211,5 @@ function show_help()
 </TEMPLATE>
 
 <TEMPLATE name="error">
-<ERRORPAGE title="error.title.history" message="error.message.history" reason="error.reason.history" suggestion="error.suggestion.history" ref="explorer_files.html" /></TEMPLATE>
+<ERRORPAGE title="error.title.history" message="error.message.history" reason="error.reason.history" suggestion="error.suggestion.history" ref="explorer_files.html" ><process>details</process></ERRORPAGE></TEMPLATE>
 </WORKPLACE>

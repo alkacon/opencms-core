@@ -91,6 +91,6 @@ function show_help()
 </TEMPLATE>
 
 <TEMPLATE name="error">
-<ERRORPAGE title="error.title.chown" message="error.message.chown" reason="error.reason.chown" suggestion="error.suggestion.chown" ref="explorer_files.html" />
+<ERRORPAGE title="error.title.chown" message="error.message.chown" reason="error.reason.chown" suggestion="error.suggestion.chown" ref="explorer_files.html"><process>details</process></ERRORPAGE>
 </TEMPLATE>
 </WORKPLACE>

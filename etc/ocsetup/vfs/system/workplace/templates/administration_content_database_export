@@ -106,7 +106,7 @@ function show_help()
 
 <TEMPLATE name="error">
 <![CDATA[
-]]><ERRORPAGE title="error.title.database" message="error.message.database" reason="error.reason.database" suggestion="error.suggestion.database" ref="administration_content_database_export.html" /><![CDATA[
+]]><ERRORPAGE title="error.title.database" message="error.message.database" reason="error.reason.database" suggestion="error.suggestion.database" ref="administration_content_database_export.html" ><process>details</process></ERRORPAGE><![CDATA[
 ]]>
 </TEMPLATE>
 

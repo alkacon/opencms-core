@@ -72,7 +72,7 @@
 
 <TEMPLATE name="error">
 <![CDATA[
-]]><ERRORPAGE title="error.title.login" message="error.message.login" reason="error.reason.login" suggestion="error.suggestion.login" ref="login.html" /><![CDATA[
+]]><ERRORPAGE title="error.title.login" message="error.message.login" reason="error.reason.login" suggestion="error.suggestion.login" ref="login.html" ><process>details</process></ERRORPAGE><![CDATA[
 ]]>
 </TEMPLATE>
 

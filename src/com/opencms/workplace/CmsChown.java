@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChown.java,v $
- * Date   : $Date: 2000/04/03 10:48:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/04/06 09:26:34 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/04/03 10:48:31 $
+ * @version $Revision: 1.5 $ $Date: 2000/04/06 09:26:34 $
  */
 public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -80,7 +80,8 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
         
         // the template to be displayed
         String template=null;
-        
+		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);        
+		
         String newowner=(String)parameters.get(C_PARA_NEWOWNER);
         String filename=(String)parameters.get(C_PARA_FILE);
         if (filename != null) {
@@ -120,11 +121,11 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			    }
             } else {
                 // the current user is not allowed to change the file owner
+				xmlTemplateDocument.setData("details", "the current user is not allowed to change the file owner");
                 template="error";
             }
         }
 
-        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
 	    // set the required datablocks
         String title=cms.readProperty(file.getAbsolutePath(),C_PROPERTY_TITLE);
         if (title==null) {

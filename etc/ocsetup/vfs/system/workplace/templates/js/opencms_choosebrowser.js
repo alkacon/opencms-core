@@ -83,3 +83,89 @@ function hidelyr(welche)
 		//shown = false;
 }
 
+//------------------------------------------------------------------------------------
+// content exchange between 2 layers (used in explorer_files_neu_ordner.html)
+// m.schreiber 21.02.2000
+//------------------------------------------------------------------------------------
+var data1=null;
+var data2=null;
+
+function saveLayerData(from,to,srcLayer,destLayer) {
+	
+	if (ie) {
+		data1 = document.forms[from].NEUNAME.value;
+		data2 = document.forms[from].NEUTITEL.value;
+		document.forms[to].NEUNAME.value = data1;
+		document.forms[to].NEUTITEL.value = data2;
+	}
+	else if (ns) {
+		data1 = document[srcLayer].document.forms[from].NEUNAME.value;
+		data2 = document[srcLayer].document.forms[from].NEUTITEL.value;
+		document[destLayer].document.forms[to].NEUNAME.value = data1;
+		document[destLayer].document.forms[to].NEUTITEL.value = data2;
+	}
+}
+
+//------------------------------------------------------------------------------------
+// Functions for DHTML error dialogs
+// m.schreiber 22.03.2000
+//------------------------------------------------------------------------------------
+
+function chInputTxt(formName,field,txt,layerName)
+{
+	if (ie || layerName==null)
+		eval('document.' + formName +'.'+ field + '.value="'+ txt +'";');
+	else if (ns && layerName!=null) 
+		eval('document["'+layerName+'"].document.forms["'+formName+'"].'+ field + '.value="'+ txt +'";');
+}
+
+function toggleLayer(layerName)
+{
+if (shown) {
+	eval('hidelyr("'+ layerName +'")');
+	shown=false;
+	}
+else {
+	eval('showlyr("'+ layerName +'")');
+	shown=true;
+	}
+}
+
+function chButtonTxt(formName,field,txt1,txt2,layerName)
+{
+	if (shown)
+		chInputTxt(formName,field,txt2,layerName);
+	else
+		chInputTxt(formName,field,txt1,layerName);
+}
+
+function justifyLayers(lyr1,lyr2) {
+	if (ie) {
+		eval('y1 = document.all["'+ lyr1 +'"].offsetTop');
+		eval('lyrHeight = document.all["'+ lyr1 +'"].offsetHeight');
+		y2 = y1 + lyrHeight;
+		eval('document.all["'+ lyr2 +'"].style.top = y2-22');
+		}
+	else if (ns) {
+		eval('y1 = document["'+ lyr1 +'"].top');
+		eval('lyrHeight = document["'+ lyr1 +'"].clip.height');
+		y2 = y1 + lyrHeight; 
+		eval('document["'+ lyr2 +'"].top = y2-22');
+		}
+}
+
+function newObj(layerName,visibility){
+	eval('oCont=new makeObj("'+ layerName +'")');
+	eval('oCont.css.visibility="'+ visibility +'"');
+	eval('centerLayer("'+ layerName +'")');
+}
+
+function errorinit() {
+	newObj('errormain','hidden');
+	newObj('errordetails','hidden');
+	justifyLayers('errormain','errordetails');
+	showlyr('errormain');
+	pageWidth=bw.ns4?innerWidth:document.body.offsetWidth;
+	pageHeight=bw.ns4?innerHeight:document.body.offsetHeight;
+	window.onresize=resized;
+}

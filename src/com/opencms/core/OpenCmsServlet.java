@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/04/04 15:57:59 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2000/04/06 09:26:34 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,6 +39,7 @@ import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
 
 import com.opencms.file.*;
+import com.opencms.util.*;
 
 
 /**
@@ -65,7 +66,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.32 $ $Date: 2000/04/04 15:57:59 $  
+* @version $Revision: 1.33 $ $Date: 2000/04/06 09:26:34 $  
 * 
 */
 
@@ -694,7 +695,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		output.append("<tr><td class=dialogtxt colspan=2>\n");
 		output.append("<table cellspacing=0 cellpadding=5 width=100%>\n");
 		output.append("<tr>\n");
-		output.append("<td class=formular align=center><INPUT class=button width = 100 type=\"button\" value=\"OK\" id=OK name=OK onClick=\"location.href='explorer_files_projekt.html'\"></td>\n");
+		output.append("<td class=formular align=center><INPUT class=button width = 100 type=\"button\" value=\"OK\" id=OK name=OK onClick=\"history.back();\"></td>\n");
 		output.append("<td class=formular align=center><INPUT class=button width = 100 type=\"button\" value=\"Details anzeigen\" id=details name=details onClick=\"toggleLayer('errordetails');chButtonTxt('ERROR','details','Details anzeigen','Details verbergen','errormain')\"></td>\n");
 		output.append("</tr>\n");
 		output.append("</table>\n");
@@ -715,18 +716,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		output.append("<tr><td align=center class=dialogtxt>\n");
 		output.append("<textarea wrap=off cols=33 rows=6 style=\"width:330\" class=\"textarea\" onfocus=\"this.blur();\" id=EXCEPTION name=EXCEPTION>");
 
-		// print the stack-trace into a writer, to get its content
-		StringWriter stringWriter = new StringWriter();
-		PrintWriter writer = new PrintWriter(stringWriter);
-		e.printStackTrace(writer);
-		
-		if (e.getException() != null){
-			e.getException().printStackTrace(writer);
-		}
-		
-		writer.close();
-		stringWriter.close();
-		output.append(stringWriter.toString());
+		output.append(Utils.getStackTrace(e));
 		
 		output.append("</textarea>\n");
 		output.append("</td></tr>\n");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
- * Date   : $Date: 2000/04/04 10:02:40 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/04/06 09:26:34 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import java.io.*;
  * This is a general helper class.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/04/04 10:02:40 $
+ * @version $Revision: 1.11 $ $Date: 2000/04/06 09:26:34 $
  */
 public class Utils implements I_CmsConstants, I_CmsLogChannels {
 	/** Constant for sorting files upward by name */
@@ -270,5 +270,28 @@ public class Utils implements I_CmsConstants, I_CmsLogChannels {
             
         }
         return result.toString();
-    }   
+    }
+	
+	/**
+	 * Gets the stack-trace of a exception, and returns it as a string.
+	 * @param e The exception to get the stackTrace from.
+	 * @return the stackTrace of the exception.
+	 */
+	public static String getStackTrace(Exception e) {
+		// print the stack-trace into a writer, to get its content
+		StringWriter stringWriter = new StringWriter();
+		PrintWriter writer = new PrintWriter(stringWriter);
+		e.printStackTrace(writer);
+
+		if(e instanceof CmsException) {
+			CmsException cmsException = (CmsException)e;
+			if (cmsException.getException() != null){
+				cmsException.getException().printStackTrace(writer);
+			}
+		}
+		
+		writer.close();
+		stringWriter.close();
+		return stringWriter.toString();
+	}
 }

@@ -78,10 +78,10 @@ function show_help()
 </TEMPLATE>
 
 <TEMPLATE name="error">
-<ERRORPAGE title="error.title.chpwd" message="error.message.chpwd" reason="error.reason.chpwd" suggestion="error.suggestion.chpwd" ref="preferences.html?panel=user" />
+<ERRORPAGE title="error.title.chpwd" message="error.message.chpwd" reason="error.reason.chpwd" suggestion="error.suggestion.chpwd" ref="preferences.html?panel=user" ><process>details</process></ERRORPAGE>
 </TEMPLATE>
 
 <TEMPLATE name="error2">
-<ERRORPAGE title="error.title.chpwd" message="error.message.chpwd" reason="error.reason.chpwd2" suggestion="error.suggestion.chpwd2" ref="preferences.html?panel=user" />
+<ERRORPAGE title="error.title.chpwd" message="error.message.chpwd" reason="error.reason.chpwd2" suggestion="error.suggestion.chpwd2" ref="preferences.html?panel=user" ><process>details</process></ERRORPAGE>
 </TEMPLATE>
 </WORKPLACE>

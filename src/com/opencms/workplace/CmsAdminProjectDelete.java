@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectDelete.java,v $
- * Date   : $Date: 2000/04/04 10:28:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/04/06 09:26:34 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/04/04 10:28:48 $
+ * @version $Revision: 1.3 $ $Date: 2000/04/06 09:26:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectDelete extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsLogChannels {
@@ -98,6 +98,7 @@ public class CmsAdminProjectDelete extends CmsWorkplaceDefault implements I_CmsC
 				templateSelector = "done";
 			} catch (CmsException exc) {
 				// display error-message
+				xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
 				templateSelector = "error";
 			}
 		} else {

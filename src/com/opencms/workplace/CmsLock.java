@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLock.java,v $
- * Date   : $Date: 2000/04/05 13:04:48 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/04/06 09:26:34 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2000/04/05 13:04:48 $
+ * @version $Revision: 1.16 $ $Date: 2000/04/06 09:26:34 $
  */
 public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -85,7 +85,8 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         
         // the template to be displayed
         String template=null;
-        
+		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);        
+		
         // get the lasturl parameter
         String lasturl = getLastUrl(cms, parameters);
         
@@ -155,13 +156,13 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
 						throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
 					}
 				}else{
+					xmlTemplateDocument.setData("details", "unknown error");
 					template="error";
 				}
             }
     
         }
 
-        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
 		xmlTemplateDocument.setXmlData("FILENAME",file.getName());
         
         // process the selected template 

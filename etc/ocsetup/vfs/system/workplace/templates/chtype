@@ -74,7 +74,7 @@ function show_help()
 </TEMPLATE>
 
 <TEMPLATE name="error">
-<ERRORPAGE title="error.title.chtype" message="error.message.chtype" reason="error.reason.chtype" suggestion="error.suggestion.chtype" ref="explorer_files.html" />
+<ERRORPAGE title="error.title.chtype" message="error.message.chtype" reason="error.reason.chtype" suggestion="error.suggestion.chtype" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
 </TEMPLATE>
 
 </WORKPLACE>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/04/05 09:21:18 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/04/06 09:26:34 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/04/05 09:21:18 $
+ * @version $Revision: 1.14 $ $Date: 2000/04/06 09:26:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -162,6 +162,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 					templateSelector = C_PROJECTNEW_ERROR;
 				}
 			} catch(CmsException exc) {
+				xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
        			templateSelector = C_PROJECTNEW_ERROR;
 			}
 		}

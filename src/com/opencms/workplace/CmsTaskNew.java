@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
- * Date   : $Date: 2000/03/16 10:02:32 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/04/06 09:26:34 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2000/03/16 10:02:32 $
+ * @version $Revision: 1.15 $ $Date: 2000/04/06 09:26:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -178,7 +178,10 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 									 (String)parameters.get("MSG_DELIVERY"));
 				templateSelector = "done";
 			} catch( Exception exc ) {
-				A_OpenCms.log(C_MODULE_INFO, "Could not create task. " + exc.getMessage());
+				if(A_OpenCms.isLogging()) {
+					A_OpenCms.log(C_MODULE_INFO, "Could not create task. " + exc.getMessage());
+				}
+				xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
 				templateSelector = "error";
 			}
 

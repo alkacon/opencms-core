@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
- * Date   : $Date: 2000/04/04 10:28:48 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/04/06 09:26:34 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/04/04 10:28:48 $
+ * @version $Revision: 1.19 $ $Date: 2000/04/06 09:26:34 $
  */
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -84,6 +84,8 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
         A_CmsUser user;
         // the template to be displayed
         String template=templateSelector;
+		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
+		
         Hashtable preferences=new Hashtable();
         // get user name and password
         String name=(String)parameters.get("NAME");
@@ -96,7 +98,8 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
               if (e.getType()==CmsException.C_NO_ACCESS) {
                     // there was an authentification error during login
                     // set user to null and switch to error template
-                    username=null;     
+                    username=null;
+					xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
                     template="error";
                 } else {
                     throw e;
@@ -147,7 +150,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                 }
             }
         }
-        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
+        
         // this is the first time the dockument is selected, so reade the page forwarding
         if (username == null) {
             xmlTemplateDocument.clearStartup();

@@ -509,6 +509,6 @@ function show_help()
 </TEMPLATE>
 
 <TEMPLATE name="error">
-<ERRORPAGE title="error.title.property" message="error.message.property" reason="error.reason.property" suggestion="error.suggestion.chgrp" ref="explorer_files.html" />
+<ERRORPAGE title="error.title.property" message="error.message.property" reason="error.reason.property" suggestion="error.suggestion.chgrp" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
 </TEMPLATE>
 </WORKPLACE>

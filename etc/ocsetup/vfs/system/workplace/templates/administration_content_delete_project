@@ -150,7 +150,7 @@ function show_help()
 
 <TEMPLATE name="error">
 <![CDATA[
-]]><ERRORPAGE title="error.title.deleteproject" message="error.message.deleteproject" reason="error.reason.deleteproject" suggestion="error.suggestion.deleteproject" ref="administration_content_projectresent.html" /><![CDATA[
+]]><ERRORPAGE title="error.title.deleteproject" message="error.message.deleteproject" reason="error.reason.deleteproject" suggestion="error.suggestion.deleteproject" ref="administration_content_projectresent.html"><process>details</process></ERRORPAGE><![CDATA[
 ]]>
 </TEMPLATE>
 

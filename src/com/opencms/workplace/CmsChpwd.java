@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChpwd.java,v $
- * Date   : $Date: 2000/03/15 10:32:57 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/04/06 09:26:34 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/03/15 10:32:57 $
+ * @version $Revision: 1.2 $ $Date: 2000/04/06 09:26:34 $
  */
 public class CmsChpwd extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -79,7 +79,8 @@ public class CmsChpwd extends CmsWorkplaceDefault implements I_CmsWpConstants,
           
         // the template to be displayed
         String template=null;
-        
+        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
+		
         String oldpwd=(String)parameters.get(C_PARA_OLDPWD);
         String newpwd=(String)parameters.get(C_PARA_NEWPWD);
         String newpwdrepeat=(String)parameters.get(C_PARA_NEWPWDREPEAT);
@@ -102,6 +103,7 @@ public class CmsChpwd extends CmsWorkplaceDefault implements I_CmsWpConstants,
                 } catch (CmsException exp) {
                     // check if the old password was not correct
                     if (exp.getType() == 1) {
+						xmlTemplateDocument.setData("details", Utils.getStackTrace(exp));
                         template="error2";
                     } else {
                         throw exp;
@@ -110,10 +112,11 @@ public class CmsChpwd extends CmsWorkplaceDefault implements I_CmsWpConstants,
 
             } else {
                 // the new passwords do not match
+				xmlTemplateDocument.setData("details", "The new passwords do not match.");
                 template="error";
             }
          } 
-        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
+        
 
         // process the selected template 
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);

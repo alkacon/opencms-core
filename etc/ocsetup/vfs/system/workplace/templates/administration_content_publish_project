@@ -90,7 +90,7 @@ function show_help()
 
 <TEMPLATE name="error">
 <![CDATA[
-]]><ERRORPAGE title="error.title.publishproject" message="error.message.publishproject" reason="error.reason.publishproject" suggestion="error.suggestion.publishproject" ref="administration_content_projectresent.html" /><![CDATA[
+]]><ERRORPAGE title="error.title.publishproject" message="error.message.publishproject" reason="error.reason.publishproject" suggestion="error.suggestion.publishproject" ref="administration_content_projectresent.html" ><process>details</process></ERRORPAGE><![CDATA[
 ]]>
 </TEMPLATE>
 

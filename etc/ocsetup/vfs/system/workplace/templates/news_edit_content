@@ -127,7 +127,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
 <TEMPLATE name="error">
 <![CDATA[
-]]><ERRORPAGE title="error.title.newproject" message="error.message.newproject" reason="error.reason.newproject" suggestion="error.suggestion.newproject" ref="administration_content_projectnew.html" /><![CDATA[
+]]><ERRORPAGE title="error.title.newproject" message="error.message.newproject" reason="error.reason.newproject" suggestion="error.suggestion.newproject" ref="administration_content_projectnew.html" ><process>details</process></ERRORPAGE><![CDATA[
 ]]>
 </TEMPLATE>
 

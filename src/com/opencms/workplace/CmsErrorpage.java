@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsErrorpage.java,v $
- * Date   : $Date: 2000/02/22 11:22:42 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/04/06 09:26:34 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ERRORPAGE&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/02/22 11:22:42 $
+ * @version $Revision: 1.7 $ $Date: 2000/04/06 09:26:34 $
  */
 public class CmsErrorpage extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
@@ -88,12 +88,17 @@ public class CmsErrorpage extends A_CmsWpElement implements I_CmsWpElement, I_Cm
         String errorReason = n.getAttribute(C_ERROR_REASON);
         String errorSuggestion = n.getAttribute(C_ERROR_SUGGESTION);
         String errorLink = n.getAttribute(C_ERROR_LINK);
+		String details = "no details";
         
+		if(n.hasChildNodes()) {
+			details=n.getFirstChild().getNodeValue();
+		}
+		
         String reason;
         String button;
         
-        CmsXmlWpErrorDefFile errordef = getErrorDefinitions(cms);
-        
+        CmsXmlWpTemplateFile errordef = getErrorDefinitions(cms);
+		
         // get the data from the language file
         errorTitle = lang.getLanguageValue(errorTitle);
         errorMessage = lang.getLanguageValue(errorMessage);
@@ -101,10 +106,18 @@ public class CmsErrorpage extends A_CmsWpElement implements I_CmsWpElement, I_Cm
         errorSuggestion = lang.getLanguageValue(errorSuggestion);
         reason=lang.getLanguageValue("message.reason");
         button=lang.getLanguageValue("button.ok");
-        
-        // build errorbox
-        String result = errordef.getErrorpage(errorTitle,errorMessage,errorReason,
-                                             errorSuggestion,errorLink,reason,button,callingObject);
+
+		errordef.setData(C_ERROR_MSG_BUTTON, button);
+		errordef.setData(C_ERROR_TITLE, errorTitle);
+        errordef.setData(C_ERROR_MESSAGE, errorMessage);
+        errordef.setData(C_ERROR_REASON, errorReason);
+        errordef.setData(C_ERROR_SUGGESTION, errorSuggestion);
+        errordef.setData(C_ERROR_LINK, errorLink);
+        errordef.setData(C_ERROR_MSG_REASON, reason);
+        errordef.setData(C_ERROR_MSG_DETAILS, details);
+		
+        // build errorpage
+        String result = errordef.getProcessedDataValue(C_TAG_ERRORPAGE, callingObject, null);
         return result; 
 
     }                    

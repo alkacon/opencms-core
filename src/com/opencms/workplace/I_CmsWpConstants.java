@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/04/06 08:31:26 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2000/04/06 09:26:34 $
+ * Version: $Revision: 1.81 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.80 $ $Date: 2000/04/06 08:31:26 $
+ * @version $Revision: 1.81 $ $Date: 2000/04/06 09:26:34 $
  */
 public interface I_CmsWpConstants {
 
@@ -316,7 +316,7 @@ public interface I_CmsWpConstants {
    public static final String C_TAG_SELECTBOX_SELOPTION="selectbox.seloption";
       
    /** Name of the error´page tag in the error definiton template */
-   public static final String C_TAG_ERRORPAGE="errorpage";
+   public static final String C_TAG_ERRORPAGE="errorpagedefinition";
 
    /** Panel bar starting sequence tag in the panel bar definiton template */
    public static final String C_TAG_PANEL_STARTSEQ="paneldef.startseq";
@@ -517,6 +517,9 @@ public interface I_CmsWpConstants {
     /** Button label of the error box */
     public static final String C_ERROR_MSG_BUTTON = "msgbutton";    
 
+    /** Button label of the error box */
+    public static final String C_ERROR_MSG_DETAILS = "details";    
+	
     // Parameters for error boxes and error pages
     
     /** Title of the messagebox */
