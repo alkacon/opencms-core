@@ -41,7 +41,8 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 		<td class=dialogtxt align=left><INPUT size="30" maxlength="30" class="textfeld3" type="file" id="DATEINAME" name="DATEINAME" onfocus="UPLOAD.WEITER.disabled=false"></td>
 	</tr>
 	<tr>
-		<td colspan=2 class=leerzeile>&nbsp;</td>
+	<td class=formular colspan=2><input type=checkbox name="unzip" name="unzip">&nbsp;]]><LABEL value="button.unzip" /><![CDATA[</td>
+
 	<tr>
 		<td colspan=2 class=formular>
 			<table cellspacing=0 cellpadding=5 width=100%>
@@ -49,7 +50,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 				<INPUT type="hidden" name="step" id="step" value="1">
 				<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location=lasturl"></td>
 				<td class=formular align=middle width=20%><INPUT disabled class=button width=100 type="submit" value="]]><LABEL value="button.nextscreen" /><![CDATA[" id=WEITER name=WEITER></td>
-				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="alert("lasturl"+lasturl);location=lasturl"></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location=lasturl"></td>
 			</tr>
 			</table>
 		</td>
@@ -75,6 +76,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 <script language=JavaScript>
 <!--
 top.help_url='Administration/bildergallerien/Bilderhochladen.html';
+var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
 function check_textfeld(formular, feld)
 {
@@ -134,7 +136,11 @@ function check_textfeld(formular, feld)
 		<td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
 		<td class=dialogtxt><INPUT class="textfeld2" id="TITLE" name="TITLE" onfocus="UPLOADPIC.FERTIG.disabled=false;"></td>
 	</tr>
-	
+	<tr>
+		<td class=formular>]]><LABEL value="input.description" /><![CDATA[:</td>
+		<td class=dialogtxt><INPUT class="textfeld2" id=DESCRIPTION name=DESCRIPTION maxlength=100 value="]]><PROCESS>IMAGEDESCRIPTION</PROCESS><![CDATA["></td>	
+	</tr>
+		
 	<!--Beginn Buttons-->
 	<tr><td colspan=2 class=formular>
 			<table cellspacing=0 cellpadding=5 width=100%>
@@ -142,7 +148,7 @@ function check_textfeld(formular, feld)
 				<INPUT type="hidden" name="step" ID="step" value="2">
 				<td class=formular align=right width=60%><INPUT class=button width = 100 type ="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='administration_content_picgallery_upload.html?step=0&folder=]]><PROCESS>link_value</PROCESS><![CDATA[&action=upload';"></td>
 				<td class=formular align=middle width=20%><INPUT disabled class=button width = 100 type ="submit" value="]]><LABEL value="button.endwizard" /><![CDATA[" id =FERTIG name=FERTIG onClick="a=check_textfeld('UPLOADPIC', 'TITLE'); if(a==true)location='administration_content_picgallery_upload.html';"></td>
-				<td class=formular align=middle width=20%><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="alert("lasturl"+lasturl);location=lasturl"></td>
+				<td class=formular align=middle width=20%><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location=lasturl"></td>
 			</tr>
 			</table>
 		</td>

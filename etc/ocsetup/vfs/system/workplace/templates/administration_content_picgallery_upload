@@ -135,7 +135,11 @@ function check_textfeld(formular, feld)
         <td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
         <td class=dialogtxt><INPUT class="textfeld2" id="TITLE" name="TITLE" onfocus="UPLOADPIC.FERTIG.disabled=false;"></td>
     </tr>
-    
+	<tr>
+		<td class=formular>]]><LABEL value="input.description" /><![CDATA[:</td>
+		<td class=dialogtxt><INPUT class="textfeld2" id=DESCRIPTION name=DESCRIPTION maxlength=100 value="]]><PROCESS>IMAGEDESCRIPTION</PROCESS><![CDATA["></td>
+	</tr>
+	
     <!--Beginn Buttons-->
     <tr><td colspan=2 class=formular>
             <table cellspacing=0 cellpadding=5 width=100%>
