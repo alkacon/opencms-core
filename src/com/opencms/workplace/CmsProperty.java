@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2000/06/22 15:57:41 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/06/23 12:59:22 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/06/22 15:57:41 $
+ * @version $Revision: 1.14 $ $Date: 2000/06/23 12:59:22 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -160,16 +160,12 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         }
         
         // delete was selected
-        System.err.println("----1!----"+ delete);
         if (delete != null) {
             // check if the ok button was selected
             if (delete.equals("true")) {
                 // delete the propertydefinition
-        System.err.println("------2----"+propertydef);
                 if (propertydef != null) {            
-        System.err.println("------2----"+filename+propertydef);               
                     cms.deleteProperty(filename,propertydef);
-		System.err.println("--------3--- alles ok bis hier!!!");
                     template="ownlocked";    
                     //session.removeValue(C_PARA_FILE);
                     //session.removeValue(C_PARA_PROPERTYDEF);

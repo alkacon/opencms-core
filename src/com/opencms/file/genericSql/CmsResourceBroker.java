@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/23 08:01:34 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2000/06/23 12:59:22 $
+ * Version: $Revision: 1.65 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.64 $ $Date: 2000/06/23 08:01:34 $
+ * @version $Revision: 1.65 $ $Date: 2000/06/23 12:59:22 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -603,7 +603,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         throws CmsException {
         // check the security
 		if( isAdmin(currentUser, currentProject) ) {
-			m_propertyDefVectorCache.clear();
+			m_propertyDefVectorCache.clear();			
 			return( m_dbAccess.createPropertydefinition(name, 
 													    getResourceType(currentUser, 
 														         		currentProject, 
@@ -750,12 +750,11 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         Vector returnValue = null;
         CmsResourceType resType = getResourceType(currentUser, currentProject, resourcetype);
         
-        returnValue = (Vector)m_propertyDefVectorCache.get(resType.getResourceType());
+        returnValue = (Vector)m_propertyDefVectorCache.get(resType.getResourceName());
         if (returnValue == null){
 			returnValue = m_dbAccess.readAllPropertydefinitions(resType);
-			m_propertyDefVectorCache.put(resType.getResourceType(), returnValue);
+			m_propertyDefVectorCache.put(resType.getResourceName(), returnValue);
         }
- 
         return returnValue;
     }
 	
