@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/02/13 08:15:59 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -180,18 +180,14 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res)
     throws ServletException, IOException {
         byte[] content = null;
-        if (file instanceof CmsFile) {
-            content = ((CmsFile)file).getContents();
-        } else {
-            String filename = cms.readAbsolutePath(file);
-            try {                
-                content = cms.readFile(filename).getContents();
-            }  catch (CmsException e) {
-                if (DEBUG > 0) {
-                    e.printStackTrace(System.err);
-                }
-                throw new ServletException("Error in CmsDumpLoader while processing " + filename, e);    
+        String filename = cms.readAbsolutePath(file);
+        try {
+            content = cms.readFile(filename).getContents();
+        } catch (CmsException e) {
+            if (DEBUG > 0) {
+                e.printStackTrace(System.err);
             }
+            throw new ServletException("Error in CmsDumpLoader while processing " + filename, e);
         }
         res.getOutputStream().write(content);
         content = null;
