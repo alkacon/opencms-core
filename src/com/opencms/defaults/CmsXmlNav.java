@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2000/04/05 15:51:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/04/05 15:53:07 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.3 $ $Date: 2000/04/05 15:51:59 $
+ * @version $Revision: 1.4 $ $Date: 2000/04/05 15:53:07 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 		
@@ -713,11 +713,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 		String currentFolder="/";		
 		StringTokenizer st = new StringTokenizer(cms.getRequestContext().currentFolder().getAbsolutePath(),"/");
 		int count=st.countTokens();
-		/*if (level<0) {
-			level=(-1)*level;
-		} else {
-			level=count-level;
-		}*/
+		
 		if (level<0) {
 			level=(-1)*level;
 			level=count-level;
