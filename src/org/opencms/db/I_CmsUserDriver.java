@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/13 10:03:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/17 16:25:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/06/13 10:03:10 $
+ * @version $Revision: 1.2 $ $Date: 2003/06/17 16:25:36 $
  * @since 5.1
  */
 public interface I_CmsUserDriver {
@@ -110,9 +110,10 @@ public interface I_CmsUserDriver {
     
     void addUserToGroup(CmsUUID userid, CmsUUID groupid) throws CmsException;
     void changeUserType(CmsUUID userId, int userType) throws CmsException;
+    /*
     CmsUUID checkGroupDependence(CmsUUID groupId1, CmsUUID groupId2) throws CmsException;
     CmsUUID checkGroupDependence(Vector groups) throws CmsException;
-    
+    */
     /**
      * Add a new group to the Cms.<p>
      *

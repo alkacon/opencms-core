@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/16 16:20:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/06/17 16:25:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.3 $ $Date: 2003/06/16 16:20:48 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/17 16:25:36 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -284,7 +284,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
      * helper for getReadingpermittedGroup. Returns the id of the group that is in
      * any way parent for the other group or -1 for no dependencies between the groups.
      */
-    public CmsUUID checkGroupDependence(CmsUUID groupId1, CmsUUID groupId2) throws CmsException {
+    private CmsUUID checkGroupDependence(CmsUUID groupId1, CmsUUID groupId2) throws CmsException {
         CmsUUID currentGroupId = groupId1;
         do {
             currentGroupId = readGroup(currentGroupId).getParentId();
@@ -311,7 +311,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
      * @return The id of the group that is in any way parent of all other
      *       group or -1 for no dependencies between the groups.
      */
-    public CmsUUID checkGroupDependence(Vector groups) throws CmsException {
+    private CmsUUID checkGroupDependence(Vector groups) throws CmsException {
         if ((groups == null) || (groups.size() == 0)) {
             return CmsUUID.getNullUUID();
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/06/17 16:24:54 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.I_CmsPrincipal;
  * Describes the Cms user object and the methods to access it.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.37 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.38 $ $Date: 2003/06/17 16:24:54 $
  */
 
 public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
@@ -171,7 +171,8 @@ public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {
         m_lastlogin = lastlogin;
         m_lastused = lastused;
         m_flags  = flags;
-        this.setDefaultGroup(defaultGroup);
+		m_defaultGroup = defaultGroup;
+		m_defaultGroupId = (defaultGroup != null) ? defaultGroup.getId() : CmsUUID.getNullUUID();
         m_additionalInfo=additionalInfo;
         m_address = address;
         m_section = section;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/13 14:48:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/06/17 16:25:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Hashtable;
 /**
  * MySQL implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.2 $ $Date: 2003/06/13 14:48:16 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/17 16:25:36 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -174,7 +174,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setTimestamp(6, new Timestamp(user.getLastUsed()));
             stmt.setInt(7, user.getFlags());
             stmt.setBytes(8, value);
-            stmt.setString(9, user.getDefaultGroupId().toString());
+            stmt.setString(9, (user.getDefaultGroupId()!=null) ? user.getDefaultGroupId().toString() : "");
             stmt.setString(10, user.getAddress());
             stmt.setString(11, user.getSection());
             stmt.setInt(12, user.getType());
