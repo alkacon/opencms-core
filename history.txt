@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2002/12/06 16:02:36 $
- * Version: $Revision: 1.419 $
+ * Date   : $Date: 2002/12/06 22:04:57 $
+ * Version: $Revision: 1.420 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -25,6 +25,7 @@ OpenCms 5.0 (next release)
 ! Preference panel for startup options will not display language selection if only one locale directory exists
 ! New "relativeroot" property tells the link substitution in the editor to generate relative URLs instead of absolute URLs
 * Fixed template selection issue when creating a new page
+* Fixed issue with response.setContentType() in JSP pages
 - Some cleanup of code comments
 
 OpenCms 5.0 beta 2 Kaitain - 11 November 2002
