@@ -1,4 +1,3 @@
-
 package com.opencms.file;
 
 import java.util.*;
@@ -6,18 +5,31 @@ import java.util.*;
 import com.opencms.core.*;
 
 /**
- * This public class describes a resource broker for tasks in the Cms.<BR/>
- * <B>All</B> Methods get a first parameter: A_CmsUser. It is the current user. This 
- * is for security-reasons, to check if this current user has the rights to call the
- * method.<BR/>
+ * This class describes a resource broker for projects in the Cms.<BR/>
  * 
- * All methods have package-visibility for security-reasons.
+ * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/01/11 17:41:34 $
+ * @version $Revision: 1.1 $ $Date: 2000/01/11 17:41:33 $
  */
-interface I_CmsRbTask { 	
-
+class CmsRbTask implements I_CmsRbTask, I_CmsConstants {
+	
+    /**
+     * The project access object which is required to access the
+     * project database.
+     */
+    private I_CmsAccessTask m_accessTask;
+    
+    /**
+     * Constructor, creates a new Cms Project Resource Broker.
+     * 
+     * @param accessProject The project access object.
+     */
+    public CmsRbTask(I_CmsAccessTask accessTask)
+    {
+        m_accessTask = accessTask;
+    }
+	
 	/**
 	 * Creates a new task.
 	 * 
@@ -34,12 +46,18 @@ interface I_CmsRbTask {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsTask createTask(int projectid, A_CmsUser owner, A_CmsUser agent, A_CmsGroup role, 
+	
+	 public A_CmsTask createTask(int projectid, A_CmsUser owner, A_CmsUser agent, A_CmsGroup role, 
 								String taskname, String taskcomment, 
 								java.sql.Timestamp timeout, int priority)
-		throws CmsException;
-	
-		/**
+		 throws CmsException {
+		 return( m_accessTask.createTask(projectid, owner, agent, role, 
+											taskname, taskcomment, 
+											timeout, priority));
+				
+	 }
+
+	/**
 	 * Ends a task from the Cms.
 	 * 
 	 * @param task The task to end.
@@ -48,10 +66,13 @@ interface I_CmsRbTask {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public void endTask() 
-		throws CmsException;	
+		throws CmsException{
+	
+		// TODO: Implementation
+	}	
 	
 	/**
-	 * Forwrds a task to a new user.
+	 * Forwards a task to a new user.
 	 * 
 	 * <B>Security:</B>
 	 * // TODO: Add security-police here
@@ -64,8 +85,10 @@ interface I_CmsRbTask {
 	 */
 	public void forwardTask(A_CmsUser callingUser, A_CmsTask task, 
 					 A_CmsUser newUser) 
-		throws CmsException;
+		throws CmsException{
 	
+		// TODO: Implementation
+	}
 	
 	/**
 	 * Read a task by id.
@@ -75,9 +98,15 @@ interface I_CmsRbTask {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public A_CmsTask readTask(int id)
-	 throws CmsException;
+	 throws CmsException {
+	 return( m_accessTask.readTask(id));
+	}
 	
-
+	
+	//--------------------------------------------
+	// Task lists
+	//----------------------------------------------
+	
 	/**
 	 * Reads all tasks for a project.
 	 * 
@@ -91,7 +120,11 @@ interface I_CmsRbTask {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public Vector readTasks(A_CmsUser callingUSer, A_CmsProject project, int orderBy)
-		throws CmsException;
+		throws CmsException{
+	
+		// TODO: Implementation
+		return null;
+	}
 	
 	/**
 	 * Reads all open tasks for a project.
@@ -106,7 +139,11 @@ interface I_CmsRbTask {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public Vector readOpenTasks(A_CmsUser callingUSer, A_CmsProject project, int orderBy)
-		throws CmsException;
+		throws CmsException{
+	
+		// TODO: Implementation
+		return null;
+	}
 	
 	/**
 	 * Reads all done tasks for a project.
@@ -121,7 +158,11 @@ interface I_CmsRbTask {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public Vector readDoneTasks(A_CmsUser callingUSer, A_CmsProject project, int orderBy)
-		throws CmsException;
+		throws CmsException{
+	
+		// TODO: Implementation
+		return null;
+	}
 	
 	/**
 	 * Reads all tasks for a user in a project.
@@ -138,7 +179,11 @@ interface I_CmsRbTask {
 	 */
 	public Vector readTasks(A_CmsUser callingUser, A_CmsProject project, 
 					 A_CmsUser user, int orderBy) 
-		throws CmsException;
+		throws CmsException{
+	
+		// TODO: Implementation
+		return null;
+	}
 	
 	/**
 	 * Reads all open tasks for a user in a project.
@@ -155,7 +200,11 @@ interface I_CmsRbTask {
 	 */
 	public Vector readOpenTasks(A_CmsUser callingUser, A_CmsProject project, 
 						 A_CmsUser user, int orderBy)
-		throws CmsException;
+		throws CmsException{
+	
+		// TODO: Implementation
+		return null;
+	}
 	
 	/**
 	 * Reads all posed tasks of a user in a project.
@@ -172,7 +221,11 @@ interface I_CmsRbTask {
 	 */
 	public Vector readPosedTasks(A_CmsUser callingUser, A_CmsProject project, 
 						  A_CmsUser user, int orderBy) 
-		throws CmsException;
+		throws CmsException{
+	
+		// TODO: Implementation
+		return null;
+	}
 
 	/**
 	 * Reads all done tasks of a group in a project.
@@ -189,7 +242,11 @@ interface I_CmsRbTask {
 	 */
 	public Vector readDoneTasks(A_CmsUser callingUser, A_CmsProject project, 
 						 A_CmsUser user, int orderBy) 
-		throws CmsException;
+		throws CmsException{
+	
+		// TODO: Implementation
+		return null;
+	}
 
 	/**
 	 * Reads all tasks of a group in a project.
@@ -206,7 +263,11 @@ interface I_CmsRbTask {
 	 */
 	public Vector readTasks(A_CmsUser callingUser, A_CmsProject project, 
 					 A_CmsGroup group, int orderBy) 
-		throws CmsException;
+		throws CmsException{
+	
+		// TODO: Implementation
+		return null;
+	}
 	
 	/**
 	 * Reads all open tasks of a group in a project.
@@ -223,7 +284,11 @@ interface I_CmsRbTask {
 	 */
 	public Vector readOpenTasks(A_CmsUser callingUser, A_CmsProject project, 
 						 A_CmsGroup group, int orderBy) 
-		throws CmsException;
+		throws CmsException{
+	
+		// TODO: Implementation
+		return null;
+	}
 	
 	/**
 	 * Reads all done tasks of a group in a project.
@@ -240,5 +305,9 @@ interface I_CmsRbTask {
 	 */
 	public Vector readDoneTasks(A_CmsUser callingUser, A_CmsProject project, 
 						 A_CmsGroup group, int orderBy) 
-		throws CmsException;
+		throws CmsException{
+	
+		// TODO: Implementation
+		return null;
+	}
 }
