@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/06/27 07:25:08 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2001/06/29 13:46:01 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.32 $ $Date: 2001/06/27 07:25:08 $ *
+ * @version $Revision: 1.33 $ $Date: 2001/06/29 13:46:01 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -764,7 +764,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
  *
  * @exception CmsException Throws CmsException if operation was not succesful
  */
-public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlineProject, String filename, int flags, int parentId, byte[] contents, CmsResourceType resourceType) throws CmsException {
+public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlineProject, String filename, int flags, int parentId, byte[] contents, I_CmsResourceType resourceType) throws CmsException {
 	//System.out.println("PL/SQL: createFile");
 	if (filename.length() > C_MAX_LENGTH_RESOURCE_NAME){
 		throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
@@ -2092,7 +2092,8 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
 		Connection con = null;
 		ResultSet res = null;
 		byte[] returnValue = null;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         String usedPool;
         String usedStatement;
         if (projectId == onlineProject){

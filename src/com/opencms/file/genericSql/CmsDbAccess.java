@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/06/28 08:22:22 $
- * Version: $Revision: 1.201 $
+ * Date   : $Date: 2001/06/29 13:45:36 $
+ * Version: $Revision: 1.202 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.201 $ $Date: 2001/06/28 08:22:22 $ *
+ * @version $Revision: 1.202 $ $Date: 2001/06/29 13:45:36 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -682,7 +682,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		int retValue;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(project.getId()).getId();
+        //int onlineProject = getOnlineProject(project.getId()).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (project.getId() == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -944,7 +945,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	 *
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlineProject, String filename, int flags, int parentId, byte[] contents, CmsResourceType resourceType) throws CmsException {
+	public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlineProject, String filename, int flags, int parentId, byte[] contents, I_CmsResourceType resourceType) throws CmsException {
 
 		String usedPool = null;
         String usedStatement = null;
@@ -1071,15 +1072,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
 		CmsFolder oldFolder = null;
 		int state = C_STATE_NEW;
-        CmsProject onlineProject = null;
         String usedPool = null;
         String usedStatement = null;
 
 		if (foldername.length() > C_MAX_LENGTH_RESOURCE_NAME){
 			throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
 		}
-        onlineProject = getOnlineProject(project.getId());
-        if (project.equals(onlineProject)) {
+        //int onlineProject = getOnlineProject(project.getId());
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
+        if (project.getId() == onlineProject) {
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
         } else {
@@ -1492,7 +1493,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public CmsPropertydefinition createPropertydefinition(String name,
-													 CmsResourceType resourcetype, int type)
+													 I_CmsResourceType resourcetype, int type)
 		throws CmsException {
 		Connection con = null;
 		PreparedStatement statement = null;
@@ -1801,7 +1802,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		PreparedStatement statement = null;
         String usedPool = null;
         String usedStatement = null;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -1850,7 +1852,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		PreparedStatement statement = null;
         String usedPool = null;
         String usedStatement = null;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -1900,8 +1903,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		PreparedStatement statement = null;
         String usedPool = null;
         String usedStatement = null;
-        CmsProject onlineProject = getOnlineProject(project.getId());
-        if (project.equals(onlineProject)){
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
+        if (project.getId() == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
         } else {
@@ -1954,8 +1957,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		throws CmsException {
         String usedPool = null;
         String usedStatement = null;
-        CmsProject onlineProject = getOnlineProject(project.getId());
-        if (project.equals(onlineProject)){
+        //CmsProject onlineProject = getOnlineProject(project.getId());
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
+        if (project.getId() == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
         } else {
@@ -2271,7 +2275,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		throws CmsException {
         String usedPool = null;
         String usedStatement = null;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -2387,7 +2392,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         throws CmsException {
         String usedPool = null;
         String usedStatement = null;
-        int onlineProject = getOnlineProject(resource.getProjectId()).getId();
+        //int onlineProject = getOnlineProject(resource.getProjectId()).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (resource.getProjectId() == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -2750,14 +2756,14 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		}
 
 		// the resourceType "folder" is needed always - so adding it
-		Hashtable resourceTypes = new Hashtable(1);
-		resourceTypes.put(C_TYPE_FOLDER_NAME, new CmsResourceType(C_TYPE_FOLDER, 0, C_TYPE_FOLDER_NAME, ""));
+		//Hashtable resourceTypes = new Hashtable(1);
+		//resourceTypes.put(C_TYPE_FOLDER_NAME, new CmsResourceType(C_TYPE_FOLDER, 0, C_TYPE_FOLDER_NAME, ""));
 
 		// sets the last used index of resource types.
-		resourceTypes.put(C_TYPE_LAST_INDEX, new Integer(C_TYPE_FOLDER));
+		//resourceTypes.put(C_TYPE_LAST_INDEX, new Integer(C_TYPE_FOLDER));
 
 		// add the resource-types to the database
-		addSystemProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE, resourceTypes);
+		//addSystemProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE, resourceTypes);
 
 		// set the mimetypes
 		addSystemProperty(C_SYSTEMPROPERTY_MIMETYPES, initMimetypes());
@@ -3219,7 +3225,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		PreparedStatement statement  = null;
         String usedPool = null;
         String usedStatement = null;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -3310,7 +3317,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		Connection con = null;
         String usedPool = null;
         String usedStatement = null;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -3379,7 +3387,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		Connection con = null;
         String usedPool = null;
         String usedStatement = null;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -3689,7 +3698,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		Connection con = null;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -3828,7 +3838,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		Connection con = null;
         String usedStatement;
         String usedPool;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
            usedPool = m_poolNameOnline;
            usedStatement = "_ONLINE";
@@ -5326,7 +5337,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		Connection con = null;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -5422,7 +5434,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
         String usedPool;
         String usedStatement;
         int resourceId = resource.getResourceId();
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -5602,7 +5615,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 	 *
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public Vector readAllPropertydefinitions(CmsResourceType resourcetype)
+	public Vector readAllPropertydefinitions(I_CmsResourceType resourcetype)
 		throws CmsException {
 		return(readAllPropertydefinitions(resourcetype.getResourceType()));
 	}
@@ -5618,7 +5631,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 	 *
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public Vector readAllPropertydefinitions(CmsResourceType resourcetype, int type)
+	public Vector readAllPropertydefinitions(I_CmsResourceType resourcetype, int type)
 		throws CmsException {
 		return(readAllPropertydefinitions(resourcetype.getResourceType(), type));
 	}
@@ -5827,7 +5840,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		Connection con = null;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -5896,7 +5910,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		Connection con = null;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -5995,7 +6010,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		Connection con = null;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -6094,7 +6110,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		Connection con = null;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -6196,7 +6213,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		Connection con = null;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -6310,7 +6328,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
         String usedPool;
         String usedStatement;
         String onlyChanged = new String();
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject) {
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -6406,7 +6425,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		Connection con = null;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -6497,7 +6517,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		Connection con = null;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -6602,7 +6623,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
         String usedPool;
         String usedStatement;
         String onlyChanged = new String();
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -7022,7 +7044,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		Connection con = null;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         String returnValue = null;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
@@ -7154,7 +7177,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 	 *
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public CmsPropertydefinition readPropertydefinition(String name, CmsResourceType type)
+	public CmsPropertydefinition readPropertydefinition(String name, I_CmsResourceType type)
 		throws CmsException {
 		return( readPropertydefinition(name, type.getResourceType() ) );
 	}
@@ -7179,7 +7202,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		Connection con = null;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(project.getId()).getId();
+        //int onlineProject = getOnlineProject(project.getId()).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (project.getId() == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -7274,7 +7298,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		Connection con = null;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(project.getId()).getId();
+        //int onlineProject = getOnlineProject(project.getId()).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (project.getId() == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -8239,7 +8264,8 @@ public CmsTask readTask(int id) throws CmsException {
 		Connection con = null;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -8291,7 +8317,8 @@ public CmsTask readTask(int id) throws CmsException {
 		// check if the folder has any files in it
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject) {
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -8357,7 +8384,8 @@ public CmsTask readTask(int id) throws CmsException {
 		Connection con = null;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(projectId).getId();
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if(projectId == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -8695,7 +8723,8 @@ public CmsTask readTask(int id) throws CmsException {
 		Connection con = null;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(project.getId()).getId();
+        //int onlineProject = getOnlineProject(project.getId()).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (project.getId() == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -8745,7 +8774,8 @@ public CmsTask readTask(int id) throws CmsException {
 		Connection con = null;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(project.getId()).getId();
+        //int onlineProject = getOnlineProject(project.getId()).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (project.getId() == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -8793,7 +8823,8 @@ public CmsTask readTask(int id) throws CmsException {
 		Connection con = null;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(res.getProjectId()).getId();
+        //int onlineProject = getOnlineProject(res.getProjectId()).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (res.getProjectId() == onlineProject) {
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -9072,7 +9103,8 @@ public CmsTask readTask(int id) throws CmsException {
 		Connection con = null;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(project.getId()).getId();
+        //int onlineProject = getOnlineProject(project.getId()).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (project.getId() == onlineProject){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -9154,7 +9186,8 @@ public CmsTask readTask(int id) throws CmsException {
 		Connection con = null;
         String usedPool;
         String usedStatement;
-        int onlineProject = getOnlineProject(project.getId()).getId();
+        //int onlineProject = getOnlineProject(project.getId()).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (project.getId() == onlineProject) {
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
@@ -9349,7 +9382,8 @@ public CmsTask readTask(int id) throws CmsException {
 		} else {
             String usedPool;
             String usedStatement;
-            int onlineProject = getOnlineProject(projectId).getId();
+            //int onlineProject = getOnlineProject(projectId).getId();
+            int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
             if (projectId == onlineProject){
                 usedPool = m_poolNameOnline;
                 usedStatement = "_ONLINE";

@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/06/22 16:00:52 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2001/06/29 13:45:50 $
+ * Version: $Revision: 1.55 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -50,7 +50,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.54 $ $Date: 2001/06/22 16:00:52 $ *
+ * @version $Revision: 1.55 $ $Date: 2001/06/29 13:45:50 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -227,7 +227,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 							   CmsProject project,
 							   CmsProject onlineProject,
 							   String filename, int flags,int parentId,
-							   byte[] contents, CmsResourceType resourceType)
+							   byte[] contents, I_CmsResourceType resourceType)
 
         throws CmsException {
         if (filename.length() > C_MAX_LENGTH_RESOURCE_NAME){
@@ -431,14 +431,14 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      */
     protected void fillDefaults() throws CmsException {
 	    // the resourceType "folder" is needed always - so adding it
-	    Hashtable resourceTypes = new Hashtable(1);
-	    resourceTypes.put(C_TYPE_FOLDER_NAME, new CmsResourceType(C_TYPE_FOLDER, 0, C_TYPE_FOLDER_NAME, ""));
+	    //Hashtable resourceTypes = new Hashtable(1);
+	    //resourceTypes.put(C_TYPE_FOLDER_NAME, new I_CmsResourceType(C_TYPE_FOLDER, 0, C_TYPE_FOLDER_NAME, ""));
 
 	    // sets the last used index of resource types.
-	    resourceTypes.put(C_TYPE_LAST_INDEX, new Integer(C_TYPE_FOLDER));
+	    //resourceTypes.put(C_TYPE_LAST_INDEX, new Integer(C_TYPE_FOLDER));
 
 	    // add the resource-types to the database
-	    addSystemProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE, resourceTypes);
+	    //addSystemProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE, resourceTypes);
 
 	    // set the mimetypes
 	    addSystemProperty(C_SYSTEMPROPERTY_MIMETYPES, initMimetypes());
@@ -1326,7 +1326,8 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
 			// write the property into the db
 			PreparedStatement statement = null;
 			Connection con = null;
-            int onlineProject = getOnlineProject(projectId).getId();
+            //int onlineProject = getOnlineProject(projectId).getId();
+            int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
             String usedPool;
             String usedStatement;
             if (projectId == onlineProject){
