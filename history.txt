@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/05/16 11:54:39 $
- * Version: $Revision: 1.475 $
+ * Date   : $Date: 2003/06/04 12:34:13 $
+ * Version: $Revision: 1.476 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,9 +20,15 @@ Legend:
 - General comment
 
 OpenCms (next 5.1 version)
+- Allowed changing of file type to JSP
+- Updated the setup wizard for the new database pooling and drivers
+- Removed the old custom database pooling mechanism located in the com.opencms.dbpool package
+  and prelaced it with the DBCP connection pool from the Apache Commons project
+- Replaced old DB access layer (subpackages of com.opencms.file) with a new implementation
+  located in the com.opencms.db package and subpackages
 - Updated MySQL JDBC driver to the latest version
 - Removed requirement for fesi.jar as the JavaScript interpreter is not longer used
-* Allowed unicode &#123; chars in task names
+* Allowed unicode &#123; char notation in workflow task names
 ! Switched database IDs for Resources, Users and Groups to cross-platform UUIDs instead of Integers
 - Removed deprecated calls for encoding in com.opencms.util.Encoder class.
 ! Added "getNavigationBreadCrumb()" methods to com.opencms.flex.jsp.CmsJspNavBuilder
