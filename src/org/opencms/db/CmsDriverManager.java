@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/04 10:48:42 $
- * Version: $Revision: 1.131 $
+ * Date   : $Date: 2003/08/04 10:56:59 $
+ * Version: $Revision: 1.132 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.131 $ $Date: 2003/08/04 10:48:42 $
+ * @version $Revision: 1.132 $ $Date: 2003/08/04 10:56:59 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -6828,32 +6828,34 @@ public class CmsDriverManager extends Object {
      * Replaces the content and properties of an existing resource.<p>
      * 
      * @param context the current request context
-     * @param resName the resource name
-     * @param newResType the new resource type
-     * @param newResProps the new resource properties
-     * @param newResContent the new resource content
+     * @param resourceName the resource name
+     * @param newResourceType the new resource type
+     * @param newResourceProperties the new resource properties
+     * @param newResourceContent the new resource content
      * @return CmsResource the resource with replaced content and properties
      * @throws CmsException if something goes wrong
      */
-    public CmsResource replaceResource(CmsRequestContext context, String resName, int newResType, Map newResProps, byte[] newResContent) throws CmsException {
+    public CmsResource replaceResource(CmsRequestContext context, String resourceName, int newResourceType, Map newResourceProperties, byte[] newResourceContent) throws CmsException {
         CmsResource resource = null;
 
-
-        lockResource(context, resName, false);
-
         // read the existing resource
-        resource = readFileHeader(context, resName, true);
+        resource = readFileHeader(context, resourceName, true);
 
         // check if the user has write access 
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
-        // replace the resource
-        m_vfsDriver.replaceResource(context.currentUser(), context.currentProject(), resource, newResContent, newResType);
+        // replace the existing with the new file content
+        m_vfsDriver.writeFileContent(resource.getFileId(), newResourceContent, context.currentProject().getId(), false);    
 
         // write the properties
-        readPath(context,resource,true);
-        m_vfsDriver.writeProperties(newResProps, context.currentProject().getId(), resource, resource.getType());
+        m_vfsDriver.writeProperties(newResourceProperties, context.currentProject().getId(), resource, resource.getType());
         m_propertyCache.clear();
+        
+        // update the resource state
+        if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
+            resource.setState(I_CmsConstants.C_STATE_CHANGED);
+        }
+        m_vfsDriver.updateResourceState(context.currentProject(), resource, C_UPDATE_RESOURCE /*C_UPDATE_ALL*/);           
 
         // clear the cache
         clearResourceCache();
