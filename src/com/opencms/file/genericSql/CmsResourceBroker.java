@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/26 06:44:50 $
- * Version: $Revision: 1.257 $
+ * Date   : $Date: 2001/07/26 08:46:16 $
+ * Version: $Revision: 1.258 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.257 $ $Date: 2001/07/26 06:44:50 $
+ * @version $Revision: 1.258 $ $Date: 2001/07/26 08:46:16 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -6295,6 +6295,11 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
             if( accessWrite(currentUser, currentProject, (CmsResource)restoredFolder) ) {
                 // write-access  was granted - write the folder without setting state = changed
                 m_dbAccess.writeFolder(currentProject, restoredFolder, false);
+                // restore the properties in the offline project
+                m_dbAccess.deleteAllProperties(currentProject.getId(),restoredFolder);
+                Hashtable propertyInfos = m_dbAccess.readAllProperties(onlineProject.getId(),onlineFolder,onlineFolder.getType());
+                m_dbAccess.writeProperties(propertyInfos,currentProject.getId(),restoredFolder,restoredFolder.getType());
+                m_propertyCache.clear();
                 // update the cache
                 //m_resourceCache.put(currentProject.getId()+C_FOLDER+restoredFolder.getAbsolutePath(),restoredFolder);
                 m_resourceCache.remove(restoredFolder.getAbsolutePath());
@@ -6326,6 +6331,11 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                 // write-acces  was granted - write the file without setting state = changed
                 m_dbAccess.writeFile(currentProject,
                                onlineProject(currentUser, currentProject), restoredFile, false);
+                // restore the properties in the offline project
+                m_dbAccess.deleteAllProperties(currentProject.getId(),restoredFile);
+                Hashtable propertyInfos = m_dbAccess.readAllProperties(onlineProject.getId(),onlineFile,onlineFile.getType());
+                m_dbAccess.writeProperties(propertyInfos,currentProject.getId(),restoredFile,restoredFile.getType());
+                m_propertyCache.clear();
                 // update the cache
                 m_resourceCache.remove(restoredFile.getAbsolutePath());
                 //m_resourceCache.put(currentProject.getId()+C_FILE+restoredFile.getAbsolutePath(),restoredFile);
@@ -6338,10 +6348,6 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                     CmsException.C_NO_ACCESS);
             }
         }
-        // restore the properties in the offline project
-        deleteAllProperties(currentUser, currentProject, resourceName);
-        Hashtable propertyInfos = readAllProperties(currentUser, onlineProject, resourceName);
-        writeProperties(currentUser, currentProject, resourceName, propertyInfos);
     }
 
     /**
