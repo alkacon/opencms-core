@@ -218,6 +218,7 @@ PACKAGE BODY opencmsAccess IS
       FETCH curGroups INTO recGroupID, recGroupName;
       EXIT WHEN curGroups%NOTFOUND;
       IF recGroupID IN (vProjGroup, vProjManager) THEN
+        CLOSE curGroups;
         RETURN 1;
       END IF;
     END LOOP;
@@ -244,7 +245,7 @@ PACKAGE BODY opencmsAccess IS
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
         vNextPath := NULL;
-    END;    
+    END;
     -- NOT accessProject => false
     IF accessProject(pUserID, vProjectID) = 0 THEN
       RETURN 0;

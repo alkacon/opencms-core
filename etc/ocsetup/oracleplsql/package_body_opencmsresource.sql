@@ -79,12 +79,12 @@ PACKAGE BODY opencmsresource IS
             END IF;
           EXCEPTION
             WHEN invalid_cursor THEN
-              exit;  
+              exit;
           END;
         END LOOP;
         IF curResource%ISOPEN THEN
           CLOSE curResource;
-        END IF; 
+        END IF;
         -- all folders in the folder and their files and folders etc.
         curResource := getFoldersInFolder(pUserId, pProjectId, vFolderName);
         LOOP
@@ -99,7 +99,7 @@ PACKAGE BODY opencmsresource IS
               exit;
           END;
         END LOOP;
-        IF curResource%ISOPEN THEN        
+        IF curResource%ISOPEN THEN
           CLOSE curResource;
         END IF;
       END IF;
@@ -109,6 +109,9 @@ PACKAGE BODY opencmsresource IS
     commit;
     EXCEPTION
       WHEN OTHERS THEN
+        IF curResource%ISOPEN THEN
+          CLOSE curResource;
+        END IF;  
         rollback;
         RAISE;
   END lockResource;
@@ -160,7 +163,7 @@ PACKAGE BODY opencmsresource IS
           -- unlock the resource
           update cms_resources set locked_by = opencmsConstants.C_UNKNOWN_ID
                  where resource_id = recResource.resource_id;
-          -- need only one resource-id to mark that there was something unlocked       
+          -- need only one resource-id to mark that there was something unlocked
           bResourceList := to_char(recResource.resource_id);
         ELSE
           userErrors.raiseUserError(userErrors.C_LOCKED);
@@ -180,11 +183,11 @@ PACKAGE BODY opencmsresource IS
           EXCEPTION
             WHEN invalid_cursor THEN
               exit;
-          END;      
+          END;
         END LOOP;
         IF curResource%ISOPEN THEN
           CLOSE curResource;
-        END IF;  
+        END IF;
         -- all folders in the folder and their files and folders etc.
         curResource := getFoldersInFolder(pUserId, pProjectId, vFolderName);
         LOOP
@@ -197,11 +200,11 @@ PACKAGE BODY opencmsresource IS
           EXCEPTION
             WHEN invalid_cursor THEN
               exit;
-          END;      
+          END;
         END LOOP;
         IF curResource%ISOPEN THEN
           CLOSE curResource;
-        END IF;  
+        END IF;
       END IF;
     ELSE
       userErrors.raiseUserError(userErrors.C_NO_ACCESS);
@@ -209,6 +212,9 @@ PACKAGE BODY opencmsresource IS
     commit;
   EXCEPTION
     WHEN OTHERS THEN
+      IF curResource%ISOPEN THEN
+        CLOSE curResource;
+      END IF;  
       rollback;
       RAISE;
   END unlockResource;
@@ -217,7 +223,7 @@ PACKAGE BODY opencmsresource IS
 -- for project with project_id = pProjectId or for online-project
 --------------------------------------------------------------------------------------------------------------
   FUNCTION readFolderAcc(pUserId NUMBER, pProjectID NUMBER, pFolderName VARCHAR2) RETURN userTypes.anyCursor IS
-    curFolder userTypes.anyCursor;  
+    curFolder userTypes.anyCursor;
     recFolder cms_resources%ROWTYPE;
   BEGIN
     curFolder := readFolder(pUserId, pProjectID, pFolderName);
@@ -232,7 +238,7 @@ PACKAGE BODY opencmsresource IS
     END IF;
     -- because the cursor was fetched into a record it's necessary to read the file again for returning
     -- the cursor
-    curFolder := readFolder(pUserId, pProjectID, pFolderName);    
+    curFolder := readFolder(pUserId, pProjectID, pFolderName);
     RETURN curFolder;
   END readFolderAcc;
 --------------------------------------------------------------------------------------------------------------
@@ -242,14 +248,14 @@ PACKAGE BODY opencmsresource IS
   FUNCTION readFolder(pUserId NUMBER, pProjectID NUMBER, pFolderName VARCHAR2) RETURN userTypes.anyCursor IS
     curOnlineProject userTypes.anyCursor;
     recOnlineProject cms_projects%ROWTYPE;
-    curFolder userTypes.anyCursor;  
+    curFolder userTypes.anyCursor;
   BEGIN
     curOnlineProject := opencmsProject.onlineProject(pProjectId);
     FETCH curOnlineProject INTO recOnlineProject;
-    CLOSE curOnlineProject;  
+    CLOSE curOnlineProject;
     -- read the resource from offline project or the online project, the first resource is used
     OPEN curFolder FOR select * from cms_resources
-                       where resource_name = pFolderName 
+                       where resource_name = pFolderName
                        and project_id in (pProjectId, recOnlineProject.project_id)
                        order by project_id desc;
     RETURN curFolder;
@@ -282,7 +288,7 @@ PACKAGE BODY opencmsresource IS
         userErrors.raiseUserError(userErrors.C_ACCESS_DENIED);
       END IF;
     END IF;
-    curResource := readFileHeader(pUserId, pProjectId, recOnlineProject.project_id, pFileName);    
+    curResource := readFileHeader(pUserId, pProjectId, recOnlineProject.project_id, pFileName);
     RETURN curResource;
   END readFileHeader;
 --------------------------------------------------------------------------------------------------------------
@@ -294,7 +300,7 @@ PACKAGE BODY opencmsresource IS
   BEGIN
     -- read the resource from offline project or the online project, the first resource is used
     OPEN curFile FOR select * from cms_resources
-                     where resource_name = pFileName 
+                     where resource_name = pFileName
                      and project_id in (pProjectId, pOnlineProjectId)
                      order by project_id desc;
     RETURN curFile;
@@ -305,7 +311,7 @@ PACKAGE BODY opencmsresource IS
 -- without checking access
 --------------------------------------------------------------------------------------------------------------
   FUNCTION readFileNoAccess(pUserId NUMBER, pProjectID NUMBER, pOnlineProjectId NUMBER, pFileName VARCHAR2) RETURN userTypes.anyCursor IS
-    curResource userTypes.anyCursor; 
+    curResource userTypes.anyCursor;
   BEGIN
     -- read the resource from offline project or the online project, the first resource is used
   	OPEN curResource FOR select r.*, f.file_content from cms_resources r, cms_files f
@@ -325,7 +331,7 @@ PACKAGE BODY opencmsresource IS
   BEGIN
     -- first read the file-header either from the project or from the onlineProject
     curResource := readFileNoAccess(pUserId, pProjectId, pOnlineProjectId, pFileName);
-    FETCH curResource INTO recFile;  
+    FETCH curResource INTO recFile;
     CLOSE curResource;
     -- now create the cursor for the file including the file_content
     IF recFile.resource_id IS NOT NULL THEN
@@ -337,8 +343,8 @@ PACKAGE BODY opencmsresource IS
         userErrors.raiseUserError(userErrors.C_ACCESS_DENIED);
       END IF;
     END IF;
-    -- because the cursor was fetched it has to be read again    
-    curResource := readFileNoAccess(pUserId, pProjectId, pOnlineProjectId, pFileName);    
+    -- because the cursor was fetched it has to be read again
+    curResource := readFileNoAccess(pUserId, pProjectId, pOnlineProjectId, pFileName);
     RETURN curResource;
   END readFile;
 --------------------------------------------------------------------------------------------------------------
@@ -369,7 +375,7 @@ PACKAGE BODY opencmsresource IS
       END IF;
     END IF;
     -- because the cursor was fetched it has to be read again
-    curResource := readFileNoAccess(pUserId, pProjectId, recOnlineProject.project_id, pFileName);    
+    curResource := readFileNoAccess(pUserId, pProjectId, recOnlineProject.project_id, pFileName);
     RETURN curResource;
   END readFile;
 ----------------------------------------------------------------------------------------------
@@ -405,8 +411,11 @@ PACKAGE BODY opencmsresource IS
   EXCEPTION
     WHEN DUP_VAL_ON_INDEX THEN
       rollback;
-      userErrors.raiseUserError(userErrors.C_FILE_EXISTS);  
+      userErrors.raiseUserError(userErrors.C_FILE_EXISTS);
     WHEN OTHERS THEN
+      IF curFolder%ISOPEN THEN
+        CLOSE curFolder;
+      END IF;
       rollback;
       RAISE;
   END createFolder;
@@ -447,8 +456,14 @@ PACKAGE BODY opencmsresource IS
   EXCEPTION
     WHEN DUP_VAL_ON_INDEX THEN
       rollback;
-      userErrors.raiseUserError(userErrors.C_FILE_EXISTS);  
+      userErrors.raiseUserError(userErrors.C_FILE_EXISTS);
     WHEN OTHERS THEN
+      IF curResources%ISOPEN THEN
+        CLOSE curResources;
+      END IF;
+      IF oResource%ISOPEN THEN
+        CLOSE oResource;
+      END IF;
       rollback;
       RAISE;
   END createFolder;
@@ -503,8 +518,14 @@ PACKAGE BODY opencmsresource IS
   EXCEPTION
     WHEN DUP_VAL_ON_INDEX THEN
       rollback;
-      userErrors.raiseUserError(userErrors.C_FILE_EXISTS);  
+      userErrors.raiseUserError(userErrors.C_FILE_EXISTS);
     WHEN OTHERS THEN
+      IF curResources%ISOPEN THEN
+        CLOSE curResources;
+      END IF;
+      IF oResource%ISOPEN THEN
+        CLOSE oResource;
+      END IF;  
       rollback;
       RAISE;
   END createFile;
@@ -538,7 +559,9 @@ PACKAGE BODY opencmsresource IS
     commit;
   EXCEPTION
     WHEN OTHERS THEN
-      CLOSE curSubResource;
+      IF curSubResource%ISOPEN THEN
+      	CLOSE curSubResource;
+      END IF;	
       rollback;
       RAISE;
   END removeFolder;
@@ -712,6 +735,24 @@ PACKAGE BODY opencmsresource IS
     ELSE
       userErrors.raiseUserError(userErrors.C_NOT_FOUND);
     END IF;
+  EXCEPTION
+    WHEN OTHERS THEN
+      IF curOnlineProject%ISOPEN THEN
+        CLOSE curOnlineProject;
+      END IF;
+      IF curFileHeader%ISOPEN THEN
+        CLOSE curFileHeader;
+      END IF;
+      IF curFolder%ISOPEN THEN
+        CLOSE curFolder;
+      END IF;
+      IF curFile%ISOPEN THEN
+        CLOSE curFile;
+      END IF;
+      IF curNewResource%ISOPEN THEN
+        CLOSE curNewResource;
+      END IF; 
+      RAISE;
   END copyFile;
 ----------------------------------------------------------------------------------------------
 -- returns a cursor for the files in this folder
@@ -890,6 +931,9 @@ PACKAGE BODY opencmsresource IS
     commit;
   EXCEPTION
     WHEN OTHERS THEN
+      IF curResource%ISOPEN THEN
+        CLOSE curResource;
+      END IF;
       rollback;
       RAISE;
   END chstate;

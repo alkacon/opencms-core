@@ -56,6 +56,9 @@ PACKAGE BODY opencmsProperty IS
     commit;
   EXCEPTION
     WHEN OTHERS THEN
+      IF pPropertyInfo%ISOPEN THEN
+        CLOSE pPropertyInfo;
+      END IF;  
       rollback;
       RAISE;
   END writeProperties;

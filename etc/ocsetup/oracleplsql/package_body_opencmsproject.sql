@@ -331,7 +331,7 @@ PACKAGE BODY OpenCmsProject IS
       EXIT WHEN curFolders%NOTFOUND;
       -- is the resource marked as deleted?
       IF recFolders.state = opencmsConstants.C_STATE_DELETED THEN
-        -- add to list with deleted folders      
+        -- add to list with deleted folders
         vDeletedFolders := vDeletedFolders||'/'||to_char(recFolders.resource_id);
       -- is the resource marked as new?
       ELSIF recFolders.state = opencmsConstants.C_STATE_NEW THEN
@@ -605,20 +605,20 @@ PACKAGE BODY OpenCmsProject IS
       -- get the string for the cursor of
       vCurDelFolders := replace(substr(vDeletedFolders,2),'/',',');
       vDeletedFolders := vDeletedFolders||'/';
-      LOOP     
+      LOOP
         vResourceId := substr(vDeletedFolders, instr(vDeletedFolders, '/', 1, 1)+1,
                        (instr(vDeletedFolders, '/', 1, 2) - (instr(vDeletedFolders, '/', 1, 1)+1)));
         vDeletedFolders := substr(vDeletedFolders, (instr(vDeletedFolders, '/', 1, 2)));
         BEGIN
-          select resource_id into vResourceId from cms_resources 
+          select resource_id into vResourceId from cms_resources
           			where resource_name = (select resource_name from cms_resources where resource_id = vResourceId)
-          			and project_id = pOnlineProjectId; 
+          			and project_id = pOnlineProjectId;
           delete from cms_properties where resource_id = vResourceId;
           delete from cms_resources where resource_id = vResourceId;
         EXCEPTION
           WHEN NO_DATA_FOUND THEN
             null;
-        END;  
+        END;
         IF length(vDeletedFolders) <= 1 THEN
           EXIT;
         END IF;
@@ -688,6 +688,18 @@ PACKAGE BODY OpenCmsProject IS
   EXCEPTION
     WHEN OTHERS THEN
       rollback;
+      IF curFolders%ISOPEN THEN
+        CLOSE curFolders;
+      END IF;  
+      IF curFiles%ISOPEN THEN
+		CLOSE curFiles;
+	  END IF;	
+      IF curNewFolder%ISOPEN THEN
+        CLOSE curNewFolder;
+      END IF;
+      IF curNewFile%ISOPEN THEN
+        CLOSE curNewFile;
+      END IF;  
       RAISE;
   END publishProject;
 -----------------------------------------------------------------------------------------
