@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/08/20 16:51:16 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/08/21 07:53:55 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * of resource that were saved during one backup process.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2003/08/20 16:51:16 $
+ * @version $Revision: 1.12 $ $Date: 2003/08/21 07:53:55 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -66,6 +66,7 @@ public interface I_CmsBackupDriver {
      * @param hasContent true if the file content is part of the result set
      * @return CmsBackupResource the new resource/file instance
      * @throws SQLException if a requested attribute was not found in the result set
+     * @throws CmsException if something goes wrong
      */
     CmsBackupResource createCmsBackupResourceFromResultSet(ResultSet res, boolean hasContent) throws SQLException, CmsException;
 
@@ -108,7 +109,6 @@ public interface I_CmsBackupDriver {
      * To obtain JDBC connections from different pools, further 
      * {online|offline|backup} pool Urls have to be specified.
      * 
-     * @param poolUrl the default connection pool URL
      * @return the SQL manager for this driver
      * @see org.opencms.db.generic.CmsSqlManager#setOfflinePoolUrl(String)
      * @see org.opencms.db.generic.CmsSqlManager#setOnlinePoolUrl(String)
@@ -126,7 +126,7 @@ public interface I_CmsBackupDriver {
     /**
      * Reads all backup file headers of a file excluding the file content.<p>.
      *
-     * @param resourceName the name of the file to read
+     * @param resourceId the id of the file to read
      * @return Vector with all backup file headers
      * @throws CmsException if something goes wrong
      */
@@ -136,7 +136,7 @@ public interface I_CmsBackupDriver {
      * Reads a backup file including the file content.<p>
      *
      * @param versionId the versionId of the file
-     * @param filename the path/name of the file
+     * @param resourceId the id of the file to read
      * @return CmsBackupResource the backup file
      * @throws CmsException is something goes wrong
      */
@@ -146,7 +146,7 @@ public interface I_CmsBackupDriver {
      * Reads a backup file header excluding the file content.<p>
      *
      * @param versionId the versionId of the file
-     * @param filename the path/name of the file
+     * @param resourceId the id of the file to read
      * @return CmsBackupResource the backup file
      * @throws CmsException is something goes wrong
      */
@@ -184,9 +184,9 @@ public interface I_CmsBackupDriver {
     /**
      * Writes a resource to the backup.<p>
      * 
-     * @param projectId the ID of the current project
+     * @param currentUser the current user
+     * @param publishProject the current project
      * @param resource the resource that is written to the backup
-     * @param content the file content of the resource
      * @param properties the properties of the resource
      * @param versionId the version ID of the backup
      * @param publishDate long timestamp when the resource was published.
@@ -222,14 +222,14 @@ public interface I_CmsBackupDriver {
      */
     void deleteBackups(List existingBackups) throws CmsException;
 
-	/**
-	 * Internal method to write the backup content.<p>
-	 *  
-	 * @param backupId			the backup id
-	 * @param fileId			the id of the file
-	 * @param fileContent		the content of the file
-	 * @param versionId			the revision
-	 * @throws CmsException		if something goes wrong
-	 */
-	void writeBackupFileContent(CmsUUID backupId, CmsUUID fileId, byte[] fileContent, int versionId) throws CmsException;
+    /**
+     * Internal method to write the backup content.<p>
+     *  
+     * @param backupId the backup id
+     * @param fileId the id of the file
+     * @param fileContent the content of the file
+     * @param versionId the revision
+     * @throws CmsException if something goes wrong
+     */
+    void writeBackupFileContent(CmsUUID backupId, CmsUUID fileId, byte[] fileContent, int versionId) throws CmsException;
 }
