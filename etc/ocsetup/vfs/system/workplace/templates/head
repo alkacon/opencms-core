@@ -41,7 +41,7 @@
 			<option value="administration.html">Administration
 			</select> -->
 		</td>
-		<td class=dialogtxt><p class=tab>]]><BUTTON href="javascript:window.top.body.location.reload(true)" name="bt_reload" action="" alt="reload"/><![CDATA[</td>
+		<td class=dialogtxt><p class=tab>]]><BUTTON href="javascript:window.location.reload(true)" name="bt_reload" action="" alt="reload"/><![CDATA[</td>
 		<td class=dialogtxt>]]><BUTTON href="einstellungen_expl.html" name="bt_einstellungen" action="" alt="preferences"/><![CDATA[</td>
 		<td class=dialogtxt>]]><BUTTON href="javascript:window.top.location.href='login.html'" name="bt_exit" action="" alt="exit"/><![CDATA[</td>
 		<td class=dialogtxt>]]><BUTTON href="javascript:url='../help/de/'+window.top.body.show_help(); openwin(url, 'Hilfe', 300, 600);" name="bt_hilfe" action="" alt="help"/><![CDATA[</td>
