@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2002/05/13 14:49:34 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2002/12/09 16:00:51 $
+* Version: $Revision: 1.53.4.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.io.*;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.53 $ $Date: 2002/05/13 14:49:34 $
+ * @version $Revision: 1.53.4.1 $ $Date: 2002/12/09 16:00:51 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -744,7 +744,14 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         }
         if(templateDatablockName == null && (!"script".equals(templateSelector))) {
             if(hasData(C_EDIT_TEMPLATE)) {
-                templateDatablockName = C_EDIT_TEMPLATE;
+				if(templateSelector != null && !"".equals(templateSelector)) {
+					Element tmpEle = getXmlDocument().createElement(C_EDIT_TEMPLATE);
+					tmpEle.setAttribute("name", templateSelector);
+					setData(C_EDIT_TEMPLATE + "."+templateSelector, tmpEle);
+					templateDatablockName = C_EDIT_TEMPLATE + "." + templateSelector;
+				}else{
+	                templateDatablockName = C_EDIT_TEMPLATE;
+				}
             }else {
                 if(hasData(C_EDIT_TEMPLATE + ".default")) {
                     templateDatablockName = C_EDIT_TEMPLATE + ".default";
