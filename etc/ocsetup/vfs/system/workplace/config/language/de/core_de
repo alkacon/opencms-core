@@ -36,6 +36,7 @@
 			<indentout>Einzug verkleinern</indentout>
 			<italic>Kursiv</italic>
 			<link>Link</link>
+			<linklist>Externe Links-Galerie</linklist>
 			<login>Anmelden</login>
 			<new>Neu</new>
 			<newarticle>Neuer Artikel</newarticle>
@@ -526,6 +527,7 @@
 			<imagelist>Bilderliste</imagelist>
 			<inactive>nicht aktiv</inactive>
 			<link>Verknüpfung</link>
+			<linklist>Externe Links</linklist>
 			<loading>Lädt...</loading>
 			<modulecreatedate>Erstellt am</modulecreatedate>
 			<modulname>Modulname</modulname>

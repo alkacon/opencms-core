@@ -36,6 +36,7 @@
 			<indentout>Unindent</indentout>
 			<italic>Italic</italic>
 			<link>Link</link>
+			<linklist>External links gallery</linklist>
 			<login>Login</login>
 			<new>New</new>
 			<newarticle>New Article</newarticle>
@@ -523,6 +524,7 @@
 			<imagelist>Imagelist</imagelist>
 			<inactive>inactive</inactive>
 			<link>Link</link>
+			<linklist>External Links</linklist>
 			<loading>Loading...</loading>
 			<modulecreatedate>Date created</modulecreatedate>
 			<modulname>Modulename</modulname>

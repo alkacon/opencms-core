@@ -72,6 +72,8 @@
 		<td class=menu>]]><BUTTON href="#" name="bt_image" action="doEditHTML(42);" alt="image"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_imagelist" action="doEditHTML(43);" alt="imagelist"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_download" action="doEditHTML(44);" alt="downloadlist"/><![CDATA[</td>
+
+		]]><PROCESS>linklist</PROCESS><![CDATA[
 				
 		<td class=menu width="100%">&nbsp;</td>
 	</tr>
@@ -100,4 +102,15 @@
 <table>
 ]]>
 </template>
+
+<linklist_enabled>
+	<![CDATA[<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
+		 	 <td class=menu>]]><BUTTON href="#" name="bt_linkgallery" action="window.open('../../modules/de.framfab.opencms.modules.external_links/action/linkgallery/linkbrowser.html?initial=true','LinkBrowser', 'width=550, height=500, resizable=yes, top=200, left=450');" alt="linklist"/><![CDATA[</td>
+	]]>
+</linklist_enabled>
+
+<linklist_disabled>
+	<![CDATA[<td></td>]]>
+</linklist_disabled>
+
 </workplace>
