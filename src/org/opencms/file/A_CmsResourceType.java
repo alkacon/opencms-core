@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2004/06/04 10:48:52 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/04 15:11:04 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -167,7 +167,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                     // resource with the same name and same uuid does exist, 
                     // update the existing resource
                     cms.lockResource(destination);
-                    cms.doWriteResource(destination, properties, content);
+                    cms.doImportUpdateResource(destination, properties, content);
                     importedResource = cms.readFileHeader(destination);
                     cms.touch(destination, resource.getDateLastModified(), false, resource.getUserLastModified());
                 } else {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2004/06/04 10:48:52 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/06/04 15:11:04 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -179,7 +179,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      String getResourceTypeName();
     
     /**
-     * Imports a resource to the cms.<p>
+     * Imports a resource into the Cms.<p>
      *
      * @param cms the current cms object
      * @param resource the resource to be imported

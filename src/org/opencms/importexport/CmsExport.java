@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/06/04 10:48:52 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/06/04 15:11:05 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.33 $ $Date: 2004/06/04 10:48:52 $
+ * @version $Revision: 1.34 $ $Date: 2004/06/04 15:11:05 $
  */
 public class CmsExport implements Serializable {
 
@@ -673,10 +673,14 @@ public class CmsExport implements Serializable {
         fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DESTINATION).addText(fileName);
         // <type>
         fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_TYPE).addText(getCms().getResourceType(resource.getType()).getResourceTypeName());
-        //  <uuidresource>
-        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE).addText(resource.getResourceId().toString());
-        //  <uuidcontent>
-        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_UUIDCONTENT).addText(resource.getFileId().toString());
+        
+        if (resource.isFile()) {
+            //  <uuidresource>
+            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE).addText(resource.getResourceId().toString());
+            //  <uuidcontent>
+            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_UUIDCONTENT).addText(resource.getFileId().toString());
+        }
+        
         // <datelastmodified>
         fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATELASTMODIFIED).addText(String.valueOf(resource.getDateLastModified()));
         // <userlastmodified>

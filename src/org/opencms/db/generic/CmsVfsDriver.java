@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/06/01 15:46:54 $
- * Version: $Revision: 1.179 $
+ * Date   : $Date: 2004/06/04 15:11:05 $
+ * Version: $Revision: 1.180 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.179 $ $Date: 2004/06/01 15:46:54 $
+ * @version $Revision: 1.180 $ $Date: 2004/06/04 15:11:05 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -2184,9 +2184,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setString(2, resource.getResourceId().toString());
             stmt.setString(3, resource.getName());
             stmt.setInt(4, structureState);
-            stmt.setString(5, resource.getStructureId().toString());
-            stmt.setLong(6, resource.getDateReleased());
-            stmt.setLong(7, resource.getDateExpired());
+            stmt.setLong(5, resource.getDateReleased());
+            stmt.setLong(6, resource.getDateExpired());
+            stmt.setString(7, resource.getStructureId().toString());            
             stmt.executeUpdate();           
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);

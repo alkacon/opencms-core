@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/06/04 10:48:52 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/06/04 15:11:05 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -138,7 +138,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 importUsers();
             }
             // now import the VFS resources
-            importAllResources(excludeList, propertyName, propertyValue);
+            readResourcesFromManifest(excludeList, propertyName, propertyValue);
             convertPointerToSiblings();
         } catch (CmsException e) {
             throw e;
@@ -266,173 +266,246 @@ public class CmsImportVersion4 extends A_CmsImport {
       }
   }
   
-  /**
-    * Imports the resources and writes them to the cms.<p>
-    * 
-    * 
-    * @param excludeList filenames of files and folders which should not 
-    *      be (over)written in the virtual file system (not used when null)
-    * @param propertyName name of a property to be added to all resources
-    * @param propertyValue value of that property
-    * @throws CmsException if something goes wrong
-    */
-   private void importAllResources(Vector excludeList, String propertyName, String propertyValue) throws CmsException {
+    /**
+     * Reads all file nodes plus their meta-information (properties, ACL) 
+     * from manifest.xml and imports them as Cms resources to the VFS.<p>
+     * 
+     * @param ignoredResources a list of resource names which should not be (over)written in the VFS, or null
+     * @param propertyKey name of a property to be added to all resources, or null
+     * @param propertyValue value of the property to be added to all resources, or null
+     * @throws CmsException if something goes wrong
+     */
+    private void readResourcesFromManifest(Vector ignoredResources, String propertyKey, String propertyValue)
+    throws CmsException {
 
-       String source, destination, type, uuidresource, uuidcontent, userlastmodified, usercreated, flags, timestamp;
-       long datelastmodified, datecreated;
-       int resType;
-       int loaderId = I_CmsConstants.C_UNKNOWN_ID;
+        String source = null, destination = null, type = null, uuidresource = null, uuidcontent = null, userlastmodified = null, usercreated = null, flags = null, timestamp = null;
+        long datelastmodified = 0, datecreated = 0;
+        int resType = I_CmsConstants.C_UNKNOWN_ID;
+        int loaderId = I_CmsConstants.C_UNKNOWN_ID;
 
-       List fileNodes, acentryNodes;
-       Element currentElement, currentEntry;
-       List properties = null;
+        List fileNodes = null, acentryNodes = null;
+        Element currentElement = null, currentEntry = null;
+        List properties = null;
 
-       if (m_importingChannelData) {
-           m_cms.getRequestContext().saveSiteRoot();
-           m_cms.setContextToCos();
-       }
+        if (m_importingChannelData) {
+            m_cms.getRequestContext().saveSiteRoot();
+            m_cms.setContextToCos();
+        }
 
-       // clear some required structures at the init phase of the import      
-       if (excludeList == null) {
-           excludeList = new Vector();
-       }
-       // get list of unwanted properties
-       List deleteProperties = OpenCms.getImportExportManager().getIgnoredProperties();
-       if (deleteProperties == null) {
-           deleteProperties = Collections.EMPTY_LIST;
-       }
-       // get list of immutable resources
-       List immutableResources = OpenCms.getImportExportManager().getImmutableResources();
-       if (immutableResources == null) {
-           immutableResources = Collections.EMPTY_LIST;
-       }
-       // get the wanted page type for imported pages
-       m_convertToXmlPage = OpenCms.getImportExportManager().convertToXmlPage();
-       
-       try {
-           // get all file-nodes
-           fileNodes = m_docXml.selectNodes("//" + I_CmsConstants.C_EXPORT_TAG_FILE);
-           int importSize = fileNodes.size();
-           // walk through all files in manifest
-           for (int i = 0; i < fileNodes.size(); i++) {
-               m_report.print(" ( " + (i + 1) + " / " + importSize + " ) ", I_CmsReport.C_FORMAT_NOTE);
-               currentElement = (Element)fileNodes.get(i);
-               // get all information for a file-import
-               // <source>
-               source = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_SOURCE);
-               // <destintion>
-               destination = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESTINATION);
-               // <type>
-               type = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
-               if (C_RESOURCE_TYPE_NEWPAGE_NAME.equals(type)) {
-                   resType = C_RESOURCE_TYPE_NEWPAGE_ID;
-               } else if (C_RESOURCE_TYPE_PAGE_NAME.equals(type)) {
-                   resType = C_RESOURCE_TYPE_PAGE_ID;
-               } else if (C_RESOURCE_TYPE_LINK_NAME.equals(type)) {
-                   resType = C_RESOURCE_TYPE_LINK_ID;
-               } else {
-                   resType = m_cms.getResourceTypeId(type);
-                   loaderId = m_cms.getResourceType(resType).getLoaderId();
-               }
-               // <uuidresource>
-               uuidresource = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE);
-               // <uuidcontent>
-               uuidcontent = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDCONTENT);
-               // <datelastmodified>
-               if ((timestamp = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DATELASTMODIFIED)) != null) {
-                   datelastmodified = Long.parseLong(timestamp);
-               } else {
-                   datelastmodified = System.currentTimeMillis();
-               }
-               // <userlastmodified>
-               userlastmodified = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_USERLASTMODIFIED);
-               userlastmodified = OpenCms.getImportExportManager().translateUser(userlastmodified);
-               // <datecreated>
-               if ((timestamp = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DATECREATED)) != null) {
-                   datecreated = Long.parseLong(timestamp);
-               } else {
-                   datecreated = System.currentTimeMillis();
-               }
-               // <usercreated>
-               usercreated = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_USERCREATED);
-               usercreated = OpenCms.getImportExportManager().translateUser(usercreated);
-               // <flags>              
-               flags = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
+        // clear some required structures at the init phase of the import      
+        if (ignoredResources == null) {
+            ignoredResources = new Vector();
+        }
 
-               String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);
-               if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(type)) {
-                   translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
-               }
-               // translate the name during import
-               translatedName = m_cms.getRequestContext().getDirectoryTranslator().translateResource(translatedName);
-               // check if this resource is immutable
-               boolean resourceNotImmutable = checkImmutable(translatedName, immutableResources);
-               translatedName = m_cms.getRequestContext().removeSiteRoot(translatedName);
-               // if the resource is not immutable and not on the exclude list, import it
-               if (resourceNotImmutable && (!excludeList.contains(translatedName))) {
-                   // print out the information to the report
-                   m_report.print(m_report.key("report.importing"), I_CmsReport.C_FORMAT_NOTE);
-                   m_report.print(translatedName);
-                   m_report.print(m_report.key("report.dots"));
-                   // get all properties
-                   properties = readPropertiesFromManifest(currentElement, resType, propertyName, propertyValue, deleteProperties);
-                   // import the resource               
-                   CmsResource res = importResource(source, destination, resType,  loaderId, uuidresource, uuidcontent, datelastmodified, userlastmodified, datecreated, usercreated, flags, properties);
-                   // if the resource was imported add the access control entrys if available
-                   if (res != null) {
-                       // write all imported access control entries for this file
-                       acentryNodes = currentElement.selectNodes("*/" + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
-                       // collect all access control entries
-                       for (int j = 0; j < acentryNodes.size(); j++) {
-                           currentEntry = (Element)acentryNodes.get(j);
-                           // get the data of the access control entry
-                           String id = CmsImport.getChildElementTextValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PRINCIPAL);
-                           String principalId=new CmsUUID().toString();
+        // get list of ignored properties
+        List ignoredProperties = OpenCms.getImportExportManager().getIgnoredProperties();
+        if (ignoredProperties == null) {
+            ignoredProperties = Collections.EMPTY_LIST;
+        }
 
-                           String principal=id.substring(id.indexOf(".")+1, id.length());
+        // get list of immutable resources
+        List immutableResources = OpenCms.getImportExportManager().getImmutableResources();
+        if (immutableResources == null) {
+            immutableResources = Collections.EMPTY_LIST;
+        }
 
-                           try {
-                               if (id.startsWith(CmsImportExportConfiguration.C_PRINCIPAL_GROUP)) {
-                                   principal = OpenCms.getImportExportManager().translateGroup(principal);  
-                                   principalId=m_cms.readGroup(principal).getId().toString();
-                               } else {
-                                   principal = OpenCms.getImportExportManager().translateUser(principal);  
-                                   principalId=m_cms.readUser(principal).getId().toString();
-                               }                                                    
-                               String acflags = CmsImport.getChildElementTextValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_FLAGS);                                                      
-                               String allowed = ((Element)currentEntry.selectNodes("./" + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET + "/" + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS).get(0)).getTextTrim();
-                               String denied = ((Element)currentEntry.selectNodes("./" + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET + "/" + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS).get(0)).getTextTrim();
-                               // add the entry to the list
-                               addImportAccessControlEntry(res, principalId, allowed, denied, acflags);
-                           } catch (CmsException e) {
-                               // user or group of ACE might not exist in target system, ignore ACE
-                               OpenCms.getLog(this).warn("Could not import ACE for resource " + translatedName, e);
-                               m_report.println(e);
-                           }
-                       }
-                       importAccessControlEntries(res);
-                   } else {
-                       // resource import failed, since no CmsResource was created
-                       m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
-                       m_report.println(translatedName);                     
-                   }
-                   
-               } else {
-                   // skip the file import, just print out the information to the report
-                   m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
-                   m_report.println(translatedName);
-               }
-           }
-       } catch (Exception exc) {
-           m_report.println(exc);
-           throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-       } finally {
-           if (m_importingChannelData) {
-               m_cms.getRequestContext().restoreSiteRoot();
-           }
-       }
+        // get the desired page type for imported pages
+        m_convertToXmlPage = OpenCms.getImportExportManager().convertToXmlPage();
 
-   }
+        try {
+            // get all file-nodes
+            fileNodes = m_docXml.selectNodes("//" + I_CmsConstants.C_EXPORT_TAG_FILE);
+            int importSize = fileNodes.size();
+
+            // walk through all files in manifest
+            for (int i = 0; i < fileNodes.size(); i++) {
+                m_report.print(" ( " + (i + 1) + " / " + importSize + " ) ", I_CmsReport.C_FORMAT_NOTE);
+                currentElement = (Element)fileNodes.get(i);
+
+                // <source>
+                source = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_SOURCE);
+                // <destination>
+
+                destination = CmsImport.getChildElementTextValue(
+                    currentElement,
+                    I_CmsConstants.C_EXPORT_TAG_DESTINATION);
+
+                // <type>
+                type = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
+                if (C_RESOURCE_TYPE_NEWPAGE_NAME.equals(type)) {
+                    resType = C_RESOURCE_TYPE_NEWPAGE_ID;
+                } else if (C_RESOURCE_TYPE_PAGE_NAME.equals(type)) {
+                    resType = C_RESOURCE_TYPE_PAGE_ID;
+                } else if (C_RESOURCE_TYPE_LINK_NAME.equals(type)) {
+                    resType = C_RESOURCE_TYPE_LINK_ID;
+                } else {
+                    resType = m_cms.getResourceTypeId(type);
+                    loaderId = m_cms.getResourceType(resType).getLoaderId();
+                }
+
+                if (resType != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+                    // <uuidresource>
+                    uuidresource = CmsImport.getChildElementTextValue(
+                        currentElement,
+                        I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE);
+                    // <uuidcontent>
+                    uuidcontent = CmsImport.getChildElementTextValue(
+                        currentElement,
+                        I_CmsConstants.C_EXPORT_TAG_UUIDCONTENT);
+                } else {
+                    uuidresource = null;
+                    uuidcontent = null;
+                }
+
+                // <datelastmodified>
+                if ((timestamp = CmsImport.getChildElementTextValue(
+                    currentElement,
+                    I_CmsConstants.C_EXPORT_TAG_DATELASTMODIFIED)) != null) {
+                    datelastmodified = Long.parseLong(timestamp);
+                } else {
+                    datelastmodified = System.currentTimeMillis();
+                }
+
+                // <userlastmodified>
+                userlastmodified = CmsImport.getChildElementTextValue(
+                    currentElement,
+                    I_CmsConstants.C_EXPORT_TAG_USERLASTMODIFIED);
+                userlastmodified = OpenCms.getImportExportManager().translateUser(userlastmodified);
+
+                // <datecreated>
+                if ((timestamp = CmsImport.getChildElementTextValue(
+                    currentElement,
+                    I_CmsConstants.C_EXPORT_TAG_DATECREATED)) != null) {
+                    datecreated = Long.parseLong(timestamp);
+                } else {
+                    datecreated = System.currentTimeMillis();
+                }
+
+                // <usercreated>
+                usercreated = CmsImport.getChildElementTextValue(
+                    currentElement,
+                    I_CmsConstants.C_EXPORT_TAG_USERCREATED);
+                usercreated = OpenCms.getImportExportManager().translateUser(usercreated);
+
+                // <flags>              
+                flags = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
+
+                String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);
+                if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(type)) {
+                    translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
+                }
+
+                // translate the name during import
+                translatedName = m_cms.getRequestContext().getDirectoryTranslator().translateResource(translatedName);
+
+                // check if this resource is immutable
+                boolean resourceNotImmutable = checkImmutable(translatedName, immutableResources);
+                translatedName = m_cms.getRequestContext().removeSiteRoot(translatedName);
+
+                // if the resource is not immutable and not on the exclude list, import it
+                if (resourceNotImmutable && (!ignoredResources.contains(translatedName))) {
+                    // print out the information to the report
+                    m_report.print(m_report.key("report.importing"), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(translatedName);
+                    m_report.print(m_report.key("report.dots"));
+                    // get all properties
+                    properties = readPropertiesFromManifest(
+                        currentElement,
+                        resType,
+                        propertyKey,
+                        propertyValue,
+                        ignoredProperties);
+
+                    // import the resource               
+                    CmsResource res = importResource(
+                        source,
+                        destination,
+                        resType,
+                        loaderId,
+                        uuidresource,
+                        uuidcontent,
+                        datelastmodified,
+                        userlastmodified,
+                        datecreated,
+                        usercreated,
+                        flags,
+                        properties);
+
+                    // if the resource was imported add the access control entrys if available
+                    if (res != null) {
+                        // write all imported access control entries for this file
+                        acentryNodes = currentElement.selectNodes("*/"
+                            + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
+
+                        // collect all access control entries
+                        for (int j = 0; j < acentryNodes.size(); j++) {
+                            currentEntry = (Element)acentryNodes.get(j);
+
+                            // get the data of the access control entry
+                            String id = CmsImport.getChildElementTextValue(
+                                currentEntry,
+                                I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PRINCIPAL);
+                            String principalId = new CmsUUID().toString();
+                            String principal = id.substring(id.indexOf(".") + 1, id.length());
+
+                            try {
+                                if (id.startsWith(CmsImportExportConfiguration.C_PRINCIPAL_GROUP)) {
+                                    principal = OpenCms.getImportExportManager().translateGroup(principal);
+                                    principalId = m_cms.readGroup(principal).getId().toString();
+                                } else {
+                                    principal = OpenCms.getImportExportManager().translateUser(principal);
+                                    principalId = m_cms.readUser(principal).getId().toString();
+                                }
+
+                                String acflags = CmsImport.getChildElementTextValue(
+                                    currentEntry,
+                                    I_CmsConstants.C_EXPORT_TAG_FLAGS);
+
+                                String allowed = ((Element)currentEntry.selectNodes(
+                                    "./"
+                                        + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET
+                                        + "/"
+                                        + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS).get(0))
+                                    .getTextTrim();
+
+                                String denied = ((Element)currentEntry.selectNodes(
+                                    "./"
+                                        + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET
+                                        + "/"
+                                        + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS).get(0))
+                                    .getTextTrim();
+
+                                // add the entry to the list
+                                addImportAccessControlEntry(res, principalId, allowed, denied, acflags);
+                            } catch (CmsException e) {
+                                // user or group of ACE might not exist in target system, ignore ACE
+                                OpenCms.getLog(this).warn("Could not import ACE for resource " + translatedName, e);
+                                m_report.println(e);
+                            }
+                        }
+                        
+                        importAccessControlEntries(res);
+                    } else {
+                        // resource import failed, since no CmsResource was created
+                        m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
+                        m_report.println(translatedName);
+                    }
+
+                } else {
+                    // skip the file import, just print out the information to the report
+                    m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.println(translatedName);
+                }
+            }
+        } catch (Exception exc) {
+            m_report.println(exc);
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+        } finally {
+            if (m_importingChannelData) {
+                m_cms.getRequestContext().restoreSiteRoot();
+            }
+        }
+    }
 
    /**
     * Imports a resource (file or folder) into the cms.<p>
@@ -499,18 +572,27 @@ public class CmsImportVersion4 extends A_CmsImport {
             }
 
             // get UUIDs for the resource and content        
-            CmsUUID newUuidresource;
+            CmsUUID newUuidresource = null;
             if ((uuidresource != null) && (resType != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID)) {
+                // create a UUID from the provided string
                 newUuidresource = new CmsUUID(uuidresource);
             } else {
+                // folders get always a new resource record UUID
                 newUuidresource = new CmsUUID();
             }
-            CmsUUID newUuidcontent;
+            
+            CmsUUID newUuidcontent = null;
             if (uuidcontent != null) {
+                // create a UUID from the provided string
                 newUuidcontent = new CmsUUID(uuidcontent);
+            } else if (resType == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+                // folders don't have any "content"- use the Null UUID as the content UUID
+                newUuidcontent = CmsUUID.getNullUUID();
             } else {
+                // create a new UUID
                 newUuidcontent = new CmsUUID();
             }
+            
             // extract the name of the resource form the destination
             String resname = destination;
             if (resname.endsWith("/")) {

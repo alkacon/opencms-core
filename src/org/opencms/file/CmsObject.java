@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/06/04 10:48:52 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/06/04 15:11:04 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  */
 public class CmsObject {
 
@@ -1191,18 +1191,14 @@ public class CmsObject {
     }
 
     /**
-     * Creates a new resource.<p>
+     * Imports a resource as a new resource into the VFS.<p>
      *
      * @param resource the resource to be imported
-     * @param content the content of the resource if it is of type file
-     * @param properties A Hashtable of propertyinfos, that should be set for this folder
-     * The keys for this Hashtable are the names for propertydefinitions, the values are
-     * the values for the propertyinfos
-     * @param destination  the name of the new resource 
-     *
-     * @return a <code>CmsFolder</code> object representing the newly created folder
-     * @throws CmsException if the resourcename is not valid, or if the user has not the appropriate rights to create
-     * a new resource
+     * @param content the content of the resource
+     * @param properties a list of Cms property objects
+     * @param destination the name of the new resource
+     * @return the imported/new Cms resource
+     * @throws CmsException if something goes wrong (e.g. the resource already exists)
      *
      */
     protected CmsResource doImportResource(CmsResource resource, byte content[], List properties, String destination) throws CmsException {
@@ -1365,15 +1361,19 @@ public class CmsObject {
     }
     
     /**
-    * Writes a resource and its properties to the VFS.<p>
-    *
-    * @param resourcename the name of the resource to write
-    * @param properties the properties of the resource
-    * @param filecontent the new filecontent of the resource
-    * @throws CmsException if something goes wrong
-    */
-    protected void doWriteResource(String resourcename, List properties, byte[] filecontent) throws CmsException {
-        m_driverManager.writeResource(m_context, addSiteRoot(resourcename), properties, filecontent);
+     * Updates an existing resource in the VFS from a resource to be imported.<p>
+     * 
+     * The structure + resource records, file content and properties of the resource
+     * are written.<p>
+     *
+     * @param resourcename the name of the resource to be updated/imported
+     * @param properties a list of Cms property objects of the resource
+     * @param filecontent the new filecontent of the resource to be updated/imported
+     * @throws CmsException if something goes wrong
+     */
+    protected void doImportUpdateResource(String resourcename, List properties, byte[] filecontent) throws CmsException {
+
+        m_driverManager.importUpdateResource(m_context, addSiteRoot(resourcename), properties, filecontent);
     }
 
     /**
@@ -2110,7 +2110,9 @@ public class CmsObject {
     }
 
     /**
-     * Imports a resource to the cms.<p>
+     * Imports a resource into the Cms by forwarding this call to
+     * the Cms resource type class matching the type of the resource
+     * to be imported.<p>
      *
      * @param resource the resource to be imported
      * @param content the content of the resource

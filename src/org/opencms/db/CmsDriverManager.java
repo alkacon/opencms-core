@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/06/04 10:48:52 $
- * Version: $Revision: 1.367 $
+ * Date   : $Date: 2004/06/04 15:11:05 $
+ * Version: $Revision: 1.368 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.367 $ $Date: 2004/06/04 10:48:52 $
+ * @version $Revision: 1.368 $ $Date: 2004/06/04 15:11:05 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -7908,49 +7908,39 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Writes a resource and its properties to the Cms.<p>
-     *
-     * A resource can only be written to an offline project.
-     * The state of the resource is set to  CHANGED (1). The file content of the file
-     * is either updated (if it is already existing in the offline project), or created
-     * in the offline project (if it is not available there).
-     *
-     * Access is granted, if:
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user can write the resource</li>
-     * <li>the resource is locked by the callingUser</li>
-     * <li>the user is the owner of the resource or administrator<li>
-     * </ul>
+     * Updates an existing resource in the VFS from a resource to be imported.<p>
+     * 
+     * The structure + resource records, file content and properties of the resource
+     * are written.<p>
      *
      * @param context the current request context
-     * @param resourcename the name of the resource to write
-     * @param properties the properties of the resource
-     * @param filecontent the new filecontent of the resource
-     * @throws CmsException  if operation was not succesful
+     * @param resourcename the name of the resource to be updated/imported
+     * @param properties a list of Cms property objects of the resource
+     * @param filecontent the new filecontent of the resource to be updated/imported
+     * @throws CmsException if something goes wrong
      */
-    public void writeResource(CmsRequestContext context, String resourcename, List properties, byte[] filecontent) throws CmsException {
-        CmsResource resource = readFileHeader(context, resourcename, CmsResourceFilter.ALL);
-        // check if the user has write access 
-        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.ALL);
-
-        m_vfsDriver.writeResource(context.currentProject(), resource, filecontent, C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
-        // mark the resource as modified in the current project
-        m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), resource);
-
-        if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
-            resource.setState(I_CmsConstants.C_STATE_CHANGED);
-        }
-
-        // write the properties
-        m_vfsDriver.writePropertyObjects(context.currentProject(), resource, properties);
-
-        // update the cache
-        //clearResourceCache(resource.getResourceName(), context.currentProject(), context.currentUser());
-        clearResourceCache();
-        filecontent = null;
+    public void importUpdateResource(CmsRequestContext context, String resourcename, List properties, byte[] filecontent) throws CmsException {
+        CmsResource resource = null;
         
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
+        try {
+            resource = readFileHeader(context, resourcename, CmsResourceFilter.ALL);
+            
+            // check if the user has write access 
+            checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.ALL);        
+            // write the properties
+            m_vfsDriver.writePropertyObjects(context.currentProject(), resource, properties);
+            // write the structure + resource records and the file content
+            m_vfsDriver.writeResource(context.currentProject(), resource, filecontent, C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());            
+            // mark the resource as modified in the current project
+            m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), resource);
+        } finally {
+            // update the driver manager cache
+            clearResourceCache();
+            m_propertyCache.clear();
+            
+            // fire an event that a resource and it's properties have been modified
+            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", resource)));
+        }
     }
     
     
