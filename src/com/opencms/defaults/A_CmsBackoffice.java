@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2004/06/07 12:44:05 $
-* Version: $Revision: 1.85 $
+* Date   : $Date: 2004/06/15 07:28:39 $
+* Version: $Revision: 1.86 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,35 +76,38 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.85 $
+ * @version $Revision: 1.86 $
  */
 public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
 
+    /** Value for state: not locked. */
     public static int C_NOT_LOCKED = -1;
+    
+    /** Value for no access. */
     public static int C_NO_ACCESS = -2;
 
     private static String C_DEFAULT_SELECTOR = "(default)";
     private static String C_DONE_SELECTOR = "done";
 
-    /** The style for unchanged files or folders */
+    /** The style for unchanged files or folders. */
     private static final String C_STYLE_UNCHANGED = "dateingeandert";
 
-    /** The style for files or folders not in project*/
+    /** The style for files or folders not in project. */
     private static final String C_STYLE_NOTINPROJECT = "dateintprojekt";
 
-    /** The style for new files or folders */
+    /** The style for new files or folders. */
     private static final String C_STYLE_NEW = "dateineu";
 
-    /** The style for deleted files or folders */
+    /** The style for deleted files or folders. */
     private static final String C_STYLE_DELETED = "dateigeloescht";
 
-    /** The style for changed files or folders */
+    /** The style for changed files or folders. */
     private static final String C_STYLE_CHANGED = "dateigeaendert";
 
-    /** Default value of permission*/
+    /** Default value of permission.*/
     protected static final int C_DEFAULT_PERMISSIONS = 383;
 
-    // possible accessflags
+    /** Possible accessflags. */
     protected static final String[] C_ACCESS_FLAGS = {"1", "2", "4", "8", "16", "32", "64", "128", "256"};
 
     /**
