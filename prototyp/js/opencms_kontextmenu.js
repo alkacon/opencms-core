@@ -48,6 +48,7 @@ var DO_COPY=4;
 var DO_MOVE=5;
 var DO_RENAME=6;
 var DO_DELETE=7;
+var DO_REPLACE=18;
 
 var DO_CHOWN=8;
 var DO_CHGRP=9;
@@ -285,6 +286,11 @@ function doAction(action) // which action on layer is clicked
 			break;
 		}
 		
+		case 18:
+		{
+			location.href='administriation_content_pic_replace.html';
+			break;
+		}
 		case 30:
 		{
 			location.href='explorer_files_copyf.html';
