@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/03/11 10:44:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/03/15 16:30:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * @author Armen Markarian (a.markarian@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDialogHandler {
     
@@ -254,10 +254,8 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             result.append(buildPropertyEntry(C_DEFAULT_PROPERTIES[i], key(C_KEY_PREFIX + C_DEFAULT_PROPERTIES[i]), editable));    
         }
         
-        // show navigation properties if enabled
-        if (showNavigation()) {
-            result.append(buildNavigationProperties(editable));
-        }
+        // show navigation properties
+        result.append(buildNavigationProperties(editable));
         
         // build head nav checkbox
         result.append(buildCheckBox(CmsTemplateNavigation.C_PROPERTY_HEADNAV_USE, C_PARAM_TRUE, C_KEY_PREFIX + CmsTemplateNavigation.C_PROPERTY_HEADNAV_USE));
@@ -429,28 +427,27 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
                 writeProperty(curProperty, paramValue, oldValue);
             }
             
-            // write the navigation properties if enabled
-            if (showNavigation()) {
-                // get the navigation enabled parameter
-                String paramValue = request.getParameter("enablenav");
-                String oldValue = null;
-                if (Boolean.valueOf(paramValue).booleanValue()) {
-                    // navigation enabled, update params
-                    paramValue = request.getParameter("navpos");
-                    if (!"-1".equals(paramValue)) {
-                        // update the property only when it is different from "-1" (meaning no change)
-                        oldValue = request.getParameter(PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_NAVPOS);
-                        writeProperty(I_CmsConstants.C_PROPERTY_NAVPOS, paramValue, oldValue);
-                    }
-                    paramValue = request.getParameter(PREFIX_VALUE + I_CmsConstants.C_PROPERTY_NAVTEXT);
-                    oldValue = request.getParameter(PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_NAVTEXT);
-                    writeProperty(I_CmsConstants.C_PROPERTY_NAVTEXT, paramValue, oldValue);
-                } else {
-                    // navigation disabled, delete property values
-                    writeProperty(I_CmsConstants.C_PROPERTY_NAVPOS, null, null);
-                    writeProperty(I_CmsConstants.C_PROPERTY_NAVTEXT, null, null);
-                }                  
-            }
+            // write the navigation properties
+
+            // get the navigation enabled parameter
+            String paramValue = request.getParameter("enablenav");
+            String oldValue = null;
+            if (Boolean.valueOf(paramValue).booleanValue()) {
+                // navigation enabled, update params
+                paramValue = request.getParameter("navpos");
+                if (!"-1".equals(paramValue)) {
+                    // update the property only when it is different from "-1" (meaning no change)
+                    oldValue = request.getParameter(PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_NAVPOS);
+                    writeProperty(I_CmsConstants.C_PROPERTY_NAVPOS, paramValue, oldValue);
+                }
+                paramValue = request.getParameter(PREFIX_VALUE + I_CmsConstants.C_PROPERTY_NAVTEXT);
+                oldValue = request.getParameter(PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_NAVTEXT);
+                writeProperty(I_CmsConstants.C_PROPERTY_NAVTEXT, paramValue, oldValue);
+            } else {
+                // navigation disabled, delete property values
+                writeProperty(I_CmsConstants.C_PROPERTY_NAVPOS, null, null);
+                writeProperty(I_CmsConstants.C_PROPERTY_NAVTEXT, null, null);
+            }                  
         } finally {
             if (useTempfileProject) {
                 switchToCurrentProject();
