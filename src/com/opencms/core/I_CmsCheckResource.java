@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsCheckResource.java,v $
- * Date   : $Date: 2003/05/05 08:06:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/07 16:03:09 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package com.opencms.core;
 
 import com.opencms.core.exceptions.CmsCheckResourceException;
@@ -41,20 +41,19 @@ import com.opencms.file.CmsObject;
  * OpenCms.initResource(cms).<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public interface I_CmsCheckResource {
 
-/**
- * Possibility to modify or change the CmsFile with the CmsObject.<p>
- * 
- * @param file the requested file
- * @param cms the current CmsObject
- * @return CmsFile a file in the OpenCms VFS
- * @throws CmsCheckResourceException throw this exception if other implementations of the interface should not be executed
- */
-public CmsFile checkResource(CmsFile file, CmsObject cms) throws CmsCheckResourceException;
+    /**
+     * Possibility to modify or change the CmsFile with the CmsObject.<p>
+     * 
+     * @param file the requested file
+     * @param cms the current CmsObject
+     * @return CmsFile a file in the OpenCms VFS
+     * @throws CmsCheckResourceException throw this exception if other implementations of the interface should not be executed
+     */
+    public CmsFile checkResource(CmsFile file, CmsObject cms) throws CmsCheckResourceException;
 
 }
-
 
