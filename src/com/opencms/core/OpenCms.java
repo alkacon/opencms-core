@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/09/11 13:31:59 $
-* Version: $Revision: 1.93 $
+* Date   : $Date: 2002/09/12 08:55:42 $
+* Version: $Revision: 1.94 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.93 $ $Date: 2002/09/11 13:31:59 $
+ * @version $Revision: 1.94 $ $Date: 2002/09/12 08:55:42 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -220,6 +220,20 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             }
             throw e;
         }
+        
+        // try to initialize the flex cache.
+        try {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initialize flex cache...");
+            }
+            com.opencms.flex.cache.CmsFlexCache flexCache = new com.opencms.flex.cache.CmsFlexCache(this);
+        }
+        catch(Exception e) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.toString());
+                //e.printStackTrace( System.err );
+            }
+        }        
 
         // try to initialize the launchers.
         try {

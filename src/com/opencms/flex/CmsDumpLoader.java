@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsDumpLoader.java,v $
- * Date   : $Date: 2002/09/04 15:46:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2002/09/12 08:58:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.ServletException;
  * Description of the class CmsDumpLoader here.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implements I_CmsResourceLoader {
     
@@ -67,11 +67,8 @@ public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implemen
     
     /** Initialize the ResourceLoader  */
     public void init(A_OpenCms openCms) {
-        m_cache = (CmsFlexCache)openCms.getRuntimeProperty(this.C_LOADER_CACHENAME);
-        if (m_cache == null) {
-            m_cache = new CmsFlexCache( openCms );
-            openCms.setRuntimeProperty(this.C_LOADER_CACHENAME, m_cache);
-        }        
+        m_cache = (CmsFlexCache)openCms.getRuntimeProperty(this.C_LOADER_CACHENAME);  
+              
         log(this.getClass().getName() + " initialized!");        
     }
     
