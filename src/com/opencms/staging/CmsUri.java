@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsUri.java,v $
-* Date   : $Date: 2001/04/26 07:34:54 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/04/26 16:14:52 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,4 +43,41 @@ import com.opencms.file.*;
  */
 public class CmsUri {
 
+    /**
+     * the id of the Group that can read the resource
+     * -1 if any Group can read this.
+     */
+    private int m_readAccessGroup;
+
+    /**
+     * The launcher type for this resource.
+     */
+    private int m_launcherType;
+
+    /**
+     * The Name of the templateclass that should used as root-Template.
+     */
+    private String m_launcherClassname;
+
+    /**
+     * The Key to the Element used to start the contentgeneration for
+     * this Uri.
+     */
+    private CmsElementDescriptor m_startingElement;
+
+    /**
+     * Constructor.
+     *
+     * @param startingElement The Element to start the contentgenerating for this uri.
+     * @param readAccessGroup the Group that can read the uri.
+     * @param launcherType The launcher type of this resource.
+     * @param launcherClassname The Name of the templateclass that should used as root-Template.
+     */
+    public CmsUri(CmsElementDescriptor startingElement, int readAccessGroup,
+                    int launcherType, String launcherClassname){
+        m_startingElement = startingElement;
+        m_readAccessGroup = readAccessGroup;
+        m_launcherType = launcherType;
+        m_launcherClassname = launcherClassname;
+    }
 }

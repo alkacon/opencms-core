@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsUriLocator.java,v $
-* Date   : $Date: 2001/04/26 07:34:54 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/04/26 16:14:52 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -30,6 +30,7 @@ package com.opencms.staging;
 import java.util.*;
 import java.io.*;
 import com.opencms.file.*;
+import com.opencms.core.*;
 
 /**
  * The UriLocator is used to receive CmsUri-Objects. It is the Cache for these
@@ -41,4 +42,42 @@ import com.opencms.file.*;
  */
 public class CmsUriLocator {
 
+    /**
+     * The cach for holding the uris.
+     */
+    private Hashtable m_uriCache;
+
+    /**
+     * Constructor
+     */
+    public CmsUriLocator(){
+        m_uriCache = new Hashtable();
+        // later we have to read the cache from the Database here.
+    }
+
+    /**
+     * returns a Uri object. either from the cache or if it is not in it,
+     * an new one will be generated and stored in the cache for the future.
+     *
+     * @param cms The cmsObject containing the uri.
+     * @return The uriObject for this uri.
+     */
+    public CmsUri get(CmsObject cms) throws CmsException{
+
+        CmsUriDescriptor  uri = new CmsUriDescriptor(cms.getRequestContext().getUri());
+        if(m_uriCache.containsKey(uri)){
+            // check the accessrights then return it
+            int groupId = cms.getRequestContext().currentGroup().getId();
+            if(false /*TODO: write a method to check if the group has access(checkGroupDependencies(newVector({new Integer(groupId), new Integer(((CmsUri)m_uriCache.get(uri)).getAccessGroup())})))*/){
+                // the group has no read access
+                throw new CmsException("blabla... nein!", CmsException.C_ACCESS_DENIED);
+            }
+            return (CmsUri)m_uriCache.get(uri);
+        }else{
+            // create a new uri Object, put it in the cache and return it
+at work...
+            CmsUri uriObject = new CmsUri(null, 0, 0, "");
+        }
+
+    }
 }

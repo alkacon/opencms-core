@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsUriDescriptor.java,v $
-* Date   : $Date: 2001/04/26 07:34:54 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/04/26 16:14:52 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -39,5 +39,19 @@ import com.opencms.file.*;
  */
 public class CmsUriDescriptor {
 
+    /**
+     * The uri string
+     */
+    private String m_uri;
 
+    /**
+     * Constructor.
+     */
+    public CmsUriDescriptor(String uri){
+        m_uri = uri;
+    }
+
+    public String getUri(){
+        return m_uri;
+    }
 }
