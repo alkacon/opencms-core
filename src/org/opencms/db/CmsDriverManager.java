@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/19 16:04:17 $
- * Version: $Revision: 1.170 $
+ * Date   : $Date: 2003/08/19 16:18:39 $
+ * Version: $Revision: 1.171 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.170 $ $Date: 2003/08/19 16:04:17 $
+ * @version $Revision: 1.171 $ $Date: 2003/08/19 16:18:39 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -345,19 +345,19 @@ public class CmsDriverManager extends Object {
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
         userDriver = (I_CmsUserDriver) driverManager.newDriverInstance(configurations, driverName, drivers);
 
-        // read the project driver class properties and initialize a new instance
+        // read the project driver class properties and initialize a new instance 
         drivers = Arrays.asList(configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_PROJECT));
         driverName = configurations.getString((String)drivers.get(0) + ".project.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
         projectDriver = (I_CmsProjectDriver) driverManager.newDriverInstance(configurations, driverName, drivers);
 
-        // read the workflow driver class properties and initialize a new instance
+        // read the workflow driver class properties and initialize a new instance 
         drivers = Arrays.asList(configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_WORKFLOW)); 
         driverName = configurations.getString((String)drivers.get(0) + ".workflow.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
         workflowDriver = (I_CmsWorkflowDriver) driverManager.newDriverInstance(configurations, driverName, drivers);
 
-        // read the backup driver class properties and initialize a new instance
+        // read the backup driver class properties and initialize a new instance 
         drivers = Arrays.asList(configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_BACKUP));
         driverName = configurations.getString((String)drivers.get(0) + ".backup.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
@@ -3538,7 +3538,7 @@ public class CmsDriverManager extends Object {
             }
         }
 
-        return (retValue == null) ? null : (Vector)retValue.clone();
+        return (retValue == null) ? null : (Vector) retValue.clone();
     }
 
     /**
@@ -4800,7 +4800,7 @@ public class CmsDriverManager extends Object {
 
         return driver;
     }
-    
+
     public Object newDriverInstance(Configurations configurations, String driverName, List successiveDrivers) throws CmsException {
         
         Class initParamClasses[] = { Configurations.class, List.class, CmsDriverManager.class };
@@ -7216,6 +7216,9 @@ public class CmsDriverManager extends Object {
             resource.setState(I_CmsConstants.C_STATE_CHANGED);
         }
         resource.setUserLastModified(context.currentUser().getId());
+
+        touch(context,resourceName, System.currentTimeMillis(), context.currentUser().getId());
+
 
         m_vfsDriver.updateResourceState(context.currentProject(), resource, C_UPDATE_RESOURCE);        
 
