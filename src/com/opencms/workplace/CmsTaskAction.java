@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
- * Date   : $Date: 2000/03/15 14:32:15 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/03/17 11:17:29 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/03/15 14:32:15 $
+ * @version $Revision: 1.2 $ $Date: 2000/03/17 11:17:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
@@ -53,6 +53,14 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 	 */
 	private final static String C_ALL_ROLES = "___all";
 
+
+	/**
+	 * Accepts a task.
+	 * @param cms The cms-object.
+	 * @param int taskid The id of the task.
+	 * @exception CmsException Throws CmsExceptions, that are be 
+	 * thrown in calling methods.
+	 */
 	public static void accept(A_CmsObject cms, int taskid) 
 		throws CmsException {
 		cms.acceptTask(taskid);
@@ -60,6 +68,13 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_ACCEPTED);
 	}
 	
+	/**
+	 * Takes a task. The calling user is now the agent for this task.
+	 * @param cms The cms-object.
+	 * @param int taskid The id of the task.
+	 * @exception CmsException Throws CmsExceptions, that are be 
+	 * thrown in calling methods.
+	 */
 	public static void take(A_CmsObject cms, int taskid) 
 		throws CmsException {
 		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
@@ -76,6 +91,15 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		}				
 	}
 	
+	/**
+	 * Forwards a task. The task is forwarded to a new editor in a new role.
+	 * @param cms The cms-object.
+	 * @param int taskid The id of the task.
+	 * @param newEditorName The name of the new editor for this task.
+	 * @param newRoleName The name of the new role for the user.
+	 * @exception CmsException Throws CmsExceptions, that are be 
+	 * thrown in calling methods.
+	 */
 	public static void forward(A_CmsObject cms, int taskid,
 							   String newEditorName, String newRoleName)
 		throws CmsException {
@@ -90,6 +114,15 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_FORWARDED);
 	}
 	
+	/**
+	 * Changes the timeou-date of the task.
+	 * @param cms The cms-object.
+	 * @param int taskid The id of the task.
+	 * @param timeoutString The new timeout-date as a string in the following format:
+	 * "dd.mm.yyyy"
+	 * @exception CmsException Throws CmsExceptions, that are be 
+	 * thrown in calling methods.
+	 */
 	public static void due(A_CmsObject cms, int taskid,
 						   String timeoutString)
 		throws CmsException {
@@ -110,6 +143,15 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_DUECHANGED);
 	}
 
+	/**
+	 * Changes the priority of a task.
+	 * @param cms The cms-object.
+	 * @param int taskid The id of the task.
+	 * @param priorityString the new priority as String ("1" = high, 
+	 * "2" = normal or "3" = low)
+	 * @exception CmsException Throws CmsExceptions, that are be 
+	 * thrown in calling methods.
+	 */
 	public static void priority(A_CmsObject cms, int taskid, 
 								String priorityString) 
 		throws CmsException {
@@ -127,6 +169,25 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_PRIORITYCHANGED);
 	}
 	
+	/**
+	 * Reaktivates a task.
+	 * @param cms The cms-object.
+	 * @param int taskid The id of the task.
+	 * @param agentName The name of the new editor for this task.
+	 * @param roleName The name of the new role for the user.
+	 * @param taskName The new name of the task.
+	 * @param taskcomment The new comment for this task.
+	 * @param timeoutString The new timeout-date as a string in the following format:
+	 * "dd.mm.yyyy"
+	 * @param priorityString the new priority as String ("1" = high, 
+	 * "2" = normal or "3" = low)
+	 * @param paraAcceptation controls if a message should be send by acceptation. ("checked" | "")
+	 * @param paraAll controls if a message should be send to all users in a role. ("checked" | "")
+	 * @param paraCompletion controls if a message should be send by completing this task. ("checked" | "")
+	 * @param paraDelivery controls if a message should be send by delivering a task. ("checked" | "")
+	 * @exception CmsException Throws CmsExceptions, that are be 
+	 * thrown in calling methods.
+	 */
 	public static void reakt(A_CmsObject cms, int taskid, 
 							 String agentName, String roleName, String taskName, 
 							 String taskcomment, String timeoutString, 
@@ -166,6 +227,13 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		cms.writeTaskLog(task.getId(), comment, C_TASKLOGTYPE_REACTIVATED);
 	}
 	
+	/**
+	 * Ends a task.
+	 * @param cms The cms-object.
+	 * @param int taskid The id of the task.
+	 * @exception CmsException Throws CmsExceptions, that are be 
+	 * thrown in calling methods.
+	 */
 	public static void end(A_CmsObject cms, int taskid) 
 		throws CmsException {
 		cms.endTask(taskid);
@@ -173,6 +241,14 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_OK);
 	}
 	
+	/**
+	 * Sends a message to the editor of the task.
+	 * @param cms The cms-object.
+	 * @param int taskid The id of the task.
+	 * @param message The text of the message.
+	 * @exception CmsException Throws CmsExceptions, that are be 
+	 * thrown in calling methods.
+	 */
 	public static void message(A_CmsObject cms, int taskid, String message)
 		throws CmsException {
 		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
@@ -185,6 +261,14 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		}
 	}
 	
+	/**
+	 * Sends a message to the initiator (owner) of the task.
+	 * @param cms The cms-object.
+	 * @param int taskid The id of the task.
+	 * @param message The text of the message.
+	 * @exception CmsException Throws CmsExceptions, that are be 
+	 * thrown in calling methods.
+	 */
 	public static void query(A_CmsObject cms, int taskid, String message) 
 		throws CmsException {
 		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
@@ -197,6 +281,24 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		}
 	}
 	
+	/**
+	 * Creates a new task.
+	 * @param cms The cms-object.
+	 * @param agentName The name of the new editor for this task.
+	 * @param roleName The name of the new role for the user.
+	 * @param taskName The new name of the task.
+	 * @param taskcomment The new comment for this task.
+	 * @param timeoutString The new timeout-date as a string in the following format:
+	 * "dd.mm.yyyy"
+	 * @param priorityString the new priority as String ("1" = high, 
+	 * "2" = normal or "3" = low)
+	 * @param paraAcceptation controls if a message should be send by acceptation. ("checked" | "")
+	 * @param paraAll controls if a message should be send to all users in a role. ("checked" | "")
+	 * @param paraCompletion controls if a message should be send by completing this task. ("checked" | "")
+	 * @param paraDelivery controls if a message should be send by delivering a task. ("checked" | "")
+	 * @exception CmsException Throws CmsExceptions, that are be 
+	 * thrown in calling methods.
+	 */
 	public static void create(A_CmsObject cms, 
 							 String agentName, String roleName, String taskName, 
 							 String taskcomment, String timeoutString, 
@@ -229,5 +331,4 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		comment += taskcomment;
 		cms.writeTaskLog(task.getId(), comment, C_TASKLOGTYPE_CREATED);
 	}
-
 }
