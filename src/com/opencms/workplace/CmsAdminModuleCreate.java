@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/08 09:25:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/11/08 11:51:51 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -184,6 +184,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
 					}
 					if ("checked".equals(adminpoint)){
 						tryToCreateFolder(cms, modulePath, "administration");
+						tryToCreateFolder(cms, modulePath, "pics");
 					}
 					
 						
