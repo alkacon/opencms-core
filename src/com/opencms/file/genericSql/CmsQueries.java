@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/09/26 13:09:28 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/09/27 17:28:12 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.12 $ $Date: 2000/09/26 13:09:28 $
+ * @version $Revision: 1.13 $ $Date: 2000/09/27 17:28:12 $
  */
 public class CmsQueries
 {
@@ -305,7 +305,7 @@ public class CmsQueries
 	public Integer C_SITES_MAXID_KEY = new Integer(452);
 	public String C_SITES_MAXID = "SELECT MAX(SITE_ID) FROM " + C_DATABASE_PREFIX + "SITES";		
 	public Integer C_SITES_WRITE_KEY = new Integer(453);
-	public String C_SITES_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "SITES VALUES(?,?,?,?,?,?,?)";
+	public String C_SITES_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "SITES (SITE_ID, NAME, DESCRIPTION, CATEGORY_ID, LANGUAGE_ID, COUNTRY_ID, ONLINEPROJECT_ID) VALUES(?,?,?,?,?,?,?)";
 
 	public Integer C_SITE_URLS_MAXID_KEY = new Integer(454);
 	public String C_SITE_URLS_MAXID = "SELECT MAX(URL_ID) FROM " + C_DATABASE_PREFIX + "SITES";
