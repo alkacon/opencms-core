@@ -429,7 +429,7 @@ PACKAGE BODY OpenCmsProject IS
       FETCH curFiles INTO recFiles;
       EXIT WHEN curFiles%NOTFOUND;
       -- resource of offline-project is marked for delete
-      IF substr(recFiles.resource_name,1,1) = opencmsConstants.C_TEMP_PREFIX THEN
+      IF substr(recFiles.resource_name,instr(recFiles.resource_name,'/',-1,1)+1,1) = opencmsConstants.C_TEMP_PREFIX THEN
         delete from cms_resources where project_id = pProjectId and resource_name = recFiles.resource_name;
       -- resource is deleted
       ELSIF recFiles.state = opencmsConstants.C_STATE_DELETED THEN
@@ -508,7 +508,7 @@ PACKAGE BODY OpenCmsProject IS
                resource_lastmodified_by = recFiles.resource_lastmodified_by,
                resource_size = recFiles.resource_size,
                file_id = recFiles.file_id
-               where resource_id = recNewFolder.resource_id;
+               where resource_id = recNewFile.resource_id;
         commit;
         -- copy the properties
         delete from cms_properties where resource_id = recNewFile.resource_id;
