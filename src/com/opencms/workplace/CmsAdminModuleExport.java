@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2002/08/26 13:00:40 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2002/10/11 15:14:13 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,8 @@ import javax.servlet.http.*;
  * Template class for displaying OpenCms workplace administration module create.
  *
  * Creation date: (27.10.00 10:28:08)
- * @author: Hanjo Riege
+ * @author Hanjo Riege
+ * @author Thomas Weckert
  */
 public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsConstants {
 
@@ -58,10 +59,13 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
     private final String C_MODULE = "module";
     private final String C_ACTION = "action";
     private final String C_NAME_PARAMETER = "module";
+    
+    private static final int DEBUG = 0;
 
     /**
-	 * Gets the content of a defined section in a given template file and its subtemplates
-	 * with the given parameters.
+	 * Collects all resources of a module to be exported in a string array. By setting the module property
+     * "additional_folders" as a folder list separated by ";", you can specify folders outside the 
+     * "system/modules" directory to be exported with the module!
 	 *
 	 * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
 	 * @param cms CmsObject Object for accessing system resources.
@@ -79,38 +83,87 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 	    CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 	    CmsRequestContext reqCont = cms.getRequestContext();
 	    I_CmsRegistry reg = cms.getRegistry();
+        
 	    String step = (String)parameters.get(C_ACTION);
 	    String moduleName = (String)parameters.get(C_MODULE);
+        
 	    if((step != null) && ("ok".equals(step))) {
-	
-	        // export
 	        String exportName = (String)parameters.get("modulename");
-	        String[] resourcen = new String[4];
-	        resourcen[0] = "/system/modules/" + exportName + "/";
-	        resourcen[1] = "/system/classes/" + exportName.replace('.', '/') + "/";
-	        resourcen[2] = C_MODULEDEMOPATH + exportName + "/";
-	        resourcen[3] = C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.length()-1) + C_MODULEDEMOPATH + exportName + "/";
+            String[] resourcen = null;
+            int resourceCount = 0;
+            int i = 0;
+            
+            if (reg.getModuleType(exportName).equals(CmsRegistry.C_MODULE_TYPE_ADVANCED)) {
+                // ADVANCED MODULE
+                
+                // check if additional resources outside the system/modules/{exportName} folder were 
+                // specified as module resources by reading the module property {C_MODULE_PROPERTY_ADDITIONAL_RESOURCES}                
+                String additionalResources = OpenCms.getRegistry().getModuleParameterString( exportName, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES );
+                int additionalResourceCount = 0;
+                StringTokenizer additionalResourceTokens = null;
+                
+                if (additionalResources!=null && !additionalResources.equals("")) {
+                    // add each additonal folder plus its content folder under "content/bodys"
+                    additionalResourceTokens = new StringTokenizer( additionalResources, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR ); 
+                    
+                    resourceCount = (additionalResourceTokens.countTokens()*2) + 4;    
+                    resourcen = new String[ resourceCount ];
+                    
+                    // add each resource plus its equivalent at content/bodys to 
+                    // the string array of all resources for the export
+                    while (additionalResourceTokens.hasMoreTokens()) {
+                        String currentResource = additionalResourceTokens.nextToken();
+                        
+                        if (DEBUG>0) {
+                            System.err.println( "Adding resource: " + currentResource );
+                            System.err.println( "Adding resource: " + C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.length()-1) + currentResource );
+                        }
+                        
+                        resourcen[ i++ ] = currentResource;
+                        resourcen[ i++ ] = C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.length()-1) + currentResource;
+                    }
+                }
+                else {
+                    // no additional resources were specified...
+                    resourceCount = 4;
+                    resourcen = new String[ resourceCount ]; 
+                    i = 0;                              
+                }                
+            }  
+            else {
+                // TRADITIONAL MODULE
+                
+                resourceCount = 4;
+                resourcen = new String[ resourceCount ]; 
+                i = 0;          
+            }
+            
+            // finally, add the "standard" module resources to the string of all resources for the export
+            resourcen[ i++ ] = I_CmsConstants.C_MODULES_PATH + exportName + "/";
+            resourcen[ i++ ] = "/system/classes/" + exportName.replace('.', '/') + "/";
+            resourcen[ i++ ] = C_MODULEDEMOPATH + exportName + "/";
+            resourcen[ i++ ] = C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.length()-1) + C_MODULEDEMOPATH + exportName + "/";            
 	
-	        // TODO: this is just a Hack
-	        for(int i = 1;i < 4;i++) {
-	            try {
-	                cms.readFileHeader(resourcen[i]);
+	        // TODO: this is just a Hack (What the heck does this hack??)
+	        for(i=0;i<resourceCount;i++) {
+	            try {            
+	                cms.readFileHeader( resourcen[i] );
 	            }
 	            catch(CmsException e) {
 	                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
 	                     A_OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG,
 	                        "error exporting module: couldn't add " + resourcen[i] + " to Module\n" + Utils.getStackTrace(e));
 	                 }
-	                resourcen[i] = resourcen[0];
+	                resourcen[i] = resourcen[ resourceCount-4 ];
 	            }
 	        }
 	        try {
-	            cms.readFileHeader(resourcen[0]);
+	            cms.readFileHeader(resourcen[ resourceCount-4 ]);
 	        }
 	        catch(CmsException e) {
 	             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
 	                 A_OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG,
-	                    "error exporting module: couldn't add " + resourcen[0]
+	                    "error exporting module: couldn't add " + resourcen[ resourceCount-4 ]
 	                    + " to Module\n" + "You dont have this module in this project!");
 	             }
 	            return startProcessing(cms, templateDocument, elementName, parameters, "done");
