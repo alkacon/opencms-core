@@ -158,7 +158,11 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 				session.removeValue("SITE_DOMAIN");
 				session.removeValue("SITE_ID");
 			}
-			else templateSelector = "erroreditsite";
+			else 
+			{
+				xmlTemplateDocument.setData("details", "");
+				templateSelector = "erroreditsite";
+			}
 		}
 		catch (CmsException exc)
 		{
