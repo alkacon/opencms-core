@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/06/13 14:48:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/06/16 13:37:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the generic (ANSI-SQL) driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/06/13 14:48:16 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/16 13:37:54 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -138,7 +138,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
             }
         } catch (SQLException e) {
             if (A_OpenCms.isLogging() && I_CmsLogChannels.C_LOGGING) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + getClass().getName() + "] error closing JDBC connection/statement/result: " + e.toString());
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + "] error closing JDBC connection/statement/result: " + e.toString());
             }
         } finally {
             res = null;
@@ -238,7 +238,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
         String value = null;
         if ((value = c_queries.getProperty(queryKey)) == null) {
             if (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + getClass().getName() + "] query '" + queryKey + "' not found in " + C_PROPERTY_FILENAME);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + "] query '" + queryKey + "' not found in " + C_PROPERTY_FILENAME);
             }
         }
 
@@ -430,15 +430,13 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
             properties.load(getClass().getClassLoader().getResourceAsStream(propertyFilename));
         } catch (NullPointerException exc) {
             if (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + getClass().getName() + "] error loading " + propertyFilename);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + "] error loading " + propertyFilename);
             }
-
             properties = null;
         } catch (java.io.IOException exc) {
             if (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + getClass().getName() + "] error loading " + propertyFilename);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + "] error loading " + propertyFilename);
             }
-
             properties = null;
         }
 
