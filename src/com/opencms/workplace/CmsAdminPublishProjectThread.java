@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPublishProjectThread.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/09/05 14:07:53 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -43,28 +43,29 @@ import java.io.*;
  */
 
 public class CmsAdminPublishProjectThread extends Thread implements I_CmsConstants {
-    
+
     private int m_projectId;
-    
+
     private CmsObject m_cms;
-    
+    private I_CmsSession m_session;
+
     /**
      * Insert the method's description here.
      * Creation date: (13.09.00 09:52:24)
      */
-    
-    public CmsAdminPublishProjectThread(CmsObject cms, int projectId) {
+
+    public CmsAdminPublishProjectThread(CmsObject cms, int projectId, I_CmsSession session) {
         m_cms = cms;
+        m_session = session;
         m_projectId = projectId;
     }
-    
+
     public void run() {
-        I_CmsSession session = m_cms.getRequestContext().getSession(true);
         try {
             m_cms.publishProject(m_projectId);
         }
         catch(CmsException e) {
-            session.putValue(C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
+            m_session.putValue(C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
             }
