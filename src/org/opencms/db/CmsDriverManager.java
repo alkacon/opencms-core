@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/02/16 01:30:36 $
- * Version: $Revision: 1.324 $
+ * Date   : $Date: 2004/02/16 09:47:44 $
+ * Version: $Revision: 1.325 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.db;
 
+import org.opencms.file.*;
 import org.opencms.importexport.CmsExport;
 import org.opencms.importexport.CmsExportModuledata;
 import org.opencms.importexport.CmsImport;
@@ -58,9 +59,6 @@ import org.opencms.validation.CmsHtmlLinkValidator;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
-import org.opencms.file.*;
-import com.opencms.template.A_CmsXmlContent;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -76,8 +74,8 @@ import java.util.zip.ZipFile;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.LRUMap;
-
-import org.w3c.dom.Document;
+import org.dom4j.Document;
+import org.dom4j.io.SAXReader;
 
 /**
  * This is the driver manager.<p>
@@ -86,7 +84,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.324 $ $Date: 2004/02/16 01:30:36 $
+ * @version $Revision: 1.325 $ $Date: 2004/02/16 09:47:44 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -3414,41 +3412,48 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if operation was not succesful
      */
     private String getFirstTagFromManifest(String importFile) throws CmsException {
-        String firstTag = "";
+        String firstTag = null;
         ZipFile importZip = null;
         Document docXml = null;
         BufferedReader xmlReader = null;
-        // get the import resource
-        File importResource = new File(OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(importFile));
+        SAXReader sax = null;
+        File importResource = null;
+
         try {
-            // if it is a file it must be a zip-file
+            // read the import file resource
+            importResource = new File(OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(importFile));
+
             if (importResource.isFile()) {
+                // a ZIP file
                 importZip = new ZipFile(importResource);
-            }
-            // is this a zip-file?
-            if (importZip != null) {
-                // yes
                 ZipEntry entry = importZip.getEntry(I_CmsConstants.C_EXPORT_XMLFILENAME);
                 InputStream stream = importZip.getInputStream(entry);
                 xmlReader = new BufferedReader(new InputStreamReader(stream));
             } else {
-                // no - use directory
+                // a directory
                 File xmlFile = new File(importResource, I_CmsConstants.C_EXPORT_XMLFILENAME);
                 xmlReader = new BufferedReader(new FileReader(xmlFile));
             }
-            docXml = A_CmsXmlContent.getXmlParser().parse(xmlReader);
-            xmlReader.close();
-            firstTag = docXml.getDocumentElement().getNodeName();
-        } catch (Exception exc) {
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-        }
-        if (importZip != null) {
+
+            sax = new SAXReader();
+            docXml = sax.read(xmlReader);
+            firstTag = docXml.getRootElement().getName();
+        } catch (Exception e) {
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
+        } finally {
             try {
-                importZip.close();
-            } catch (IOException exc) {
-                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+                if (xmlReader != null) {
+                    xmlReader.close();
+                }
+
+                if (importZip != null) {
+                    importZip.close();
+                }
+            } catch (IOException e) {
+                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
             }
         }
+
         return firstTag;
     }
 
