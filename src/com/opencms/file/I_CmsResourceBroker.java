@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/23 07:40:55 $
- * Version: $Revision: 1.149 $
+ * Date   : $Date: 2001/07/26 11:42:59 $
+ * Version: $Revision: 1.150 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.149 $ $Date: 2001/07/23 07:40:55 $
+ * @version $Revision: 1.150 $ $Date: 2001/07/26 11:42:59 $
  *
  */
 
@@ -3227,4 +3227,13 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
 	public void writeWebUser(CmsUser currentUser, CmsProject currentProject,
 						  CmsUser user)
 		throws CmsException;
+
+    /**
+     * Changes the project-id of a resource to the new project
+     * for publishing the resource directly
+     *
+     * @param newProjectId The new project-id
+     * @param resourcename The name of the resource to change
+     */
+    public void changeLockedInProject(int projectId, String resourcename) throws CmsException;
 }

@@ -3,8 +3,8 @@ import java.util.zip.*;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2001/07/26 07:55:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2001/07/26 11:42:45 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -43,7 +43,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2001/07/26 07:55:38 $
+ * @version $Revision: 1.7 $ $Date: 2001/07/26 11:42:45 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -913,4 +913,26 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         // nothing to do here
     }
 
+    /**
+     * Changes the project-id of the resource to the new project
+     * for publishing the resource directly
+     *
+     * @param newProjectId The Id of the new project
+     * @param resourcename The name of the resource to change
+     */
+    public void changeLockedInProject(CmsObject cms, int newProjectId, String resourcename)
+        throws CmsException{
+        CmsFile file = cms.readFile(resourcename);
+        cms.doChangeLockedInProject(newProjectId, resourcename);
+		String bodyPath = checkBodyPath(cms, (CmsFile)file);
+		if (bodyPath != null){
+            cms.doChangeLockedInProject(newProjectId, bodyPath);
+		}
+
+        // The page file contains XML.
+        // So there could be some data in the parser's cache.
+        // Clear it!
+        String currentProject = cms.getRequestContext().currentProject().getName();
+        CmsXmlControlFile.clearFileCache(currentProject + ":" + resourcename);
+    }
 }

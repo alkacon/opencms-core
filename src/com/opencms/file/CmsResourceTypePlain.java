@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
- * Date   : $Date: 2001/07/26 09:26:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2001/07/26 11:42:45 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -513,4 +513,16 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
 		}
 		chmod(cms, filename, accessFlags.intValue(), false);
 	}
+
+    /**
+     * Changes the project-id of the resource to the new project
+     * for publishing the resource directly
+     *
+     * @param newProjectId The Id of the new project
+     * @param resourcename The name of the resource to change
+     */
+    public void changeLockedInProject(CmsObject cms, int newProjectId, String resourcename)
+        throws CmsException{
+        cms.doChangeLockedInProject(newProjectId, resourcename);
+    }
 }

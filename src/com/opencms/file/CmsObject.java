@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/07/24 12:28:33 $
- * Version: $Revision: 1.177 $
+ * Date   : $Date: 2001/07/26 11:42:44 $
+ * Version: $Revision: 1.178 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.177 $ $Date: 2001/07/24 12:28:33 $
+ * @version $Revision: 1.178 $ $Date: 2001/07/26 11:42:44 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2301,7 +2301,12 @@ public void publishProject(int id) throws CmsException {
  */
 public void publishResource(String resourcename) throws CmsException {
     int oldProjectId = m_context.currentProject().getId();
-    CmsResource res = readFileHeader(resourcename);
+    CmsResource res = null;
+    if(resourcename.endsWith("/")){
+        res = readFolder(resourcename, true);
+    } else {
+        res = readFileHeader(resourcename);
+    }
     if(res.isLocked()){
         throw new CmsException("[CmsObject] cannot publish locked resource", CmsException.C_NO_ACCESS);
     }
@@ -2316,8 +2321,9 @@ public void publishResource(String resourcename) throws CmsException {
             // copy the resource to the
 	        rt.copyResourceToProject(this, resourcename);
             // lock and unlock resource to set the project_id to the current project
-            rt.lockResource(this, resourcename, true);
-            rt.unlockResource(this, resourcename);
+            rt.changeLockedInProject(this, newProjectId, resourcename);
+            //rt.lockResource(this, resourcename, true);
+            //rt.unlockResource(this, resourcename);
             // publish the temporary project
             publishProject(newProjectId);
             getRequestContext().setCurrentProject(oldProjectId);
@@ -3466,4 +3472,27 @@ public void writeWebUser(CmsUser user) throws CmsException {
     m_rb.writeWebUser(m_context.currentUser(), m_context.currentProject(), user);
 }
 
+/**
+ * Changes the project-id of a resource to the new project
+ * for publishing the resource directly
+ *
+ * @param newProjectId The new project-id
+ * @param resourcename The name of the resource to change
+ */
+protected void changeLockedInProject(int projectId, String resourcename) throws CmsException{
+	CmsResource res = m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), resourcename, true);
+	I_CmsResourceType rt = getResourceType(res.getType());
+    rt.changeLockedInProject(this, projectId, resourcename);
+}
+
+/**
+ * Changes the project-id of a resource to the new project
+ * for publishing the resource directly
+ *
+ * @param newProjectId The new project-id
+ * @param resourcename The name of the resource to change
+ */
+protected void doChangeLockedInProject(int projectId, String resourcename) throws CmsException{
+    m_rb.changeLockedInProject(projectId, resourcename);
+}
 }

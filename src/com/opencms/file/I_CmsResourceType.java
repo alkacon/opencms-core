@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2001/07/23 07:40:55 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2001/07/26 11:42:59 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -348,5 +348,15 @@ public interface I_CmsResourceType
 	* to unlock this resource.
 	*/
 	public void unlockResource(CmsObject cms, String resource) throws CmsException;
+
+    /**
+     * Changes the project-id of the resource to the new project
+     * for publishing the resource directly
+     *
+     * @param newProjectId The Id of the new project
+     * @param resourcename The name of the resource to change
+     */
+    public void changeLockedInProject(CmsObject cms, int newProjectId, String resourcename)
+        throws CmsException;
 
 }

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2001/07/26 07:55:38 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2001/07/26 11:42:45 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -937,6 +937,47 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         if (l == 0) {
             throw new CmsException("[" + this.getClass().getName() + "] " + resourcename,
                 CmsException.C_BAD_NAME);
+        }
+    }
+
+    /**
+     * Changes the project-id of the resource to the new project
+     * for publishing the resource directly
+     *
+     * @param newProjectId The Id of the new project
+     * @param resourcename The name of the resource to change
+     */
+    public void changeLockedInProject(CmsObject cms, int newProjectId, String resourcename)
+        throws CmsException{
+        // we have to change the folder and all resources in the folder
+        Vector allSubFolders = new Vector();
+        Vector allSubFiles   = new Vector();
+        getAllResources(cms, resourcename, allSubFiles, allSubFolders);
+        // first change all the files
+        for (int i=0; i<allSubFiles.size(); i++){
+            CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
+            if(curFile.getState() != C_STATE_UNCHANGED){
+                cms.changeLockedInProject(newProjectId, curFile.getAbsolutePath());
+            }
+        }
+        // now all the subfolders
+        for (int i=0; i<allSubFolders.size(); i++){
+            CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
+            if(curFolder.getState() != C_STATE_UNCHANGED){
+                changeLockedInProject(cms, newProjectId, curFolder.getAbsolutePath());
+            }
+        }
+        // finally the folder
+        cms.doChangeLockedInProject(newProjectId, resourcename);
+        // change the corresponding folder in /content/bodys/
+        String bodyFolder = C_CONTENTBODYPATH.substring(0,
+                    C_CONTENTBODYPATH.lastIndexOf("/")) + resourcename;
+        try {
+            cms.readFolder(bodyFolder,true);
+            changeLockedInProject(cms, newProjectId, bodyFolder);
+        }
+        catch(CmsException ex) {
+            // no folder is there, so do nothing
         }
     }
 }
