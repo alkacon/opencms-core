@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/17 08:39:27 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2003/07/17 09:36:44 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.60 $ $Date: 2003/07/17 08:39:27 $
+ * @version $Revision: 1.61 $ $Date: 2003/07/17 09:36:44 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4176,7 +4176,7 @@ public class CmsDriverManager extends Object {
         }
 
 
-        String launcherClassname=getResourceType(launcherType).getResourceTypeName();       
+        String launcherClassname=getResourceType(resourceType).getResourceTypeName();       
 
         // TODO VFS links: refactor all upper methods to support the VFS link type param
         CmsResource newResource = new CmsResource(newUuid, newUuidresource, parentFolder.getId(), newUuidfile, resourceName, resourceType, 0,  context.currentProject().getId(), accessFlags, I_CmsConstants.C_STATE_NEW, context.currentUser().getId(), launcherType, launcherClassname, lastmodified, context.currentUser().getId(), lastmodified, context.currentUser().getId(), filecontent.length, context.currentProject().getId(), I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
