@@ -13,6 +13,7 @@ OpenCms 4.7.4 Ecaz - ?? April 2002
   old urls: http://www.myserver.com:8080/opencms/opencms/pics/mygallery/mypic.gif
   new urls: /opencms/opencms/pics/mygallery/mypic.gif
   So now the server name or IP can be changed without modifying the complete content.
+- Added mimetype for asx files.
 
 OpenCms 4.7.3 Ecaz - 5 April 2002
 ! Corrected the base url for editing in ActiveX DHTML-Control. Now relative links to
