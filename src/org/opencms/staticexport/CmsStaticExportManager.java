@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/11/17 07:47:09 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2003/12/10 17:36:58 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsPublishedResource;
 import org.opencms.loader.CmsDumpLoader;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsPageLoader;
+import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.I_CmsEventListener;
@@ -73,7 +74,7 @@ import org.apache.commons.collections.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -411,7 +412,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // check loader id for resource
         int loaderId = file.getLoaderId();
         I_CmsResourceLoader loader = OpenCms.getLoaderManager().getLoader(loaderId);
-        if ((loader == null) || ((loaderId != CmsDumpLoader.C_RESOURCE_LOADER_ID) && (loaderId != CmsJspLoader.C_RESOURCE_LOADER_ID) && (loaderId != CmsPageLoader.C_RESOURCE_LOADER_ID))) {
+        if ((loader == null) 
+            || ((loaderId != CmsDumpLoader.C_RESOURCE_LOADER_ID) 
+                        && (loaderId != CmsJspLoader.C_RESOURCE_LOADER_ID) 
+                        && (loaderId != CmsPageLoader.C_RESOURCE_LOADER_ID)
+                        && (loaderId != CmsXmlPageLoader.C_RESOURCE_LOADER_ID))) {
             throw new CmsException("Unable to export VFS file " + vfsName + ", invalid loader id " + loaderId);
         }
 
