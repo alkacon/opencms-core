@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2004/08/02 07:51:55 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/08/06 14:46:28 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,9 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsShellCommands;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
+import org.opencms.module.CmsModule;
+import org.opencms.module.CmsModuleDependency;
+import org.opencms.module.CmsModuleImportExportHandler;
 import org.opencms.report.CmsShellReport;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
@@ -77,7 +80,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
@@ -227,83 +230,71 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      * @return a map with all available modules
      */
     public Map getAvailableModules() {
-        File packagesFolder = null;
-        File[] childResources = null;
-        File childResource = null;
-        Document manifest = null;
-        String moduleName = null;
-        String moduleNiceName = null;
-        String moduleVersion = null;
-        String moduleDescription = null;
-        List dependencyNodes = null;
-        List moduleDependencies = null;
-        Element rootElement = null;
-        Element moduleDependency = null;
-        String moduleDependencyName = null;
-        Map module = null;
 
         try {
             m_availableModules = new HashMap();
             m_moduleDependencies = new HashMap();
 
             // open the folder "/WEB-INF/packages/modules/"
-            packagesFolder = new File(m_webAppRfsPath + "WEB-INF" + File.separator + "packages" + File.separator + "modules");
+            File packagesFolder = new File(m_webAppRfsPath + "WEB-INF" + File.separator + "packages" + File.separator + "modules");
 
             if (packagesFolder.exists()) {
                 // list all child resources in the packages folder
-                childResources = packagesFolder.listFiles();
+                File[] childResources = packagesFolder.listFiles();
 
                 if (childResources != null) {
                     for (int i = 0; i < childResources.length; i++) {
-                        childResource = childResources[i];
-
-                        // try to get manifest.xml either from a ZIP file or a subfolder
-                        if (childResource.exists() && childResource.canRead() && (manifest = CmsImportExportManager.getManifest(childResource)) != null) {
-                            // get the "export" node
-                            rootElement = manifest.getRootElement();
-                            // module package name
-                            moduleName = ((Element)rootElement.selectNodes("//export/module/name").get(0)).getTextTrim();
-                            // module nice name
-                            moduleNiceName = ((Element)rootElement.selectNodes("//export/module/nicename").get(0)).getTextTrim();
-                            // module version
-                            moduleVersion = ((Element)rootElement.selectNodes("//export/module/version").get(0)).getTextTrim();
-                            // module description
-                            moduleDescription = ((Element)rootElement.selectNodes("//export/module/description").get(0)).getTextTrim();
-                            // all module "dependency" sub nodes
-                            dependencyNodes = rootElement.selectNodes("//export/module/dependencies/dependency");
-
-                            // if module a depends on module b, and module c depends also on module b:
-                            // build a map with a list containing "a" and "c" keyed by "b" to get a 
-                            // list of modules depending on module "b"...
-                            for (int j = 0; j < dependencyNodes.size(); j++) {
-                                moduleDependency = (Element)dependencyNodes.get(j);
-
-                                // module dependency package name
-                                moduleDependencyName = ((Element)moduleDependency.selectNodes("./name").get(0)).getTextTrim();
-                                // get the list of dependend modules ("b" in the example)
-                                moduleDependencies = (List)m_moduleDependencies.get(moduleDependencyName);
-
-                                if (moduleDependencies == null) {
-                                    // build a new list if "b" has no dependend modules yet
-                                    moduleDependencies = new ArrayList();
-                                    m_moduleDependencies.put(moduleDependencyName, moduleDependencies);
-                                }
-
-                                // add "a" as a module depending on "b"
-                                moduleDependencies.add(moduleName);
+                        File childResource = childResources[i];
+                        
+                        if (childResource.isFile() && !(childResource.getAbsolutePath().toLowerCase().endsWith(".zip"))) {
+                            // skip non-ZIP files
+                            continue;
+                        }
+                        
+                        // parse the module's manifest
+                        CmsModule module = CmsModuleImportExportHandler.readModuleFromImport(childResource.getAbsolutePath());
+                        
+                        // module package name
+                        String moduleName = module.getName();
+                        // module nice name
+                        String moduleNiceName = module.getNiceName();
+                        // module version
+                        String moduleVersion = module.getVersion().getVersion();
+                        // module description
+                        String moduleDescription = module.getDescription();
+                        
+                        // if module a depends on module b, and module c depends also on module b:
+                        // build a map with a list containing "a" and "c" keyed by "b" to get a 
+                        // list of modules depending on module "b"...                        
+                        List dependencies = module.getDependencies();
+                        for (int j = 0, n = dependencies.size(); j < n; j++) {
+                            CmsModuleDependency dependency = (CmsModuleDependency)dependencies.get(j);
+                            
+                            // module dependency package name
+                            String moduleDependencyName = dependency.getName();
+                            // get the list of dependend modules
+                            List moduleDependencies = (List)m_moduleDependencies.get(moduleDependencyName);
+                            
+                            if (moduleDependencies == null) {
+                                // build a new list if "b" has no dependend modules yet
+                                moduleDependencies = new ArrayList();
+                                m_moduleDependencies.put(moduleDependencyName, moduleDependencies);
                             }
 
-                            // create a map holding the collected module information
-                            module = new HashMap();
-                            module.put("name", moduleName);
-                            module.put("niceName", moduleNiceName);
-                            module.put("version", moduleVersion);
-                            module.put("description", moduleDescription);
-                            module.put("filename", childResource.getName());
+                            // add "a" as a module depending on "b"
+                            moduleDependencies.add(moduleName);                            
+                        }           
+                        
+                        // create a map holding the collected module information
+                        Map moduleData = new HashMap();
+                        moduleData.put("name", moduleName);
+                        moduleData.put("niceName", moduleNiceName);
+                        moduleData.put("version", moduleVersion);
+                        moduleData.put("description", moduleDescription);
+                        moduleData.put("filename", childResource.getName());
 
-                            // put the module information into a map keyed by the module packages names
-                            m_availableModules.put(moduleName, module);
-                        }
+                        // put the module information into a map keyed by the module packages names
+                        m_availableModules.put(moduleName, moduleData);                      
                     }
                 }
             }
