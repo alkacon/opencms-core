@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2004/10/31 21:30:17 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/04 14:23:10 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.3
  */
@@ -400,6 +400,21 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
     public String getParamBodyFile() {
         return m_paramBodyFile;
     }
+    
+    /**
+     * Overrides the super implementation to avoid problems with double reqource input fields.<p>
+     * 
+     * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden()
+     */
+    public String paramsAsHidden() {
+        String resourceName = getParamResource();
+        // remove resource parameter from hidden params to avoid problems with double input fields in form
+        setParamResource(null);
+        String params = super.paramsAsHidden();
+        // set resource parameter to stored value
+        setParamResource(resourceName);
+        return params;
+    }
 
     /**
      * Sets the body file parameter value.<p>
@@ -453,8 +468,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             }         
             setParamResource(defaultFile);    
         } else {
-            // set resource name to empty string for common dialog mode
-            setParamResource("");    
+            setParamResource("");
         }
     }
 
