@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2004/07/18 16:27:12 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2004/07/23 13:42:28 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleVersion;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.I_CmsSession;
@@ -75,23 +76,6 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
     private final static String C_MODULE_TYPE = "moduletype";
     private final static String C_EXPORTCLASSES = "exportclasses";
     private final static String C_EXPORTLIB = "exportlib";
-        
-    /**
-     *  Checks if the name is correct.
-     *  @param name the name to check..
-     */
-    private boolean checkName(String name) {
-        if(name == null || name.length() == 0 || name.trim().length() == 0) {
-            return false;
-        }
-        for(int i = 0;i < name.length();i++) {
-            char c = name.charAt(i);
-            if(((c < 'a') || (c > 'z')) && ((c < '0') || (c > '9')) && ((c < 'A') || (c > 'Z')) && (c != '-') && (c != '.') && (c != '_') && (c != '~')) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
@@ -149,10 +133,15 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                 boolean mustExportLib = ((exportLib != null) && exportLib.equals("checked"));
                 
                 boolean moduleExists = OpenCms.getModuleManager().hasModule(modulename); 
-
-                CmsModuleVersion moduleVersion = new CmsModuleVersion(version);
                 
-                if((!checkName(modulename)) || (version == null) || ("".equals(version)) || moduleExists) {
+                CmsModuleVersion moduleVersion;
+                try {
+                    moduleVersion = new CmsModuleVersion(version);
+                } catch (IllegalArgumentException e) {
+                    moduleVersion = null;
+                }
+                
+                if((!CmsStringUtil.isValidJavaClassName(modulename)) || moduleExists || (moduleVersion == null)) {
                     Hashtable sessionData = new Hashtable();
                     sessionData.put(C_MODULENAME, getStringValue(nicename));
                     sessionData.put(C_VERSION, getStringValue(version));
