@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/01/04 17:34:08 $
- * Version: $Revision: 1.157 $
+ * Date   : $Date: 2005/02/02 12:54:12 $
+ * Version: $Revision: 1.158 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,7 +110,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.157 $
+ * @version $Revision: 1.158 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1980,7 +1980,7 @@ public final class OpenCmsCore {
             try {
                 // get a Admin cms context object
                 CmsObject adminCms = initCmsObject(req, res, getDefaultUsers().getUserAdmin(), null);
-                CmsProperty propertyLoginForm = adminCms.readPropertyObject(I_CmsConstants.C_PROPERTY_LOGIN_FORM, req.getPathInfo(), true);
+                CmsProperty propertyLoginForm = adminCms.readPropertyObject(req.getPathInfo(), I_CmsConstants.C_PROPERTY_LOGIN_FORM, true);
 
                 if (org.opencms.main.OpenCms.getLog(this).isDebugEnabled()) {
                     org.opencms.main.OpenCms.getLog(this).debug("resource: " + req.getPathInfo());
