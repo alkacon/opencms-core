@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/09 16:28:43 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/13 15:19:10 $
  */
 public interface I_CmsRbFile {
 	
@@ -1025,7 +1025,7 @@ public interface I_CmsRbFile {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void declineResource(I_CmsUser callingUser, String project, String resource)
+	void declineResource(I_CmsUser callingUser, String project, String resource)
 		throws CmsException;
 
 	/**
@@ -1044,6 +1044,17 @@ public interface I_CmsRbFile {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void rejectResource(I_CmsUser callingUser, String project, String resource)
+	void rejectResource(I_CmsUser callingUser, String project, String resource)
 		throws CmsException;
+
+	/**
+	 * Returns the actual number of Filesystem-changes since starting the cms.<BR/>
+	 * This can be used to write intelligent caching-operations.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @return the actual number of Filesystem-changes since starting the cms.
+	 */
+	long getNumberOfFsChanges(I_CmsUser callingUser);
 }

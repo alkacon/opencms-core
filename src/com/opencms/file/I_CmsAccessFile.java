@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/10 11:10:23 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/13 15:19:10 $
  */
 public interface I_CmsAccessFile {
 
@@ -551,7 +551,7 @@ public interface I_CmsAccessFile {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void declineResource(String project, String resource)
+	void declineResource(String project, String resource)
 		throws CmsException;
 
 	/**
@@ -564,7 +564,7 @@ public interface I_CmsAccessFile {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void rejectResource(String project, String resource)
+	void rejectResource(String project, String resource)
 		throws CmsException;
 
 }

@@ -12,9 +12,9 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/10 11:10:23 $
+ * @version $Revision: 1.1 $ $Date: 1999/12/13 15:19:10 $
  */
-public interface I_CmsAccessProperty {
+public abstract class A_CmsAccessProperty {
 	
 	/**
 	 * Reads a serializable object from the propertys.
@@ -25,7 +25,7 @@ public interface I_CmsAccessProperty {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	Serializable readProperty(String name)
+	abstract Serializable readProperty(String name)
 		throws CmsException;
 
 	/**
@@ -37,7 +37,7 @@ public interface I_CmsAccessProperty {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if something goes wrong.
 	 */
-	void writeProperty(String name, Serializable object)
+	abstract void writeProperty(String name, Serializable object)
 		throws CmsDuplicateKeyException, CmsException;
 
 	/**
@@ -47,6 +47,6 @@ public interface I_CmsAccessProperty {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	void deleteProperty(String name)
+	abstract void deleteProperty(String name)
 		throws CmsException;
 }

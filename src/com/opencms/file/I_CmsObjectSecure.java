@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * I_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 1999/12/09 16:28:43 $ 
+ * @version $Revision: 1.4 $ $Date: 1999/12/13 15:19:10 $ 
  * 
  */
 interface I_CmsObjectSecure {	
@@ -954,4 +954,33 @@ interface I_CmsObjectSecure {
 	 * @return true, if the user has access, else returns false.
 	 */
 	public boolean accessProject(String projectname);
+
+	/**
+	 * Returns the available memory for the java-vm.
+	 * 
+	 * @return the available memory for the java-vm.
+	 */
+	public long availableMem();
+	
+	/**
+	 * Returns the used memory for the java-vm.
+	 * 
+	 * @return the used memory for the java-vm.
+	 */
+	public long usedMem();
+	
+	/**
+	 * Returns the free memory for the java-vm.
+	 * 
+	 * @return the free memory for the java-vm.
+	 */
+	public long freeMem();
+	
+	/**
+	 * Returns the actual number of Filesystem-changes since starting the cms.<BR/>
+	 * This can be used to write intelligent caching-operations.
+	 * 
+	 * @return the actual number of Filesystem-changes since starting the cms.
+	 */
+	public long getNumberOfFsChanges();
 }
